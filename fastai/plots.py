@@ -1,5 +1,5 @@
-from imports import *
-from torch_imports import *
+from .imports import *
+from .torch_imports import *
 
 def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None):
     if type(ims[0]) is np.ndarray:

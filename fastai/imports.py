@@ -15,5 +15,13 @@ np.set_printoptions(precision=4, linewidth=100)
 
 def in_notebook(): return 'ipykernel' in sys.modules
 
-from tqdm import trange, tqdm, tqdm_notebook, tnrange
-if in_notebook(): trange=tnrange; tqdm=tqdm_notebook
+import tqdm as tq
+from tqdm import tqdm_notebook, tnrange
+if in_notebook():
+    def tqdm(*args, **kwargs): return tq.tqdm(*args, file=sys.stdout, **kwargs)
+    def trange(*args, **kwargs): return tq.trange(*args, file=sys.stdout, **kwargs)
+else:
+    from tqdm import tqdm, trange
+    tnrange=trange
+    tqdm_notebook=tqdm
+
