@@ -60,7 +60,7 @@ class ConvnetBuilder():
             res += self.create_fc_layer(ni, nf, p=self.ps[i], actn=nn.ReLU)
             ni=nf
         final_actn = nn.Sigmoid if self.is_multi else nn.LogSoftmax
-        if self.is_reg: final_actn = None 
+        if self.is_reg: final_actn = None
         res += self.create_fc_layer(ni, self.c, p=self.ps[-1], actn=final_actn)
         return res
 
@@ -72,17 +72,17 @@ class ConvnetBuilder():
 
 
 class ConvLearner(Learner):
-    def __init__(self, data, models, use_fc=False, **kwargs):
-        self.use_fc=False
+    def __init__(self, data, models, precompute=False, **kwargs):
+        self.precompute=False
         super().__init__(data, models, **kwargs)
         self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
-        if self.metrics is None and not data.is_reg:
-            self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
         if data.is_reg:
-            self.crit = F.l1_loss 
+            self.crit = F.l1_loss
+        elif self.metrics is None:
+            self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
         self.save_fc1()
         self.freeze()
-        self.use_fc=use_fc
+        self.precompute=precompute
 
     @classmethod
     def pretrained(self, f, data, ps=None, xtra_fc=None, xtra_cut=0, **kwargs):
@@ -90,10 +90,10 @@ class ConvLearner(Learner):
         return self(data, models, **kwargs)
 
     @property
-    def model(self): return self.models.fc_model if self.use_fc else self.models.model
+    def model(self): return self.models.fc_model if self.precompute else self.models.model
 
     @property
-    def data(self): return self.fc_data if self.use_fc else self.data_
+    def data(self): return self.fc_data if self.precompute else self.data_
 
     def create_empty_bcolz(self, n, name):
         return bcolz.carray(np.zeros((0,n), np.float32), chunklen=1, mode='w', rootdir=name)
@@ -104,12 +104,12 @@ class ConvLearner(Learner):
         self.freeze()
 
     def get_layer_groups(self):
-        return self.models.get_layer_groups(self.use_fc)
+        return self.models.get_layer_groups(self.precompute)
 
     def get_activations(self, force=False):
         tmpl = f'_{self.models.name}_{self.data.sz}.bc'
         names = [os.path.join(self.tmp_path, p+tmpl) for p in ('x_act', 'x_act_val')]
-        if os.path.exists(names[0]) and not force: 
+        if os.path.exists(names[0]) and not force:
             self.activations = [bcolz.open(p) for p in names]
         else:
             self.activations = [self.create_empty_bcolz(self.models.nf,n) for n in names]
