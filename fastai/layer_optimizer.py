@@ -1,5 +1,6 @@
 from .imports import *
 from .torch_imports import *
+from .core import *
 
 def opt_params(parm, lr, wd):
     return {'params': chain_params(parm), 'lr':lr, 'weight_decay':wd}

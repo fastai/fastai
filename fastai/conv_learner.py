@@ -1,11 +1,14 @@
-from learner import *
+from .core import *
+from .layers import *
+from .learner import *
+from .initializers import *
 
 
 class ConvnetBuilder():
-    """Class representing a convolutional network.    
+    """Class representing a convolutional network.
 
     Arguments:
-        f (string): name of the model  
+        f (string): name of the model
         c (int): size of the last layer
         is_multi (bool): is multilabel classification
             (def here http://scikit-learn.org/stable/modules/multiclass.html)

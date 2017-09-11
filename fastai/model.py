@@ -44,7 +44,7 @@ def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None):
 
     apply_leaf(m, set_train_mode)
     batch_num,avg_loss=0,0.
-    for epoch in trange(epochs, desc='Epoch'):
+    for epoch in tnrange(epochs, desc='Epoch'):
         apply_leaf(m, set_train_mode)
         t = trange(len(data.trn_dl), leave=False)
         dl = iter(data.trn_dl)
@@ -60,7 +60,7 @@ def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None):
             if stop: return
 
         vals = validate(m, data.val_dl, crit, metrics)
-        print(np.round([avg_loss] + vals, 6))
+        print(np.round([epoch, avg_loss] + vals, 6))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: return

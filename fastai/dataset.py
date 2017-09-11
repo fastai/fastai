@@ -1,5 +1,6 @@
 from .imports import *
 from .torch_imports import *
+from .core import *
 from .transforms import *
 from .layer_optimizer import *
 
@@ -170,6 +171,8 @@ class ArraysNhotDataset(ArraysDataset):
 class ModelData():
     def __init__(self, path, trn_dl, val_dl): self.path,self.trn_dl,self.val_dl = path,trn_dl,val_dl
 
+    @property
+    def is_reg(self): return self.trn_ds.is_reg
     @property
     def trn_ds(self): return self.trn_dl.dataset
     @property
