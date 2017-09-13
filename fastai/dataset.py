@@ -39,7 +39,7 @@ def read_dir(path, folder):
 
 def read_dirs(path, folder):
     full_path = os.path.join(path, folder)
-    all_labels = sorted([os.path.basename(os.path.dirname(f)) 
+    all_labels = sorted([os.path.basename(os.path.dirname(f))
                   for f in iglob(f"{full_path}/*/")])
     fnames = [iglob(f"{full_path}/{d}/*.*") for d in all_labels]
     pairs = [(os.path.relpath(fn,path), l) for l,f in zip(all_labels, fnames) for fn in f]
@@ -67,7 +67,7 @@ def parse_csv_labels(fn, skip_header=True):
     return sorted(csv_labels.keys()), csv_labels, all_labels, label2idx
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
-    all_idx = {k: n_hot([label2idx[o] for o in v], c) 
+    all_idx = {k: n_hot([label2idx[o] for o in v], c)
                for k,v in csv_labels.items()}
     return np.stack([all_idx[o] for o in fnames])
 
@@ -89,12 +89,12 @@ class BaseDataset(Dataset):
         self.sz = self.get_sz()
 
     def __getitem__(self, idx):
-        return (self.get(self.transform, self.get_x, idx), 
+        return (self.get(self.transform, self.get_x, idx),
                 self.get(self.target_transform, self.get_y, idx))
 
     def __len__(self): return self.n
 
-    def get(self, tfm, fn, idx): 
+    def get(self, tfm, fn, idx):
         return fn(idx) if tfm is None else tfm(fn(idx))
 
     @abstractmethod
@@ -184,7 +184,7 @@ class ModelData():
 
 
 class ImageData(ModelData):
-    def __init__(self, path, datasets, bs, num_workers, classes): 
+    def __init__(self, path, datasets, bs, num_workers, classes):
         trn_ds,val_ds,fix_ds,aug_ds,test_ds,test_aug_ds = datasets
         self.path,self.bs,self.num_workers,self.classes = path,bs,num_workers,classes
         self.trn_dl,self.val_dl,self.fix_dl,self.aug_dl,self.test_dl,self.test_aug_dl = [
@@ -212,7 +212,7 @@ class ImageData(ModelData):
         dls = [self.trn_dl,self.val_dl,self.fix_dl,self.aug_dl]
         if self.test_dl: dls += [self.test_dl, self.test_aug_dl]
         else: dls += [None,None]
-        t = tqdm(dls)
+        t = tqdm_notebook(dls)
         for dl in t: new_ds.append(self.resized(dl, targ, new_path))
         t.close()
         return self.__class__(new_ds[0].path, new_ds, self.bs, self.num_workers, self.classes)
