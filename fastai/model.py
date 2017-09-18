@@ -26,32 +26,49 @@ def get_probabilities(net, loader):
     net.eval()
     return np.vstack(net(VV(data)) for data, *_ in loader)
 
-def step(m, opt, xs, y, crit):
-    loss = crit(m(*V(xs)), V(y))
+def step(m, opt, xs, y, crit, clip):
+    loss = crit(m(*xs), y)
     opt.zero_grad()
     loss.backward()
+    if clip: nn.utils.clip_grad_norm(trainable_params_(m), clip)
     opt.step()
     return loss.data[0]
+
+
+class Stepper():
+    def __init__(self, m, opt, crit, clip):
+        self.m,self.opt,self.crit,self.clip = m,opt,crit,clip
+
+    def step(self, xs,y):
+        loss = self.crit(self.m(*xs), y)
+        self.opt.zero_grad()
+        loss.backward()
+        if self.clip: nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
+        self.opt.step()
+        return loss.data[0]
+
 
 def set_train_mode(m):
     if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
     else: m.train()
 
-def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None):
+def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None, clip=0, stepper_fn=Stepper):
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
 
     apply_leaf(m, set_train_mode)
     batch_num,avg_loss=0,0.
+
     for epoch in tnrange(epochs, desc='Epoch'):
+        stepper = stepper_fn(m, opt, crit, clip)
         apply_leaf(m, set_train_mode)
         t = trange(len(data.trn_dl), leave=False)
         dl = iter(data.trn_dl)
         for i in t:
             batch_num += 1
             *x,y =next(dl)
-            loss = step(m,opt,x,y, crit)
+            loss = stepper.step(V(x),V(y))
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
