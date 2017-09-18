@@ -124,8 +124,15 @@ class FilesDataset(BaseDataset):
     def resize_imgs(self, targ, new_path):
         dest = resize_imgs(self.fnames, targ, self.path, new_path)
         return self.__class__(self.fnames, self.y, self.transform, dest)
-    def denorm(self,arr): return self.transform.denorm(np.rollaxis(to_np(arr),1,4))
+    def denorm(self,arr):
+        """Denormalizing dataset.
 
+        Arguments:
+            arr: of shape/size (N,3,sz,sz)
+        """
+        if type(arr) is not np.ndarray:
+            arr = to_np(arr)
+        return self.transform.denorm(np.rollaxis(arr,1,4))
 
 class FilesArrayDataset(FilesDataset):
     def __init__(self, fnames, y, transform, path):
