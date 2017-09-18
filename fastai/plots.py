@@ -1,12 +1,13 @@
 from .imports import *
 from .torch_imports import *
 
-def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None):
+def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None, maintitle=None):
     if type(ims[0]) is np.ndarray:
         ims = np.array(ims)
         if (ims.shape[-1] != 3): ims = ims.transpose((0,2,3,1))
     f = plt.figure(figsize=figsize)
-
+    if maintitle is not None:
+        plt.suptitle(maintitle, fontsize=16)
     for i in range(len(ims)):
         sp = f.add_subplot(rows, len(ims)//rows, i+1)
         sp.axis('Off')
