@@ -26,59 +26,25 @@ def get_probabilities(net, loader):
     net.eval()
     return np.vstack(net(VV(data)) for data, *_ in loader)
 
-#def step(m, opt, xs, y, crit, clip):
-    #loss = crit(m(*xs), y)
-    #opt.zero_grad()
-    #loss.backward()
-    #if clip: nn.utils.clip_grad_norm(trainable_params_(m), clip)
-    #opt.step()
-    #return loss.data[0]
-
 
 def set_train_mode(m):
     if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
     else: m.train()
 
 
-def set_train_mode(m):
-    if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
-    else: m.train()
-
-class Stepper():
-    def __init__(self, m, opt, crit, clip):
-        self.m,self.opt,self.crit,self.clip = m,opt,crit,clip
-
-    def reset(self, train=True): pass
-
-    def step(self, xs,y):
-        loss = self.crit(self.m(*xs), y)
-        self.opt.zero_grad()
-        loss.backward()
-        if self.clip: nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
-        self.opt.step()
-        return loss.data[0]
-
-    def evaluate(self, xs, y):
-        preds = self.m(*xs)
-        return preds, self.crit(preds,y)
-
-
-def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None, clip=0, stepper_fn=Stepper):
+def fit(stepper, data, epochs, metrics=None, callbacks=None):
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
-
-    apply_leaf(m, set_train_mode)
     batch_num,avg_loss=0,0.
 
     for epoch in tnrange(epochs, desc='Epoch'):
-        stepper = stepper_fn(m, opt, crit, clip)
-        apply_leaf(m, set_train_mode)
+        stepper.reset(True)
         t = trange(len(data.trn_dl), leave=False)
         dl = iter(data.trn_dl)
         for i in t:
-            batch_num += 1
             *x,y =next(dl)
+            batch_num += 1
             loss = stepper.step(V(x),V(y))
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
@@ -87,16 +53,15 @@ def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None, clip=0, steppe
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
             if stop: return
 
-        stepper.reset(False)
-        vals = validate(m, iter(data.val_dl), metrics, stepper)
+        vals = validate(stepper, iter(data.val_dl), metrics)
         print(np.round([epoch, avg_loss] + vals, 6))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: return
 
-def validate(m, dl, metrics, stepper):
-    m.eval()
+def validate(stepper, dl, metrics):
     loss,res = [],[]
+    stepper.reset(False)
     for i in range(len(dl)):
         (*x,y) = next(dl)
         preds,l = stepper.evaluate(VV(x), VV(y))
@@ -104,12 +69,10 @@ def validate(m, dl, metrics, stepper):
         res.append([f(to_np(preds),to_np(y)) for f in metrics])
     return [np.mean(loss)] + list(np.mean(np.stack(res),0))
 
-def predict(m, dl):
-    m.eval()
-    return torch.cat([m(*VV(x)) for *x,_ in dl]).data.cpu()
+def predict(m, dl): return predict_with_targs(m, dl)[0]
 
 def predict_with_targs(m, dl):
     m.eval()
     preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
-    return torch.cat(preda).data.cpu(), torch.cat(targa)
+    return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 

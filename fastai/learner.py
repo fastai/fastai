@@ -16,6 +16,34 @@ class BasicModel():
     def get_layer_groups(self): return children(self.model)
 
 
+class Stepper():
+    def __init__(self, m, opt, crit, clip=0, reg_fn=None):
+        self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
+        self.reset()
+
+    def reset(self, train=True):
+        if train: apply_leaf(self.m, set_train_mode)
+        else: self.m.eval()
+
+    def step(self, xs, y):
+        xtra = []
+        output = self.m(*xs)
+        if isinstance(output,(tuple,list)): output,*xtra = output
+        self.opt.zero_grad()
+        loss = raw_loss = self.crit(output, y)
+        if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
+        loss.backward()
+        if self.clip:   # Gradient clipping
+            nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
+        self.opt.step()
+        return raw_loss.data[0]
+
+    def evaluate(self, xs, y):
+        preds = self.m(*xs)
+        if isinstance(preds,(tuple,list)): preds=preds[0]
+        return preds, self.crit(preds,y)
+
+
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None):
         self.data_,self.models,self.metrics = data,models,metrics
@@ -61,7 +89,7 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
-                metrics=None, callbacks=None, **kwargs):
+                metrics=None, callbacks=None, stepper_fn=Stepper, **kwargs):
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
         if cycle_len:
@@ -72,7 +100,8 @@ class Learner():
         callbacks+=[self.sched]
         for cb in callbacks: cb.on_train_begin()
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
-        fit(model, data, n_epoch, self.crit, layer_opt.opt, metrics, callbacks, **kwargs)
+        stepper = stepper_fn(model, layer_opt.opt, self.crit, **kwargs)
+        fit(stepper, data, n_epoch, metrics, callbacks)
 
     def get_layer_groups(self): return self.children
 
@@ -93,12 +122,15 @@ class Learner():
 
     def predict(self, is_test=False):
         dl = self.data.test_dl if is_test else self.data.val_dl
-        return to_np(predict(self.model, dl))
+        return self.predict_with_targs(dl)[0]
+
+    def predict_with_targs(self, dl): return predict_with_targs(self.model, dl)
 
     def TTA(self, n_aug=4, is_test=False):
         dl1 = self.data.test_dl     if is_test else self.data.val_dl
         dl2 = self.data.test_aug_dl if is_test else self.data.aug_dl
-        preds1,targs = predict_with_targs(self.model, dl1)
-        preds1 = [to_np(preds1)]*math.ceil(n_aug/4)
-        preds2 = [to_np(predict(self.model, dl2)) for i in range(n_aug)]
-        return np.stack(preds1+preds2).mean(0), to_np(targs)
+        preds1,targs = self.predict_with_targs(dl1)
+        preds1 = [preds1]*math.ceil(n_aug/4)
+        preds2 = [self.predict_with_targs(self.model, dl2)[0] for i in range(n_aug)]
+        return np.stack(preds1+preds2).mean(0), targs
+

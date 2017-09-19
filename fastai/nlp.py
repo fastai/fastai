@@ -154,7 +154,14 @@ class LanguageModelLoader():
         return source[i:i+seq_len], source[i+1:i+1+seq_len].view(-1)
 
 
-class LanguageModelLearner(Learner):
+class RNN_Learner(Learner):
+    def predict_with_targs(m, dl):
+        m.eval()
+        preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
+        return to_np(torch.cat(preda)), to_np(torch.cat(targa))
+
+
+class LanguageModelLearner(RNN_Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
         self.crit = F.cross_entropy
@@ -170,8 +177,8 @@ class LanguageModelData():
         self.trn_dl,self.val_dl,self.test_dl = [LanguageModelLoader(ds, bs, bptt) for ds in
                                                (self.trn_ds,self.val_ds,self.test_ds)]
 
-    def get_model(self, opt_fn, ninp, nhid, nlayers, **kwargs):
-        m = Seq2SeqRNN(self.nt, ninp, nhid, nlayers, **kwargs).cuda()
+    def get_model(self, opt_fn, bs, ninp, nhid, nlayers, **kwargs):
+        m = Seq2SeqRNN(bs, self.nt, ninp, nhid, nlayers, **kwargs).cuda()
         model = BasicModel(m)
         return LanguageModelLearner(self, model, opt_fn=opt_fn)
 
