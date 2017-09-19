@@ -49,3 +49,5 @@ def set_trainable(l, b):
 def SGD_Momentum(momentum):
     return lambda *args, **kwargs: optim.SGD(*args, momentum=momentum, **kwargs)
 
+def one_hot(a,c): return np.eye(c)[a]
+

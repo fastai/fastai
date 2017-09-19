@@ -26,18 +26,29 @@ def get_probabilities(net, loader):
     net.eval()
     return np.vstack(net(VV(data)) for data, *_ in loader)
 
-def step(m, opt, xs, y, crit, clip):
-    loss = crit(m(*xs), y)
-    opt.zero_grad()
-    loss.backward()
-    if clip: nn.utils.clip_grad_norm(trainable_params_(m), clip)
-    opt.step()
-    return loss.data[0]
+#def step(m, opt, xs, y, crit, clip):
+    #loss = crit(m(*xs), y)
+    #opt.zero_grad()
+    #loss.backward()
+    #if clip: nn.utils.clip_grad_norm(trainable_params_(m), clip)
+    #opt.step()
+    #return loss.data[0]
 
+
+def set_train_mode(m):
+    if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
+    else: m.train()
+
+
+def set_train_mode(m):
+    if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
+    else: m.train()
 
 class Stepper():
     def __init__(self, m, opt, crit, clip):
         self.m,self.opt,self.crit,self.clip = m,opt,crit,clip
+
+    def reset(self, train=True): pass
 
     def step(self, xs,y):
         loss = self.crit(self.m(*xs), y)
@@ -47,10 +58,10 @@ class Stepper():
         self.opt.step()
         return loss.data[0]
 
+    def evaluate(self, xs, y):
+        preds = self.m(*xs)
+        return preds, self.crit(preds,y)
 
-def set_train_mode(m):
-    if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
-    else: m.train()
 
 def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None, clip=0, stepper_fn=Stepper):
     metrics = metrics or []
@@ -76,19 +87,20 @@ def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None, clip=0, steppe
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
             if stop: return
 
-        vals = validate(m, data.val_dl, crit, metrics)
+        stepper.reset(False)
+        vals = validate(m, iter(data.val_dl), metrics, stepper)
         print(np.round([epoch, avg_loss] + vals, 6))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: return
 
-def validate(m, dl, crit, metrics):
+def validate(m, dl, metrics, stepper):
     m.eval()
     loss,res = [],[]
-    for (*x,y) in dl:
-        y = y.cuda()
-        preds = m(*VV(x))
-        loss.append(to_np(crit(preds,VV(y))))
+    for i in range(len(dl)):
+        (*x,y) = next(dl)
+        preds,l = stepper.evaluate(VV(x), VV(y))
+        loss.append(to_np(l))
         res.append([f(to_np(preds),to_np(y)) for f in metrics])
     return [np.mean(loss)] + list(np.mean(np.stack(res),0))
 

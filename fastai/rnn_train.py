@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+from .core import *
 from .model import Stepper
 
 
@@ -16,15 +17,19 @@ def get_rnn_stepper(bs, alpha=2, beta=1):
 class RNNStepper(Stepper):
     def __init__(self, m, opt, crit, clip, bs, alpha, beta):
         super().__init__(m,opt,crit,clip)
-        self.hidden = m.init_hidden(bs)
-        self.alpha,self.beta = alpha,beta
+        self.bs,self.alpha,self.beta = bs,alpha,beta
+        self.reset()
 
-    def step(self, xs,y):
+    def reset(self, train=True):
+        self.hidden = self.m.init_hidden(self.bs, train)
+
+    def step(self, xs, y):
         output,hidden,hs,dropped_hs = self.m(*xs, self.hidden, return_h=True)
         self.hidden = repackage_var(hidden)
         self.opt.zero_grad()
 
-        raw_loss = self.crit(output.view_as(y), y)
+        output = output.view(-1, output.size(-1))
+        raw_loss = self.crit(output, y)
         loss = raw_loss
         # Activation Regularization
         if self.alpha:
@@ -38,6 +43,12 @@ class RNNStepper(Stepper):
             nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         self.opt.step()
         return raw_loss.data[0]
+
+    def evaluate(self, xs, y):
+        output,hidden = self.m(*xs, self.hidden)
+        self.hidden = repackage_var(hidden)
+        output = output.view(-1, output.size(-1))
+        return output, self.crit(output,y)
 
 
 def batchify(data, bs):

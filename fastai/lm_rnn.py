@@ -1,3 +1,4 @@
+import warnings
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -36,7 +37,9 @@ class Seq2SeqRNN(nn.Module):
         new_hidden,raw_outputs,outputs = [],[],[]
         for l, rnn in enumerate(self.rnns):
             current_input = raw_output
-            raw_output, new_h = rnn(raw_output, hidden[l])
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                raw_output, new_h = rnn(raw_output, hidden[l])
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
             if l != self.nlayers - 1:
@@ -51,10 +54,10 @@ class Seq2SeqRNN(nn.Module):
         if return_h: return result, new_hidden, raw_outputs, outputs
         return result, new_hidden
 
-    def one_hidden(self, bsz, l, weight):
-        return Variable(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else self.ninp).zero_())
+    def one_hidden(self, bsz, l, weight, train):
+        return Variable(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else self.ninp).zero_(), volatile=not train)
 
-    def init_hidden(self, bsz):
+    def init_hidden(self, bsz, train):
         weight = next(self.parameters()).data
-        return [(self.one_hidden(bsz, l, weight), self.one_hidden(bsz, l, weight)) for l in range(self.nlayers)]
+        return [(self.one_hidden(bsz, l, weight, train), self.one_hidden(bsz, l, weight, train)) for l in range(self.nlayers)]
 

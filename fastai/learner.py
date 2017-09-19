@@ -11,6 +11,11 @@ from .metrics import *
 from .losses import *
 
 
+class BasicModel():
+    def __init__(self,model): self.model=model
+    def get_layer_groups(self): return children(self.model)
+
+
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None):
         self.data_,self.models,self.metrics = data,models,metrics
@@ -56,7 +61,7 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
-                metrics=None, callbacks=None):
+                metrics=None, callbacks=None, **kwargs):
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
         if cycle_len:
@@ -67,7 +72,7 @@ class Learner():
         callbacks+=[self.sched]
         for cb in callbacks: cb.on_train_begin()
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
-        fit(model, data, n_epoch, self.crit, layer_opt.opt, metrics, callbacks)
+        fit(model, data, n_epoch, self.crit, layer_opt.opt, metrics, callbacks, **kwargs)
 
     def get_layer_groups(self): return self.children
 
