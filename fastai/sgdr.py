@@ -30,6 +30,8 @@ class LossRecorder(Callback):
         plt.plot(self.iterations[10:], self.losses[10:])
 
     def plot_lr(self):
+        plt.xlabel("iterations")
+        plt.ylabel("learning rate")
         plt.plot(self.iterations, self.lrs)
 
 
@@ -69,6 +71,8 @@ class LR_Finder(LR_Updater):
         return super().on_batch_end(loss)
 
     def plot(self):
+        plt.ylabel("loss")
+        plt.xlabel("learning rate (log scale)")
         plt.plot(self.lrs[10:-5], self.losses[10:-5])
         plt.xscale('log')
 
