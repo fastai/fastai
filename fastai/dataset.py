@@ -71,13 +71,17 @@ def nhot_labels(label2idx, csv_labels, fnames, c):
                for k,v in csv_labels.items()}
     return np.stack([all_idx[o] for o in fnames])
 
-def csv_source(folder, csv_file, skip_header=True, suffix=''):
+def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
     fnames,csv_labels,all_labels,label2idx = parse_csv_labels(
         csv_file, skip_header)
-    label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
     full_names = [os.path.join(folder,fn+suffix) for fn in fnames]
-    is_single = np.all(label_arr.sum(axis=1)==1)
-    if is_single: label_arr = np.argmax(label_arr, axis=1)
+    if continuous:
+        yy = np.array([csv_labels[i][0] for i in fnames])
+        label_arr = yy.astype(np.float32)
+    else:
+        label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
+        is_single = np.all(label_arr.sum(axis=1)==1)
+        if is_single: label_arr = np.argmax(label_arr, axis=1)
     return full_names, label_arr, all_labels
 
 class BaseDataset(Dataset):
@@ -151,6 +155,10 @@ class FilesNhotArrayDataset(FilesArrayDataset):
     @property
     def is_multi(self): return True
 
+
+class FilesIndexArrayRegressionDataset(FilesArrayDataset):
+    def get_c(self): return 1
+    def is_reg(self): return True
 
 class ArraysDataset(BaseDataset):
     def __init__(self, x, y, transform):
@@ -272,12 +280,15 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_csv(self, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, skip_header=True, num_workers=4):
-        fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix)
+               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=4):
+        fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
         test_fnames = read_dir(path, test_name) if test_name else None
-        f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
+        if continuous:
+            f = FilesIndexArrayRegressionDataset
+        else:
+            f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
         datasets = self.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,
                                path=path, test=test_fnames)
         return self(path, datasets, bs, num_workers, classes=classes)
