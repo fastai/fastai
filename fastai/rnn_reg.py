@@ -9,8 +9,6 @@ def dropout_mask(x, sz, dropout): return x.new(*sz).bernoulli_(1-dropout)/(1-dro
 class LockedDropout(nn.Module):
     def forward(self, x, dropout=0.5):
         if not self.training or not dropout: return x
-        #m = x.data.new(1, x.size(1), x.size(2)).bernoulli_(1 - dropout)
-        #mask = Variable(m, requires_grad=False) / (1 - dropout)
         m = dropout_mask(x.data, (1, x.size(1), x.size(2)), dropout)
         return Variable(m, requires_grad=False) * x
 
@@ -44,8 +42,6 @@ class WeightDrop(torch.nn.Module):
 
 def embedded_dropout(embed, words, dropout=0.1, scale=None):
   if dropout:
-    #mask = embed.weight.data.new().resize_((embed.weight.size(0), 1))
-    #mask = Variable(mask.bernoulli_(1 - dropout) / (1 - dropout))
     mask = Variable(dropout_mask(embed.weight.data, (embed.weight.size(0), 1), dropout))
     masked_embed_weight = mask * embed.weight
   else: masked_embed_weight = embed.weight

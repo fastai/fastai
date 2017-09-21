@@ -138,7 +138,7 @@ class LanguageModelLoader():
     def __next__(self):
         bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
         seq_len = max(5, int(np.random.normal(bptt, 5)))
-        res = self.get_batch(self.data, self.i, seq_len)
+        res = self.get_batch(self.i, seq_len)
         self.i += seq_len
         if self.i > self.n-2: self.i=0
         return res
@@ -149,7 +149,8 @@ class LanguageModelLoader():
         data = data.view(self.bs, -1).t().contiguous()
         return data.cuda()
 
-    def get_batch(self, source, i, seq_len):
+    def get_batch(self, i, seq_len):
+        source = self.data
         seq_len = min(seq_len, len(source) - 1 - i)
         return source[i:i+seq_len], source[i+1:i+1+seq_len].view(-1)
 

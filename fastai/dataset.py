@@ -84,21 +84,20 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
     return full_names, label_arr, all_labels
 
 class BaseDataset(Dataset):
-    def __init__(self, transform=None, target_transform=None):
-        self.transform,self.target_transform = transform,target_transform
+    def __init__(self, transform=None):
+        self.transform = transform
         self.lock=threading.Lock()
         self.n = self.get_n()
         self.c = self.get_c()
         self.sz = self.get_sz()
 
     def __getitem__(self, idx):
-        return (self.get(self.transform, self.get_x, idx),
-                self.get(self.target_transform, self.get_y, idx))
+        x,y = self.get_x(idx),self.get_y(idx)
+        return self.get(self.transform, x, y)
 
     def __len__(self): return self.n
 
-    def get(self, tfm, fn, idx):
-        return fn(idx) if tfm is None else tfm(fn(idx))
+    def get(self, tfm, x, y): return (x,y) if tfm is None else tfm(x,y)
 
     @abstractmethod
     def get_n(self): raise NotImplementedError
@@ -118,7 +117,7 @@ class BaseDataset(Dataset):
 class FilesDataset(BaseDataset):
     def __init__(self, fnames, transform, path):
         self.path,self.fnames = path,fnames
-        super().__init__(transform, None)
+        super().__init__(transform)
     def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
     def get_x(self, i):
@@ -162,7 +161,7 @@ class ArraysDataset(BaseDataset):
     def __init__(self, x, y, transform):
         self.x,self.y=x,y
         assert(len(x)==len(y))
-        super().__init__(transform, None)
+        super().__init__(transform)
     def get_x(self, i):
         with self.lock: return self.x[i]
     def get_y(self, i):
@@ -303,3 +302,4 @@ def tfms_from_model(f_model, sz, aug_tfms=[], max_zoom=None, pad=0):
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad)
     trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom, pad=pad)
     return trn_tfm, val_tfm
+

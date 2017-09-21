@@ -1,5 +1,6 @@
 from .imports import *
 from .layer_optimizer import *
+from enum import Enum
 
 imagenet_mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((1,1,3))
 def preprocess_imagenet(x): return x[..., ::-1] - imagenet_mean
@@ -75,12 +76,12 @@ class RandomRotate():
         self.deg,self.mode,self.p = deg,mode,p
     def __call__(self, x, y=None):
         deg = rand0(self.deg)
-        if random.random()<self.p: 
+        if random.random()<self.p:
             x = rotate_cv(x, deg, self.mode)
             if y is not None: y = rotate_cv(y, deg, self.mode)
         return x if y is None else (x,y)
-    
-class RandomCrop(): 
+
+class RandomCrop():
     def __init__(self, targ): self.targ = targ
     def __call__(self, x):
         r,c,_ = x.shape
@@ -146,6 +147,36 @@ class RandomDihedral():
         x = np.rot90(x, random.randint(0,3))
         return x.copy() if random.random()<0.5 else np.fliplr(x).copy()
 
+TfmType = Enum('TfmType', 'NO PIXEL COORD')
+
+class Transform():
+    def __init__(tfm_y): self.tfm_y=tfm_y
+    def __call__(self, x, y):
+        x,y = (self.transform(x),y if self.tfm_y==TfmType.NO
+                else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
+                else self.transform_coord(x,y))
+
+
+class RandomDihedralXY(Transform):
+    def rand_gen(self):
+        return random.randint(0,3), random.random()<0.5
+
+    def transform_coord(self, x, y):
+        rot_times, do_flip = self.rand_gen()
+        x = do_transform(x, rot_times, do_flip)
+        raise NotImplementedError # XXX: Handle y coord transform
+        return x, y
+
+    def transform(self, x, y=None):
+        rot_times, do_flip = self.rand_gen()
+        x = do_transform(x, rot_times, do_flip)
+        return (x, do_transform(y, rot_times, do_flip)) if y else x
+
+    def do_transform(self, x, rot_times, do_flip):
+        x = np.rot90(x, rot_times)
+        return np.fliplr(x).copy() if do_flip else x
+
+
 def RandomFlip(): return lambda x: x if random.random()<0.5 else np.fliplr(x).copy()
 
 def channel_dim(x): return np.rollaxis(x, 2)
@@ -155,11 +186,11 @@ def compose(im, fns):
     return im
 
 class Transforms():
-    def __init__(self, sz, tfms, denorm, rand_crop=False): 
+    def __init__(self, sz, tfms, denorm, rand_crop=False):
         self.sz,self.denorm = sz,denorm
         crop_fn = RandomCrop if rand_crop else CenterCrop
         self.tfms = tfms + [crop_fn(sz), channel_dim]
-    def __call__(self, im): return compose(im, self.tfms)
+    def __call__(self, im, y): return compose(im, self.tfms), y
 
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0):
     if tfms is None: tfms=[]
