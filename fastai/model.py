@@ -42,10 +42,6 @@ def fit(stepper, data, epochs, metrics=None, callbacks=None):
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False)
         for (*x,y) in t:
-        #t = trange(len(data.trn_dl), leave=False)
-        #dl = iter(data.trn_dl)
-        #for i in t:
-            #*x,y =next(dl)
             batch_num += 1
             loss = stepper.step(V(x),V(y))
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
@@ -65,8 +61,6 @@ def validate(stepper, dl, metrics):
     loss,res = [],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
-    #for i in range(len(dl)):
-        #(*x,y) = next(dl)
         preds,l = stepper.evaluate(VV(x), VV(y))
         loss.append(to_np(l))
         res.append([f(to_np(preds),to_np(y)) for f in metrics])

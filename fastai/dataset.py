@@ -33,6 +33,7 @@ def resize_imgs(fnames, targ, path, new_path):
     return os.path.join(path,new_path,str(targ))
 
 def read_dir(path, folder):
+    # TODO: warn or error if no files found?
     full_path = os.path.join(path, folder)
     fnames = iglob(f"{full_path}/*.*")
     return [os.path.relpath(f,path) for f in fnames]
@@ -72,12 +73,10 @@ def nhot_labels(label2idx, csv_labels, fnames, c):
     return np.stack([all_idx[o] for o in fnames])
 
 def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
-    fnames,csv_labels,all_labels,label2idx = parse_csv_labels(
-        csv_file, skip_header)
+    fnames,csv_labels,all_labels,label2idx = parse_csv_labels(csv_file, skip_header)
     full_names = [os.path.join(folder,fn+suffix) for fn in fnames]
     if continuous:
-        yy = np.array([csv_labels[i][0] for i in fnames])
-        label_arr = yy.astype(np.float32)
+        label_arr = np.array([csv_labels[i] for i in fnames]).astype(np.float32)
     else:
         label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
         is_single = np.all(label_arr.sum(axis=1)==1)
@@ -134,8 +133,8 @@ class FilesDataset(BaseDataset):
         Arguments:
             arr: of shape/size (N,3,sz,sz)
         """
-        if type(arr) is not np.ndarray:
-            arr = to_np(arr)
+        if type(arr) is not np.ndarray: arr = to_np(arr)
+        if len(arr.shape)==3: arr = arr[None]
         return self.transform.denorm(np.rollaxis(arr,1,4))
 
 class FilesArrayDataset(FilesDataset):
@@ -144,6 +143,7 @@ class FilesArrayDataset(FilesDataset):
         assert(len(fnames)==len(y))
         super().__init__(fnames, transform, path)
     def get_y(self, i): return self.y[i]
+    def get_c(self): return self.y.shape[1]
 
 
 class FilesIndexArrayDataset(FilesArrayDataset):
@@ -151,13 +151,11 @@ class FilesIndexArrayDataset(FilesArrayDataset):
 
 
 class FilesNhotArrayDataset(FilesArrayDataset):
-    def get_c(self): return self.y.shape[1]
     @property
     def is_multi(self): return True
 
 
 class FilesIndexArrayRegressionDataset(FilesArrayDataset):
-    def get_c(self): return 1
     def is_reg(self): return True
 
 class ArraysDataset(BaseDataset):
