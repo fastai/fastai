@@ -177,8 +177,8 @@ class LanguageModelData():
         self.trn_dl,self.val_dl,self.test_dl = [LanguageModelLoader(ds, bs, bptt) for ds in
                                                (self.trn_ds,self.val_ds,self.test_ds)]
 
-    def get_model(self, opt_fn, bs, ninp, nhid, nlayers, **kwargs):
-        m = Seq2SeqRNN(bs, self.nt, ninp, nhid, nlayers, **kwargs).cuda()
+    def get_model(self, opt_fn, bs, emb_sz, nhid, nlayers, **kwargs):
+        m = get_rnn_classifer(bs, self.nt, self.nt, emb_sz, nhid, nlayers, **kwargs).cuda()
         model = BasicModel(m)
         return LanguageModelLearner(self, model, opt_fn=opt_fn)
 

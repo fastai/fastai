@@ -191,6 +191,17 @@ class ModelData():
     def val_y(self): return self.val_ds.y
 
 
+class ModelDataLoader(DataLoader):
+    def __iter__(self):
+        self.it,self.i = super().__iter__(),0
+        return self
+
+    def __next__(self):
+        if self.i<len(self): self.i+=1; return next(self.it)
+        else: raise StopIteration
+
+
+
 class ImageData(ModelData):
     def __init__(self, path, datasets, bs, num_workers, classes):
         trn_ds,val_ds,fix_ds,aug_ds,test_ds,test_aug_ds = datasets
@@ -204,7 +215,7 @@ class ImageData(ModelData):
 
     def get_dl(self, ds, shuffle):
         if ds is None: return None
-        return DataLoader(ds, batch_size=self.bs, shuffle=shuffle,
+        return ModelDataLoader(ds, batch_size=self.bs, shuffle=shuffle,
             num_workers=self.num_workers, pin_memory=True)
 
     @property
@@ -248,8 +259,8 @@ class ImageClassifierData(ImageData):
         return res
 
     @classmethod
-    def from_arrays(self, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4):
-        datasets = self.get_ds(ArraysIndexDataset, trn, val, tfms)
+    def from_arrays(self, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
+        datasets = self.get_ds(ArraysIndexDataset, trn, val, tfms, test=test)
         return self(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
