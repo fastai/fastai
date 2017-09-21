@@ -1,0 +1,84 @@
+name: fastai
+channels:
+- soumith
+- defaults
+dependencies:
+- certifi=2016.2.28=py36_0
+- cffi=1.10.0=py36_0
+- freetype=2.5.5=2
+- jbig=2.1=0
+- jpeg=9b=0
+- libffi=3.2.1=1
+- libgcc=5.2.0=0
+- libpng=1.6.30=1
+- libtiff=4.0.6=3
+- mkl=2017.0.3=0
+- numpy=1.13.1=py36_0
+- olefile=0.44=py36_0
+- openssl=1.0.2l=0
+- pillow=4.2.1=py36_0
+- pip=9.0.1=py36_1
+- pycparser=2.18=py36_0
+- python=3.6.2=0
+- readline=6.2=2
+- setuptools=36.4.0=py36_0
+- six=1.10.0=py36_0
+- sqlite=3.13.0=0
+- tk=8.5.18=0
+- wheel=0.29.0=py36_0
+- xz=5.2.3=0
+- zlib=1.2.11=0
+- cuda80=1.0=0
+- pytorch=0.2.0=py36h53baedd_4cu80
+- torchvision=0.1.9=py36h7584368_1
+- pip:
+  - bcolz==1.1.2
+  - bleach==2.0.0
+  - cycler==0.10.0
+  - decorator==4.1.2
+  - entrypoints==0.2.3
+  - html5lib==0.999999999
+  - ipykernel==4.6.1
+  - ipython==6.2.0
+  - ipython-genutils==0.2.0
+  - ipywidgets==7.0.1
+  - jedi==0.11.0
+  - jinja2==2.9.6
+  - jsonschema==2.6.0
+  - jupyter==1.0.0
+  - jupyter-client>=5.1.0
+  - jupyter-console>=5.2.0
+  - jupyter-core>=4.3.0
+  - markupsafe>=1.0
+  - matplotlib>=2.0.2
+  - mistune>=0.7.4
+  - nbconvert>=5.3.1
+  - nbformat>=4.4.0
+  - notebook>=5.1.0
+  - opencv-python>=3.3.0.10
+  - pandas>=0.20.3
+  - pandocfilters>=1.4.2
+  - parso>=0.1.0
+  - pexpect>=4.2.1
+  - pickleshare>=0.7.4
+  - prompt-toolkit>=1.0.15
+  - ptyprocess>=0.5.2
+  - pygments>=2.2.0
+  - pyparsing>=2.2.0
+  - python-dateutil>=2.6.1
+  - pytz>=2017.2
+  - pyzmq>=16.0.2
+  - qtconsole>=4.3.1
+  - scipy>=0.19.1
+  - seaborn>=0.8.1
+  - simplegeneric>=0.8.1
+  - terminado>=0.6
+  - testpath>=0.3.1
+  - torch>=0.2.0.post4
+  - tornado>=4.5.2
+  - tqdm>=4.17.0
+  - traitlets>=4.3.2
+  - wcwidth>=0.1.7
+  - webencodings>=0.5.1
+  - widgetsnbextension>=3.0.3
+
