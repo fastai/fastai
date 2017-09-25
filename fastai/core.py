@@ -9,7 +9,8 @@ conv_dict = {np.dtype('int32'): torch.IntTensor, np.dtype('int64'): torch.LongTe
 
 def T(a):
     a = np.array(a)
-    return conv_dict[a.dtype](a)
+    #return conv_dict[a.dtype](a)
+    return torch.from_numpy(a)
 
 def V_(x):  return x.cuda(async=True) if isinstance(x, Variable) else Variable(x.cuda(async=True))
 def V(x):   return [V_(o) for o in x] if isinstance(x,list) else V_(x)
@@ -47,4 +48,6 @@ def set_trainable(l, b):
 
 def SGD_Momentum(momentum):
     return lambda *args, **kwargs: optim.SGD(*args, momentum=momentum, **kwargs)
+
+def one_hot(a,c): return np.eye(c)[a]
 

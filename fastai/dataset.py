@@ -33,6 +33,7 @@ def resize_imgs(fnames, targ, path, new_path):
     return os.path.join(path,new_path,str(targ))
 
 def read_dir(path, folder):
+    # TODO: warn or error if no files found?
     full_path = os.path.join(path, folder)
     fnames = iglob(f"{full_path}/*.*")
     return [os.path.relpath(f,path) for f in fnames]
@@ -71,31 +72,32 @@ def nhot_labels(label2idx, csv_labels, fnames, c):
                for k,v in csv_labels.items()}
     return np.stack([all_idx[o] for o in fnames])
 
-def csv_source(folder, csv_file, skip_header=True, suffix=''):
-    fnames,csv_labels,all_labels,label2idx = parse_csv_labels(
-        csv_file, skip_header)
-    label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
+def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
+    fnames,csv_labels,all_labels,label2idx = parse_csv_labels(csv_file, skip_header)
     full_names = [os.path.join(folder,fn+suffix) for fn in fnames]
-    is_single = np.all(label_arr.sum(axis=1)==1)
-    if is_single: label_arr = np.argmax(label_arr, axis=1)
+    if continuous:
+        label_arr = np.array([csv_labels[i] for i in fnames]).astype(np.float32)
+    else:
+        label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
+        is_single = np.all(label_arr.sum(axis=1)==1)
+        if is_single: label_arr = np.argmax(label_arr, axis=1)
     return full_names, label_arr, all_labels
 
 class BaseDataset(Dataset):
-    def __init__(self, transform=None, target_transform=None):
-        self.transform,self.target_transform = transform,target_transform
+    def __init__(self, transform=None):
+        self.transform = transform
         self.lock=threading.Lock()
         self.n = self.get_n()
         self.c = self.get_c()
         self.sz = self.get_sz()
 
     def __getitem__(self, idx):
-        return (self.get(self.transform, self.get_x, idx),
-                self.get(self.target_transform, self.get_y, idx))
+        x,y = self.get_x(idx),self.get_y(idx)
+        return self.get(self.transform, x, y)
 
     def __len__(self): return self.n
 
-    def get(self, tfm, fn, idx):
-        return fn(idx) if tfm is None else tfm(fn(idx))
+    def get(self, tfm, x, y): return (x,y) if tfm is None else tfm(x,y)
 
     @abstractmethod
     def get_n(self): raise NotImplementedError
@@ -115,7 +117,7 @@ class BaseDataset(Dataset):
 class FilesDataset(BaseDataset):
     def __init__(self, fnames, transform, path):
         self.path,self.fnames = path,fnames
-        super().__init__(transform, None)
+        super().__init__(transform)
     def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
     def get_x(self, i):
@@ -124,8 +126,15 @@ class FilesDataset(BaseDataset):
     def resize_imgs(self, targ, new_path):
         dest = resize_imgs(self.fnames, targ, self.path, new_path)
         return self.__class__(self.fnames, self.y, self.transform, dest)
-    def denorm(self,arr): return self.transform.denorm(np.rollaxis(to_np(arr),1,4))
+    def denorm(self,arr):
+        """Denormalizing dataset.
 
+        Arguments:
+            arr: of shape/size (N,3,sz,sz)
+        """
+        if type(arr) is not np.ndarray: arr = to_np(arr)
+        if len(arr.shape)==3: arr = arr[None]
+        return self.transform.denorm(np.rollaxis(arr,1,4))
 
 class FilesArrayDataset(FilesDataset):
     def __init__(self, fnames, y, transform, path):
@@ -133,6 +142,7 @@ class FilesArrayDataset(FilesDataset):
         assert(len(fnames)==len(y))
         super().__init__(fnames, transform, path)
     def get_y(self, i): return self.y[i]
+    def get_c(self): return self.y.shape[1]
 
 
 class FilesIndexArrayDataset(FilesArrayDataset):
@@ -140,16 +150,18 @@ class FilesIndexArrayDataset(FilesArrayDataset):
 
 
 class FilesNhotArrayDataset(FilesArrayDataset):
-    def get_c(self): return self.y.shape[1]
     @property
     def is_multi(self): return True
 
+
+class FilesIndexArrayRegressionDataset(FilesArrayDataset):
+    def is_reg(self): return True
 
 class ArraysDataset(BaseDataset):
     def __init__(self, x, y, transform):
         self.x,self.y=x,y
         assert(len(x)==len(y))
-        super().__init__(transform, None)
+        super().__init__(transform)
     def get_x(self, i):
         with self.lock: return self.x[i]
     def get_y(self, i):
@@ -169,7 +181,8 @@ class ArraysNhotDataset(ArraysDataset):
 
 
 class ModelData():
-    def __init__(self, path, trn_dl, val_dl): self.path,self.trn_dl,self.val_dl = path,trn_dl,val_dl
+    def __init__(self, path, trn_dl, val_dl, test_dl=None):
+        self.path,self.trn_dl,self.val_dl,self.test_dl = path,trn_dl,val_dl,test_dl
 
     @property
     def is_reg(self): return self.trn_ds.is_reg
@@ -181,6 +194,17 @@ class ModelData():
     def trn_y(self): return self.trn_ds.y
     @property
     def val_y(self): return self.val_ds.y
+
+
+class ModelDataLoader(DataLoader):
+    def __iter__(self):
+        self.it,self.i = super().__iter__(),0
+        return self
+
+    def __next__(self):
+        if self.i<len(self): self.i+=1; return next(self.it)
+        else: raise StopIteration
+
 
 
 class ImageData(ModelData):
@@ -196,7 +220,7 @@ class ImageData(ModelData):
 
     def get_dl(self, ds, shuffle):
         if ds is None: return None
-        return DataLoader(ds, batch_size=self.bs, shuffle=shuffle,
+        return ModelDataLoader(ds, batch_size=self.bs, shuffle=shuffle,
             num_workers=self.num_workers, pin_memory=True)
 
     @property
@@ -240,8 +264,8 @@ class ImageClassifierData(ImageData):
         return res
 
     @classmethod
-    def from_arrays(self, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4):
-        datasets = self.get_ds(ArraysIndexDataset, trn, val, tfms)
+    def from_arrays(self, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
+        datasets = self.get_ds(ArraysIndexDataset, trn, val, tfms, test=test)
         return self(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
@@ -253,12 +277,15 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_csv(self, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, skip_header=True, num_workers=4):
-        fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix)
+               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=4):
+        fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
         test_fnames = read_dir(path, test_name) if test_name else None
-        f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
+        if continuous:
+            f = FilesIndexArrayRegressionDataset
+        else:
+            f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
         datasets = self.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,
                                path=path, test=test_fnames)
         return self(path, datasets, bs, num_workers, classes=classes)
@@ -275,3 +302,4 @@ def tfms_from_model(f_model, sz, aug_tfms=[], max_zoom=None, pad=0):
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad)
     trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom, pad=pad)
     return trn_tfm, val_tfm
+

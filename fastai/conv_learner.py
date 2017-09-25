@@ -76,8 +76,7 @@ class ConvLearner(Learner):
         self.precompute=False
         super().__init__(data, models, **kwargs)
         self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
-        if data.is_reg:
-            self.crit = F.l1_loss
+        if data.is_reg: self.crit = F.l1_loss
         elif self.metrics is None:
             self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
         self.save_fc1()
@@ -108,7 +107,8 @@ class ConvLearner(Learner):
 
     def get_activations(self, force=False):
         tmpl = f'_{self.models.name}_{self.data.sz}.bc'
-        names = [os.path.join(self.tmp_path, p+tmpl) for p in ('x_act', 'x_act_val')]
+        # TODO: Somehow check that directory names haven't changed (e.g. added test set)
+        names = [os.path.join(self.tmp_path, p+tmpl) for p in ('x_act', 'x_act_val', 'x_act_test')]
         if os.path.exists(names[0]) and not force:
             self.activations = [bcolz.open(p) for p in names]
         else:
@@ -116,14 +116,16 @@ class ConvLearner(Learner):
 
     def save_fc1(self):
         self.get_activations()
-        act, val_act = self.activations
+        act, val_act, test_act = self.activations
 
         if len(self.activations[0])==0:
             m=self.models.top_model
             predict_to_bcolz(m, self.data.fix_dl, act)
             predict_to_bcolz(m, self.data.val_dl, val_act)
+            if self.data.test_dl: predict_to_bcolz(m, self.data.test_dl, test_act)
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,
-               (act, self.data.trn_y), (val_act, self.data.val_y), self.data.bs, classes=self.data.classes)
+                (act, self.data.trn_y), (val_act, self.data.val_y), self.data.bs, classes=self.data.classes,
+                test = test_act if self.data.test_dl else None)
 
     def freeze(self): self.freeze_to(-self.models.n_fc)

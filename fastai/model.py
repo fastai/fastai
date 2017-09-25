@@ -26,32 +26,24 @@ def get_probabilities(net, loader):
     net.eval()
     return np.vstack(net(VV(data)) for data, *_ in loader)
 
-def step(m, opt, xs, y, crit):
-    loss = crit(m(*V(xs)), V(y))
-    opt.zero_grad()
-    loss.backward()
-    opt.step()
-    return loss.data[0]
 
 def set_train_mode(m):
     if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
     else: m.train()
 
-def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None):
+
+def fit(stepper, data, epochs, metrics=None, callbacks=None):
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
-
-    apply_leaf(m, set_train_mode)
     batch_num,avg_loss=0,0.
+
     for epoch in tnrange(epochs, desc='Epoch'):
-        apply_leaf(m, set_train_mode)
-        t = trange(len(data.trn_dl), leave=False)
-        dl = iter(data.trn_dl)
-        for i in t:
+        stepper.reset(True)
+        t = tqdm(iter(data.trn_dl), leave=False)
+        for (*x,y) in t:
             batch_num += 1
-            *x,y =next(dl)
-            loss = step(m,opt,x,y, crit)
+            loss = stepper.step(V(x),V(y))
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
@@ -59,28 +51,25 @@ def fit(m, data, epochs, crit, opt, metrics=None, callbacks=None):
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
             if stop: return
 
-        vals = validate(m, data.val_dl, crit, metrics)
+        vals = validate(stepper, data.val_dl, metrics)
         print(np.round([epoch, avg_loss] + vals, 6))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: return
 
-def validate(m, dl, crit, metrics):
-    m.eval()
+def validate(stepper, dl, metrics):
     loss,res = [],[]
-    for (*x,y) in dl:
-        y = y.cuda()
-        preds = m(*VV(x))
-        loss.append(to_np(crit(preds,VV(y))))
+    stepper.reset(False)
+    for (*x,y) in iter(dl):
+        preds,l = stepper.evaluate(VV(x), VV(y))
+        loss.append(to_np(l))
         res.append([f(to_np(preds),to_np(y)) for f in metrics])
     return [np.mean(loss)] + list(np.mean(np.stack(res),0))
 
-def predict(m, dl):
-    m.eval()
-    return torch.cat([m(*VV(x)) for *x,_ in dl]).data.cpu()
+def predict(m, dl): return predict_with_targs(m, dl)[0]
 
 def predict_with_targs(m, dl):
     m.eval()
     preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
-    return torch.cat(preda).data.cpu(), torch.cat(targa)
+    return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
