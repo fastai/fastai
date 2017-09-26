@@ -102,6 +102,6 @@ class Learner():
         dl2 = self.data.test_aug_dl if is_test else self.data.aug_dl
         preds1,targs = self.predict_with_targs(dl1)
         preds1 = [preds1]*math.ceil(n_aug/4)
-        preds2 = [self.predict_with_targs(self.model, dl2)[0] for i in range(n_aug)]
+        preds2 = [self.predict_with_targs(dl2)[0] for i in range(n_aug)]
         return np.stack(preds1+preds2).mean(0), targs
 
