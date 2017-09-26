@@ -21,6 +21,8 @@ def to_np(v):
     if isinstance(v, Variable): v=v.data
     return v.cpu().numpy()
 
+def noop(*args, **kwargs): return
+
 def split_by_idxs(seq, idxs):
     last, sl = 0, len(seq)
     for idx in idxs:
@@ -39,9 +41,9 @@ def set_trainable_attr(m,b):
 
 def apply_leaf(m, f):
     c = children(m)
+    f(m)
     if len(c)>0:
         for l in c: apply_leaf(l,f)
-    else: f(m)
 
 def set_trainable(l, b):
     apply_leaf(l, lambda m: set_trainable_attr(m,b))

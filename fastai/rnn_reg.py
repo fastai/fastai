@@ -1,4 +1,5 @@
 from .torch_imports import *
+from .core import *
 from functools import wraps
 from torch.autograd import Variable
 
@@ -7,9 +8,13 @@ def dropout_mask(x, sz, dropout): return x.new(*sz).bernoulli_(1-dropout)/(1-dro
 
 
 class LockedDropout(nn.Module):
-    def forward(self, x, dropout=0.5):
-        if not self.training or not dropout: return x
-        m = dropout_mask(x.data, (1, x.size(1), x.size(2)), dropout)
+    def __init__(self, p=0.5):
+        super().__init__()
+        self.p=p
+
+    def forward(self, x):
+        if not self.training or not self.p: return x
+        m = dropout_mask(x.data, (1, x.size(1), x.size(2)), self.p)
         return Variable(m, requires_grad=False) * x
 
 
@@ -19,15 +24,14 @@ class WeightDrop(torch.nn.Module):
         self.module,self.weights,self.dropout = module,weights,dropout
         self._setup()
 
-    def noop(*args, **kwargs): return
-
     def _setup(self):
         # Terrible temporary solution to an issue regarding compacting weights re: CUDNN RNN
-        if issubclass(type(self.module), torch.nn.RNNBase): self.module.flatten_parameters = self.noop
+        if isinstance(self.module, torch.nn.RNNBase): self.module.flatten_parameters = noop
         for name_w in self.weights:
             w = getattr(self.module, name_w)
             del self.module._parameters[name_w]
             self.module.register_parameter(name_w + '_raw', nn.Parameter(w.data))
+
 
     def _setweights(self):
         for name_w in self.weights:

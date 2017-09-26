@@ -126,26 +126,27 @@ class LanguageModelLoader():
         fld = ds.fields['text']
         nums = fld.numericalize([text])
         self.data = self.batchify(nums)
-        self.i = 0
+        self.i,self.iter = 0,0
         self.n = len(self.data)
 
     def __iter__(self):
-        self.i=0
+        self.i,self.iter = 0,0
         return self
 
-    def __len__(self): return self.n // self.bptt
+    def __len__(self): return self.n // self.bptt - 1
 
     def __next__(self):
+        if self.i >= self.n-1 or self.iter>=len(self): raise StopIteration
         bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
         seq_len = max(5, int(np.random.normal(bptt, 5)))
         res = self.get_batch(self.i, seq_len)
         self.i += seq_len
-        if self.i > self.n-2: self.i=0
+        self.iter += 1
         return res
 
     def batchify(self, data):
         nb = data.size(0) // self.bs
-        data = data.narrow(0, 0, nb * self.bs)
+        data = data[:nb*self.bs]
         data = data.view(self.bs, -1).t().contiguous()
         return data.cuda()
 
@@ -156,30 +157,83 @@ class LanguageModelLoader():
 
 
 class RNN_Learner(Learner):
+    def __init__(self, data, models, **kwargs):
+        super().__init__(data, models, **kwargs)
+        self.crit = F.cross_entropy
+
     def predict_with_targs(m, dl):
         m.eval()
         preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
         return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
+    def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
+    def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))
 
-class LanguageModelLearner(RNN_Learner):
-    def __init__(self, data, models, **kwargs):
-        super().__init__(data, models, **kwargs)
-        self.crit = F.cross_entropy
+
+class ConcatTextDataset(torchtext.data.Dataset):
+    def __init__(self, path, text_field, newline_eos=True, **kwargs):
+        fields = [('text', text_field)]
+        text = []
+        if os.path.isdir(path): paths=glob(f'{path}/*.*')
+        else: paths=[path]
+        for p in paths:
+            with open(p) as f:
+                for line in f:
+                    text += text_field.preprocess(line)
+                    if newline_eos: text.append('<eos>')
+
+        examples = [torchtext.data.Example.fromlist([text], fields)]
+        super().__init__(examples, fields, **kwargs)
 
 
 class LanguageModelData():
     def __init__(self, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
         self.path = path
-        self.trn_ds,self.val_ds,self.test_ds = language_modeling.LanguageModelingDataset.splits(
+        self.trn_ds,self.val_ds,self.test_ds = ConcatTextDataset.splits(
             path, text_field=field, train=train, validation=validation, test=test)
         field.build_vocab(self.trn_ds, **kwargs)
         self.nt = len(field.vocab)
         self.trn_dl,self.val_dl,self.test_dl = [LanguageModelLoader(ds, bs, bptt) for ds in
                                                (self.trn_ds,self.val_ds,self.test_ds)]
 
-    def get_model(self, opt_fn, bs, emb_sz, nhid, nlayers, **kwargs):
-        m = get_rnn_classifer(bs, self.nt, self.nt, emb_sz, nhid, nlayers, **kwargs).cuda()
+    def get_model(self, opt_fn, bs, emb_sz, n_hid, n_layers, pad_token, **kwargs):
+        m = get_language_model(bs, self.nt, emb_sz, n_hid, n_layers, pad_token, **kwargs).cuda()
         model = BasicModel(m)
-        return LanguageModelLearner(self, model, opt_fn=opt_fn)
+        return RNN_Learner(self, model, opt_fn=opt_fn)
+
+
+class TextDataLoader():
+    def __init__(self, src, x_fld, y_fld):
+        self.src,self.x_fld,self.y_fld = src,x_fld,y_fld
+
+    def __len__(self): return len(self.src)-1
+
+    def __iter__(self):
+        it = iter(self.src)
+        for i in range(len(self)):
+            b = next(it)
+            yield getattr(b, self.x_fld), getattr(b, self.y_fld)
+
+
+class TextData(ModelData):
+    def create_td(self, it): return TextDataLoader(it, self.text_fld, self.label_fld)
+
+    @classmethod
+    def from_splits(cls, path, splits, bs, text_name='text', label_name='label'):
+        text_fld = splits[0].fields[text_name]
+        label_fld = splits[0].fields[label_name]
+        label_fld.build_vocab(splits[0])
+        trn_iter,val_iter = torchtext.data.BucketIterator.splits(splits, batch_size=bs)
+        trn_dl = TextDataLoader(trn_iter, text_name, label_name)
+        val_dl = TextDataLoader(val_iter, text_name, label_name)
+        obj = cls.from_dls(path, trn_dl, val_dl)
+        obj.nt = len(text_fld.vocab)
+        obj.c = len(label_fld.vocab)
+        return obj
+
+    def get_model(self, opt_fn, max_sl, bptt, bs, emb_sz, n_hid, n_layers, pad_token, **kwargs):
+        m = get_rnn_classifer(max_sl, bptt, bs, self.c, self.nt, emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers,
+                              pad_token=pad_token, **kwargs).cuda()
+        model = BasicModel(m)
+        return RNN_Learner(self, model, opt_fn=opt_fn)
 

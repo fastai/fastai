@@ -6,6 +6,7 @@ from abc import abstractmethod
 from glob import glob, iglob
 from concurrent.futures import ThreadPoolExecutor
 from itertools import chain
+from functools import partial
 from collections import Iterable, Counter
 
 from matplotlib import pyplot as plt, rcParams, animation, rc
