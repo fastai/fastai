@@ -1,17 +1,19 @@
 from IPython.lib.deepreload import reload as dreload
 import PIL, os, numpy as np, math, collections, cv2, threading, json, bcolz, random, scipy
-import random, pandas as pd, pickle, sys, itertools, string, sys, re
-import seaborn as sns
+import random, pandas as pd, pickle, sys, itertools, string, sys, re, datetime
+import seaborn as sns, matplotlib
 from abc import abstractmethod
 from glob import glob, iglob
 from concurrent.futures import ThreadPoolExecutor
 from itertools import chain
 from functools import partial
 from collections import Iterable, Counter
+from isoweek import Week
+from pandas_summary import DataFrameSummary
 
-from matplotlib import pyplot as plt, rcParams, animation, rc
+from matplotlib import pyplot as plt, rcParams, animation
 from ipywidgets import interact, interactive, fixed, widgets
-rc('animation', html='html5')
+matplotlib.rc('animation', html='html5')
 np.set_printoptions(precision=4, linewidth=100)
 
 def in_notebook(): return 'ipykernel' in sys.modules

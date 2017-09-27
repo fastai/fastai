@@ -8,17 +8,17 @@ class ColumnarDataset(Dataset):
         *xs,y=args
         self.xs = [T(x) for x in xs]
         self.y = T(y).unsqueeze(1)
-        
+
     def __len__(self): return len(self.y)
     def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.y[idx]]
-    
+
     @classmethod
     def from_data_frame(self, df, cols_x, col_y):
         cols = [df[o] for o in cols_x+[col_y]]
         return self(*cols)
 
 class ColumnarModelData(ModelData):
-    def __init__(self, path, trn_ds, val_ds, bs): 
+    def __init__(self, path, trn_ds, val_ds, bs):
         super().__init__(path, DataLoader(trn_ds, bs, shuffle=True),
             DataLoader(val_ds, bs*2, shuffle=False))
 
@@ -26,7 +26,7 @@ class ColumnarModelData(ModelData):
     def from_data_frames(self, path, trn_df, val_df, cols_x, col_y, bs):
         return self(path, ColumnarDataset.from_data_frame(trn_df, cols_x, col_y),
                     ColumnarDataset.from_data_frame(val_df, cols_x, col_y), bs)
-    
+
     @classmethod
     def from_data_frame(self, path, val_idxs, df, cols_x, col_y, bs):
         ((val_df, trn_df),) = split_by_idx(val_idxs, df)
@@ -55,7 +55,7 @@ class CollabFilterDataset(Dataset):
         uniq = col.unique()
         name2idx = {o:i for i,o in enumerate(uniq)}
         return (uniq, name2idx, np.array([name2idx[x] for x in col]), len(uniq))
-        
+
     def __len__(self): return self.n
     def __getitem__(self, idx): return [o[idx] for o in self.cols]
 
@@ -83,7 +83,7 @@ class EmbeddingDotBias(nn.Module):
         (self.u, self.i, self.ub, self.ib) = [get_emb(*o) for o in [
             (n_users, n_factors), (n_items, n_factors), (n_users,1), (n_items,1)
         ]]
-        
+
     def forward(self, users, items):
         um = self.u(users)* self.i(items)
         res = um.sum(1) + self.ub(users).squeeze() + self.ib(items).squeeze()
@@ -94,9 +94,6 @@ class CollabFilterLearner(Learner):
         super().__init__(data, models, **kwargs)
         self.crit = F.mse_loss
 
-class CollabFilterModel():
-    def __init__(self,model):
-        self.model=model
+class CollabFilterModel(BasicModel):
+    def get_layer_groups(self): return list(split_by_idxs(self.children,[2]))
 
-    def get_layer_groups(self):
-        return list(split_by_idxs(self.children,[2]))

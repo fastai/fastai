@@ -161,13 +161,13 @@ class RNN_Learner(Learner):
         super().__init__(data, models, **kwargs)
         self.crit = F.cross_entropy
 
-    def predict_with_targs(m, dl):
-        m.eval()
-        preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
-        return to_np(torch.cat(preda)), to_np(torch.cat(targa))
-
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))
+
+    def freeze_to(self, n):
+        c=self.get_layer_groups()
+        for l in c:     set_trainable(l, False)
+        for l in c[n:]: set_trainable(l, True)
 
 
 class ConcatTextDataset(torchtext.data.Dataset):
@@ -188,17 +188,18 @@ class ConcatTextDataset(torchtext.data.Dataset):
 
 class LanguageModelData():
     def __init__(self, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
-        self.path = path
+        self.path,self.bs = path,bs
         self.trn_ds,self.val_ds,self.test_ds = ConcatTextDataset.splits(
             path, text_field=field, train=train, validation=validation, test=test)
         field.build_vocab(self.trn_ds, **kwargs)
+        self.pad_idx = field.vocab.stoi[field.pad_token]
         self.nt = len(field.vocab)
         self.trn_dl,self.val_dl,self.test_dl = [LanguageModelLoader(ds, bs, bptt) for ds in
                                                (self.trn_ds,self.val_ds,self.test_ds)]
 
-    def get_model(self, opt_fn, bs, emb_sz, n_hid, n_layers, pad_token, **kwargs):
-        m = get_language_model(bs, self.nt, emb_sz, n_hid, n_layers, pad_token, **kwargs).cuda()
-        model = BasicModel(m)
+    def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
+        m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs).cuda()
+        model = SingleModel(m)
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
 
@@ -215,6 +216,11 @@ class TextDataLoader():
             yield getattr(b, self.x_fld), getattr(b, self.y_fld)
 
 
+class TextModel(BasicModel):
+    def get_layer_groups(self):
+        return [self.model[0].encoder, self.model[0].rnns, self.model[1]]
+
+
 class TextData(ModelData):
     def create_td(self, it): return TextDataLoader(it, self.text_fld, self.label_fld)
 
@@ -227,13 +233,15 @@ class TextData(ModelData):
         trn_dl = TextDataLoader(trn_iter, text_name, label_name)
         val_dl = TextDataLoader(val_iter, text_name, label_name)
         obj = cls.from_dls(path, trn_dl, val_dl)
+        obj.bs = bs
+        obj.pad_idx = text_fld.vocab.stoi[text_fld.pad_token]
         obj.nt = len(text_fld.vocab)
         obj.c = len(label_fld.vocab)
         return obj
 
-    def get_model(self, opt_fn, max_sl, bptt, bs, emb_sz, n_hid, n_layers, pad_token, **kwargs):
-        m = get_rnn_classifer(max_sl, bptt, bs, self.c, self.nt, emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers,
-                              pad_token=pad_token, **kwargs).cuda()
-        model = BasicModel(m)
+    def get_model(self, opt_fn, max_sl, bptt, emb_sz, n_hid, n_layers, **kwargs):
+        m = get_rnn_classifer(max_sl, bptt, self.bs, self.c, self.nt, emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers,
+                              pad_token=self.pad_idx, **kwargs).cuda()
+        model = TextModel(m)
         return RNN_Learner(self, model, opt_fn=opt_fn)
 

@@ -15,6 +15,9 @@ class BasicModel():
     def __init__(self,model): self.model=model
     def get_layer_groups(self): return children(self.model)
 
+class SingleModel(BasicModel):
+    def get_layer_groups(self): return [self.model]
+
 
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None):
@@ -74,7 +77,7 @@ class Learner():
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         fit(model, data, n_epoch, layer_opt.opt, self.crit, metrics=metrics, callbacks=callbacks, **kwargs)
 
-    def get_layer_groups(self): return self.children
+    def get_layer_groups(self): return self.models.get_layer_groups()
 
     def get_layer_opt(self, lrs, wds):
         return LayerOptimizer(self.opt_fn, self.get_layer_groups(), lrs, wds)
@@ -91,17 +94,17 @@ class Learner():
         self.fit_gen(self.model, self.data, layer_opt, 1)
         self.load('tmp')
 
-    def predict(self, is_test=False):
-        dl = self.data.test_dl if is_test else self.data.val_dl
-        return self.predict_with_targs(dl)[0]
+    def predict(self, is_test=False): return self.predict_with_targs(dl)[0]
 
-    def predict_with_targs(self, dl): return predict_with_targs(self.model, dl)
+    def predict_with_targs(self, is_test=False):
+        dl = self.data.test_dl if is_test else self.data.val_dl
+        return predict_with_targs(self.model, dl)
 
     def TTA(self, n_aug=4, is_test=False):
         dl1 = self.data.test_dl     if is_test else self.data.val_dl
         dl2 = self.data.test_aug_dl if is_test else self.data.aug_dl
-        preds1,targs = self.predict_with_targs(dl1)
+        preds1,targs = predict_with_targs(self.model, dl1)
         preds1 = [preds1]*math.ceil(n_aug/4)
-        preds2 = [self.predict_with_targs(dl2)[0] for i in range(n_aug)]
+        preds2 = [predict_with_targs(self.model, dl2)[0] for i in range(n_aug)]
         return np.stack(preds1+preds2).mean(0), targs
 

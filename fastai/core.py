@@ -33,7 +33,10 @@ def split_by_idxs(seq, idxs):
 def trainable_params_(m):
     return [p for p in m.parameters() if p.requires_grad]
 
-def chain_params(p): return list(chain(*[trainable_params_(o) for o in p]))
+def chain_params(p):
+    if isinstance(p, (list,tuple)):
+        return list(chain(*[trainable_params_(o) for o in p]))
+    return trainable_params_(p)
 
 def set_trainable_attr(m,b):
     m.trainable=b
