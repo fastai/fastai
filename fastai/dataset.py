@@ -184,6 +184,12 @@ class ModelData():
     def __init__(self, path, trn_dl, val_dl, test_dl=None):
         self.path,self.trn_dl,self.val_dl,self.test_dl = path,trn_dl,val_dl,test_dl
 
+    @classmethod
+    def from_dls(cls, path,trn_dl,val_dl,test_dl=None):
+        trn_dl,val_dl = ModelDataLoader(trn_dl),ModelDataLoader(val_dl)
+        if test_dl: test_dl = ModelDataLoader(test_dl)
+        return cls(path, trn_dl, val_dl, test_dl)
+
     @property
     def is_reg(self): return self.trn_ds.is_reg
     @property
@@ -196,16 +202,25 @@ class ModelData():
     def val_y(self): return self.val_ds.y
 
 
-class ModelDataLoader(DataLoader):
+class ModelDataLoader():
+    def __init__(self, dl): self.dl=dl
+
+    @classmethod
+    def create_dl(cls, *args, **kwargs): return cls(DataLoader(*args, **kwargs))
+
     def __iter__(self):
-        self.it,self.i = super().__iter__(),0
+        self.it,self.i = iter(self.dl),0
         return self
 
+    def __len__(self): return len(self.dl)
+
     def __next__(self):
-        if self.i<len(self): self.i+=1; return next(self.it)
-        else: raise StopIteration
+        if self.i>=len(self.dl): raise StopIteration
+        self.i+=1
+        return next(self.it)
 
-
+    @property
+    def dataset(self): return self.dl.dataset
 
 class ImageData(ModelData):
     def __init__(self, path, datasets, bs, num_workers, classes):
@@ -220,7 +235,7 @@ class ImageData(ModelData):
 
     def get_dl(self, ds, shuffle):
         if ds is None: return None
-        return ModelDataLoader(ds, batch_size=self.bs, shuffle=shuffle,
+        return ModelDataLoader.create_dl(ds, batch_size=self.bs, shuffle=shuffle,
             num_workers=self.num_workers, pin_memory=True)
 
     @property

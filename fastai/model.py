@@ -22,9 +22,34 @@ def num_features(m):
     elif hasattr(c[-2], 'out_features'): return c[-2].out_features
     return num_features(children(m)[-1])
 
-def get_probabilities(net, loader):
-    net.eval()
-    return np.vstack(net(VV(data)) for data, *_ in loader)
+
+class Stepper():
+    def __init__(self, m, opt, crit, clip=0, reg_fn=None):
+        self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
+        self.reset(True)
+
+    def reset(self, train=True):
+        if train: apply_leaf(self.m, set_train_mode)
+        else: self.m.eval()
+        if hasattr(self.m, 'reset'): self.m.reset()
+
+    def step(self, xs, y):
+        xtra = []
+        output = self.m(*xs)
+        if isinstance(output,(tuple,list)): output,*xtra = output
+        self.opt.zero_grad()
+        loss = raw_loss = self.crit(output, y)
+        if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
+        loss.backward()
+        if self.clip:   # Gradient clipping
+            nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
+        self.opt.step()
+        return raw_loss.data[0]
+
+    def evaluate(self, xs, y):
+        preds = self.m(*xs)
+        if isinstance(preds,(tuple,list)): preds=preds[0]
+        return preds, self.crit(preds,y)
 
 
 def set_train_mode(m):
@@ -32,7 +57,8 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(stepper, data, epochs, metrics=None, callbacks=None):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
+    stepper = Stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
@@ -70,6 +96,7 @@ def predict(m, dl): return predict_with_targs(m, dl)[0]
 
 def predict_with_targs(m, dl):
     m.eval()
+    if hasattr(m, 'reset'): m.reset()
     preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 

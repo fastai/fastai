@@ -8,14 +8,14 @@ class ConvnetBuilder():
     """Class representing a convolutional network.
 
     Arguments:
-        f (string): name of the model
+        f: a model creation function
         c (int): size of the last layer
-        is_multi (bool): is multilabel classification
+        is_multi (bool): is multilabel classification?
             (def here http://scikit-learn.org/stable/modules/multiclass.html)
-        is_reg (bool): is a regression
-        ps (float or array of float): dropout parameter
-        xtra_fc (list of ints): list of hidden layers with hidden neurons
-        xtra_cut (int): where to cut the model, detault is 0
+        is_reg (bool): is a regression?
+        ps (float or array of float): dropout parameters
+        xtra_fc (list of ints): list of hidden layers with # hidden neurons
+        xtra_cut (int): # layers earlier than default to cut the model, detault is 0
     """
     model_meta = {
         resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], resnext50:[8,6],
