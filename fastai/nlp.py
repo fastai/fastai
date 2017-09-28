@@ -10,6 +10,12 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from torchtext.datasets import language_modeling
 
+import spacy
+
+re_br = re.compile('<br />')
+spacy_en = spacy.load('en')
+def sub_br(x): return re_br.sub("\n", x)
+def spacy_tok(x): return [tok.text for tok in spacy_en.tokenizer(sub_br(x))]
 
 re_tok = re.compile(f'([{string.punctuation}“”¨«»®´·º½¾¿¡§£₤‘’])')
 def tokenize(s): return re_tok.sub(r' \1 ', s).split()

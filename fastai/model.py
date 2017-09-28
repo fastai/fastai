@@ -94,9 +94,14 @@ def validate(stepper, dl, metrics):
 
 def predict(m, dl): return predict_with_targs(m, dl)[0]
 
+def get_prediction(x):
+    if isinstance(x,(tuple,list)): x=x[0]
+    return x.data
+
 def predict_with_targs(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
-    preda,targa = zip(*[(m(*VV(x)),y) for *x,y in dl])
+    preda,targa = zip(*[(get_prediction(m(*VV(x))),y)
+                        for *x,y in iter(dl)])
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 

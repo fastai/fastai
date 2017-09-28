@@ -28,7 +28,7 @@ class Learner():
         if not os.path.exists(self.tmp_path): os.mkdir(self.tmp_path)
         self.models_path = os.path.join(self.data.path, models_name)
         if not os.path.exists(self.models_path): os.mkdir(self.models_path)
-        self.crit = None
+        self.crit,self.reg_fn,self.crit = None,None,None
 
     def num_features(self): return num_features(self.model)
 
@@ -75,7 +75,8 @@ class Learner():
         callbacks+=[self.sched]
         for cb in callbacks: cb.on_train_begin()
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
-        fit(model, data, n_epoch, layer_opt.opt, self.crit, metrics=metrics, callbacks=callbacks, **kwargs)
+        fit(model, data, n_epoch, layer_opt.opt, self.crit,
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 
