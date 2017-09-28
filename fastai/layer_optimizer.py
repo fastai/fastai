@@ -7,7 +7,7 @@ def opt_params(parm, lr, wd):
 
 class LayerOptimizer():
     def __init__(self, opt_fn, layer_groups, lrs, wds=None):
-        if not isinstance(layer_groups[0], Iterable): layer_groups=[layer_groups]
+        if not isinstance(layer_groups, (list,tuple)): layer_groups=[layer_groups]
         if not isinstance(lrs, Iterable): lrs=[lrs]
         if len(lrs)==1: lrs=lrs*len(layer_groups)
         if wds is None: wds=0.

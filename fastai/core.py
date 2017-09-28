@@ -21,6 +21,8 @@ def to_np(v):
     if isinstance(v, Variable): v=v.data
     return v.cpu().numpy()
 
+def noop(*args, **kwargs): return
+
 def split_by_idxs(seq, idxs):
     last, sl = 0, len(seq)
     for idx in idxs:
@@ -31,7 +33,10 @@ def split_by_idxs(seq, idxs):
 def trainable_params_(m):
     return [p for p in m.parameters() if p.requires_grad]
 
-def chain_params(p): return list(chain(*[trainable_params_(o) for o in p]))
+def chain_params(p):
+    if isinstance(p, (list,tuple)):
+        return list(chain(*[trainable_params_(o) for o in p]))
+    return trainable_params_(p)
 
 def set_trainable_attr(m,b):
     m.trainable=b
@@ -39,9 +44,9 @@ def set_trainable_attr(m,b):
 
 def apply_leaf(m, f):
     c = children(m)
+    f(m)
     if len(c)>0:
         for l in c: apply_leaf(l,f)
-    else: f(m)
 
 def set_trainable(l, b):
     apply_leaf(l, lambda m: set_trainable_attr(m,b))

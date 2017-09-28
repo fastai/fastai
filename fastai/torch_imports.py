@@ -1,4 +1,4 @@
-import torch, torchvision
+import torch, torchvision, torchtext
 from torch import nn, cuda, backends, FloatTensor, LongTensor, optim
 import torch.nn.functional as F
 from torch.autograd import Variable
