@@ -27,7 +27,7 @@ def combine_date(years, months=1, days=1, weeks=None, hours=None, minutes=None,
 
 def get_nn_mappers(df, cat_vars, contin_vars):
     # Replace nulls with 0 for continuous, "" for categorical.
-    for v in contin_vars: df[v].fillna(df[v].max()+100, inplace=True)
+    for v in contin_vars: df[v] = df[v].fillna(df[v].max()+100).astype(np.float32)
     for v in cat_vars: df[v].fillna('#NA#', inplace=True)
 
     # list of tuples, containing variable and instance of a transformer for that variable
