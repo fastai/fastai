@@ -60,7 +60,7 @@ def apply_cats(df, trn):
             df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
 
 def proc_col(col, name, max_n_cat, force_cat):
-    if is_numeric_dtype(col): col = col.fillna(col.mean()+100)
+    if is_numeric_dtype(col): col = col.fillna(col.max()+100)
     elif name not in force_cat and (max_n_cat is None or col.nunique()>max_n_cat):
         col = col.cat.codes
     return col
