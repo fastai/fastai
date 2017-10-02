@@ -23,6 +23,7 @@ class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None):
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
+        self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
         self.tmp_path = os.path.join(self.data.path, tmp_name)
         if not os.path.exists(self.tmp_path): os.mkdir(self.tmp_path)
