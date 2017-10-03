@@ -266,8 +266,8 @@ class CropType(IntEnum):
 class Transforms():
     def __init__(self, sz, tfms, denorm, crop_type=CropType.CENTER):
         self.sz,self.denorm = sz,denorm
-        crop_fn = RandomCrop
-        if crop_type == CropType.CENTER: crop_fn = CenterCrop
+        crop_fn = CenterCrop
+        if crop_type == CropType.RANDOM: crop_fn = RandomCrop
         if crop_type == CropType.NO: crop_fn = NoCrop
         self.tfms = tfms + [crop_fn(sz), channel_dim]
     def __call__(self, im, y): return compose(im, self.tfms), y
@@ -277,7 +277,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScale(sz, max_zoom) if max_zoom is not None else Scale(sz)]
     if pad: scale.append(ReflectionPad(pad))
-    if max_zoom is not None and crop_type is not CropType.NO:
+    if max_zoom is not None and crop_type is None:
         crop_type = CropType.RANDOM 
     return Transforms(sz+pad, scale + tfms + [normalizer], denorm,
                       crop_type)
