@@ -3,6 +3,7 @@ from .torch_imports import *
 from .core import *
 
 import IPython, graphviz
+from concurrent.futures import ProcessPoolExecutor
 
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
@@ -11,10 +12,23 @@ from sklearn.ensemble import forest
 from sklearn.tree import export_graphviz
 
 
-def draw_tree(t, df, size=10, ratio=0.6):
-    s=export_graphviz(t, out_file=None, feature_names=df.columns)
+def set_plot_sizes(sml, med, big):
+    plt.rc('font', size=sml)          # controls default text sizes
+    plt.rc('axes', titlesize=sml)     # fontsize of the axes title
+    plt.rc('axes', labelsize=med)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=sml)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=sml)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=sml)    # legend fontsize
+    plt.rc('figure', titlesize=big)  # fontsize of the figure title
+
+def parallel_trees(m, fn, n_jobs=8):
+        return list(ProcessPoolExecutor(n_jobs).map(fn, m.estimators_))
+
+def draw_tree(t, df, size=10, ratio=0.6, precision=0):
+    s=export_graphviz(t, out_file=None, feature_names=df.columns, filled=True,
+                      special_characters=True, rotate=True, precision=precision)
     IPython.display.display(graphviz.Source(re.sub('Tree {',
-       f'Tree {{ size={size}; rankdir=LR; ratio={ratio}', s)))
+       f'Tree {{ size={size}; ratio={ratio}', s)))
 
 def combine_date(years, months=1, days=1, weeks=None, hours=None, minutes=None,
               seconds=None, milliseconds=None, microseconds=None, nanoseconds=None):
@@ -39,7 +53,7 @@ def get_nn_mappers(df, cat_vars, contin_vars):
     contin_maps = [([o], StandardScaler()) for o in contin_vars]
     return DataFrameMapper(cat_maps).fit(df), DataFrameMapper(contin_maps).fit(df)
 
-def get_sample(x,n): return np.random.permutation(len(x))[:n]
+def get_sample(df,n): return df.iloc[np.random.permutation(len(df))[:n]].copy()
 
 def add_datepart(df, fldname):
     fld = df[fldname]
@@ -59,22 +73,24 @@ def apply_cats(df, trn):
         if trn[n].dtype.name=='category':
             df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
 
-def proc_col(col, name, max_n_cat, force_cat):
-    if is_numeric_dtype(col): col = col.fillna(col.max()+100)
+def proc_col(df, col, name, max_n_cat, force_cat):
+    if is_numeric_dtype(col):
+        if pd.isnull(col).sum(): df[name+'_na'] = pd.isnull(col)
+        col = col.fillna(col.median())
     elif name not in force_cat and (max_n_cat is None or col.nunique()>max_n_cat):
         col = col.cat.codes
-    return col
+    df[name] = col
 
 def proc_df(df, y_fld, skip_flds=None, preproc_fn=None, max_n_cat=None, force_cat=None, subset=None):
     if not force_cat: force_cat=[]
     if not skip_flds: skip_flds=[]
-    if subset: df = df.iloc[get_sample(df,subset)]
+    if subset: df = get_sample(df,subset)
     df = df.copy()
     if preproc_fn: preproc_fn(df)
     y = df[y_fld].values
     df.drop(skip_flds+[y_fld], axis=1, inplace=True)
 
-    for n,c in df.items(): df[n] = proc_col(c, n, max_n_cat, force_cat)
+    for n,c in df.items(): proc_col(df, c, n, max_n_cat, force_cat)
     return pd.get_dummies(df, dummy_na=True), y
 
 def rf_feat_importance(m, df):
