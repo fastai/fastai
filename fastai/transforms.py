@@ -1,6 +1,6 @@
 from .imports import *
 from .layer_optimizer import *
-from enum import Enum
+from enum import IntEnum
 
 imagenet_mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((1,1,3))
 def preprocess_imagenet(x): return x[..., ::-1] - imagenet_mean
@@ -40,6 +40,11 @@ def rotate_cv(img, deg, mode=cv2.BORDER_REFLECT):
     M = cv2.getRotationMatrix2D((cols/2,rows/2),deg,1)
     return cv2.warpAffine(img,M,(cols,rows), borderMode=mode)
 
+def no_crop(im, min_sz=None):
+    r,c,_ = im.shape
+    if min_sz is None: min_sz = min(r,c)
+    return cv2.resize(im, (min_sz, min_sz))
+
 def center_crop(im, min_sz=None):
     r,c,_ = im.shape
     if min_sz is None: min_sz = min(r,c)
@@ -60,6 +65,7 @@ def det_zoom(zoom): return lambda x: zoom_cv(x, zoom)
 def rand0(s): return random.random()*(s*2)-s
 
 def CenterCrop(min_sz=None): return lambda x: center_crop(x, min_sz)
+def NoCrop(min_sz=None): return lambda x: no_crop(x, min_sz) 
 def Scale(sz): return lambda x: scale_min(x, sz)
 
 class RandomScale(): 
@@ -147,61 +153,139 @@ class RandomDihedral():
         x = np.rot90(x, random.randint(0,3))
         return x.copy() if random.random()<0.5 else np.fliplr(x).copy()
 
-TfmType = Enum('TfmType', 'NO PIXEL COORD')
-
-class Transform():
-    def __init__(tfm_y): self.tfm_y=tfm_y
-    def __call__(self, x, y):
-        x,y = (self.transform(x),y if self.tfm_y==TfmType.NO
-                else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
-                else self.transform_coord(x,y))
-
-
-class RandomDihedralXY(Transform):
-    def rand_gen(self):
-        return random.randint(0,3), random.random()<0.5
-
-    def transform_coord(self, x, y):
-        rot_times, do_flip = self.rand_gen()
-        x = do_transform(x, rot_times, do_flip)
-        raise NotImplementedError # XXX: Handle y coord transform
-        return x, y
-
-    def transform(self, x, y=None):
-        rot_times, do_flip = self.rand_gen()
-        x = do_transform(x, rot_times, do_flip)
-        return (x, do_transform(y, rot_times, do_flip)) if y else x
-
-    def do_transform(self, x, rot_times, do_flip):
-        x = np.rot90(x, rot_times)
-        return np.fliplr(x).copy() if do_flip else x
-
-
 def RandomFlip(): return lambda x: x if random.random()<0.5 else np.fliplr(x).copy()
 
 def channel_dim(x): return np.rollaxis(x, 2)
+
+def to_bb(YY, y):
+    (rows, cols) = np.nonzero(YY)
+    top_row = np.min(rows)
+    left_col = np.min(cols)
+    bottom_row = np.max(rows)
+    right_col = np.max(cols)
+    return np.array([top_row, left_col, bottom_row, right_col])
+
+def coords2px(y, x):
+    rows = np.rint([y[0], y[0], y[2], y[2]]).astype(int)
+    cols = np.rint([y[1], y[3], y[1], y[3]]).astype(int) 
+    Y = np.zeros((x.shape[0], x.shape[1]))
+    Y[rows, cols] = 1
+    return Y
+
+class TfmType(IntEnum):
+    NO = 1
+    PIXEL = 2
+    COORD = 3
+
+class Transform():
+    def __init__(self, tfm_y=TfmType.NO): self.tfm_y=tfm_y
+    def __call__(self, x, y):
+        self.set_state()
+        x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
+                else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
+                else self.transform_coord(x,y))
+        return x, y
+
+    def transform_coord(self, x, y): return self.transform(x),y
+    
+    def transform(self, x, y=None):
+        x = self.do_transform(x)
+        return (x, self.do_transform(y)) if y is not None else x
+
+    def do_transform(self, x): raise NotImplementedError
+
+class CoordTransform(Transform):
+    def transform_coord(self, x, y):
+        y = coords2px(y, x)
+        x,y_tr = self.transform(x,y)
+        y = to_bb(y_tr, y)
+        return x, y
+
+class RandomRotateXY(CoordTransform):
+    def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
+        self.deg,self.mode,self.p = deg,mode,p
+        self.tfm_y=tfm_y
+
+    def set_state(self):
+        self.rdeg = rand0(self.deg)
+        self.rp = random.random()<self.p
+        print(self.rdeg, self.rp)
+
+    def do_transform(self, x):
+        if self.rp:
+            x = rotate_cv(x, self.rdeg, self.mode)
+        return x
+
+class RandomDihedralXY(CoordTransform):
+    def set_state(self):
+        self.rot_times = random.randint(0,3)
+        self.do_flip = random.random()<0.5
+
+    def do_transform(self, x):
+        x = np.rot90(x, self.rot_times)
+        return np.fliplr(x).copy() if self.do_flip else x
+
+class RandomFlipXY(CoordTransform):
+    def set_state(self):
+        self.do_flip = random.random()<0.5
+
+    def do_transform(self, x):
+        return np.fliplr(x).copy() if self.do_flip else x
+
+## TODO: talk to Jeremy about this
+class RandomLightingXY(CoordTransform):
+    def __init__(self, b, c, tfm_y=TfmType.NO):
+        self.tfm_y=tfm_y
+        self.b,self.c = b,c
+
+    def __call__(self, x, y):
+        self.set_state()
+        x,y = self.do_transform(x),y
+        return x, y 
+ 
+    def set_state(self):
+        self.b_rand = b = rand0(self.b)
+        self.c_rand = b = rand0(self.c)
+
+    def do_transform(self, x):
+        b = self.b
+        c = self.c
+        c = -1/(c-1) if c<0 else c+1
+        x = lighting(x, b, c)
+        return x
 
 def compose(im, fns):
     for fn in fns: im=fn(im)
     return im
 
+class CropType(IntEnum):
+    RANDOM = 1
+    CENTER = 2
+    NO = 3
+
 class Transforms():
-    def __init__(self, sz, tfms, denorm, rand_crop=False):
+    def __init__(self, sz, tfms, denorm, crop_type=CropType.CENTER):
         self.sz,self.denorm = sz,denorm
-        crop_fn = RandomCrop if rand_crop else CenterCrop
+        crop_fn = CenterCrop
+        if crop_type == CropType.RANDOM: crop_fn = RandomCrop
+        if crop_type == CropType.NO: crop_fn = NoCrop
         self.tfms = tfms + [crop_fn(sz), channel_dim]
     def __call__(self, im, y): return compose(im, self.tfms), y
 
-def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0):
+def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None):
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScale(sz, max_zoom) if max_zoom is not None else Scale(sz)]
     if pad: scale.append(ReflectionPad(pad))
+    if max_zoom is not None and crop_type is None:
+        crop_type = CropType.RANDOM 
     return Transforms(sz+pad, scale + tfms + [normalizer], denorm,
-                      rand_crop=max_zoom is not None)
+                      crop_type)
 
 def noop(x): return x
 
 transforms_basic    = [RandomRotate(10), RandomLighting(0.05, 0.05)]
 transforms_side_on  = transforms_basic + [RandomFlip()]
 transforms_top_down = transforms_basic + [RandomDihedral()]
+
+coord_transforms_basic  = [RandomDihedralXY(), RandomLightingXY(0.05, 0.05)]
