@@ -2,16 +2,19 @@ from .imports import *
 from .torch_imports import *
 from .core import *
 
+import IPython, graphviz
+
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
+from pandas.api.types import is_string_dtype, is_numeric_dtype
+from sklearn.ensemble import forest
+from sklearn.tree import export_graphviz
 
 
-def add_datepart(df, date_fld, yr_fld="Year", month_fld="Month", week_fld="Week", day_fld="Day"):
-    df[date_fld] = pd.to_datetime(df[date_fld])
-    df[yr_fld] = df.Date.dt.year
-    df[month_fld] = df.Date.dt.month
-    df[week_fld] = df.Date.dt.week
-    df[day_fld] = df.Date.dt.day
+def draw_tree(t, df, size=10, ratio=0.6):
+    s=export_graphviz(t, out_file=None, feature_names=df.columns)
+    IPython.display.display(graphviz.Source(re.sub('Tree {',
+       f'Tree {{ size={size}; rankdir=LR; ratio={ratio}', s)))
 
 def combine_date(years, months=1, days=1, weeks=None, hours=None, minutes=None,
               seconds=None, milliseconds=None, microseconds=None, nanoseconds=None):
@@ -27,7 +30,7 @@ def combine_date(years, months=1, days=1, weeks=None, hours=None, minutes=None,
 
 def get_nn_mappers(df, cat_vars, contin_vars):
     # Replace nulls with 0 for continuous, "" for categorical.
-    for v in contin_vars: df[v] = df[v].fillna(df[v].max()+100).astype(np.float32)
+    for v in contin_vars: df[v] = df[v].fillna(df[v].max()+100,)
     for v in cat_vars: df[v].fillna('#NA#', inplace=True)
 
     # list of tuples, containing variable and instance of a transformer for that variable
@@ -35,4 +38,54 @@ def get_nn_mappers(df, cat_vars, contin_vars):
     cat_maps = [(o, LabelEncoder()) for o in cat_vars]
     contin_maps = [([o], StandardScaler()) for o in contin_vars]
     return DataFrameMapper(cat_maps).fit(df), DataFrameMapper(contin_maps).fit(df)
+
+def get_sample(x,n): return np.random.permutation(len(x))[:n]
+
+def add_datepart(df, fldname):
+    fld = df[fldname]
+    targ_pre = re.sub('[Dd]ate$', '', fldname)
+    for n in ('Year', 'Month', 'Week', 'Day'): df[targ_pre+n] = getattr(fld.dt,n.lower())
+    df[targ_pre+'Elapsed'] = (fld - fld.min()).dt.days
+    df.drop(fldname, axis=1, inplace=True)
+
+def is_date(x): return np.issubdtype(x.dtype, np.datetime64)
+
+def train_cats(df):
+    for n,c in df.items():
+        if is_string_dtype(c): df[n] = c.astype('category').cat.as_ordered()
+
+def apply_cats(df, trn):
+    for n,c in df.items():
+        if trn[n].dtype.name=='category':
+            df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
+
+def proc_col(col, name, max_n_cat, force_cat):
+    if is_numeric_dtype(col): col = col.fillna(col.max()+100)
+    elif name not in force_cat and (max_n_cat is None or col.nunique()>max_n_cat):
+        col = col.cat.codes
+    return col
+
+def proc_df(df, y_fld, skip_flds=None, preproc_fn=None, max_n_cat=None, force_cat=None, subset=None):
+    if not force_cat: force_cat=[]
+    if not skip_flds: skip_flds=[]
+    if subset: df = df.iloc[get_sample(df,subset)]
+    df = df.copy()
+    if preproc_fn: preproc_fn(df)
+    y = df[y_fld].values
+    df.drop(skip_flds+[y_fld], axis=1, inplace=True)
+
+    for n,c in df.items(): df[n] = proc_col(c, n, max_n_cat, force_cat)
+    return pd.get_dummies(df, dummy_na=True), y
+
+def rf_feat_importance(m, df):
+    return pd.DataFrame({'cols':df.columns, 'imp':m.feature_importances_}
+                       ).sort_values('imp', ascending=False)
+
+def set_rf_samples(n):
+    forest._generate_sample_indices = (lambda rs, n_samples:
+        forest.check_random_state(rs).randint(0, n_samples, n))
+
+def reset_rf_samples():
+    forest._generate_sample_indices = (lambda rs, n_samples:
+        forest.check_random_state(rs).randint(0, n_samples, n_samples))
 

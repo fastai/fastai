@@ -74,7 +74,7 @@ def calc_r(y_i, x, y):
     return np.log((p/p.sum())/(q/q.sum()))
 
 class BOW_Dataset(Dataset):
-    def __init__(self, bow, y, max_len): 
+    def __init__(self, bow, y, max_len):
         self.bow,self.max_len = bow,max_len
         self.c = int(y.max())+1
         self.n,self.vocab_size = bow.shape
