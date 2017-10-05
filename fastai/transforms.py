@@ -119,7 +119,7 @@ class Normalize():
     def __init__(self, m, s):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
-    def __call__(self, x): return (x-self.m)/self.s
+    def __call__(self, x, y): return (x-self.m)/self.s, y
 
 
 class RandomRotateZoom():
@@ -172,7 +172,7 @@ class RandomDihedral():
 
 def RandomFlip(): return lambda x: x if random.random()<0.5 else np.fliplr(x).copy()
 
-def channel_dim(x): return np.rollaxis(x, 2)
+def channel_dim(x, y): return np.rollaxis(x, 2), y
 
 def to_bb(YY, y):
     (rows, cols) = np.nonzero(YY)
@@ -379,9 +379,11 @@ class RandomLightingXY(Transform):
         x = lighting(x, b, c)
         return x
 
-def compose(im, fns):
-    for fn in fns: im=fn(im)
-    return im
+def compose(im, y, fns):
+    for fn in fns:
+        print(fn) 
+        im, y =fn(im, y)
+    return im, y
 
 
 class CropType(IntEnum):
@@ -399,15 +401,15 @@ class Transforms():
         if crop_type == CropType.RANDOM: crop_tfm = RandomCropXY(sz, tfm_y)
         if crop_type == CropType.NO: crop_tfm = NoCropXY(sz, tfm_y)
         self.tfms = tfms + [crop_tfm, channel_dim]
-    def __call__(self, im, y): return compose(im, self.tfms), y
+    def __call__(self, im, y): return compose(im, y, self.tfms)
 
 
-## TODO: Here is a problem tfms have to have the "right" type (tfm_y)
+# TODO: Here is a problem tfms have to have the "right" type (tfm_y)
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScaleXY(sz, max_zoom, tfm_y) if max_zoom is not None else ScaleXY(sz, tfm_y)]
-    if pad: scale.append(ReflectionPad(pad)) ## TODO: fix this one
+    if pad: scale.append(ReflectionPad(pad)) # TODO: fix this one
     if max_zoom is not None and crop_type is None:
         crop_type = CropType.RANDOM 
     return Transforms(sz+pad, scale + tfms + [normalizer], denorm,
