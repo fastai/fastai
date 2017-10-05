@@ -381,7 +381,6 @@ class RandomLightingXY(Transform):
 
 def compose(im, y, fns):
     for fn in fns:
-        print(fn) 
         im, y =fn(im, y)
     return im, y
 
@@ -406,6 +405,7 @@ class Transforms():
 
 # TODO: Here is a problem tfms have to have the "right" type (tfm_y)
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
+    if tfm_y is None: tfm_y=TfmType.NO
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScaleXY(sz, max_zoom, tfm_y) if max_zoom is not None else ScaleXY(sz, tfm_y)]
