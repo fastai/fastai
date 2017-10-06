@@ -329,7 +329,26 @@ class RandomScaleXY(CoordTransform):
         return scale_min(x, self.new_sz)
 
 
-class RandomRotateXY(CoordTransform):
+def random_px_rect(y, x):
+    rows0 = np.array([y[0], y[0], y[2], y[2]])
+    cols0 = np.array([y[1], y[3], y[1], y[3]])
+    n = [np.random.randint(10, 20) for i in range(4)]
+    rand_rows = np.hstack([np.random.uniform(y[0], y[2], size=n[i]) for i in range(2)])
+    fixed_cols = np.hstack([ y[j] * np.ones(n[i]) for i, j in zip(range(0,2), [1,3])])
+    rand_cols = np.hstack([np.random.uniform(y[1], y[3], size=n[i]) for i in range(2,4)])
+    fixed_rows = np.hstack([y[j] * np.ones(n[i]) for i, j in zip(range(2,4),[0,2])])
+    rows = np.hstack([rows0, rand_rows, fixed_rows]).astype(int)
+    cols = np.hstack([cols0, fixed_cols, rand_cols]).astype(int)
+    Y = np.zeros((x.shape[0], x.shape[1]))
+    Y[rows, cols] = 1 
+    return Y
+
+def rotate_cv2(img, deg):
+    rows=img.shape[0]; cols=img.shape[1]
+    M = cv2.getRotationMatrix2D((cols/2,rows/2),deg,1)
+    return cv2.warpAffine(img,M,(cols,rows), flags=cv2.INTER_LINEAR)
+
+class RandomRotateXY(Transform):
     def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         self.deg,self.mode,self.p = deg,mode,p
         self.tfm_y=tfm_y
@@ -337,12 +356,24 @@ class RandomRotateXY(CoordTransform):
     def set_state(self):
         self.rdeg = rand0(self.deg)
         self.rp = random.random()<self.p
-        print(self.rdeg, self.rp)
+
+    def transform_coord(self, x, y):
+        # tranforming coordinate to pixels, at the moment this works
+        # for the bounding box problem
+        y = random_px_rect(y, x)
+        x,y_tr = self.do_transform(x), self.do_transform_y(y)
+        y = to_bb(y_tr, y)
+        return x, y
 
     def do_transform(self, x):
         if self.rp:
             x = rotate_cv(x, self.rdeg, self.mode)
         return x
+
+    def do_transform_y(self, y):
+        if self.rp:
+            y = rotate_cv2(y, self.rdeg)
+        return y
 
 
 class RandomDihedralXY(CoordTransform):
