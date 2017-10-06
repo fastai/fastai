@@ -4,13 +4,17 @@ from .torch_imports import *
 def sum_geom(a,r,n):
     return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
 
-conv_dict = {np.dtype('int32'): torch.IntTensor, np.dtype('int64'): torch.LongTensor,
+conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
+    np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
 
 def T(a):
     a = np.array(a)
-    #return conv_dict[a.dtype](a)
-    return torch.from_numpy(a)
+    if a.dtype in (np.int8, np.int16, np.int32, np.int64):
+        return torch.LongTensor(a.astype(np.int64))
+    if a.dtype in (np.float32, np.float64):
+        return torch.FloatTensor(a.astype(np.float32))
+    raise NotImplementedError
 
 def V_(x):  return x.cuda(async=True) if isinstance(x, Variable) else Variable(x.cuda(async=True))
 def V(x):   return [V_(o) for o in x] if isinstance(x,list) else V_(x)

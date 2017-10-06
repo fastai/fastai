@@ -5,6 +5,7 @@ from .core import *
 import IPython, graphviz
 from concurrent.futures import ProcessPoolExecutor
 
+import sklearn_pandas, sklearn, warnings
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
 from pandas.api.types import is_string_dtype, is_numeric_dtype
@@ -73,16 +74,24 @@ def apply_cats(df, trn):
         if trn[n].dtype.name=='category':
             df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
 
-def proc_col(df, col, name, max_n_cat, force_cat):
+def fix_missing(df, col, name):
     if is_numeric_dtype(col):
         if pd.isnull(col).sum(): df[name+'_na'] = pd.isnull(col)
-        col = col.fillna(col.median())
-    elif name not in force_cat and (max_n_cat is None or col.nunique()>max_n_cat):
-        col = col.cat.codes
-    df[name] = col
+        df[name] = col.fillna(col.median())
 
-def proc_df(df, y_fld, skip_flds=None, preproc_fn=None, max_n_cat=None, force_cat=None, subset=None):
-    if not force_cat: force_cat=[]
+def numericalize(df, col, name, max_n_cat):
+    if not is_numeric_dtype(col) and ( max_n_cat is None or col.nunique()>max_n_cat):
+        df[name] = col.cat.codes+1
+
+def scale_vars(df):
+    warnings.filterwarnings('ignore', category=sklearn.exceptions.DataConversionWarning)
+    map_f = [([n],StandardScaler()) for n in df.columns if is_numeric_dtype(df[n])]
+    mapper = DataFrameMapper(map_f).fit(df)
+    df[mapper.transformed_names_] = mapper.transform(df)
+    return mapper
+
+def proc_df(df, y_fld, skip_flds=None, do_scale=False,
+            preproc_fn=None, max_n_cat=None, subset=None):
     if not skip_flds: skip_flds=[]
     if subset: df = get_sample(df,subset)
     df = df.copy()
@@ -90,8 +99,12 @@ def proc_df(df, y_fld, skip_flds=None, preproc_fn=None, max_n_cat=None, force_ca
     y = df[y_fld].values
     df.drop(skip_flds+[y_fld], axis=1, inplace=True)
 
-    for n,c in df.items(): proc_col(df, c, n, max_n_cat, force_cat)
-    return pd.get_dummies(df, dummy_na=True), y
+    for n,c in df.items(): fix_missing(df, c, n)
+    if do_scale: mapper = scale_vars(df)
+    for n,c in df.items(): numericalize(df, c, n, max_n_cat)
+    res = [pd.get_dummies(df, dummy_na=True), y]
+    if not do_scale: return res
+    return res + [mapper]
 
 def rf_feat_importance(m, df):
     return pd.DataFrame({'cols':df.columns, 'imp':m.feature_importances_}

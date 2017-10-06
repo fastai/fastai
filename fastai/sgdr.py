@@ -70,10 +70,10 @@ class LR_Finder(LR_Updater):
         if loss<self.best: self.best=loss
         return super().on_batch_end(loss)
 
-    def plot(self):
+    def plot(self, n_skip=10):
         plt.ylabel("loss")
         plt.xlabel("learning rate (log scale)")
-        plt.plot(self.lrs[10:-5], self.losses[10:-5])
+        plt.plot(self.lrs[n_skip:-5], self.losses[n_skip:-5])
         plt.xscale('log')
 
 
