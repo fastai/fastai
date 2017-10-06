@@ -96,7 +96,7 @@ class Learner():
         self.fit_gen(self.model, self.data, layer_opt, 1)
         self.load('tmp')
 
-    def predict(self, is_test=False): return self.predict_with_targs(dl)[0]
+    def predict(self, is_test=False): return self.predict_with_targs(is_test)[0]
 
     def predict_with_targs(self, is_test=False):
         dl = self.data.test_dl if is_test else self.data.val_dl
