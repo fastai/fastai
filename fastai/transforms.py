@@ -116,6 +116,8 @@ class Denormalize():
 
 
 class Normalize():
+    """ Normalizes an image.
+    """
     def __init__(self, m, s):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
@@ -223,6 +225,12 @@ class Transform():
 
     All other transforms should subclass it. All subclasses should override
     do_transform.
+    We have 3 types of transforms:
+       TfmType.NO: the target y is not transformed
+       TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms 
+           them with the same paramters.
+       TfmType.COORD: assumes that y are some coordinates in the image x. At the momemnt this 
+           works for a bounding box around a fish.
 
     Arguments:
         tfm_y (TfmType): type of transform
@@ -246,10 +254,10 @@ class Transform():
 
 class CoordTransform(Transform):
     """ A class that represents a coordinate transform.
+
+    Note: at the moment this works for the bounding box problem.
     """
     def transform_coord(self, x, y):
-        # tranforming coordinate to pixels, at the moment this works
-        # for the bounding box problem
         y = coords2px(y, x)
         x,y_tr = self.transform(x,y)
         y = to_bb(y_tr, y)
@@ -257,6 +265,13 @@ class CoordTransform(Transform):
 
 
 class CenterCropXY(CoordTransform):
+    """ A class that represents a Center Crop.
+
+    This transforms (optionally) transforms x,y at with the same parameters. 
+    Arguments:
+        sz (int): size of the crop.
+        tfm_y (TfmType): type of y transformation. 
+    """
     def __init__(self, sz, tfm_y=TfmType.NO):
         self.tfm_y=tfm_y
         self.min_sz=sz
@@ -269,6 +284,13 @@ class CenterCropXY(CoordTransform):
 
 
 class RandomCropXY(CoordTransform):
+    """ A class that represents a Random Crop transformation.
+
+    This transforms (optionally) transforms x,y at with the same parameters. 
+    Arguments:
+        targ (int): target size of the crop.
+        tfm_y (TfmType): type of y transformation.
+    """
     def __init__(self, targ, tfm_y=TfmType.NO):
         self.tfm_y=tfm_y
         self.targ=targ
@@ -285,6 +307,13 @@ class RandomCropXY(CoordTransform):
 
 
 class NoCropXY(CoordTransform):
+    """  A transformation that resize to a square image without cropping.
+
+    This transforms (optionally) resizes x,y at with the same parameters. 
+    Arguments:
+        targ (int): target size of the crop.
+        tfm_y (TfmType): type of y transformation.
+    """
     def __init__(self, sz, tfm_y=TfmType.NO):
         self.tfm_y=tfm_y
         self.sz=sz
@@ -297,6 +326,12 @@ class NoCropXY(CoordTransform):
 
 
 class ScaleXY(CoordTransform):
+    """ A transformation that scales the min size to sz. 
+
+    Arguments:
+        sz (int): target size to scale minimum size.
+        tfm_y (TfmType): type of y transformation.
+    """
     def __init__(self, sz, tfm_y=TfmType.NO):
         self.tfm_y=tfm_y
         self.sz=sz
@@ -311,6 +346,7 @@ class ScaleXY(CoordTransform):
 class RandomScaleXY(CoordTransform):
     """ Scales an image so that the min size is a random number between [sz, sz*max_zoom] 
 
+    This transforms (optionally) scales x,y at with the same parameters. 
     Arguments:
         sz (int): target size
         max_zoom (float): float >= 1.0
@@ -330,6 +366,18 @@ class RandomScaleXY(CoordTransform):
 
 
 def random_px_rect(y, x):
+    """ Returns a 2D image of the size x with random points in a square box.
+
+    Arguments:
+        y (numpy array): defines a bounding box (arround a fish) for the 
+            fishery datset. Contains the coordinates of the bounding box corners
+            y = [upper_row, left_col, lower_row, right_col]
+        x (numpy array): image (with the target fish)
+
+    Returns:
+        Y (numpy array): A 2D numpy array of size (x.shape[0], x.shape[1]) with pixes
+            on corners of the bounding box and random points in the boundary of the box.
+    """
     rows0 = np.array([y[0], y[0], y[2], y[2]])
     cols0 = np.array([y[1], y[3], y[1], y[3]])
     n = [np.random.randint(10, 20) for i in range(4)]
@@ -344,11 +392,27 @@ def random_px_rect(y, x):
     return Y
 
 def rotate_cv2(img, deg):
+    """ Rotates and image by degree=deg with leaving black borders.
+
+    This function is used to rotated the bounding box pixels.
+    Arguments:
+        deg (float): degree to rotate. 
+    """
     rows=img.shape[0]; cols=img.shape[1]
     M = cv2.getRotationMatrix2D((cols/2,rows/2),deg,1)
     return cv2.warpAffine(img,M,(cols,rows), flags=cv2.INTER_LINEAR)
 
 class RandomRotateXY(Transform):
+    """ Rotates images and (optionally) target y. 
+
+    Rotating coordinates is treated differently for x and y on this
+    transform.
+     Arguments:
+        deg (float): degree to rotate. 
+        p (float): probability of rotation
+        mode: type of border
+        tfm_y (TfmType): type of y transform 
+    """
     def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         self.deg,self.mode,self.p = deg,mode,p
         self.tfm_y=tfm_y
@@ -358,8 +422,6 @@ class RandomRotateXY(Transform):
         self.rp = random.random()<self.p
 
     def transform_coord(self, x, y):
-        # tranforming coordinate to pixels, at the moment this works
-        # for the bounding box problem
         y = random_px_rect(y, x)
         x,y_tr = self.do_transform(x), self.do_transform_y(y)
         y = to_bb(y_tr, y)
@@ -449,6 +511,6 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
 def noop(x): return x
 
 # TODO: find a different solution now that we have tfm_y
-transforms_basic    = [RandomRotate(10), RandomLighting(0.05, 0.05)]
-transforms_side_on  = transforms_basic + [RandomFlip()]
-transforms_top_down = transforms_basic + [RandomDihedral()]
+transforms_basic    = [RandomRotateXY(10), RandomLightingXY(0.05, 0.05)]
+transforms_side_on  = transforms_basic + [RandomFlipXY()]
+transforms_top_down = transforms_basic + [RandomDihedralXY()]
