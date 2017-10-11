@@ -39,30 +39,47 @@ class ColumnarModelData(ModelData):
         ((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, df, y)
         return self.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs)
 
-    def get_learner(self, emb_szs, n_cont, emb_drop, szs, drops):
-        model = MixedInputModel(emb_szs, n_cont, emb_drop, szs, drops)
+    def get_learner(self, emb_szs, n_cont, emb_drop, szs, drops, y_range=None):
+        model = MixedInputModel(emb_szs, n_cont, emb_drop, szs, drops, y_range)
         return StructuredLearner(self, StructuredModel(model.cuda()), opt_fn=optim.Adam)
 
 
+def emb_init(x):
+    x = x.weight.data
+    sc = 2/(x.size(1)+1)
+    x.uniform_(-sc,sc)
+
+
 class MixedInputModel(nn.Module):
-    def __init__(self, emb_szs, n_cont, emb_drop, szs, drops):
+    def __init__(self, emb_szs, n_cont, emb_drop, szs, drops, y_range=None):
         super().__init__()
         self.embs = nn.ModuleList([nn.Embedding(c, s) for c,s in emb_szs])
+        for emb in self.embs: emb_init(emb)
         n_emb = sum(e.embedding_dim for e in self.embs)
-        szs = [n_emb+n_cont] + szs + [1]
+
+        szs = [n_emb+n_cont] + szs
         self.lins = nn.ModuleList([
             nn.Linear(szs[i], szs[i+1]) for i in range(len(szs)-1)])
+        for o in self.lins: kaiming_normal(o.weight.data)
+
         self.emb_drop = nn.Dropout(emb_drop)
         self.drops = [nn.Dropout(drop) for drop in drops]
         self.drops = nn.ModuleList(self.drops + [None])
+        self.cont_lin = nn.Linear(n_cont,n_cont)
+        self.y_range = y_range
 
     def forward(self, x_cat, x_cont):
         x = [e(x_cat[:,i]) for i,e in enumerate(self.embs)]
-        x = self.emb_drop(torch.cat(x, 1))
-        x = torch.cat([x, x_cont], 1)
+        x = torch.cat(x, 1)
+        x2 = F.relu(self.cont_lin(x_cont))
+        x = self.emb_drop(torch.cat([x, x2], 1))
         for l,d in zip(self.lins, self.drops):
             x = F.relu(l(x))
             if d: x = d(x)
+        if self.y_range:
+            x = F.sigmoid(x)
+            x = x*(self.y_range[1] - self.y_range[0])
+            x = x+self.y_range[0]
         return x
 
 
