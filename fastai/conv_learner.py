@@ -79,7 +79,8 @@ class ConvLearner(Learner):
         if data.is_reg: self.crit = F.l1_loss
         elif self.metrics is None:
             self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
-        self.save_fc1()
+        if self.precompute:
+            self.save_fc1()
         self.freeze()
         self.precompute=precompute
 

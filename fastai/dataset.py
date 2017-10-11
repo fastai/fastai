@@ -310,12 +310,12 @@ def split_by_idx(idxs, *a):
     mask[np.array(idxs)] = True
     return [(o[mask],o[~mask]) for o in a]
 
-def tfms_from_model(f_model, sz, aug_tfms=[], max_zoom=None, pad=0, crop_type=None):
+def tfms_from_model(f_model, sz, aug_tfms=[], max_zoom=None, pad=0, crop_type=None, tfm_y=None):
     stats = inception_stats if f_model in inception_models else imagenet_stats
     tfm_norm = Normalize(*stats)
     tfm_denorm = Denormalize(*stats)
-    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type)
+    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y)
     trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type)
+                      pad=pad, crop_type=crop_type, tfm_y=tfm_y)
     return trn_tfm, val_tfm
 
