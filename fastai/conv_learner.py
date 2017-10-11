@@ -74,12 +74,13 @@ class ConvnetBuilder():
 class ConvLearner(Learner):
     def __init__(self, data, models, precompute=False, **kwargs):
         self.precompute=False
+        print("self.precompute", self.precompute)
         super().__init__(data, models, **kwargs)
         self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
         if data.is_reg: self.crit = F.l1_loss
         elif self.metrics is None:
             self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
-        if self.precompute:
+        if precompute:
             self.save_fc1()
         self.freeze()
         self.precompute=precompute
@@ -108,6 +109,7 @@ class ConvLearner(Learner):
 
     def get_activations(self, force=False):
         tmpl = f'_{self.models.name}_{self.data.sz}.bc'
+        print(self.tmp_path)
         # TODO: Somehow check that directory names haven't changed (e.g. added test set)
         names = [os.path.join(self.tmp_path, p+tmpl) for p in ('x_act', 'x_act_val', 'x_act_test')]
         if os.path.exists(names[0]) and not force:
