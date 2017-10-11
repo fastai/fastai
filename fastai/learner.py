@@ -26,13 +26,14 @@ class Learner():
         self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
         self.tmp_path = os.path.join(self.data.path, tmp_name)
-        try:
-            if not os.path.exists(self.tmp_path): os.mkdir(self.tmp_path)
-        except IOError:
-            print(f'directory {self.tmp_path} is not writable')
-        else:
-            self.tmp_path = os.path.join(os.getenv("HOME"), tmp_name)
-            if not os.path.exists(self.tmp_path): os.mkdir(self.tmp_path)
+        if not os.path.exists(self.tmp_path):
+            try:
+                os.mkdir(self.tmp_path)
+            except IOError:
+                print(f'directory {self.tmp_path} is not writable')
+            else:
+                self.tmp_path = os.path.join(os.getenv("HOME"), tmp_name)
+                if not os.path.exists(self.tmp_path): os.mkdir(self.tmp_path)
         self.models_path = os.path.join(self.data.path, models_name)
         if not os.path.exists(self.models_path): os.mkdir(self.models_path)
         self.crit,self.reg_fn,self.crit = None,None,None
