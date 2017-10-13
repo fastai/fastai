@@ -236,7 +236,7 @@ class ImageData(ModelData):
     def get_dl(self, ds, shuffle):
         if ds is None: return None
         return ModelDataLoader.create_dl(ds, batch_size=self.bs, shuffle=shuffle,
-            num_workers=self.num_workers, pin_memory=True)
+            num_workers=self.num_workers, pin_memory=False)
 
     @property
     def sz(self): return self.trn_ds.sz
