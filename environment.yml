@@ -1,3 +1,4 @@
+name: fastai
 channels:
 - soumith
 - defaults
