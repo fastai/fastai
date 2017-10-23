@@ -104,4 +104,5 @@ dependencies:
   - torchtext
   - graphviz
   - sklearn_pandas
+  - feather-format
 
