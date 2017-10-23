@@ -95,14 +95,7 @@ dependencies:
 - cuda80=1.0=0
 - pytorch=0.2.0=py36h53baedd_4cu80
 - torchvision=0.1.9=py36h7584368_1
-- pip:
-  - bcolz
-  - ipython-genutils
-  - jupyter-client
-  - jupyter-console
-  - jupyter-core
-  - opencv-python
-  - prompt-toolkit
-  - torch==0.2.0.post4
-
+- bcolz
+- opencv
+- prompt_toolkit
 
