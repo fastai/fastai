@@ -79,7 +79,8 @@ class ConvLearner(Learner):
         if data.is_reg: self.crit = F.l1_loss
         elif self.metrics is None:
             self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
-        self.save_fc1()
+        if precompute:
+            self.save_fc1()
         self.freeze()
         self.precompute=precompute
 
@@ -126,6 +127,6 @@ class ConvLearner(Learner):
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,
                 (act, self.data.trn_y), (val_act, self.data.val_y), self.data.bs, classes=self.data.classes,
-                test = test_act if self.data.test_dl else None)
+                test = test_act if self.data.test_dl else None, num_workers=8)
 
     def freeze(self): self.freeze_to(-self.models.n_fc)
