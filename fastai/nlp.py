@@ -40,8 +40,9 @@ def texts_from_folders(src, names):
     return texts,np.array(labels)
 
 class DotProdNB(nn.Module):
-    def __init__(self, nf, ny):
+    def __init__(self, nf, ny, w_adj=0.4, r_adj=10):
         super().__init__()
+        self.w_adj,self.r_adj = w_adj,r_adj
         self.w = nn.Embedding(nf+1, 1, padding_idx=0)
         self.w.weight.data.uniform_(-0.1,0.1)
         self.r = nn.Embedding(nf+1, ny)
@@ -49,7 +50,7 @@ class DotProdNB(nn.Module):
     def forward(self, feat_idx, feat_cnt, sz):
         w = self.w(feat_idx)
         r = self.r(feat_idx)
-        x = ((w+0.4)*r/10).sum(1)
+        x = ((w+self.w_adj)*r/self.r_adj).sum(1)
         return F.softmax(x)
 
 class SimpleNB(nn.Module):
@@ -69,8 +70,8 @@ class BOW_Learner(Learner):
         self.crit = F.l1_loss
 
 def calc_r(y_i, x, y):
-    p = x[y==y_i].sum(0)+1
-    q = x[y!=y_i].sum(0)+1
+    p = x[np.argwhere(y==y_i)[:,0]].sum(0)+1
+    q = x[np.argwhere(y!=y_i)[:,0]].sum(0)+1
     return np.log((p/p.sum())/(q/q.sum()))
 
 class BOW_Dataset(Dataset):
@@ -105,15 +106,15 @@ class TextClassifierData(ModelData):
     def r(self):
         return torch.Tensor(np.concatenate([np.zeros((1,self.c)), self.trn_ds.r]))
 
-    def get_model(self, f):
-        m = f(self.trn_ds.vocab_size, self.c).cuda()
+    def get_model(self, f, **kwargs):
+        m = f(self.trn_ds.vocab_size, self.c, **kwargs).cuda()
         m.r.weight.data = self.r.cuda()
         m.r.weight.requires_grad = False
         model = BasicModel(m)
         return BOW_Learner(self, model, metrics=[accuracy_thresh(0.5)], opt_fn=optim.Adam)
 
-    def dotprod_nb_learner(self): return self.get_model(DotProdNB)
-    def nb_learner(self): return self.get_model(SimpleNB)
+    def dotprod_nb_learner(self, **kwargs): return self.get_model(DotProdNB, **kwargs)
+    def nb_learner(self, **kwargs): return self.get_model(SimpleNB, **kwargs)
 
     @classmethod
     def from_bow(cls, trn_bow, trn_y, val_bow, val_y, sl):
@@ -183,10 +184,8 @@ class ConcatTextDataset(torchtext.data.Dataset):
         if os.path.isdir(path): paths=glob(f'{path}/*.*')
         else: paths=[path]
         for p in paths:
-            with open(p) as f:
-                for line in f:
-                    text += text_field.preprocess(line)
-                    if newline_eos: text.append('<eos>')
+            for line in open(p): text += text_field.preprocess(line)
+            if newline_eos: text.append('<eos>')
 
         examples = [torchtext.data.Example.fromlist([text], fields)]
         super().__init__(examples, fields, **kwargs)
