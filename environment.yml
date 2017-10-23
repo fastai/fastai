@@ -1,4 +1,3 @@
-name: fastai
 channels:
 - soumith
 - defaults
@@ -93,9 +92,15 @@ dependencies:
 - zeromq
 - zlib
 - cuda80=1.0=0
-- pytorch=0.2.0=py36h53baedd_4cu80
-- torchvision=0.1.9=py36h7584368_1
+- pytorch>=0.2.0
+- torchvision>=0.1.9
 - bcolz
 - opencv
 - prompt_toolkit
+- pip:
+  - isoweek
+  - pandas_summary
+  - torchtext
+  - graphviz
+  - sklearn_pandas
 
