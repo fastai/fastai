@@ -96,9 +96,9 @@ dependencies:
 - pytorch>=0.2.0
 - torchvision>=0.1.9
 - bcolz
-- opencv
 - prompt_toolkit
 - pip:
+  - opencv-python
   - isoweek
   - pandas_summary
   - torchtext
