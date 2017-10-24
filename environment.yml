@@ -7,15 +7,15 @@ dependencies:
 - certifi
 - cffi
 - cycler
-- dbus
+#- dbus
 - decorator
 - entrypoints
 - expat
 - fontconfig
 - freetype
 - glib
-- gst-plugins-base
-- gstreamer
+#- gst-plugins-base
+#- gstreamer
 - html5lib
 - icu
 - ipykernel
@@ -38,7 +38,7 @@ dependencies:
 - libpng
 - libsodium
 - libtiff
-- libxcb
+#- libxcb
 - libxml2
 - markupsafe
 - matplotlib
@@ -92,7 +92,7 @@ dependencies:
 - xz
 - zeromq
 - zlib
-- cuda80=1.0=0
+#- cuda80
 - pytorch>=0.2.0
 - torchvision>=0.1.9
 - bcolz
