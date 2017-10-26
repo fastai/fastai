@@ -7,15 +7,15 @@ dependencies:
 - certifi
 - cffi
 - cycler
-- dbus
+#- dbus
 - decorator
 - entrypoints
 - expat
 - fontconfig
 - freetype
 - glib
-- gst-plugins-base
-- gstreamer
+#- gst-plugins-base
+#- gstreamer
 - html5lib
 - icu
 - ipykernel
@@ -38,7 +38,7 @@ dependencies:
 - libpng
 - libsodium
 - libtiff
-- libxcb
+#- libxcb
 - libxml2
 - markupsafe
 - matplotlib
@@ -92,17 +92,17 @@ dependencies:
 - xz
 - zeromq
 - zlib
-- cuda80=1.0=0
-- pytorch=0.2.0=py36h53baedd_4cu80
-- torchvision=0.1.9=py36h7584368_1
+#- cuda80
+- pytorch>=0.2.0
+- torchvision>=0.1.9
+- bcolz
+- prompt_toolkit
 - pip:
-  - bcolz
-  - ipython-genutils
-  - jupyter-client
-  - jupyter-console
-  - jupyter-core
   - opencv-python
-  - prompt-toolkit
-  - torch==0.2.0.post4
-
+  - isoweek
+  - pandas_summary
+  - torchtext
+  - graphviz
+  - sklearn_pandas
+  - feather-format
 
