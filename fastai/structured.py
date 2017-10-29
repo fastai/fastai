@@ -62,7 +62,7 @@ def add_datepart(df, fldname):
     for n in ('Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
             'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
         df[targ_pre+n] = getattr(fld.dt,n.lower())
-    df[targ_pre+'Elapsed'] = (fld - fld.min()).dt.days
+    df[targ_pre+'Elapsed'] = fld.astype(np.int64) // 10**9
     df.drop(fldname, axis=1, inplace=True)
 
 def is_date(x): return np.issubdtype(x.dtype, np.datetime64)
