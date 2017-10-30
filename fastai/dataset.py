@@ -97,7 +97,8 @@ class BaseDataset(Dataset):
 
     def __len__(self): return self.n
 
-    def get(self, tfm, x, y): return (x,y) if tfm is None else tfm(x,y)
+    def get(self, tfm, x, y):
+        with self.lock: return (x,y) if tfm is None else tfm(x,y)
 
     @abstractmethod
     def get_n(self): raise NotImplementedError
