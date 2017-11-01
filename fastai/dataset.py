@@ -285,8 +285,8 @@ class ImageClassifierData(ImageData):
         return self(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='val', test_name=None, num_workers=4):
-        trn,val = [folder_source(path, o) for o in ('train', 'valid')]
+    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=4):
+        trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
         test_fnames = read_dir(path, test_name) if test_name else None
         datasets = self.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
         return self(path, datasets, bs, num_workers, classes=trn[2])
