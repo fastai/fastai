@@ -288,7 +288,7 @@ class ImageClassifierData(ImageData):
         return self(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='val', test_name=None, num_workers=4):
+    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='val', test_name=None, num_workers=8):
         trn,val = [folder_source(path, o) for o in ('train', 'valid')]
         test_fnames = read_dir(path, test_name) if test_name else None
         datasets = self.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
@@ -296,7 +296,7 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_csv(self, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=4):
+               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
