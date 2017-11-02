@@ -28,3 +28,4 @@ else:
     tnrange=trange
     tqdm_notebook=tqdm
 
+cv2.setNumThreads(0)

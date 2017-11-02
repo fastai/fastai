@@ -9,6 +9,7 @@ from .layer_optimizer import *
 from .layers import *
 from .metrics import *
 from .losses import *
+import time
 
 
 class BasicModel():

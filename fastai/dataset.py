@@ -86,7 +86,7 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
 class BaseDataset(Dataset):
     def __init__(self, transform=None):
         self.transform = transform
-        self.lock=threading.Lock()
+        #self.lock=threading.Lock()
         self.n = self.get_n()
         self.c = self.get_c()
         self.sz = self.get_sz()
@@ -98,7 +98,7 @@ class BaseDataset(Dataset):
     def __len__(self): return self.n
 
     def get(self, tfm, x, y):
-        with self.lock: return (x,y) if tfm is None else tfm(x,y)
+        return (x,y) if tfm is None else tfm(x,y)
 
     @abstractmethod
     def get_n(self): raise NotImplementedError
@@ -164,9 +164,11 @@ class ArraysDataset(BaseDataset):
         assert(len(x)==len(y))
         super().__init__(transform)
     def get_x(self, i):
-        with self.lock: return self.x[i]
+        return self.x[i]
+        #with self.lock: return self.x[i]
     def get_y(self, i):
-        with self.lock: return self.y[i]
+        return self.y[i]
+        #with self.lock: return self.y[i]
     def get_n(self): return len(self.y)
     def get_sz(self): return self.x.shape[1]
 

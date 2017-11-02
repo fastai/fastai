@@ -96,7 +96,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
         print(np.round([epoch, avg_loss] + vals, 6))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
-        if stop: return
+        if stop: break
 
 def validate(stepper, dl, metrics):
     loss,res = [],[]
