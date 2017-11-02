@@ -40,9 +40,9 @@ class ConvnetBuilder():
 
         fc_layers = self.get_fc_layers()
         self.n_fc = len(fc_layers)
-        self.fc_model = nn.Sequential(*fc_layers).cuda()
+        self.fc_model = to_gpu(nn.Sequential(*fc_layers))
         apply_init(self.fc_model, kaiming_normal)
-        self.model=nn.Sequential(*(layers+fc_layers)).cuda()
+        self.model = to_gpu(nn.Sequential(*(layers+fc_layers)))
         time.sleep(1)
 
     @property

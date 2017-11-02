@@ -66,12 +66,13 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
                nn.Linear(28*28, 256),
                nn.ReLU(),
                nn.Linear(256, 10)
-           ).cuda()
+           )
+           net = to_gpu(net)
        data (DataModel): see examples of DataModel
            it data loaders: data.trn_dl and data.val_dl
        opt: optimization. Example: opt=optim.Adam(net.parameters())
        epochs(int): number of epochs
-       crit: loss function to optimize. Example: F.cross_entropy 
+       crit: loss function to optimize. Example: F.cross_entropy
     """
     stepper = Stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
