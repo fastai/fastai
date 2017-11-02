@@ -110,7 +110,6 @@ def validate(stepper, dl, metrics):
 def predict(m, dl): return predict_with_targs(m, dl)[0]
 
 def get_prediction(x):
-    time.sleep(random.random()/1000)
     if isinstance(x,(tuple,list)): x=x[0]
     return x.data
 

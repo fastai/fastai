@@ -23,7 +23,6 @@ class ConvnetBuilder():
     }
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0):
-        time.sleep(1)
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
         self.ps = ps or [0.25,0.5]
         self.xtra_fc = xtra_fc or [512]
@@ -43,7 +42,6 @@ class ConvnetBuilder():
         self.fc_model = nn.Sequential(*fc_layers).cuda()
         apply_init(self.fc_model, kaiming_normal)
         self.model=nn.Sequential(*(layers+fc_layers)).cuda()
-        time.sleep(1)
 
     @property
     def name(self): return f'{self.f.__name__}_{self.xtra_cut}'
