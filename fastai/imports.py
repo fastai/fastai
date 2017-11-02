@@ -4,7 +4,7 @@ import random, pandas as pd, pickle, sys, itertools, string, sys, re, datetime
 import seaborn as sns, matplotlib
 from abc import abstractmethod
 from glob import glob, iglob
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from itertools import chain
 from functools import partial
 from collections import Iterable, Counter

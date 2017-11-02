@@ -3,6 +3,7 @@ from .torch_imports import *
 from .core import *
 from .transforms import *
 from .layer_optimizer import *
+from .dataloader import DataLoader
 
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])

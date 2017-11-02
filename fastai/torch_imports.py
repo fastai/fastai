@@ -2,7 +2,7 @@ import torch, torchvision, torchtext
 from torch import nn, cuda, backends, FloatTensor, LongTensor, optim
 import torch.nn.functional as F
 from torch.autograd import Variable
-from torch.utils.data import DataLoader, Dataset, TensorDataset
+from torch.utils.data import Dataset, TensorDataset
 from torch.nn.init import kaiming_uniform, kaiming_normal
 from torchvision.transforms import Compose
 from torchvision.models import resnet18, resnet34, resnet50, resnet101
