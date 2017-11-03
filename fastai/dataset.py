@@ -40,12 +40,14 @@ def read_dir(path, folder):
     return [os.path.relpath(f,path) for f in fnames]
 
 def read_dirs(path, folder):
+    labels, filenames, all_labels = [], [], []
     full_path = os.path.join(path, folder)
-    all_labels = sorted([os.path.basename(os.path.dirname(f))
-                  for f in iglob(f"{full_path}/*/")])
-    fnames = [iglob(f"{full_path}/{d}/*.*") for d in all_labels]
-    pairs = [(os.path.relpath(fn,path), l) for l,f in zip(all_labels, fnames) for fn in f]
-    return list(zip(*pairs))+[all_labels]
+    for label in sorted(os.listdir(full_path)):
+        all_labels.append(label)
+        for fname in os.listdir(os.path.join(full_path, label)):
+            filenames.append(os.path.join(folder, label, fname))
+            labels.append(label)
+    return filenames, labels, all_labels
 
 def n_hot(ids, c):
     res = np.zeros((c,), dtype=np.float32)
@@ -288,8 +290,8 @@ class ImageClassifierData(ImageData):
         return self(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='val', test_name=None, num_workers=8):
-        trn,val = [folder_source(path, o) for o in ('train', 'valid')]
+    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=8):
+        trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
         test_fnames = read_dir(path, test_name) if test_name else None
         datasets = self.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
         return self(path, datasets, bs, num_workers, classes=trn[2])
