@@ -42,7 +42,7 @@ class ColumnarModelData(ModelData):
     def get_learner(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
                     y_range=None, use_bn=False):
         model = MixedInputModel(emb_szs, n_cont, emb_drop, out_sz, szs, drops, y_range, use_bn)
-        return StructuredLearner(self, StructuredModel(model.cuda()), opt_fn=optim.Adam)
+        return StructuredLearner(self, StructuredModel(to_gpu(model)), opt_fn=optim.Adam)
 
 
 def emb_init(x):
@@ -134,7 +134,7 @@ class CollabFilterDataset(Dataset):
 
     def get_model(self, n_factors):
         model = EmbeddingDotBias(n_factors, self.n_users, self.n_items, self.min_score, self.max_score)
-        return CollabFilterModel(model.cuda())
+        return CollabFilterModel(to_gpu(model))
 
     def get_learner(self, n_factors, val_idxs, bs, **kwargs):
         return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors), **kwargs)
