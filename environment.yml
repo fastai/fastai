@@ -101,4 +101,6 @@ dependencies:
   - sklearn_pandas
   - feather-format
   - jupyter_contrib_nbextensions
+  - plotnine
+  - git+https://github.com/SauceCat/PDPbox.git
 
