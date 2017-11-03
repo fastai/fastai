@@ -107,8 +107,8 @@ class TextClassifierData(ModelData):
         return torch.Tensor(np.concatenate([np.zeros((1,self.c)), self.trn_ds.r]))
 
     def get_model(self, f, **kwargs):
-        m = f(self.trn_ds.vocab_size, self.c, **kwargs).cuda()
-        m.r.weight.data = self.r.cuda()
+        m = to_gpu(f(self.trn_ds.vocab_size, self.c, **kwargs))
+        m.r.weight.data = to_gpu(self.r)
         m.r.weight.requires_grad = False
         model = BasicModel(m)
         return BOW_Learner(self, model, metrics=[accuracy_thresh(0.5)], opt_fn=optim.Adam)
@@ -155,7 +155,7 @@ class LanguageModelLoader():
         nb = data.size(0) // self.bs
         data = data[:nb*self.bs]
         data = data.view(self.bs, -1).t().contiguous()
-        return data.cuda()
+        return to_gpu(data)
 
     def get_batch(self, i, seq_len):
         source = self.data
@@ -203,8 +203,8 @@ class LanguageModelData():
                                                (self.trn_ds,self.val_ds,self.test_ds)]
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
-        m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs).cuda()
-        model = SingleModel(m)
+        m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
+        model = SingleModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
 
@@ -246,7 +246,7 @@ class TextData(ModelData):
 
     def get_model(self, opt_fn, max_sl, bptt, emb_sz, n_hid, n_layers, **kwargs):
         m = get_rnn_classifer(max_sl, bptt, self.bs, self.c, self.nt, emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers,
-                              pad_token=self.pad_idx, **kwargs).cuda()
-        model = TextModel(m)
+                              pad_token=self.pad_idx, **kwargs)
+        model = TextModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 

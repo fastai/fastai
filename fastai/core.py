@@ -16,14 +16,20 @@ def T(a):
         return torch.FloatTensor(a.astype(np.float32))
     raise NotImplementedError
 
-def V_(x):  return x.cuda(async=True) if isinstance(x, Variable) else Variable(x.cuda(async=True))
+def V_(x):  return to_gpu(x, async=True) if isinstance(x, Variable) else Variable(to_gpu(x, async=True))
 def V(x):   return [V_(o) for o in x] if isinstance(x,list) else V_(x)
-def VV_(x): return x.cuda(async=True) if isinstance(x, Variable) else Variable(x.cuda(async=True), volatile=True)
+def VV_(x): return to_gpu(x, async=True) if isinstance(x, Variable) else Variable(to_gpu(x, async=True), volatile=True)
 def VV(x):  return [VV_(o) for o in x] if isinstance(x,list) else VV_(x)
 
 def to_np(v):
     if isinstance(v, Variable): v=v.data
     return v.cpu().numpy()
+
+def to_gpu(x, *args, **kwargs):
+    if torch.cuda.is_available():
+        return x.cuda(*args, **kwargs)
+    else:
+        return x
 
 def noop(*args, **kwargs): return
 
@@ -59,4 +65,3 @@ def SGD_Momentum(momentum):
     return lambda *args, **kwargs: optim.SGD(*args, momentum=momentum, **kwargs)
 
 def one_hot(a,c): return np.eye(c)[a]
-
