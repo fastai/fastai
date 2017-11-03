@@ -40,12 +40,18 @@ def read_dir(path, folder):
     return [os.path.relpath(f,path) for f in fnames]
 
 def read_dirs(path, folder):
-    full_path = os.path.join(path, folder)
-    all_labels = sorted([os.path.basename(os.path.dirname(f))
-                  for f in iglob(f"{full_path}/*/")])
-    fnames = [iglob(f"{full_path}/{d}/*.*") for d in all_labels]
-    pairs = [(os.path.relpath(fn,path), l) for l,f in zip(all_labels, fnames) for fn in f]
-    return list(zip(*pairs))+[all_labels]
+    labels = []
+    filenames = []
+    all_labels = []
+    pjoin = os.path.join
+    full_path = pjoin(path, folder)
+    os.chdir(full_path)
+    for label in sorted(iglob('*')):
+        all_labels.append(label)
+        for fname in iglob(pjoin(label, '*.*')):
+            filenames.append(pjoin(folder, fname))
+            labels.append(label)
+    return filenames, labels, all_labels
 
 def n_hot(ids, c):
     res = np.zeros((c,), dtype=np.float32)
