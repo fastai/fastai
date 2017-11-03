@@ -40,16 +40,12 @@ def read_dir(path, folder):
     return [os.path.relpath(f,path) for f in fnames]
 
 def read_dirs(path, folder):
-    labels = []
-    filenames = []
-    all_labels = []
-    pjoin = os.path.join
-    full_path = pjoin(path, folder)
-    os.chdir(full_path)
-    for label in sorted(iglob('*')):
+    labels, filenames, all_labels = [], [], []
+    full_path = os.path.join(path, folder)
+    for label in sorted(os.listdir(full_path)):
         all_labels.append(label)
-        for fname in iglob(pjoin(label, '*.*')):
-            filenames.append(pjoin(folder, fname))
+        for fname in os.listdir(os.path.join(full_path, label)):
+            filenames.append(os.path.join(folder, label, fname))
             labels.append(label)
     return filenames, labels, all_labels
 
