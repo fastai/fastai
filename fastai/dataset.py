@@ -3,6 +3,7 @@ from .torch_imports import *
 from .core import *
 from .transforms import *
 from .layer_optimizer import *
+from .dataloader import DataLoader
 
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
@@ -86,7 +87,7 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
 class BaseDataset(Dataset):
     def __init__(self, transform=None):
         self.transform = transform
-        self.lock=threading.Lock()
+        #self.lock=threading.Lock()
         self.n = self.get_n()
         self.c = self.get_c()
         self.sz = self.get_sz()
@@ -98,7 +99,7 @@ class BaseDataset(Dataset):
     def __len__(self): return self.n
 
     def get(self, tfm, x, y):
-        with self.lock: return (x,y) if tfm is None else tfm(x,y)
+        return (x,y) if tfm is None else tfm(x,y)
 
     @abstractmethod
     def get_n(self): raise NotImplementedError
@@ -164,9 +165,11 @@ class ArraysDataset(BaseDataset):
         assert(len(x)==len(y))
         super().__init__(transform)
     def get_x(self, i):
-        with self.lock: return self.x[i]
+        return self.x[i]
+        #with self.lock: return self.x[i]
     def get_y(self, i):
-        with self.lock: return self.y[i]
+        return self.y[i]
+        #with self.lock: return self.y[i]
     def get_n(self): return len(self.y)
     def get_sz(self): return self.x.shape[1]
 
@@ -285,7 +288,7 @@ class ImageClassifierData(ImageData):
         return self(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=4):
+    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=8):
         trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
         test_fnames = read_dir(path, test_name) if test_name else None
         datasets = self.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
@@ -293,7 +296,7 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_csv(self, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=4):
+               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 

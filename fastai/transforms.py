@@ -496,8 +496,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScaleXY(sz, max_zoom, tfm_y) if max_zoom is not None else ScaleXY(sz, tfm_y)]
     if pad: scale.append(ReflectionPad(pad)) # TODO: fix this one
-    if max_zoom is not None and crop_type is None:
-        crop_type = CropType.RANDOM
+    if max_zoom is not None and crop_type is None: crop_type = CropType.RANDOM
     return Transforms(sz+pad, scale + tfms + [normalizer], denorm, crop_type, tfm_y)
 
 def noop(x): return x

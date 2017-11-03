@@ -54,7 +54,9 @@ def get_nn_mappers(df, cat_vars, contin_vars):
     contin_maps = [([o], StandardScaler()) for o in contin_vars]
     return DataFrameMapper(cat_maps).fit(df), DataFrameMapper(contin_maps).fit(df)
 
-def get_sample(df,n): return df.iloc[np.random.permutation(len(df))[:n]].copy()
+def get_sample(df,n):
+    idxs = sorted(np.random.permutation(len(df)))
+    return df.iloc[idxs[:n]].copy()
 
 def add_datepart(df, fldname):
     fld = df[fldname]
@@ -76,10 +78,14 @@ def apply_cats(df, trn):
         if trn[n].dtype.name=='category':
             df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
 
-def fix_missing(df, col, name):
+def fix_missing(df, col, name, na_dict):
     if is_numeric_dtype(col):
-        if pd.isnull(col).sum(): df[name+'_na'] = pd.isnull(col)
-        df[name] = col.fillna(col.median())
+        if pd.isnull(col).sum() or (name in na_dict):
+            df[name+'_na'] = pd.isnull(col)
+            filler = na_dict[name] if name in na_dict else col.median()
+            df[name] = col.fillna(filler)
+            na_dict[name] = filler
+    return na_dict
 
 def numericalize(df, col, name, max_n_cat):
     if not is_numeric_dtype(col) and ( max_n_cat is None or col.nunique()>max_n_cat):
@@ -92,7 +98,7 @@ def scale_vars(df):
     df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
-def proc_df(df, y_fld, skip_flds=None, do_scale=False,
+def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None):
     if not skip_flds: skip_flds=[]
     if subset: df = get_sample(df,subset)
@@ -101,12 +107,14 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False,
     y = df[y_fld].values
     df.drop(skip_flds+[y_fld], axis=1, inplace=True)
 
-    for n,c in df.items(): fix_missing(df, c, n)
+    if na_dict is None: na_dict = {}
+    for n,c in df.items(): na_dict = fix_missing(df, c, n, na_dict)
     if do_scale: mapper = scale_vars(df)
     for n,c in df.items(): numericalize(df, c, n, max_n_cat)
-    res = [pd.get_dummies(df, dummy_na=True), y]
-    if not do_scale: return res
-    return res + [mapper]
+    res = [pd.get_dummies(df, dummy_na=True), y, na_dict]
+    if do_scale: res = res + [mapper]
+    return res
+
 
 def rf_feat_importance(m, df):
     return pd.DataFrame({'cols':df.columns, 'imp':m.feature_importances_}
