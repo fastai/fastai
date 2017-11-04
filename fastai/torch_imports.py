@@ -1,3 +1,4 @@
+import os
 import torch, torchvision, torchtext
 from torch import nn, cuda, backends, FloatTensor, LongTensor, optim
 import torch.nn.functional as F
@@ -21,7 +22,8 @@ def load_model(m, p): m.load_state_dict(torch.load(p))
 
 def load_pre(pre, f, fn):
     m = f()
-    if pre: load_model(m, f'wgts/{fn}.pth')
+    path = os.path.dirname(__file__)
+    if pre: load_model(m, f'{path}/weights/{fn}.pth')
     return m
 
 def inception_4(pre):

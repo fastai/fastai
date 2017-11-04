@@ -16,11 +16,11 @@ def predict_to_bcolz(m, gen, arr, workers=4):
 
 def num_features(m):
     c=children(m)
-    if hasattr(c[-1], 'num_features'): return c[-1].num_features
-    elif hasattr(c[-1], 'out_features'): return c[-1].out_features
-    if hasattr(c[-2], 'num_features'): return c[-2].num_features
-    elif hasattr(c[-2], 'out_features'): return c[-2].out_features
-    return num_features(children(m)[-1])
+    if len(c)==0: return None
+    for l in reversed(c):
+        if hasattr(l, 'num_features'): return l.num_features
+        res = num_features(l)
+        if res is not None: return res
 
 
 class Stepper():

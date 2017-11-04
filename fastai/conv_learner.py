@@ -3,6 +3,12 @@ from .layers import *
 from .learner import *
 from .initializers import *
 
+model_meta = {
+    resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6],
+    resnext50:[8,6], resnext101:[8,6], resnext101_64:[8,6],
+    wrn:[8,6], dn121:[10,6], inceptionresnet_2:[-2,9], inception_4:[-1,8]
+}
+model_features = {inception_4: 3072, dn121: 1024}
 
 class ConvnetBuilder():
     """Class representing a convolutional network.
@@ -17,20 +23,16 @@ class ConvnetBuilder():
         xtra_fc (list of ints): list of hidden layers with # hidden neurons
         xtra_cut (int): # layers earlier than default to cut the model, detault is 0
     """
-    model_meta = {
-        resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], resnext50:[8,6],
-        wrn:[8,6], dn121:[10,6], inceptionresnet_2:[5,9], inception_4:[19,8]
-    }
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
         self.ps = ps or [0.25,0.5]
         self.xtra_fc = xtra_fc or [512]
 
-        cut,self.lr_cut = self.model_meta[self.f]
+        cut,self.lr_cut = model_meta[f]
         cut-=xtra_cut
-        layers = cut_model(self.f(True), cut)
-        self.nf=num_features(layers[-1])*2
+        layers = cut_model(f(True), cut)
+        self.nf = model_features[f] if f in model_features else (num_features(layers[-1])*2)
         layers += [AdaptiveConcatPool2d(), Flatten()]
         self.top_model = nn.Sequential(*layers)
 

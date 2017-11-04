@@ -102,5 +102,7 @@ dependencies:
   - feather-format
   - jupyter_contrib_nbextensions
   - plotnine
+  - docrepr
+  - awscli
   - git+https://github.com/SauceCat/PDPbox.git
 
