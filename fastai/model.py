@@ -88,13 +88,14 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
             loss = stepper.step(V(x),V(y))
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
-            t.set_postfix(loss=debias_loss)
+            t.set_postfix(train_loss=debias_loss)
             stop=False
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
             if stop: return
 
         vals = validate(stepper, data.val_dl, metrics)
-        print(np.round([epoch, avg_loss] + vals, 6))
+        print("epoch: {:4d}, train_loss: {:10.6f}, val_loss: {:10.6f}, val_acc: {:10.6f}".\
+              format(epoch, avg_loss, vals[0], vals[1]))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
