@@ -108,11 +108,11 @@ def validate(stepper, dl, metrics):
         res.append([f(to_np(preds),to_np(y)) for f in metrics])
     return [np.mean(loss)] + list(np.mean(np.stack(res),0))
 
-def predict(m, dl): return predict_with_targs(m, dl)[0]
-
 def get_prediction(x):
     if isinstance(x,(tuple,list)): x=x[0]
     return x.data
+
+def predict(m, dl): return predict_with_targs(m, dl)[0]
 
 def predict_with_targs(m, dl):
     m.eval()
@@ -120,4 +120,43 @@ def predict_with_targs(m, dl):
     preda,targa = zip(*[(get_prediction(m(*VV(x))),y)
                         for *x,y in iter(dl)])
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
+
+# From https://github.com/ncullen93/torchsample
+def model_summary(m, input_size):
+    def register_hook(module):
+        def hook(module, input, output):
+            class_name = str(module.__class__).split('.')[-1].split("'")[0]
+            module_idx = len(summary)
+
+            m_key = '%s-%i' % (class_name, module_idx+1)
+            summary[m_key] = OrderedDict()
+            summary[m_key]['input_shape'] = list(input[0].size())
+            summary[m_key]['input_shape'][0] = -1
+            summary[m_key]['output_shape'] = list(output.size())
+            summary[m_key]['output_shape'][0] = -1
+
+            params = 0
+            if hasattr(module, 'weight'):
+                params += torch.prod(torch.LongTensor(list(module.weight.size())))
+                summary[m_key]['trainable'] = module.weight.requires_grad
+            if hasattr(module, 'bias') and module.bias is not None:
+                params +=  torch.prod(torch.LongTensor(list(module.bias.size())))
+            summary[m_key]['nb_params'] = params
+
+        if (not isinstance(module, nn.Sequential) and
+           not isinstance(module, nn.ModuleList) and
+           not (module == m)):
+            hooks.append(module.register_forward_hook(hook))
+
+    summary = OrderedDict()
+    hooks = []
+    m.apply(register_hook)
+
+    if isinstance(input_size[0], (list, tuple)):
+        x = [Variable(torch.rand(1,*in_size)).cuda() for in_size in input_size]
+    else: x = [Variable(torch.rand(1,*input_size)).cuda()]
+    m(*x)
+
+    for h in hooks: h.remove()
+    return summary
 

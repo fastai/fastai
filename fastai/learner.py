@@ -45,6 +45,8 @@ class Learner():
     @property
     def data(self): return self.data_
 
+    def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
+
     def freeze_to(self, n):
         c=self.children
         for l in c:     set_trainable(l, False)
