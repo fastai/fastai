@@ -104,5 +104,6 @@ dependencies:
   - plotnine
   - docrepr
   - awscli
+  - kaggle-cli
   - git+https://github.com/SauceCat/PDPbox.git
 
