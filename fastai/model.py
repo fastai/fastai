@@ -3,7 +3,9 @@ from .torch_imports import *
 from .core import *
 from .layer_optimizer import *
 
-def cut_model(m, cut): return list(m.children())[:cut]
+def cut_model(m, cut):
+    c = list(m.children())
+    return c[:cut] if cut else c
 
 def predict_to_bcolz(m, gen, arr, workers=4):
     lock=threading.Lock()

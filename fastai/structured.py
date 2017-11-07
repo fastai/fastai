@@ -58,14 +58,14 @@ def get_sample(df,n):
     idxs = sorted(np.random.permutation(len(df)))
     return df.iloc[idxs[:n]].copy()
 
-def add_datepart(df, fldname):
+def add_datepart(df, fldname, drop=True):
     fld = df[fldname]
     targ_pre = re.sub('[Dd]ate$', '', fldname)
     for n in ('Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
             'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
         df[targ_pre+n] = getattr(fld.dt,n.lower())
     df[targ_pre+'Elapsed'] = fld.astype(np.int64) // 10**9
-    df.drop(fldname, axis=1, inplace=True)
+    if drop: df.drop(fldname, axis=1, inplace=True)
 
 def is_date(x): return np.issubdtype(x.dtype, np.datetime64)
 

@@ -34,3 +34,7 @@ def resnext101(pre): return load_pre(pre, resnext_101_32x4d, 'resnext_101_32x4d'
 def resnext101_64(pre): return load_pre(pre, resnext_101_64x4d, 'resnext_101_64x4d')
 def wrn(pre): return load_pre(pre, wrn_50_2f, 'wrn_50_2f')
 def dn121(pre): return children(densenet121(pre))[0]
+def dn161(pre): return children(densenet161(pre))[0]
+def dn169(pre): return children(densenet169(pre))[0]
+def dn201(pre): return children(densenet201(pre))[0]
+

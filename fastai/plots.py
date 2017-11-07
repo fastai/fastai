@@ -1,5 +1,7 @@
 from .imports import *
 from .torch_imports import *
+from sklearn.metrics import confusion_matrix
+
 
 def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None, maintitle=None):
     if type(ims[0]) is np.ndarray:
@@ -61,3 +63,27 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
+
+def plots_raw(ims, figsize=(12,6), rows=1, titles=None):
+    f = plt.figure(figsize=figsize)
+    for i in range(len(ims)):
+        sp = f.add_subplot(rows, len(ims)//rows, i+1)
+        sp.axis('Off')
+        if titles is not None: sp.set_title(titles[i], fontsize=16)
+        plt.imshow(ims[i])
+
+def load_img_id(ds, idx, path): return np.array(PIL.Image.open(path+ds.fnames[idx]))
+
+def plot_val_with_title(idxs, ds, probs, path):
+    imgs = [load_img_id(ds,x,path) for x in idxs]
+    title_probs = [probs[x] for x in idxs]
+    return plots_raw(imgs, rows=1, titles=title_probs, figsize=(16,8))
+
+def most_by_mask(mask, mult, probs):
+    idxs = np.where(mask)[0]
+    return idxs[np.argsort(mult * probs[idxs])[:4]]
+
+def most_by_incorrect(y, is_correct, preds, acts):
+    mult = -1 if (y==1)==is_correct else 1
+    return most_by_mask((preds == acts)==is_correct & (acts == y), mult)
+

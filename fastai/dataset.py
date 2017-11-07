@@ -203,6 +203,8 @@ class ModelData():
     @property
     def val_ds(self): return self.val_dl.dataset
     @property
+    def test_ds(self): return self.test_dl.dataset
+    @property
     def trn_y(self): return self.trn_ds.y
     @property
     def val_y(self): return self.val_ds.y
