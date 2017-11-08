@@ -7,15 +7,16 @@ model_meta = {
     resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6],
     resnext50:[8,6], resnext101:[8,6], resnext101_64:[8,6],
     wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,8],
-    dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
+    dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6], vgg_surrogate:[31,16]
 }
-model_features = {inception_4: 3072, dn121: 1024, dn161: 4416}
+model_features = {inception_4: 3072, dn121: 1024, dn161: 4416,\
+                  vgg_surrogate:1024}
 
 class ConvnetBuilder():
     """Class representing a convolutional network.
 
     Arguments:
-        f: a model creation function
+        f: a model creation function (e.g resnet18, wrn, vgg_surrogate etc.)
         c (int): size of the last layer
         is_multi (bool): is multilabel classification?
             (def here http://scikit-learn.org/stable/modules/multiclass.html)
