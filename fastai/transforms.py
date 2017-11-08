@@ -7,27 +7,22 @@ def preprocess_imagenet(x): return x[..., ::-1] - imagenet_mean
 def preprocess_scale(x): return ((x/255.)-0.5)*2
 
 def scale_min(im, targ):
-    """ Scales the image so that the smallest size targ.
+    """ Scales the image so that the smallest axis is of size targ.
 
     Arguments:
-        im (np array): numpy array image
+        im (array): image
         targ (int): target size
     """
-    r,c = im.shape[0], im.shape[1]
+    r,c = im.size
     ratio = targ/min(r,c)
-    sz = (scale_to(c, ratio, targ), scale_to(r, ratio, targ))
-    return cv2.resize(im, sz)
-
-def zoom_cv(x,z):
-    if z==0: return x
-    rows=x.shape[0]; cols=x.shape[1]
-    M = cv2.getRotationMatrix2D((cols/2,rows/2),0,z+1.)
-    return cv2.warpAffine(x,M,(cols,rows))
+    sz = (scale_to(r, ratio, targ), scale_to(c, ratio, targ))
+    return im.resize(sz, Image.BILINEAR)
 
 def stretch_cv(x,sr,sc):
     if sr==0 and sc==0: return x
     r=x.shape[0]; c=x.shape[1]
-    x = cv2.resize(x, None, fx=sr+1, fy=sc+1)
+    assert(False) # Need to implement non opencv version
+    #x = cv2.resize(x, None, fx=sr+1, fy=sc+1)
     nr=x.shape[0]; nc=x.shape[1]
     cr = (nr-r)//2; cc = (nc-c)//2
     return x[cr:r+cr, cc:c+cc]
@@ -37,26 +32,27 @@ def dihedral(x, dih):
     return x if self.dih<4 else np.fliplr(x)
 
 def lighting(im, b, c):
-    if b==0 and c==1: return im
-    mu = np.average(im)
-    return np.clip((im-mu)*c+mu+b,0.,1.).astype(np.float32)
+    if b==1 and c==1: return im
+    im = ImageEnhance.Brightness(im).enhance(b)
+    im = ImageEnhance.Contrast(im).enhance(c)
+    return im
 
-def rotate_cv(img, deg, mode=cv2.BORDER_REFLECT, flags=cv2.INTER_LINEAR):
-    """ Rotates and image by degree=deg with leaving black borders.
+def rotate(im, deg):
+    """ Rotates and image by deg degrees,
+    and uses existing image for corner fill.
 
-    This function is used to rotated the bounding box pixels.
     Arguments:
         deg (float): degree to rotate.
     """
-    rows=img.shape[0]; cols=img.shape[1]
-    M = cv2.getRotationMatrix2D((cols/2,rows/2),deg,1)
-    return cv2.warpAffine(img,M,(cols,rows), borderMode=mode, flags=flags)
+    im2 = im.convert("RGBA").rotate(deg, resample=Image.BILINEAR)
+    im.paste(im2, im2)
+    return im
 
 def no_crop(im, min_sz=None):
     """ Returns a squared resized image """
-    r,c = im.shape[0], im.shape[1]
+    r,c = im.size
     if min_sz is None: min_sz = min(r,c)
-    return cv2.resize(im, (min_sz, min_sz))
+    return im.resize((min_sz, min_sz), Image.BILINEAR)
 
 def center_crop(im, min_sz=None):
     """ Returns a center crop of an image"""
@@ -73,7 +69,7 @@ def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
 def det_dihedral(dih): return lambda x: dihedral(dih)
 def det_stretch(sr, sc): return lambda x: stretch_cv(x, sr, sc)
 def det_lighting(b, c): return lambda x: lighting(x, b, c)
-def det_rotate(deg): return lambda x: rotate_cv(x, deg)
+def det_rotate(deg): return lambda x: rotate(x, deg)
 def det_zoom(zoom): return lambda x: zoom_cv(x, zoom)
 
 def rand0(s): return random.random()*(s*2)-s
@@ -94,13 +90,13 @@ class RandomScale():
 
 
 class RandomRotate():
-    def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT):
-        self.deg,self.mode,self.p = deg,mode,p
+    def __init__(self, deg, p=0.75):
+        self.deg,self.p = deg,p
     def __call__(self, x, y=None):
         deg = rand0(self.deg)
         if random.random()<self.p:
-            x = rotate_cv(x, deg, self.mode)
-            if y is not None: y = rotate_cv(y, deg, self.mode)
+            x = rotate(x, deg)
+            if y is not None: y = rotate(y, deg)
         return x if y is None else (x,y)
 
 
@@ -127,17 +123,19 @@ class Normalize():
     def __init__(self, m, s):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
-    def __call__(self, x, y): return (x-self.m)/self.s, y
+    def __call__(self, x, y):
+        x = np.array(x.convert('RGB'), dtype=np.float32)/255.
+        return (x-self.m)/self.s, y
 
 
 class RandomRotateZoom():
-    def __init__(self, deg, zoom, stretch, mode=cv2.BORDER_REFLECT):
-        self.deg,self.zoom,self.stretch,self.mode = deg,zoom,stretch,mode
+    def __init__(self, deg, zoom, stretch):
+        self.deg,self.zoom,self.stretch = deg,zoom,stretch
 
     def __call__(self, x, y=None):
         choice = random.randint(0,3)
         if choice==0: pass
-        elif choice==1: x = rotate_cv(x, rand0(self.deg), self.mode)
+        elif choice==1: x = rotate(x, rand0(self.deg))
         elif choice==2: x = zoom_cv(x, random.random()*self.zoom)
         elif choice==3:
             str_choice = random.randint(0,1)
@@ -149,11 +147,12 @@ class RandomRotateZoom():
 
 
 class ReflectionPad():
-    def __init__(self, pad, mode=cv2.BORDER_REFLECT):
-        self.pad,self.mode = pad,mode
+    def __init__(self, pad):
+        self.pad= pad
 
     def add_pad(self, img):
-        return cv2.copyMakeBorder(img, self.pad, self.pad, self.pad, self.pad, self.mode)
+        assert(False) # Need to implement non opencv version
+        #return cv2.copyMakeBorder(img, self.pad, self.pad, self.pad, self.pad, self.mode)
 
     def __call__(self, x, y=None):
         x = self.add_pad(x)
@@ -375,13 +374,13 @@ def random_px_rect(y, x):
     """ Returns a 2D image of the size x with random points in a square box.
 
     Arguments:
-        y (numpy array): defines a bounding box (arround a fish) for the
+        y (array): defines a bounding box (arround a fish) for the
             fishery datset. Contains the coordinates of the bounding box corners
             y = [upper_row, left_col, lower_row, right_col]
-        x (numpy array): image (with the target fish)
+        x (array): image (with the target fish)
 
     Returns:
-        Y (numpy array): A 2D numpy array of size (x.shape[0], x.shape[1]) with pixes
+        Y (array): A 2D array of size (x.shape[0], x.shape[1]) with pixes
             on corners of the bounding box and random points in the boundary of the box.
     """
     rows0 = np.array([y[0], y[0], y[2], y[2]])
@@ -408,8 +407,8 @@ class RandomRotateXY(Transform):
         mode: type of border
         tfm_y (TfmType): type of y transform
     """
-    def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
-        self.deg,self.mode,self.p = deg,mode,p
+    def __init__(self, deg, p=0.75, tfm_y=TfmType.NO):
+        self.deg,self.p = deg,p
         self.tfm_y=tfm_y
 
     def set_state(self):
@@ -423,11 +422,11 @@ class RandomRotateXY(Transform):
         return x, y
 
     def do_transform(self, x):
-        if self.rp: x = rotate_cv(x, self.rdeg, mode=self.mode)
+        if self.rp: x = rotate(x, self.rdeg)
         return x
 
     def do_transform_y(self, y):
-        if self.rp: y = rotate_cv(y, self.rdeg, flags=cv2.INTER_LINEAR)
+        if self.rp: y = rotate(y, self.rdeg)
         return y
 
 
@@ -437,8 +436,9 @@ class RandomDihedralXY(CoordTransform):
         self.do_flip = random.random()<0.5
 
     def do_transform(self, x):
-        x = np.rot90(x, self.rot_times)
-        return np.fliplr(x).copy() if self.do_flip else x
+        rots = [Image.ROTATE_90, Image.ROTATE_180, Image.ROTATE_270]
+        if self.rot_times>0: x = x.transpose(rots[self.rot_times-1])
+        return x.transpose(Image.FLIP_LEFT_RIGHT) if self.do_flip else x
 
 
 class RandomFlipXY(CoordTransform):
@@ -446,7 +446,7 @@ class RandomFlipXY(CoordTransform):
         self.do_flip = random.random()<0.5
 
     def do_transform(self, x):
-        return np.fliplr(x).copy() if self.do_flip else x
+        return x.transpose(Image.FLIP_LEFT_RIGHT) if self.do_flip else x
 
 
 class RandomLightingXY(Transform):
@@ -455,13 +455,12 @@ class RandomLightingXY(Transform):
         self.b,self.c = b,c
 
     def set_state(self):
-        self.b_rand = b = rand0(self.b)
-        self.c_rand = b = rand0(self.c)
+        self.b_rand = rand0(self.b)
+        self.c_rand = rand0(self.c)
 
     def do_transform(self, x):
-        b = self.b
-        c = self.c
-        c = -1/(c-1) if c<0 else c+1
+        b = self.b_rand+1
+        c = self.c_rand+1
         x = lighting(x, b, c)
         return x
 
@@ -489,7 +488,6 @@ class Transforms():
     def __call__(self, im, y): return compose(im, y, self.tfms)
 
 
-# TODO: Here is a problem tfms have to have the "right" type (tfm_y)
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
     if tfm_y is None: tfm_y=TfmType.NO
     if tfms is None: tfms=[]

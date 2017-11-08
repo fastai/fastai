@@ -131,4 +131,4 @@ class ConvLearner(Learner):
                 (act, self.data.trn_y), (val_act, self.data.val_y), self.data.bs, classes=self.data.classes,
                 test = test_act if self.data.test_dl else None, num_workers=8)
 
-    def freeze(self): self.freeze_to(-self.models.n_fc)
+    def freeze(self): self.freeze_to(-1)
