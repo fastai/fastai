@@ -6,7 +6,7 @@ from torch.autograd import Variable
 from torch.utils.data import Dataset, TensorDataset
 from torch.nn.init import kaiming_uniform, kaiming_normal
 from torchvision.transforms import Compose
-from torchvision.models import resnet18, resnet34, resnet50, resnet101
+from torchvision.models import resnet18, resnet34, resnet50, resnet101, vgg16
 from torchvision.models import densenet121, densenet161, densenet169, densenet201
 
 from .models.resnext_50_32x4d import resnext_50_32x4d
@@ -37,4 +37,29 @@ def dn121(pre): return children(densenet121(pre))[0]
 def dn161(pre): return children(densenet161(pre))[0]
 def dn169(pre): return children(densenet169(pre))[0]
 def dn201(pre): return children(densenet201(pre))[0]
+
+def vgg_surrogate(pretrained=True):
+    '''
+    Method returns a surrogate version of the VGG
+    where all the layers are initialized as a simple
+    sequence of constituent layers. The pytorch out-
+    of-the-box vgg16 model comes as nested Sequential
+    models of the convolution layers and fully-connected
+    layers respectively. Working with the below makes
+    it much easier to manipulate the independent layers,
+    as we do it in the ConvnetBuilder class.
+    :param pretrained:
+    :return:
+    '''
+    vgg = vgg16(pretrained=pretrained)
+
+    surrogateList = []
+
+    for layer in list(vgg.children())[0]:
+        surrogateList.append(layer)
+
+    for layer in list(vgg.children())[1]:
+        surrogateList.append(layer)
+
+    return nn.Sequential(*surrogateList)
 

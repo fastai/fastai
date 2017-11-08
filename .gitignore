@@ -103,3 +103,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+courses/dl1/Untitled*
+courses/dl1/test_debug.py
+
