@@ -4,7 +4,7 @@ from .learner import *
 from .initializers import *
 
 model_meta = {
-    resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6],
+    resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], vgg16: [0,22],
     resnext50:[8,6], resnext101:[8,6], resnext101_64:[8,6],
     wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,8],
     dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
@@ -15,7 +15,7 @@ class ConvnetBuilder():
     """Class representing a convolutional network.
 
     Arguments:
-        f: a model creation function
+        f: a model creation function (e.g. resnet34, vgg16, etc)
         c (int): size of the last layer
         is_multi (bool): is multilabel classification?
             (def here http://scikit-learn.org/stable/modules/multiclass.html)
@@ -33,7 +33,7 @@ class ConvnetBuilder():
         cut,self.lr_cut = model_meta[f]
         cut-=xtra_cut
         layers = cut_model(f(True), cut)
-        self.nf = model_features[f] if f in model_features else (num_features(layers[-1])*2)
+        self.nf = model_features[f] if f in model_features else (num_features(layers)*2)
         layers += [AdaptiveConcatPool2d(), Flatten()]
         self.top_model = nn.Sequential(*layers)
 
