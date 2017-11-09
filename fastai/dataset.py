@@ -288,17 +288,17 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_arrays(self, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
-        """ Read in images that are given as numpy arrays
+        """ Read in images and their labels given as numpy arrays
 
         Arguments:
             path: a root path of the data (used for storing trained models, precomputed values, etc)
-            trn: a tuple of training data matrix and target label/classification array (`trn=(x,y)` where `x` has the
+            trn: a tuple of training data matrix and target label/classification array (e.g. `trn=(x,y)` where `x` has the
                 shape of `(5000, 784)` and `y` has the shape of `(5000,)`)
             val: a tuple of validation data matrix and target label/classification array.
             bs: batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
             classes: TODO
-            num_workers: TODO
+            num_workers: a number of workers
             test: a matrix of test data (the shape should match `trn[0]`)
 
         Returns:
@@ -312,7 +312,7 @@ class ImageClassifierData(ImageData):
         """ Read in images and their labels given as sub-folder names
 
         Arguments:
-            path: a root path of the data
+            path: a root path of the data (used for storing trained models, precomputed values, etc)
             bs: batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
             trn_name: a name of the folder that contains training images.
@@ -337,7 +337,7 @@ class ImageClassifierData(ImageData):
         sub-directories with label names.
 
         Arguments:
-            path: a root path of the data.
+            path: a root path of the data (used for storing trained models, precomputed values, etc)
             folder: a name of the folder in which training images are contained.
             csv_fname: a name of the CSV file which contains target labels.
             bs: batch size
