@@ -277,7 +277,7 @@ class ImageClassifierData(ImageData):
             fn(trn[0], trn[1], tfms[1], **kwargs), # fix
             fn(val[0], val[1], tfms[0], **kwargs)  # aug
         ]
-        if test:
+        if test is not None:
             test_lbls = np.zeros((len(test),1))
             res += [
                 fn(test, test_lbls, tfms[1], **kwargs), # test

@@ -6,7 +6,7 @@ from .initializers import *
 model_meta = {
     resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], vgg16: [0,22],
     resnext50:[8,6], resnext101:[8,6], resnext101_64:[8,6],
-    wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,8],
+    wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,9],
     dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
 }
 model_features = {inception_4: 3072, dn121: 1024, dn161: 4416}
