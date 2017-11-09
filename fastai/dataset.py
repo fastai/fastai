@@ -269,8 +269,8 @@ class ImageClassifierData(ImageData):
     @property
     def is_multi(self): return self.trn_dl.dataset.is_multi
 
-    @classmethod
-    def get_ds(self, fn, trn, val, tfms, test=None, **kwargs):
+    @staticmethod
+    def get_ds(fn, trn, val, tfms, test=None, **kwargs):
         res = [
             fn(trn[0], trn[1], tfms[0], **kwargs), # train
             fn(val[0], val[1], tfms[1], **kwargs), # val
