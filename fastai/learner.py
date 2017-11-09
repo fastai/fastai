@@ -32,8 +32,6 @@ class Learner():
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn,self.crit = None,None,None
 
-    #def num_features(self): return num_features(self.model)
-
     def __getitem__(self,i): return self.children[i]
 
     @property
@@ -47,8 +45,14 @@ class Learner():
 
     def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
 
+    def set_bn_freeze(self, m, do_freeze):
+        if hasattr(m, 'running_mean'): m.bn_freeze = do_freeze
+
+    def bn_freeze(self, do_freeze):
+        apply_leaf(self.model, lambda m: self.set_bn_freeze(m, do_freeze))
+
     def freeze_to(self, n):
-        c=self.children
+        c=self.get_layer_groups()
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 

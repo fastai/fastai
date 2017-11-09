@@ -54,7 +54,7 @@ def set_trainable_attr(m,b):
 
 def apply_leaf(m, f):
     c = children(m)
-    f(m)
+    if isinstance(m, nn.Module): f(m)
     if len(c)>0:
         for l in c: apply_leaf(l,f)
 
