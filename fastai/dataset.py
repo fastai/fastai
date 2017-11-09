@@ -3,7 +3,7 @@ from .torch_imports import *
 from .core import *
 from .transforms import *
 from .layer_optimizer import *
-from .dataloader import DataLoader
+#from .dataloader import DataLoader
 
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
@@ -19,12 +19,12 @@ def get_cv_idxs(n, cv_idx=4, val_pct=0.2, seed=42):
 def resize_img(fname, targ, path, new_path):
     dest = os.path.join(path,new_path,str(targ),fname)
     if os.path.exists(dest): return
-    im = PIL.Image.open(os.path.join(path, fname)).convert('RGB')
+    im = Image.open(os.path.join(path, fname)).convert('RGB')
     r,c = im.size
     ratio = targ/min(r,c)
     sz = (scale_to(r, ratio, targ), scale_to(c, ratio, targ))
     os.makedirs(os.path.split(dest)[0], exist_ok=True)
-    im.resize(sz, PIL.Image.LINEAR).save(dest)
+    im.resize(sz, Image.LINEAR).save(dest)
 
 def resize_imgs(fnames, targ, path, new_path):
     if not os.path.exists(os.path.join(path,new_path,str(targ),fnames[0])):
@@ -125,13 +125,13 @@ class FilesDataset(BaseDataset):
     def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
     def get_x(self, i):
-        im = PIL.Image.open(os.path.join(self.path, self.fnames[i])).convert('RGB')
-        return np.array(im, dtype=np.float32)/255.
+        return Image.open(os.path.join(self.path, self.fnames[i]))
     def resize_imgs(self, targ, new_path):
         dest = resize_imgs(self.fnames, targ, self.path, new_path)
         return self.__class__(self.fnames, self.y, self.transform, dest)
+
     def denorm(self,arr):
-        """Denormalizing dataset.
+        """Reverse the normalization done to a batch of images.
 
         Arguments:
             arr: of shape/size (N,3,sz,sz)
