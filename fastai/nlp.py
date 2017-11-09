@@ -171,11 +171,6 @@ class RNN_Learner(Learner):
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))
 
-    def freeze_to(self, n):
-        c=self.get_layer_groups()
-        for l in c:     set_trainable(l, False)
-        for l in c[n:]: set_trainable(l, True)
-
 
 class ConcatTextDataset(torchtext.data.Dataset):
     def __init__(self, path, text_field, newline_eos=True, **kwargs):

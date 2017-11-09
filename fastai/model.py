@@ -53,9 +53,9 @@ class Stepper():
         if isinstance(preds,(tuple,list)): preds=preds[0]
         return preds, self.crit(preds,y)
 
-
 def set_train_mode(m):
-    if hasattr(m, 'running_mean') and not (hasattr(m,'trainable') and m.trainable): m.eval()
+    if (hasattr(m, 'running_mean') and
+        (getattr(m,'bn_freeze',False) or not getattr(m,'trainable',False))): m.eval()
     else: m.train()
 
 
@@ -63,16 +63,10 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     """ Fits a model
 
     Arguments:
-       model (model):example:
-           net = nn.Sequential(
-               nn.Linear(28*28, 256),
-               nn.ReLU(),
-               nn.Linear(256, 10)
-           )
+       model (model): any pytorch module
            net = to_gpu(net)
-       data (DataModel): see examples of DataModel
-           it data loaders: data.trn_dl and data.val_dl
-       opt: optimization. Example: opt=optim.Adam(net.parameters())
+       data (ModelData): see ModelData class and subclasses
+       opt: optimizer. Example: opt=optim.Adam(net.parameters())
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """

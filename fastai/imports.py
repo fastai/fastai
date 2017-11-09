@@ -1,5 +1,5 @@
 from IPython.lib.deepreload import reload as dreload
-import PIL, os, numpy as np, math, collections, cv2, threading, json, bcolz, random, scipy
+import PIL, os, numpy as np, math, collections, threading, json, bcolz, random, scipy
 import random, pandas as pd, pickle, sys, itertools, string, sys, re, datetime, time
 import seaborn as sns, matplotlib
 from abc import abstractmethod
@@ -11,6 +11,7 @@ from collections import Iterable, Counter, OrderedDict
 from isoweek import Week
 from pandas_summary import DataFrameSummary
 from IPython.lib.display import FileLink
+from PIL import Image, ImageEnhance
 
 from matplotlib import pyplot as plt, rcParams, animation
 from ipywidgets import interact, interactive, fixed, widgets
@@ -29,5 +30,5 @@ else:
     tnrange=trange
     tqdm_notebook=tqdm
 
-cv2.setNumThreads(0)
+#cv2.setNumThreads(0)
 
