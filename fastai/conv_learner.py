@@ -86,9 +86,9 @@ class ConvLearner(Learner):
         self.precompute = precompute
 
     @classmethod
-    def pretrained(self, f, data, ps=None, xtra_fc=None, xtra_cut=0, **kwargs):
+    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, **kwargs):
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg, ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut)
-        return self(data, models, **kwargs)
+        return cls(data, models, **kwargs)
 
     @property
     def model(self): return self.models.fc_model if self.precompute else self.models.model
