@@ -105,9 +105,10 @@ class Learner():
          until the loss starts decreasing.
 
         Args:
-            start_lr (float): The starting learning rate
-            end_lr (float): The maximum learning rate to try.
-            wds (iterable or float): TO DO!
+            start_lr (float/numpy array) : Passing in a numpy array allows you 
+                to specify learning rates for a learner's layer_groups
+            end_lr (float) : The maximum learning rate to try.
+            wds (iterable/float)
 
         Examples:
             As training moves us closer to the optimal weights for a model,
@@ -116,6 +117,9 @@ class Learner():
             1000x smaller than the model's current learning rate as such:
 
             >> learn.lr_find(lr/1000)
+
+            >> lrs = np.array([ 1e-4, 1e-3, 1e-2 ])
+            >> learn.lr_find(lrs / 1000)
 
         Notes:
             lr_find() may finish before going through each batch of examples if
