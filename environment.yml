@@ -1,8 +1,10 @@
 name: fastai
 channels:
+- fastai
 - soumith
 - defaults
 dependencies:
+- pillow
 - bleach
 - certifi
 - cffi

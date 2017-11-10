@@ -37,13 +37,15 @@ def lighting(im, b, c):
     im = ImageEnhance.Contrast(im).enhance(c)
     return im
 
-def rotate(im, deg):
+def rotate(im, deg, black_corners=False):
     """ Rotates and image by deg degrees,
     and uses existing image for corner fill.
 
     Arguments:
         deg (float): degree to rotate.
     """
+    if black_corners:
+        return im.rotate(deg, resample=Image.BILINEAR)
     im2 = im.convert("RGBA").rotate(deg, resample=Image.BILINEAR)
     im.paste(im2, im2)
     return im

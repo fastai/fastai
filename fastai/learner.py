@@ -109,6 +109,8 @@ class Learner():
         dl = self.data.test_dl if is_test else self.data.val_dl
         return predict_with_targs(self.model, dl)
 
+    def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
+
     def TTA(self, n_aug=4, is_test=False):
         dl1 = self.data.test_dl     if is_test else self.data.val_dl
         dl2 = self.data.test_aug_dl if is_test else self.data.aug_dl
