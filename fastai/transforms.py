@@ -58,7 +58,7 @@ def no_crop(im, min_sz=None):
 
 def center_crop(im, min_sz=None):
     """ Returns a center crop of an image"""
-    r,c = im.shape[0], im.shape[1]
+    r,c = im.size
     if min_sz is None: min_sz = min(r,c)
     start_r = math.ceil((r-min_sz)/2)
     start_c = math.ceil((c-min_sz)/2)
@@ -66,7 +66,7 @@ def center_crop(im, min_sz=None):
 
 def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
 
-def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
+def crop(im, r, c, sz): return im.crop((r, c, r+sz, c+sz))
 
 def det_dihedral(dih): return lambda x: dihedral(dih)
 def det_stretch(sr, sc): return lambda x: stretch_cv(x, sr, sc)
@@ -184,7 +184,7 @@ def RandomFlip(): return lambda x: x if random.random()<0.5 else np.fliplr(x).co
 def channel_dim(x, y): return np.rollaxis(x, 2), y
 
 def to_bb(YY, y):
-    (rows, cols) = np.nonzero(YY)
+    (cols, rows) = np.nonzero(YY)
     # return 0s when the fish has been cropped
     if rows.shape[0] == 0:
         #TODO: log this somewhere
@@ -194,7 +194,7 @@ def to_bb(YY, y):
     left_col = np.min(cols)
     bottom_row = np.max(rows)
     right_col = np.max(cols)
-    return np.array([top_row, left_col, bottom_row, right_col])
+    return np.array([left_col, top_row, right_col, bottom_row])
 
 def coords2px(y, x):
     """ Transforming coordinates to pixes.
@@ -202,15 +202,16 @@ def coords2px(y, x):
     Arguments:
         y (np array): vector in which (y[0], y[1]) and (y[2], y[3]) are the
             the corners of a bounding box.
-        x (np array): an image
+        x (image): an image
     Returns:
-        Y (np array): of shape (x.shape[0], x.shape[1])
+        Y (image): of size x.size
     """
     rows = np.rint([y[0], y[0], y[2], y[2]]).astype(int)
     cols = np.rint([y[1], y[3], y[1], y[3]]).astype(int)
-    Y = np.zeros((x.shape[0], x.shape[1]))
+    r,c = x.size
+    Y = np.zeros((c, r))
     Y[rows, cols] = 1
-    return Y
+    return Image.fromarray(Y)
 
 
 class TfmType(IntEnum):
@@ -307,7 +308,7 @@ class RandomCropXY(CoordTransform):
         self.rand_c = random.uniform(0, 1)
 
     def do_transform(self, x):
-        r,c = x.shape[0], x.shape[1]
+        r,c = x.size
         start_r = np.floor(self.rand_r*(r-self.targ)).astype(int)
         start_c = np.floor(self.rand_c*(c-self.targ)).astype(int)
         return crop(x, start_r, start_c, self.targ)
@@ -394,9 +395,10 @@ def random_px_rect(y, x):
     fixed_rows = np.hstack([y[j] * np.ones(n[i]) for i, j in zip(range(2,4),[0,2])])
     rows = np.hstack([rows0, rand_rows, fixed_rows]).astype(int)
     cols = np.hstack([cols0, fixed_cols, rand_cols]).astype(int)
-    Y = np.zeros((x.shape[0], x.shape[1]))
+    r,c = x.size
+    Y = np.zeros((c, r))
     Y[rows, cols] = 1
-    return Y
+    return Image.fromarray(Y)
 
 class RandomRotateXY(Transform):
     """ Rotates images and (optionally) target y.
@@ -428,7 +430,7 @@ class RandomRotateXY(Transform):
         return x
 
     def do_transform_y(self, y):
-        if self.rp: y = rotate(y, self.rdeg)
+        if self.rp: y = rotate(y, self.rdeg, black_corners=True)
         return y
 
 
@@ -481,12 +483,12 @@ class CropType(IntEnum):
 
 
 class Transforms():
-    def __init__(self, sz, tfms, denorm, crop_type=CropType.CENTER, tfm_y=TfmType.NO):
+    def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER, tfm_y=TfmType.NO):
         self.sz,self.denorm = sz,denorm
         crop_tfm = CenterCropXY(sz, tfm_y)
         if crop_type == CropType.RANDOM: crop_tfm = RandomCropXY(sz, tfm_y)
         if crop_type == CropType.NO: crop_tfm = NoCropXY(sz, tfm_y)
-        self.tfms = tfms + [crop_tfm, channel_dim]
+        self.tfms = tfms + [crop_tfm, normalizer, channel_dim]
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
 
 
@@ -497,7 +499,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     scale = [RandomScaleXY(sz, max_zoom, tfm_y) if max_zoom is not None else ScaleXY(sz, tfm_y)]
     if pad: scale.append(ReflectionPad(pad)) # TODO: fix this one
     if max_zoom is not None and crop_type is None: crop_type = CropType.RANDOM
-    return Transforms(sz+pad, scale + tfms + [normalizer], denorm, crop_type, tfm_y)
+    return Transforms(sz+pad, scale + tfms, normalizer, denorm, crop_type, tfm_y)
 
 def noop(x): return x
 
