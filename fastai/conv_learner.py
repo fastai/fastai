@@ -120,11 +120,12 @@ class ConvLearner(Learner):
     def save_fc1(self):
         self.get_activations()
         act, val_act, test_act = self.activations
-
+        m=self.models.top_model
         if len(self.activations[0])==0:
-            m=self.models.top_model
             predict_to_bcolz(m, self.data.fix_dl, act)
+        if len(self.activations[1])==0:
             predict_to_bcolz(m, self.data.val_dl, val_act)
+        if len(self.activations[2])==0:
             if self.data.test_dl: predict_to_bcolz(m, self.data.test_dl, test_act)
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,
