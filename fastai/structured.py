@@ -92,7 +92,7 @@ def get_sample(df,n):
 
 def add_datepart(df, fldname, drop=True):
     """add_datepart converts a column of df from a datetime64 to many columns containing
-        the same information. This applies changes inplace.
+    the same information. This applies changes inplace.
 
     Parameters:
     -----------
@@ -213,7 +213,7 @@ def apply_cats(df, trn):
 
 def fix_missing(df, col, name, na_dict):
     """ Fill missing data in a column of df with the median, and add a {name}_na column
-        which specifies if the data was missing.
+    which specifies if the data was missing.
 
     Parameters:
     -----------
@@ -340,7 +340,7 @@ def scale_vars(df):
 def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None):
     """ proc_df takes a data frame df and splits off the response variable, and
-        changes the df into an entirely numeric dataframe.
+    changes the df into an entirely numeric dataframe.
 
     Parameters:
     -----------
@@ -421,7 +421,7 @@ def rf_feat_importance(m, df):
 
 def set_rf_samples(n):
     """ Changes Scikit learn's random forests to give each tree a random sample of
-        n random rows.
+    n random rows.
     """
     forest._generate_sample_indices = (lambda rs, n_samples:
         forest.check_random_state(rs).randint(0, n_samples, n))
