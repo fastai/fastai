@@ -10,7 +10,7 @@ model_meta = {
     wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,9],
     dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
 }
-model_features = {inception_4: 3072, dn121: 1024, dn161: 4416}
+model_features = {inception_4: 3072, dn121: 2048, dn161: 4416}
 
 class ConvnetBuilder():
     """Class representing a convolutional network.
@@ -88,9 +88,9 @@ class ConvLearner(Learner):
         self.precompute = precompute
 
     @classmethod
-    def pretrained(self, f, data, ps=None, xtra_fc=None, xtra_cut=0, **kwargs):
+    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, **kwargs):
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg, ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut)
-        return self(data, models, **kwargs)
+        return cls(data, models, **kwargs)
 
     @property
     def model(self): return self.models.fc_model if self.precompute else self.models.model
@@ -121,11 +121,12 @@ class ConvLearner(Learner):
     def save_fc1(self):
         self.get_activations()
         act, val_act, test_act = self.activations
-
+        m=self.models.top_model
         if len(self.activations[0])==0:
-            m=self.models.top_model
             predict_to_bcolz(m, self.data.fix_dl, act)
+        if len(self.activations[1])==0:
             predict_to_bcolz(m, self.data.val_dl, val_act)
+        if len(self.activations[2])==0:
             if self.data.test_dl: predict_to_bcolz(m, self.data.test_dl, test_act)
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,
