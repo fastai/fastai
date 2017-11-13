@@ -2,6 +2,7 @@ from IPython.lib.deepreload import reload as dreload
 import PIL, os, numpy as np, math, collections, threading, json, bcolz, random, scipy
 import random, pandas as pd, pickle, sys, itertools, string, sys, re, datetime, time
 import seaborn as sns, matplotlib
+import IPython, graphviz, sklearn_pandas, sklearn, warnings
 from abc import abstractmethod
 from glob import glob, iglob
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
@@ -12,6 +13,7 @@ from isoweek import Week
 from pandas_summary import DataFrameSummary
 from IPython.lib.display import FileLink
 from PIL import Image, ImageEnhance
+from sklearn import metrics, ensemble, preprocessing
 
 from matplotlib import pyplot as plt, rcParams, animation
 from ipywidgets import interact, interactive, fixed, widgets
