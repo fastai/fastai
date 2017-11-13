@@ -297,7 +297,7 @@ class ImageClassifierData(ImageData):
             val: a tuple of validation data matrix and target label/classification array.
             bs: batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
-            classes: TODO
+            classes: a list of all labels/classifications
             num_workers: a number of workers
             test: a matrix of test data (the shape should match `trn[0]`)
 
