@@ -1,11 +1,5 @@
 from .imports import *
-from .torch_imports import *
-from .core import *
 
-import IPython, graphviz
-from concurrent.futures import ProcessPoolExecutor
-
-import sklearn_pandas, sklearn, warnings
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
 from pandas.api.types import is_string_dtype, is_numeric_dtype
@@ -49,17 +43,6 @@ def combine_date(years, months=1, days=1, weeks=None, hours=None, minutes=None,
             milliseconds, microseconds, nanoseconds)
     return sum(np.asarray(v, dtype=t) for t, v in zip(types, vals)
                if v is not None)
-
-def get_nn_mappers(df, cat_vars, contin_vars):
-    # Replace nulls with 0 for continuous, "" for categorical.
-    for v in contin_vars: df[v] = df[v].fillna(df[v].max()+100,)
-    for v in cat_vars: df[v].fillna('#NA#', inplace=True)
-
-    # list of tuples, containing variable and instance of a transformer for that variable
-    # for categoricals, use LabelEncoder to map to integers. For continuous, standardize
-    cat_maps = [(o, LabelEncoder()) for o in cat_vars]
-    contin_maps = [([o], StandardScaler()) for o in contin_vars]
-    return DataFrameMapper(cat_maps).fit(df), DataFrameMapper(contin_maps).fit(df)
 
 def get_sample(df,n):
     """ Gets a random sample of n rows from df, without replacement.
@@ -414,7 +397,6 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     if do_scale: res = res + [mapper]
     return res
 
-
 def rf_feat_importance(m, df):
     return pd.DataFrame({'cols':df.columns, 'imp':m.feature_importances_}
                        ).sort_values('imp', ascending=False)
@@ -431,3 +413,15 @@ def reset_rf_samples():
     """
     forest._generate_sample_indices = (lambda rs, n_samples:
         forest.check_random_state(rs).randint(0, n_samples, n_samples))
+
+def get_nn_mappers(df, cat_vars, contin_vars):
+    # Replace nulls with 0 for continuous, "" for categorical.
+    for v in contin_vars: df[v] = df[v].fillna(df[v].max()+100,)
+    for v in cat_vars: df[v].fillna('#NA#', inplace=True)
+
+    # list of tuples, containing variable and instance of a transformer for that variable
+    # for categoricals, use LabelEncoder to map to integers. For continuous, standardize
+    cat_maps = [(o, LabelEncoder()) for o in cat_vars]
+    contin_maps = [([o], StandardScaler()) for o in contin_vars]
+    return DataFrameMapper(cat_maps).fit(df), DataFrameMapper(contin_maps).fit(df)
+
