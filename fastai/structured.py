@@ -75,12 +75,13 @@ def get_sample(df,n):
 
 def add_datepart(df, fldname, drop=True):
     """add_datepart converts a column of df from a datetime64 to many columns containing
-    the same information. This applies changes inplace.
+    the information from the date. This applies changes inplace.
 
     Parameters:
     -----------
     df: A pandas data frame. df gain several new columns.
     fldname: A string that is the name of the date column you wish to expand.
+        If it is not a datetime64 series, it will be converted to one with pd.to_datetime.
     drop: If true then the original date column will be removed.
 
     Examples:
@@ -103,6 +104,8 @@ def add_datepart(df, fldname, drop=True):
     2   2000  3      11    13   0          73         False         False           False           False             False        False          952905600
     """
     fld = df[fldname]
+    if not np.issubdtype(fld.dtype, np.datetime64):
+        df[fldname] = fld = pd.to_datetime(fld, infer_datetime_format=True)
     targ_pre = re.sub('[Dd]ate$', '', fldname)
     for n in ('Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
             'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
@@ -335,7 +338,7 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     do_scale: Standardizes each column in df.
 
     na_dict: a dictionary of na columns to add. Na columns are also added if there
-        is any missing values.
+        are any missing values.
 
     preproc_fn: A function that gets applied to df.
     max_n_cat: The maximum number of categories to break into dummy values, instead
@@ -351,7 +354,7 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
 
         y: y is the response variable
 
-        nas: returns a dictionary of which nas it created, and the associated value.
+        nas: returns a dictionary of which nas it created, and the associated median.
 
     Examples:
     ---------
