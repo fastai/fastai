@@ -4,6 +4,8 @@ channels:
 - soumith
 - defaults
 dependencies:
+- scipy
+- numpy
 - pillow
 - jpeg
 - zlib
