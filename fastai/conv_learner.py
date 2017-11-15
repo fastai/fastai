@@ -28,8 +28,9 @@ class ConvnetBuilder():
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
-        self.ps = ps or [0.25,0.5]
-        self.xtra_fc = xtra_fc or [512]
+        if ps is None: ps = [0.25,0.5]
+        if xtra_fc is None: xtra_fc = [512]
+        self.ps,self.xtra_fc = ps,xtra_fc
 
         cut,self.lr_cut = model_meta[f]
         cut-=xtra_cut
@@ -103,7 +104,6 @@ class ConvLearner(Learner):
 
     def set_data(self, data):
         super().set_data(data)
-        self.save_fc1()
         self.freeze()
 
     def get_layer_groups(self):

@@ -148,20 +148,6 @@ class RandomRotateZoom():
         return x
 
 
-class ReflectionPad():
-    def __init__(self, pad):
-        self.pad= pad
-
-    def add_pad(self, img):
-        assert(False) # Need to implement non opencv version
-        #return cv2.copyMakeBorder(img, self.pad, self.pad, self.pad, self.pad, self.mode)
-
-    def __call__(self, x, y=None):
-        x = self.add_pad(x)
-        if y is not None: return x, self.add_pad(y)
-        else: return x
-
-
 class RandomLighting():
     def __init__(self, b, c): self.b,self.c = b,c
 
@@ -244,6 +230,7 @@ class Transform():
         tfm_y (TfmType): type of transform
     """
     def __init__(self, tfm_y=TfmType.NO): self.tfm_y=tfm_y
+    def set_state(self): pass
     def __call__(self, x, y):
         self.set_state()
         x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
@@ -268,8 +255,12 @@ class CoordTransform(Transform):
     def transform_coord(self, x, y):
         y = coords2px(y, x)
         x,y_tr = self.transform(x,y)
-        y = to_bb(y_tr, y)
-        return x, y
+        return x, to_bb(y_tr, y)
+
+
+class ConstantPad(CoordTransform):
+    def __init__(self, pad, fill=None, tfm_y=TfmType.NO): self.pad,self.fill,self.tfm_y = pad,fill,tfm_y
+    def do_transform(self, img): return ImageOps.expand(img, border=self.pad, fill=self.fill)
 
 
 class CenterCropXY(CoordTransform):
@@ -280,15 +271,8 @@ class CenterCropXY(CoordTransform):
         sz (int): size of the crop.
         tfm_y (TfmType): type of y transformation.
     """
-    def __init__(self, sz, tfm_y=TfmType.NO):
-        self.tfm_y=tfm_y
-        self.min_sz=sz
-
-    def set_state(self):
-        pass
-
-    def do_transform(self, x):
-        return center_crop(x, self.min_sz)
+    def __init__(self, sz, tfm_y=TfmType.NO): self.tfm_y,self.min_sz = tfm_y,sz
+    def do_transform(self, x): return center_crop(x, self.min_sz)
 
 
 class RandomCropXY(CoordTransform):
@@ -326,9 +310,6 @@ class NoCropXY(CoordTransform):
         self.tfm_y=tfm_y
         self.sz=sz
 
-    def set_state(self):
-        pass
-
     def do_transform(self, x):
        return no_crop(x, self.sz)
 
@@ -343,9 +324,6 @@ class ScaleXY(CoordTransform):
     def __init__(self, sz, tfm_y=TfmType.NO):
         self.tfm_y=tfm_y
         self.sz=sz
-
-    def set_state(self):
-        pass
 
     def do_transform(self, x):
         return scale_min(x, self.sz)
@@ -497,9 +475,9 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScaleXY(sz, max_zoom, tfm_y) if max_zoom is not None else ScaleXY(sz, tfm_y)]
-    if pad: scale.append(ReflectionPad(pad)) # TODO: fix this one
-    if max_zoom is not None and crop_type is None: crop_type = CropType.RANDOM
-    return Transforms(sz+pad, scale + tfms, normalizer, denorm, crop_type, tfm_y)
+    if pad: scale.append(ConstantPad(pad))
+    if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
+    return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y)
 
 def noop(x): return x
 
@@ -507,3 +485,21 @@ def noop(x): return x
 transforms_basic    = [RandomRotateXY(10), RandomLightingXY(0.05, 0.05)]
 transforms_side_on  = transforms_basic + [RandomFlipXY()]
 transforms_top_down = transforms_basic + [RandomDihedralXY()]
+
+imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+inception_models = (inception_4, inceptionresnet_2)
+
+def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
+    if aug_tfms is None: aug_tfms=[]
+    tfm_norm = Normalize(*stats)
+    tfm_denorm = Denormalize(*stats)
+    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y)
+    trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
+                      pad=pad, crop_type=crop_type, tfm_y=tfm_y)
+    return trn_tfm, val_tfm
+
+def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
+    stats = inception_stats if f_model in inception_models else imagenet_stats
+    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type, tfm_y=tfm_y)
+

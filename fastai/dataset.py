@@ -5,10 +5,6 @@ from .transforms import *
 from .layer_optimizer import *
 #from .dataloader import DataLoader
 
-imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-inception_models = (inception_4, inceptionresnet_2)
-
 def get_cv_idxs(n, cv_idx=4, val_pct=0.2, seed=42):
     np.random.seed(seed)
     n_val = int(val_pct*n)
@@ -166,12 +162,8 @@ class ArraysDataset(BaseDataset):
         self.x,self.y=x,y
         assert(len(x)==len(y))
         super().__init__(transform)
-    def get_x(self, i):
-        return self.x[i]
-        #with self.lock: return self.x[i]
-    def get_y(self, i):
-        return self.y[i]
-        #with self.lock: return self.y[i]
+    def get_x(self, i): return self.x[i]
+    def get_y(self, i): return self.y[i]
     def get_n(self): return len(self.y)
     def get_sz(self): return self.x.shape[1]
 
@@ -369,13 +361,3 @@ def split_by_idx(idxs, *a):
     mask = np.zeros(len(a[0]),dtype=bool)
     mask[np.array(idxs)] = True
     return [(o[mask],o[~mask]) for o in a]
-
-def tfms_from_model(f_model, sz, aug_tfms=[], max_zoom=None, pad=0, crop_type=None, tfm_y=None):
-    stats = inception_stats if f_model in inception_models else imagenet_stats
-    tfm_norm = Normalize(*stats)
-    tfm_denorm = Denormalize(*stats)
-    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y)
-    trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type, tfm_y=tfm_y)
-    return trn_tfm, val_tfm
-

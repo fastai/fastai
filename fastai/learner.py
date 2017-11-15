@@ -13,8 +13,8 @@ import time
 
 
 class BasicModel():
-    def __init__(self,model): self.model=model
-    def get_layer_groups(self): return children(self.model)
+    def __init__(self,model,name='unnamed'): self.model,self.name = model,name
+    def get_layer_groups(self, do_fc=False): return children(self.model)
 
 class SingleModel(BasicModel):
     def get_layer_groups(self): return [self.model]

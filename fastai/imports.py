@@ -12,7 +12,7 @@ from collections import Iterable, Counter, OrderedDict
 from isoweek import Week
 from pandas_summary import DataFrameSummary
 from IPython.lib.display import FileLink
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageOps
 from sklearn import metrics, ensemble, preprocessing
 
 from matplotlib import pyplot as plt, rcParams, animation
