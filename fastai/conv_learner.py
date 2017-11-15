@@ -136,7 +136,7 @@ class ConvLearner(Learner):
     def freeze(self):
         """ Freeze all but the very last layer.
 
-        Make all layers except for the last layers to be non-trainable.
+        Make all layers untrainable (i.e. frozen) except for the last layer.
 
         Returns:
             None
@@ -146,7 +146,7 @@ class ConvLearner(Learner):
     def unfreeze(self):
         """ Unfreeze all layers.
 
-        Make all layers to be trainable by unfreezing. This will also set the `precompute` to be false since we can
+        Make all layers trainable by unfreezing. This will also set the `precompute` to `False` since we can
         no longer pre-calculate the activation of frozen layers.
 
         Returns:
