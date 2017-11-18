@@ -64,7 +64,7 @@ class ConvnetBuilder():
         for i,nf in enumerate(self.xtra_fc):
             res += self.create_fc_layer(ni, nf, p=self.ps[i], actn=nn.ReLU())
             ni=nf
-        final_actn = nn.Sigmoid() if self.is_multi else nn.LogSoftmax(1)
+        final_actn = nn.Sigmoid() if self.is_multi else nn.LogSoftmax()
         if self.is_reg: final_actn = None
         res += self.create_fc_layer(ni, self.c, p=self.ps[-1], actn=final_actn)
         return res
