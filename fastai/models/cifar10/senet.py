@@ -112,4 +112,5 @@ class SENet(nn.Module):
 
 
 def SENet18(): return SENet(PreActBlock, [2,2,2,2])
+def SENet34(): return SENet(PreActBlock, [3,4,6,3])
 

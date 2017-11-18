@@ -55,16 +55,16 @@ class ConvnetBuilder():
         res=[nn.BatchNorm1d(num_features=ni)]
         if p: res.append(nn.Dropout(p=p))
         res.append(nn.Linear(in_features=ni, out_features=nf))
-        if actn: res.append(actn())
+        if actn: res.append(actn)
         return res
 
     def get_fc_layers(self):
         res=[]
         ni=self.nf
         for i,nf in enumerate(self.xtra_fc):
-            res += self.create_fc_layer(ni, nf, p=self.ps[i], actn=nn.ReLU)
+            res += self.create_fc_layer(ni, nf, p=self.ps[i], actn=nn.ReLU())
             ni=nf
-        final_actn = nn.Sigmoid if self.is_multi else nn.LogSoftmax
+        final_actn = nn.Sigmoid() if self.is_multi else nn.LogSoftmax(1)
         if self.is_reg: final_actn = None
         res += self.create_fc_layer(ni, self.c, p=self.ps[-1], actn=final_actn)
         return res

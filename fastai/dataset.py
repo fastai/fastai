@@ -85,7 +85,6 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
 class BaseDataset(Dataset):
     def __init__(self, transform=None):
         self.transform = transform
-        #self.lock=threading.Lock()
         self.n = self.get_n()
         self.c = self.get_c()
         self.sz = self.get_sz()
