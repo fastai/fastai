@@ -110,6 +110,13 @@ class ConvLearner(Learner):
     def get_layer_groups(self):
         return self.models.get_layer_groups(self.precompute)
 
+    def summary(self):
+        precompute = self.precompute
+        self.precompute = False
+        res = super().summary()
+        self.precompute = precompute
+        return res
+
     def get_activations(self, force=False):
         tmpl = f'_{self.models.name}_{self.data.sz}.bc'
         # TODO: Somehow check that directory names haven't changed (e.g. added test set)
