@@ -16,6 +16,7 @@ from .models.resnext_101_64x4d import resnext_101_64x4d
 from .models.wrn_50_2f import wrn_50_2f
 from .models.inceptionresnetv2 import InceptionResnetV2
 from .models.inceptionv4 import InceptionV4
+from .models.nasnet import nasnetalarge
 
 def children(m): return m if isinstance(m, (list, tuple)) else list(m.children())
 def save_model(m, p): torch.save(m.state_dict(), p)
@@ -40,3 +41,4 @@ def dn169(pre): return children(densenet169(pre))[0]
 def dn201(pre): return children(densenet201(pre))[0]
 def vgg16(pre): return children(vgg16_bn(pre))[0]
 def vgg19(pre): return children(vgg19_bn(pre))[0]
+

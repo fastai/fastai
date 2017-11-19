@@ -10,7 +10,7 @@ model_meta = {
     wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,9],
     dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
 }
-model_features = {inception_4: 3072, dn121: 2048, dn161: 4416}
+model_features = {inception_4: 3072, dn121: 2048, dn161: 4416,} # nasnetalarge: 4032*2}
 
 class ConvnetBuilder():
     """Class representing a convolutional network.
@@ -28,10 +28,12 @@ class ConvnetBuilder():
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
-        self.ps = ps or [0.25,0.5]
-        self.xtra_fc = xtra_fc or [512]
+        if ps is None: ps = [0.25,0.5]
+        if xtra_fc is None: xtra_fc = [512]
+        self.ps,self.xtra_fc = ps,xtra_fc
 
-        cut,self.lr_cut = model_meta[f]
+        if f in model_meta: cut,self.lr_cut = model_meta[f]
+        else: cut,self.lr_cut = 0,0
         cut-=xtra_cut
         layers = cut_model(f(True), cut)
         self.nf = model_features[f] if f in model_features else (num_features(layers)*2)
@@ -54,16 +56,16 @@ class ConvnetBuilder():
         res=[nn.BatchNorm1d(num_features=ni)]
         if p: res.append(nn.Dropout(p=p))
         res.append(nn.Linear(in_features=ni, out_features=nf))
-        if actn: res.append(actn())
+        if actn: res.append(actn)
         return res
 
     def get_fc_layers(self):
         res=[]
         ni=self.nf
         for i,nf in enumerate(self.xtra_fc):
-            res += self.create_fc_layer(ni, nf, p=self.ps[i], actn=nn.ReLU)
+            res += self.create_fc_layer(ni, nf, p=self.ps[i], actn=nn.ReLU())
             ni=nf
-        final_actn = nn.Sigmoid if self.is_multi else nn.LogSoftmax
+        final_actn = nn.Sigmoid() if self.is_multi else nn.LogSoftmax()
         if self.is_reg: final_actn = None
         res += self.create_fc_layer(ni, self.c, p=self.ps[-1], actn=final_actn)
         return res
@@ -103,11 +105,17 @@ class ConvLearner(Learner):
 
     def set_data(self, data):
         super().set_data(data)
-        self.save_fc1()
         self.freeze()
 
     def get_layer_groups(self):
         return self.models.get_layer_groups(self.precompute)
+
+    def summary(self):
+        precompute = self.precompute
+        self.precompute = False
+        res = super().summary()
+        self.precompute = precompute
+        return res
 
     def get_activations(self, force=False):
         tmpl = f'_{self.models.name}_{self.data.sz}.bc'
@@ -122,15 +130,35 @@ class ConvLearner(Learner):
         self.get_activations()
         act, val_act, test_act = self.activations
         m=self.models.top_model
-        if len(self.activations[0])==0:
+        if len(self.activations[0])!=len(self.data.trn_ds):
             predict_to_bcolz(m, self.data.fix_dl, act)
-        if len(self.activations[1])==0:
+        if len(self.activations[1])!=len(self.data.val_ds):
             predict_to_bcolz(m, self.data.val_dl, val_act)
-        if len(self.activations[2])==0:
+        if self.data.test_dl and (len(self.activations[2])!=len(self.data.test_ds)):
             if self.data.test_dl: predict_to_bcolz(m, self.data.test_dl, test_act)
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,
                 (act, self.data.trn_y), (val_act, self.data.val_y), self.data.bs, classes=self.data.classes,
                 test = test_act if self.data.test_dl else None, num_workers=8)
 
-    def freeze(self): self.freeze_to(-1)
+    def freeze(self):
+        """ Freeze all but the very last layer.
+
+        Make all layers untrainable (i.e. frozen) except for the last layer.
+
+        Returns:
+            None
+        """
+        self.freeze_to(-1)
+
+    def unfreeze(self):
+        """ Unfreeze all layers.
+
+        Make all layers trainable by unfreezing. This will also set the `precompute` to `False` since we can
+        no longer pre-calculate the activation of frozen layers.
+
+        Returns:
+            None
+        """
+        self.freeze_to(0)
+        self.precompute = False

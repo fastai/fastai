@@ -4,10 +4,10 @@ from .core import *
 from .layer_optimizer import *
 
 def cut_model(m, cut):
-    c = list(m.children())
-    return c[:cut] if cut else c
+    return list(m.children())[:cut] if cut else [m]
 
 def predict_to_bcolz(m, gen, arr, workers=4):
+    arr.trim(len(arr))
     lock=threading.Lock()
     m.eval()
     for x,*_ in tqdm(gen):
@@ -113,8 +113,9 @@ def predict(m, dl): return predict_with_targs(m, dl)[0]
 def predict_with_targs(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
-    preda,targa = zip(*[(get_prediction(m(*VV(x))),y)
-                        for *x,y in iter(dl)])
+    res = []
+    for *x,y in iter(dl): res.append([get_prediction(m(*VV(x))),y])
+    preda,targa = zip(*res)
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
 # From https://github.com/ncullen93/torchsample
