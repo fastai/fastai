@@ -10,7 +10,7 @@ model_meta = {
     wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,9],
     dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
 }
-model_features = {inception_4: 3072, dn121: 2048, dn161: 4416}
+model_features = {inception_4: 3072, dn121: 2048, dn161: 4416,} # nasnetalarge: 4032*2}
 
 class ConvnetBuilder():
     """Class representing a convolutional network.
@@ -32,7 +32,8 @@ class ConvnetBuilder():
         if xtra_fc is None: xtra_fc = [512]
         self.ps,self.xtra_fc = ps,xtra_fc
 
-        cut,self.lr_cut = model_meta[f]
+        if f in model_meta: cut,self.lr_cut = model_meta[f]
+        else: cut,self.lr_cut = 0,0
         cut-=xtra_cut
         layers = cut_model(f(True), cut)
         self.nf = model_features[f] if f in model_features else (num_features(layers)*2)
@@ -122,11 +123,11 @@ class ConvLearner(Learner):
         self.get_activations()
         act, val_act, test_act = self.activations
         m=self.models.top_model
-        if len(self.activations[0])==0:
+        if len(self.activations[0])!=len(self.data.trn_ds):
             predict_to_bcolz(m, self.data.fix_dl, act)
-        if len(self.activations[1])==0:
+        if len(self.activations[1])!=len(self.data.val_ds):
             predict_to_bcolz(m, self.data.val_dl, val_act)
-        if len(self.activations[2])==0:
+        if self.data.test_dl and (len(self.activations[2])!=len(self.data.test_ds)):
             if self.data.test_dl: predict_to_bcolz(m, self.data.test_dl, test_act)
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,

@@ -134,27 +134,26 @@ class BranchSeparablesReduction(BranchSeparables):
 
 class CellStem0(nn.Module):
 
-    def __init__(self, is_imagenet=1):
-        s = 2 if is_imagenet else 1
+    def __init__(self):
         super(CellStem0, self).__init__()
         self.conv_1x1 = nn.Sequential()
         self.conv_1x1.add_module('relu', nn.ReLU())
         self.conv_1x1.add_module('conv', nn.Conv2d(96, 42, 1, stride=1, bias=False))
         self.conv_1x1.add_module('bn', nn.BatchNorm2d(42, eps=0.001, momentum=0.1, affine=True))
 
-        self.comb_iter_0_left = BranchSeparables(42, 42, 5, s, 2)
-        self.comb_iter_0_right = BranchSeparablesStem(96, 42, 7, s, 3, bias=False)
+        self.comb_iter_0_left = BranchSeparables(42, 42, 5, 2, 2)
+        self.comb_iter_0_right = BranchSeparablesStem(96, 42, 7, 2, 3, bias=False)
 
-        self.comb_iter_1_left = nn.MaxPool2d(3, stride=s, padding=1)
-        self.comb_iter_1_right = BranchSeparablesStem(96, 42, 7, s, 3, bias=False)
+        self.comb_iter_1_left = nn.MaxPool2d(3, stride=2, padding=1)
+        self.comb_iter_1_right = BranchSeparablesStem(96, 42, 7, 2, 3, bias=False)
 
-        self.comb_iter_2_left = nn.AvgPool2d(3, stride=s, padding=1, count_include_pad=False)
-        self.comb_iter_2_right = BranchSeparablesStem(96, 42, 5, s, 2, bias=False)
+        self.comb_iter_2_left = nn.AvgPool2d(3, stride=2, padding=1, count_include_pad=False)
+        self.comb_iter_2_right = BranchSeparablesStem(96, 42, 5, 2, 2, bias=False)
 
         self.comb_iter_3_right = nn.AvgPool2d(3, stride=1, padding=1, count_include_pad=False)
 
         self.comb_iter_4_left = BranchSeparables(42, 42, 3, 1, 1, bias=False)
-        self.comb_iter_4_right = nn.MaxPool2d(3, stride=s, padding=1)
+        self.comb_iter_4_right = nn.MaxPool2d(3, stride=2, padding=1)
 
     def forward(self, x):
         x1 = self.conv_1x1(x)
@@ -487,9 +486,9 @@ class ReductionCell1(nn.Module):
 
 class NASNetALarge(nn.Module):
 
-    def __init__(self, is_imagenet, n_xtra=4, num_classes=1001):
+    def __init__(self, use_classifer=False, num_classes=1001):
         super(NASNetALarge, self).__init__()
-        self.is_imagenet,self.n_xtra,self.num_classes = is_imagenet,n_xtra,num_classes
+        self.use_classifer,self.num_classes = use_classifer,num_classes
 
         self.conv0 = nn.Sequential()
         self.conv0.add_module('conv', nn.Conv2d(in_channels=3, out_channels=96, kernel_size=3, padding=0, stride=2,
@@ -503,8 +502,14 @@ class NASNetALarge(nn.Module):
                                 in_channels_right=336, out_channels_right=168)
         self.cell_1 = NormalCell(in_channels_left=336, out_channels_left=168,
                                  in_channels_right=1008, out_channels_right=168)
-        self.xtra0 = nn.ModuleList([NormalCell(in_channels_left=1008, out_channels_left=168,
-                                   in_channels_right=1008, out_channels_right=168) for i in range(n_xtra)])
+        self.cell_2 = NormalCell(in_channels_left=1008, out_channels_left=168,
+                                 in_channels_right=1008, out_channels_right=168)
+        self.cell_3 = NormalCell(in_channels_left=1008, out_channels_left=168,
+                                 in_channels_right=1008, out_channels_right=168)
+        self.cell_4 = NormalCell(in_channels_left=1008, out_channels_left=168,
+                                 in_channels_right=1008, out_channels_right=168)
+        self.cell_5 = NormalCell(in_channels_left=1008, out_channels_left=168,
+                                 in_channels_right=1008, out_channels_right=168)
 
         self.reduction_cell_0 = ReductionCell0(in_channels_left=1008, out_channels_left=336,
                                                in_channels_right=1008, out_channels_right=336)
@@ -513,8 +518,14 @@ class NASNetALarge(nn.Module):
                                 in_channels_right=1344, out_channels_right=336)
         self.cell_7 = NormalCell(in_channels_left=1344, out_channels_left=336,
                                  in_channels_right=2016, out_channels_right=336)
-        self.xtra1 = nn.ModuleList([NormalCell(in_channels_left=2016, out_channels_left=336,
-                                   in_channels_right=2016, out_channels_right=336) for i in range(n_xtra)])
+        self.cell_8 = NormalCell(in_channels_left=2016, out_channels_left=336,
+                                 in_channels_right=2016, out_channels_right=336)
+        self.cell_9 = NormalCell(in_channels_left=2016, out_channels_left=336,
+                                 in_channels_right=2016, out_channels_right=336)
+        self.cell_10 = NormalCell(in_channels_left=2016, out_channels_left=336,
+                                  in_channels_right=2016, out_channels_right=336)
+        self.cell_11 = NormalCell(in_channels_left=2016, out_channels_left=336,
+                                  in_channels_right=2016, out_channels_right=336)
 
         self.reduction_cell_1 = ReductionCell1(in_channels_left=2016, out_channels_left=672,
                                                in_channels_right=2016, out_channels_right=672)
@@ -523,52 +534,63 @@ class NASNetALarge(nn.Module):
                                  in_channels_right=2688, out_channels_right=672)
         self.cell_13 = NormalCell(in_channels_left=2688, out_channels_left=672,
                                   in_channels_right=4032, out_channels_right=672)
-        self.xtra2 = nn.ModuleList([NormalCell(in_channels_left=4032, out_channels_left=672,
-                                   in_channels_right=4032, out_channels_right=672) for i in range(n_xtra)])
+        self.cell_14 = NormalCell(in_channels_left=4032, out_channels_left=672,
+                                  in_channels_right=4032, out_channels_right=672)
+        self.cell_15 = NormalCell(in_channels_left=4032, out_channels_left=672,
+                                  in_channels_right=4032, out_channels_right=672)
+        self.cell_16 = NormalCell(in_channels_left=4032, out_channels_left=672,
+                                  in_channels_right=4032, out_channels_right=672)
+        self.cell_17 = NormalCell(in_channels_left=4032, out_channels_left=672,
+                                  in_channels_right=4032, out_channels_right=672)
 
         self.relu = nn.ReLU()
-        self.avgpool = nn.AvgPool2d(11, stride=1, padding=0)
         self.dropout = nn.Dropout()
-        self.linear = nn.Linear(4032 if self.is_imagenet else 2016, self.num_classes)
+        self.linear = nn.Linear(4032, self.num_classes)
 
     def features(self, x):
-        #c0 = self.conv0(x) if self.is_imagenet else x
-        #x_stem_0 = self.cell_stem_0(c0) if self.is_imagenet else x
-        c0 = self.conv0(x)
-        x_stem_0 = self.cell_stem_0(c0)
-        x_stem_1 = self.cell_stem_1(c0, x_stem_0)
+        x_conv0 = self.conv0(x)
+        x_stem_0 = self.cell_stem_0(x_conv0)
+        x_stem_1 = self.cell_stem_1(x_conv0, x_stem_0)
 
-        c0 = self.cell_0(x_stem_1, x_stem_0)
-        c1 = self.cell_1(c0, x_stem_1)
-        for c in self.xtra0: c1,c0 = c(c1, c0),c1
-        x_reduction_cell_0 = self.reduction_cell_0(c1, c0)
+        x_cell_0 = self.cell_0(x_stem_1, x_stem_0)
+        x_cell_1 = self.cell_1(x_cell_0, x_stem_1)
+        x_cell_2 = self.cell_2(x_cell_1, x_cell_0)
+        x_cell_3 = self.cell_3(x_cell_2, x_cell_1)
+        x_cell_4 = self.cell_4(x_cell_3, x_cell_2)
+        x_cell_5 = self.cell_5(x_cell_4, x_cell_3)
 
-        c0 = self.cell_6(x_reduction_cell_0, c1)
-        c1 = self.cell_7(c0, x_reduction_cell_0)
-        for c in self.xtra1: c1,c0 = c(c1, c0),c1
-        x_reduction_cell_1 = self.reduction_cell_1(c1, c0)
+        x_reduction_cell_0 = self.reduction_cell_0(x_cell_5, x_cell_4)
 
-        if self.is_imagenet:
-            c0 = self.cell_12(x_reduction_cell_1, c1)
-            c1 = self.cell_13(c0, x_reduction_cell_1)
-            for c in self.xtra2: c1,c0 = c(c1, c0),c1
+        x_cell_6 = self.cell_6(x_reduction_cell_0, x_cell_4)
+        x_cell_7 = self.cell_7(x_cell_6, x_reduction_cell_0)
+        x_cell_8 = self.cell_8(x_cell_7, x_cell_6)
+        x_cell_9 = self.cell_9(x_cell_8, x_cell_7)
+        x_cell_10 = self.cell_10(x_cell_9, x_cell_8)
+        x_cell_11 = self.cell_11(x_cell_10, x_cell_9)
 
-        return c1
+        x_reduction_cell_1 = self.reduction_cell_1(x_cell_11, x_cell_10)
+
+        x_cell_12 = self.cell_12(x_reduction_cell_1, x_cell_10)
+        x_cell_13 = self.cell_13(x_cell_12, x_reduction_cell_1)
+        x_cell_14 = self.cell_14(x_cell_13, x_cell_12)
+        x_cell_15 = self.cell_15(x_cell_14, x_cell_13)
+        x_cell_16 = self.cell_16(x_cell_15, x_cell_14)
+        x_cell_17 = self.cell_17(x_cell_16, x_cell_15)
+        return self.relu(x_cell_17)
 
     def classifier(self, x):
-        x = self.relu(x)
         x = F.adaptive_max_pool2d(x, 1)
         x = x.view(x.size(0), -1)
         x = self.dropout(x)
-        return F.log_softmax(self.linear(x), 1)
+        return F.log_softmax(self.linear(x))
 
     def forward(self, x):
         x = self.features(x)
-        x = self.classifier(x)
+        if self.use_classifer: x = self.classifier(x)
         return x
 
 
-def nasnetalarge(num_classes=1001, pretrained='imagenet'):
+def nasnetalarge(use_classifer=False, num_classes=1000, pretrained='imagenet'):
     r"""NASNetALarge model architecture from the
     `"NASNet" <https://arxiv.org/abs/1707.07012>`_ paper.
     """

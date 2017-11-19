@@ -4,10 +4,10 @@ from .core import *
 from .layer_optimizer import *
 
 def cut_model(m, cut):
-    c = list(m.children())
-    return c[:cut] if cut else c
+    return list(m.children())[:cut] if cut else [m]
 
 def predict_to_bcolz(m, gen, arr, workers=4):
+    arr.trim(len(arr))
     lock=threading.Lock()
     m.eval()
     for x,*_ in tqdm(gen):
