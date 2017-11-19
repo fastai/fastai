@@ -3,7 +3,7 @@ from .torch_imports import *
 from .core import *
 from .transforms import *
 from .layer_optimizer import *
-#from .dataloader import DataLoader
+from .dataloader import DataLoader
 
 def get_cv_idxs(n, cv_idx=4, val_pct=0.2, seed=42):
     np.random.seed(seed)
@@ -120,7 +120,9 @@ class FilesDataset(BaseDataset):
     def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
     def get_x(self, i):
-        return Image.open(os.path.join(self.path, self.fnames[i]))
+        flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
+        fn = os.path.join(self.path, self.fnames[i])
+        return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
     def resize_imgs(self, targ, new_path):
         dest = resize_imgs(self.fnames, targ, self.path, new_path)
         return self.__class__(self.fnames, self.y, self.transform, dest)
