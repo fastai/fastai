@@ -45,6 +45,8 @@ class Learner():
 
     def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
 
+    def __repr__(self): return self.model.__repr__()
+
     def set_bn_freeze(self, m, do_freeze):
         if hasattr(m, 'running_mean'): m.bn_freeze = do_freeze
 
