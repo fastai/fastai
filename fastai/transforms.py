@@ -259,7 +259,6 @@ class AddPadding(CoordTransform):
     def do_transform(self, im):
         return cv2.copyMakeBorder(im, self.pad, self.pad, self.pad, self.pad, self.mode)
 
-
 class CenterCropXY(CoordTransform):
     """ A class that represents a Center Crop.
 
@@ -471,7 +470,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScaleXY(sz, max_zoom, tfm_y) if max_zoom is not None else ScaleXY(sz, tfm_y)]
-    if pad: scale.append(ConstantPad(pad))
+    if pad: scale.append(AddPadding(pad))
     if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
     return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y)
 
