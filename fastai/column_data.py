@@ -6,12 +6,14 @@ from .learner import *
 
 class ColumnarDataset(Dataset):
     def __init__(self, cats, conts, y):
-        self.cats = torch.stack([T(x) for x in cats], 1)
-        self.conts = torch.stack([T(x) for x in conts], 1)
-        self.y = T(y).unsqueeze(1)
+        self.lock = threading.Lock()
+        self.cats = np.stack(cats, 1).astype(np.int64)
+        self.conts = np.stack(conts, 1).astype(np.float32)
+        self.y = y[:,None].astype(np.float32)
 
     def __len__(self): return len(self.y)
-    def __getitem__(self, idx): return [self.cats[idx], self.conts[idx], self.y[idx]]
+    def __getitem__(self, idx):
+        with self.lock: return [self.cats[idx], self.conts[idx], self.y[idx]]
 
     @classmethod
     def from_data_frames(cls, df_cat, df_cont, y):
@@ -26,8 +28,8 @@ class ColumnarDataset(Dataset):
 
 class ColumnarModelData(ModelData):
     def __init__(self, path, trn_ds, val_ds, bs):
-        super().__init__(path, DataLoader(trn_ds, bs, shuffle=True),
-            DataLoader(val_ds, bs*2, shuffle=False))
+        super().__init__(path, DataLoader(trn_ds, bs, shuffle=True, num_workers=1),
+            DataLoader(val_ds, bs*2, shuffle=False, num_workers=1))
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs):

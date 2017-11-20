@@ -78,7 +78,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
 
     for epoch in tnrange(epochs, desc='Epoch'):
         stepper.reset(True)
-        t = tqdm(iter(data.trn_dl), leave=False)
+        t = tqdm(iter(data.trn_dl), leave=False, total=len(data.trn_dl))
         for (*x,y) in t:
             batch_num += 1
             loss = stepper.step(V(x),V(y))
