@@ -316,15 +316,16 @@ def numericalize(df, col, name, max_n_cat):
     if not is_numeric_dtype(col) and ( max_n_cat is None or col.nunique()>max_n_cat):
         df[name] = col.cat.codes+1
 
-def scale_vars(df):
+def scale_vars(df, mapper):
     warnings.filterwarnings('ignore', category=sklearn.exceptions.DataConversionWarning)
-    map_f = [([n],StandardScaler()) for n in df.columns if is_numeric_dtype(df[n])]
-    mapper = DataFrameMapper(map_f).fit(df)
+    if mapper is None:
+        map_f = [([n],StandardScaler()) for n in df.columns if is_numeric_dtype(df[n])]
+        mapper = DataFrameMapper(map_f).fit(df)
     df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
 def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
-            preproc_fn=None, max_n_cat=None, subset=None):
+            preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
     """ proc_df takes a data frame df and splits off the response variable, and
     changes the df into an entirely numeric dataframe.
 
@@ -394,7 +395,7 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
 
     if na_dict is None: na_dict = {}
     for n,c in df.items(): na_dict = fix_missing(df, c, n, na_dict)
-    if do_scale: mapper = scale_vars(df)
+    if do_scale: mapper = scale_vars(df, mapper)
     for n,c in df.items(): numericalize(df, c, n, max_n_cat)
     res = [pd.get_dummies(df, dummy_na=True), y, na_dict]
     if do_scale: res = res + [mapper]
