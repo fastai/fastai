@@ -4,16 +4,31 @@ from .dataset import *
 from .learner import *
 
 
-class ColumnarDataset(Dataset):
-    def __init__(self, cats, conts, y):
-        self.lock = threading.Lock()
-        self.cats = np.stack(cats, 1).astype(np.int64)
-        self.conts = np.stack(conts, 1).astype(np.float32)
+class PassthruDataset(Dataset):
+    def __init__(self,*args):
+        *xs,y=args
+        self.xs = xs
         self.y = y[:,None].astype(np.float32)
 
     def __len__(self): return len(self.y)
+    def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.y[idx]]
+
+    @classmethod
+    def from_data_frame(self, df, cols_x, col_y):
+        cols = [df[o] for o in cols_x+[col_y]]
+        return self(*cols)
+
+
+class ColumnarDataset(Dataset):
+    def __init__(self, cats, conts, y):
+        self.cats = np.stack(cats, 1).astype(np.int64) if cats else np.zeros((len(y),0))
+        self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((len(y),0))
+        self.y = y[:,None].astype(np.float32)
+
+    def __len__(self): return len(self.y)
+
     def __getitem__(self, idx):
-        with self.lock: return [self.cats[idx], self.conts[idx], self.y[idx]]
+        return [self.cats[idx], self.conts[idx], self.y[idx]]
 
     @classmethod
     def from_data_frames(cls, df_cat, df_cont, y):
@@ -132,7 +147,7 @@ class CollabFilterDataset(Dataset):
 
     def get_data(self, val_idxs, bs):
         val, trn = zip(*split_by_idx(val_idxs, *self.cols))
-        return ColumnarModelData(self.path, ColumnarDataset(*trn), ColumnarDataset(*val), bs)
+        return ColumnarModelData(self.path, PassthruDataset(*trn), PassthruDataset(*val), bs)
 
     def get_model(self, n_factors):
         model = EmbeddingDotBias(n_factors, self.n_users, self.n_items, self.min_score, self.max_score)
@@ -166,5 +181,5 @@ class CollabFilterLearner(Learner):
         self.crit = F.mse_loss
 
 class CollabFilterModel(BasicModel):
-    def get_layer_groups(self): return list(split_by_idxs(self.children,[2]))
+    def get_layer_groups(self): return self.model
 
