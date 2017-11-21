@@ -5,7 +5,7 @@ from .transforms import *
 from .layer_optimizer import *
 from .dataloader import DataLoader
 
-def get_cv_idxs(n, cv_idx=4, val_pct=0.2, seed=42):
+def get_cv_idxs(n, cv_idx=0, val_pct=0.2, seed=42):
     np.random.seed(seed)
     n_val = int(val_pct*n)
     idx_start = cv_idx*n_val
