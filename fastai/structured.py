@@ -326,6 +326,7 @@ def scale_vars(df, mapper):
 
 def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
+    
     """ proc_df takes a data frame df and splits off the response variable, and
     changes the df into an entirely numeric dataframe.
 
@@ -336,26 +337,34 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     y_fld: The name of the response variable
 
     skip_flds: A list of fields that dropped from df.
-    do_scale: Standardizes each column in df.
+    
+    do_scale: Standardizes each column in df,Takes Boolean Values(True,False)
 
     na_dict: a dictionary of na columns to add. Na columns are also added if there
         are any missing values.
 
     preproc_fn: A function that gets applied to df.
+    
     max_n_cat: The maximum number of categories to break into dummy values, instead
         of integer codes.
 
     subset: Takes a random subset of size subset from df.
-
+    
+    mapper: If do_scale is set as True, the mapper variable 
+    lets you know the values (mean and standard deviation) used for scaling of variables.
+    
     Returns:
     --------
-    [x, y, nas]:
+    [x, y, nas, mapper(optional)]:
+    
         x: x is the transformed version of df. x will not have the response variable
             and is entirely numeric.
 
         y: y is the response variable
 
         nas: returns a dictionary of which nas it created, and the associated median.
+        
+        mapper: returns the mean and standard deviation used for scaling of variables. 
 
     Examples:
     ---------
