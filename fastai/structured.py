@@ -364,8 +364,8 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
 
         nas: returns a dictionary of which nas it created, and the associated median.
         
-        mapper: stores the mean and standard deviation which can be used for scaling of variables during test-time
-            when it is passed. 
+        mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continous
+        variables which is then used for scaling of during test-time. 
 
     Examples:
     ---------
@@ -395,6 +395,25 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     0     1
     1     2
     2     1
+    
+    >>> data = DataFrame(pet=["cat", "dog", "dog", "fish", "cat", "dog", "cat", "fish"],
+                 children=[4., 6, 3, 3, 2, 3, 5, 4],
+                 salary=[90, 24, 44, 27, 32, 59, 36, 27])
+                 
+    >>> mapper = DataFrameMapper([(:pet, LabelBinarizer()),
+                          ([:children], StandardScaler())])
+                          
+    >>>round(fit_transform!(mapper, copy(data)), 2)
+    
+    8x4 Array{Float64,2}:
+    1.0  0.0  0.0   0.21
+    0.0  1.0  0.0   1.88
+    0.0  1.0  0.0  -0.63
+    0.0  0.0  1.0  -0.63
+    1.0  0.0  0.0  -1.46
+    0.0  1.0  0.0  -0.63
+    1.0  0.0  0.0   1.04
+    0.0  0.0  1.0   0.21
     """
     if not skip_flds: skip_flds=[]
     if subset: df = get_sample(df,subset)
