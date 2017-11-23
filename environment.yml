@@ -1,8 +1,16 @@
 name: fastai
 channels:
+- fastai
 - soumith
 - defaults
 dependencies:
+- scipy
+- numpy
+- pillow
+- jpeg
+- zlib
+- freetype
+- libtiff
 - bleach
 - certifi
 - cffi
@@ -11,7 +19,6 @@ dependencies:
 - entrypoints
 - expat
 - fontconfig
-- freetype
 - glib
 - html5lib
 - icu
@@ -22,7 +29,6 @@ dependencies:
 - jbig
 - jedi
 - jinja2
-- jpeg
 - jsonschema
 - jupyter
 - jupyter_client
@@ -34,7 +40,6 @@ dependencies:
 - libiconv
 - libpng
 - libsodium
-- libtiff
 - libxml2
 - markupsafe
 - matplotlib
@@ -87,7 +92,6 @@ dependencies:
 - widgetsnbextension
 - xz
 - zeromq
-- zlib
 - pytorch>=0.2.0
 - torchvision>=0.1.9
 - bcolz
@@ -105,5 +109,7 @@ dependencies:
   - docrepr
   - awscli
   - kaggle-cli
+  - ipywidgets
+  - jupyter_contrib_nbextensions
   - git+https://github.com/SauceCat/PDPbox.git
 

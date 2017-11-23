@@ -4,10 +4,10 @@ from .core import *
 from .layer_optimizer import *
 
 def cut_model(m, cut):
-    c = list(m.children())
-    return c[:cut] if cut else c
+    return list(m.children())[:cut] if cut else [m]
 
 def predict_to_bcolz(m, gen, arr, workers=4):
+    arr.trim(len(arr))
     lock=threading.Lock()
     m.eval()
     for x,*_ in tqdm(gen):
@@ -78,7 +78,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
 
     for epoch in tnrange(epochs, desc='Epoch'):
         stepper.reset(True)
-        t = tqdm(iter(data.trn_dl), leave=False)
+        t = tqdm(iter(data.trn_dl), leave=False, total=len(data.trn_dl))
         for (*x,y) in t:
             batch_num += 1
             loss = stepper.step(V(x),V(y))
@@ -90,7 +90,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
             if stop: return
 
         vals = validate(stepper, data.val_dl, metrics)
-        print(np.round([epoch, avg_loss] + vals, 6))
+        print(np.round([epoch, debias_loss] + vals, 6))
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
@@ -113,8 +113,9 @@ def predict(m, dl): return predict_with_targs(m, dl)[0]
 def predict_with_targs(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
-    preda,targa = zip(*[(get_prediction(m(*VV(x))),y)
-                        for *x,y in iter(dl)])
+    res = []
+    for *x,y in iter(dl): res.append([get_prediction(m(*VV(x))),y])
+    preda,targa = zip(*res)
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
 # From https://github.com/ncullen93/torchsample

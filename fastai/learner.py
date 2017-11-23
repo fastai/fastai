@@ -13,8 +13,8 @@ import time
 
 
 class BasicModel():
-    def __init__(self,model): self.model=model
-    def get_layer_groups(self): return children(self.model)
+    def __init__(self,model,name='unnamed'): self.model,self.name = model,name
+    def get_layer_groups(self, do_fc=False): return children(self.model)
 
 class SingleModel(BasicModel):
     def get_layer_groups(self): return [self.model]
@@ -44,6 +44,8 @@ class Learner():
     def data(self): return self.data_
 
     def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
+
+    def __repr__(self): return self.model.__repr__()
 
     def set_bn_freeze(self, m, do_freeze):
         if hasattr(m, 'running_mean'): m.bn_freeze = do_freeze
@@ -141,11 +143,31 @@ class Learner():
         dl = self.data.test_dl if is_test else self.data.val_dl
         return predict_with_targs(self.model, dl)
 
+    def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
+    def predict_array(self, arr): return to_np(self.model(V(T(arr).cuda())))
+
     def TTA(self, n_aug=4, is_test=False):
+        """ Predict with Test Time Augmentation (TTA)
+
+        Additional to the original test/validation images, apply image augmentation to them
+        (just like for training images) and calculate the mean of predictions. The intent
+        is to increase the accuracy of predictions by examining the images using multiple
+        perspectives.
+
+        Args:
+            n_aug: a number of augmentation images to use per original image
+            is_test: indicate to use test images; otherwise use validation images
+
+        Returns:
+            (tuple): a tuple containing:
+
+                log predictions (numpy.ndarray): log predictions (i.e. `np.exp(log_preds)` will return probabilities)
+                targs (numpy.ndarray): target values when `is_test==False`; zeros otherwise.
+        """
         dl1 = self.data.test_dl     if is_test else self.data.val_dl
         dl2 = self.data.test_aug_dl if is_test else self.data.aug_dl
         preds1,targs = predict_with_targs(self.model, dl1)
         preds1 = [preds1]*math.ceil(n_aug/4)
-        preds2 = [predict_with_targs(self.model, dl2)[0] for i in range(n_aug)]
+        preds2 = [predict_with_targs(self.model, dl2)[0] for i in tqdm(range(n_aug), leave=False)]
         return np.stack(preds1+preds2).mean(0), targs
 

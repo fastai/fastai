@@ -3,13 +3,9 @@ from .torch_imports import *
 from .core import *
 from .transforms import *
 from .layer_optimizer import *
-#from .dataloader import DataLoader
+from .dataloader import DataLoader
 
-imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-inception_models = (inception_4, inceptionresnet_2)
-
-def get_cv_idxs(n, cv_idx=4, val_pct=0.2, seed=42):
+def get_cv_idxs(n, cv_idx=0, val_pct=0.2, seed=42):
     np.random.seed(seed)
     n_val = int(val_pct*n)
     idx_start = cv_idx*n_val
@@ -89,7 +85,6 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
 class BaseDataset(Dataset):
     def __init__(self, transform=None):
         self.transform = transform
-        #self.lock=threading.Lock()
         self.n = self.get_n()
         self.c = self.get_c()
         self.sz = self.get_sz()
@@ -125,7 +120,9 @@ class FilesDataset(BaseDataset):
     def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
     def get_x(self, i):
-        return Image.open(os.path.join(self.path, self.fnames[i]))
+        flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
+        fn = os.path.join(self.path, self.fnames[i])
+        return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
     def resize_imgs(self, targ, new_path):
         dest = resize_imgs(self.fnames, targ, self.path, new_path)
         return self.__class__(self.fnames, self.y, self.transform, dest)
@@ -166,12 +163,8 @@ class ArraysDataset(BaseDataset):
         self.x,self.y=x,y
         assert(len(x)==len(y))
         super().__init__(transform)
-    def get_x(self, i):
-        return self.x[i]
-        #with self.lock: return self.x[i]
-    def get_y(self, i):
-        return self.y[i]
-        #with self.lock: return self.y[i]
+    def get_x(self, i): return self.x[i]
+    def get_y(self, i): return self.y[i]
     def get_n(self): return len(self.y)
     def get_sz(self): return self.x.shape[1]
 
@@ -269,8 +262,8 @@ class ImageClassifierData(ImageData):
     @property
     def is_multi(self): return self.trn_dl.dataset.is_multi
 
-    @classmethod
-    def get_ds(self, fn, trn, val, tfms, test=None, **kwargs):
+    @staticmethod
+    def get_ds(fn, trn, val, tfms, test=None, **kwargs):
         res = [
             fn(trn[0], trn[1], tfms[0], **kwargs), # train
             fn(val[0], val[1], tfms[1], **kwargs), # val
@@ -287,7 +280,7 @@ class ImageClassifierData(ImageData):
         return res
 
     @classmethod
-    def from_arrays(self, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
+    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
         """ Read in images and their labels given as numpy arrays
 
         Arguments:
@@ -297,18 +290,18 @@ class ImageClassifierData(ImageData):
             val: a tuple of validation data matrix and target label/classification array.
             bs: batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
-            classes: TODO
+            classes: a list of all labels/classifications
             num_workers: a number of workers
             test: a matrix of test data (the shape should match `trn[0]`)
 
         Returns:
             ImageClassifierData
         """
-        datasets = self.get_ds(ArraysIndexDataset, trn, val, tfms, test=test)
-        return self(path, datasets, bs, num_workers, classes=classes)
+        datasets = cls.get_ds(ArraysIndexDataset, trn, val, tfms, test=test)
+        return cls(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(self, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=8):
+    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=8):
         """ Read in images and their labels given as sub-folder names
 
         Arguments:
@@ -325,11 +318,11 @@ class ImageClassifierData(ImageData):
         """
         trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
         test_fnames = read_dir(path, test_name) if test_name else None
-        datasets = self.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
-        return self(path, datasets, bs, num_workers, classes=trn[2])
+        datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
+        return cls(path, datasets, bs, num_workers, classes=trn[2])
 
     @classmethod
-    def from_csv(self, path, folder, csv_fname, bs=64, tfms=(None,None),
+    def from_csv(cls, path, folder, csv_fname, bs=64, tfms=(None,None),
                val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
         """ Read in images and their labels given as a CSV file.
 
@@ -361,21 +354,11 @@ class ImageClassifierData(ImageData):
             f = FilesIndexArrayRegressionDataset
         else:
             f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
-        datasets = self.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,
+        datasets = cls.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,
                                path=path, test=test_fnames)
-        return self(path, datasets, bs, num_workers, classes=classes)
+        return cls(path, datasets, bs, num_workers, classes=classes)
 
 def split_by_idx(idxs, *a):
     mask = np.zeros(len(a[0]),dtype=bool)
     mask[np.array(idxs)] = True
     return [(o[mask],o[~mask]) for o in a]
-
-def tfms_from_model(f_model, sz, aug_tfms=[], max_zoom=None, pad=0, crop_type=None, tfm_y=None):
-    stats = inception_stats if f_model in inception_models else imagenet_stats
-    tfm_norm = Normalize(*stats)
-    tfm_denorm = Denormalize(*stats)
-    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y)
-    trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type, tfm_y=tfm_y)
-    return trn_tfm, val_tfm
-
