@@ -187,19 +187,24 @@ class ConcatTextDataset(torchtext.data.Dataset):
 
 
 class ConcatTextDatasetFromDataFrames(torchtext.data.Dataset):
-    def __init__(self, text_field, col, newline_eos=True, **kwargs):
+    def __init__(self, df, text_field, col, newline_eos=True, **kwargs):
         fields = [('text', text_field)]
         text = []
 
-        for arg in ['train', 'validation', 'test']:
-            if (arg in kwargs):
-                df = kwargs[arg]
-                text += text_field.preprocess(df[col].str.cat(sep=' '))
-                if (newline_eos): text.append('<eos>')
+        text += text_field.preprocess(df[col].str.cat(sep=' '))
+        if (newline_eos): text.append('<eos>')
 
         examples = [torchtext.data.Example.fromlist([text], fields)]
 
         super().__init__(examples, fields, **kwargs)
+
+    @classmethod
+    def splits(cls, train_df=None, val_df=None, test_df=None, **kwargs):
+        train_data = None if train_df is None else cls(train_df, **kwargs)
+        val_data = None if val_df is None else cls(val_df, **kwargs)
+        test_data = None if test_df is None else cls(test_df, **kwargs)
+
+        return tuple(d for d in (train_data, val_data, test_data) if d is not None)
 
 
 class LanguageModelData():
@@ -220,23 +225,25 @@ class LanguageModelData():
 
 
 class LanguageModelDataFromDataFrames():
-    def __init__(self, field, col, train_df, validation_df, test_df=None, bs=64, bptt=70, **kwargs):
+    def __init__(self, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
         self.bs = bs
 
         # split train, val, and test datasets
-        self.trn_ds, self.val_ds, self.test_ds = ConcatTextDatasetFromDataFrames.splits(field, col, 
-                                                    train=train_df, validation=validation_df, test=test_df)
+        self.trn_ds, self.val_ds, self.test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col, 
+                                                    train_df=train_df, val_df=val_df, test_df=test_df)
 
         field.build_vocab(self.trn_ds, **kwargs)
 
         self.pad_idx = field.vocab.stoi[field.pad_token]
         self.nt = len(field.vocab)
+
         self.trn_dl, self.val_dl, self.test_dl = [ LanguageModelLoader(ds, bs, bptt) 
                                                     for ds in (self.trn_ds, self.val_ds, self.test_ds) ]
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
         model = SingleModel(to_gpu(m))
+        
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
 
