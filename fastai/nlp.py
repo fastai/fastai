@@ -208,29 +208,9 @@ class ConcatTextDatasetFromDataFrames(torchtext.data.Dataset):
 
 
 class LanguageModelData():
-    def __init__(self, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
-        self.path,self.bs = path,bs
-        self.trn_ds,self.val_ds,self.test_ds = ConcatTextDataset.splits(
-            path, text_field=field, train=train, validation=validation, test=test)
-        field.build_vocab(self.trn_ds, **kwargs)
-        self.pad_idx = field.vocab.stoi[field.pad_token]
-        self.nt = len(field.vocab)
-        self.trn_dl,self.val_dl,self.test_dl = [LanguageModelLoader(ds, bs, bptt) for ds in
-                                               (self.trn_ds,self.val_ds,self.test_ds)]
-
-    def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
-        m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
-        model = SingleModel(to_gpu(m))
-        return RNN_Learner(self, model, opt_fn=opt_fn)
-
-
-class LanguageModelDataFromDataFrames():
-    def __init__(self, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
+    def __init__(self, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs):
         self.bs = bs
-
-        # split train, val, and test datasets
-        self.trn_ds, self.val_ds, self.test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col, 
-                                                    train_df=train_df, val_df=val_df, test_df=test_df)
+        self.trn_ds = trn_ds; self.val_ds = val_ds; self.test_ds = test_ds
 
         field.build_vocab(self.trn_ds, **kwargs)
 
@@ -243,8 +223,26 @@ class LanguageModelDataFromDataFrames():
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
         model = SingleModel(to_gpu(m))
-        
         return RNN_Learner(self, model, opt_fn=opt_fn)
+
+    @classmethod
+    def from_dataframes(cls, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
+        # split train, val, and test datasets
+        trn_ds, val_ds, test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col, 
+                                    train_df=train_df, val_df=val_df, test_df=test_df)
+
+        return cls(field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
+
+    @classmethod
+    def from_text_files(cls, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
+        # split train, val, and test datasets
+        trn_ds, val_ds, test_ds = ConcatTextDataset.splits(
+                                    path, text_field=field, train=train, validation=validation, test=test)
+
+        lmd = cls(field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
+        lmd.path = path
+
+        return lmd
 
 
 class TextDataLoader():
