@@ -113,16 +113,18 @@ class BaseDataset(Dataset):
     @property
     def is_reg(self): return False
 
+def open_image(fn):
+    flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
+    return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+
 class FilesDataset(BaseDataset):
     def __init__(self, fnames, transform, path):
         self.path,self.fnames = path,fnames
         super().__init__(transform)
     def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
-    def get_x(self, i):
-        flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
-        fn = os.path.join(self.path, self.fnames[i])
-        return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+    def get_x(self, i): return open_image(os.path.join(self.path, self.fnames[i]))
+
     def resize_imgs(self, targ, new_path):
         dest = resize_imgs(self.fnames, targ, self.path, new_path)
         return self.__class__(self.fnames, self.y, self.transform, dest)
