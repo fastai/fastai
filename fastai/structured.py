@@ -194,7 +194,7 @@ def apply_cats(df, trn):
     now the type of col is category {a : 1, b : 2}
     """
     for n,c in df.items():
-        if trn[n].dtype.name=='category':
+        if (n in trn.columns) and (trn[n].dtype.name=='category'):
             df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
 
 def fix_missing(df, col, name, na_dict):
@@ -282,7 +282,7 @@ def numericalize(df, col, name, max_n_cat):
         integer codes.
 
     max_n_cat: If col has more categories than max_n_cat it will not change the
-        it to it's integer codes. If max_n_cat is None, then col will always be
+        it to its integer codes. If max_n_cat is None, then col will always be
         converted.
 
     Examples:
@@ -326,7 +326,7 @@ def scale_vars(df, mapper):
 
 def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
-    
+
     """ proc_df takes a data frame df and splits off the response variable, and
     changes the df into an entirely numeric dataframe.
 
@@ -337,35 +337,35 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     y_fld: The name of the response variable
 
     skip_flds: A list of fields that dropped from df.
-    
+
     do_scale: Standardizes each column in df,Takes Boolean Values(True,False)
 
     na_dict: a dictionary of na columns to add. Na columns are also added if there
         are any missing values.
 
     preproc_fn: A function that gets applied to df.
-    
+
     max_n_cat: The maximum number of categories to break into dummy values, instead
         of integer codes.
 
     subset: Takes a random subset of size subset from df.
-    
-    mapper: If do_scale is set as True, the mapper variable 
+
+    mapper: If do_scale is set as True, the mapper variable
         calculates the values used for scaling of variables during training time(mean and standard deviation).
-    
+
     Returns:
     --------
     [x, y, nas, mapper(optional)]:
-    
+
         x: x is the transformed version of df. x will not have the response variable
             and is entirely numeric.
 
         y: y is the response variable
 
         nas: returns a dictionary of which nas it created, and the associated median.
-        
+
         mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continous
-        variables which is then used for scaling of during test-time. 
+        variables which is then used for scaling of during test-time.
 
     Examples:
     ---------
@@ -395,16 +395,16 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     0     1
     1     2
     2     1
-    
+
     >>> data = DataFrame(pet=["cat", "dog", "dog", "fish", "cat", "dog", "cat", "fish"],
                  children=[4., 6, 3, 3, 2, 3, 5, 4],
                  salary=[90, 24, 44, 27, 32, 59, 36, 27])
-                 
+
     >>> mapper = DataFrameMapper([(:pet, LabelBinarizer()),
                           ([:children], StandardScaler())])
-                          
+
     >>>round(fit_transform!(mapper, copy(data)), 2)
-    
+
     8x4 Array{Float64,2}:
     1.0  0.0  0.0   0.21
     0.0  1.0  0.0   1.88
