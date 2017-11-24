@@ -338,7 +338,7 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
 
     skip_flds: A list of fields that dropped from df.
     
-    do_scale: Standardizes each column in df, takes Boolean Values (True,False).
+    do_scale: Standardizes each column in df,Takes Boolean Values(True,False)
 
     na_dict: a dictionary of na columns to add. Na columns are also added if there
         are any missing values.

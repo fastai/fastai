@@ -28,8 +28,7 @@ def plots_from_files(imspaths, figsize=(10,5), rows=1, titles=None, maintitle=No
         maintitle (string): main title
     """
     f = plt.figure(figsize=figsize)
-    if maintitle is not None:
-        plt.suptitle(maintitle, fontsize=16)    
+    if maintitle is not None: plt.suptitle(maintitle, fontsize=16)
     for i in range(len(imspaths)):
         sp = f.add_subplot(rows, len(imspaths)//rows, i+1)
         sp.axis('Off')
@@ -38,8 +37,7 @@ def plots_from_files(imspaths, figsize=(10,5), rows=1, titles=None, maintitle=No
         plt.imshow(img)
 
 
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix',
-        cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
@@ -53,8 +51,7 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.xticks(tick_marks, classes, rotation=45)
     plt.yticks(tick_marks, classes)
 
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
     print(cm)
     thresh = cm.max() / 2.
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
