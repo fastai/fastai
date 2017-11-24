@@ -186,21 +186,63 @@ class ConcatTextDataset(torchtext.data.Dataset):
         super().__init__(examples, fields, **kwargs)
 
 
+class ConcatTextDatasetFromDataFrames(torchtext.data.Dataset):
+    def __init__(self, df, text_field, col, newline_eos=True, **kwargs):
+        fields = [('text', text_field)]
+        text = []
+
+        text += text_field.preprocess(df[col].str.cat(sep=' '))
+        if (newline_eos): text.append('<eos>')
+
+        examples = [torchtext.data.Example.fromlist([text], fields)]
+
+        super().__init__(examples, fields, **kwargs)
+
+    @classmethod
+    def splits(cls, train_df=None, val_df=None, test_df=None, **kwargs):
+        train_data = None if train_df is None else cls(train_df, **kwargs)
+        val_data = None if val_df is None else cls(val_df, **kwargs)
+        test_data = None if test_df is None else cls(test_df, **kwargs)
+
+        return tuple(d for d in (train_data, val_data, test_data) if d is not None)
+
+
 class LanguageModelData():
-    def __init__(self, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
-        self.path,self.bs = path,bs
-        self.trn_ds,self.val_ds,self.test_ds = ConcatTextDataset.splits(
-            path, text_field=field, train=train, validation=validation, test=test)
+    def __init__(self, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs):
+        self.bs = bs
+        self.trn_ds = trn_ds; self.val_ds = val_ds; self.test_ds = test_ds
+
         field.build_vocab(self.trn_ds, **kwargs)
+
         self.pad_idx = field.vocab.stoi[field.pad_token]
         self.nt = len(field.vocab)
-        self.trn_dl,self.val_dl,self.test_dl = [LanguageModelLoader(ds, bs, bptt) for ds in
-                                               (self.trn_ds,self.val_ds,self.test_ds)]
+
+        self.trn_dl, self.val_dl, self.test_dl = [ LanguageModelLoader(ds, bs, bptt) 
+                                                    for ds in (self.trn_ds, self.val_ds, self.test_ds) ]
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
         model = SingleModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
+
+    @classmethod
+    def from_dataframes(cls, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
+        # split train, val, and test datasets
+        trn_ds, val_ds, test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col, 
+                                    train_df=train_df, val_df=val_df, test_df=test_df)
+
+        return cls(field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
+
+    @classmethod
+    def from_text_files(cls, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
+        # split train, val, and test datasets
+        trn_ds, val_ds, test_ds = ConcatTextDataset.splits(
+                                    path, text_field=field, train=train, validation=validation, test=test)
+
+        lmd = cls(field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
+        lmd.path = path
+
+        return lmd
 
 
 class TextDataLoader():
