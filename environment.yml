@@ -8,6 +8,7 @@ dependencies:
 - numpy
 - pillow
 - jpeg
+- spacy
 - zlib
 - freetype
 - libtiff
