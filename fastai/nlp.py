@@ -208,8 +208,9 @@ class ConcatTextDatasetFromDataFrames(torchtext.data.Dataset):
 
 
 class LanguageModelData():
-    def __init__(self, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs):
+    def __init__(self, path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs):
         self.bs = bs
+        self.path = path
         self.trn_ds = trn_ds; self.val_ds = val_ds; self.test_ds = test_ds
 
         field.build_vocab(self.trn_ds, **kwargs)
@@ -226,12 +227,12 @@ class LanguageModelData():
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
     @classmethod
-    def from_dataframes(cls, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
+    def from_dataframes(cls, path, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
         # split train, val, and test datasets
-        trn_ds, val_ds, test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col, 
+        trn_ds, val_ds, test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col,
                                     train_df=train_df, val_df=val_df, test_df=test_df)
 
-        return cls(field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
+        return cls(path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
 
     @classmethod
     def from_text_files(cls, path, field, train, validation, test=None, bs=64, bptt=70, **kwargs):
@@ -239,10 +240,7 @@ class LanguageModelData():
         trn_ds, val_ds, test_ds = ConcatTextDataset.splits(
                                     path, text_field=field, train=train, validation=validation, test=test)
 
-        lmd = cls(field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
-        lmd.path = path
-
-        return lmd
+        return cls(path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
 
 
 class TextDataLoader():
