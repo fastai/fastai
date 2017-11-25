@@ -24,6 +24,7 @@ class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None):
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
+        self.wd_sched = None
         self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
         self.tmp_path = os.path.join(self.data.path, tmp_name)
@@ -74,9 +75,18 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
-                metrics=None, callbacks=None, **kwargs):
+                metrics=None, callbacks=None, use_wd_schedule=False, **kwargs):
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
+
+        if use_wd_schedule:
+            # This needs to come before CosAnneal() because we need to read the initial learning rate from
+            # layer_opt.lrs but CosAnneal() alters the layer_opt.lrs value initially (divides by 100)
+            batch_per_epoch = len(list(iter(data.trn_dl)))
+            self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cycle_len if cycle_len else 1,
+                                                cycle_mult, n_cycle)
+            callbacks += [self.wd_sched]
+
         if cycle_len:
             cycle_end = self.get_cycle_end(cycle_save_name)
             cycle_batches = len(data.trn_dl)*cycle_len

@@ -27,7 +27,16 @@ class LayerOptimizer():
         self.lrs=lrs
         set_lrs(self.opt, lrs)
 
+    def set_wds(self, wds):
+        self.wds=wds
+        set_wds(self.opt, wds)
+
 def set_lrs(opt, lrs):
     if not isinstance(lrs, Iterable): lrs=[lrs]
     if len(lrs)==1: lrs=lrs*len(opt.param_groups)
     for pg,lr in zip(opt.param_groups,lrs): pg['lr'] = lr
+
+def set_wds(opt, wds):
+    if not isinstance(wds, Iterable): wds=[wds]
+    if len(wds)==1: wds=wds*len(opt.param_groups)
+    for pg,wd in zip(opt.param_groups,wds): pg['weight_decay'] = wd

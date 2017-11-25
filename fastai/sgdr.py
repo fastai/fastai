@@ -2,12 +2,14 @@ from .imports import *
 from .layer_optimizer import *
 
 class Callback:
-    def on_train_begin(self, opt): pass
+    def on_train_begin(self): pass
+    def on_batch_begin(self): pass
     def on_epoch_end(self, metrics): pass
     def on_batch_end(self, metrics): pass
 
 class LossRecorder(Callback):
     def __init__(self, layer_opt):
+        super().__init__()
         self.layer_opt=layer_opt
         self.init_lrs=np.array(layer_opt.lrs)
         self.on_train_begin()
@@ -100,3 +102,39 @@ class CosAnneal(LR_Updater):
                 self.on_cycle_end(self, self.cycle_count)
             self.cycle_count += 1
         return init_lrs / 2 * cos_out
+
+
+class WeightDecaySchedule(Callback):
+    def __init__(self, layer_opt, batch_per_epoch, cycle_len, cycle_mult, n_cycles):
+        super().__init__()
+        self.layer_opt = layer_opt
+        self.batch_per_epoch = batch_per_epoch
+        self.init_wds = np.array(layer_opt.wds)
+        self.init_lrs = np.array(layer_opt.lrs)
+        self.iteration = 0
+        self.epoch = 0
+        # Pre calculating the number of epochs in the cycle of current running epoch
+        self.epoch_to_num_cycles, i = dict(), 0
+        for cycle in range(n_cycles):
+            for _ in range(cycle_len):
+                self.epoch_to_num_cycles[i] = cycle_len
+                i += 1
+            cycle_len *= cycle_mult
+
+    def on_train_begin(self):
+        self.iteration = 0
+        self.epoch = 0
+
+    def on_batch_begin(self):
+        # Decay the weight(s)
+        weightDecayMultiplier = np.array(self.layer_opt.lrs) / self.init_lrs
+        weightDecayNormalized = self.init_wds / np.sqrt(self.batch_per_epoch * self.epoch_to_num_cycles[self.epoch])
+        new_wds = weightDecayMultiplier * weightDecayNormalized
+        self.layer_opt.set_wds(new_wds)
+        self.iteration += 1
+
+        # Note: In the paper, weightDecayMultiplier is multiplied with LR too. In the paper's associated code, it does
+        # not do so. I found that it doesn't make sense to do so either.
+
+    def on_epoch_end(self, metrics):
+        self.epoch += 1
