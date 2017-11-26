@@ -21,10 +21,10 @@ class SingleModel(BasicModel):
 
 
 class Learner():
-    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None):
+    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
-        self.clip = None
+        self.clip = clip
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
         self.tmp_path = os.path.join(self.data.path, tmp_name)
         self.models_path = os.path.join(self.data.path, models_name)
@@ -101,13 +101,13 @@ class Learner():
     def lr_find(self, start_lr=1e-5, end_lr=10, wds=None):
         """Helps you find an optimal learning rate for a model.
 
-         It uses the technique developed in the 2015 paper 
-         `Cyclical Learning Rates for Training Neural Networks`, where 
-         we simply keep increasing the learning rate from a very small value, 
+         It uses the technique developed in the 2015 paper
+         `Cyclical Learning Rates for Training Neural Networks`, where
+         we simply keep increasing the learning rate from a very small value,
          until the loss starts decreasing.
 
         Args:
-            start_lr (float/numpy array) : Passing in a numpy array allows you 
+            start_lr (float/numpy array) : Passing in a numpy array allows you
                 to specify learning rates for a learner's layer_groups
             end_lr (float) : The maximum learning rate to try.
             wds (iterable/float)

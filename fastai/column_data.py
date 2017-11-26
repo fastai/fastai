@@ -60,9 +60,9 @@ class ColumnarModelData(ModelData):
         return cls.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=test_df)
 
     def get_learner(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
-                    y_range=None, use_bn=False):
+                    y_range=None, use_bn=False, **kwargs):
         model = MixedInputModel(emb_szs, n_cont, emb_drop, out_sz, szs, drops, y_range, use_bn)
-        return StructuredLearner(self, StructuredModel(to_gpu(model)), opt_fn=optim.Adam)
+        return StructuredLearner(self, StructuredModel(to_gpu(model)), opt_fn=optim.Adam, **kwargs)
 
 
 def emb_init(x):
