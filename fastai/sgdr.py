@@ -111,8 +111,11 @@ class WeightDecaySchedule(Callback):
         self.batch_per_epoch = batch_per_epoch
         self.init_wds = np.array(layer_opt.wds)
         self.init_lrs = np.array(layer_opt.lrs)
+        self.new_wds = None
+        self.param_groups_old = None
         self.iteration = 0
         self.epoch = 0
+
         # Pre calculating the number of epochs in the cycle of current running epoch
         self.epoch_to_num_cycles, i = dict(), 0
         for cycle in range(n_cycles):
@@ -129,12 +132,21 @@ class WeightDecaySchedule(Callback):
         # Decay the weight(s)
         weightDecayMultiplier = np.array(self.layer_opt.lrs) / self.init_lrs
         weightDecayNormalized = self.init_wds / np.sqrt(self.batch_per_epoch * self.epoch_to_num_cycles[self.epoch])
-        new_wds = weightDecayMultiplier * weightDecayNormalized
-        self.layer_opt.set_wds(new_wds)
+        self.new_wds = weightDecayMultiplier * weightDecayNormalized
+
+        self.layer_opt.set_wds(torch.zeros(self.new_wds.size))  # Set with zeros so that it is not applied in Adam
+        self.param_groups_old = self.layer_opt.opt.param_groups.copy()
         self.iteration += 1
 
         # Note: In the paper, weightDecayMultiplier is multiplied with LR too. In the paper's associated code, it does
         # not do so. I found that it doesn't make sense to do so either.
+
+    def on_batch_end(self, loss):
+        for group, group_old, wds in zip(self.layer_opt.opt.param_groups, self.param_groups_old, self.new_wds):
+            for p, p_old in zip(group['params'], group_old['params']):
+                if p.grad is None:
+                    continue
+                p.data = p.data.add(-wds, p_old.data)
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
