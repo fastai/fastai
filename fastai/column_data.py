@@ -22,8 +22,8 @@ class PassthruDataset(Dataset):
 class ColumnarDataset(Dataset):
     def __init__(self, cats, conts, y):
         n = len(cats[0]) if cats else len(conts[0])
-        self.cats = np.stack(cats, 1).astype(np.int64) if cats else np.zeros((n,0))
-        self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((n,0))
+        self.cats = np.stack(cats, 1).astype(np.int64) if cats else np.zeros((n,1))
+        self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((n,1))
         self.y = np.zeros((n,1)) if y is None else y[:,None].astype(np.float32)
 
     def __len__(self): return len(self.y)
@@ -47,6 +47,12 @@ class ColumnarModelData(ModelData):
         test_dl = DataLoader(test_ds, bs, shuffle=False, num_workers=1) if test_ds is not None else None
         super().__init__(path, DataLoader(trn_ds, bs, shuffle=True, num_workers=1),
             DataLoader(val_ds, bs*2, shuffle=False, num_workers=1), test_dl)
+
+    #def from_cats(cls, path, val_idxs, df, y_col, cols):
+        #x = df[cols]
+        #y = df[y_col]
+        #((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, x, y)
+        #return cls(
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=None):
