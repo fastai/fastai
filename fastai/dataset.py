@@ -61,10 +61,11 @@ def folder_source(path, folder):
 def parse_csv_labels(fn, skip_header=True):
     skip = 1 if skip_header else 0
     csv_lines = [o.strip().split(',') for o in open(fn)][skip:]
+    fnames = [fname for fname, _ in csv_lines]
     csv_labels = {a:b.split(' ') for a,b in csv_lines}
     all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
     label2idx = {v:k for k,v in enumerate(all_labels)}
-    return sorted(csv_labels.keys()), csv_labels, all_labels, label2idx
+    return sorted(fnames), csv_labels, all_labels, label2idx
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
     all_idx = {k: n_hot([label2idx[o] for o in v], c)
