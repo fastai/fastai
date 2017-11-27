@@ -15,7 +15,7 @@ Then, `cd` to the fastai folder and create the python environment:
 
 ```sh
 cd fastai
-conda env create -f environment.yml
+conda env update
 ```
 This downloads all of the dependencies and then all you have to do is:
 
@@ -23,7 +23,7 @@ This downloads all of the dependencies and then all you have to do is:
 source activate fastai
 ```
 
-To update the environment:
+To update everything:
 
 ```sh
 git pull
