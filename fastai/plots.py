@@ -87,6 +87,7 @@ class ImageModelResults():
         self.ds = ds
         self.preds = np.argmax(log_preds, axis=1)
         self.probs = np.exp(log_preds)
+        self.num_classes = log_preds.shape[1]
 
     def plot_val_with_title(self, idxs, y):
         imgs = np.stack([self.ds[x][0] for x in idxs])
@@ -116,7 +117,22 @@ class ImageModelResults():
     def plot_by_correct(self, y, is_correct):
         return self.plot_val_with_title(self.most_by_correct(y, is_correct), y)
 
+    def most_uncertain(self):
+        return np.argsort(np.average(np.abs(self.probs-(1/self.num_classes)), axis = 1))[:4]
+
+    def most_uncertain_class(self, most_uncertain_idx):
+        return np.argsort(np.abs(self.probs[most_uncertain_idx,:]-(1/self.num_classes)))[:4,-1]
+
+    def plot_by_uncertain(self):
+        """
+        most_uncertain() - will return the most uncertain indexes which can belong to different classes
+        most_uncertain_class() - will return the specific classes of this uncertain indexes
+        we need to know the classes in order to display them on the plot along to the probabilities values
+        """
+        most_uncertain_idxs = self.most_uncertain();
+        return self.plot_val_with_title(most_uncertain_idxs, self.most_uncertain_class(most_uncertain_idxs))
+
+    def plot_most_uncertain(self): return self.plot_by_uncertain()
 
     def plot_most_correct(self, y): return self.plot_by_correct(y, True)
     def plot_most_incorrect(self, y): return self.plot_by_correct(y, False)
-
