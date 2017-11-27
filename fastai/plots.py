@@ -2,6 +2,8 @@ from .imports import *
 from .torch_imports import *
 from sklearn.metrics import confusion_matrix
 
+def ceildiv(a, b):
+    return -(-a // b)
 
 def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None, maintitle=None):
     if type(ims[0]) is np.ndarray:
@@ -11,7 +13,7 @@ def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None, maintitle=None
     if maintitle is not None:
         plt.suptitle(maintitle, fontsize=16)
     for i in range(len(ims)):
-        sp = f.add_subplot(rows, len(ims)//rows, i+1)
+        sp = f.add_subplot(rows, ceildiv(len(ims), rows), i+1)
         sp.axis('Off')
         if titles is not None: sp.set_title(titles[i], fontsize=16)
         plt.imshow(ims[i], interpolation=None if interp else 'none')
@@ -30,7 +32,7 @@ def plots_from_files(imspaths, figsize=(10,5), rows=1, titles=None, maintitle=No
     f = plt.figure(figsize=figsize)
     if maintitle is not None: plt.suptitle(maintitle, fontsize=16)
     for i in range(len(imspaths)):
-        sp = f.add_subplot(rows, len(imspaths)//rows, i+1)
+        sp = f.add_subplot(rows, ceildiv(len(imspaths), rows), i+1)
         sp.axis('Off')
         if titles is not None: sp.set_title(titles[i], fontsize=16)
         img = plt.imread(imspaths[i])
@@ -64,7 +66,7 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
 def plots_raw(ims, figsize=(12,6), rows=1, titles=None):
     f = plt.figure(figsize=figsize)
     for i in range(len(ims)):
-        sp = f.add_subplot(rows, len(ims)//rows, i+1)
+        sp = f.add_subplot(rows, ceildiv(len(ims), rows), i+1)
         sp.axis('Off')
         if titles is not None: sp.set_title(titles[i], fontsize=16)
         plt.imshow(ims[i])
