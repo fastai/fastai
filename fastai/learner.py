@@ -75,6 +75,28 @@ class Learner():
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
                 metrics=None, callbacks=None, **kwargs):
+        """
+        Method does some preparation before finally delegating to the 'fit' method for
+        fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
+        scheduler for varying the learning rate across iterations.
+
+        Method also computes the total number of epochs to fit based on provided 'cycle_len',
+        'cycle_mult', and 'n_cycle' parameters.
+
+        :param model (Learner): Any neural architecture for solving a supported problem. Eg. ResNet-34, RNN_Learner etc.
+        :param data (ModelData): An instance of ModelData.
+        :param layer_opt (LayerOptimizer): An instance of the LayerOptimizer class
+        :param n_cycle (int): number of cycles
+        :param cycle_len (int): number of cycles before lr is reset to the initial value. E.g if cycle_len = 3, then
+        the lr is varied between a maximum and minimum value over 3 epochs.
+        :param cycle_mult (int): additional parameter for influencing how the lr resets over the cycles. For an intuitive
+        explanation, please see https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb
+        :param cycle_save_name (str): use to save the weights at end of each cycle
+        :param metrics (function): some function for evaluating a desired metric. Eg. accuracy, fbeta_torch etc.
+        :param callbacks (list(Callback)): callbacks to apply during the training.
+        :param kwargs: other arguments
+        :return: None
+        """
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
         if cycle_len:
@@ -91,9 +113,42 @@ class Learner():
     def get_layer_groups(self): return self.models.get_layer_groups()
 
     def get_layer_opt(self, lrs, wds):
+        """
+        Method returns an instance of the LayerOptimizer class, which
+        allows for setting differential learning rates for different
+        parts of the model.
+
+        An example of how a model maybe differentiated into different parts
+        for application of differential learning rates and weight decays is
+        seen in ../.../courses/dl1/fastai/conv_learner.py, using the dict
+        'model_meta'. Currently, this seems supported only for convolutional
+        networks such as VGG-19, ResNet-XX etc.
+
+        :param lrs (float or list(float)): learning rate(s) for the model
+        :param wds (float or list(float)): weight decay parameter(s).
+        :return: An instance of a LayerOptimizer
+        """
         return LayerOptimizer(self.opt_fn, self.get_layer_groups(), lrs, wds)
 
     def fit(self, lrs, n_cycle, wds=None, **kwargs):
+        """
+        Method gets an instance of LayerOptimizer and delegates to self.fit_gen(..)
+
+        Note that one can specify a list of learning rates which, when appropriately
+        defined, will be applied to different segments of an architecture. This seems
+        mostly relevant to ImageNet-trained models, where we want to alter the layers
+        closest to the images by much smaller amounts.
+
+        Likewise, a single or list of weight decay parameters can be specified, which
+        if appropriate for a model, will apply variable weight decay parameters to
+        different segments of the model.
+
+        :param lrs (float or list(float)): learning rate for the model
+        :param n_cycle (int): number of cycles (or iterations) to fit the model for
+        :param wds (float or list(float)): weight decay parameter(s).
+        :param kwargs: other arguments
+        :return: None
+        """
         self.sched = None
         layer_opt = self.get_layer_opt(lrs, wds)
         self.fit_gen(self.model, self.data, layer_opt, n_cycle, **kwargs)
