@@ -269,10 +269,15 @@ class TextData(ModelData):
         text_fld = splits[0].fields[text_name]
         label_fld = splits[0].fields[label_name]
         label_fld.build_vocab(splits[0])
-        trn_iter,val_iter = torchtext.data.BucketIterator.splits(splits, batch_size=bs)
+        iters = torchtext.data.BucketIterator.splits(splits, batch_size=bs)
+        trn_iter,val_iter,test_iter = iters[0],iters[1],None
+        test_dl = None
+        if len(iters) == 3:
+            test_iter = iters[2]
+            test_dl = TextDataLoader(test_iter, text_name, label_name)
         trn_dl = TextDataLoader(trn_iter, text_name, label_name)
         val_dl = TextDataLoader(val_iter, text_name, label_name)
-        obj = cls.from_dls(path, trn_dl, val_dl)
+        obj = cls.from_dls(path, trn_dl, val_dl, test_dl)
         obj.bs = bs
         obj.pad_idx = text_fld.vocab.stoi[text_fld.pad_token]
         obj.nt = len(text_fld.vocab)
