@@ -75,16 +75,19 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
-                metrics=None, callbacks=None, use_wd_schedule=False, **kwargs):
+                metrics=None, callbacks=None, use_wd_sched=False, **kwargs):
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
 
-        if use_wd_schedule:
+        if use_wd_sched:
             # This needs to come before CosAnneal() because we need to read the initial learning rate from
             # layer_opt.lrs - but CosAnneal() alters the layer_opt.lrs value initially (divides by 100)
-            batch_per_epoch = len(list(iter(data.trn_dl)))
-            self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cycle_len if cycle_len else 1,
-                                                cycle_mult, n_cycle)
+            if np.sum(layer_opt.wds) == 0:
+                print('fit() warning: use_wd_sched is set to True, but weight decay(s) passed are 0. Use wds to '
+                      'pass weight decay values.')
+            batch_per_epoch = len(data.trn_dl)
+            cl = cycle_len if cycle_len else 1
+            self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cl, cycle_mult, n_cycle)
             callbacks += [self.wd_sched]
 
         if cycle_len:
