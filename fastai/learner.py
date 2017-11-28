@@ -81,7 +81,7 @@ class Learner():
 
         if use_wd_schedule:
             # This needs to come before CosAnneal() because we need to read the initial learning rate from
-            # layer_opt.lrs but CosAnneal() alters the layer_opt.lrs value initially (divides by 100)
+            # layer_opt.lrs - but CosAnneal() alters the layer_opt.lrs value initially (divides by 100)
             batch_per_epoch = len(list(iter(data.trn_dl)))
             self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cycle_len if cycle_len else 1,
                                                 cycle_mult, n_cycle)

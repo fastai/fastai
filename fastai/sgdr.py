@@ -1,5 +1,7 @@
 from .imports import *
 from .layer_optimizer import *
+import copy
+
 
 class Callback:
     def on_train_begin(self): pass
@@ -106,13 +108,23 @@ class CosAnneal(LR_Updater):
 
 class WeightDecaySchedule(Callback):
     def __init__(self, layer_opt, batch_per_epoch, cycle_len, cycle_mult, n_cycles):
+        """
+        Implements the weight decay schedule as mentioned in https://arxiv.org/abs/1711.05101
+
+        :param layer_opt: The LayerOptimizer
+        :param batch_per_epoch: Num batches in 1 epoch
+        :param cycle_len: Num epochs in initial cycle. Subsequent cycle_len = previous cycle_len * cycle_mult
+        :param cycle_mult: Cycle multiplier
+        :param n_cycles: Number of cycles to be executed
+        """
         super().__init__()
+
         self.layer_opt = layer_opt
         self.batch_per_epoch = batch_per_epoch
-        self.init_wds = np.array(layer_opt.wds)
-        self.init_lrs = np.array(layer_opt.lrs)
-        self.new_wds = None
-        self.param_groups_old = None
+        self.init_wds = np.array(layer_opt.wds)  # Weights as set by user
+        self.init_lrs = np.array(layer_opt.lrs)  # Learning rates as set by user
+        self.new_wds = None                      # Holds the new weight decay factors, calculated in on_batch_begin()
+        self.param_groups_old = None             # Caches the old parameter values in on_batch_begin()
         self.iteration = 0
         self.epoch = 0
 
@@ -129,19 +141,21 @@ class WeightDecaySchedule(Callback):
         self.epoch = 0
 
     def on_batch_begin(self):
-        # Decay the weight(s)
-        weightDecayMultiplier = np.array(self.layer_opt.lrs) / self.init_lrs
-        weightDecayNormalized = self.init_wds / np.sqrt(self.batch_per_epoch * self.epoch_to_num_cycles[self.epoch])
-        self.new_wds = weightDecayMultiplier * weightDecayNormalized
+        # Prepare for decay of weights
 
-        self.layer_opt.set_wds(torch.zeros(self.new_wds.size))  # Set with zeros so that it is not applied in Adam
-        self.param_groups_old = self.layer_opt.opt.param_groups.copy()
+        # Weight Decay Multiplier (The 'eta' in the paper)
+        wdm = np.array(self.layer_opt.lrs) / self.init_lrs
+        # Weight Decay Normalized
+        wdn = self.init_wds / np.sqrt(self.batch_per_epoch * self.epoch_to_num_cycles[self.epoch])
+        self.new_wds = wdm * wdn
+
+        # Set weight_decay with zeros so that it is not applied in Adam, we will apply it outside in on_batch_end()
+        self.layer_opt.set_wds(torch.zeros(self.new_wds.size))
+        self.param_groups_old = copy.deepcopy(self.layer_opt.opt.param_groups)
         self.iteration += 1
 
-        # Note: In the paper, weightDecayMultiplier is multiplied with LR too. In the paper's associated code, it does
-        # not do so. I found that it doesn't make sense to do so either.
-
     def on_batch_end(self, loss):
+        # Decay the weights
         for group, group_old, wds in zip(self.layer_opt.opt.param_groups, self.param_groups_old, self.new_wds):
             for p, p_old in zip(group['params'], group_old['params']):
                 if p.grad is None:
