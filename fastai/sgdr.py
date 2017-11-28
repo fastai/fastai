@@ -2,7 +2,6 @@ from .imports import *
 from .layer_optimizer import *
 import copy
 
-
 class Callback:
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
@@ -151,6 +150,7 @@ class WeightDecaySchedule(Callback):
 
         # Set weight_decay with zeros so that it is not applied in Adam, we will apply it outside in on_batch_end()
         self.layer_opt.set_wds(torch.zeros(self.new_wds.size))
+        # We have to save the existing weights before the optimizer changes the values
         self.param_groups_old = copy.deepcopy(self.layer_opt.opt.param_groups)
         self.iteration += 1
 
