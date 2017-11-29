@@ -30,3 +30,9 @@ git pull
 conda env update
 ```
 
+Or
+
+We can also install this library in the local environment using ```pip```
+```sh
+pip install fastai
+```
