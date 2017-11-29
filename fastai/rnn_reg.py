@@ -8,23 +8,11 @@ def dropout_mask(x, sz, dropout): return x.new(*sz).bernoulli_(1-dropout)/(1-dro
 
 
 class LockedDropout(nn.Module):
-    """
-
-    """
     def __init__(self, p=0.5):
-        """
-
-        :param p:
-        """
         super().__init__()
         self.p=p
 
     def forward(self, x):
-        """
-
-        :param x:
-        :return:
-        """
         if not self.training or not self.p: return x
         m = dropout_mask(x.data, (1, x.size(1), x.size(2)), self.p)
         return Variable(m, requires_grad=False) * x
