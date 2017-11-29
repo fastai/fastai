@@ -18,6 +18,10 @@ from .models.inceptionresnetv2 import InceptionResnetV2
 from .models.inceptionv4 import InceptionV4
 from .models.nasnet import nasnetalarge
 
+import warnings
+warnings.filterwarnings('ignore', message='Implicit dimension choice',
+                        category=UserWarning, module='.*container.*')
+
 def children(m): return m if isinstance(m, (list, tuple)) else list(m.children())
 def save_model(m, p): torch.save(m.state_dict(), p)
 def load_model(m, p): m.load_state_dict(torch.load(p))
