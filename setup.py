@@ -20,7 +20,7 @@ from setuptools import setup
 setup(
     name = "fastai",
     packages = ['fastai', 'fastai/models', 'fastai/models/cifar10'],
-    version = 0.4 ,
+    version = 0.6 ,
     description = "The fast.ai deep learning and machine learning library. Git pull fastai, for all fast.ai sessions and tutorials also",
     author = "Jeremy Howard and contributors",
     author_email = "info@fast.ai",
