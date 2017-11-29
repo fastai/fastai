@@ -75,40 +75,82 @@ def load_img_id(ds, idx, path): return np.array(PIL.Image.open(path+ds.fnames[id
 
 
 class ImageModelResults():
-    """
-    Visualize the results of an image model
+    """ Visualize the results of an image model
 
-    Each function has an extra parameter, y, which is the selected_class in (0,num_classes-1)
-    y is a number in the case of displaying the most correct/incorrect classes
-    y is a vector in the case of displaying the most uncertain classes
-    """
+    Arguments:
+        ds: a dataset which contains the images
+        log_preds: predictions for the dataset in log scale
 
+    Returns:
+        ImageModelResults
+    """
     def __init__(self, ds, log_preds):
         self.ds = ds
+        # returns the indices of the maximum value of predictions along axis 1, representing the predicted class
+        # log_preds.shape = (number_of_samples, number_of_classes);
+        # preds.shape = (number_of_samples,)
         self.preds = np.argmax(log_preds, axis=1)
+        # computes the probabilities
         self.probs = np.exp(log_preds)
+        # extracts the number of classes
+        self.num_classes = log_preds.shape[1]
 
+    """
+    Displays the images and their probabilities of belonging to a certain class
+    Arguments:
+        idxs: indexes of the image samples from the dataset
+        y: the selected class
+    Returns:
+        Plots the images in n rows [rows = n]
+    """
     def plot_val_with_title(self, idxs, y):
-        imgs = np.stack([self.ds[x][0] for x in idxs])
-        if isinstance(y, int):
+        # if there are any samples to be displayed
+        if len(idxs) > 0:
+            imgs = np.stack([self.ds[x][0] for x in idxs])
             title_probs = [self.probs[x,y] for x in idxs]
+
+            return plots(self.ds.denorm(imgs), rows=1, titles=title_probs)
+        # if idxs is empty return false
         else:
-            title_probs = [self.probs[x,y[i]] for i,x in enumerate(idxs)]
+            return false;
 
-        return plots(self.ds.denorm(imgs), rows=1, titles=title_probs)
-
+    """
+    Extracts the first 4 most correct/incorrect indexes from the ordered list of probabilities
+    Arguments:
+        mask: the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
+        y: the selected class
+        mult: sets the ordering; -1 descending, 1 ascending
+    Returns:
+        An array of indexes (numpy.ndarray)
+    """
     def most_by_mask(self, mask, y, mult):
         idxs = np.where(mask)[0]
         return idxs[np.argsort(mult * self.probs[idxs,y])[:4]]
 
+    """
+    Extracts the first 4 most uncertain indexes from the ordered list of probabilities
+    Arguments:
+        mask: the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
+        y: the selected class
+    Returns:
+        An array of indexes (numpy.ndarray)
+    """
+    def most_uncertain_by_mask(self, mask, y):
+        idxs = np.where(mask)[0]
+        # the most uncertain samples will have abs(probs-1/num_classes) close to 0;
+        return idxs[np.argsort(np.abs(self.probs[idxs,y]-(1/self.num_classes)))[:4]]
+
+    """
+    Extracts the predicted classes which correspond to the selected class (y) and to the specific case (prediction is correct - is_true=True, prediction is wrong - is_true=False)
+    Arguments:
+        y: the selected class
+        is_correct: a boolean flag (True, False) which specify the what to look for. Ex: True - most correct samples, False - most incorrect samples
+    Returns:
+        An array of indexes (numpy.ndarray)
+    """
     def most_by_correct(self, y, is_correct):
-        """
-        mult=-1 when the is_correct flag is true -> when we want to display
-        the most correct classes we will make a descending sorting (argsort)
-        because we want that the biggest probabilities to be displayed first.
-        When is_correct is false, we want to display the most incorrect classes,
-        so we want an ascending sorting since our interest is in the smallest probabilities.
-        """
+        # mult=-1 when the is_correct flag is true -> when we want to display the most correct classes we will make a descending sorting (argsort) because we want that the biggest probabilities to be displayed first.
+        # When is_correct is false, we want to display the most incorrect classes, so we want an ascending sorting since our interest is in the smallest probabilities.
         mult = -1 if is_correct==True else 1
         return self.most_by_mask(((self.preds == self.ds.y)==is_correct)
                                  & (self.ds.y == y), y, mult)
@@ -116,7 +158,9 @@ class ImageModelResults():
     def plot_by_correct(self, y, is_correct):
         return self.plot_val_with_title(self.most_by_correct(y, is_correct), y)
 
+    def most_by_uncertain(self, y):
+        return self.most_uncertain_by_mask((self.ds.y == y), y)
 
     def plot_most_correct(self, y): return self.plot_by_correct(y, True)
     def plot_most_incorrect(self, y): return self.plot_by_correct(y, False)
-
+    def plot_most_uncertain(self, y): return self.plot_val_with_title(self.most_by_uncertain(y), y)
