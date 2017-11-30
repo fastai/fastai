@@ -1,3 +1,4 @@
+.pypirc
 ~*
 tmp*
 tags
@@ -113,3 +114,4 @@ ENV/
 .Trashes
 ehthumbs.db
 Thumbs.db
+.idea
