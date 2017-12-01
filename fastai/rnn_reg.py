@@ -4,15 +4,72 @@ from functools import wraps
 from torch.autograd import Variable
 
 
-def dropout_mask(x, sz, dropout): return x.new(*sz).bernoulli_(1-dropout)/(1-dropout)
+def dropout_mask(x, sz, dropout):
+    """ Method returns a new tensor whose input is the shape determined by sz.
+
+    Args:
+        x (nn.Variable): A torch Variable object
+        sz (tuple(int, int, int)): The expected size of the new tensor
+        dropout (float): The dropout fraction to apply
+
+    This method uses the bernoulli distribution to decide to keep the activations.
+    Additionally, the sampled activations is rescaled is using the factor 1/(1 - dropout).
+
+    In the example given below, one can see that approximately .8 fraction of the
+    returned tensors are zero. Rescaling with the factor 1/(1 - 0.8) returns a tensor
+    with 5's in the unit places.
+
+    The official link to the pytorch bernoulli function is here:
+        http://pytorch.org/docs/master/torch.html#torch.bernoulli
+
+    Examples:
+        >>> a_Var = torch.autograd.Variable(torch.Tensor(2, 3, 4).uniform_(0, 1), requires_grad=False)
+        >>> a_Var
+
+            Variable containing:
+            (0 ,.,.) =
+              0.6890  0.5412  0.4303  0.8918
+              0.3871  0.7944  0.0791  0.5979
+              0.4575  0.7036  0.6186  0.7217
+
+            (1 ,.,.) =
+              0.8354  0.1690  0.1734  0.8099
+              0.6002  0.2602  0.7907  0.4446
+              0.5877  0.7464  0.4257  0.3386
+            [torch.FloatTensor of size 2x3x4]
+
+        >>> a_mask = dropout_mask(a_Var.data, (1,a_Var.size(1),a_Var.size(2)), dropout=0.8)
+        >>> a_mask
+
+            (0 ,.,.) =
+              0  5  0  0
+              0  0  0  5
+              5  0  5  0
+            [torch.FloatTensor of size 1x3x4]
+    """
+    return x.new(*sz).bernoulli_(1-dropout)/(1-dropout)
 
 
 class LockedDropout(nn.Module):
+    """A custom module that applies dropout to the activations passing through it.
+
+    """
     def __init__(self, p=0.5):
         super().__init__()
         self.p=p
 
     def forward(self, x):
+        """Applies the dropout to input so that approximately specified
+        fraction of the activation is dropped (or zero-ed) out. The original
+        input is also rescaled because of how dropout_mask works.
+
+        Args:
+            x (autograd.Variable): torch Variable
+
+        Returns:
+            autograd.Variable
+
+        """
         if not self.training or not self.p: return x
         m = dropout_mask(x.data, (1, x.size(1), x.size(2)), self.p)
         return Variable(m, requires_grad=False) * x
@@ -100,17 +157,37 @@ class WeightDrop(torch.nn.Module):
 
 
 def embedded_dropout(embed, words, dropout=0.1, scale=None):
-  if dropout:
-    mask = Variable(dropout_mask(embed.weight.data, (embed.weight.size(0), 1), dropout))
-    masked_embed_weight = mask * embed.weight
-  else: masked_embed_weight = embed.weight
-  if scale: masked_embed_weight = scale * masked_embed_weight
+    """Method applies dropout to the embedding input.
 
-  padding_idx = embed.padding_idx
-  if padding_idx is None: padding_idx = -1
-  X = embed._backend.Embedding.apply(words, masked_embed_weight,
-    padding_idx, embed.max_norm, embed.norm_type,
-    embed.scale_grad_by_freq, embed.sparse
-  )
-  return X
+    The dropout is applied using the dropout_mask. Essentially,
+    for all rows (w_1, w_2, .... w_N)  in the embedding matrix, this
+    method zeros out a fraction of these elements. Then the existing
+    values are rescaled using the 1/(1-dropout) value. Additional rescaling
+    can be specified using the scale parameter.
+
+    Finally, the method uses the modified (masked_embedding_weight)
+    to evaluate the ouput tensor.
+
+    Args:
+        embed (nn.Embedding): torch Embedding module
+        words (nn.Variable): torch Variable carrying a tensor
+        dropout (float): dropout value to apply
+        scale (float): additional rescaling to apply
+
+    Returns:
+        torch Variable
+    """
+    if dropout:
+        mask = Variable(dropout_mask(embed.weight.data, (embed.weight.size(0), 1), dropout))
+        masked_embed_weight = mask * embed.weight
+    else: masked_embed_weight = embed.weight
+    if scale: masked_embed_weight = scale * masked_embed_weight
+
+    padding_idx = embed.padding_idx
+    if padding_idx is None: padding_idx = -1
+    X = embed._backend.Embedding.apply(words, masked_embed_weight,
+        padding_idx, embed.max_norm, embed.norm_type,
+        embed.scale_grad_by_freq, embed.sparse
+    )
+    return X
 
