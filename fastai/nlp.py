@@ -217,38 +217,40 @@ class LanguageModelData():
         for NLP tasks), then proceed with training.
 
         Example:
-            FILES = dict(train=TRN_PATH, validation=VAL_PATH, test=VAL_PATH)
-            md = LanguageModelData.from_text_files(PATH, TEXT, **FILES, bs=bs, bptt=bptt, min_freq=10)
+            >> FILES = dict(train=TRN_PATH, validation=VAL_PATH, test=VAL_PATH)
+            >> md = LanguageModelData.from_text_files(PATH, TEXT, **FILES, bs=bs, bptt=bptt, min_freq=10)
 
-            em_sz = 200  # size of each embedding vector
-            nh = 500     # number of hidden activations per layer
-            nl = 3       # number of layers
+            >> em_sz = 200  # size of each embedding vector
+            >> nh = 500     # number of hidden activations per layer
+            >> nl = 3       # number of layers
 
-            opt_fn = partial(optim.Adam, betas=(0.7, 0.99))
-            learner = md.get_model(opt_fn, em_sz, nh, nl,
+            >> opt_fn = partial(optim.Adam, betas=(0.7, 0.99))
+            >> learner = md.get_model(opt_fn, em_sz, nh, nl,
                            dropouti=0.05, dropout=0.05, wdrop=0.1, dropoute=0.02, dropouth=0.05)
-            learner.reg_fn = seq2seq_reg
-            learner.clip=0.3
+            >> learner.reg_fn = seq2seq_reg
+            >> learner.clip=0.3
 
-            learner.fit(3e-3, 4, wds=1e-6, cycle_len=1, cycle_mult=2)
+            >> learner.fit(3e-3, 4, wds=1e-6, cycle_len=1, cycle_mult=2)
 
     """
     def __init__(self, path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs):
-        """ Constructor for the class. A very important thing that happens here is
+
+        """ Constructor for the LanguageModelData class. A very important thing that happens here is
             that the field's "build_vocab" method is invoked, which builds the vocabulary
             for this NLP model. Another important thing that happens in the constructor
             is that three instances of the LanguageModelLoader is constructed; one each
             for training data (self.trn_dl), validation data (self.val_dl), and the
             testing data (self.test_dl)
 
-        :param path (str): testing path
-        :param field (Field): torchtext field object
-        :param trn_ds (Dataset): training dataset
-        :param val_ds (Dataset): validation dataset
-        :param test_ds (Dataset): testing dataset
-        :param bs (int): batch size
-        :param bptt (int): back propagation through time
-        :param kwargs: other argumetns
+        Args:
+            path (str): testing path
+            field (Field): torchtext field object
+            trn_ds (Dataset): training dataset
+            val_ds (Dataset): validation dataset
+            test_ds (Dataset): testing dataset
+            bs (int): batch size
+            bptt (int): back propagation through time
+            kwargs: other argumetns
         """
         self.bs = bs
         self.path = path
@@ -264,13 +266,16 @@ class LanguageModelData():
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         """ Method returns a RNN_Learner instance, based on the given optimizer function and other arguments.
-            
-        :param opt_fn (Optimizer): the torch optimizer function to use
-        :param emb_sz (int): embedding size
-        :param n_hid (int): number of hidden inputs
-        :param n_layers (int): number of hidden layers
-        :param kwargs: other arguments
-        :return: An instance of the RNN_Learner class.
+
+        Args:
+            opt_fn (Optimizer): the torch optimizer function to use
+            emb_sz (int): embedding size
+            n_hid (int): number of hidden inputs
+            n_layers (int): number of hidden layers
+            kwargs: other arguments
+
+        Returns:
+            An instance of the RNN_Learner class.
 
         """
         m = get_language_model(self.bs, self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
@@ -289,16 +294,19 @@ class LanguageModelData():
         """ Method used to instantiate a LanguageModelData object that can be used for a
             supported nlp task.
 
-        :param path (str): the absolute path in which temporary model data will be saved
-        :param field (Field): torchtext field
-        :param train (str): file location of the training data
-        :param validation (str): file location of the validation data
-        :param test (str): file location of the testing data
-        :param bs (int): batch size to use
-        :param bptt (int): back propagation through time parameter (a hyper-parameter for RNN models)
-        :param kwargs: other arguments
-        :return: a LanguageModelData instance, which most importantly, provides us the datasets
-                 for training, validation, and testing
+        Args:
+            path (str): the absolute path in which temporary model data will be saved
+            field (Field): torchtext field
+            train (str): file location of the training data
+            validation (str): file location of the validation data
+            test (str): file location of the testing data
+            bs (int): batch size to use
+            bptt (int): back propagation through time parameter (a hyper-parameter for RNN models)
+            kwargs: other arguments
+
+        Returns:
+            A LanguageModelData instance, which most importantly, provides us the datasets
+            for training, validation, and testing
 
         """
         trn_ds, val_ds, test_ds = ConcatTextDataset.splits(

@@ -21,10 +21,38 @@ def repackage_var(h):
 
 
 class RNN_Encoder(nn.Module):
+
+    """Instantiates a simple encoder network based on three main principles:
+
+        1. project the input (tokens) on an embedding matrix
+        2. use a LSTM (a kind of RNN) to drive the network.
+        3. Usage of dropouts in embedding and internal LSTM layers.
+
+    """
     initrange=0.1
 
     def __init__(self, bs, ntoken, emb_sz, nhid, nlayers, pad_token,
                  dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5):
+
+    """ Default constructor for the RNN_Encoder class
+
+        Args:
+              bs (int): batch size of input data
+              ntoken (int): number of vocabulary (or tokens) in the source dataset
+              emb_sz (int): the embedding size to use to encode the input data
+              nhid (int): number of hidden activation per layer
+              nlayers (int): number of layers
+              pad_token (int): the int value used for padding text.
+              dropouth (float): dropout to apply to the hidden LSTM layers. Also used to create a custom LockedDropout
+                    module which is used on the output.
+              dropouti (float): dropout to apply to the input layer. Also used by creating a custom LockedDropout module
+              dropoute (float): dropout to apply to the embedding layer.
+              wdrop (float): dropout used to instantiate a WeightDrop module.
+
+          Note:
+              A module as referenced in this doc is synonymous to a layer created by extending pytorch's torch.nn.Module
+              class.
+        """
         super().__init__()
         self.encoder = nn.Embedding(ntoken, emb_sz, padding_idx=pad_token)
         self.rnns = [torch.nn.LSTM(emb_sz if l == 0 else nhid, nhid if l != nlayers - 1 else emb_sz, 1, dropout=dropouth)
@@ -38,6 +66,16 @@ class RNN_Encoder(nn.Module):
         self.dropouth = LockedDropout(dropouth)
 
     def forward(self, input):
+        """ invoked during the forward propagation of the RNN_Encoder module.
+
+        Args:
+            input (Tensor): input of shape (batch_size x sentence length)
+
+        Returns:
+            raw_outputs (list (Tensor)), outputs (list(Tensor)): The first is the list of tensor evaluated from the pass
+            through the LSTM (or any RNN networks). The second seems to be mostly equivalent to the former, except for
+            the value got the last layer. This value seems to be what is got from raw_outputs, but with dropouth applied.
+        """
         emb = embedded_dropout(self.encoder, input, dropout=self.dropoute if self.training else 0)
         emb = self.dropouti(emb)
 
@@ -139,6 +177,40 @@ class SequentialRNN(nn.Sequential):
 
 def get_language_model(bs, n_tok, emb_sz, nhid, nlayers, pad_token,
                  dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True):
+    """Returns a SequentialRNN model.
+
+    At first, a RNN_Encoder layer is instantiated using the parameters provided. This layer
+    consists of a series of LSTM networks that uses an embedding layer to encode the input tokens,
+    as well as multiple dropout layers for regularization.
+
+    This is followed by the creation of a LinearDecoder layer. This is a simple Linear layer that
+    reads the signals from the output of the RNN_Encoder layer, and decodes to a output of size n_tokens.
+
+    Also under default condition (i.e. tie_weights = True), the embedding matrix used in the RNN_Encoder
+    is used to  instantiate the weights for the LinearDecoder layer.
+
+    The SequentialRNN layer is the native torch's Sequential wrapper that puts the RNN_Encoder and
+    LinearDecoder layers sequentially in the model.
+
+    Args:
+        bs (int): batch size of input data
+        ntoken (int): number of vocabulary (or tokens) in the source dataset
+        emb_sz (int): the embedding size to use to encode the input data
+        nhid (int): number of hidden activation per layer
+        nlayers (int): number of layers
+        pad_token (int): the int value used for padding text.
+        dropouth (float): dropout to apply to the hidden LSTM layers. Also used to create a custom LockedDropout
+            module which is used on the output.
+        dropouti (float): dropout to apply to the input layer. Also used by creating a custom LockedDropout module
+        dropoute (float): dropout to apply to the embedding layer.
+        wdrop (float): dropout used to instantiate a WeightDrop module.
+        tie_weights (bool): decide if the weights of the embedding matrix in the RNN encoder should be tied to the
+            weights of the LinearDecoder layer.
+
+    Returns:
+        A SequentialRNN model
+
+    """
     rnn_enc = RNN_Encoder(bs, n_tok, emb_sz, nhid, nlayers, pad_token,
                  dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop)
     enc = rnn_enc.encoder if tie_weights else None
