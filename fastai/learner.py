@@ -24,7 +24,8 @@ class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
-        self.clip = clip
+        self.wd_sched = None
+        self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
         self.tmp_path = os.path.join(self.data.path, tmp_name)
         self.models_path = os.path.join(self.data.path, models_name)
@@ -74,8 +75,7 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
-                metrics=None, callbacks=None, **kwargs):
-
+                metrics=None, callbacks=None, use_wd_sched=False, **kwargs):
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
         scheduler for varying the learning rate across iterations.
@@ -112,8 +112,21 @@ class Learner():
         Returns:
             None
         """
+
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
+
+        if use_wd_sched:
+            # This needs to come before CosAnneal() because we need to read the initial learning rate from
+            # layer_opt.lrs - but CosAnneal() alters the layer_opt.lrs value initially (divides by 100)
+            if np.sum(layer_opt.wds) == 0:
+                print('fit() warning: use_wd_sched is set to True, but weight decay(s) passed are 0. Use wds to '
+                      'pass weight decay values.')
+            batch_per_epoch = len(data.trn_dl)
+            cl = cycle_len if cycle_len else 1
+            self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cl, cycle_mult, n_cycle)
+            callbacks += [self.wd_sched]
+
         if cycle_len:
             cycle_end = self.get_cycle_end(cycle_save_name)
             cycle_batches = len(data.trn_dl)*cycle_len
