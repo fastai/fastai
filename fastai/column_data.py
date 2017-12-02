@@ -144,6 +144,7 @@ class CollabFilterDataset(Dataset):
     @classmethod
     def from_csv(cls, path, csv, user_name, item_name, rating_name):
         df = pd.read_csv(os.path.join(path,csv))
+        df[rating_name] = df[rating_name].astype(float)
         return cls.from_data_frame(path, df, user_name, item_name, rating_name)
 
     def proc_col(self,col):
