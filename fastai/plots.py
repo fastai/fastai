@@ -112,7 +112,7 @@ class ImageModelResults():
             return plots(self.ds.denorm(imgs), rows=1, titles=title_probs)
         # if idxs is empty return false
         else:
-            return false;
+            return False;
 
     """
     Extracts the first 4 most correct/incorrect indexes from the ordered list of probabilities
