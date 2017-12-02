@@ -1,24 +1,34 @@
 from .imports import *
 from .torch_imports import *
 
-def sum_geom(a,r,n):
-    return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
+def sum_geom(a,r,n): return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
 
 conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
 
 def T(a):
-    a = np.array(a)
-    if a.dtype in (np.int8, np.int16, np.int32, np.int64):
-        return torch.LongTensor(a.astype(np.int64))
-    if a.dtype in (np.float32, np.float64):
-        return torch.FloatTensor(a.astype(np.float32))
-    raise NotImplementedError
+    if torch.is_tensor(a): res = a
+    else:
+        a = np.array(a)
+        if a.dtype in (np.int8, np.int16, np.int32, np.int64):
+            res = torch.LongTensor(a.astype(np.int64))
+        elif a.dtype in (np.float32, np.float64):
+            return torch.FloatTensor(a.astype(np.float32))
+        else: raise NotImplementedError
+    return to_gpu(a, async=True)
 
-def V_(x):  return to_gpu(x, async=True) if isinstance(x, Variable) else Variable(to_gpu(x, async=True))
-def V(x):   return [V_(o) for o in x] if isinstance(x,list) else V_(x)
-def VV_(x): return to_gpu(x, async=True) if isinstance(x, Variable) else Variable(to_gpu(x, async=True), volatile=True)
+def create_variable(x, volatile, requires_grad=False):
+    if not isinstance(x, Variable):
+        x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
+    return x
+
+def V_(x, requires_grad=False):
+    return create_variable(x, False, requires_grad=requires_grad)
+def V(x, requires_grad=False):
+    return [V_(o, requires_grad) for o in x] if isinstance(x,list) else V_(x, requires_grad)
+
+def VV_(x): return create_variable(x, True)
 def VV(x):  return [VV_(o) for o in x] if isinstance(x,list) else VV_(x)
 
 def to_np(v):
@@ -26,10 +36,7 @@ def to_np(v):
     return v.cpu().numpy()
 
 def to_gpu(x, *args, **kwargs):
-    if torch.cuda.is_available():
-        return x.cuda(*args, **kwargs)
-    else:
-        return x
+    return x.cuda(*args, **kwargs) if torch.cuda.is_available() else x
 
 def noop(*args, **kwargs): return
 
