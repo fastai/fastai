@@ -7,8 +7,7 @@ from .learner import *
 class PassthruDataset(Dataset):
     def __init__(self,*args):
         *xs,y=args
-        self.xs = xs
-        self.y = y[:,None].astype(np.float32)
+        self.xs,self.y = xs,y
 
     def __len__(self): return len(self.y)
     def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.y[idx]]
@@ -24,7 +23,7 @@ class ColumnarDataset(Dataset):
         n = len(cats[0]) if cats else len(conts[0])
         self.cats = np.stack(cats, 1).astype(np.int64) if cats else np.zeros((n,1))
         self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((n,1))
-        self.y = np.zeros((n,1)) if y is None else y[:,None].astype(np.float32)
+        self.y = np.zeros((n,1)) if y is None else y[:,None]
 
     def __len__(self): return len(self.y)
 
@@ -48,11 +47,10 @@ class ColumnarModelData(ModelData):
         super().__init__(path, DataLoader(trn_ds, bs, shuffle=True, num_workers=1),
             DataLoader(val_ds, bs*2, shuffle=False, num_workers=1), test_dl)
 
-    #def from_cats(cls, path, val_idxs, df, y_col, cols):
-        #x = df[cols]
-        #y = df[y_col]
-        #((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, x, y)
-        #return cls(
+    @classmethod
+    def from_arrays(cls, path, val_idxs, xs, y, bs=64):
+        ((val_xs, trn_xs), (val_y, trn_y)) = split_by_idx(val_idxs, xs, y)
+        return cls(path, PassthruDataset(*(trn_xs.T), trn_y), PassthruDataset(*(val_xs.T), val_y), bs)
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=None):

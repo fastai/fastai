@@ -259,12 +259,12 @@ class LanguageModelData():
         self.pad_idx = field.vocab.stoi[field.pad_token]
         self.nt = len(field.vocab)
 
-        self.trn_dl, self.val_dl, self.test_dl = [ LanguageModelLoader(ds, bs, bptt) 
+        self.trn_dl, self.val_dl, self.test_dl = [ LanguageModelLoader(ds, bs, bptt)
                                                     for ds in (self.trn_ds, self.val_ds, self.test_ds) ]
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         """ Method returns a RNN_Learner instance, based on the given optimizer function and other arguments.
-            
+
         :param opt_fn (Optimizer): the torch optimizer function to use
         :param emb_sz (int): embedding size
         :param n_hid (int): number of hidden inputs

@@ -16,7 +16,7 @@ def T(a):
         elif a.dtype in (np.float32, np.float64):
             return torch.FloatTensor(a.astype(np.float32))
         else: raise NotImplementedError
-    return to_gpu(a, async=True)
+    return to_gpu(res, async=True)
 
 def create_variable(x, volatile, requires_grad=False):
     if not isinstance(x, Variable):
