@@ -129,8 +129,8 @@ class StructuredModel(BasicModel):
 
 
 class CollabFilterDataset(Dataset):
-    def __init__(self, path, user_col, item_col, ratings):
-        self.ratings,self.path = ratings.values.astype(np.float32),path
+    def __init__(self, path, user_col, item_col, ratings, is_reg=True):
+        self.ratings,self.path = ratings.values.astype(np.float32),path,is_reg
         self.n = len(ratings)
         (self.users,self.user2idx,self.user_col,self.n_users) = self.proc_col(user_col)
         (self.items,self.item2idx,self.item_col,self.n_items) = self.proc_col(item_col)
@@ -172,9 +172,9 @@ def get_emb(ni,nf):
     return e
 
 class EmbeddingDotBias(nn.Module):
-    def __init__(self, n_factors, n_users, n_items, min_score, max_score):
+    def __init__(self, n_factors, n_users, n_items, min_score=0, max_score=1, is_reg=True):
         super().__init__()
-        self.min_score,self.max_score = min_score,max_score
+        self.min_score,self.max_score,self.is_reg = min_score,max_score,is_reg
         (self.u, self.i, self.ub, self.ib) = [get_emb(*o) for o in [
             (n_users, n_factors), (n_items, n_factors), (n_users,1), (n_items,1)
         ]]
@@ -182,27 +182,32 @@ class EmbeddingDotBias(nn.Module):
     def forward(self, users, items):
         um = self.u(users)* self.i(items)
         res = um.sum(1) + self.ub(users).squeeze() + self.ib(items).squeeze()
-        return F.sigmoid(res) * (self.max_score-self.min_score) + self.min_score
+        output = F.sigmoid(res)
+        if self.is_reg:
+            output = output * (self.max_score-self.min_score) + self.min_score
+        return output
 
 class CollabFilterLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.mse_loss
+        if data.is_reg: self.crit = F.mse_loss
+        else self.crit = F.cross_entropy
 
-class CollabFilterClassifierLearner(Learner):
-    def __init__(self, data, models, **kwargs):
-        super().__init__(data, models, **kwargs)
-        self.crit = F.cross_entropy
 
-class CollabFilterClassifierDataset(CollabFilterDataset):
-    def __init__(self, path, user_col, item_col, ratings):
-        super().__init__(path, user_col, item_col, ratings)
-        # TODO VALIDATE ratings are all 0 or 1
+# class CollabFilterClassifierLearner(Learner):
+#     def __init__(self, data, models, **kwargs):
+#         super().__init__(data, models, **kwargs)
+#         self.crit = F.cross_entropy
 
-    # I did not override get_model or modify EmbeddingDotBias since it will evaluate to F.sigmoid as is
-
-    def get_learner(self, n_factors, val_idxs, bs, **kwargs):
-        return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors), **kwargs)
+# class CollabFilterClassifierDataset(CollabFilterDataset):
+#     def __init__(self, path, user_col, item_col, ratings):
+#         super().__init__(path, user_col, item_col, ratings)
+#         # TODO VALIDATE ratings are all 0 or 1
+#
+#     # I did not override get_model or modify EmbeddingDotBias since it will evaluate to F.sigmoid as is
+#
+#     def get_learner(self, n_factors, val_idxs, bs, **kwargs):
+#         return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors), **kwargs)
 
 class CollabFilterModel(BasicModel):
     def get_layer_groups(self): return self.model
