@@ -42,15 +42,16 @@ class ColumnarDataset(Dataset):
 
 
 class ColumnarModelData(ModelData):
-    def __init__(self, path, trn_ds, val_ds, bs, test_ds=None):
+    def __init__(self, path, trn_ds, val_ds, bs, test_ds=None, shuffle=True):
         test_dl = DataLoader(test_ds, bs, shuffle=False, num_workers=1) if test_ds is not None else None
-        super().__init__(path, DataLoader(trn_ds, bs, shuffle=True, num_workers=1),
+        super().__init__(path, DataLoader(trn_ds, bs, shuffle=shuffle, num_workers=1),
             DataLoader(val_ds, bs*2, shuffle=False, num_workers=1), test_dl)
 
     @classmethod
-    def from_arrays(cls, path, val_idxs, xs, y, bs=64):
+    def from_arrays(cls, path, val_idxs, xs, y, bs=64, shuffle=True):
         ((val_xs, trn_xs), (val_y, trn_y)) = split_by_idx(val_idxs, xs, y)
-        return cls(path, PassthruDataset(*(trn_xs.T), trn_y), PassthruDataset(*(val_xs.T), val_y), bs)
+        return cls(path, PassthruDataset(*(trn_xs.T), trn_y), PassthruDataset(*(val_xs.T), val_y),
+                   bs=bs, shuffle=shuffle)
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=None):
@@ -128,7 +129,7 @@ class StructuredModel(BasicModel):
 
 class CollabFilterDataset(Dataset):
     def __init__(self, path, user_col, item_col, ratings):
-        self.ratings,self.path = ratings,path
+        self.ratings,self.path = ratings.values.astype(np.float32),path
         self.n = len(ratings)
         (self.users,self.user2idx,self.user_col,self.n_users) = self.proc_col(user_col)
         (self.items,self.item2idx,self.item_col,self.n_items) = self.proc_col(item_col)
