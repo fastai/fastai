@@ -70,8 +70,8 @@ def get_sample(df,n):
     2     3    a
     1     2    b
     """
-    idxs = sorted(np.random.permutation(len(df)))
-    return df.iloc[idxs[:n]].copy()
+    idxs = sorted(np.random.permutation(len(df))[:n])
+    return df.iloc[idxs].copy()
 
 def add_datepart(df, fldname, drop=True):
     """add_datepart converts a column of df from a datetime64 to many columns containing
