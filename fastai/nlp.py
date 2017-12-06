@@ -79,22 +79,27 @@ class BOW_Dataset(Dataset):
         self.bow,self.max_len = bow,max_len
         self.c = int(y.max())+1
         self.n,self.vocab_size = bow.shape
-        self.y = one_hot(y,self.c)
+        self.y = one_hot(y,self.c).astype(np.float32)
         x = self.bow.sign()
         self.r = np.stack([calc_r(i, x, y).A1 for i in range(self.c)]).T
 
-    def do_pad(self, prepend, a):
-        return np.array((prepend+a.tolist())[-self.max_len:])
-
-    def pad_row(self, row):
-        prepend = [0] * max(self.max_len - len(row.indices), 0)
-        return self.do_pad(prepend, row.indices+1), self.do_pad(prepend, row.data)
-
-    def __getitem__(self,i):
-        row = self.bow.getrow(i)
-        ind,data = self.pad_row(row)
-        return ind, data, len(row.indices), self.y[i].astype(np.float32)
-
+    def __getitem__(self, i):
+        row = self.X.getrow(i)
+        
+        num_row_entries = row.indices.shape[0]
+        indices = (row.indices + 1).astype(np.int64)
+        data = (row.data).astype(np.int64)
+        
+        if num_row_entries < self.max_len:
+            # If short, pad
+            indices = np.pad(indices, (self.max_len - num_row_entries, 0), mode='constant')
+            data = np.pad(data, (self.max_len - num_row_entries, 0), mode='constant')
+        else:
+            # If long, truncate
+            indices, data = indices[-self.max_len:], data[-self.max_len:]
+            
+        return indices, data, min(self.max_len, num_row_entries), self.y[i]
+        
     def __len__(self): return len(self.bow.indptr)-1
 
 
