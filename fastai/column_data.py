@@ -48,10 +48,11 @@ class ColumnarModelData(ModelData):
             DataLoader(val_ds, bs*2, shuffle=False, num_workers=1), test_dl)
 
     @classmethod
-    def from_arrays(cls, path, val_idxs, xs, y, bs=64, shuffle=True):
+    def from_arrays(cls, path, val_idxs, xs, y, bs=64, test_xs=None, shuffle=True):
         ((val_xs, trn_xs), (val_y, trn_y)) = split_by_idx(val_idxs, xs, y)
+        test_ds = PassthruDataset(*(test_xs.T), [0] * len(test_xs)) if test_xs is not None else None
         return cls(path, PassthruDataset(*(trn_xs.T), trn_y), PassthruDataset(*(val_xs.T), val_y),
-                   bs=bs, shuffle=shuffle)
+                   bs=bs, shuffle=shuffle, test_ds=test_ds)
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=None):
