@@ -125,7 +125,7 @@ def open_image(fn):
     """
     flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
     if not os.path.exists(fn):
-        print('No such file or driectory: {}'.format(fn))
+        print('No such file or directory: {}'.format(fn))
     elif os.path.isdir(fn):
         print('Is a directory: {}'.format(fn))
     else:
