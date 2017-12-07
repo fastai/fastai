@@ -129,8 +129,8 @@ class StructuredModel(BasicModel):
 
 
 class CollabFilterDataset(Dataset):
-    def __init__(self, path, user_col, item_col, ratings, is_reg=True):
-        self.ratings,self.path = ratings.values.astype(np.float32),path,is_reg
+    def __init__(self, path, user_col, item_col, ratings):
+        self.ratings,self.path = ratings.values.astype(np.float32),path
         self.n = len(ratings)
         (self.users,self.user2idx,self.user_col,self.n_users) = self.proc_col(user_col)
         (self.items,self.item2idx,self.item_col,self.n_items) = self.proc_col(item_col)
@@ -158,12 +158,12 @@ class CollabFilterDataset(Dataset):
         val, trn = zip(*split_by_idx(val_idxs, *self.cols))
         return ColumnarModelData(self.path, PassthruDataset(*trn), PassthruDataset(*val), bs)
 
-    def get_model(self, n_factors):
-        model = EmbeddingDotBias(n_factors, self.n_users, self.n_items, self.min_score, self.max_score)
+    def get_model(self, n_factors, is_reg=True):
+        model = EmbeddingDotBias(n_factors, self.n_users, self.n_items, self.min_score, self.max_score, is_reg)
         return CollabFilterModel(to_gpu(model))
 
     def get_learner(self, n_factors, val_idxs, bs, **kwargs):
-        return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors), **kwargs)
+        return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors, kwargs['is_reg']), **kwargs)
 
 
 def get_emb(ni,nf):
@@ -188,10 +188,9 @@ class EmbeddingDotBias(nn.Module):
         return output
 
 class CollabFilterLearner(Learner):
-    def __init__(self, data, models, **kwargs):
+    def __init__(self, data, models, is_reg=True, **kwargs):
         super().__init__(data, models, **kwargs)
-        if data.is_reg: self.crit = F.mse_loss
-        else self.crit = F.cross_entropy
+        self.crit = F.mse_loss if is_reg else F.binary_cross_entropy
 
 
 # class CollabFilterClassifierLearner(Learner):
