@@ -115,8 +115,24 @@ class BaseDataset(Dataset):
     def is_reg(self): return False
 
 def open_image(fn):
+    """ Opens an image using OpenCV given the file path.
+
+    Arguments:
+        fn: the file path of the image
+
+    Returns:
+        The numpy array representation of the image in the RGB format
+    """
     flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
-    return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+    if not os.path.exists(fn):
+        print('No such file or directory: {}'.format(fn))
+    elif os.path.isdir(fn):
+        print('Is a directory: {}'.format(fn))
+    else:
+        try:
+            return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+        except Exception as e:
+            print(fn, e)
 
 class FilesDataset(BaseDataset):
     def __init__(self, fnames, transform, path):
