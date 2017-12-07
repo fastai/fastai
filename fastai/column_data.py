@@ -192,21 +192,5 @@ class CollabFilterLearner(Learner):
         super().__init__(data, models, **kwargs)
         self.crit = F.mse_loss if is_reg else F.binary_cross_entropy
 
-
-# class CollabFilterClassifierLearner(Learner):
-#     def __init__(self, data, models, **kwargs):
-#         super().__init__(data, models, **kwargs)
-#         self.crit = F.cross_entropy
-
-# class CollabFilterClassifierDataset(CollabFilterDataset):
-#     def __init__(self, path, user_col, item_col, ratings):
-#         super().__init__(path, user_col, item_col, ratings)
-#         # TODO VALIDATE ratings are all 0 or 1
-#
-#     # I did not override get_model or modify EmbeddingDotBias since it will evaluate to F.sigmoid as is
-#
-#     def get_learner(self, n_factors, val_idxs, bs, **kwargs):
-#         return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors), **kwargs)
-
 class CollabFilterModel(BasicModel):
     def get_layer_groups(self): return self.model
