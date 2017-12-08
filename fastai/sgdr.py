@@ -7,13 +7,13 @@ class Callback:
     def on_batch_begin(self): pass
     def on_epoch_end(self, metrics): pass
     def on_batch_end(self, metrics): pass
+    def on_train_end(self): pass
 
 class LossRecorder(Callback):
     def __init__(self, layer_opt):
         super().__init__()
         self.layer_opt=layer_opt
         self.init_lrs=np.array(layer_opt.lrs)
-        self.on_train_begin()
 
     def on_train_begin(self):
         self.losses,self.lrs,self.iterations = [],[],[]

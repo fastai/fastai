@@ -75,6 +75,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     callbacks = callbacks or []
     avg_mom=0.98
     batch_num,avg_loss=0,0.
+    for cb in callbacks: cb.on_train_begin()
 
     for epoch in tnrange(epochs, desc='Epoch'):
         stepper.reset(True)
@@ -95,6 +96,9 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
+
+    for cb in callbacks: cb.on_train_begin()
+
 
 def validate(stepper, dl, metrics):
     loss,res = [],[]

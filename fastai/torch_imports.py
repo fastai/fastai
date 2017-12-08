@@ -24,7 +24,6 @@ warnings.filterwarnings('ignore', message='Implicit dimension choice',
 
 def children(m): return m if isinstance(m, (list, tuple)) else list(m.children())
 def save_model(m, p): torch.save(m.state_dict(), p)
-def load_model(m, p): m.load_state_dict(torch.load(p))
 def load_model(m, p): m.load_state_dict(torch.load(p, map_location=lambda storage, loc: storage))
 
 def load_pre(pre, f, fn):

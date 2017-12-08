@@ -1,7 +1,7 @@
 name: fastai
 channels:
 - fastai
-- soumith
+- pytorch
 - defaults
 dependencies:
 - scipy
