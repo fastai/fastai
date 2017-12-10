@@ -115,3 +115,5 @@ ENV/
 ehthumbs.db
 Thumbs.db
 .idea
+courses/dl1/experiments/*
+!courses/dl1/experiments/README.md
