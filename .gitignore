@@ -116,3 +116,4 @@ ENV/
 ehthumbs.db
 Thumbs.db
 .idea
+experiments/
