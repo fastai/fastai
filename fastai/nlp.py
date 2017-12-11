@@ -69,10 +69,13 @@ class BOW_Learner(Learner):
         super().__init__(data, models, **kwargs)
         self.crit = F.l1_loss
 
+def calc_pr(y_i, x, y, b):
+    idx = np.argwhere((y==y_i)==b)
+    p = x[idx[:,0]].sum(0)+1
+    return p/((y==y_i)==b).sum()
+
 def calc_r(y_i, x, y):
-    p = x[np.argwhere(y==y_i)[:,0]].sum(0)+1
-    q = x[np.argwhere(y!=y_i)[:,0]].sum(0)+1
-    return np.log((p/p.sum())/(q/q.sum()))
+    return np.log(calc_pr(y_i, x, y, True) / calc_pr(y_i, x, y, False))
 
 class BOW_Dataset(Dataset):
     def __init__(self, bow, y, max_len):
@@ -84,12 +87,12 @@ class BOW_Dataset(Dataset):
         self.r = np.stack([calc_r(i, x, y).A1 for i in range(self.c)]).T
 
     def __getitem__(self, i):
-        row = self.X.getrow(i)
-        
+        row = self.bow.getrow(i)
+
         num_row_entries = row.indices.shape[0]
         indices = (row.indices + 1).astype(np.int64)
         data = (row.data).astype(np.int64)
-        
+
         if num_row_entries < self.max_len:
             # If short, pad
             indices = np.pad(indices, (self.max_len - num_row_entries, 0), mode='constant')
@@ -97,9 +100,9 @@ class BOW_Dataset(Dataset):
         else:
             # If long, truncate
             indices, data = indices[-self.max_len:], data[-self.max_len:]
-            
+
         return indices, data, min(self.max_len, num_row_entries), self.y[i]
-        
+
     def __len__(self): return len(self.bow.indptr)-1
 
 
