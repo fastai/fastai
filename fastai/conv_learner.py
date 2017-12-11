@@ -8,7 +8,7 @@ model_meta = {
     vgg16:[0,22], vgg19:[0,22],
     resnext50:[8,6], resnext101:[8,6], resnext101_64:[8,6],
     wrn:[8,6], inceptionresnet_2:[-2,9], inception_4:[-1,9],
-    dn121:[0,6], dn161:[0,6], dn169:[0,6], dn201:[0,6],
+    dn121:[0,7], dn161:[0,7], dn169:[0,7], dn201:[0,7],
 }
 model_features = {inception_4: 3072, dn121: 2048, dn161: 4416,} # nasnetalarge: 4032*2}
 
@@ -71,10 +71,13 @@ class ConvnetBuilder():
         return res
 
     def get_layer_groups(self, do_fc=False):
-        if do_fc: m,idxs = self.fc_model,[]
-        else:     m,idxs = self.model,[self.lr_cut,-self.n_fc]
-        lgs = list(split_by_idxs(children(m),idxs))
-        return lgs
+        if do_fc:
+            return self.fc_model
+        idxs = [self.lr_cut]
+        c = children(self.top_model)
+        if len(c)==3: c = children(c[0])+c[1:]
+        lgs = list(split_by_idxs(c,idxs))
+        return lgs+[self.fc_model]
 
 
 class ConvLearner(Learner):

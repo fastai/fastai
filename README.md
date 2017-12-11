@@ -2,9 +2,11 @@
 
 The fast.ai deep learning library, lessons, and tutorials.
 
+Copyright 2017 onwards, Jeremy Howard. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. A copy of the License is provided in the LICENSE file in this repository.
+
 ## Current Status
 
-This is pre-pre-alpha. Stuff is moving around and changing every day. You should only be using this if you're interested in digging into the details and actively contributing to the project.
+This is pre-alpha. Stuff is moving around and changing frequently. You should only be using this if you're interested in digging into the details and actively contributing to the project.
 
 First, clone fastai using `git`:
 
@@ -32,7 +34,9 @@ conda env update
 
 Or
 
-We can also install this library in the local environment using ```pip```
+You can also install this library in the local environment using ```pip```
+
 ```sh
 pip install fastai
 ```
+

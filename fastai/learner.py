@@ -33,6 +33,12 @@ class Learner():
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn,self.crit = None,None,None
 
+    @classmethod
+    def from_model_data(cls, m, data):
+        self = cls(data, BasicModel(to_gpu(m)))
+        self.unfreeze()
+        return self
+
     def __getitem__(self,i): return self.children[i]
 
     @property
