@@ -33,7 +33,10 @@ def read_dir(path, folder):
     # TODO: warn or error if no files found?
     full_path = os.path.join(path, folder)
     fnames = iglob(f"{full_path}/*.*")
-    return [os.path.relpath(f,path) for f in fnames]
+    if any(fnames):
+        return [os.path.relpath(f,path) for f in fnames]
+    else:
+        raise FileNotFoundError("{} folder doesn't exist or is empty".format(folder))
 
 def read_dirs(path, folder):
     labels, filenames, all_labels = [], [], []
