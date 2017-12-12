@@ -164,7 +164,7 @@ class FilesArrayDataset(FilesDataset):
         self.y=y
         assert(len(fnames)==len(y))
         super().__init__(fnames, transform, path)
-    def get_y(self, i): return self.y[i].astype(np.int64)
+    def get_y(self, i): return self.y[i]
     def get_c(self): return self.y.shape[1]
 
 
@@ -193,7 +193,7 @@ class ArraysDataset(BaseDataset):
 
 class ArraysIndexDataset(ArraysDataset):
     def get_c(self): return int(self.y.max())+1
-    def get_y(self, i): return self.y[i].astype(np.int64)
+    def get_y(self, i): return self.y[i]
 
 
 class ArraysNhotDataset(ArraysDataset):
