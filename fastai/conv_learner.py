@@ -72,7 +72,7 @@ class ConvnetBuilder():
 
     def get_layer_groups(self, do_fc=False):
         if do_fc:
-            return self.fc_model
+            return [self.fc_model]
         idxs = [self.lr_cut]
         c = children(self.top_model)
         if len(c)==3: c = children(c[0])+c[1:]
