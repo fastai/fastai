@@ -1,7 +1,7 @@
 import warnings
 from .imports import *
 from .torch_imports import *
-from .rnn_reg import embedded_dropout,LockedDropout,WeightDrop
+from .rnn_reg import embedded_dropout,LockedDropout,WeightDrop,EmbeddingDropout
 from .model import Stepper
 
 
@@ -56,6 +56,7 @@ class RNN_Encoder(nn.Module):
 
         super().__init__()
         self.encoder = nn.Embedding(ntoken, emb_sz, padding_idx=pad_token)
+        self.encoder_with_dropout = EmbeddingDropout(self.encoder)
         self.rnns = [torch.nn.LSTM(emb_sz if l == 0 else nhid, nhid if l != nlayers - 1 else emb_sz, 1, dropout=dropouth)
                      for l in range(nlayers)]
         if wdrop: self.rnns = [WeightDrop(rnn, wdrop) for rnn in self.rnns]
@@ -76,7 +77,7 @@ class RNN_Encoder(nn.Module):
             dropouth, list of tensors evaluated from each RNN layer using dropouth,
         """
 
-        emb = embedded_dropout(self.encoder, input, dropout=self.dropoute if self.training else 0)
+        emb = self.encoder_with_dropout(input, dropout=self.dropoute if self.training else 0)
         emb = self.dropouti(emb)
 
         raw_output = emb
