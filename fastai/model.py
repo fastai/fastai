@@ -97,7 +97,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
 
-    for cb in callbacks: cb.on_train_begin()
+    for cb in callbacks: cb.on_train_end()
 
 
 def validate(stepper, dl, metrics):
