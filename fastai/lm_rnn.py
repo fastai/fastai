@@ -1,7 +1,7 @@
 import warnings
 from .imports import *
 from .torch_imports import *
-from .rnn_reg import embedded_dropout,LockedDropout,WeightDrop,EmbeddingDropout
+from .rnn_reg import LockedDropout,WeightDrop,EmbeddingDropout
 from .model import Stepper
 
 
