@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from torchtext.datasets import language_modeling
 
 import spacy
+import codecs
 
 re_br = re.compile('<br />')
 spacy_en = spacy.load('en')
@@ -187,7 +188,7 @@ class ConcatTextDataset(torchtext.data.Dataset):
         if os.path.isdir(path): paths=glob(f'{path}/*.*')
         else: paths=[path]
         for p in paths:
-            for line in open(p): text += text_field.preprocess(line)
+            for line in codecs.open(p, 'r', 'utf-8'): text += text_field.preprocess(line)
             if newline_eos: text.append('<eos>')
 
         examples = [torchtext.data.Example.fromlist([text], fields)]
