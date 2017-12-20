@@ -119,8 +119,8 @@ class WeightDrop(torch.nn.Module):
         self._setweights()
         return self.module.forward(*args)
 
+class EmbeddingDropout(nn.Module):
 
-def embedded_dropout(embed, words, dropout=0.1, scale=None):
     """ Applies dropout in the embedding layer by zeroing out some elements of the embedding vector.
     Uses the dropout_mask custom layer to achieve this.
 
@@ -139,8 +139,8 @@ def embedded_dropout(embed, words, dropout=0.1, scale=None):
     >> words = Variable(torch.LongTensor([[1,2,4,5] ,[4,3,2,9]]))
     >> words.size()
         (2,4)
-
-    >> dropout_out_ = embedded_dropout(embed, words, dropout=0.40)
+    >> embed_dropout_layer = EmbeddingDropout(embed)
+    >> dropout_out_ = embed_dropout_layer(embed, words, dropout=0.40)
     >> dropout_out_
         Variable containing:
         (0 ,.,.) =
@@ -157,17 +157,29 @@ def embedded_dropout(embed, words, dropout=0.1, scale=None):
         [torch.FloatTensor of size 2x4x3]
     """
 
-    if dropout:
-        mask = Variable(dropout_mask(embed.weight.data, (embed.weight.size(0), 1), dropout))
-        masked_embed_weight = mask * embed.weight
-    else: masked_embed_weight = embed.weight
-    if scale: masked_embed_weight = scale * masked_embed_weight
+    def __init__(self, embed):
+        super().__init__()
+        self.embed = embed
 
-    padding_idx = embed.padding_idx
-    if padding_idx is None: padding_idx = -1
-    X = embed._backend.Embedding.apply(words, masked_embed_weight,
-        padding_idx, embed.max_norm, embed.norm_type,
-        embed.scale_grad_by_freq, embed.sparse
-    )
-    return X
+    def forward(self, words, dropout=0.1, scale=None):
 
+        if dropout:
+            size = (self.embed.weight.size(0),1)
+            mask = Variable(dropout_mask(self.embed.weight.data, size, dropout))
+            masked_embed_weight = mask * self.embed.weight
+        else:
+            masked_embed_weight = self.embed.weight
+
+        if scale:
+            masked_embed_weight = scale * masked_embed_weight
+
+        padding_idx = self.embed.padding_idx
+
+        if padding_idx is None:
+            padding_idx = -1
+
+        X = self.embed._backend.Embedding.apply(words,
+                 masked_embed_weight, padding_idx, self.embed.max_norm,
+                     self.embed.norm_type, self.embed.scale_grad_by_freq, self.embed.sparse)
+
+        return X
