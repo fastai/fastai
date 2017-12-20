@@ -73,7 +73,7 @@ class ColumnarModelData(ModelData):
 
 def emb_init(x):
     x = x.weight.data
-    sc = 2/(x.size(1)+1)
+    sc = np.sqrt(2/(x.size(1)+1))
     x.uniform_(-sc,sc)
 
 
