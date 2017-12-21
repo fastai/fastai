@@ -5,6 +5,7 @@ channels:
 - defaults
 dependencies:
 - scipy
+- cuda90
 - numpy
 - pillow
 - jpeg
