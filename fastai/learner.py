@@ -81,7 +81,7 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None,
-                metrics=None, callbacks=None, use_wd_sched=False, **kwargs):
+                metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
         scheduler for varying the learning rate across iterations.
@@ -113,6 +113,20 @@ class Learner():
 
             callbacks (list(Callback)): callbacks to apply during the training.
 
+            use_wd_sched (bool, optional): set to True to enable weight regularization using
+                the technique mentioned in https://arxiv.org/abs/1711.05101. When this is True
+                alone (see below), the regularization is detached from gradient update and
+                applied directly to the weights.
+
+            norm_wds (bool, optional): when this is set to True along with use_wd_sched, the
+                regularization factor is normalized with each training cycle.
+
+            wds_sched_mult (function, optional): when this is provided along with use_wd_sched
+                as True, the value computed by this function is multiplied with the regularization
+                strength. This function is passed the WeightDecaySchedule object. And example
+                function that can be passed is:
+                            f = lambda x: np.array(x.layer_opt.lrs) / x.init_lrs
+
             kwargs: other optional arguments
 
         Returns:
@@ -130,7 +144,8 @@ class Learner():
                       'pass weight decay values.')
             batch_per_epoch = len(data.trn_dl)
             cl = cycle_len if cycle_len else 1
-            self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cl, cycle_mult, n_cycle)
+            self.wd_sched = WeightDecaySchedule(layer_opt, batch_per_epoch, cl, cycle_mult, n_cycle,
+                                                norm_wds, wds_sched_mult)
             callbacks += [self.wd_sched]
 
         if cycle_len:
