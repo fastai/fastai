@@ -374,9 +374,12 @@ class TextData(ModelData):
                  else len(getattr(splits[0][0], label_name)))
         return obj
 
+    def to_model(self, m, opt_fn)
+        model = TextModel(to_gpu(m))
+        return RNN_Learner(self, model, opt_fn=opt_fn)
+
     def get_model(self, opt_fn, max_sl, bptt, emb_sz, n_hid, n_layers, **kwargs):
         m = get_rnn_classifer(max_sl, bptt, self.bs, self.c, self.nt,
               emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=self.pad_idx, **kwargs)
-        model = TextModel(to_gpu(m))
-        return RNN_Learner(self, model, opt_fn=opt_fn)
+        return self.to_model(m, opt_fn)
 
