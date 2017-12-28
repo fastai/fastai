@@ -212,6 +212,11 @@ class Learner():
         layer_opt = self.get_layer_opt(lrs, wds)
         self.fit_gen(self.model, self.data, layer_opt, n_cycle, **kwargs)
 
+    def warm_up(self, start_lr=1e-5, end_lr=10, wds=None):
+        layer_opt = self.get_layer_opt(start_lr, wds)
+        self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), end_lr)
+        self.fit_gen(self.model, self.data, layer_opt, 1)
+
     def lr_find(self, start_lr=1e-5, end_lr=10, wds=None):
         """Helps you find an optimal learning rate for a model.
 

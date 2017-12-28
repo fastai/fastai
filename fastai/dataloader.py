@@ -1,18 +1,21 @@
-import torch
+import torch, queue
 from torch.utils.data.sampler import SequentialSampler, RandomSampler, BatchSampler
 from .imports import *
 import collections,sys,traceback,threading
 
-if sys.version_info[0] == 2:
-    import Queue as queue
-    string_classes = basestring
-else:
-    import queue
-    string_classes = (str, bytes)
+string_classes = (str, bytes)
+
+def do_stack(b):
+    if len(b[0].shape)!=2: return np.stack(b)
+    ml = max(len(o) for o in b)
+    if min(len(o) for o in b)==ml: return np.stack(b)
+    res = np.zeros((len(b), ml), dtype=b[0].dtype)
+    for i,o in enumerate(b): res[i, :len(o)] = o
+    return res
 
 def np_collate(batch):
     b = batch[0]
-    if isinstance(b, (np.ndarray, np.generic)): return np.stack(batch)
+    if isinstance(b, (np.ndarray, np.generic)): return do_stack(batch)
     elif isinstance(b, (int, float)): return np.array(batch)
     elif isinstance(b, string_classes): return batch
     elif isinstance(b, collections.Mapping):

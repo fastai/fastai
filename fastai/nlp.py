@@ -346,7 +346,8 @@ class TextDataLoader():
 
 class TextModel(BasicModel):
     def get_layer_groups(self):
-        return [self.model[0].encoder, self.model[0].rnns, self.model[1]]
+        m = self.model[0]
+        return [m.encoder, *m.rnns, [m.dropouti, m.dropouth], self.model[1]]
 
 
 class TextData(ModelData):

@@ -70,7 +70,7 @@ class LR_Finder(LR_Updater):
     def on_batch_end(self, loss):
         if math.isnan(loss) or loss>self.best*4:
             return True
-        if loss<self.best: self.best=loss
+        if (loss<self.best and self.iteration>10): self.best=loss
         return super().on_batch_end(loss)
 
     def plot(self, n_skip=10):

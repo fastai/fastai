@@ -158,19 +158,37 @@ class LinearDecoder(LinearRNNOutput):
         return result, raw_outputs, outputs
 
 
-class PoolingLinearClassifier(LinearRNNOutput):
+class LinearBlock(nn.Module):
+    def __init__(self, ni, nf, drop):
+        super().__init__()
+        self.lin = nn.Linear(ni, nf)
+        self.drop = nn.Dropout(drop)
+        self.bn = nn.BatchNorm1d(ni)
+
+    def forward(self, x): return self.lin(self.drop(self.bn(x)))
+
+
+class PoolingLinearClassifier(nn.Module):
+    def __init__(self, layers, drops):
+        super().__init__()
+        self.layers = nn.ModuleList([
+            LinearBlock(layers[i], layers[i + 1], drops[i]) for i in range(len(layers) - 1)])
+
     def pool(self, x, bs, is_max):
         f = F.adaptive_max_pool1d if is_max else F.adaptive_avg_pool1d
         return f(x.permute(1,2,0), (1,)).view(bs,-1)
 
     def forward(self, input):
-        output, raw_outputs, outputs = super().forward(input)
-        bs,_ = output[-1].size()
+        raw_outputs, outputs = input
+        output = outputs[-1]
+        sl,bs,_ = output.size()
         avgpool = self.pool(output, bs, False)
         mxpool = self.pool(output, bs, True)
-        pooled = torch.cat([output[-1], mxpool, avgpool], 1)
-        result = self.decoder(pooled)
-        return result, raw_outputs, outputs
+        x = torch.cat([output[-1], mxpool, avgpool], 1)
+        for l in self.layers:
+            l_x = l(x)
+            x = F.relu(l_x)
+        return l_x, raw_outputs, outputs
 
 
 class SequentialRNN(nn.Sequential):
@@ -216,9 +234,9 @@ def get_language_model(bs, n_tok, emb_sz, nhid, nlayers, pad_token,
     return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc))
 
 
-def get_rnn_classifer(max_sl, bptt, bs, n_class, n_tok, emb_sz, n_hid, n_layers, pad_token,
+def get_rnn_classifer(max_sl, bptt, bs, n_class, n_tok, emb_sz, n_hid, n_layers, pad_token, layers, drops,
                       dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5):
     rnn_enc = MultiBatchRNN(max_sl, bptt, bs, n_tok, emb_sz, n_hid, n_layers, pad_token=pad_token,
                       dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop)
-    return SequentialRNN(rnn_enc, PoolingLinearClassifier(n_class, 3*emb_sz, dropout))
+    return SequentialRNN(rnn_enc, PoolingLinearClassifier(layers, drops))
 
