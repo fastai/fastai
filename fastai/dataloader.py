@@ -5,8 +5,8 @@ import collections,sys,traceback,threading
 
 string_classes = (str, bytes)
 
-def do_stack(b):
-    if len(b[0].shape)!=2: return np.stack(b)
+def jag_stack(b):
+    if len(b[0].shape) not in (1,2): return np.stack(b)
     ml = max(len(o) for o in b)
     if min(len(o) for o in b)==ml: return np.stack(b)
     res = np.zeros((len(b), ml), dtype=b[0].dtype)
@@ -15,7 +15,7 @@ def do_stack(b):
 
 def np_collate(batch):
     b = batch[0]
-    if isinstance(b, (np.ndarray, np.generic)): return do_stack(batch)
+    if isinstance(b, (np.ndarray, np.generic)): return jag_stack(batch)
     elif isinstance(b, (int, float)): return np.array(batch)
     elif isinstance(b, string_classes): return batch
     elif isinstance(b, collections.Mapping):
@@ -40,9 +40,9 @@ def get_tensor(batch, pin):
 
 class DataLoader(object):
     def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
-                 num_workers=None, collate_fn=np_collate, pin_memory=False, drop_last=False):
+                 num_workers=None, collate_fn=np_collate, pin_memory=False, drop_last=False, transpose=False):
         self.dataset,self.batch_size,self.num_workers = dataset,batch_size,num_workers
-        self.collate_fn,self.pin_memory,self.drop_last = collate_fn,pin_memory,drop_last
+        self.collate_fn,self.pin_memory,self.drop_last,self.transpose = collate_fn,pin_memory,drop_last,transpose
 
         if batch_sampler is not None:
             if batch_size > 1 or shuffle or sampler is not None or drop_last:
@@ -62,7 +62,11 @@ class DataLoader(object):
 
     def __len__(self): return len(self.batch_sampler)
 
-    def get_batch(self, indices): return self.collate_fn([self.dataset[i] for i in indices])
+    def get_batch(self, indices):
+        res = self.collate_fn([self.dataset[i] for i in indices])
+        if not self.transpose: return res
+        res[0] = res[0].T
+        return res
 
     def __iter__(self):
         with ThreadPoolExecutor(max_workers=self.num_workers) as e:
