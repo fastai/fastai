@@ -91,7 +91,6 @@ class RNN_Encoder(nn.Module):
             current_input = raw_output
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                #import pdb; pdb.set_trace()
                 raw_output, new_h = rnn(raw_output, self.hidden[l])
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
@@ -123,10 +122,14 @@ class MultiBatchRNN(RNN_Encoder):
         for l in self.hidden:
             for h in l: h.data.zero_()
         raw_outputs, outputs = [],[]
-        for i in range(0, min(self.max_sl,sl), self.bptt):
-            r, o = super().forward(input[i : min(i+self.bptt, sl)])
-            raw_outputs.append(r)
-            outputs.append(o)
+        max_sl = min(self.max_sl,sl)
+        for i in range(0, max_sl, self.bptt):
+            r, o = super().forward(input[i : min(i+self.bptt, max_sl)])
+            #if (i<self.bptt*8) or i>(max_sl-self.bptt*8):
+            #if i>(max_sl-self.bptt*16):
+            if True:
+                raw_outputs.append(r)
+                outputs.append(o)
         return self.concat(raw_outputs), self.concat(outputs)
 
 

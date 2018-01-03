@@ -10,7 +10,7 @@ conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTe
 def T(a):
     if torch.is_tensor(a): res = a
     else:
-        a = np.array(a)
+        a = np.array(np.ascontiguousarray(a))
         if a.dtype in (np.int8, np.int16, np.int32, np.int64):
             res = torch.LongTensor(a.astype(np.int64))
         elif a.dtype in (np.float32, np.float64):
@@ -36,8 +36,9 @@ def to_np(v):
     if isinstance(v, Variable): v=v.data
     return v.cpu().numpy()
 
+USE_GPU=True
 def to_gpu(x, *args, **kwargs):
-    return x.cuda(*args, **kwargs) if torch.cuda.is_available() else x
+    return x.cuda(*args, **kwargs) if torch.cuda.is_available() and USE_GPU else x
 
 def noop(*args, **kwargs): return
 
