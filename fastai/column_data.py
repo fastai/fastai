@@ -158,12 +158,12 @@ class CollabFilterDataset(Dataset):
         val, trn = zip(*split_by_idx(val_idxs, *self.cols))
         return ColumnarModelData(self.path, PassthruDataset(*trn), PassthruDataset(*val), bs)
 
-    def get_model(self, n_factors):
-        model = EmbeddingDotBias(n_factors, self.n_users, self.n_items, self.min_score, self.max_score)
+    def get_model(self, n_factors, is_reg=True):
+        model = EmbeddingDotBias(n_factors, self.n_users, self.n_items, self.min_score, self.max_score, is_reg)
         return CollabFilterModel(to_gpu(model))
 
     def get_learner(self, n_factors, val_idxs, bs, **kwargs):
-        return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors), **kwargs)
+        return CollabFilterLearner(self.get_data(val_idxs, bs), self.get_model(n_factors, kwargs['is_reg']), **kwargs)
 
 
 def get_emb(ni,nf):
@@ -172,9 +172,9 @@ def get_emb(ni,nf):
     return e
 
 class EmbeddingDotBias(nn.Module):
-    def __init__(self, n_factors, n_users, n_items, min_score, max_score):
+    def __init__(self, n_factors, n_users, n_items, min_score=0, max_score=1, is_reg=True):
         super().__init__()
-        self.min_score,self.max_score = min_score,max_score
+        self.min_score,self.max_score,self.is_reg = min_score,max_score,is_reg
         (self.u, self.i, self.ub, self.ib) = [get_emb(*o) for o in [
             (n_users, n_factors), (n_items, n_factors), (n_users,1), (n_items,1)
         ]]
@@ -182,13 +182,15 @@ class EmbeddingDotBias(nn.Module):
     def forward(self, users, items):
         um = self.u(users)* self.i(items)
         res = um.sum(1) + self.ub(users).squeeze() + self.ib(items).squeeze()
-        return F.sigmoid(res) * (self.max_score-self.min_score) + self.min_score
+        output = F.sigmoid(res)
+        if self.is_reg:
+            output = output * (self.max_score-self.min_score) + self.min_score
+        return output
 
 class CollabFilterLearner(Learner):
-    def __init__(self, data, models, **kwargs):
+    def __init__(self, data, models, is_reg=True, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.mse_loss
+        self.crit = F.mse_loss if is_reg else F.binary_cross_entropy
 
 class CollabFilterModel(BasicModel):
     def get_layer_groups(self): return self.model
-
