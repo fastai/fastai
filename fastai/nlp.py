@@ -18,6 +18,7 @@ def sub_br(x): return re_br.sub("\n", x)
 
 my_tok = spacy.load('en')
 my_tok.tokenizer.add_special_case('<eos>', [{ORTH: '<eos>'}])
+my_tok.tokenizer.add_special_case('<unk>', [{ORTH: '<unk>'}])
 def spacy_tok(x): return [tok.text for tok in my_tok.tokenizer(sub_br(x))]
 
 re_tok = re.compile(f'([{string.punctuation}“”¨«»®´·º½¾¿¡§£₤‘’])')
@@ -276,8 +277,7 @@ class LanguageModelData():
         self.bs = bs
         self.path = path
         self.trn_ds = trn_ds; self.val_ds = val_ds; self.test_ds = test_ds
-
-        field.build_vocab(self.trn_ds, **kwargs)
+        if not hasattr(field, 'vocab'): field.build_vocab(self.trn_ds, **kwargs)
 
         self.pad_idx = field.vocab.stoi[field.pad_token]
         self.nt = len(field.vocab)
@@ -366,8 +366,7 @@ class TextData(ModelData):
     def from_splits(cls, path, splits, bs, text_name='text', label_name='label'):
         text_fld = splits[0].fields[text_name]
         label_fld = splits[0].fields[label_name]
-        if hasattr(label_fld, 'build_vocab'):
-            label_fld.build_vocab(splits[0])
+        if hasattr(label_fld, 'build_vocab'): label_fld.build_vocab(splits[0])
         iters = torchtext.data.BucketIterator.splits(splits, batch_size=bs)
         trn_iter,val_iter,test_iter = iters[0],iters[1],None
         test_dl = None
@@ -388,8 +387,9 @@ class TextData(ModelData):
         model = TextModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
-    def get_model(self, opt_fn, max_sl, bptt, emb_sz, n_hid, n_layers, **kwargs):
+    def get_model(self, opt_fn, max_sl, bptt, emb_sz, n_hid, n_layers, dropout, **kwargs):
         m = get_rnn_classifer(max_sl, bptt, self.bs, self.c, self.nt,
+              layers=[emb_sz*3, self.c], drops=[dropout],
               emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=self.pad_idx, **kwargs)
         return self.to_model(m, opt_fn)
 

@@ -30,9 +30,8 @@ def resize_imgs(fnames, targ, path, new_path):
     return os.path.join(path,new_path,str(targ))
 
 def read_dir(path, folder):
-    # TODO: warn or error if no files found?
     full_path = os.path.join(path, folder)
-    fnames = iglob(f"{full_path}/*.*")
+    fnames = glob(f"{full_path}/*.*")
     if any(fnames):
         return [os.path.relpath(f,path) for f in fnames]
     else:
