@@ -122,7 +122,7 @@ def predict_with_targs(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
     res = []
-    for *x,y in iter(dl): res.append([get_prediction(m(*VV(x))),y])
+    for *x,y in dl: res.append([get_prediction(m(*VV(x))),y])
     preda,targa = zip(*res)
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
