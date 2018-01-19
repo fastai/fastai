@@ -34,7 +34,7 @@ class RNN_Encoder(nn.Module):
 
     initrange=0.1
 
-    def __init__(self, bs, ntoken, emb_sz, nhid, nlayers, pad_token, bidir=False,
+    def __init__(self, ntoken, emb_sz, nhid, nlayers, pad_token, bidir=False,
                  dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5):
         """ Default constructor for the RNN_Encoder class
 
@@ -56,6 +56,7 @@ class RNN_Encoder(nn.Module):
 
         super().__init__()
         self.ndir = 2 if bidir else 1
+        self.bs = 1
         self.encoder = nn.Embedding(ntoken, emb_sz, padding_idx=pad_token)
         self.encoder_with_dropout = EmbeddingDropout(self.encoder)
         self.rnns = [nn.LSTM(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
@@ -64,7 +65,7 @@ class RNN_Encoder(nn.Module):
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
 
-        self.bs,self.emb_sz,self.nhid,self.nlayers,self.dropoute = bs,emb_sz,nhid,nlayers,dropoute
+        self.emb_sz,self.nhid,self.nlayers,self.dropoute = emb_sz,nhid,nlayers,dropoute
         self.dropouti = LockedDropout(dropouti)
         self.dropouths = nn.ModuleList([LockedDropout(dropouth) for l in range(nlayers)])
 
@@ -110,8 +111,8 @@ class RNN_Encoder(nn.Module):
 
 
 class MultiBatchRNN(RNN_Encoder):
-    def __init__(self, max_sl, bptt, *args, **kwargs):
-        self.max_sl,self.bptt = max_sl,bptt
+    def __init__(self, bptt, max_seq, *args, **kwargs):
+        self.max_seq,self.bptt = max_seq,bptt
         super().__init__(*args, **kwargs)
 
     def concat(self, arrs):
@@ -122,12 +123,9 @@ class MultiBatchRNN(RNN_Encoder):
         for l in self.hidden:
             for h in l: h.data.zero_()
         raw_outputs, outputs = [],[]
-        max_sl = min(self.max_sl,sl)
-        for i in range(0, max_sl, self.bptt):
-            r, o = super().forward(input[i : min(i+self.bptt, max_sl)])
-            #if (i<self.bptt*8) or i>(max_sl-self.bptt*8):
-            #if i>(max_sl-self.bptt*16):
-            if True:
+        for i in range(0, sl, self.bptt):
+            r, o = super().forward(input[i : min(i+self.bptt, sl)])
+            if i>(sl-self.max_seq):
                 raw_outputs.append(r)
                 outputs.append(o)
         return self.concat(raw_outputs), self.concat(outputs)
@@ -202,7 +200,7 @@ class SequentialRNN(nn.Sequential):
             if hasattr(c, 'reset'): c.reset()
 
 
-def get_language_model(bs, n_tok, emb_sz, nhid, nlayers, pad_token,
+def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
                  dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True):
     """Returns a SequentialRNN model.
 
@@ -233,15 +231,15 @@ def get_language_model(bs, n_tok, emb_sz, nhid, nlayers, pad_token,
         A SequentialRNN model
     """
 
-    rnn_enc = RNN_Encoder(bs, n_tok, emb_sz, nhid, nlayers, pad_token,
+    rnn_enc = RNN_Encoder(n_tok, emb_sz, nhid=nhid, nlayers=nlayers, pad_token=pad_token,
                  dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop)
     enc = rnn_enc.encoder if tie_weights else None
     return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc))
 
 
-def get_rnn_classifer(max_sl, bptt, bs, n_class, n_tok, emb_sz, n_hid, n_layers, pad_token, layers, drops, bidir=False,
+def get_rnn_classifer(bptt, max_seq, n_class, n_tok, emb_sz, n_hid, n_layers, pad_token, layers, drops, bidir=False,
                       dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5):
-    rnn_enc = MultiBatchRNN(max_sl, bptt, bs, n_tok, emb_sz, n_hid, n_layers, pad_token=pad_token, bidir=bidir,
+    rnn_enc = MultiBatchRNN(bptt, max_seq, n_tok, emb_sz, n_hid, n_layers, pad_token=pad_token, bidir=bidir,
                       dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop)
     return SequentialRNN(rnn_enc, PoolingLinearClassifier(layers, drops))
 

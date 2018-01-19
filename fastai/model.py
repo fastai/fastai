@@ -53,12 +53,11 @@ class Stepper():
         if isinstance(preds,(tuple,list)): preds=preds[0]
         return preds, self.crit(preds, y)
 
-from . import lm_rnn
 def set_train_mode(m):
-    #if ((hasattr(m, 'running_mean') or isinstance(m, (nn.Dropout, lm_rnn.LockedDropout)))
-    if (hasattr(m, 'running_mean')
-        and (getattr(m,'bn_freeze',False) or not getattr(m,'trainable',False))):
-        m.eval()
+    if (hasattr(m, 'running_mean') and (getattr(m,'bn_freeze',False)
+              or not getattr(m,'trainable',False))): m.eval()
+    elif (getattr(m,'drop_freeze',False) and hasattr(m, 'p')
+          and ('drop' in type(m).__name__.lower())): m.eval()
     else: m.train()
 
 

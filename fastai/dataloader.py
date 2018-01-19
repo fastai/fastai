@@ -10,8 +10,7 @@ def jag_stack(b, pad_idx):
     ml = max(len(o) for o in b)
     if min(len(o) for o in b)==ml: return np.stack(b)
     res = np.zeros((len(b), ml), dtype=b[0].dtype) + pad_idx
-    for i,o in enumerate(b): res[i, :len(o)] = o
-    #for i,o in enumerate(b): res[i, -len(o):] = o
+    for i,o in enumerate(b): res[i, -len(o):] = o
     return res
 
 def np_collate(batch, pad_idx):

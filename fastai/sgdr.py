@@ -2,12 +2,14 @@ from .imports import *
 from .layer_optimizer import *
 import copy
 
+
 class Callback:
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
     def on_epoch_end(self, metrics): pass
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
+
 
 class LossRecorder(Callback):
     def __init__(self, layer_opt):
@@ -57,15 +59,19 @@ class LR_Updater(LossRecorder):
 
 
 class LR_Finder(LR_Updater):
-    def __init__(self, layer_opt, nb, end_lr=10):
-        self.lr_mult = (end_lr/layer_opt.lr)**(1/nb)
+    def __init__(self, layer_opt, nb, end_lr=10, linear=False):
+        self.linear = linear
+        ratio = end_lr/layer_opt.lr
+        self.lr_mult = (ratio/nb) if linear else ratio**(1/nb)
         super().__init__(layer_opt)
 
     def on_train_begin(self):
         super().on_train_begin()
         self.best=1e9
 
-    def calc_lr(self, init_lrs): return init_lrs * (self.lr_mult**self.iteration)
+    def calc_lr(self, init_lrs):
+        mult = self.lr_mult*self.iteration if self.linear else self.lr_mult**self.iteration
+        return init_lrs * mult
 
     def on_batch_end(self, loss):
         if math.isnan(loss) or loss>self.best*4:
@@ -99,10 +105,32 @@ class CosAnneal(LR_Updater):
         if self.cycle_iter==self.nb:
             self.cycle_iter = 0
             self.nb *= self.cycle_mult
-            if self.on_cycle_end:
-                self.on_cycle_end(self, self.cycle_count)
+            if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
             self.cycle_count += 1
         return init_lrs / 2 * cos_out
+
+
+class CircularLR(LR_Updater):
+    def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None):
+        self.nb,self.div,self.cut_div,self.on_cycle_end = nb,div,cut_div,on_cycle_end
+        super().__init__(layer_opt)
+
+    def on_train_begin(self):
+        self.cycle_iter,self.cycle_count=0,0
+        super().on_train_begin()
+
+    def calc_lr(self, init_lrs):
+        cut_pt = self.nb//self.cut_div
+        if self.cycle_iter>cut_pt:
+            pct = 1 - (self.cycle_iter - cut_pt)/(cut_pt*(self.cut_div-1))
+        else: pct = self.cycle_iter/cut_pt
+        res = init_lrs * (1 + pct*(self.div-1)) / self.div
+        self.cycle_iter += 1
+        if self.cycle_iter==self.nb:
+            self.cycle_iter = 0
+            if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
+            self.cycle_count += 1
+        return res
 
 
 class WeightDecaySchedule(Callback):
