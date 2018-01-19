@@ -21,7 +21,7 @@ def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None, maintitle=None
 
 def plots_from_files(imspaths, figsize=(10,5), rows=1, titles=None, maintitle=None):
     """Plots images given image files.
-
+    
     Arguments:
         im_paths (list): list of paths
         figsize (tuple): figure size
@@ -76,15 +76,16 @@ def load_img_id(ds, idx, path): return np.array(PIL.Image.open(path+ds.fnames[id
 
 class ImageModelResults():
     """ Visualize the results of an image model
-
+    
     Arguments:
-        ds: a dataset which contains the images
-        log_preds: predictions for the dataset in log scale
-
+        ds (dataset): a dataset which contains the images
+        log_preds (numpy.ndarray): predictions for the dataset in log scale
+        
     Returns:
         ImageModelResults
     """
     def __init__(self, ds, log_preds):
+        """Initialize an ImageModelResults class instance"""
         self.ds = ds
         # returns the indices of the maximum value of predictions along axis 1, representing the predicted class
         # log_preds.shape = (number_of_samples, number_of_classes);
@@ -95,15 +96,16 @@ class ImageModelResults():
         # extracts the number of classes
         self.num_classes = log_preds.shape[1]
 
-    """
-    Displays the images and their probabilities of belonging to a certain class
-    Arguments:
-        idxs: indexes of the image samples from the dataset
-        y: the selected class
-    Returns:
-        Plots the images in n rows [rows = n]
-    """
     def plot_val_with_title(self, idxs, y):
+        """ Displays the images and their probabilities of belonging to a certain class
+            
+            Arguments:
+                idxs (numpy.ndarray): indexes of the image samples from the dataset
+                y (int): the selected class
+                
+            Returns:
+                Plots the images in n rows [rows = n]
+        """
         # if there are any samples to be displayed
         if len(idxs) > 0:
             imgs = np.stack([self.ds[x][0] for x in idxs])
@@ -114,41 +116,44 @@ class ImageModelResults():
         else:
             return False;
 
-    """
-    Extracts the first 4 most correct/incorrect indexes from the ordered list of probabilities
-    Arguments:
-        mask: the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
-        y: the selected class
-        mult: sets the ordering; -1 descending, 1 ascending
-    Returns:
-        An array of indexes (numpy.ndarray)
-    """
     def most_by_mask(self, mask, y, mult):
+        """ Extracts the first 4 most correct/incorrect indexes from the ordered list of probabilities
+        
+            Arguments:
+                mask (numpy.ndarray): the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
+                y (int): the selected class
+                mult (int): sets the ordering; -1 descending, 1 ascending
+                
+            Returns:
+                idxs (ndarray): An array of indexes of length 4
+        """
         idxs = np.where(mask)[0]
         return idxs[np.argsort(mult * self.probs[idxs,y])[:4]]
 
-    """
-    Extracts the first 4 most uncertain indexes from the ordered list of probabilities
-    Arguments:
-        mask: the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
-        y: the selected class
-    Returns:
-        An array of indexes (numpy.ndarray)
-    """
     def most_uncertain_by_mask(self, mask, y):
+        """ Extracts the first 4 most uncertain indexes from the ordered list of probabilities
+            
+            Arguments:
+                mask (numpy.ndarray): the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
+                y (int): the selected class
+            
+            Returns:
+                idxs (ndarray): An array of indexes of length 4
+        """
         idxs = np.where(mask)[0]
         # the most uncertain samples will have abs(probs-1/num_classes) close to 0;
         return idxs[np.argsort(np.abs(self.probs[idxs,y]-(1/self.num_classes)))[:4]]
-
-    """
-    Extracts the predicted classes which correspond to the selected class (y) and to the specific case (prediction is correct - is_true=True, prediction is wrong - is_true=False)
-    Arguments:
-        y: the selected class
-        is_correct: a boolean flag (True, False) which specify the what to look for. Ex: True - most correct samples, False - most incorrect samples
-    Returns:
-        An array of indexes (numpy.ndarray)
-    """
+    
     def most_by_correct(self, y, is_correct):
+        """ Extracts the predicted classes which correspond to the selected class (y) and to the specific case (prediction is correct - is_true=True, prediction is wrong - is_true=False)
+            
+            Arguments:
+                y (int): the selected class
+                is_correct (boolean): a boolean flag (True, False) which specify the what to look for. Ex: True - most correct samples, False - most incorrect samples
+            
+            Returns:
+                idxs (numpy.ndarray): An array of indexes (numpy.ndarray)
+        """
         # mult=-1 when the is_correct flag is true -> when we want to display the most correct classes we will make a descending sorting (argsort) because we want that the biggest probabilities to be displayed first.
         # When is_correct is false, we want to display the most incorrect classes, so we want an ascending sorting since our interest is in the smallest probabilities.
         mult = -1 if is_correct==True else 1
@@ -156,11 +161,43 @@ class ImageModelResults():
                                  & (self.ds.y == y), y, mult)
 
     def plot_by_correct(self, y, is_correct):
+        """ Plots the images which correspond to the selected class (y) and to the specific case (prediction is correct - is_true=True, prediction is wrong - is_true=False)
+            
+            Arguments:
+                y (int): the selected class
+                is_correct (boolean): a boolean flag (True, False) which specify the what to look for. Ex: True - most correct samples, False - most incorrect samples
+        """    
         return self.plot_val_with_title(self.most_by_correct(y, is_correct), y)
 
     def most_by_uncertain(self, y):
+        """ Extracts the predicted classes which correspond to the selected class (y) and have probabilities nearest to 1/number_of_classes (eg. 0.5 for 2 classes, 0.33 for 3 classes) for the selected class.
+            
+            Arguments:
+                y (int): the selected class
+            
+            Returns:
+                idxs (numpy.ndarray): An array of indexes (numpy.ndarray)
+        """
         return self.most_uncertain_by_mask((self.ds.y == y), y)
 
-    def plot_most_correct(self, y): return self.plot_by_correct(y, True)
-    def plot_most_incorrect(self, y): return self.plot_by_correct(y, False)
-    def plot_most_uncertain(self, y): return self.plot_val_with_title(self.most_by_uncertain(y), y)
+    def plot_most_correct(self, y):
+        """ Plots the images which correspond to the selected class (y) and are most correct.
+            
+            Arguments:
+                y (int): the selected class
+        """
+        return self.plot_by_correct(y, True)
+    def plot_most_incorrect(self, y): 
+        """ Plots the images which correspond to the selected class (y) and are most incorrect.
+            
+            Arguments:
+                y (int): the selected class
+        """
+        return self.plot_by_correct(y, False)
+    def plot_most_uncertain(self, y):
+        """ Plots the images which correspond to the selected class (y) and are most uncertain i.e have probabilities nearest to 1/number_of_classes.
+            
+            Arguments:
+                y (int): the selected class
+        """
+        return self.plot_val_with_title(self.most_by_uncertain(y), y)
