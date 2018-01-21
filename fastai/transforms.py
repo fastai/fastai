@@ -390,6 +390,34 @@ class RandomLighting(Transform):
         return x
 
 
+class RandomBlur(Transform):
+    """
+    Adds a gaussian blur to the image at chance.
+    Multiple blur strengths can be configured, one of them is used by random chance.
+    """
+
+    def __init__(self, blur_strengths=5, probability=0.5, tfm_y=TfmType.NO):
+        # Blur strength must be an odd number, because it is used as a kernel size.
+        self.blur_strengths = (np.array(blur_strengths, ndmin=1) * 2) - 1
+        if np.any(self.blur_strengths < 0):
+            raise ValueError("all blur_strengths must be > 0")
+        self.kernel = (0, 0)
+        self.probability = probability
+        self.tfm_y = tfm_y
+        self.apply_transform = False
+
+    def set_state(self):
+        self.apply_transform = random.random() < self.probability
+        kernel_size = np.random.choice(self.blur_strengths)
+        self.kernel = (kernel_size, kernel_size)
+
+    def do_transform(self, x):
+        if self.apply_transform:
+            return cv2.GaussianBlur(src=x, ksize=self.kernel, sigmaX=0)
+        else:
+            return x
+
+
 def compose(im, y, fns):
     for fn in fns:
         im, y =fn(im, y)
