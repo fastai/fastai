@@ -188,7 +188,7 @@ def apply_cats(df, trn):
 
            col1 col2
         0     1    b
-        1     2    b
+        1     2    a
         2     3    a
 
     now the type of col is category {a : 1, b : 2}
@@ -457,4 +457,3 @@ def get_nn_mappers(df, cat_vars, contin_vars):
     cat_maps = [(o, LabelEncoder()) for o in cat_vars]
     contin_maps = [([o], StandardScaler()) for o in contin_vars]
     return DataFrameMapper(cat_maps).fit(df), DataFrameMapper(contin_maps).fit(df)
-
