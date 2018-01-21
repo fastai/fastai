@@ -256,10 +256,10 @@ def fix_missing(df, col, name, na_dict):
 
     >>> fix_missing(df, df['col1'], 'col1', {'col1' : 500})
     >>> df
-       col1 col2
-    0     1    5
-    1   500    2
-    2     3    2
+       col1 col2 col1_na
+    0     1    5   False
+    1   500    2    True
+    2     3    2   False
     """
     if is_numeric_dtype(col):
         if pd.isnull(col).sum() or (name in na_dict):
