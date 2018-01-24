@@ -267,7 +267,7 @@ class LanguageModelData():
             An instance of the RNN_Learner class.
 
         """
-        m = get_language_model(self.nt, emb_sz, nhid=n_hid, nlayers=n_layers, pad_idx=self.pad_idx, **kwargs)
+            m = get_language_model(self.nt, emb_sz, nhid=n_hid, nlayers=n_layers, pad_token=self.pad_idx, **kwargs)
         model = SingleModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
@@ -360,4 +360,3 @@ class TextData(ModelData):
               layers=[emb_sz*3, self.c], drops=[dropout],
               emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=self.pad_idx, **kwargs)
         return self.to_model(m, opt_fn)
-
