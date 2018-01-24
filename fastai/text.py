@@ -75,7 +75,10 @@ class Tokenizer():
     def proc_all(self, ss): return [self.proc_text(s) for s in ss]
 
     def proc_all_mp(self, ss):
-        ncpus = len(os.sched_getaffinity(0))//2
+        try:
+            ncpus = len(os.sched_getaffinity(0))//2
+        except AttributeError:
+            ncpus = 2
         with ProcessPoolExecutor(ncpus) as e: return sum(e.map(self.proc_all, ss), [])
 
 

@@ -78,7 +78,10 @@ def one_hot(a,c): return np.eye(c)[a]
 def partition(a, sz): return [a[i:i+sz] for i in range(0, len(a), sz)]
 
 def partition_by_cores(a):
-    return partition(a, len(a)//len(os.sched_getaffinity(0)) + 1)
+    try:
+        return partition(a, len(a)//len(os.sched_getaffinity(0)) + 1)
+    except AttributeError:
+        return partition(a, len(a)//2)
 
 
 class BasicModel():
