@@ -357,7 +357,8 @@ class ImageClassifierData(ImageData):
             csv_fname: a name of the CSV file which contains target labels.
             bs: batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
-            val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`
+            val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`.
+                If None, default arguments to get_cv_idxs are used.
             suffix: suffix to add to image names in CSV file (sometimes CSV only contains the file name without file
                     extension e.g. '.jpg' - in which case, you can set suffix as '.jpg')
             test_name: a name of the folder which contains test images.
@@ -369,6 +370,8 @@ class ImageClassifierData(ImageData):
             ImageClassifierData
         """
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
+
+        val_idxs = get_cv_idxs(len(fnames)) if val_idxs is None else val_idxs
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
         test_fnames = read_dir(path, test_name) if test_name else None
