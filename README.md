@@ -6,9 +6,9 @@ Copyright 2017 onwards, Jeremy Howard. Licensed under the Apache License, Versio
 
 ## Current Status
 
-This is pre-alpha. Stuff is moving around and changing frequently. You should only be using this if you're interested in digging into the details and actively contributing to the project.
+This is an alpha version. Most of the library is quite well tested since many students have used it to complete the [Practical Deep Learning for Coders](http://course.fast.ai). course. However it hasn't been widely used yet ourside of the course, so you may find some missing features or rough edges. If you're interested in using the library in your own projects, we're happy to help support any bug fixes or feature additions you need&mdash;please use http://forums.fast.ai to discuss.
 
-First, clone fastai using `git`:
+Recommended installation approach is to clone fastai using `git`:
 
 ```sh
 git clone https://github.com/fastai/fastai.git
@@ -25,18 +25,18 @@ This downloads all of the dependencies and then all you have to do is:
 source activate fastai
 ```
 
-To update everything:
+To update everything at any time, cd to your repo and:
 
 ```sh
 git pull
 conda env update
 ```
 
-Or
-
 You can also install this library in the local environment using ```pip```
 
 ```sh
 pip install fastai
 ```
+
+However this is not currently the recommended approach, since the library is being updated much more frequently than the pip release, fewer people are using and testing the pip version, and pip needs to compile many libraries from scratch (which can be slow). 
 
