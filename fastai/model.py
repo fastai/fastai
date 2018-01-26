@@ -79,7 +79,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     batch_num,avg_loss=0,0.
     for cb in callbacks: cb.on_train_begin()
     
-    names = ["epochs", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
+    names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
     layout = "{!s:10} " * len(names)
     
     for epoch in tnrange(epochs, desc='Epoch'):
