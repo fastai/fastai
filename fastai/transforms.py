@@ -29,8 +29,8 @@ def stretch_cv(x,sr,sc):
     return x[cr:r+cr, cc:c+cc]
 
 def dihedral(x, dih):
-    x = np.rot90(x, self.dih%4)
-    return x if self.dih<4 else np.fliplr(x)
+    x = np.rot90(x, dih%4)
+    return x if dih<4 else np.fliplr(x)
 
 def lighting(im, b, c):
     if b==0 and c==1: return im
@@ -65,7 +65,7 @@ def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
 
 def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
 
-def det_dihedral(dih): return lambda x: dihedral(dih)
+def det_dihedral(dih): return lambda x: dihedral(x, dih)
 def det_stretch(sr, sc): return lambda x: stretch_cv(x, sr, sc)
 def det_lighting(b, c): return lambda x: lighting(x, b, c)
 def det_rotate(deg): return lambda x: rotate_cv(x, deg)
@@ -383,8 +383,8 @@ class RandomLighting(Transform):
         self.c_rand = rand0(self.c)
 
     def do_transform(self, x):
-        b = self.b
-        c = self.c
+        b = self.b_rand
+        c = self.c_rand
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x

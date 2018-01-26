@@ -87,7 +87,7 @@ class ConvLearner(Learner):
         self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
         if data.is_reg: self.crit = F.l1_loss
         elif self.metrics is None:
-            self.metrics = [accuracy_multi] if self.data.is_multi else [accuracy]
+            self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
         if precompute: self.save_fc1()
         self.freeze()
         self.precompute = precompute

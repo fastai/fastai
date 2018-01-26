@@ -23,7 +23,7 @@ class Learner():
         self.models_path = os.path.join(self.data.path, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
-        self.crit,self.reg_fn,self.crit = None,None,None
+        self.crit,self.reg_fn = None,None
 
     @classmethod
     def from_model_data(cls, m, data):

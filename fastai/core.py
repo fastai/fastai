@@ -78,7 +78,13 @@ def one_hot(a,c): return np.eye(c)[a]
 def partition(a, sz): return [a[i:i+sz] for i in range(0, len(a), sz)]
 
 def partition_by_cores(a):
-    return partition(a, len(a)//len(os.sched_getaffinity(0)) + 1)
+    return partition(a, len(a)//num_cpus() + 1)
+
+def num_cpus():
+    try:
+        return len(os.sched_getaffinity(0))
+    except AttributeError:
+        return os.cpu_count()
 
 
 class BasicModel():
