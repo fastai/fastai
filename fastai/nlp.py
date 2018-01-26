@@ -267,7 +267,7 @@ class LanguageModelData():
             An instance of the RNN_Learner class.
 
         """
-        m = get_language_model(self.nt, emb_sz, nhid=n_hid, nlayers=n_layers, pad_idx=self.pad_idx, **kwargs)
+        m = get_language_model(self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
         model = SingleModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
