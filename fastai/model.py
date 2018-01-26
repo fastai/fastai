@@ -79,8 +79,9 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     batch_num,avg_loss=0,0.
     for cb in callbacks: cb.on_train_begin()
     
-    names = ["train_loss","val_loss"] + [f.__name__ for f in metrics]
-
+    names = ["epochs", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
+    layout = "{!s:10} " * len(names)
+    
     for epoch in tnrange(epochs, desc='Epoch'):
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=len(data.trn_dl))
@@ -96,7 +97,8 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
             if stop: return
 
         vals = validate(stepper, data.val_dl, metrics)
-        print_stats(epoch, names, [debias_loss] + vals)
+        if epoch == 0: print(layout.format(*names))
+        print_stats(epoch, [debias_loss] + vals)
         
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
@@ -105,10 +107,10 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     for cb in callbacks: cb.on_train_end()
 
 
-def print_stats(epoch, names, values):
-    print_str = "{}: {:3d}, ".format("epoch",epoch)
-    print_str += ', '.join(("{}: {:.6f}".format(n, v) for (n, v) in zip(names, values)))
-    print(print_str)    
+def print_stats(epoch, values, decimals=6):
+    layout = "{!s:^10}" + " {!s:10}" * len(values)
+    values = [epoch] + list(np.round(values, decimals))
+    print(layout.format(*values))
     
 def validate(stepper, dl, metrics):
     loss,res = [],[]
