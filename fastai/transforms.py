@@ -383,8 +383,8 @@ class RandomLighting(Transform):
         self.c_rand = rand0(self.c)
 
     def do_transform(self, x):
-        b = self.b
-        c = self.c
+        b = self.b_rand
+        c = self.c_rand
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x
