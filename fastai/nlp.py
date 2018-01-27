@@ -360,4 +360,3 @@ class TextData(ModelData):
               layers=[emb_sz*3, self.c], drops=[dropout],
               emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=self.pad_idx, **kwargs)
         return self.to_model(m, opt_fn)
-
