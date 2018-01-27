@@ -152,7 +152,7 @@ class Learner():
         elif not self.sched: self.sched=LossRecorder(layer_opt)
         callbacks+=[self.sched]
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
-        fit(model, data, n_epoch, layer_opt.opt, self.crit,
+        return fit(model, data, n_epoch, layer_opt.opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
@@ -206,12 +206,12 @@ class Learner():
         """
         self.sched = None
         layer_opt = self.get_layer_opt(lrs, wds)
-        self.fit_gen(self.model, self.data, layer_opt, n_cycle, **kwargs)
+        return self.fit_gen(self.model, self.data, layer_opt, n_cycle, **kwargs)
 
     def warm_up(self, lr, wds=None):
         layer_opt = self.get_layer_opt(lr/4, wds)
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), lr, linear=True)
-        self.fit_gen(self.model, self.data, layer_opt, 1)
+        return self.fit_gen(self.model, self.data, layer_opt, 1)
 
     def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False):
         """Helps you find an optimal learning rate for a model.

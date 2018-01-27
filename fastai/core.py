@@ -14,7 +14,7 @@ def T(a):
         if a.dtype in (np.int8, np.int16, np.int32, np.int64):
             res = torch.LongTensor(a.astype(np.int64))
         elif a.dtype in (np.float32, np.float64):
-            return torch.FloatTensor(a.astype(np.float32))
+            res = torch.FloatTensor(a.astype(np.float32))
         else: raise NotImplementedError(a.dtype)
     return to_gpu(res, async=True)
 
