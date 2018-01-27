@@ -152,7 +152,7 @@ class LanguageModelLoader():
 class LanguageModel(BasicModel):
     def get_layer_groups(self):
         m = self.model[0]
-        return [(self.model[1], m.dropouti), *zip(m.rnns, m.dropouths)]
+        return [*zip(m.rnns, m.dropouths), (self.model[1], m.dropouti)]
 
 
 class LanguageModelData():

@@ -106,9 +106,15 @@ class ConvLearner(Learner):
     def create_empty_bcolz(self, n, name):
         return bcolz.carray(np.zeros((0,n), np.float32), chunklen=1, mode='w', rootdir=name)
 
-    def set_data(self, data):
+    def set_data(self, data, precompute=False):
         super().set_data(data)
-        self.freeze()
+        if precompute:
+            self.unfreeze()
+            self.save_fc1()
+            self.freeze()
+            self.precompute = True
+        else:
+            self.freeze()
 
     def get_layer_groups(self):
         return self.models.get_layer_groups(self.precompute)
