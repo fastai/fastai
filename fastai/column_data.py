@@ -84,7 +84,8 @@ class MixedInputModel(nn.Module):
         self.embs = nn.ModuleList([nn.Embedding(c, s) for c,s in emb_szs])
         for emb in self.embs: emb_init(emb)
         n_emb = sum(e.embedding_dim for e in self.embs)
-
+        self.n_emb, self.n_cont=n_emb, n_cont
+        
         szs = [n_emb+n_cont] + szs
         self.lins = nn.ModuleList([
             nn.Linear(szs[i], szs[i+1]) for i in range(len(szs)-1)])
@@ -100,11 +101,13 @@ class MixedInputModel(nn.Module):
         self.use_bn,self.y_range = use_bn,y_range
 
     def forward(self, x_cat, x_cont):
-        x = [e(x_cat[:,i]) for i,e in enumerate(self.embs)]
-        x = torch.cat(x, 1)
-        x2 = self.bn(x_cont)
-        x = self.emb_drop(x)
-        x = torch.cat([x, x2], 1)
+        if self.n_emb != 0:
+            x = [e(x_cat[:,i]) for i,e in enumerate(self.embs)]
+            x = torch.cat(x, 1)
+            x = self.emb_drop(x)
+        if self.n_cont != 0:
+            x2 = self.bn(x_cont)
+            x = torch.cat([x, x2], 1) if self.n_emb != 0 else x2
         for l,d,b in zip(self.lins, self.drops, self.bns):
             x = F.relu(l(x))
             if self.use_bn: x = b(x)

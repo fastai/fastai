@@ -29,8 +29,8 @@ def stretch_cv(x,sr,sc):
     return x[cr:r+cr, cc:c+cc]
 
 def dihedral(x, dih):
-    x = np.rot90(x, self.dih%4)
-    return x if self.dih<4 else np.fliplr(x)
+    x = np.rot90(x, dih%4)
+    return x if dih<4 else np.fliplr(x)
 
 def lighting(im, b, c):
     if b==0 and c==1: return im
@@ -65,7 +65,7 @@ def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
 
 def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
 
-def det_dihedral(dih): return lambda x: dihedral(dih)
+def det_dihedral(dih): return lambda x: dihedral(x, dih)
 def det_stretch(sr, sc): return lambda x: stretch_cv(x, sr, sc)
 def det_lighting(b, c): return lambda x: lighting(x, b, c)
 def det_rotate(deg): return lambda x: rotate_cv(x, deg)
@@ -383,11 +383,39 @@ class RandomLighting(Transform):
         self.c_rand = rand0(self.c)
 
     def do_transform(self, x):
-        b = self.b
-        c = self.c
+        b = self.b_rand
+        c = self.c_rand
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x
+
+
+class RandomBlur(Transform):
+    """
+    Adds a gaussian blur to the image at chance.
+    Multiple blur strengths can be configured, one of them is used by random chance.
+    """
+
+    def __init__(self, blur_strengths=5, probability=0.5, tfm_y=TfmType.NO):
+        # Blur strength must be an odd number, because it is used as a kernel size.
+        self.blur_strengths = (np.array(blur_strengths, ndmin=1) * 2) - 1
+        if np.any(self.blur_strengths < 0):
+            raise ValueError("all blur_strengths must be > 0")
+        self.kernel = (0, 0)
+        self.probability = probability
+        self.tfm_y = tfm_y
+        self.apply_transform = False
+
+    def set_state(self):
+        self.apply_transform = random.random() < self.probability
+        kernel_size = np.random.choice(self.blur_strengths)
+        self.kernel = (kernel_size, kernel_size)
+
+    def do_transform(self, x):
+        if self.apply_transform:
+            return cv2.GaussianBlur(src=x, ksize=self.kernel, sigmaX=0)
+        else:
+            return x
 
 
 def compose(im, y, fns):

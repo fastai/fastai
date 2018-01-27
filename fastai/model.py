@@ -79,6 +79,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     batch_num,avg_loss=0,0.
     for cb in callbacks: cb.on_train_begin()
     num_batch = len(data.trn_dl)
+    names = ["train_loss","val_loss"] + [f.__name__ for f in metrics]
     if epochs<1:
         num_batch = int(num_batch*epochs)
         epochs = 1
@@ -101,7 +102,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
             i += 1
 
         vals = validate(stepper, data.val_dl, metrics)
-        print(np.round([epoch, debias_loss] + vals, 6))
+        print_stats(epoch, names, [debias_loss] + vals)
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
@@ -109,6 +110,11 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     for cb in callbacks: cb.on_train_end()
     return vals
 
+
+def print_stats(epoch, names, values):
+    print_str = "{}: {:3d}, ".format("epoch",epoch)
+    print_str += ', '.join(("{}: {:.6f}".format(n, v) for (n, v) in zip(names, values)))
+    print(print_str)
 
 def validate(stepper, dl, metrics):
     loss,res = [],[]
