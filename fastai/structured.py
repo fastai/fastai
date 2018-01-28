@@ -30,7 +30,7 @@ def draw_tree(t, df, size=10, ratio=0.6, precision=0):
     s=export_graphviz(t, out_file=None, feature_names=df.columns, filled=True,
                       special_characters=True, rotate=True, precision=precision)
     IPython.display.display(graphviz.Source(re.sub('Tree {',
-       f'Tree {{ size={size}; ratio={ratio}', s)))
+       'Tree {{ size={size}; ratio={ratio}', s)))
 
 def combine_date(years, months=1, days=1, weeks=None, hours=None, minutes=None,
               seconds=None, milliseconds=None, microseconds=None, nanoseconds=None):
