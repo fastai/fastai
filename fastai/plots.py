@@ -71,7 +71,7 @@ def plots_raw(ims, figsize=(12,6), rows=1, titles=None):
         if titles is not None: sp.set_title(titles[i], fontsize=16)
         plt.imshow(ims[i])
 
-def load_img_id(ds, idx, path): return np.array(PIL.Image.open(path+ds.fnames[idx]))
+def load_img_id(ds, idx, path): return np.array(PIL.Image.open(os.path.join(path, ds.fnames[idx])))
 
 
 class ImageModelResults():
