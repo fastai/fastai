@@ -318,7 +318,7 @@ class TextDataLoader():
         it = iter(self.src)
         for i in range(len(self)):
             b = next(it)
-            yield getattr(b, self.x_fld), getattr(b, self.y_fld)
+            yield getattr(b, self.x_fld).data, getattr(b, self.y_fld).data
 
 
 class TextModel(BasicModel):
