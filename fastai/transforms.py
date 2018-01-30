@@ -16,7 +16,7 @@ def scale_min(im, targ):
 
 def zoom_cv(x,z):
     if z==0: return x
-    r,c,*_ = im.shape
+    r,c,*_ = x.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
