@@ -202,7 +202,6 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
     LinearDecoder layers sequentially in the model.
 
     Args:
-        bs (int): batch size of input data
         ntoken (int): number of vocabulary (or tokens) in the source dataset
         emb_sz (int): the embedding size to use to encode each token
         nhid (int): number of hidden activation per LSTM layer
