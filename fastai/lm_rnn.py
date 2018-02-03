@@ -134,8 +134,7 @@ class LinearDecoder(nn.Module):
     initrange=0.1
     def __init__(self, n_out, nhid, dropout, tie_encoder=None):
         super().__init__()
-        self.decoder = nn.Linear(nhid, n_out)
-        self.decoder.bias.data.fill_(0)
+        self.decoder = nn.Linear(nhid, n_out, bias=False)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.dropout = LockedDropout(dropout)
         if tie_encoder: self.decoder.weight = tie_encoder.weight
