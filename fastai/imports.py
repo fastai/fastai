@@ -24,6 +24,16 @@ np.set_printoptions(precision=5, linewidth=110, suppress=True)
 from ipykernel.kernelapp import IPKernelApp
 def in_notebook(): return IPKernelApp.initialized()
 
+def in_ipynb():
+    try:
+        cfg = get_ipython().config
+        if cfg['IPKernelApp']['parent_appname'] == 'ipython-notebook':
+            return True
+        else:
+            return False
+    except NameError:
+        return False
+
 import tqdm as tq
 from tqdm import tqdm_notebook, tnrange
 

@@ -12,10 +12,11 @@ class Callback:
 
 
 class LossRecorder(Callback):
-    def __init__(self, layer_opt):
+    def __init__(self, layer_opt, save_path=''):
         super().__init__()
         self.layer_opt=layer_opt
         self.init_lrs=np.array(layer_opt.lrs)
+        self.save_path=save_path
 
     def on_train_begin(self):
         self.losses,self.lrs,self.iterations = [],[],[]
@@ -32,12 +33,21 @@ class LossRecorder(Callback):
         self.losses.append(loss)
 
     def plot_loss(self):
+        if not in_ipynb():
+            plt.switch_backend('agg')
         plt.plot(self.iterations[10:], self.losses[10:])
+        if not in_ipynb():
+            plt.savefig(os.path.join(self.save_path, 'loss_plot.png'))
+            np.save(os.path.join(self.save_path, 'losses.npy'), self.losses[10:])
 
     def plot_lr(self):
+        if not in_ipynb():
+            plt.switch_backend('agg')
         plt.xlabel("iterations")
         plt.ylabel("learning rate")
         plt.plot(self.iterations, self.lrs)
+        if not in_ipynb():
+            plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
 
 
 class LR_Updater(LossRecorder):
