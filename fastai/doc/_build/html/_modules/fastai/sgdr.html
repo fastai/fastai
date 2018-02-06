@@ -1,0 +1,202 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fastai.sgdr &#8212; fastai 0.6 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for fastai.sgdr</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.layer_optimizer</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Callback"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.Callback">[docs]</a><span class="k">class</span> <span class="nc">Callback</span><span class="p">:</span>
+<div class="viewcode-block" id="Callback.on_train_begin"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.Callback.on_train_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="Callback.on_epoch_end"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.Callback.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="Callback.on_batch_end"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.Callback.on_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span> <span class="k">pass</span></div></div>
+
+<div class="viewcode-block" id="LossRecorder"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LossRecorder">[docs]</a><span class="k">class</span> <span class="nc">LossRecorder</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_opt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_opt</span><span class="o">=</span><span class="n">layer_opt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_lrs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">layer_opt</span><span class="o">.</span><span class="n">lrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LossRecorder.on_train_begin"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LossRecorder.on_train_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lrs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="p">[],[],[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="LossRecorder.on_epoch_end"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LossRecorder.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="LossRecorder.on_batch_end"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LossRecorder.on_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_opt</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LossRecorder.plot_loss"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LossRecorder.plot_loss">[docs]</a>    <span class="k">def</span> <span class="nf">plot_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="mi">10</span><span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">[</span><span class="mi">10</span><span class="p">:])</span></div>
+
+<div class="viewcode-block" id="LossRecorder.plot_lr"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LossRecorder.plot_lr">[docs]</a>    <span class="k">def</span> <span class="nf">plot_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;iterations&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;learning rate&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lrs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LR_Updater"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Updater">[docs]</a><span class="k">class</span> <span class="nc">LR_Updater</span><span class="p">(</span><span class="n">LossRecorder</span><span class="p">):</span>
+<div class="viewcode-block" id="LR_Updater.on_train_begin"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Updater.on_train_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_lr</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LR_Updater.on_batch_end"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Updater.on_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_batch_end</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_lr</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="LR_Updater.update_lr"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Updater.update_lr">[docs]</a>    <span class="k">def</span> <span class="nf">update_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_lrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_lr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_lrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_opt</span><span class="o">.</span><span class="n">set_lrs</span><span class="p">(</span><span class="n">new_lrs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LR_Updater.calc_lr"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Updater.calc_lr">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">calc_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_lrs</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="LR_Finder"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Finder">[docs]</a><span class="k">class</span> <span class="nc">LR_Finder</span><span class="p">(</span><span class="n">LR_Updater</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_opt</span><span class="p">,</span> <span class="n">nb</span><span class="p">,</span> <span class="n">end_lr</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr_mult</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_lr</span><span class="o">/</span><span class="n">layer_opt</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">nb</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer_opt</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LR_Finder.on_train_begin"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Finder.on_train_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best</span><span class="o">=</span><span class="mf">1e9</span></div>
+
+<div class="viewcode-block" id="LR_Finder.calc_lr"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Finder.calc_lr">[docs]</a>    <span class="k">def</span> <span class="nf">calc_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_lrs</span><span class="p">):</span> <span class="k">return</span> <span class="n">init_lrs</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_mult</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LR_Finder.on_batch_end"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Finder.on_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="ow">or</span> <span class="n">loss</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">best</span><span class="o">*</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">loss</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">best</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">best</span><span class="o">=</span><span class="n">loss</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_batch_end</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LR_Finder.plot"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.LR_Finder.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_skip</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;learning rate (log scale)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lrs</span><span class="p">[</span><span class="n">n_skip</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">[</span><span class="n">n_skip</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CosAnneal"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.CosAnneal">[docs]</a><span class="k">class</span> <span class="nc">CosAnneal</span><span class="p">(</span><span class="n">LR_Updater</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_opt</span><span class="p">,</span> <span class="n">nb</span><span class="p">,</span> <span class="n">on_cycle_end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cycle_mult</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_cycle_end</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_mult</span> <span class="o">=</span> <span class="n">nb</span><span class="p">,</span><span class="n">on_cycle_end</span><span class="p">,</span><span class="n">cycle_mult</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer_opt</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CosAnneal.on_train_begin"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.CosAnneal.on_train_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle_iter</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CosAnneal.calc_lr"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.sgdr.CosAnneal.calc_lr">[docs]</a>    <span class="k">def</span> <span class="nf">calc_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_lrs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">nb</span><span class="o">/</span><span class="mi">20</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cycle_iter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">init_lrs</span><span class="o">/</span><span class="mf">100.</span>
+
+        <span class="n">cos_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_iter</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">nb</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle_iter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_iter</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">nb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cycle_iter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nb</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_mult</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_cycle_end</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_cycle_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">init_lrs</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cos_out</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Jeremy Howard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

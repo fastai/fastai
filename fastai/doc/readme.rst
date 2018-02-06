@@ -1,0 +1,3 @@
+readme
+======
+.. include:: ../../README.md

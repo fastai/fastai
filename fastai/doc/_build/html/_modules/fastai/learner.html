@@ -1,0 +1,273 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fastai.learner &#8212; fastai 0.6 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for fastai.learner</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.transforms</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.dataset</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.sgdr</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.layer_optimizer</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.layers</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.metrics</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.losses</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="BasicModel"><a class="viewcode-back" href="../../api.html#fastai.learner.BasicModel">[docs]</a><span class="k">class</span> <span class="nc">BasicModel</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;unnamed&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">model</span><span class="p">,</span><span class="n">name</span>
+<div class="viewcode-block" id="BasicModel.get_layer_groups"><a class="viewcode-back" href="../../api.html#fastai.learner.BasicModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do_fc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="SingleModel"><a class="viewcode-back" href="../../api.html#fastai.learner.SingleModel">[docs]</a><span class="k">class</span> <span class="nc">SingleModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleModel.get_layer_groups"><a class="viewcode-back" href="../../api.html#fastai.learner.SingleModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="Learner"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner">[docs]</a><span class="k">class</span> <span class="nc">Learner</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">opt_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmp_name</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">models_name</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span><span class="n">models</span><span class="p">,</span><span class="n">metrics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sched</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_fn</span> <span class="o">=</span> <span class="n">opt_fn</span> <span class="ow">or</span> <span class="n">SGD_Momentum</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmp_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">tmp_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">models_name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_fn</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_</span>
+
+<div class="viewcode-block" id="Learner.summary"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">model_summary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sz</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Learner.set_bn_freeze"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.set_bn_freeze">[docs]</a>    <span class="k">def</span> <span class="nf">set_bn_freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">do_freeze</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;running_mean&#39;</span><span class="p">):</span> <span class="n">m</span><span class="o">.</span><span class="n">bn_freeze</span> <span class="o">=</span> <span class="n">do_freeze</span></div>
+
+<div class="viewcode-block" id="Learner.bn_freeze"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.bn_freeze">[docs]</a>    <span class="k">def</span> <span class="nf">bn_freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do_freeze</span><span class="p">):</span>
+        <span class="n">apply_leaf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_bn_freeze</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">do_freeze</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Learner.freeze_to"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.freeze_to">[docs]</a>    <span class="k">def</span> <span class="nf">freeze_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">c</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer_groups</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>     <span class="n">set_trainable</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="n">n</span><span class="p">:]:</span> <span class="n">set_trainable</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.unfreeze"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.get_model_path"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.get_model_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models_path</span><span class="p">,</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.h5&#39;</span></div>
+<div class="viewcode-block" id="Learner.save"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">save_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_path</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+<div class="viewcode-block" id="Learner.load"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">load_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_path</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Learner.set_data"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Learner.get_cycle_end"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.get_cycle_end">[docs]</a>    <span class="k">def</span> <span class="nf">get_cycle_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">sched</span><span class="p">,</span> <span class="n">cycle</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_cycle</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cycle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.save_cycle"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.save_cycle">[docs]</a>    <span class="k">def</span> <span class="nf">save_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">_cyc_</span><span class="si">{cycle}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Learner.load_cycle"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.load_cycle">[docs]</a>    <span class="k">def</span> <span class="nf">load_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">_cyc_</span><span class="si">{cycle}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.fit_gen"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.fit_gen">[docs]</a>    <span class="k">def</span> <span class="nf">fit_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">layer_opt</span><span class="p">,</span> <span class="n">n_cycle</span><span class="p">,</span> <span class="n">cycle_len</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cycle_mult</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cycle_save_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">callbacks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">if</span> <span class="n">metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span>
+        <span class="k">if</span> <span class="n">cycle_len</span><span class="p">:</span>
+            <span class="n">cycle_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cycle_end</span><span class="p">(</span><span class="n">cycle_save_name</span><span class="p">)</span>
+            <span class="n">cycle_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">)</span><span class="o">*</span><span class="n">cycle_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="n">CosAnneal</span><span class="p">(</span><span class="n">layer_opt</span><span class="p">,</span> <span class="n">cycle_batches</span><span class="p">,</span> <span class="n">on_cycle_end</span><span class="o">=</span><span class="n">cycle_end</span><span class="p">,</span> <span class="n">cycle_mult</span><span class="o">=</span><span class="n">cycle_mult</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sched</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sched</span><span class="o">=</span><span class="n">LossRecorder</span><span class="p">(</span><span class="n">layer_opt</span><span class="p">)</span>
+        <span class="n">callbacks</span><span class="o">+=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sched</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">cb</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+        <span class="n">n_epoch</span> <span class="o">=</span> <span class="n">sum_geom</span><span class="p">(</span><span class="n">cycle_len</span> <span class="k">if</span> <span class="n">cycle_len</span> <span class="k">else</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cycle_mult</span><span class="p">,</span> <span class="n">n_cycle</span><span class="p">)</span>
+        <span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">n_epoch</span><span class="p">,</span> <span class="n">layer_opt</span><span class="o">.</span><span class="n">opt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">crit</span><span class="p">,</span>
+            <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">reg_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_fn</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.get_layer_groups"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get_layer_groups</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Learner.get_layer_opt"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.get_layer_opt">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lrs</span><span class="p">,</span> <span class="n">wds</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">LayerOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_layer_groups</span><span class="p">(),</span> <span class="n">lrs</span><span class="p">,</span> <span class="n">wds</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.fit"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lrs</span><span class="p">,</span> <span class="n">n_cycle</span><span class="p">,</span> <span class="n">wds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">layer_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_layer_opt</span><span class="p">(</span><span class="n">lrs</span><span class="p">,</span> <span class="n">wds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">layer_opt</span><span class="p">,</span> <span class="n">n_cycle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.lr_find"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.lr_find">[docs]</a>    <span class="k">def</span> <span class="nf">lr_find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_lr</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">end_lr</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">wds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helps you find an optimal learning rate for a model.</span>
+
+<span class="sd">         It uses the technique developed in the 2015 paper</span>
+<span class="sd">         `Cyclical Learning Rates for Training Neural Networks`, where</span>
+<span class="sd">         we simply keep increasing the learning rate from a very small value,</span>
+<span class="sd">         until the loss starts decreasing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_lr (float/numpy array) : Passing in a numpy array allows you</span>
+<span class="sd">                to specify learning rates for a learner&#39;s layer_groups</span>
+<span class="sd">            end_lr (float) : The maximum learning rate to try.</span>
+<span class="sd">            wds (iterable/float)</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            As training moves us closer to the optimal weights for a model,</span>
+<span class="sd">            the optimal learning rate will be smaller. We can take advantage of</span>
+<span class="sd">            that knowledge and provide lr_find() with a starting learning rate</span>
+<span class="sd">            1000x smaller than the model&#39;s current learning rate as such:</span>
+
+<span class="sd">            &gt;&gt; learn.lr_find(lr/1000)</span>
+
+<span class="sd">            &gt;&gt; lrs = np.array([ 1e-4, 1e-3, 1e-2 ])</span>
+<span class="sd">            &gt;&gt; learn.lr_find(lrs / 1000)</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            lr_find() may finish before going through each batch of examples if</span>
+<span class="sd">            the loss decreases enough.</span>
+
+<span class="sd">        .. _Cyclical Learning Rates for Training Neural Networks:</span>
+<span class="sd">            http://arxiv.org/abs/1506.01186</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
+        <span class="n">layer_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_layer_opt</span><span class="p">(</span><span class="n">start_lr</span><span class="p">,</span> <span class="n">wds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="n">LR_Finder</span><span class="p">(</span><span class="n">layer_opt</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">),</span> <span class="n">end_lr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">layer_opt</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.predict"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_test</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_with_targs</span><span class="p">(</span><span class="n">is_test</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Learner.predict_with_targs"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.predict_with_targs">[docs]</a>    <span class="k">def</span> <span class="nf">predict_with_targs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_test</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">dl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_dl</span> <span class="k">if</span> <span class="n">is_test</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">val_dl</span>
+        <span class="k">return</span> <span class="n">predict_with_targs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learner.predict_dl"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.predict_dl">[docs]</a>    <span class="k">def</span> <span class="nf">predict_dl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dl</span><span class="p">):</span> <span class="k">return</span> <span class="n">predict_with_targs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+<div class="viewcode-block" id="Learner.predict_array"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.predict_array">[docs]</a>    <span class="k">def</span> <span class="nf">predict_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arr</span><span class="p">):</span> <span class="k">return</span> <span class="n">to_np</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">V</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">())))</span></div>
+
+<div class="viewcode-block" id="Learner.TTA"><a class="viewcode-back" href="../../api.html#fastai.learner.Learner.TTA">[docs]</a>    <span class="k">def</span> <span class="nf">TTA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_aug</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">is_test</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Predict with Test Time Augmentation (TTA)</span>
+
+<span class="sd">        Additional to the original test/validation images, apply image augmentation to them</span>
+<span class="sd">        (just like for training images) and calculate the mean of predictions. The intent</span>
+<span class="sd">        is to increase the accuracy of predictions by examining the images using multiple</span>
+<span class="sd">        perspectives.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n_aug: a number of augmentation images to use per original image</span>
+<span class="sd">            is_test: indicate to use test images; otherwise use validation images</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (tuple): a tuple containing:</span>
+
+<span class="sd">                log predictions (numpy.ndarray): log predictions (i.e. `np.exp(log_preds)` will return probabilities)</span>
+<span class="sd">                targs (numpy.ndarray): target values when `is_test==False`; zeros otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dl1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_dl</span>     <span class="k">if</span> <span class="n">is_test</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">val_dl</span>
+        <span class="n">dl2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_aug_dl</span> <span class="k">if</span> <span class="n">is_test</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">aug_dl</span>
+        <span class="n">preds1</span><span class="p">,</span><span class="n">targs</span> <span class="o">=</span> <span class="n">predict_with_targs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dl1</span><span class="p">)</span>
+        <span class="n">preds1</span> <span class="o">=</span> <span class="p">[</span><span class="n">preds1</span><span class="p">]</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_aug</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">preds2</span> <span class="o">=</span> <span class="p">[</span><span class="n">predict_with_targs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">dl2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_aug</span><span class="p">),</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">preds1</span><span class="o">+</span><span class="n">preds2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">targs</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Jeremy Howard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
