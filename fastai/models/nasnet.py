@@ -617,4 +617,4 @@ def nasnetalarge(num_classes=1000, pretrained='imagenet'):
         model.std = settings['std']
     else:
         model = NASNetALarge(num_classes=num_classes)
-return model
+    return model
