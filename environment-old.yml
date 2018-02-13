@@ -1,0 +1,116 @@
+name: fastai
+channels:
+- fastai
+- pytorch
+- defaults
+dependencies:
+- scipy
+- cuda90
+- numpy
+- pillow
+- jpeg
+- spacy
+- zlib
+- freetype
+- libtiff
+- bleach
+- certifi
+- cffi
+- cycler
+- decorator
+- entrypoints
+- expat
+- fontconfig
+- glib
+- html5lib
+- icu
+- ipykernel
+- ipython
+- ipython_genutils
+- ipywidgets
+- jbig
+- jedi
+- jinja2
+- jsonschema
+- jupyter
+- jupyter_client
+- jupyter_console
+- jupyter_core
+- libffi
+- libgcc
+- libgfortran
+- libiconv
+- libpng
+- libsodium
+- libxml2
+- markupsafe
+- matplotlib
+- mistune
+- mkl
+- nbconvert
+- nbformat
+- notebook
+- numpy
+- olefile
+- openssl
+- pandas
+- pandocfilters
+- path.py
+- patsy
+- pcre
+- pexpect
+- pickleshare
+- pillow
+- pip
+- prompt_toolkit
+- ptyprocess
+- pycparser
+- pygments
+- pyparsing
+- pyqt
+- python>=3.6.0
+- python-dateutil
+- pytz
+- pyzmq
+- qt
+- qtconsole
+- readline
+- scipy
+- seaborn
+- setuptools
+- simplegeneric
+- sip
+- six
+- sqlite
+- statsmodels
+- terminado
+- testpath
+- tk
+- tornado
+- tqdm
+- traitlets
+- wcwidth
+- wheel
+- widgetsnbextension
+- xz
+- zeromq
+- pytorch>=0.2.0
+- torchvision>=0.1.9
+- bcolz
+- prompt_toolkit
+- pip:
+  - opencv-python
+  - isoweek
+  - pandas_summary
+  - torchtext
+  - graphviz
+  - sklearn_pandas
+  - feather-format
+  - jupyter_contrib_nbextensions
+  - plotnine
+  - awscli
+  - kaggle-cli
+  - ipywidgets
+  - jupyter_contrib_nbextensions
+  - git+https://github.com/SauceCat/PDPbox.git
+
