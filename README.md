@@ -32,6 +32,13 @@ git pull
 conda env update
 ```
 
+In case of ```Windows``` all we need to do after installing the fast.ai library
+is to execute this line of code 
+
+``` conda activate fastai ```
+
+And we are ready to use the library.
+
 You can also install this library in the local environment using ```pip```
 
 ```sh
