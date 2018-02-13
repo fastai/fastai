@@ -19,10 +19,16 @@ Then, `cd` to the fastai folder and create the python environment:
 cd fastai
 conda env update
 ```
-This downloads all of the dependencies and then all you have to do is:
+This downloads all of the dependencies and then all you have to do on Linux and macOS is:
 
 ```sh
 source activate fastai
+```
+
+or on Windows do:
+
+```sh
+activate fastai
 ```
 
 To update everything at any time, cd to your repo and:
