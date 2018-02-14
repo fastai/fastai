@@ -32,6 +32,12 @@ git pull
 conda env update
 ```
 
+To install a cpu only environment instead:
+```sh
+cd fastai
+conda env update -f environment-cpu.yml
+```
+
 You can also install this library in the local environment using ```pip```
 
 ```sh
