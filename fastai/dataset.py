@@ -58,12 +58,31 @@ def create_sample(path, r):
     sample_path = path + '_sample'
     shutil.rmtree(sample_path, ignore_errors=True)
     subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    for subdir in subdirs:
-        os.makedirs(os.path.join(sample_path, subdir))
-        files = glob(os.path.join(path, subdir, '*'))
+    copy_or_move_files(subdirs, path, sample_path, r, move=False)
+
+def create_val(path, r):
+    """ Takes a path to a dataset and creates a validation set of specified size
+
+    Note - this changes the dataset at <path> by moving files to the val set
+
+    Parameters:
+    -----------
+    path: dataset path
+    r (float): subset of examples to use for validation, in the range from 0 to 1
+
+    """
+    val_path = os.path.join(os.path.split(path)[0], 'val')
+    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
+    copy_or_move_files(subdirs, path, val_path, r, move=True)
+
+def copy_or_move_files(subdir_lst, src, dst, r, move=False):
+    do = shutil.move if move else shutil.copy
+    for subdir in subdir_lst:
+        os.makedirs(os.path.join(dst, subdir))
+        files = glob(os.path.join(src, subdir, '*'))
         np.random.shuffle(files)
         for f in files[:int(len(files) * r)]:
-            shutil.copy(f, os.path.join(sample_path, subdir, os.path.split(f)[1]))
+            do(f, os.path.join(dst, subdir, os.path.split(f)[1]))
 
 def n_hot(ids, c):
     res = np.zeros((c,), dtype=np.float32)
