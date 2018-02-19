@@ -53,12 +53,12 @@ def create_sample(path, r):
     Parameters:
     -----------
     path: dataset path
-    r (float): subset of examples to use as sample, in the range from 0 to 1
+    r (float): how many examples to use as a sample, in the range from 0 to 1
     """
     sample_path = path + '_sample'
     shutil.rmtree(sample_path, ignore_errors=True)
     subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    copy_or_move_files(subdirs, path, sample_path, r, move=False)
+    copy_or_move_with_subdirs(subdirs, path, sample_path, r, move=False)
 
 def create_val(path, r):
     """ Takes a path to a dataset and creates a validation set of specified size
@@ -68,14 +68,14 @@ def create_val(path, r):
     Parameters:
     -----------
     path: dataset path
-    r (float): subset of examples to use for validation, in the range from 0 to 1
+    r (float): how many examples to use for validation, in the range from 0 to 1
 
     """
     val_path = os.path.join(os.path.split(path)[0], 'val')
     subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    copy_or_move_files(subdirs, path, val_path, r, move=True)
+    copy_or_move_with_subdirs(subdirs, path, val_path, r, move=True)
 
-def copy_or_move_files(subdir_lst, src, dst, r, move=False):
+def copy_or_move_with_subdirs(subdir_lst, src, dst, r, move=False):
     do = shutil.move if move else shutil.copy
     for subdir in subdir_lst:
         os.makedirs(os.path.join(dst, subdir))
