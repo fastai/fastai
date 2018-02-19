@@ -22,7 +22,7 @@ conda env update
 This downloads all of the dependencies and then all you have to do is:
 
 ```sh
-source activate fastai
+conda activate fastai
 ```
 
 To update everything at any time, cd to your repo and:
