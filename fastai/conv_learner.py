@@ -23,7 +23,7 @@ class ConvnetBuilder():
         is_reg (bool): is a regression?
         ps (float or array of float): dropout parameters
         xtra_fc (list of ints): list of hidden layers with # hidden neurons
-        xtra_cut (int): # layers earlier than default to cut the model, detault is 0
+        xtra_cut (int): # layers earlier than default to cut the model, default is 0
     """
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0):
@@ -93,9 +93,9 @@ class ConvLearner(Learner):
         self.precompute = precompute
 
     @classmethod
-    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, **kwargs):
+    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, precompute=False, **kwargs):
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg, ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut)
-        return cls(data, models, **kwargs)
+        return cls(data, models, precompute, **kwargs)
 
     @property
     def model(self): return self.models.fc_model if self.precompute else self.models.model
