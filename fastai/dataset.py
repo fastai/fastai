@@ -71,7 +71,7 @@ def create_val(path, r):
     r (float): proportion of examples to use for validation, in the range from 0 to 1
 
     """
-    val_path = os.path.join(os.path.split(path)[0], 'val')
+    val_path = os.path.join(os.path.split(path)[0], 'valid')
     subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
     copy_or_move_with_subdirs(subdirs, path, val_path, r, move=True)
 
