@@ -53,7 +53,7 @@ def create_sample(path, r):
     Parameters:
     -----------
     path: dataset path
-    r (float): how many examples to use as a sample, in the range from 0 to 1
+    r (float): proportion of examples to use as sample, in the range from 0 to 1
     """
     sample_path = path + '_sample'
     shutil.rmtree(sample_path, ignore_errors=True)
@@ -68,7 +68,7 @@ def create_val(path, r):
     Parameters:
     -----------
     path: dataset path
-    r (float): how many examples to use for validation, in the range from 0 to 1
+    r (float): proportion of examples to use for validation, in the range from 0 to 1
 
     """
     val_path = os.path.join(os.path.split(path)[0], 'val')
