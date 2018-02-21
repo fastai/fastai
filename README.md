@@ -37,12 +37,3 @@ To install a cpu only environment instead:
 cd fastai
 conda env update -f environment-cpu.yml
 ```
-
-You can also install this library in the local environment using ```pip```
-
-```sh
-pip install fastai
-```
-
-However this is not currently the recommended approach, since the library is being updated much more frequently than the pip release, fewer people are using and testing the pip version, and pip needs to compile many libraries from scratch (which can be slow). 
-
