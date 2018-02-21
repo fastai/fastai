@@ -116,4 +116,3 @@ dependencies:
   - jupyter_contrib_nbextensions
   - git+https://github.com/SauceCat/PDPbox.git
   - -e .
-
