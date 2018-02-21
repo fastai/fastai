@@ -9,7 +9,33 @@ class Callback:
     def on_epoch_end(self, metrics): pass
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
-
+    
+# Useful for maintaining status of a long-running job.
+# 
+# Usage:
+# learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
+class LoggingCallback(Callback):
+    def __init__(self, save_path):
+        super().__init__()
+        self.save_path=save_path
+    def on_train_begin(self): 
+        self.batch = 0
+        self.epoch = 0
+        self.f = open(self.save_path, "a", 1)
+        self.log("\ton_train_begin")
+    def on_batch_begin(self): 
+        self.log(str(self.batch)+"\ton_batch_begin")
+    def on_epoch_end(self, metrics): 
+        self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
+        self.epoch += 1
+    def on_batch_end(self, metrics): 
+        self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
+        self.batch += 1
+    def on_train_end(self): 
+        self.log("\ton_train_end")
+        self.f.close()
+    def log(self, string):
+        self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
 
 class LossRecorder(Callback):
     def __init__(self, layer_opt, save_path=''):
