@@ -442,12 +442,12 @@ class Transforms():
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
 
 
-def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
+def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None, pad_mode=cv2.BORDER_REFLECT):
     if tfm_y is None: tfm_y=TfmType.NO
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScale(sz, max_zoom, tfm_y=tfm_y) if max_zoom is not None else Scale(sz, tfm_y)]
-    if pad: scale.append(AddPadding(pad))
+    if pad: scale.append(AddPadding(pad, mode=pad_mode))
     if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
     return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y)
 
@@ -462,17 +462,17 @@ imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
 
-def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
+def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None, pad_mode=cv2.BORDER_REFLECT):
     if aug_tfms is None: aug_tfms=[]
     tfm_norm = Normalize(*stats)
     tfm_denorm = Denormalize(*stats)
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=CropType.CENTER, tfm_y=tfm_y)
     trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type, tfm_y=tfm_y)
+                      pad=pad, crop_type=crop_type, tfm_y=tfm_y, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
-def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None):
+def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None, pad_mode=cv2.BORDER_REFLECT):
     stats = inception_stats if f_model in inception_models else imagenet_stats
-    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type, tfm_y=tfm_y)
+    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type, tfm_y=tfm_y, pad_mode=pad_mode)
 
