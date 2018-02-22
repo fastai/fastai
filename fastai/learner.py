@@ -26,8 +26,8 @@ class Learner():
         self.crit,self.reg_fn = None,None
 
     @classmethod
-    def from_model_data(cls, m, data):
-        self = cls(data, BasicModel(to_gpu(m)))
+    def from_model_data(cls, m, data, **kwargs):
+        self = cls(data, BasicModel(to_gpu(m)), **kwargs)
         self.unfreeze()
         return self
 
