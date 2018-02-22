@@ -345,6 +345,7 @@ class ImageClassifierData(ImageData):
         trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
         if test_name:
             test = folder_source(path, test_name) if test_with_labels else read_dir(path, test_name)
+        else: test = None
         datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test)
         return cls(path, datasets, bs, num_workers, classes=trn[2])
 
