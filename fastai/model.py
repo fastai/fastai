@@ -2,6 +2,7 @@ from .imports import *
 from .torch_imports import *
 from .core import *
 from .layer_optimizer import *
+import datetime as dt
 
 def cut_model(m, cut):
     return list(m.children())[:cut] if cut else [m]
@@ -86,6 +87,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
         num_batch = int(num_batch*epochs)
         epochs = 1
 
+    last_postfix_update = dt.datetime.now()
     for epoch in tnrange(epochs, desc='Epoch'):
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
@@ -96,7 +98,9 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
             loss = stepper.step(V(x),V(y))
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
-            t.set_postfix(loss=debias_loss)
+            if (dt.datetime.now() - last_postfix_update).microseconds > 1e6:
+                t.set_postfix(loss=debias_loss)
+                last_postfix_update = dt.datetime.now()
             stop=False
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
             if stop: return
