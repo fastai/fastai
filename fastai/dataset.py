@@ -365,6 +365,8 @@ class ImageClassifierData(ImageData):
         Returns:
             ImageClassifierData
         """
+        assert isinstance(tfms[0], Transforms) and isinstance(tfms[1], Transforms), \
+            "please provide transformations for your train and validation sets"
         trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
         test_fnames = read_dir(path, test_name) if test_name else None
         datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
