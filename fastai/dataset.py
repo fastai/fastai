@@ -1,3 +1,5 @@
+import csv
+
 from .imports import *
 from .torch_imports import *
 from .core import *
@@ -61,8 +63,13 @@ def folder_source(path, folder):
     return fnames, label_arr, all_labels
 
 def parse_csv_labels(fn, skip_header=True):
-    skip = 1 if skip_header else 0
-    csv_lines = [o.strip().split(',') for o in open(fn)][skip:]
+    with open(fn) as fileobj:
+        reader = csv.reader(fileobj)
+        if skip_header:
+            next(reader)
+
+        csv_lines = [l for l in reader]
+
     fnames = [fname for fname, _ in csv_lines]
     csv_labels = {a:b.split(' ') for a,b in csv_lines}
     all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
