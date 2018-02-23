@@ -67,8 +67,8 @@ def get_sample(df,n):
 
     >>> get_sample(df, 2)
        col1 col2
-    2     3    a
     1     2    b
+    2     3    a
     """
     idxs = sorted(np.random.permutation(len(df))[:n])
     return df.iloc[idxs].copy()
