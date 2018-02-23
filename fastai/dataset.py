@@ -320,7 +320,11 @@ class ImageClassifierData(ImageData):
             fn(val[0], val[1], tfms[0], **kwargs)  # aug
         ]
         if test is not None:
-            test_lbls = np.zeros((len(test),1))
+            if isinstance(test, tuple):
+                test_lbls = test[1]
+                test = test[0]
+            else:
+                test_lbls = np.zeros((len(test),1))
             res += [
                 fn(test, test_lbls, tfms[1], **kwargs), # test
                 fn(test, test_lbls, tfms[0], **kwargs)  # test_aug
@@ -350,7 +354,7 @@ class ImageClassifierData(ImageData):
         return cls(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=8):
+    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, test_with_labels=False, num_workers=8):
         """ Read in images and their labels given as sub-folder names
 
         Arguments:
@@ -368,8 +372,10 @@ class ImageClassifierData(ImageData):
         assert isinstance(tfms[0], Transforms) and isinstance(tfms[1], Transforms), \
             "please provide transformations for your train and validation sets"
         trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
-        test_fnames = read_dir(path, test_name) if test_name else None
-        datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
+        if test_name:
+            test = folder_source(path, test_name) if test_with_labels else read_dir(path, test_name)
+        else: test = None
+        datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test)
         return cls(path, datasets, bs, num_workers, classes=trn[2])
 
     @classmethod
