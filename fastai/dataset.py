@@ -63,6 +63,26 @@ def folder_source(path, folder):
     return fnames, label_arr, all_labels
 
 def parse_csv_labels(fn, skip_header=True):
+    """Parse filenames and label sets from a CSV file.
+
+    This method expects that the csv file at path :fn: has two columns. If it
+    has a header, :skip_header: should be set to True. The labels in the
+    label set are expected to be space separated.
+
+    Arguments:
+        fn: Path to a CSV file.
+        skip_header: A boolean flag indicating whether to skip the header.
+
+    Returns:
+        a four-tuple of (
+            sorted image filenames,
+            a dictionary of filenames and corresponding labels,
+            a sorted set of unique labels,
+            a dictionary of labels to their corresponding index, which will
+            be one-hot encoded.
+        )
+    .
+    """
     with open(fn) as fileobj:
         reader = csv.reader(fileobj)
         if skip_header:
