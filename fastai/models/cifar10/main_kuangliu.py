@@ -73,6 +73,10 @@ else:
     net = SENet18()
 
 if use_cuda:
+    if torch.cuda.device_count() > 1:
+    print("Let's use", torch.cuda.device_count(), "GPUs!")
+    # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
+    net = nn.DataParallel(net)
     net.cuda()
     #net = torch.nn.DataParallel(net, device_ids=(0,3))
     #net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
