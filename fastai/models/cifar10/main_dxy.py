@@ -105,7 +105,12 @@ def main():
   optimizer = torch.optim.SGD(net.parameters(), state['learning_rate'], momentum=state['momentum'],
                 weight_decay=state['decay'], nesterov=True)
 
-  if args.use_cuda: net.cuda()
+  if args.use_cuda:
+    if torch.cuda.device_count() > 1:
+       print("Let's use", torch.cuda.device_count(), "GPUs!")
+       # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
+       net = nn.DataParallel(net)
+    net.cuda()
 
   recorder = RecorderMeter(args.epochs)
   # optionally resume from a checkpoint
