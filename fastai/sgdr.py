@@ -169,6 +169,44 @@ class CircularLR(LR_Updater):
         return res
 
 
+class SaveBestModel(LossRecorder):
+    
+    """ Save weigths of the model with
+        the best accuracy during training.
+        
+        Args:
+            model: the fastai model
+            lr: indicate to use test images; otherwise use validation images
+            name: the name of filename of the weights without '.h5'
+        
+        Usage:
+            Briefly, you have your model 'learn' variable and call fit.
+            >>> learn.fit(lr, 2, cycle_len=2, cycle_mult=1, best_save_name='mybestmodel')
+            ....
+            >>> learn.load('mybestmodel')
+            
+            For more details see http://forums.fast.ai/t/a-code-snippet-to-save-the-best-model-during-training/12066
+ 
+    """
+    def __init__(self, model, layer_opt, name='best_model'):
+        super().__init__(layer_opt)
+        self.name = name
+        self.model = model
+        self.best_loss = None
+        self.best_acc = None
+
+    def on_epoch_end(self, metrics):
+        super().on_epoch_end(metrics)
+        loss, acc = metrics
+        if self.best_acc == None or acc > self.best_acc:
+            self.best_acc = acc
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+        elif acc == self.best_acc and  loss < self.best_loss:
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+
+
 class WeightDecaySchedule(Callback):
     def __init__(self, layer_opt, batch_per_epoch, cycle_len, cycle_mult, n_cycles, norm_wds=False, wds_sched_mult=None):
         """
