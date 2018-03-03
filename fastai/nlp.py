@@ -142,8 +142,8 @@ class LanguageModelLoader():
 
     def batchify(self, data):
         nb = data.size(0) // self.bs
-        data = data[:nb*self.bs]
-        data = data.view(self.bs, -1).t().contiguous()
+        data = data[:int(nb*self.bs)]
+        data = data.view(int(self.bs), -1).t().contiguous()
         if self.backwards: data=flip_tensor(data, 0)
         return to_gpu(data)
 
