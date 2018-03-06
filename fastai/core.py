@@ -43,7 +43,7 @@ def to_gpu(x, *args, **kwargs):
 def noop(*args, **kwargs): return
 
 def split_by_idxs(seq, idxs):
-    last, sl = 0, len(seq)
+    last = 0
     for idx in idxs:
         yield seq[last:idx]
         last = idx
