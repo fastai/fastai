@@ -311,12 +311,12 @@ class ModelDataLoader():
     def dataset(self): return self.dl.dataset
 
 class ImageData(ModelData):
-    def __init__(self, path, datasets, bs, num_workers, classes):
+    def __init__(self, path, datasets, bs, num_workers, classes, shuf_trn=True):
         trn_ds,val_ds,fix_ds,aug_ds,test_ds,test_aug_ds = datasets
         self.path,self.bs,self.num_workers,self.classes = path,bs,num_workers,classes
         self.trn_dl,self.val_dl,self.fix_dl,self.aug_dl,self.test_dl,self.test_aug_dl = [
             self.get_dl(ds,shuf) for ds,shuf in [
-                (trn_ds,True),(val_ds,False),(fix_ds,False),(aug_ds,False),
+                (trn_ds,shuf_trn),(val_ds,False),(fix_ds,False),(aug_ds,False),
                 (test_ds,False),(test_aug_ds,False)
             ]
         ]
@@ -371,7 +371,7 @@ class ImageClassifierData(ImageData):
         return res
 
     @classmethod
-    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
+    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None, shuf_trn=True):
         """ Read in images and their labels given as numpy arrays
 
         Arguments:
@@ -384,15 +384,16 @@ class ImageClassifierData(ImageData):
             classes: a list of all labels/classifications
             num_workers: a number of workers
             test: a matrix of test data (the shape should match `trn[0]`)
+            shuf_trn: whether to shuffle the training data
 
         Returns:
             ImageClassifierData
         """
         datasets = cls.get_ds(ArraysIndexDataset, trn, val, tfms, test=test)
-        return cls(path, datasets, bs, num_workers, classes=classes)
+        return cls(path, datasets, bs, num_workers, classes=classes, shuf_trn=shuf_trn)
 
     @classmethod
-    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, test_with_labels=False, num_workers=8):
+    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, test_with_labels=False, num_workers=8, shuf_trn=True):
         """ Read in images and their labels given as sub-folder names
 
         Arguments:
@@ -403,6 +404,7 @@ class ImageClassifierData(ImageData):
             val_name:  a name of the folder that contains validation images.
             test_name:  a name of the folder that contains test images.
             num_workers: number of workers
+            shuf_trn: whether to shuffle the training data
 
         Returns:
             ImageClassifierData
@@ -414,11 +416,11 @@ class ImageClassifierData(ImageData):
             test = folder_source(path, test_name) if test_with_labels else read_dir(path, test_name)
         else: test = None
         datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test)
-        return cls(path, datasets, bs, num_workers, classes=trn[2])
+        return cls(path, datasets, bs, num_workers, classes=trn[2], shuf_trn=shuf_trn)
 
     @classmethod
     def from_csv(cls, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
+               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8, shuf_trn=True):
         """ Read in images and their labels given as a CSV file.
 
         This method should be used when training image labels are given in an CSV file as opposed to
@@ -438,6 +440,7 @@ class ImageClassifierData(ImageData):
             continuous: TODO
             skip_header: skip the first row of the CSV file.
             num_workers: number of workers
+            shuf_trn: whether to shuffle the training data
 
         Returns:
             ImageClassifierData
@@ -454,7 +457,7 @@ class ImageClassifierData(ImageData):
             f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
         datasets = cls.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,
                                path=path, test=test_fnames)
-        return cls(path, datasets, bs, num_workers, classes=classes)
+        return cls(path, datasets, bs, num_workers, classes=classes, shuf_trn=shuf_trn)
 
 def split_by_idx(idxs, *a):
     mask = np.zeros(len(a[0]),dtype=bool)
