@@ -16,17 +16,50 @@ def scale_min(im, targ):
 
 def zoom_cv(x,z):
     if z==0: return x
-    r,c,*_ = im.shape
+    r,c,*_ = x.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
+def padding_resize_cv(x, new_r, new_c, mode=cv2.BORDER_REFLECT):
+    """Resizes an image through either padding or center cropping on each axis.
+    
+    Arguments:
+        x (array): image
+        new_r (int): target row size
+        new_c (int): target columns size"""
+    r,c,*_ = x.shape
+    r_side = (new_r - r) / 2
+    c_side = (new_c - c) / 2
+    
+    if r_side > 0:
+        r_pad = (math.floor(r_side), math.ceil(r_side))
+    else:
+        r_del = (abs(math.ceil(r_side)), abs(math.floor(r_side)))
+        x = x[ r_del[0]:r-r_del[1], :, :]
+        r_pad = (0,0)
+    if c_side > 0:
+        c_pad = (math.floor(c_side), math.ceil(c_side))
+    else:
+        c_del = (abs(math.ceil(c_side)), abs(math.floor(c_side)))
+        x = x[ :, c_del[0]:c-c_del[1], :]
+        c_pad = (0,0)
+    return cv2.copyMakeBorder(x, r_pad[0], r_pad[1], c_pad[0], c_pad[1], mode)
+
 def stretch_cv(x,sr,sc):
+    """Stretch image and center crop
+    
+    Arguments:
+        x (array): image
+        sr (float): row scale factor
+        sc (float): column scale factor"""
     if sr==0 and sc==0: return x
-    r,c,*_ = im.shape
-    x = cv2.resize(x, None, fx=sr+1, fy=sc+1)
-    nr,nc,*_ = im.shape
-    cr = (nr-r)//2; cc = (nc-c)//2
-    return x[cr:r+cr, cc:c+cc]
+    if sr == 0: sr = 1
+    if sc == 0: sc = 1
+    r,c,*_ = x.shape
+    x = cv2.resize(x, None, fx=sr, fy=sc)
+    nr,nc,*_ = x.shape
+    x = padding_resize_cv(x, max(nr, r), max(nc, c))
+    return x
 
 def dihedral(x, dih):
     x = np.rot90(x, dih%4)
@@ -100,7 +133,7 @@ class RandomRotateZoom():
         elif choice==2: x = zoom_cv(x, random.random()*self.zoom)
         elif choice==3:
             str_choice = random.randint(0,1)
-            sa = random.random()*self.stretch
+            sa = 1+random.random()*self.stretch
             if str_choice==0: x = stretch_cv(x, sa, 0)
             else:             x = stretch_cv(x, 0, sa)
         assert (y is None) # not implemented
@@ -138,7 +171,9 @@ def coords2px(y, x):
     cols = np.rint([y[1], y[3], y[1], y[3]]).astype(int)
     r,c,*_ = x.shape
     Y = np.zeros((r, c))
-    Y[rows, cols] = 1
+    #Y[rows, cols] = 1
+    Y[rows[0]:rows[2], cols[0]:cols[1]] = 1
+    #Y[y[0]:y[2], y[1]:y[2]] = 1
     return Y
 
 
