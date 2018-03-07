@@ -61,7 +61,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -72,7 +72,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
-    stepper = Stepper(model, opt, crit, **kwargs)
+    stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98

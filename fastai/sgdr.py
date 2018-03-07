@@ -9,7 +9,33 @@ class Callback:
     def on_epoch_end(self, metrics): pass
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
-
+    
+# Useful for maintaining status of a long-running job.
+# 
+# Usage:
+# learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
+class LoggingCallback(Callback):
+    def __init__(self, save_path):
+        super().__init__()
+        self.save_path=save_path
+    def on_train_begin(self): 
+        self.batch = 0
+        self.epoch = 0
+        self.f = open(self.save_path, "a", 1)
+        self.log("\ton_train_begin")
+    def on_batch_begin(self): 
+        self.log(str(self.batch)+"\ton_batch_begin")
+    def on_epoch_end(self, metrics): 
+        self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
+        self.epoch += 1
+    def on_batch_end(self, metrics): 
+        self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
+        self.batch += 1
+    def on_train_end(self): 
+        self.log("\ton_train_end")
+        self.f.close()
+    def log(self, string):
+        self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
 
 class LossRecorder(Callback):
     def __init__(self, layer_opt, save_path=''):
@@ -141,6 +167,44 @@ class CircularLR(LR_Updater):
             if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
             self.cycle_count += 1
         return res
+
+
+class SaveBestModel(LossRecorder):
+    
+    """ Save weigths of the model with
+        the best accuracy during training.
+        
+        Args:
+            model: the fastai model
+            lr: indicate to use test images; otherwise use validation images
+            name: the name of filename of the weights without '.h5'
+        
+        Usage:
+            Briefly, you have your model 'learn' variable and call fit.
+            >>> learn.fit(lr, 2, cycle_len=2, cycle_mult=1, best_save_name='mybestmodel')
+            ....
+            >>> learn.load('mybestmodel')
+            
+            For more details see http://forums.fast.ai/t/a-code-snippet-to-save-the-best-model-during-training/12066
+ 
+    """
+    def __init__(self, model, layer_opt, name='best_model'):
+        super().__init__(layer_opt)
+        self.name = name
+        self.model = model
+        self.best_loss = None
+        self.best_acc = None
+
+    def on_epoch_end(self, metrics):
+        super().on_epoch_end(metrics)
+        loss, acc = metrics
+        if self.best_acc == None or acc > self.best_acc:
+            self.best_acc = acc
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+        elif acc == self.best_acc and  loss < self.best_loss:
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
 
 
 class WeightDecaySchedule(Callback):
