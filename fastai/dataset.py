@@ -65,9 +65,7 @@ def parse_csv_labels(fn, skip_header=True):
     csv_lines = [o.strip().split(',') for o in open(fn)][skip:]
     fnames = [fname for fname, _ in csv_lines]
     csv_labels = {a:b.split(' ') for a,b in csv_lines}
-    all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
-    label2idx = {v:k for k,v in enumerate(all_labels)}
-    return sorted(fnames), csv_labels, all_labels, label2idx
+    return sorted(fnames), csv_labels
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
     all_idx = {k: n_hot([label2idx[o] for o in v], c)
@@ -75,11 +73,17 @@ def nhot_labels(label2idx, csv_labels, fnames, c):
     return np.stack([all_idx[o] for o in fnames])
 
 def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
-    fnames,csv_labels,all_labels,label2idx = parse_csv_labels(csv_file, skip_header)
+    fnames,csv_labels = parse_csv_labels(csv_file, skip_header)
+    return dict_source(folder, fnames, csv_labels, suffix, continuous)
+
+def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
+    all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
     full_names = [os.path.join(folder,fn+suffix) for fn in fnames]
     if continuous:
-        label_arr = np.array([csv_labels[i] for i in fnames]).astype(np.float32)
+        label_arr = np.array([np.array(csv_labels[i]).astype(np.float32)
+                for i in fnames])
     else:
+        label2idx = {v:k for k,v in enumerate(all_labels)}
         label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
         is_single = np.all(label_arr.sum(axis=1)==1)
         if is_single: label_arr = np.argmax(label_arr, axis=1)
@@ -132,7 +136,7 @@ def open_image(fn):
         raise OSError('Is a directory: {}'.format(fn))
     else:
         try:
-            return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+            return cv2.cvtColor(cv2.imread(str(fn), flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
         except Exception as e:
             raise OSError('Error handling image at: {}'.format(fn)) from e
 
@@ -164,7 +168,8 @@ class FilesArrayDataset(FilesDataset):
         assert(len(fnames)==len(y))
         super().__init__(fnames, transform, path)
     def get_y(self, i): return self.y[i]
-    def get_c(self): return self.y.shape[1]
+    def get_c(self):
+        return self.y.shape[1] if len(self.y.shape)>1 else 0
 
 
 class FilesIndexArrayDataset(FilesArrayDataset):
@@ -207,8 +212,8 @@ class ModelData():
 
     @classmethod
     def from_dls(cls, path,trn_dl,val_dl,test_dl=None):
-        trn_dl,val_dl = ModelDataLoader(trn_dl),ModelDataLoader(val_dl)
-        if test_dl: test_dl = ModelDataLoader(test_dl)
+        trn_dl,val_dl = DataLoader(trn_dl),DataLoader(val_dl)
+        if test_dl: test_dl = DataLoader(test_dl)
         return cls(path, trn_dl, val_dl, test_dl)
 
     @property
@@ -225,26 +230,6 @@ class ModelData():
     def val_y(self): return self.val_ds.y
 
 
-class ModelDataLoader():
-    def __init__(self, dl): self.dl=dl
-
-    @classmethod
-    def create_dl(cls, *args, **kwargs): return cls(DataLoader(*args, **kwargs))
-
-    def __iter__(self):
-        self.it,self.i = iter(self.dl),0
-        return self
-
-    def __len__(self): return len(self.dl)
-
-    def __next__(self):
-        if self.i>=len(self.dl): raise StopIteration
-        self.i+=1
-        return next(self.it)
-
-    @property
-    def dataset(self): return self.dl.dataset
-
 class ImageData(ModelData):
     def __init__(self, path, datasets, bs, num_workers, classes):
         trn_ds,val_ds,fix_ds,aug_ds,test_ds,test_aug_ds = datasets
@@ -258,7 +243,7 @@ class ImageData(ModelData):
 
     def get_dl(self, ds, shuffle):
         if ds is None: return None
-        return ModelDataLoader.create_dl(ds, batch_size=self.bs, shuffle=shuffle,
+        return DataLoader(ds, batch_size=self.bs, shuffle=shuffle,
             num_workers=self.num_workers, pin_memory=False)
 
     @property
@@ -279,11 +264,6 @@ class ImageData(ModelData):
         t.close()
         return self.__class__(new_ds[0].path, new_ds, self.bs, self.num_workers, self.classes)
 
-
-class ImageClassifierData(ImageData):
-    @property
-    def is_multi(self): return self.trn_dl.dataset.is_multi
-
     @staticmethod
     def get_ds(fn, trn, val, tfms, test=None, **kwargs):
         res = [
@@ -300,6 +280,11 @@ class ImageClassifierData(ImageData):
             ]
         else: res += [None,None]
         return res
+
+
+class ImageClassifierData(ImageData):
+    @property
+    def is_multi(self): return self.trn_dl.dataset.is_multi
 
     @classmethod
     def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
@@ -370,13 +355,17 @@ class ImageClassifierData(ImageData):
             ImageClassifierData
         """
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
+        return cls.from_names_and_array(path, fnames, y, classes, val_idxs, test_name,
+                num_workers=num_workers, suffix=suffix, tfms=tfms, bs=bs, continuous=continuous)
 
+    @classmethod
+    def from_names_and_array(cls, path, fnames,y,classes, val_idxs=None, test_name=None,
+            num_workers=8, suffix='', tfms=(None,None), bs=64, continuous=False):
         val_idxs = get_cv_idxs(len(fnames)) if val_idxs is None else val_idxs
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
         test_fnames = read_dir(path, test_name) if test_name else None
-        if continuous:
-            f = FilesIndexArrayRegressionDataset
+        if continuous: f = FilesIndexArrayRegressionDataset
         else:
             f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
         datasets = cls.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,
