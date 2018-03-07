@@ -171,7 +171,9 @@ def coords2px(y, x):
     cols = np.rint([y[1], y[3], y[1], y[3]]).astype(int)
     r,c,*_ = x.shape
     Y = np.zeros((r, c))
-    Y[rows, cols] = 1
+    #Y[rows, cols] = 1
+    Y[rows[0]:rows[2], cols[0]:cols[1]] = 1
+    #Y[y[0]:y[2], y[1]:y[2]] = 1
     return Y
 
 
