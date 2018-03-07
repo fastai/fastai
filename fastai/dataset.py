@@ -88,7 +88,7 @@ def copy_or_move_with_subdirs(subdir_lst, src, dst, r, move=False):
             do(f, os.path.join(dst, subdir, os.path.split(f)[1]))
 
 def n_hot(ids, c):
-    res = np.zeros((c,), dtype=np.float32)
+    res = np.zeros((c,), dtype=np.int8)
     res[ids] = 1
     return res
 
