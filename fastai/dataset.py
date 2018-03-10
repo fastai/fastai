@@ -43,7 +43,7 @@ def read_dirs(path, folder):
     labels, filenames, all_labels = [], [], []
     full_path = os.path.join(path, folder)
     for label in sorted(os.listdir(full_path)):
-        if label not in ('.ipynb_checkpoints'):
+        if label not in ('.ipynb_checkpoints','.DS_Store'):
             all_labels.append(label)
             for fname in os.listdir(os.path.join(full_path, label)):
                 filenames.append(os.path.join(folder, label, fname))
