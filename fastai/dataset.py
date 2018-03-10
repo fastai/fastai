@@ -27,7 +27,7 @@ def resize_img(fname, targ, path, new_path):
 def resize_imgs(fnames, targ, path, new_path):
     if not os.path.exists(os.path.join(path,new_path,str(targ),fnames[0])):
         with ThreadPoolExecutor(8) as e:
-            ims = e.map(lambda x: resize_img(x, targ, path, 'tmp'), fnames)
+            ims = e.map(lambda x: resize_img(x, targ, path, new_path), fnames)
             for x in tqdm(ims, total=len(fnames), leave=False): pass
     return os.path.join(path,new_path,str(targ))
 
