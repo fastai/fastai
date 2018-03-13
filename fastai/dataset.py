@@ -27,7 +27,7 @@ def resize_img(fname, targ, path, new_path):
 def resize_imgs(fnames, targ, path, new_path):
     if not os.path.exists(os.path.join(path,new_path,str(targ),fnames[0])):
         with ThreadPoolExecutor(8) as e:
-            ims = e.map(lambda x: resize_img(x, targ, path, 'tmp'), fnames)
+            ims = e.map(lambda x: resize_img(x, targ, path, new_path), fnames)
             for x in tqdm(ims, total=len(fnames), leave=False): pass
     return os.path.join(path,new_path,str(targ))
 
@@ -43,7 +43,7 @@ def read_dirs(path, folder):
     labels, filenames, all_labels = [], [], []
     full_path = os.path.join(path, folder)
     for label in sorted(os.listdir(full_path)):
-        if label not in ('.ipynb_checkpoints'):
+        if label not in ('.ipynb_checkpoints','.DS_Store'):
             all_labels.append(label)
             for fname in os.listdir(os.path.join(full_path, label)):
                 filenames.append(os.path.join(folder, label, fname))
@@ -88,7 +88,7 @@ def copy_or_move_with_subdirs(subdir_lst, src, dst, r, move=False):
             do(f, os.path.join(dst, subdir, os.path.split(f)[1]))
 
 def n_hot(ids, c):
-    res = np.zeros((c,), dtype=np.float32)
+    res = np.zeros((c,), dtype=np.int8)
     res[ids] = 1
     return res
 
