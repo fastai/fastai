@@ -1,3 +1,5 @@
+import csv
+
 from .imports import *
 from .torch_imports import *
 from .core import *
@@ -25,7 +27,7 @@ def resize_img(fname, targ, path, new_path):
 def resize_imgs(fnames, targ, path, new_path):
     if not os.path.exists(os.path.join(path,new_path,str(targ),fnames[0])):
         with ThreadPoolExecutor(8) as e:
-            ims = e.map(lambda x: resize_img(x, targ, path, 'tmp'), fnames)
+            ims = e.map(lambda x: resize_img(x, targ, path, new_path), fnames)
             for x in tqdm(ims, total=len(fnames), leave=False): pass
     return os.path.join(path,new_path,str(targ))
 
@@ -41,14 +43,52 @@ def read_dirs(path, folder):
     labels, filenames, all_labels = [], [], []
     full_path = os.path.join(path, folder)
     for label in sorted(os.listdir(full_path)):
-        all_labels.append(label)
-        for fname in os.listdir(os.path.join(full_path, label)):
-            filenames.append(os.path.join(folder, label, fname))
-            labels.append(label)
+        if label not in ('.ipynb_checkpoints','.DS_Store'):
+            all_labels.append(label)
+            for fname in os.listdir(os.path.join(full_path, label)):
+                filenames.append(os.path.join(folder, label, fname))
+                labels.append(label)
     return filenames, labels, all_labels
 
+def create_sample(path, r):
+    """ Takes a path to a dataset and creates a sample of specified size at <path>_sample
+
+    Parameters:
+    -----------
+    path: dataset path
+    r (float): proportion of examples to use as sample, in the range from 0 to 1
+    """
+    sample_path = path + '_sample'
+    shutil.rmtree(sample_path, ignore_errors=True)
+    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
+    copy_or_move_with_subdirs(subdirs, path, sample_path, r, move=False)
+
+def create_val(path, r):
+    """ Takes a path to a dataset and creates a validation set of specified size
+
+    Note - this changes the dataset at <path> by moving files to the val set
+
+    Parameters:
+    -----------
+    path: dataset path
+    r (float): proportion of examples to use for validation, in the range from 0 to 1
+
+    """
+    val_path = os.path.join(os.path.split(path)[0], 'valid')
+    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
+    copy_or_move_with_subdirs(subdirs, path, val_path, r, move=True)
+
+def copy_or_move_with_subdirs(subdir_lst, src, dst, r, move=False):
+    do = shutil.move if move else shutil.copy
+    for subdir in subdir_lst:
+        os.makedirs(os.path.join(dst, subdir))
+        files = glob(os.path.join(src, subdir, '*'))
+        np.random.shuffle(files)
+        for f in files[:int(len(files) * r)]:
+            do(f, os.path.join(dst, subdir, os.path.split(f)[1]))
+
 def n_hot(ids, c):
-    res = np.zeros((c,), dtype=np.float32)
+    res = np.zeros((c,), dtype=np.int8)
     res[ids] = 1
     return res
 
@@ -61,13 +101,36 @@ def folder_source(path, folder):
     return fnames, label_arr, all_labels
 
 def parse_csv_labels(fn, skip_header=True):
-    skip = 1 if skip_header else 0
-    csv_lines = [o.strip().split(',') for o in open(fn)][skip:]
+    """Parse filenames and label sets from a CSV file.
+
+    This method expects that the csv file at path :fn: has two columns. If it
+    has a header, :skip_header: should be set to True. The labels in the
+    label set are expected to be space separated.
+
+    Arguments:
+        fn: Path to a CSV file.
+        skip_header: A boolean flag indicating whether to skip the header.
+
+    Returns:
+        a four-tuple of (
+            sorted image filenames,
+            a dictionary of filenames and corresponding labels,
+            a sorted set of unique labels,
+            a dictionary of labels to their corresponding index, which will
+            be one-hot encoded.
+        )
+    .
+    """
+    with open(fn) as fileobj:
+        reader = csv.reader(fileobj)
+        if skip_header:
+            next(reader)
+
+        csv_lines = [l for l in reader]
+
     fnames = [fname for fname, _ in csv_lines]
     csv_labels = {a:b.split(' ') for a,b in csv_lines}
-    all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
-    label2idx = {v:k for k,v in enumerate(all_labels)}
-    return sorted(fnames), csv_labels, all_labels, label2idx
+    return sorted(fnames), csv_labels
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
     all_idx = {k: n_hot([label2idx[o] for o in v], c)
@@ -75,11 +138,17 @@ def nhot_labels(label2idx, csv_labels, fnames, c):
     return np.stack([all_idx[o] for o in fnames])
 
 def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
-    fnames,csv_labels,all_labels,label2idx = parse_csv_labels(csv_file, skip_header)
+    fnames,csv_labels = parse_csv_labels(csv_file, skip_header)
+    return dict_source(folder, fnames, csv_labels, suffix, continuous)
+
+def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
+    all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
     full_names = [os.path.join(folder,fn+suffix) for fn in fnames]
     if continuous:
-        label_arr = np.array([csv_labels[i] for i in fnames]).astype(np.float32)
+        label_arr = np.array([np.array(csv_labels[i]).astype(np.float32)
+                for i in fnames])
     else:
+        label2idx = {v:k for k,v in enumerate(all_labels)}
         label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
         is_single = np.all(label_arr.sum(axis=1)==1)
         if is_single: label_arr = np.argmax(label_arr, axis=1)
@@ -132,7 +201,9 @@ def open_image(fn):
         raise OSError('Is a directory: {}'.format(fn))
     else:
         try:
-            return cv2.cvtColor(cv2.imread(fn, flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+            im = cv2.imread(str(fn), flags).astype(np.float32)/255
+            if im is None: raise OSError(f'File not recognized by opencv: {fn}')
+            return cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         except Exception as e:
             raise OSError('Error handling image at: {}'.format(fn)) from e
 
@@ -164,7 +235,8 @@ class FilesArrayDataset(FilesDataset):
         assert(len(fnames)==len(y))
         super().__init__(fnames, transform, path)
     def get_y(self, i): return self.y[i]
-    def get_c(self): return self.y.shape[1]
+    def get_c(self):
+        return self.y.shape[1] if len(self.y.shape)>1 else 0
 
 
 class FilesIndexArrayDataset(FilesArrayDataset):
@@ -207,8 +279,8 @@ class ModelData():
 
     @classmethod
     def from_dls(cls, path,trn_dl,val_dl,test_dl=None):
-        trn_dl,val_dl = ModelDataLoader(trn_dl),ModelDataLoader(val_dl)
-        if test_dl: test_dl = ModelDataLoader(test_dl)
+        trn_dl,val_dl = DataLoader(trn_dl),DataLoader(val_dl)
+        if test_dl: test_dl = DataLoader(test_dl)
         return cls(path, trn_dl, val_dl, test_dl)
 
     @property
@@ -225,26 +297,6 @@ class ModelData():
     def val_y(self): return self.val_ds.y
 
 
-class ModelDataLoader():
-    def __init__(self, dl): self.dl=dl
-
-    @classmethod
-    def create_dl(cls, *args, **kwargs): return cls(DataLoader(*args, **kwargs))
-
-    def __iter__(self):
-        self.it,self.i = iter(self.dl),0
-        return self
-
-    def __len__(self): return len(self.dl)
-
-    def __next__(self):
-        if self.i>=len(self.dl): raise StopIteration
-        self.i+=1
-        return next(self.it)
-
-    @property
-    def dataset(self): return self.dl.dataset
-
 class ImageData(ModelData):
     def __init__(self, path, datasets, bs, num_workers, classes):
         trn_ds,val_ds,fix_ds,aug_ds,test_ds,test_aug_ds = datasets
@@ -258,7 +310,7 @@ class ImageData(ModelData):
 
     def get_dl(self, ds, shuffle):
         if ds is None: return None
-        return ModelDataLoader.create_dl(ds, batch_size=self.bs, shuffle=shuffle,
+        return DataLoader(ds, batch_size=self.bs, shuffle=shuffle,
             num_workers=self.num_workers, pin_memory=False)
 
     @property
@@ -279,11 +331,6 @@ class ImageData(ModelData):
         t.close()
         return self.__class__(new_ds[0].path, new_ds, self.bs, self.num_workers, self.classes)
 
-
-class ImageClassifierData(ImageData):
-    @property
-    def is_multi(self): return self.trn_dl.dataset.is_multi
-
     @staticmethod
     def get_ds(fn, trn, val, tfms, test=None, **kwargs):
         res = [
@@ -293,13 +340,22 @@ class ImageClassifierData(ImageData):
             fn(val[0], val[1], tfms[0], **kwargs)  # aug
         ]
         if test is not None:
-            test_lbls = np.zeros((len(test),1))
+            if isinstance(test, tuple):
+                test_lbls = test[1]
+                test = test[0]
+            else:
+                test_lbls = np.zeros((len(test),1))
             res += [
                 fn(test, test_lbls, tfms[1], **kwargs), # test
                 fn(test, test_lbls, tfms[0], **kwargs)  # test_aug
             ]
         else: res += [None,None]
         return res
+
+
+class ImageClassifierData(ImageData):
+    @property
+    def is_multi(self): return self.trn_dl.dataset.is_multi
 
     @classmethod
     def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
@@ -323,7 +379,7 @@ class ImageClassifierData(ImageData):
         return cls(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, num_workers=8):
+    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, test_with_labels=False, num_workers=8):
         """ Read in images and their labels given as sub-folder names
 
         Arguments:
@@ -338,9 +394,13 @@ class ImageClassifierData(ImageData):
         Returns:
             ImageClassifierData
         """
+        assert isinstance(tfms[0], Transforms) and isinstance(tfms[1], Transforms), \
+            "please provide transformations for your train and validation sets"
         trn,val = [folder_source(path, o) for o in (trn_name, val_name)]
-        test_fnames = read_dir(path, test_name) if test_name else None
-        datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test_fnames)
+        if test_name:
+            test = folder_source(path, test_name) if test_with_labels else read_dir(path, test_name)
+        else: test = None
+        datasets = cls.get_ds(FilesIndexArrayDataset, trn, val, tfms, path=path, test=test)
         return cls(path, datasets, bs, num_workers, classes=trn[2])
 
     @classmethod
@@ -370,13 +430,17 @@ class ImageClassifierData(ImageData):
             ImageClassifierData
         """
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
+        return cls.from_names_and_array(path, fnames, y, classes, val_idxs, test_name,
+                num_workers=num_workers, suffix=suffix, tfms=tfms, bs=bs, continuous=continuous)
 
+    @classmethod
+    def from_names_and_array(cls, path, fnames,y,classes, val_idxs=None, test_name=None,
+            num_workers=8, suffix='', tfms=(None,None), bs=64, continuous=False):
         val_idxs = get_cv_idxs(len(fnames)) if val_idxs is None else val_idxs
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
         test_fnames = read_dir(path, test_name) if test_name else None
-        if continuous:
-            f = FilesIndexArrayRegressionDataset
+        if continuous: f = FilesIndexArrayRegressionDataset
         else:
             f = FilesIndexArrayDataset if len(trn_y.shape)==1 else FilesNhotArrayDataset
         datasets = cls.get_ds(f, (trn_fnames,trn_y), (val_fnames,val_y), tfms,

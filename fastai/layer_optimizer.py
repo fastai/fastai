@@ -17,6 +17,8 @@ class LayerOptimizer():
         self.opt = opt_fn(self.opt_params())
 
     def opt_params(self):
+        assert(len(self.layer_groups) == len(self.lrs))
+        assert(len(self.layer_groups) == len(self.wds))
         params = list(zip(self.layer_groups,self.lrs,self.wds))
         return [opt_params(*p) for p in params]
 

@@ -7,7 +7,7 @@ from torch.autograd import Variable
 pretrained_settings = {
     'nasnetalarge': {
         'imagenet': {
-            'url': 'http://webia.lip6.fr/~cadene/Downloads/pretrained-models.pytorch/nasnetalarge-dc8c1432.pth',
+            'url': 'http://data.lip6.fr/cadene/pretrainedmodels/nasnetalarge-a1897284.pth',
             'input_space': 'RGB',
             'input_size': [3, 331, 331], # resize 354
             'input_range': [0, 1],
@@ -16,7 +16,7 @@ pretrained_settings = {
             'num_classes': 1000
         },
         'imagenet+background': {
-            'url': 'http://webia.lip6.fr/~cadene/Downloads/pretrained-models.pytorch/nasnetalarge-dc8c1432.pth',
+            'url': 'http://data.lip6.fr/cadene/pretrainedmodels/nasnetalarge-a1897284.pth',
             'input_space': 'RGB',
             'input_size': [3, 331, 331], # resize 354
             'input_range': [0, 1],
@@ -545,7 +545,7 @@ class NASNetALarge(nn.Module):
 
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout()
-        self.linear = nn.Linear(4032, self.num_classes)
+        self.last_linear = nn.Linear(4032, self.num_classes)
 
     def features(self, x):
         x_conv0 = self.conv0(x)
@@ -590,7 +590,7 @@ class NASNetALarge(nn.Module):
         return x
 
 
-def nasnetalarge(use_classifer=False, num_classes=1000, pretrained='imagenet'):
+def nasnetalarge(num_classes=1000, pretrained='imagenet'):
     r"""NASNetALarge model architecture from the
     `"NASNet" <https://arxiv.org/abs/1707.07012>`_ paper.
     """
@@ -604,10 +604,10 @@ def nasnetalarge(use_classifer=False, num_classes=1000, pretrained='imagenet'):
         model.load_state_dict(model_zoo.load_url(settings['url']))
 
         if pretrained == 'imagenet':
-            new_linear = nn.Linear(model.linear.in_features, 1000)
-            new_linear.weight.data = model.linear.weight.data[1:]
-            new_linear.bias.data = model.linear.bias.data[1:]
-            model.linear = new_linear
+            new_last_linear = nn.Linear(model.last_linear.in_features, 1000)
+            new_last_linear.weight.data = model.last_linear.weight.data[1:]
+            new_last_linear.bias.data = model.last_linear.bias.data[1:]
+            model.last_linear = new_last_linear
 
         model.input_space = settings['input_space']
         model.input_size = settings['input_size']
@@ -618,4 +618,3 @@ def nasnetalarge(use_classifer=False, num_classes=1000, pretrained='imagenet'):
     else:
         model = NASNetALarge(num_classes=num_classes)
     return model
-

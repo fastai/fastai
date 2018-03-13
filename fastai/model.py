@@ -38,7 +38,7 @@ class Stepper():
     def step(self, xs, y):
         xtra = []
         output = self.m(*xs)
-        if isinstance(output,(tuple,list)): output,*xtra = output
+        if isinstance(output,tuple): output,*xtra = output
         self.opt.zero_grad()
         loss = raw_loss = self.crit(output, y)
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
@@ -50,7 +50,7 @@ class Stepper():
 
     def evaluate(self, xs, y):
         preds = self.m(*xs)
-        if isinstance(preds,(tuple,list)): preds=preds[0]
+        if isinstance(preds,tuple): preds=preds[0]
         return preds, self.crit(preds, y)
 
 def set_train_mode(m):
@@ -61,7 +61,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -72,7 +72,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
-    stepper = Stepper(model, opt, crit, **kwargs)
+    stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
@@ -132,14 +132,19 @@ def get_prediction(x):
     if isinstance(x,(tuple,list)): x=x[0]
     return x.data
 
-def predict(m, dl): return predict_with_targs(m, dl)[0]
+def predict(m, dl):
+    preda,_ = predict_with_targs_(m, dl)
+    return to_np(torch.cat(preda))
 
-def predict_with_targs(m, dl):
+def predict_with_targs_(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
     res = []
     for *x,y in iter(dl): res.append([get_prediction(m(*VV(x))),y])
-    preda,targa = zip(*res)
+    return zip(*res)
+
+def predict_with_targs(m, dl):
+    preda,targa = predict_with_targs_(m, dl)
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
 # From https://github.com/ncullen93/torchsample

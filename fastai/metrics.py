@@ -13,5 +13,8 @@ def accuracy_thresh(thresh):
     return lambda preds,targs: accuracy_multi(preds, targs, thresh)
 
 def accuracy_multi(preds, targs, thresh):
-    return ((preds>thresh)==targs).float().mean()
+    return ((preds>thresh).float()==targs).float().mean()
+
+def accuracy_multi_np(preds, targs, thresh):
+    return ((preds>thresh)==targs).mean()
 

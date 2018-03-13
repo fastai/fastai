@@ -71,7 +71,11 @@ class DataLoader(object):
         return res
 
     def __iter__(self):
-        with ThreadPoolExecutor(max_workers=self.num_workers) as e:
-            for batch in e.map(self.get_batch, iter(self.batch_sampler)):
+        if self.num_workers==0:
+            for batch in map(self.get_batch, iter(self.batch_sampler)):
                 yield get_tensor(batch, self.pin_memory)
+        else:
+            with ThreadPoolExecutor(max_workers=self.num_workers) as e:
+                for batch in e.map(self.get_batch, iter(self.batch_sampler)):
+                    yield get_tensor(batch, self.pin_memory)
 

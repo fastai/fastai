@@ -1,4 +1,4 @@
-name: fastai
+name: fastai-cpu
 channels:
 - fastai
 - pytorch
@@ -6,8 +6,6 @@ channels:
 - peterjc123
 dependencies:
 - scipy
-- cuda90
-- cudnn
 - numpy
 - pillow
 - jpeg
@@ -114,5 +112,5 @@ dependencies:
   - kaggle-cli
   - ipywidgets
   - jupyter_contrib_nbextensions
-    #- git+https://github.com/SauceCat/PDPbox.git
+  - git+https://github.com/SauceCat/PDPbox.git
 

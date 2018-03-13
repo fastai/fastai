@@ -6,7 +6,7 @@ Copyright 2017 onwards, Jeremy Howard. Licensed under the Apache License, Versio
 
 ## Current Status
 
-This is an alpha version. Most of the library is quite well tested since many students have used it to complete the [Practical Deep Learning for Coders](http://course.fast.ai). course. However it hasn't been widely used yet ourside of the course, so you may find some missing features or rough edges. If you're interested in using the library in your own projects, we're happy to help support any bug fixes or feature additions you need&mdash;please use http://forums.fast.ai to discuss.
+This is an alpha version. Most of the library is quite well tested since many students have used it to complete the [Practical Deep Learning for Coders](http://course.fast.ai). course. However it hasn't been widely used yet outside of the course, so you may find some missing features or rough edges. If you're interested in using the library in your own projects, we're happy to help support any bug fixes or feature additions you need&mdash;please use http://forums.fast.ai to discuss.
 
 Recommended installation approach is to clone fastai using `git`:
 
@@ -22,7 +22,7 @@ conda env update
 This downloads all of the dependencies and then all you have to do is:
 
 ```sh
-source activate fastai
+conda activate fastai
 ```
 
 To update everything at any time, cd to your repo and:
@@ -30,6 +30,12 @@ To update everything at any time, cd to your repo and:
 ```sh
 git pull
 conda env update
+```
+
+To install a cpu only environment instead:
+```sh
+cd fastai
+conda env update -f environment-cpu.yml
 ```
 
 You can also install this library in the local environment using ```pip```
