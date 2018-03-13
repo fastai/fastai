@@ -86,7 +86,7 @@ dependencies:
   #- terminado
 - testpath
 - tk
-- tornado
+- tornado<5
 - tqdm
 - traitlets
 - wcwidth
