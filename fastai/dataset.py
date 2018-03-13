@@ -201,7 +201,9 @@ def open_image(fn):
         raise OSError('Is a directory: {}'.format(fn))
     else:
         try:
-            return cv2.cvtColor(cv2.imread(str(fn), flags), cv2.COLOR_BGR2RGB).astype(np.float32)/255
+            im = cv2.imread(str(fn), flags).astype(np.float32)/255
+            if im is None: raise OSError(f'File not recognized by opencv: {fn}')
+            return cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         except Exception as e:
             raise OSError('Error handling image at: {}'.format(fn)) from e
 
