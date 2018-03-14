@@ -1,0 +1,206 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Dataset &#8212; fastai 0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">fastai 0.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fastai.fastai.dataset">
+<span id="dataset"></span><h1>Dataset<a class="headerlink" href="#module-fastai.fastai.dataset" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.fastai.dataset.ArraysDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">ArraysDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>transform</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.ArraysDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.BaseDataset" title="fastai.fastai.dataset.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.BaseDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.ArraysIndexDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">ArraysIndexDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>transform</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.ArraysIndexDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.ArraysDataset" title="fastai.fastai.dataset.ArraysDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ArraysDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.ArraysNhotDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">ArraysNhotDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>transform</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.ArraysNhotDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.ArraysDataset" title="fastai.fastai.dataset.ArraysDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ArraysDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.BaseDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">BaseDataset</code><span class="sig-paren">(</span><em>transform=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.FilesArrayDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">FilesArrayDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.FilesArrayDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.FilesDataset" title="fastai.fastai.dataset.FilesDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.FilesDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">FilesDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.FilesDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.BaseDataset" title="fastai.fastai.dataset.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.BaseDataset</span></code></a></p>
+<dl class="method">
+<dt id="fastai.fastai.dataset.FilesDataset.denorm">
+<code class="descname">denorm</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.FilesDataset.denorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverse the normalization done to a batch of images.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>arr: of shape/size (N,3,sz,sz)</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.FilesIndexArrayDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">FilesIndexArrayDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.FilesIndexArrayDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.FilesArrayDataset" title="fastai.fastai.dataset.FilesArrayDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesArrayDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.FilesIndexArrayRegressionDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">FilesIndexArrayRegressionDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.FilesIndexArrayRegressionDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.FilesArrayDataset" title="fastai.fastai.dataset.FilesArrayDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesArrayDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.fastai.dataset.FilesNhotArrayDataset">
+<em class="property">class </em><code class="descclassname">fastai.fastai.dataset.</code><code class="descname">FilesNhotArrayDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.FilesNhotArrayDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.fastai.dataset.FilesArrayDataset" title="fastai.fastai.dataset.FilesArrayDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesArrayDataset</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.fastai.dataset.create_sample">
+<code class="descclassname">fastai.fastai.dataset.</code><code class="descname">create_sample</code><span class="sig-paren">(</span><em>path</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.create_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a path to a dataset and creates a sample of specified size at &lt;path&gt;_sample</p>
+<p>path: dataset path
+r (float): proportion of examples to use as sample, in the range from 0 to 1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.fastai.dataset.create_val">
+<code class="descclassname">fastai.fastai.dataset.</code><code class="descname">create_val</code><span class="sig-paren">(</span><em>path</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.create_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a path to a dataset and creates a validation set of specified size</p>
+<p>Note - this changes the dataset at &lt;path&gt; by moving files to the val set</p>
+<p>path: dataset path
+r (float): proportion of examples to use for validation, in the range from 0 to 1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.fastai.dataset.open_image">
+<code class="descclassname">fastai.fastai.dataset.</code><code class="descname">open_image</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.open_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens an image using OpenCV given the file path.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>fn: the file path of the image</dd>
+<dt>Returns:</dt>
+<dd>The numpy array representation of the image in the RGB format</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.fastai.dataset.parse_csv_labels">
+<code class="descclassname">fastai.fastai.dataset.</code><code class="descname">parse_csv_labels</code><span class="sig-paren">(</span><em>fn</em>, <em>skip_header=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.fastai.dataset.parse_csv_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse filenames and label sets from a CSV file.</p>
+<p>This method expects that the csv file at path :fn: has two columns. If it
+has a header, :skip_header: should be set to True. The labels in the
+label set are expected to be space separated.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>fn: Path to a CSV file.
+skip_header: A boolean flag indicating whether to skip the header.</dd>
+<dt>Returns:</dt>
+<dd><dl class="first docutils">
+<dt>a four-tuple of (</dt>
+<dd>sorted image filenames,
+a dictionary of filenames and corresponding labels,
+a sorted set of unique labels,
+a dictionary of labels to their corresponding index, which will
+be one-hot encoded.</dd>
+</dl>
+<p class="last">)</p>
+</dd>
+</dl>
+<p>.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/generated/old_dataset.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">fastai 0.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Jeremy Howard.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

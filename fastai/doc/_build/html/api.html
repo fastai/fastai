@@ -4,660 +4,373 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai API reference &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>API reference &#8212; fastai 0.6 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="readme" href="readme.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head>
-  <body>
-  
+    <link rel="prev" title="readme" href="readme.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="readme.html" title="readme"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fastai 0.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-fastai">
-<span id="fastai-api-reference"></span><h1>fastai API reference<a class="headerlink" href="#module-fastai" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-fastai.dataset">
-<span id="fastai-dataset-module"></span><h2>fastai.dataset module<a class="headerlink" href="#module-fastai.dataset" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="fastai.dataset.ArraysDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ArraysDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>transform</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.BaseDataset" title="fastai.dataset.BaseDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.BaseDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.ArraysDataset.get_n">
-<code class="descname">get_n</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysDataset.get_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysDataset.get_n" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.ArraysDataset.get_sz">
-<code class="descname">get_sz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysDataset.get_sz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysDataset.get_sz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.ArraysDataset.get_x">
-<code class="descname">get_x</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysDataset.get_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysDataset.get_x" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.ArraysDataset.get_y">
-<code class="descname">get_y</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysDataset.get_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysDataset.get_y" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.ArraysIndexDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ArraysIndexDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>transform</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysIndexDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysIndexDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.ArraysDataset" title="fastai.dataset.ArraysDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.ArraysDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.ArraysIndexDataset.get_c">
-<code class="descname">get_c</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysIndexDataset.get_c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysIndexDataset.get_c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.ArraysNhotDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ArraysNhotDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>transform</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysNhotDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysNhotDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.ArraysDataset" title="fastai.dataset.ArraysDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.ArraysDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.ArraysNhotDataset.get_c">
-<code class="descname">get_c</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ArraysNhotDataset.get_c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ArraysNhotDataset.get_c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ArraysNhotDataset.is_multi">
-<code class="descname">is_multi</code><a class="headerlink" href="#fastai.dataset.ArraysNhotDataset.is_multi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.BaseDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">BaseDataset</code><span class="sig-paren">(</span><em>transform=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
-<dl class="method">
-<dt id="fastai.dataset.BaseDataset.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>tfm</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.BaseDataset.get_c">
-<code class="descname">get_c</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset.get_c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset.get_c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.BaseDataset.get_n">
-<code class="descname">get_n</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset.get_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset.get_n" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.BaseDataset.get_sz">
-<code class="descname">get_sz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset.get_sz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset.get_sz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.BaseDataset.get_x">
-<code class="descname">get_x</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset.get_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset.get_x" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.BaseDataset.get_y">
-<code class="descname">get_y</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#BaseDataset.get_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.BaseDataset.get_y" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.BaseDataset.is_multi">
-<code class="descname">is_multi</code><a class="headerlink" href="#fastai.dataset.BaseDataset.is_multi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.BaseDataset.is_reg">
-<code class="descname">is_reg</code><a class="headerlink" href="#fastai.dataset.BaseDataset.is_reg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.FilesArrayDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">FilesArrayDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesArrayDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesArrayDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.FilesDataset" title="fastai.dataset.FilesDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.FilesDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.FilesArrayDataset.get_c">
-<code class="descname">get_c</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesArrayDataset.get_c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesArrayDataset.get_c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.FilesArrayDataset.get_y">
-<code class="descname">get_y</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesArrayDataset.get_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesArrayDataset.get_y" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.FilesDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">FilesDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.BaseDataset" title="fastai.dataset.BaseDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.BaseDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.FilesDataset.denorm">
-<code class="descname">denorm</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesDataset.denorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesDataset.denorm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reverse the normalization done to a batch of images.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd>arr: of shape/size (N,3,sz,sz)</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.FilesDataset.get_n">
-<code class="descname">get_n</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesDataset.get_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesDataset.get_n" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.FilesDataset.get_sz">
-<code class="descname">get_sz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesDataset.get_sz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesDataset.get_sz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.FilesDataset.get_x">
-<code class="descname">get_x</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesDataset.get_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesDataset.get_x" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.FilesDataset.resize_imgs">
-<code class="descname">resize_imgs</code><span class="sig-paren">(</span><em>targ</em>, <em>new_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesDataset.resize_imgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesDataset.resize_imgs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.FilesIndexArrayDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">FilesIndexArrayDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesIndexArrayDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesIndexArrayDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.FilesArrayDataset" title="fastai.dataset.FilesArrayDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.FilesArrayDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.FilesIndexArrayDataset.get_c">
-<code class="descname">get_c</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesIndexArrayDataset.get_c"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesIndexArrayDataset.get_c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.FilesIndexArrayRegressionDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">FilesIndexArrayRegressionDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesIndexArrayRegressionDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesIndexArrayRegressionDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.FilesArrayDataset" title="fastai.dataset.FilesArrayDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.FilesArrayDataset</span></code></a></p>
-<dl class="method">
-<dt id="fastai.dataset.FilesIndexArrayRegressionDataset.is_reg">
-<code class="descname">is_reg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesIndexArrayRegressionDataset.is_reg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesIndexArrayRegressionDataset.is_reg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.FilesNhotArrayDataset">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">FilesNhotArrayDataset</code><span class="sig-paren">(</span><em>fnames</em>, <em>y</em>, <em>transform</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#FilesNhotArrayDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.FilesNhotArrayDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.FilesArrayDataset" title="fastai.dataset.FilesArrayDataset"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.FilesArrayDataset</span></code></a></p>
-<dl class="attribute">
-<dt id="fastai.dataset.FilesNhotArrayDataset.is_multi">
-<code class="descname">is_multi</code><a class="headerlink" href="#fastai.dataset.FilesNhotArrayDataset.is_multi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.ImageClassifierData">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ImageClassifierData</code><span class="sig-paren">(</span><em>path</em>, <em>datasets</em>, <em>bs</em>, <em>num_workers</em>, <em>classes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageClassifierData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageClassifierData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.ImageData" title="fastai.dataset.ImageData"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.ImageData</span></code></a></p>
-<dl class="classmethod">
-<dt id="fastai.dataset.ImageClassifierData.from_arrays">
-<em class="property">classmethod </em><code class="descname">from_arrays</code><span class="sig-paren">(</span><em>path</em>, <em>trn</em>, <em>val</em>, <em>bs=64</em>, <em>tfms=(None</em>, <em>None)</em>, <em>classes=None</em>, <em>num_workers=4</em>, <em>test=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageClassifierData.from_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageClassifierData.from_arrays" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read in images and their labels given as numpy arrays</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd><p class="first">path: a root path of the data (used for storing trained models, precomputed values, etc)
-trn: a tuple of training data matrix and target label/classification array (e.g. <cite>trn=(x,y)</cite> where <cite>x</cite> has the</p>
-<blockquote>
-<div>shape of <cite>(5000, 784)</cite> and <cite>y</cite> has the shape of <cite>(5000,)</cite>)</div></blockquote>
-<p class="last">val: a tuple of validation data matrix and target label/classification array.
-bs: batch size
-tfms: transformations (for data augmentations). e.g. output of <cite>tfms_from_model</cite>
-classes: a list of all labels/classifications
-num_workers: a number of workers
-test: a matrix of test data (the shape should match <cite>trn[0]</cite>)</p>
-</dd>
-<dt>Returns:</dt>
-<dd>ImageClassifierData</dd>
-</dl>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="fastai.dataset.ImageClassifierData.from_csv">
-<em class="property">classmethod </em><code class="descname">from_csv</code><span class="sig-paren">(</span><em>path</em>, <em>folder</em>, <em>csv_fname</em>, <em>bs=64</em>, <em>tfms=(None</em>, <em>None)</em>, <em>val_idxs=None</em>, <em>suffix=''</em>, <em>test_name=None</em>, <em>continuous=False</em>, <em>skip_header=True</em>, <em>num_workers=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageClassifierData.from_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageClassifierData.from_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read in images and their labels given as a CSV file.</p>
-<p>This method should be used when training image labels are given in an CSV file as opposed to
-sub-directories with label names.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd><p class="first">path: a root path of the data (used for storing trained models, precomputed values, etc)
-folder: a name of the folder in which training images are contained.
-csv_fname: a name of the CSV file which contains target labels.
-bs: batch size
-tfms: transformations (for data augmentations). e.g. output of <cite>tfms_from_model</cite>
-val_idxs: index of images to be used for validation. e.g. output of <cite>get_cv_idxs</cite>
-suffix: suffix to add to image names in CSV file (sometimes CSV only contains the file name without file</p>
-<blockquote>
-<div>extension e.g. ‘.jpg’ - in which case, you can set suffix as ‘.jpg’)</div></blockquote>
-<p class="last">test_name: a name of the folder which contains test images.
-continuous: TODO
-skip_header: skip the first row of the CSV file.
-num_workers: number of workers</p>
-</dd>
-<dt>Returns:</dt>
-<dd>ImageClassifierData</dd>
-</dl>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="fastai.dataset.ImageClassifierData.from_paths">
-<em class="property">classmethod </em><code class="descname">from_paths</code><span class="sig-paren">(</span><em>path</em>, <em>bs=64</em>, <em>tfms=(None</em>, <em>None)</em>, <em>trn_name='train'</em>, <em>val_name='valid'</em>, <em>test_name=None</em>, <em>num_workers=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageClassifierData.from_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageClassifierData.from_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read in images and their labels given as sub-folder names</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd>path: a root path of the data (used for storing trained models, precomputed values, etc)
-bs: batch size
-tfms: transformations (for data augmentations). e.g. output of <cite>tfms_from_model</cite>
-trn_name: a name of the folder that contains training images.
-val_name:  a name of the folder that contains validation images.
-test_name:  a name of the folder that contains test images.
-num_workers: number of workers</dd>
-<dt>Returns:</dt>
-<dd>ImageClassifierData</dd>
-</dl>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="fastai.dataset.ImageClassifierData.get_ds">
-<em class="property">static </em><code class="descname">get_ds</code><span class="sig-paren">(</span><em>fn</em>, <em>trn</em>, <em>val</em>, <em>tfms</em>, <em>test=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageClassifierData.get_ds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageClassifierData.get_ds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ImageClassifierData.is_multi">
-<code class="descname">is_multi</code><a class="headerlink" href="#fastai.dataset.ImageClassifierData.is_multi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.ImageData">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ImageData</code><span class="sig-paren">(</span><em>path</em>, <em>datasets</em>, <em>bs</em>, <em>num_workers</em>, <em>classes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.dataset.ModelData" title="fastai.dataset.ModelData"><code class="xref py py-class docutils literal"><span class="pre">fastai.dataset.ModelData</span></code></a></p>
-<dl class="attribute">
-<dt id="fastai.dataset.ImageData.c">
-<code class="descname">c</code><a class="headerlink" href="#fastai.dataset.ImageData.c" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.ImageData.get_dl">
-<code class="descname">get_dl</code><span class="sig-paren">(</span><em>ds</em>, <em>shuffle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageData.get_dl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageData.get_dl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.ImageData.resize">
-<code class="descname">resize</code><span class="sig-paren">(</span><em>targ</em>, <em>new_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageData.resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageData.resize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.dataset.ImageData.resized">
-<code class="descname">resized</code><span class="sig-paren">(</span><em>dl</em>, <em>targ</em>, <em>new_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ImageData.resized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ImageData.resized" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ImageData.sz">
-<code class="descname">sz</code><a class="headerlink" href="#fastai.dataset.ImageData.sz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.ModelData">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ModelData</code><span class="sig-paren">(</span><em>path</em>, <em>trn_dl</em>, <em>val_dl</em>, <em>test_dl=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ModelData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ModelData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="classmethod">
-<dt id="fastai.dataset.ModelData.from_dls">
-<em class="property">classmethod </em><code class="descname">from_dls</code><span class="sig-paren">(</span><em>path</em>, <em>trn_dl</em>, <em>val_dl</em>, <em>test_dl=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ModelData.from_dls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ModelData.from_dls" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelData.is_reg">
-<code class="descname">is_reg</code><a class="headerlink" href="#fastai.dataset.ModelData.is_reg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelData.test_ds">
-<code class="descname">test_ds</code><a class="headerlink" href="#fastai.dataset.ModelData.test_ds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelData.trn_ds">
-<code class="descname">trn_ds</code><a class="headerlink" href="#fastai.dataset.ModelData.trn_ds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelData.trn_y">
-<code class="descname">trn_y</code><a class="headerlink" href="#fastai.dataset.ModelData.trn_y" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelData.val_ds">
-<code class="descname">val_ds</code><a class="headerlink" href="#fastai.dataset.ModelData.val_ds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelData.val_y">
-<code class="descname">val_y</code><a class="headerlink" href="#fastai.dataset.ModelData.val_y" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.dataset.ModelDataLoader">
-<em class="property">class </em><code class="descclassname">fastai.dataset.</code><code class="descname">ModelDataLoader</code><span class="sig-paren">(</span><em>dl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ModelDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ModelDataLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="classmethod">
-<dt id="fastai.dataset.ModelDataLoader.create_dl">
-<em class="property">classmethod </em><code class="descname">create_dl</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#ModelDataLoader.create_dl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.ModelDataLoader.create_dl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.dataset.ModelDataLoader.dataset">
-<code class="descname">dataset</code><a class="headerlink" href="#fastai.dataset.ModelDataLoader.dataset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.csv_source">
-<code class="descclassname">fastai.dataset.</code><code class="descname">csv_source</code><span class="sig-paren">(</span><em>folder</em>, <em>csv_file</em>, <em>skip_header=True</em>, <em>suffix=''</em>, <em>continuous=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#csv_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.csv_source" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.folder_source">
-<code class="descclassname">fastai.dataset.</code><code class="descname">folder_source</code><span class="sig-paren">(</span><em>path</em>, <em>folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#folder_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.folder_source" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.get_cv_idxs">
-<code class="descclassname">fastai.dataset.</code><code class="descname">get_cv_idxs</code><span class="sig-paren">(</span><em>n</em>, <em>cv_idx=0</em>, <em>val_pct=0.2</em>, <em>seed=42</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#get_cv_idxs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.get_cv_idxs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.n_hot">
-<code class="descclassname">fastai.dataset.</code><code class="descname">n_hot</code><span class="sig-paren">(</span><em>ids</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#n_hot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.n_hot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.nhot_labels">
-<code class="descclassname">fastai.dataset.</code><code class="descname">nhot_labels</code><span class="sig-paren">(</span><em>label2idx</em>, <em>csv_labels</em>, <em>fnames</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#nhot_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.nhot_labels" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.open_image">
-<code class="descclassname">fastai.dataset.</code><code class="descname">open_image</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#open_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.open_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.parse_csv_labels">
-<code class="descclassname">fastai.dataset.</code><code class="descname">parse_csv_labels</code><span class="sig-paren">(</span><em>fn</em>, <em>skip_header=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#parse_csv_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.parse_csv_labels" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.read_dir">
-<code class="descclassname">fastai.dataset.</code><code class="descname">read_dir</code><span class="sig-paren">(</span><em>path</em>, <em>folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#read_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.read_dir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.read_dirs">
-<code class="descclassname">fastai.dataset.</code><code class="descname">read_dirs</code><span class="sig-paren">(</span><em>path</em>, <em>folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#read_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.read_dirs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.resize_img">
-<code class="descclassname">fastai.dataset.</code><code class="descname">resize_img</code><span class="sig-paren">(</span><em>fname</em>, <em>targ</em>, <em>path</em>, <em>new_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#resize_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.resize_img" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.resize_imgs">
-<code class="descclassname">fastai.dataset.</code><code class="descname">resize_imgs</code><span class="sig-paren">(</span><em>fnames</em>, <em>targ</em>, <em>path</em>, <em>new_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#resize_imgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.resize_imgs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.dataset.split_by_idx">
-<code class="descclassname">fastai.dataset.</code><code class="descname">split_by_idx</code><span class="sig-paren">(</span><em>idxs</em>, <em>*a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/dataset.html#split_by_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.dataset.split_by_idx" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+  <div class="section" id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dataset">
+<h2>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.BaseDataset" title="fastai.fastai.dataset.BaseDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.BaseDataset</span></code></a>([transform])</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.FilesDataset" title="fastai.fastai.dataset.FilesDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesDataset</span></code></a>(fnames,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.FilesArrayDataset" title="fastai.fastai.dataset.FilesArrayDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesArrayDataset</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.FilesIndexArrayDataset" title="fastai.fastai.dataset.FilesIndexArrayDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesIndexArrayDataset</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.FilesNhotArrayDataset" title="fastai.fastai.dataset.FilesNhotArrayDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesNhotArrayDataset</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.FilesIndexArrayRegressionDataset" title="fastai.fastai.dataset.FilesIndexArrayRegressionDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.FilesIndexArrayRegressionDataset</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.ArraysDataset" title="fastai.fastai.dataset.ArraysDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ArraysDataset</span></code></a>(x,&nbsp;y,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.ArraysIndexDataset" title="fastai.fastai.dataset.ArraysIndexDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ArraysIndexDataset</span></code></a>(x,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.ArraysNhotDataset" title="fastai.fastai.dataset.ArraysNhotDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ArraysNhotDataset</span></code></a>(x,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.ModelData" title="fastai.fastai.dataset.ModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ModelData</span></code></a>(path,&nbsp;…[,&nbsp;…])</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataset.ImageData" title="fastai.fastai.dataset.ImageData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataset.ImageData</span></code></a>(path,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dastaset.ImageClassifierData</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section" id="module-fastai.learner">
-<span id="fastai-learner-module"></span><h2>fastai.learner module<a class="headerlink" href="#module-fastai.learner" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="fastai.learner.BasicModel">
-<em class="property">class </em><code class="descclassname">fastai.learner.</code><code class="descname">BasicModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#BasicModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.BasicModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="fastai.learner.BasicModel.get_layer_groups">
-<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><em>do_fc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#BasicModel.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.BasicModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.learner.Learner">
-<em class="property">class </em><code class="descclassname">fastai.learner.</code><code class="descname">Learner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>opt_fn=None</em>, <em>tmp_name='tmp'</em>, <em>models_name='models'</em>, <em>metrics=None</em>, <em>clip=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="fastai.learner.Learner.TTA">
-<code class="descname">TTA</code><span class="sig-paren">(</span><em>n_aug=4</em>, <em>is_test=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.TTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.TTA" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predict with Test Time Augmentation (TTA)</p>
-<p>Additional to the original test/validation images, apply image augmentation to them
-(just like for training images) and calculate the mean of predictions. The intent
-is to increase the accuracy of predictions by examining the images using multiple
-perspectives.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>n_aug: a number of augmentation images to use per original image
-is_test: indicate to use test images; otherwise use validation images</dd>
-<dt>Returns:</dt>
-<dd><p class="first">(tuple): a tuple containing:</p>
-<blockquote class="last">
-<div>log predictions (numpy.ndarray): log predictions (i.e. <cite>np.exp(log_preds)</cite> will return probabilities)
-targs (numpy.ndarray): target values when <cite>is_test==False</cite>; zeros otherwise.</div></blockquote>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.bn_freeze">
-<code class="descname">bn_freeze</code><span class="sig-paren">(</span><em>do_freeze</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.bn_freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.bn_freeze" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.learner.Learner.children">
-<code class="descname">children</code><a class="headerlink" href="#fastai.learner.Learner.children" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.learner.Learner.data">
-<code class="descname">data</code><a class="headerlink" href="#fastai.learner.Learner.data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>lrs</em>, <em>n_cycle</em>, <em>wds=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.fit_gen">
-<code class="descname">fit_gen</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>layer_opt</em>, <em>n_cycle</em>, <em>cycle_len=None</em>, <em>cycle_mult=1</em>, <em>cycle_save_name=None</em>, <em>metrics=None</em>, <em>callbacks=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.fit_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.fit_gen" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.freeze_to">
-<code class="descname">freeze_to</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.freeze_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.freeze_to" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.get_cycle_end">
-<code class="descname">get_cycle_end</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.get_cycle_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_cycle_end" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.get_layer_groups">
-<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_layer_groups" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.get_layer_opt">
-<code class="descname">get_layer_opt</code><span class="sig-paren">(</span><em>lrs</em>, <em>wds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.get_layer_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_layer_opt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.get_model_path">
-<code class="descname">get_model_path</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.get_model_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_model_path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.load_cycle">
-<code class="descname">load_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.load_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.load_cycle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.lr_find">
-<code class="descname">lr_find</code><span class="sig-paren">(</span><em>start_lr=1e-05</em>, <em>end_lr=10</em>, <em>wds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.lr_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.lr_find" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helps you find an optimal learning rate for a model.</p>
-<blockquote>
-<div>It uses the technique developed in the 2015 paper
-<cite>Cyclical Learning Rates for Training Neural Networks</cite>, where
-we simply keep increasing the learning rate from a very small value,
-until the loss starts decreasing.</div></blockquote>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first docutils">
-<dt>start_lr (float/numpy array) <span class="classifier-delimiter">:</span> <span class="classifier">Passing in a numpy array allows you</span></dt>
-<dd>to specify learning rates for a learner’s layer_groups</dd>
-</dl>
-<p class="last">end_lr (float) : The maximum learning rate to try.
-wds (iterable/float)</p>
-</dd>
-<dt>Examples:</dt>
-<dd><p class="first">As training moves us closer to the optimal weights for a model,
-the optimal learning rate will be smaller. We can take advantage of
-that knowledge and provide lr_find() with a starting learning rate
-1000x smaller than the model’s current learning rate as such:</p>
-<p>&gt;&gt; learn.lr_find(lr/1000)</p>
-<p class="last">&gt;&gt; lrs = np.array([ 1e-4, 1e-3, 1e-2 ])
-&gt;&gt; learn.lr_find(lrs / 1000)</p>
-</dd>
-<dt>Notes:</dt>
-<dd>lr_find() may finish before going through each batch of examples if
-the loss decreases enough.</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fastai.learner.Learner.model">
-<code class="descname">model</code><a class="headerlink" href="#fastai.learner.Learner.model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.predict_array">
-<code class="descname">predict_array</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.predict_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict_array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.predict_dl">
-<code class="descname">predict_dl</code><span class="sig-paren">(</span><em>dl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.predict_dl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict_dl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.predict_with_targs">
-<code class="descname">predict_with_targs</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.predict_with_targs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict_with_targs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.save" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.save_cycle">
-<code class="descname">save_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.save_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.save_cycle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.set_bn_freeze">
-<code class="descname">set_bn_freeze</code><span class="sig-paren">(</span><em>m</em>, <em>do_freeze</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.set_bn_freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.set_bn_freeze" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.set_data">
-<code class="descname">set_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.set_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.set_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.summary">
-<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.summary" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastai.learner.Learner.unfreeze">
-<code class="descname">unfreeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#Learner.unfreeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.unfreeze" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fastai.learner.SingleModel">
-<em class="property">class </em><code class="descclassname">fastai.learner.</code><code class="descname">SingleModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#SingleModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.SingleModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastai.learner.BasicModel" title="fastai.learner.BasicModel"><code class="xref py py-class docutils literal"><span class="pre">fastai.learner.BasicModel</span></code></a></p>
-<dl class="method">
-<dt id="fastai.learner.SingleModel.get_layer_groups">
-<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fastai/learner.html#SingleModel.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.SingleModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="core">
+<h2>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.core.BasicModel" title="fastai.fastai.core.BasicModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.core.BasicModel</span></code></a>(model[,&nbsp;name])</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.core.SingleModel" title="fastai.fastai.core.SingleModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.core.SingleModel</span></code></a>(model[,&nbsp;name])</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.core.SimpleNet" title="fastai.fastai.core.SimpleNet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.core.SimpleNet</span></code></a>(layers)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="adaptivesoftmax">
+<h2>AdaptiveSoftmax<a class="headerlink" href="#adaptivesoftmax" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.adaptive_softmax.AdaptiveSoftmax" title="fastai.fastai.adaptive_softmax.AdaptiveSoftmax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.adaptive_softmax.AdaptiveSoftmax</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.adaptive_softmax.AdaptiveLoss" title="fastai.fastai.adaptive_softmax.AdaptiveLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.adaptive_softmax.AdaptiveLoss</span></code></a>(cutoff)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="columndata">
+<h2>ColumnData<a class="headerlink" href="#columndata" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.PassthruDataset" title="fastai.fastai.column_data.PassthruDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.PassthruDataset</span></code></a>(*args)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.ColumnarDataset" title="fastai.fastai.column_data.ColumnarDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.ColumnarDataset</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.ColumnarModelData" title="fastai.fastai.column_data.ColumnarModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.ColumnarModelData</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.MixedInputModel" title="fastai.fastai.column_data.MixedInputModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.MixedInputModel</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.StructuredLearner" title="fastai.fastai.column_data.StructuredLearner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.StructuredLearner</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.StructuredModel" title="fastai.fastai.column_data.StructuredModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.StructuredModel</span></code></a>(model)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.CollabFilterDataset" title="fastai.fastai.column_data.CollabFilterDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.CollabFilterDataset</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.EmbeddingDotBias" title="fastai.fastai.column_data.EmbeddingDotBias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.EmbeddingDotBias</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.CollabFilterLearner" title="fastai.fastai.column_data.CollabFilterLearner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.CollabFilterLearner</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.column_data.CollabFilterModel" title="fastai.fastai.column_data.CollabFilterModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.column_data.CollabFilterModel</span></code></a>(model)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="convlearner">
+<h2>ConvLearner<a class="headerlink" href="#convlearner" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.conv_learner.ConvLearner" title="fastai.fastai.conv_learner.ConvLearner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.conv_learner.ConvLearner</span></code></a>(data,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.conv_learner.ConvnetBuilder" title="fastai.fastai.conv_learner.ConvnetBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.conv_learner.ConvnetBuilder</span></code></a>(f,&nbsp;…)</td>
+<td>Class representing a convolutional network.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dataloader">
+<h2>DataLoader<a class="headerlink" href="#dataloader" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.dataloader.DataLoader" title="fastai.fastai.dataloader.DataLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.dataloader.DataLoader</span></code></a>(dataset)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="io">
+<h2>IO<a class="headerlink" href="#io" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.io.TqdmUpTo" title="fastai.fastai.io.TqdmUpTo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.io.TqdmUpTo</span></code></a>([iterable,&nbsp;desc,&nbsp;…])</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="layer-optimizer">
+<h2>Layer Optimizer<a class="headerlink" href="#layer-optimizer" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.layer_optimizer.LayerOptimizer" title="fastai.fastai.layer_optimizer.LayerOptimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.layer_optimizer.LayerOptimizer</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.layers.AdaptiveConcatPool2d" title="fastai.fastai.layers.AdaptiveConcatPool2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.layers.AdaptiveConcatPool2d</span></code></a>([sz])</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.layers.Lambda" title="fastai.fastai.layers.Lambda"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.layers.Lambda</span></code></a>(f)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.layers.Flatten" title="fastai.fastai.layers.Flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.layers.Flatten</span></code></a>()</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="learner">
+<h2>Learner<a class="headerlink" href="#learner" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.learner.Learner" title="fastai.fastai.learner.Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.learner.Learner</span></code></a>(data,&nbsp;models)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="lm-rnn">
+<h2>LM RNN<a class="headerlink" href="#lm-rnn" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.lm_rnn.RNN_Encoder" title="fastai.fastai.lm_rnn.RNN_Encoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.lm_rnn.RNN_Encoder</span></code></a>(ntoken,&nbsp;…)</td>
+<td>A custom RNN encoder network that uses - an embedding matrix to encode input, - a stack of LSTM layers to drive the network, and - variational dropouts in the embedding and LSTM layers</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.lm_rnn.MultiBatchRNN" title="fastai.fastai.lm_rnn.MultiBatchRNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.lm_rnn.MultiBatchRNN</span></code></a>(bptt,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.lm_rnn.LinearDecoder" title="fastai.fastai.lm_rnn.LinearDecoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.lm_rnn.LinearDecoder</span></code></a>(n_out,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.lm_rnn.LinearBlock" title="fastai.fastai.lm_rnn.LinearBlock"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.lm_rnn.LinearBlock</span></code></a>(ni,&nbsp;nf,&nbsp;drop)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.lm_rnn.PoolingLinearClassifier" title="fastai.fastai.lm_rnn.PoolingLinearClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.lm_rnn.PoolingLinearClassifier</span></code></a>(…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.lm_rnn.SequentialRNN" title="fastai.fastai.lm_rnn.SequentialRNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.lm_rnn.SequentialRNN</span></code></a>(*args)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.model.Stepper" title="fastai.fastai.model.Stepper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.model.Stepper</span></code></a>(m,&nbsp;opt,&nbsp;crit[,&nbsp;…])</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nlp">
+<h2>NLP<a class="headerlink" href="#nlp" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.DotProdNB" title="fastai.fastai.nlp.DotProdNB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.DotProdNB</span></code></a>(nf,&nbsp;ny[,&nbsp;w_adj,&nbsp;…])</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.SimpleNB" title="fastai.fastai.nlp.SimpleNB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.SimpleNB</span></code></a>(nf,&nbsp;ny)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.BOW_Learner" title="fastai.fastai.nlp.BOW_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.BOW_Learner</span></code></a>(data,&nbsp;models,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.BOW_Dataset" title="fastai.fastai.nlp.BOW_Dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.BOW_Dataset</span></code></a>(bow,&nbsp;y,&nbsp;max_len)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.BOW_Learner" title="fastai.fastai.nlp.BOW_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.BOW_Learner</span></code></a>(data,&nbsp;models,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.TextClassifierData" title="fastai.fastai.nlp.TextClassifierData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.TextClassifierData</span></code></a>(path,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.LanguageModelLoader" title="fastai.fastai.nlp.LanguageModelLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.LanguageModelLoader</span></code></a>(ds,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.RNN_Learner" title="fastai.fastai.nlp.RNN_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.RNN_Learner</span></code></a>(data,&nbsp;models,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.ConcatTextDataset" title="fastai.fastai.nlp.ConcatTextDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.ConcatTextDataset</span></code></a>(path,&nbsp;…)</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.ConcatTextDatasetFormDataFrames</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.LanguageModelData" title="fastai.fastai.nlp.LanguageModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.LanguageModelData</span></code></a>(path,&nbsp;…)</td>
+<td>This class provides the entry point for dealing with supported NLP tasks.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.TextDatLoader</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.TextModel" title="fastai.fastai.nlp.TextModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.TextModel</span></code></a>(model[,&nbsp;name])</td>
+<td>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.html#fastai.fastai.nlp.TextData" title="fastai.fastai.nlp.TextData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastai.fastai.nlp.TextData</span></code></a>(path,&nbsp;trn_dl,&nbsp;val_dl)</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="rnn-reg">
+<h2>RNN_Reg<a class="headerlink" href="#rnn-reg" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="sgdr">
+<h2>SGDR<a class="headerlink" href="#sgdr" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="text">
+<h2>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="id1">
+<h2>Text<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="utils">
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -667,61 +380,76 @@ the loss decreases enough.</dd>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">fastai</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme.html">readme</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">fastai API reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-fastai.dataset">fastai.dataset module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-fastai.learner">fastai.learner module</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API reference</a><ul>
+<li><a class="reference internal" href="#dataset">Dataset</a></li>
+<li><a class="reference internal" href="#core">Core</a></li>
+<li><a class="reference internal" href="#adaptivesoftmax">AdaptiveSoftmax</a></li>
+<li><a class="reference internal" href="#columndata">ColumnData</a></li>
+<li><a class="reference internal" href="#convlearner">ConvLearner</a></li>
+<li><a class="reference internal" href="#dataloader">DataLoader</a></li>
+<li><a class="reference internal" href="#io">IO</a></li>
+<li><a class="reference internal" href="#layer-optimizer">Layer Optimizer</a></li>
+<li><a class="reference internal" href="#layers">Layers</a></li>
+<li><a class="reference internal" href="#learner">Learner</a></li>
+<li><a class="reference internal" href="#lm-rnn">LM RNN</a></li>
+<li><a class="reference internal" href="#model">Model</a></li>
+<li><a class="reference internal" href="#nlp">NLP</a></li>
+<li><a class="reference internal" href="#plots">Plots</a></li>
+<li><a class="reference internal" href="#rnn-reg">RNN_Reg</a></li>
+<li><a class="reference internal" href="#sgdr">SGDR</a></li>
+<li><a class="reference internal" href="#text">Text</a></li>
+<li><a class="reference internal" href="#id1">Text</a></li>
+<li><a class="reference internal" href="#utils">Utils</a></li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="readme.html" title="previous chapter">readme</a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="readme.html"
+                        title="previous chapter">readme</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/api.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="readme.html" title="readme"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fastai 0.6 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Jeremy Howard.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
   </body>
 </html>
