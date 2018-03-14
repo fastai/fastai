@@ -211,13 +211,8 @@ class FilesDataset(BaseDataset):
     def __init__(self, fnames, transform, path):
         self.path,self.fnames = path,fnames
         super().__init__(transform)
-    def get_n(self): return len(self.y)
     def get_sz(self): return self.transform.sz
     def get_x(self, i): return open_image(os.path.join(self.path, self.fnames[i]))
-
-    def resize_imgs(self, targ, new_path):
-        dest = resize_imgs(self.fnames, targ, self.path, new_path)
-        return self.__class__(self.fnames, self.y, self.transform, dest)
 
     def denorm(self,arr):
         """Reverse the normalization done to a batch of images.
@@ -234,10 +229,14 @@ class FilesArrayDataset(FilesDataset):
         self.y=y
         assert(len(fnames)==len(y))
         super().__init__(fnames, transform, path)
+    def get_n(self): return len(self.y)
     def get_y(self, i): return self.y[i]
     def get_c(self):
         return self.y.shape[1] if len(self.y.shape)>1 else 0
 
+    def resize_imgs(self, targ, new_path):
+        dest = resize_imgs(self.fnames, targ, self.path, new_path)
+        return self.__class__(self.fnames, self.y, self.transform, dest)
 
 class FilesIndexArrayDataset(FilesArrayDataset):
     def get_c(self): return int(self.y.max())+1
