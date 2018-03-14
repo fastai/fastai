@@ -80,7 +80,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
     layout = "{!s:10} " * len(names)
-    
+
     num_batch = len(data.trn_dl)
     if epochs<1:
         num_batch = int(num_batch*epochs)
