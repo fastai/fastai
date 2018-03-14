@@ -279,8 +279,8 @@ class ModelData():
 
     @classmethod
     def from_dls(cls, path,trn_dl,val_dl,test_dl=None):
-        trn_dl,val_dl = DataLoader(trn_dl),DataLoader(val_dl)
-        if test_dl: test_dl = DataLoader(test_dl)
+        #trn_dl,val_dl = DataLoader(trn_dl),DataLoader(val_dl)
+        #if test_dl: test_dl = DataLoader(test_dl)
         return cls(path, trn_dl, val_dl, test_dl)
 
     @property
