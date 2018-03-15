@@ -3,7 +3,7 @@ readme
 
 Create documentation from docstrings
 
-    sphinx-apidoc -o generated/ ./ -e -f
+    sphinx-apidoc -o doc/generated/ ./ -e -f
 
 Build the html files
 

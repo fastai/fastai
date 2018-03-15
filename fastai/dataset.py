@@ -239,7 +239,8 @@ class FilesArrayDataset(FilesDataset):
         return self.__class__(self.fnames, self.y, self.transform, dest)
 
 class FilesIndexArrayDataset(FilesArrayDataset):
-    def get_c(self): return int(self.y.max())+1
+    def get_c(self): 
+        return int(self.y.max())+1
 
 
 class FilesNhotArrayDataset(FilesArrayDataset):

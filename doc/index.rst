@@ -26,9 +26,8 @@ But we also provide the ability to customise every stage, so we could easily exp
    :maxdepth: 1
     
    readme
-   quick_start
+   tutorials/basic.rst
    tutorials/index
-   generated/modules
    api 
 
 Indices and tables

@@ -93,15 +93,17 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">readme</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#an-introduction-do-deep-learning-with-fastai">An introduction do deep learning with fastai</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#loading-a-dataset">Loading a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#training">Training</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#predicting">Predicting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#analyzing-results-loss-and-accuracy">Analyzing results: loss and accuracy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#install-fast-ai-and-pytorch">Install fast.ai and pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#loading-a-dataset">Loading a dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#download-data">Download data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unzip">Unzip</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#training">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#predicting">Predicting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/modules.html">fastai</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
 
@@ -169,19 +171,150 @@
   <div class="section" id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
 </div>
-<div class="section" id="an-introduction-do-deep-learning-with-fastai">
-<h1>An introduction do deep learning with fastai<a class="headerlink" href="#an-introduction-do-deep-learning-with-fastai" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install-fast-ai-and-pytorch">
+<h1>Install fast.ai and pytorch<a class="headerlink" href="#install-fast-ai-and-pytorch" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Google Colaboratory</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">wheel.pep425tags</span> <span class="kn">import</span> <span class="n">get_abbr_impl</span><span class="p">,</span> <span class="n">get_impl_ver</span><span class="p">,</span> <span class="n">get_abi_tag</span>
+<span class="n">platform</span> <span class="o">=</span> <span class="s1">&#39;{}{}-{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_abbr_impl</span><span class="p">(),</span> <span class="n">get_impl_ver</span><span class="p">(),</span> <span class="n">get_abi_tag</span><span class="p">())</span>
+
+<span class="n">accelerator</span> <span class="o">=</span> <span class="s1">&#39;cu80&#39;</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;/opt/bin/nvidia-smi&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>#!pip install -q http://download.pytorch.org/whl/{accelerator}/torch-
+0.3.0.post4-{platform}-linux_x86_64.whl torchvision
+!pip install http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp36-cp36m-
+linux_x86_64.whl
+!pip install torchvision
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install fastai
+</pre></div>
+</div>
+</div>
+<div class="section" id="imports">
+<h1>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+
+ <span class="bp">True</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.transforms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.conv_learner</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.model</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.dataset</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.sgdr</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.plots</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fastai.metrics</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="loading-a-dataset">
-<span id="loading-dataset"></span><h2>Loading a dataset<a class="headerlink" href="#loading-a-dataset" title="Permalink to this headline">¶</a></h2>
+<h1>Loading a dataset<a class="headerlink" href="#loading-a-dataset" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="download-data">
+<h2>Download data<a class="headerlink" href="#download-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!curl -O http://files.fast.ai/data/dogscats.zip
+
+   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                  Dload  Upload   Total   Spent    Left  Speed
+ 100  817M  100  817M    0     0  31.4M      0  0:00:26  0:00:26 --:--:-- 30.6M
+</pre></div>
+</div>
+</div>
+<div class="section" id="unzip">
+<h2>Unzip<a class="headerlink" href="#unzip" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!unzip dogscats.zip
+
+ Archive:  dogscats.zip
+    creating: dogscats/
+    creating: dogscats/sample/
+    creating: dogscats/sample/train/
+    creating: dogscats/sample/train/cats/
+   inflating: dogscats/sample/train/cats/cat.2921.jpg
+   inflating: dogscats/sample/train/cats/cat.394.jpg
+   inflating: dogscats/sample/train/cats/cat.4865.jpg  ats/train/dogs/dog.3880.jpg
+   inflating: dogscats/train/dogs/dog.3501.jpg
+   inflating: dogscats/train/dogs/dog.7816.jpg
+   inflating: dogscats/train/dogs/dog.19.jpg
+   inflating: dogscats/train/dogs/dog.6934.jpg
+   inflating: dogscats/train/dogs/dog.2449.jpg
+   inflating: dogscats/train/dogs/dog.7655.jpg
+   inflating: dogscats/train/dogs/dog.11037.jpg
+   [...]
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="training">
-<span id="id1"></span><h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
+<h1>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!ls
+
+ datalab  dogscats  dogscats.zip
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PATH</span> <span class="o">=</span> <span class="s2">&quot;dogscats/&quot;</span>
+<span class="n">sz</span><span class="o">=</span><span class="mi">224</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arch</span><span class="o">=</span><span class="n">resnet34</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageClassifierData</span><span class="o">.</span><span class="n">from_paths</span><span class="p">(</span><span class="n">PATH</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms_from_model</span><span class="p">(</span><span class="n">arch</span><span class="p">,</span> <span class="n">sz</span><span class="p">))</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">ConvLearner</span><span class="o">.</span><span class="n">pretrained</span><span class="p">(</span><span class="n">arch</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+ <span class="p">[</span><span class="mf">0.</span>      <span class="mf">0.05905</span> <span class="mf">0.02629</span> <span class="mf">0.99023</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">1.</span>      <span class="mf">0.04276</span> <span class="mf">0.02546</span> <span class="mf">0.99072</span><span class="p">]</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="predicting">
-<span id="id2"></span><h2>Predicting<a class="headerlink" href="#predicting" title="Permalink to this headline">¶</a></h2>
+<h1>Predicting<a class="headerlink" href="#predicting" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># this gives prediction for validation set. Predictions are in log scale</span>
+<span class="n">log_preds</span> <span class="o">=</span> <span class="n">learn</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+
+<span class="c1"># 2000 rows, each row has an array with 2 positions</span>
+<span class="c1">#     first array position = probability for cat</span>
+<span class="c1">#     second array position = probability for a dog</span>
+
+<span class="n">log_preds</span><span class="o">.</span><span class="n">shape</span>
+
+ <span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="analyzing-results-loss-and-accuracy">
-<h2>Analyzing results: loss and accuracy<a class="headerlink" href="#analyzing-results-loss-and-accuracy" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is the label for a val data</span>
+<span class="n">target_values</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">val_y</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># from array to labels (get the max value for each row, returns 0 if it&#39;s the first position [cat] or 1 if it&#39;s the second [dog])</span>
+<span class="n">pred_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">log_preds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pred_labels</span><span class="o">.</span><span class="n">shape</span>
+
+
+ <span class="p">(</span><span class="mi">2000</span><span class="p">,)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">accuracy_np</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">targs</span><span class="p">):</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">preds</span><span class="o">==</span><span class="n">targs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="n">accuracy_np</span><span class="p">(</span><span class="n">log_preds</span><span class="p">,</span> <span class="n">target_values</span><span class="p">)</span>
+
+
+ <span class="mf">0.9905</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">target_values</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
+
+ <span class="p">[[</span><span class="mi">992</span>   <span class="mi">8</span><span class="p">]</span>
+  <span class="p">[</span> <span class="mi">11</span> <span class="mi">989</span><span class="p">]]</span>
+</pre></div>
 </div>
 </div>
 
