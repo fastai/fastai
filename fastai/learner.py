@@ -155,7 +155,7 @@ class Learner():
         callbacks+=[self.sched]
         
         if best_save_name is not None:
-            callbacks+=[SaveBestModel(self, layer_opt, best_save_name)]
+            callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
             
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
