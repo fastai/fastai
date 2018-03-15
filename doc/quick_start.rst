@@ -1,4 +1,4 @@
 Quick Start
 ===========
 
-[todo]
+.. include:: tutorials/basic.rst

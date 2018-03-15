@@ -27,7 +27,7 @@ But we also provide the ability to customise every stage, so we could easily exp
     
    readme
    quick_start
-   tutorials
+   tutorials/index
    generated/modules
    api 
 
