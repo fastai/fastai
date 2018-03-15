@@ -1,130 +1,321 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai.dataset &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.dataset &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.dataset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for fastai.dataset</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+
+<span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.transforms</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.layer_optimizer</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">DataLoader</span>
 
-<div class="viewcode-block" id="get_cv_idxs"><a class="viewcode-back" href="../../api.html#fastai.dataset.get_cv_idxs">[docs]</a><span class="k">def</span> <span class="nf">get_cv_idxs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">cv_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">val_pct</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cv_idxs"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.get_cv_idxs">[docs]</a><span class="k">def</span> <span class="nf">get_cv_idxs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">cv_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">val_pct</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
     <span class="n">n_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val_pct</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
     <span class="n">idx_start</span> <span class="o">=</span> <span class="n">cv_idx</span><span class="o">*</span><span class="n">n_val</span>
-    <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">idxs</span><span class="p">[</span><span class="n">idx_start</span><span class="p">:</span><span class="n">idx_start</span><span class="o">+</span><span class="n">n_val</span><span class="p">]</span></div>
+    <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">idxs</span><span class="p">[</span><span class="n">idx_start</span><span class="p">:</span><span class="n">idx_start</span><span class="o">+</span><span class="n">n_val</span><span class="p">]</span>
 
-<div class="viewcode-block" id="resize_img"><a class="viewcode-back" href="../../api.html#fastai.dataset.resize_img">[docs]</a><span class="k">def</span> <span class="nf">resize_img</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
+<div class="viewcode-block" id="resize_img"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.resize_img">[docs]</a><span class="k">def</span> <span class="nf">resize_img</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
     <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">new_path</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">targ</span><span class="p">),</span><span class="n">fname</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span> <span class="k">return</span>
     <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
     <span class="n">r</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
     <span class="n">ratio</span> <span class="o">=</span> <span class="n">targ</span><span class="o">/</span><span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
     <span class="n">sz</span> <span class="o">=</span> <span class="p">(</span><span class="n">scale_to</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">targ</span><span class="p">),</span> <span class="n">scale_to</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">targ</span><span class="p">))</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dest</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span></div>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dest</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
 
-<div class="viewcode-block" id="resize_imgs"><a class="viewcode-back" href="../../api.html#fastai.dataset.resize_imgs">[docs]</a><span class="k">def</span> <span class="nf">resize_imgs</span><span class="p">(</span><span class="n">fnames</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
+<div class="viewcode-block" id="resize_imgs"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.resize_imgs">[docs]</a><span class="k">def</span> <span class="nf">resize_imgs</span><span class="p">(</span><span class="n">fnames</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">new_path</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">targ</span><span class="p">),</span><span class="n">fnames</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
         <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">ims</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">resize_img</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s1">&#39;tmp&#39;</span><span class="p">),</span> <span class="n">fnames</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fnames</span><span class="p">),</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">pass</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">new_path</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">targ</span><span class="p">))</span></div>
+            <span class="n">ims</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">resize_img</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">),</span> <span class="n">fnames</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">fnames</span><span class="p">),</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">pass</span></div>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">new_path</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">targ</span><span class="p">))</span>
 
-<div class="viewcode-block" id="read_dir"><a class="viewcode-back" href="../../api.html#fastai.dataset.read_dir">[docs]</a><span class="k">def</span> <span class="nf">read_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
-    <span class="c1"># TODO: warn or error if no files found?</span>
+<div class="viewcode-block" id="read_dir"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.read_dir">[docs]</a><span class="k">def</span> <span class="nf">read_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
     <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
-    <span class="n">fnames</span> <span class="o">=</span> <span class="n">iglob</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{full_path}</span><span class="s2">/*.*&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">]</span></div>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{full_path}</span><span class="s2">/*.*&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">fnames</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span></div>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> folder doesn&#39;t exist or is empty&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">))</span>
 
-<div class="viewcode-block" id="read_dirs"><a class="viewcode-back" href="../../api.html#fastai.dataset.read_dirs">[docs]</a><span class="k">def</span> <span class="nf">read_dirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+<div class="viewcode-block" id="read_dirs"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.read_dirs">[docs]</a><span class="k">def</span> <span class="nf">read_dirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
     <span class="n">labels</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">all_labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">full_path</span><span class="p">)):</span>
-        <span class="n">all_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="n">label</span><span class="p">)):</span>
-            <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
-            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">all_labels</span></div>
+        <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;.ipynb_checkpoints&#39;</span><span class="p">,</span><span class="s1">&#39;.DS_Store&#39;</span><span class="p">):</span>
+            <span class="n">all_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="n">label</span><span class="p">)):</span>
+                <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
+                <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">all_labels</span>
 
-<div class="viewcode-block" id="n_hot"><a class="viewcode-back" href="../../api.html#fastai.dataset.n_hot">[docs]</a><span class="k">def</span> <span class="nf">n_hot</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">c</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">res</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">res</span></div>
+<div class="viewcode-block" id="create_sample"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.create_sample">[docs]</a><span class="k">def</span> <span class="nf">create_sample</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Takes a path to a dataset and creates a sample of specified size at &lt;path&gt;_sample</span>
 
-<div class="viewcode-block" id="folder_source"><a class="viewcode-back" href="../../api.html#fastai.dataset.folder_source">[docs]</a><span class="k">def</span> <span class="nf">folder_source</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    path: dataset path</span>
+<span class="sd">    r (float): proportion of examples to use as sample, in the range from 0 to 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sample_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;_sample&#39;</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">sample_path</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">))]</span></div>
+    <span class="n">copy_or_move_with_subdirs</span><span class="p">(</span><span class="n">subdirs</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">sample_path</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="create_val"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.create_val">[docs]</a><span class="k">def</span> <span class="nf">create_val</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Takes a path to a dataset and creates a validation set of specified size</span>
+
+<span class="sd">    Note - this changes the dataset at &lt;path&gt; by moving files to the val set</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    path: dataset path</span>
+<span class="sd">    r (float): proportion of examples to use for validation, in the range from 0 to 1</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">val_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;valid&#39;</span><span class="p">)</span>
+    <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">))]</span></div>
+    <span class="n">copy_or_move_with_subdirs</span><span class="p">(</span><span class="n">subdirs</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">val_path</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="copy_or_move_with_subdirs"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.copy_or_move_with_subdirs">[docs]</a><span class="k">def</span> <span class="nf">copy_or_move_with_subdirs</span><span class="p">(</span><span class="n">subdir_lst</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">do</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">move</span> <span class="k">if</span> <span class="n">move</span> <span class="k">else</span> <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span>
+    <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="n">subdir_lst</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">subdir</span><span class="p">))</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">))</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)]:</span></div>
+            <span class="n">do</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+
+<div class="viewcode-block" id="n_hot"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.n_hot">[docs]</a><span class="k">def</span> <span class="nf">n_hot</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">c</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+    <span class="n">res</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span></div>
+    <span class="k">return</span> <span class="n">res</span>
+
+<div class="viewcode-block" id="folder_source"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.folder_source">[docs]</a><span class="k">def</span> <span class="nf">folder_source</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
     <span class="n">fnames</span><span class="p">,</span> <span class="n">lbls</span><span class="p">,</span> <span class="n">all_labels</span> <span class="o">=</span> <span class="n">read_dirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
     <span class="n">label2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_labels</span><span class="p">)}</span>
     <span class="n">idxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">label2idx</span><span class="p">[</span><span class="n">lbl</span><span class="p">]</span> <span class="k">for</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="n">lbls</span><span class="p">]</span>
     <span class="n">c</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_labels</span><span class="p">)</span>
-    <span class="n">label_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">label_arr</span><span class="p">,</span> <span class="n">all_labels</span></div>
+    <span class="n">label_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">label_arr</span><span class="p">,</span> <span class="n">all_labels</span>
 
-<div class="viewcode-block" id="parse_csv_labels"><a class="viewcode-back" href="../../api.html#fastai.dataset.parse_csv_labels">[docs]</a><span class="k">def</span> <span class="nf">parse_csv_labels</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">skip_header</span> <span class="k">else</span> <span class="mi">0</span>
-    <span class="n">csv_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)][</span><span class="n">skip</span><span class="p">:]</span>
+<div class="viewcode-block" id="parse_csv_labels"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.parse_csv_labels">[docs]</a><span class="k">def</span> <span class="nf">parse_csv_labels</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse filenames and label sets from a CSV file.</span>
+
+<span class="sd">    This method expects that the csv file at path :fn: has two columns. If it</span>
+<span class="sd">    has a header, :skip_header: should be set to True. The labels in the</span>
+<span class="sd">    label set are expected to be space separated.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        fn: Path to a CSV file.</span>
+<span class="sd">        skip_header: A boolean flag indicating whether to skip the header.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a four-tuple of (</span>
+<span class="sd">            sorted image filenames,</span>
+<span class="sd">            a dictionary of filenames and corresponding labels,</span>
+<span class="sd">            a sorted set of unique labels,</span>
+<span class="sd">            a dictionary of labels to their corresponding index, which will</span>
+<span class="sd">            be one-hot encoded.</span>
+<span class="sd">        )</span>
+<span class="sd">    .</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">skip_header</span><span class="p">:</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+
+        <span class="n">csv_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">]</span>
+
     <span class="n">fnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">fname</span> <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">csv_lines</span><span class="p">]</span>
-    <span class="n">csv_labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">csv_lines</span><span class="p">}</span>
-    <span class="n">all_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">csv_labels</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">o</span><span class="p">)))</span>
-    <span class="n">label2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_labels</span><span class="p">)}</span>
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fnames</span><span class="p">),</span> <span class="n">csv_labels</span><span class="p">,</span> <span class="n">all_labels</span><span class="p">,</span> <span class="n">label2idx</span></div>
+    <span class="n">csv_labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">csv_lines</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fnames</span><span class="p">),</span> <span class="n">csv_labels</span>
 
-<div class="viewcode-block" id="nhot_labels"><a class="viewcode-back" href="../../api.html#fastai.dataset.nhot_labels">[docs]</a><span class="k">def</span> <span class="nf">nhot_labels</span><span class="p">(</span><span class="n">label2idx</span><span class="p">,</span> <span class="n">csv_labels</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<div class="viewcode-block" id="nhot_labels"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.nhot_labels">[docs]</a><span class="k">def</span> <span class="nf">nhot_labels</span><span class="p">(</span><span class="n">label2idx</span><span class="p">,</span> <span class="n">csv_labels</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="n">all_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">n_hot</span><span class="p">([</span><span class="n">label2idx</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">v</span><span class="p">],</span> <span class="n">c</span><span class="p">)</span>
-               <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">csv_labels</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">all_idx</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">])</span></div>
+               <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">csv_labels</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">all_idx</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">])</span>
 
-<div class="viewcode-block" id="csv_source"><a class="viewcode-back" href="../../api.html#fastai.dataset.csv_source">[docs]</a><span class="k">def</span> <span class="nf">csv_source</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="n">fnames</span><span class="p">,</span><span class="n">csv_labels</span><span class="p">,</span><span class="n">all_labels</span><span class="p">,</span><span class="n">label2idx</span> <span class="o">=</span> <span class="n">parse_csv_labels</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">)</span>
+<div class="viewcode-block" id="csv_source"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.csv_source">[docs]</a><span class="k">def</span> <span class="nf">csv_source</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">fnames</span><span class="p">,</span><span class="n">csv_labels</span> <span class="o">=</span> <span class="n">parse_csv_labels</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">dict_source</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">csv_labels</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">continuous</span><span class="p">)</span>
+
+<div class="viewcode-block" id="dict_source"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.dict_source">[docs]</a><span class="k">def</span> <span class="nf">dict_source</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">csv_labels</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">all_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">csv_labels</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">o</span><span class="p">)))</span>
     <span class="n">full_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">fn</span><span class="o">+</span><span class="n">suffix</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span>
-        <span class="n">label_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">csv_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">label_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">csv_labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">label2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_labels</span><span class="p">)}</span>
         <span class="n">label_arr</span> <span class="o">=</span> <span class="n">nhot_labels</span><span class="p">(</span><span class="n">label2idx</span><span class="p">,</span> <span class="n">csv_labels</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_labels</span><span class="p">))</span>
         <span class="n">is_single</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">label_arr</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">is_single</span><span class="p">:</span> <span class="n">label_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">label_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">full_names</span><span class="p">,</span> <span class="n">label_arr</span><span class="p">,</span> <span class="n">all_labels</span></div>
+        <span class="k">if</span> <span class="n">is_single</span><span class="p">:</span> <span class="n">label_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">label_arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">full_names</span><span class="p">,</span> <span class="n">label_arr</span><span class="p">,</span> <span class="n">all_labels</span>
 
-<div class="viewcode-block" id="BaseDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_n</span><span class="p">()</span>
@@ -137,101 +328,120 @@
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
 
-<div class="viewcode-block" id="BaseDataset.get"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfm</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">tfm</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tfm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span></div>
+<div class="viewcode-block" id="BaseDataset.get"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfm</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">tfm</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tfm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BaseDataset.get_n"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset.get_n">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-<div class="viewcode-block" id="BaseDataset.get_c"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset.get_c">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-<div class="viewcode-block" id="BaseDataset.get_sz"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset.get_sz">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-<div class="viewcode-block" id="BaseDataset.get_x"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset.get_x">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-<div class="viewcode-block" id="BaseDataset.get_y"><a class="viewcode-back" href="../../api.html#fastai.dataset.BaseDataset.get_y">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+<div class="viewcode-block" id="BaseDataset.get_n"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset.get_n">[docs]</a>    <span class="nd">@abstractmethod</span></div>
+    <span class="k">def</span> <span class="nf">get_n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="BaseDataset.get_c"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset.get_c">[docs]</a>    <span class="nd">@abstractmethod</span></div>
+    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="BaseDataset.get_sz"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset.get_sz">[docs]</a>    <span class="nd">@abstractmethod</span></div>
+    <span class="k">def</span> <span class="nf">get_sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="BaseDataset.get_x"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset.get_x">[docs]</a>    <span class="nd">@abstractmethod</span></div>
+    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="BaseDataset.get_y"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.BaseDataset.get_y">[docs]</a>    <span class="nd">@abstractmethod</span></div>
+    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">False</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_reg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">False</span></div>
+    <span class="nd">@property</span></div>
+    <span class="k">def</span> <span class="nf">is_reg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="open_image"><a class="viewcode-back" href="../../api.html#fastai.dataset.open_image">[docs]</a><span class="k">def</span> <span class="nf">open_image</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<div class="viewcode-block" id="open_image"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.open_image">[docs]</a><span class="k">def</span> <span class="nf">open_image</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Opens an image using OpenCV given the file path.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        fn: the file path of the image</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The numpy array representation of the image in the RGB format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">flags</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="o">+</span><span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_ANYDEPTH</span><span class="o">+</span><span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_ANYCOLOR</span>
-    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">flags</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mi">255</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;No such file or directory: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;Is a directory: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span> <span class="n">flags</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">/</span><span class="mi">255</span>
+            <span class="k">if</span> <span class="n">im</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;File not recognized by opencv: </span><span class="si">{fn}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span></div>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;Error handling image at: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">e</span>
 
-<div class="viewcode-block" id="FilesDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+<div class="viewcode-block" id="FilesDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fnames</span> <span class="o">=</span> <span class="n">path</span><span class="p">,</span><span class="n">fnames</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
-<div class="viewcode-block" id="FilesDataset.get_n"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesDataset.get_n">[docs]</a>    <span class="k">def</span> <span class="nf">get_n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
-<div class="viewcode-block" id="FilesDataset.get_sz"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesDataset.get_sz">[docs]</a>    <span class="k">def</span> <span class="nf">get_sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">sz</span></div>
-<div class="viewcode-block" id="FilesDataset.get_x"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesDataset.get_x">[docs]</a>    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="n">open_image</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnames</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span></div>
+<div class="viewcode-block" id="FilesDataset.get_sz"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesDataset.get_sz">[docs]</a>    <span class="k">def</span> <span class="nf">get_sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">sz</span></div>
+<div class="viewcode-block" id="FilesDataset.get_x"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesDataset.get_x">[docs]</a>    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="n">open_image</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnames</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 
-<div class="viewcode-block" id="FilesDataset.resize_imgs"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesDataset.resize_imgs">[docs]</a>    <span class="k">def</span> <span class="nf">resize_imgs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
-        <span class="n">dest</span> <span class="o">=</span> <span class="n">resize_imgs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fnames</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FilesDataset.denorm"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesDataset.denorm">[docs]</a>    <span class="k">def</span> <span class="nf">denorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">):</span>
+<div class="viewcode-block" id="FilesDataset.denorm"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesDataset.denorm">[docs]</a>    <span class="k">def</span> <span class="nf">denorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reverse the normalization done to a batch of images.</span>
 
 <span class="sd">        Arguments:</span>
 <span class="sd">            arr: of shape/size (N,3,sz,sz)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">to_np</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">denorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rollaxis</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span></div></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">denorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rollaxis</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 
-<div class="viewcode-block" id="FilesArrayDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesArrayDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesArrayDataset</span><span class="p">(</span><span class="n">FilesDataset</span><span class="p">):</span>
+<div class="viewcode-block" id="FilesArrayDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesArrayDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesArrayDataset</span><span class="p">(</span><span class="n">FilesDataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="n">y</span>
         <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fnames</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fnames</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-<div class="viewcode-block" id="FilesArrayDataset.get_y"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesArrayDataset.get_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
-<div class="viewcode-block" id="FilesArrayDataset.get_c"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesArrayDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fnames</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+<div class="viewcode-block" id="FilesArrayDataset.get_n"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesArrayDataset.get_n">[docs]</a>    <span class="k">def</span> <span class="nf">get_n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+<div class="viewcode-block" id="FilesArrayDataset.get_y"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesArrayDataset.get_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<div class="viewcode-block" id="FilesArrayDataset.get_c"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesArrayDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="FilesArrayDataset.resize_imgs"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesArrayDataset.resize_imgs">[docs]</a>    <span class="k">def</span> <span class="nf">resize_imgs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">resize_imgs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fnames</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FilesIndexArrayDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesIndexArrayDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesIndexArrayDataset</span><span class="p">(</span><span class="n">FilesArrayDataset</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="FilesIndexArrayDataset.get_c"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesIndexArrayDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span>
 
 
-<div class="viewcode-block" id="FilesIndexArrayDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesIndexArrayDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesIndexArrayDataset</span><span class="p">(</span><span class="n">FilesArrayDataset</span><span class="p">):</span>
-<div class="viewcode-block" id="FilesIndexArrayDataset.get_c"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesIndexArrayDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span></div></div>
+<div class="viewcode-block" id="FilesNhotArrayDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesNhotArrayDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesNhotArrayDataset</span><span class="p">(</span><span class="n">FilesArrayDataset</span><span class="p">):</span>
+    <span class="nd">@property</span></div>
+    <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="FilesNhotArrayDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesNhotArrayDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesNhotArrayDataset</span><span class="p">(</span><span class="n">FilesArrayDataset</span><span class="p">):</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span></div>
+<div class="viewcode-block" id="FilesIndexArrayRegressionDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesIndexArrayRegressionDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesIndexArrayRegressionDataset</span><span class="p">(</span><span class="n">FilesArrayDataset</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="FilesIndexArrayRegressionDataset.is_reg"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.FilesIndexArrayRegressionDataset.is_reg">[docs]</a>    <span class="k">def</span> <span class="nf">is_reg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span>
 
-
-<div class="viewcode-block" id="FilesIndexArrayRegressionDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesIndexArrayRegressionDataset">[docs]</a><span class="k">class</span> <span class="nc">FilesIndexArrayRegressionDataset</span><span class="p">(</span><span class="n">FilesArrayDataset</span><span class="p">):</span>
-<div class="viewcode-block" id="FilesIndexArrayRegressionDataset.is_reg"><a class="viewcode-back" href="../../api.html#fastai.dataset.FilesIndexArrayRegressionDataset.is_reg">[docs]</a>    <span class="k">def</span> <span class="nf">is_reg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span></div></div>
-
-<div class="viewcode-block" id="ArraysDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysDataset">[docs]</a><span class="k">class</span> <span class="nc">ArraysDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+<div class="viewcode-block" id="ArraysDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysDataset">[docs]</a><span class="k">class</span> <span class="nc">ArraysDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">y</span>
         <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
-<div class="viewcode-block" id="ArraysDataset.get_x"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysDataset.get_x">[docs]</a>    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
-<div class="viewcode-block" id="ArraysDataset.get_y"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysDataset.get_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
-<div class="viewcode-block" id="ArraysDataset.get_n"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysDataset.get_n">[docs]</a>    <span class="k">def</span> <span class="nf">get_n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
-<div class="viewcode-block" id="ArraysDataset.get_sz"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysDataset.get_sz">[docs]</a>    <span class="k">def</span> <span class="nf">get_sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ArraysDataset.get_x"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysDataset.get_x">[docs]</a>    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+<div class="viewcode-block" id="ArraysDataset.get_y"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysDataset.get_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+<div class="viewcode-block" id="ArraysDataset.get_n"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysDataset.get_n">[docs]</a>    <span class="k">def</span> <span class="nf">get_n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="ArraysDataset.get_sz"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysDataset.get_sz">[docs]</a>    <span class="k">def</span> <span class="nf">get_sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ArraysIndexDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysIndexDataset">[docs]</a><span class="k">class</span> <span class="nc">ArraysIndexDataset</span><span class="p">(</span><span class="n">ArraysDataset</span><span class="p">):</span>
-<div class="viewcode-block" id="ArraysIndexDataset.get_c"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysIndexDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span></div></div>
+<div class="viewcode-block" id="ArraysIndexDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysIndexDataset">[docs]</a><span class="k">class</span> <span class="nc">ArraysIndexDataset</span><span class="p">(</span><span class="n">ArraysDataset</span><span class="p">):</span></div>
+<div class="viewcode-block" id="ArraysIndexDataset.get_c"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysIndexDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span></div></div>
+<div class="viewcode-block" id="ArraysIndexDataset.get_y"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysIndexDataset.get_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ArraysNhotDataset"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysNhotDataset">[docs]</a><span class="k">class</span> <span class="nc">ArraysNhotDataset</span><span class="p">(</span><span class="n">ArraysDataset</span><span class="p">):</span>
-<div class="viewcode-block" id="ArraysNhotDataset.get_c"><a class="viewcode-back" href="../../api.html#fastai.dataset.ArraysNhotDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span></div>
+<div class="viewcode-block" id="ArraysNhotDataset"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysNhotDataset">[docs]</a><span class="k">class</span> <span class="nc">ArraysNhotDataset</span><span class="p">(</span><span class="n">ArraysDataset</span><span class="p">):</span></div>
+<div class="viewcode-block" id="ArraysNhotDataset.get_c"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ArraysNhotDataset.get_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="nd">@property</span></div>
+    <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="ModelData"><a class="viewcode-back" href="../../api.html#fastai.dataset.ModelData">[docs]</a><span class="k">class</span> <span class="nc">ModelData</span><span class="p">():</span>
+<div class="viewcode-block" id="ModelData"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ModelData">[docs]</a><span class="k">class</span> <span class="nc">ModelData</span><span class="p">():</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">trn_dl</span><span class="p">,</span> <span class="n">val_dl</span><span class="p">,</span> <span class="n">test_dl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val_dl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">test_dl</span> <span class="o">=</span> <span class="n">path</span><span class="p">,</span><span class="n">trn_dl</span><span class="p">,</span><span class="n">val_dl</span><span class="p">,</span><span class="n">test_dl</span>
 
-<div class="viewcode-block" id="ModelData.from_dls"><a class="viewcode-back" href="../../api.html#fastai.dataset.ModelData.from_dls">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ModelData.from_dls"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ModelData.from_dls">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dls</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span><span class="n">trn_dl</span><span class="p">,</span><span class="n">val_dl</span><span class="p">,</span><span class="n">test_dl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">trn_dl</span><span class="p">,</span><span class="n">val_dl</span> <span class="o">=</span> <span class="n">ModelDataLoader</span><span class="p">(</span><span class="n">trn_dl</span><span class="p">),</span><span class="n">ModelDataLoader</span><span class="p">(</span><span class="n">val_dl</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">test_dl</span><span class="p">:</span> <span class="n">test_dl</span> <span class="o">=</span> <span class="n">ModelDataLoader</span><span class="p">(</span><span class="n">test_dl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">trn_dl</span><span class="p">,</span> <span class="n">val_dl</span><span class="p">,</span> <span class="n">test_dl</span><span class="p">)</span></div>
+        <span class="c1">#trn_dl,val_dl = DataLoader(trn_dl),DataLoader(val_dl)</span>
+        <span class="c1">#if test_dl: test_dl = DataLoader(test_dl)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">trn_dl</span><span class="p">,</span> <span class="n">val_dl</span><span class="p">,</span> <span class="n">test_dl</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_reg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">is_reg</span>
@@ -243,31 +453,11 @@
     <span class="k">def</span> <span class="nf">test_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_dl</span><span class="o">.</span><span class="n">dataset</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trn_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">y</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">val_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span><span class="o">.</span><span class="n">y</span></div>
+    <span class="nd">@property</span></div>
+    <span class="k">def</span> <span class="nf">val_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span><span class="o">.</span><span class="n">y</span>
 
 
-<div class="viewcode-block" id="ModelDataLoader"><a class="viewcode-back" href="../../api.html#fastai.dataset.ModelDataLoader">[docs]</a><span class="k">class</span> <span class="nc">ModelDataLoader</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dl</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">dl</span><span class="o">=</span><span class="n">dl</span>
-
-<div class="viewcode-block" id="ModelDataLoader.create_dl"><a class="viewcode-back" href="../../api.html#fastai.dataset.ModelDataLoader.create_dl">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">create_dl</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">DataLoader</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
-
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">it</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dl</span><span class="p">),</span><span class="mi">0</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dl</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="o">&gt;=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dl</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">StopIteration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">it</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dl</span><span class="o">.</span><span class="n">dataset</span></div>
-
-<div class="viewcode-block" id="ImageData"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageData">[docs]</a><span class="k">class</span> <span class="nc">ImageData</span><span class="p">(</span><span class="n">ModelData</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageData"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageData">[docs]</a><span class="k">class</span> <span class="nc">ImageData</span><span class="p">(</span><span class="n">ModelData</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="p">):</span>
         <span class="n">trn_ds</span><span class="p">,</span><span class="n">val_ds</span><span class="p">,</span><span class="n">fix_ds</span><span class="p">,</span><span class="n">aug_ds</span><span class="p">,</span><span class="n">test_ds</span><span class="p">,</span><span class="n">test_aug_ds</span> <span class="o">=</span> <span class="n">datasets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">path</span><span class="p">,</span><span class="n">bs</span><span class="p">,</span><span class="n">num_workers</span><span class="p">,</span><span class="n">classes</span>
@@ -278,35 +468,30 @@
             <span class="p">]</span>
         <span class="p">]</span>
 
-<div class="viewcode-block" id="ImageData.get_dl"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageData.get_dl">[docs]</a>    <span class="k">def</span> <span class="nf">get_dl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageData.get_dl"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageData.get_dl">[docs]</a>    <span class="k">def</span> <span class="nf">get_dl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">ModelDataLoader</span><span class="o">.</span><span class="n">create_dl</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
-            <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span></div>
+            <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">sz</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">c</span>
 
-<div class="viewcode-block" id="ImageData.resized"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageData.resized">[docs]</a>    <span class="k">def</span> <span class="nf">resized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">resize_imgs</span><span class="p">(</span><span class="n">targ</span><span class="p">,</span><span class="n">new_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">dl</span> <span class="k">else</span> <span class="kc">None</span></div>
+<div class="viewcode-block" id="ImageData.resized"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageData.resized">[docs]</a>    <span class="k">def</span> <span class="nf">resized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="n">dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">resize_imgs</span><span class="p">(</span><span class="n">targ</span><span class="p">,</span><span class="n">new_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">dl</span> <span class="k">else</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="ImageData.resize"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageData.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageData.resize"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageData.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">):</span>
         <span class="n">new_ds</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dls</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val_dl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fix_dl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">aug_dl</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_dl</span><span class="p">:</span> <span class="n">dls</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">test_dl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_aug_dl</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span> <span class="n">dls</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">tqdm_notebook</span><span class="p">(</span><span class="n">dls</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dl</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span> <span class="n">new_ds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resized</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">new_path</span><span class="p">))</span>
-        <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">new_ds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span></div></div>
+        <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">new_ds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ImageClassifierData"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageClassifierData">[docs]</a><span class="k">class</span> <span class="nc">ImageClassifierData</span><span class="p">(</span><span class="n">ImageData</span><span class="p">):</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">is_multi</span>
-
-<div class="viewcode-block" id="ImageClassifierData.get_ds"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageClassifierData.get_ds">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ImageData.get_ds"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageData.get_ds">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_ds</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">trn</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">fn</span><span class="p">(</span><span class="n">trn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="c1"># train</span>
@@ -315,15 +500,24 @@
             <span class="n">fn</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># aug</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="n">test</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">test_lbls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">test_lbls</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">test</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">test_lbls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
             <span class="n">res</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="n">fn</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">test_lbls</span><span class="p">,</span> <span class="n">tfms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="c1"># test</span>
                 <span class="n">fn</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">test_lbls</span><span class="p">,</span> <span class="n">tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># test_aug</span>
             <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">res</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">res</span></div>
+        <span class="k">else</span><span class="p">:</span> <span class="n">res</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="n">res</span>
 
-<div class="viewcode-block" id="ImageClassifierData.from_arrays"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageClassifierData.from_arrays">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="ImageClassifierData"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageClassifierData">[docs]</a><span class="k">class</span> <span class="nc">ImageClassifierData</span><span class="p">(</span><span class="n">ImageData</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">is_multi</span>
+
+<div class="viewcode-block" id="ImageClassifierData.from_arrays"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageClassifierData.from_arrays">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_arrays</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">trn</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read in images and their labels given as numpy arrays</span>
 
@@ -341,11 +535,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ImageClassifierData</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">datasets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_ds</span><span class="p">(</span><span class="n">ArraysIndexDataset</span><span class="p">,</span> <span class="n">trn</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_ds</span><span class="p">(</span><span class="n">ArraysIndexDataset</span><span class="p">,</span> <span class="n">trn</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ImageClassifierData.from_paths"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageClassifierData.from_paths">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_paths</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">trn_name</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">val_name</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="n">test_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageClassifierData.from_paths"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageClassifierData.from_paths">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_paths</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">trn_name</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">val_name</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="n">test_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_with_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read in images and their labels given as sub-folder names</span>
 
 <span class="sd">        Arguments:</span>
@@ -360,12 +554,16 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ImageClassifierData</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tfms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Transforms</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tfms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Transforms</span><span class="p">),</span> \
+            <span class="s2">&quot;please provide transformations for your train and validation sets&quot;</span>
         <span class="n">trn</span><span class="p">,</span><span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">folder_source</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">trn_name</span><span class="p">,</span> <span class="n">val_name</span><span class="p">)]</span>
-        <span class="n">test_fnames</span> <span class="o">=</span> <span class="n">read_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">test_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">test_name</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">datasets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_ds</span><span class="p">(</span><span class="n">FilesIndexArrayDataset</span><span class="p">,</span> <span class="n">trn</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test_fnames</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">trn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+        <span class="k">if</span> <span class="n">test_name</span><span class="p">:</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">folder_source</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">test_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">test_with_labels</span> <span class="k">else</span> <span class="n">read_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">test_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">test</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_ds</span><span class="p">(</span><span class="n">FilesIndexArrayDataset</span><span class="p">,</span> <span class="n">trn</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">trn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
-<div class="viewcode-block" id="ImageClassifierData.from_csv"><a class="viewcode-back" href="../../api.html#fastai.dataset.ImageClassifierData.from_csv">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ImageClassifierData.from_csv"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageClassifierData.from_csv">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_csv</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">csv_fname</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
                <span class="n">val_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">test_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read in images and their labels given as a CSV file.</span>
@@ -379,7 +577,8 @@
 <span class="sd">            csv_fname: a name of the CSV file which contains target labels.</span>
 <span class="sd">            bs: batch size</span>
 <span class="sd">            tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`</span>
-<span class="sd">            val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`</span>
+<span class="sd">            val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`.</span>
+<span class="sd">                If None, default arguments to get_cv_idxs are used.</span>
 <span class="sd">            suffix: suffix to add to image names in CSV file (sometimes CSV only contains the file name without file</span>
 <span class="sd">                    extension e.g. &#39;.jpg&#39; - in which case, you can set suffix as &#39;.jpg&#39;)</span>
 <span class="sd">            test_name: a name of the folder which contains test images.</span>
@@ -391,77 +590,90 @@
 <span class="sd">            ImageClassifierData</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fnames</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">classes</span> <span class="o">=</span> <span class="n">csv_source</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">csv_fname</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="n">continuous</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_names_and_array</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">test_name</span><span class="p">,</span></div>
+                <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="n">continuous</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ImageClassifierData.from_names_and_array"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.ImageClassifierData.from_names_and_array">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_names_and_array</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fnames</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">classes</span><span class="p">,</span> <span class="n">val_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">val_idxs</span> <span class="o">=</span> <span class="n">get_cv_idxs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fnames</span><span class="p">))</span> <span class="k">if</span> <span class="n">val_idxs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">val_idxs</span>
         <span class="p">((</span><span class="n">val_fnames</span><span class="p">,</span><span class="n">trn_fnames</span><span class="p">),(</span><span class="n">val_y</span><span class="p">,</span><span class="n">trn_y</span><span class="p">))</span> <span class="o">=</span> <span class="n">split_by_idx</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fnames</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="n">test_fnames</span> <span class="o">=</span> <span class="n">read_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">test_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">test_name</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">FilesIndexArrayRegressionDataset</span>
+        <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span> <span class="n">f</span> <span class="o">=</span> <span class="n">FilesIndexArrayRegressionDataset</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">FilesIndexArrayDataset</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trn_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">FilesNhotArrayDataset</span>
         <span class="n">datasets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_ds</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">trn_fnames</span><span class="p">,</span><span class="n">trn_y</span><span class="p">),</span> <span class="p">(</span><span class="n">val_fnames</span><span class="p">,</span><span class="n">val_y</span><span class="p">),</span> <span class="n">tfms</span><span class="p">,</span>
-                               <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test_fnames</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div></div>
+                               <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test_fnames</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
-<div class="viewcode-block" id="split_by_idx"><a class="viewcode-back" href="../../api.html#fastai.dataset.split_by_idx">[docs]</a><span class="k">def</span> <span class="nf">split_by_idx</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">):</span>
+<div class="viewcode-block" id="split_by_idx"><a class="viewcode-back" href="../../generated/fastai.dataset.html#fastai.dataset.split_by_idx">[docs]</a><span class="k">def</span> <span class="nf">split_by_idx</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">):</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-    <span class="n">mask</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idxs</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="p">[(</span><span class="n">o</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">o</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span></div>
+    <span class="n">mask</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idxs</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span></div>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">o</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span><span class="n">o</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
+
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
+  
 
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
 
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

@@ -204,18 +204,18 @@
 <span id="fastai-transforms-module"></span><h1>fastai.transforms module<a class="headerlink" href="#module-fastai.transforms" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="fastai.transforms.AddPadding">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">AddPadding</code><span class="sig-paren">(</span><em>pad</em>, <em>mode=2</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.AddPadding" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">AddPadding</code><span class="sig-paren">(</span><em>pad</em>, <em>mode=2</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#AddPadding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.AddPadding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <dl class="method">
 <dt id="fastai.transforms.AddPadding.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>im</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.AddPadding.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>im</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#AddPadding.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.AddPadding.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.CenterCrop">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CenterCrop</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CenterCrop" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CenterCrop</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#CenterCrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.CenterCrop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <p>A class that represents a Center Crop.</p>
 <p>This transforms (optionally) transforms x,y at with the same parameters.
@@ -225,31 +225,31 @@ Arguments:</p>
 tfm_y (TfmType): type of y transformation.</div></blockquote>
 <dl class="method">
 <dt id="fastai.transforms.CenterCrop.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CenterCrop.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#CenterCrop.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.CenterCrop.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.CoordTransform">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CoordTransform</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CoordTransform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CoordTransform</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#CoordTransform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.CoordTransform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.Transform</span></code></a></p>
 <p>A class that represents a coordinate transform.</p>
 <dl class="method">
 <dt id="fastai.transforms.CoordTransform.map_y">
-<code class="descname">map_y</code><span class="sig-paren">(</span><em>y0</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CoordTransform.map_y" title="Permalink to this definition">¶</a></dt>
+<code class="descname">map_y</code><span class="sig-paren">(</span><em>y0</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#CoordTransform.map_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.CoordTransform.map_y" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.CoordTransform.transform_coord">
-<code class="descname">transform_coord</code><span class="sig-paren">(</span><em>x</em>, <em>ys</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CoordTransform.transform_coord" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transform_coord</code><span class="sig-paren">(</span><em>x</em>, <em>ys</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#CoordTransform.transform_coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.CoordTransform.transform_coord" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.CropType">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CropType</code><a class="headerlink" href="#fastai.transforms.CropType" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CropType</code><a class="reference internal" href="../_modules/fastai/transforms.html#CropType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.CropType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
 <p>Type of image cropping.</p>
 <dl class="attribute">
@@ -271,13 +271,13 @@ tfm_y (TfmType): type of y transformation.</div></blockquote>
 
 <dl class="class">
 <dt id="fastai.transforms.Denormalize">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Denormalize</code><span class="sig-paren">(</span><em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Denormalize" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Denormalize</code><span class="sig-paren">(</span><em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Denormalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Denormalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.NoCrop">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">NoCrop</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.NoCrop" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">NoCrop</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#NoCrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.NoCrop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <p>A transformation that resize to a square image without cropping.</p>
 <p>This transforms (optionally) resizes x,y at with the same parameters.
@@ -287,39 +287,39 @@ Arguments:</p>
 tfm_y (TfmType): type of y transformation.</div></blockquote>
 <dl class="method">
 <dt id="fastai.transforms.NoCrop.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.NoCrop.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#NoCrop.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.NoCrop.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.Normalize">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Normalize</code><span class="sig-paren">(</span><em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Normalize" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Normalize</code><span class="sig-paren">(</span><em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Normalizes an image.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomBlur">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomBlur</code><span class="sig-paren">(</span><em>blur_strengths=5</em>, <em>probability=0.5</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomBlur" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomBlur</code><span class="sig-paren">(</span><em>blur_strengths=5</em>, <em>probability=0.5</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomBlur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomBlur" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.Transform</span></code></a></p>
 <p>Adds a gaussian blur to the image at chance.
 Multiple blur strengths can be configured, one of them is used by random chance.</p>
 <dl class="method">
 <dt id="fastai.transforms.RandomBlur.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomBlur.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomBlur.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomBlur.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomBlur.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomBlur.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomBlur.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomBlur.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomCrop">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomCrop</code><span class="sig-paren">(</span><em>targ</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomCrop" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomCrop</code><span class="sig-paren">(</span><em>targ</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomCrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomCrop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <p>A class that represents a Random Crop transformation.</p>
 <p>This transforms (optionally) transforms x,y at with the same parameters.
@@ -329,67 +329,67 @@ Arguments:</p>
 tfm_y (TfmType): type of y transformation.</div></blockquote>
 <dl class="method">
 <dt id="fastai.transforms.RandomCrop.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomCrop.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomCrop.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomCrop.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomCrop.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomCrop.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomCrop.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomCrop.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomDihedral">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomDihedral</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomDihedral" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomDihedral</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomDihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomDihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <dl class="method">
 <dt id="fastai.transforms.RandomDihedral.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomDihedral.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomDihedral.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomDihedral.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomDihedral.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomDihedral.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomDihedral.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomDihedral.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomFlip">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomFlip</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomFlip" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomFlip</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomFlip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomFlip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <dl class="method">
 <dt id="fastai.transforms.RandomFlip.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomFlip.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomFlip.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomFlip.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomFlip.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomFlip.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomFlip.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomFlip.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomLighting">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomLighting</code><span class="sig-paren">(</span><em>b</em>, <em>c</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomLighting" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomLighting</code><span class="sig-paren">(</span><em>b</em>, <em>c</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomLighting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomLighting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.Transform</span></code></a></p>
 <dl class="method">
 <dt id="fastai.transforms.RandomLighting.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomLighting.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomLighting.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomLighting.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomLighting.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomLighting.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomLighting.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomLighting.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomRotate">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomRotate</code><span class="sig-paren">(</span><em>deg</em>, <em>p=0.75</em>, <em>mode=2</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomRotate</code><span class="sig-paren">(</span><em>deg</em>, <em>p=0.75</em>, <em>mode=2</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomRotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomRotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <p>Rotates images and (optionally) target y.</p>
 <p>Rotating coordinates is treated differently for x and y on this
@@ -405,25 +405,25 @@ tfm_y (TfmType): type of y transform</dd>
 </div></blockquote>
 <dl class="method">
 <dt id="fastai.transforms.RandomRotate.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotate.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomRotate.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomRotate.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomRotate.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotate.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomRotate.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomRotate.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomRotateZoom">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomRotateZoom</code><span class="sig-paren">(</span><em>deg</em>, <em>zoom</em>, <em>stretch</em>, <em>mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotateZoom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomRotateZoom</code><span class="sig-paren">(</span><em>deg</em>, <em>zoom</em>, <em>stretch</em>, <em>mode=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomRotateZoom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomRotateZoom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.RandomScale">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomScale</code><span class="sig-paren">(</span><em>sz</em>, <em>max_zoom</em>, <em>p=0.75</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomScale" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomScale</code><span class="sig-paren">(</span><em>sz</em>, <em>max_zoom</em>, <em>p=0.75</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomScale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomScale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <p>Scales an image so that the min size is a random number between [sz, sz*max_zoom]</p>
 <p>This transforms (optionally) scales x,y at with the same parameters.
@@ -435,19 +435,19 @@ p (float): a probability for doing the random sizing
 tfm_y (TfmType): type of y transform</div></blockquote>
 <dl class="method">
 <dt id="fastai.transforms.RandomScale.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomScale.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomScale.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomScale.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.RandomScale.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomScale.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#RandomScale.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.RandomScale.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.Scale">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Scale</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Scale" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Scale</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
 <p>A transformation that scales the min size to sz.</p>
 <dl class="docutils">
@@ -457,14 +457,14 @@ tfm_y (TfmType): type of y transformation.</dd>
 </dl>
 <dl class="method">
 <dt id="fastai.transforms.Scale.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Scale.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Scale.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Scale.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.TfmType">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">TfmType</code><a class="headerlink" href="#fastai.transforms.TfmType" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">TfmType</code><a class="reference internal" href="../_modules/fastai/transforms.html#TfmType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.TfmType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
 <p>Type of transformation.</p>
 <p>NO: is the default, y does not get transformed when x is transformed.
@@ -494,7 +494,7 @@ PIXEL: when x and y are images and should be transformed in the same way.</p>
 
 <dl class="class">
 <dt id="fastai.transforms.Transform">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Transform</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Transform</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class that represents a transform.</p>
 <p>All other transforms should subclass it. All subclasses should override
@@ -513,51 +513,51 @@ TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
 </dl>
 <dl class="method">
 <dt id="fastai.transforms.Transform.do_transform">
-<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.do_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Transform.do_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Transform.do_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.Transform.set_state">
-<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Transform.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Transform.set_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.Transform.transform">
-<code class="descname">transform</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transform</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Transform.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Transform.transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.transforms.Transform.transform_coord">
-<code class="descname">transform_coord</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.transform_coord" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transform_coord</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Transform.transform_coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Transform.transform_coord" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.transforms.Transforms">
-<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Transforms</code><span class="sig-paren">(</span><em>sz</em>, <em>tfms</em>, <em>normalizer</em>, <em>denorm</em>, <em>crop_type=&lt;CropType.CENTER: 2&gt;</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transforms" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Transforms</code><span class="sig-paren">(</span><em>sz</em>, <em>tfms</em>, <em>normalizer</em>, <em>denorm</em>, <em>crop_type=&lt;CropType.CENTER: 2&gt;</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#Transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.Transforms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.center_crop">
-<code class="descclassname">fastai.transforms.</code><code class="descname">center_crop</code><span class="sig-paren">(</span><em>im</em>, <em>min_sz=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.center_crop" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">center_crop</code><span class="sig-paren">(</span><em>im</em>, <em>min_sz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#center_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.center_crop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a center crop of an image</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.channel_dim">
-<code class="descclassname">fastai.transforms.</code><code class="descname">channel_dim</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.channel_dim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">channel_dim</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#channel_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.channel_dim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.compose">
-<code class="descclassname">fastai.transforms.</code><code class="descname">compose</code><span class="sig-paren">(</span><em>im</em>, <em>y</em>, <em>fns</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.compose" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">compose</code><span class="sig-paren">(</span><em>im</em>, <em>y</em>, <em>fns</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#compose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.compose" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.coords2px">
-<code class="descclassname">fastai.transforms.</code><code class="descname">coords2px</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.coords2px" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">coords2px</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#coords2px"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.coords2px" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforming coordinates to pixels.</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -574,68 +574,68 @@ TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
 
 <dl class="function">
 <dt id="fastai.transforms.crop">
-<code class="descclassname">fastai.transforms.</code><code class="descname">crop</code><span class="sig-paren">(</span><em>im</em>, <em>r</em>, <em>c</em>, <em>sz</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.crop" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">crop</code><span class="sig-paren">(</span><em>im</em>, <em>r</em>, <em>c</em>, <em>sz</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.crop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.det_dihedral">
-<code class="descclassname">fastai.transforms.</code><code class="descname">det_dihedral</code><span class="sig-paren">(</span><em>dih</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_dihedral" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_dihedral</code><span class="sig-paren">(</span><em>dih</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#det_dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.det_dihedral" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.det_lighting">
-<code class="descclassname">fastai.transforms.</code><code class="descname">det_lighting</code><span class="sig-paren">(</span><em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_lighting" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_lighting</code><span class="sig-paren">(</span><em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#det_lighting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.det_lighting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.det_rotate">
-<code class="descclassname">fastai.transforms.</code><code class="descname">det_rotate</code><span class="sig-paren">(</span><em>deg</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_rotate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_rotate</code><span class="sig-paren">(</span><em>deg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#det_rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.det_rotate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.det_stretch">
-<code class="descclassname">fastai.transforms.</code><code class="descname">det_stretch</code><span class="sig-paren">(</span><em>sr</em>, <em>sc</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_stretch" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_stretch</code><span class="sig-paren">(</span><em>sr</em>, <em>sc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#det_stretch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.det_stretch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.det_zoom">
-<code class="descclassname">fastai.transforms.</code><code class="descname">det_zoom</code><span class="sig-paren">(</span><em>zoom</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_zoom" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_zoom</code><span class="sig-paren">(</span><em>zoom</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#det_zoom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.det_zoom" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.dihedral">
-<code class="descclassname">fastai.transforms.</code><code class="descname">dihedral</code><span class="sig-paren">(</span><em>x</em>, <em>dih</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.dihedral" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">dihedral</code><span class="sig-paren">(</span><em>x</em>, <em>dih</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.image_gen">
-<code class="descclassname">fastai.transforms.</code><code class="descname">image_gen</code><span class="sig-paren">(</span><em>normalizer</em>, <em>denorm</em>, <em>sz</em>, <em>tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=None</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.image_gen" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">image_gen</code><span class="sig-paren">(</span><em>normalizer</em>, <em>denorm</em>, <em>sz</em>, <em>tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=None</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#image_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.image_gen" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.lighting">
-<code class="descclassname">fastai.transforms.</code><code class="descname">lighting</code><span class="sig-paren">(</span><em>im</em>, <em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.lighting" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">lighting</code><span class="sig-paren">(</span><em>im</em>, <em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#lighting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.lighting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.no_crop">
-<code class="descclassname">fastai.transforms.</code><code class="descname">no_crop</code><span class="sig-paren">(</span><em>im</em>, <em>min_sz=None</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.no_crop" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">no_crop</code><span class="sig-paren">(</span><em>im</em>, <em>min_sz=None</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#no_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.no_crop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a squared resized image</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.noop">
-<code class="descclassname">fastai.transforms.</code><code class="descname">noop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.noop" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">noop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#noop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.noop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.rand0">
-<code class="descclassname">fastai.transforms.</code><code class="descname">rand0</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.rand0" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">rand0</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#rand0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.rand0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.random_px_rect">
-<code class="descclassname">fastai.transforms.</code><code class="descname">random_px_rect</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.random_px_rect" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">random_px_rect</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#random_px_rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.random_px_rect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a 2D image of the size x with random points in a square box.</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -656,7 +656,7 @@ TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
 
 <dl class="function">
 <dt id="fastai.transforms.rotate_cv">
-<code class="descclassname">fastai.transforms.</code><code class="descname">rotate_cv</code><span class="sig-paren">(</span><em>im</em>, <em>deg</em>, <em>mode=0</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.rotate_cv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">rotate_cv</code><span class="sig-paren">(</span><em>im</em>, <em>deg</em>, <em>mode=0</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#rotate_cv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.rotate_cv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotates an image by deg degrees</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -666,7 +666,7 @@ TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
 
 <dl class="function">
 <dt id="fastai.transforms.scale_min">
-<code class="descclassname">fastai.transforms.</code><code class="descname">scale_min</code><span class="sig-paren">(</span><em>im</em>, <em>targ</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.scale_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">scale_min</code><span class="sig-paren">(</span><em>im</em>, <em>targ</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#scale_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.scale_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scales the image so that the smallest axis is of size targ.</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -677,32 +677,32 @@ targ (int): target size</dd>
 
 <dl class="function">
 <dt id="fastai.transforms.scale_to">
-<code class="descclassname">fastai.transforms.</code><code class="descname">scale_to</code><span class="sig-paren">(</span><em>x</em>, <em>ratio</em>, <em>targ</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.scale_to" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">scale_to</code><span class="sig-paren">(</span><em>x</em>, <em>ratio</em>, <em>targ</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#scale_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.scale_to" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.stretch_cv">
-<code class="descclassname">fastai.transforms.</code><code class="descname">stretch_cv</code><span class="sig-paren">(</span><em>x</em>, <em>sr</em>, <em>sc</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.stretch_cv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">stretch_cv</code><span class="sig-paren">(</span><em>x</em>, <em>sr</em>, <em>sc</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#stretch_cv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.stretch_cv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.tfms_from_model">
-<code class="descclassname">fastai.transforms.</code><code class="descname">tfms_from_model</code><span class="sig-paren">(</span><em>f_model</em>, <em>sz</em>, <em>aug_tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=&lt;CropType.RANDOM: 1&gt;</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.tfms_from_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">tfms_from_model</code><span class="sig-paren">(</span><em>f_model</em>, <em>sz</em>, <em>aug_tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=&lt;CropType.RANDOM: 1&gt;</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#tfms_from_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.tfms_from_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.tfms_from_stats">
-<code class="descclassname">fastai.transforms.</code><code class="descname">tfms_from_stats</code><span class="sig-paren">(</span><em>stats</em>, <em>sz</em>, <em>aug_tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=&lt;CropType.RANDOM: 1&gt;</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.tfms_from_stats" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">tfms_from_stats</code><span class="sig-paren">(</span><em>stats</em>, <em>sz</em>, <em>aug_tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=&lt;CropType.RANDOM: 1&gt;</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#tfms_from_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.tfms_from_stats" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.to_bb">
-<code class="descclassname">fastai.transforms.</code><code class="descname">to_bb</code><span class="sig-paren">(</span><em>YY</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.to_bb" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">to_bb</code><span class="sig-paren">(</span><em>YY</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#to_bb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.to_bb" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.transforms.zoom_cv">
-<code class="descclassname">fastai.transforms.</code><code class="descname">zoom_cv</code><span class="sig-paren">(</span><em>x</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.zoom_cv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.transforms.</code><code class="descname">zoom_cv</code><span class="sig-paren">(</span><em>x</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/transforms.html#zoom_cv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.transforms.zoom_cv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

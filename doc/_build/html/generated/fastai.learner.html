@@ -204,11 +204,11 @@
 <span id="fastai-learner-module"></span><h1>fastai.learner module<a class="headerlink" href="#module-fastai.learner" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="fastai.learner.Learner">
-<em class="property">class </em><code class="descclassname">fastai.learner.</code><code class="descname">Learner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>opt_fn=None</em>, <em>tmp_name='tmp'</em>, <em>models_name='models'</em>, <em>metrics=None</em>, <em>clip=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.learner.</code><code class="descname">Learner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>opt_fn=None</em>, <em>tmp_name='tmp'</em>, <em>models_name='models'</em>, <em>metrics=None</em>, <em>clip=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastai.learner.Learner.TTA">
-<code class="descname">TTA</code><span class="sig-paren">(</span><em>n_aug=4</em>, <em>is_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.TTA" title="Permalink to this definition">¶</a></dt>
+<code class="descname">TTA</code><span class="sig-paren">(</span><em>n_aug=4</em>, <em>is_test=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.TTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.TTA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict with Test Time Augmentation (TTA)</p>
 <p>Additional to the original test/validation images, apply image augmentation to them
 (just like for training images) and calculate the mean of predictions. The intent
@@ -229,7 +229,7 @@ targs (numpy.ndarray): target values when <cite>is_test==False</cite>; zeros oth
 
 <dl class="method">
 <dt id="fastai.learner.Learner.bn_freeze">
-<code class="descname">bn_freeze</code><span class="sig-paren">(</span><em>do_freeze</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.bn_freeze" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bn_freeze</code><span class="sig-paren">(</span><em>do_freeze</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.bn_freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.bn_freeze" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -244,7 +244,7 @@ targs (numpy.ndarray): target values when <cite>is_test==False</cite>; zeros oth
 
 <dl class="method">
 <dt id="fastai.learner.Learner.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>lrs</em>, <em>n_cycle</em>, <em>wds=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.fit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit</code><span class="sig-paren">(</span><em>lrs</em>, <em>n_cycle</em>, <em>wds=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method gets an instance of LayerOptimizer and delegates to self.fit_gen(..)</p>
 <p>Note that one can specify a list of learning rates which, when appropriately
 defined, will be applied to different segments of an architecture. This seems
@@ -267,7 +267,7 @@ different segments of the model.</p>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.fit_gen">
-<code class="descname">fit_gen</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>layer_opt</em>, <em>n_cycle</em>, <em>cycle_len=None</em>, <em>cycle_mult=1</em>, <em>cycle_save_name=None</em>, <em>best_save_name=None</em>, <em>use_clr=None</em>, <em>metrics=None</em>, <em>callbacks=None</em>, <em>use_wd_sched=False</em>, <em>norm_wds=False</em>, <em>wds_sched_mult=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.fit_gen" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_gen</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>layer_opt</em>, <em>n_cycle</em>, <em>cycle_len=None</em>, <em>cycle_mult=1</em>, <em>cycle_save_name=None</em>, <em>best_save_name=None</em>, <em>use_clr=None</em>, <em>metrics=None</em>, <em>callbacks=None</em>, <em>use_wd_sched=False</em>, <em>norm_wds=False</em>, <em>wds_sched_mult=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.fit_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.fit_gen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method does some preparation before finally delegating to the ‘fit’ method for
 fitting the model. Namely, if cycle_len is defined, it adds a ‘Cosine Annealing’
 scheduler for varying the learning rate across iterations.</p>
@@ -318,27 +318,27 @@ function that can be passed is:</p>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.freeze_to">
-<code class="descname">freeze_to</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.freeze_to" title="Permalink to this definition">¶</a></dt>
+<code class="descname">freeze_to</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.freeze_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.freeze_to" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
 <dt id="fastai.learner.Learner.from_model_data">
-<em class="property">classmethod </em><code class="descname">from_model_data</code><span class="sig-paren">(</span><em>m</em>, <em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.from_model_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">from_model_data</code><span class="sig-paren">(</span><em>m</em>, <em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.from_model_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.from_model_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.get_cycle_end">
-<code class="descname">get_cycle_end</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_cycle_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_cycle_end</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.get_cycle_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_cycle_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.get_layer_groups">
-<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_layer_groups" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.get_layer_opt">
-<code class="descname">get_layer_opt</code><span class="sig-paren">(</span><em>lrs</em>, <em>wds</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_layer_opt" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_layer_opt</code><span class="sig-paren">(</span><em>lrs</em>, <em>wds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.get_layer_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_layer_opt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method returns an instance of the LayerOptimizer class, which
 allows for setting differential learning rates for different
 parts of the model.</p>
@@ -359,22 +359,22 @@ networks such as VGG-19, ResNet-XX etc.</p>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.get_model_path">
-<code class="descname">get_model_path</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_model_path" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_model_path</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.get_model_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.get_model_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.load" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.load" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.load_cycle">
-<code class="descname">load_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.load_cycle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.load_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.load_cycle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.lr_find">
-<code class="descname">lr_find</code><span class="sig-paren">(</span><em>start_lr=1e-05</em>, <em>end_lr=10</em>, <em>wds=None</em>, <em>linear=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.lr_find" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lr_find</code><span class="sig-paren">(</span><em>start_lr=1e-05</em>, <em>end_lr=10</em>, <em>wds=None</em>, <em>linear=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.lr_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.lr_find" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helps you find an optimal learning rate for a model.</p>
 <blockquote>
 <div>It uses the technique developed in the 2015 paper
@@ -412,57 +412,57 @@ the loss decreases enough.</dd>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.predict_array">
-<code class="descname">predict_array</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict_array</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.predict_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict_array" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.predict_dl">
-<code class="descname">predict_dl</code><span class="sig-paren">(</span><em>dl</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict_dl" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict_dl</code><span class="sig-paren">(</span><em>dl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.predict_dl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict_dl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.predict_with_targs">
-<code class="descname">predict_with_targs</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict_with_targs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict_with_targs</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.predict_with_targs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.predict_with_targs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.save" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.save" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.save_cycle">
-<code class="descname">save_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.save_cycle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.save_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.save_cycle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.set_bn_freeze">
-<code class="descname">set_bn_freeze</code><span class="sig-paren">(</span><em>m</em>, <em>do_freeze</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.set_bn_freeze" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_bn_freeze</code><span class="sig-paren">(</span><em>m</em>, <em>do_freeze</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.set_bn_freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.set_bn_freeze" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.set_data">
-<code class="descname">set_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.set_data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.set_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.set_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.summary">
-<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.summary" title="Permalink to this definition">¶</a></dt>
+<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.summary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.unfreeze">
-<code class="descname">unfreeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.unfreeze" title="Permalink to this definition">¶</a></dt>
+<code class="descname">unfreeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.unfreeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.unfreeze" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.learner.Learner.warm_up">
-<code class="descname">warm_up</code><span class="sig-paren">(</span><em>lr</em>, <em>wds=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.warm_up" title="Permalink to this definition">¶</a></dt>
+<code class="descname">warm_up</code><span class="sig-paren">(</span><em>lr</em>, <em>wds=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/learner.html#Learner.warm_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.learner.Learner.warm_up" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

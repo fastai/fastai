@@ -1,42 +1,162 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai.rnn_reg &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.rnn_reg &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.rnn_reg</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for fastai.rnn_reg</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
@@ -45,28 +165,87 @@
 <span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="k">import</span> <span class="n">Variable</span>
 
 
-<div class="viewcode-block" id="dropout_mask"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.rnn_reg.dropout_mask">[docs]</a><span class="k">def</span> <span class="nf">dropout_mask</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">dropout</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">sz</span><span class="p">)</span><span class="o">.</span><span class="n">bernoulli_</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">dropout</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">dropout</span><span class="p">)</span></div>
+<div class="viewcode-block" id="dropout_mask"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.dropout_mask">[docs]</a><span class="k">def</span> <span class="nf">dropout_mask</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">dropout</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Applies a dropout mask whose size is determined by passed argument &#39;sz&#39;.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        x (nn.Variable): A torch Variable object</span>
+<span class="sd">        sz (tuple(int, int, int)): The expected size of the new tensor</span>
+<span class="sd">        dropout (float): The dropout fraction to apply</span>
+
+<span class="sd">    This method uses the bernoulli distribution to decide which activations to keep.</span>
+<span class="sd">    Additionally, the sampled activations is rescaled is using the factor 1/(1 - dropout).</span>
+
+<span class="sd">    In the example given below, one can see that approximately .8 fraction of the</span>
+<span class="sd">    returned tensors are zero. Rescaling with the factor 1/(1 - 0.8) returns a tensor</span>
+<span class="sd">    with 5&#39;s in the unit places.</span>
+
+<span class="sd">    The official link to the pytorch bernoulli function is here:</span>
+<span class="sd">        http://pytorch.org/docs/master/torch.html#torch.bernoulli</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; a_Var = torch.autograd.Variable(torch.Tensor(2, 3, 4).uniform_(0, 1), requires_grad=False)</span>
+<span class="sd">        &gt;&gt;&gt; a_Var</span>
+<span class="sd">            Variable containing:</span>
+<span class="sd">            (0 ,.,.) =</span>
+<span class="sd">              0.6890  0.5412  0.4303  0.8918</span>
+<span class="sd">              0.3871  0.7944  0.0791  0.5979</span>
+<span class="sd">              0.4575  0.7036  0.6186  0.7217</span>
+<span class="sd">            (1 ,.,.) =</span>
+<span class="sd">              0.8354  0.1690  0.1734  0.8099</span>
+<span class="sd">              0.6002  0.2602  0.7907  0.4446</span>
+<span class="sd">              0.5877  0.7464  0.4257  0.3386</span>
+<span class="sd">            [torch.FloatTensor of size 2x3x4]</span>
+<span class="sd">        &gt;&gt;&gt; a_mask = dropout_mask(a_Var.data, (1,a_Var.size(1),a_Var.size(2)), dropout=0.8)</span>
+<span class="sd">        &gt;&gt;&gt; a_mask</span>
+<span class="sd">            (0 ,.,.) =</span>
+<span class="sd">              0  5  0  0</span>
+<span class="sd">              0  0  0  5</span>
+<span class="sd">              5  0  5  0</span>
+<span class="sd">            [torch.FloatTensor of size 1x3x4]</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">sz</span><span class="p">)</span><span class="o">.</span><span class="n">bernoulli_</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">dropout</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">dropout</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="LockedDropout"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.rnn_reg.LockedDropout">[docs]</a><span class="k">class</span> <span class="nc">LockedDropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="LockedDropout"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.LockedDropout">[docs]</a><span class="k">class</span> <span class="nc">LockedDropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">=</span><span class="n">p</span>
 
-<div class="viewcode-block" id="LockedDropout.forward"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.rnn_reg.LockedDropout.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="LockedDropout.forward"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.LockedDropout.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">dropout_mask</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span></div></div>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">dropout_mask</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
 
 
-<div class="viewcode-block" id="WeightDrop"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.rnn_reg.WeightDrop">[docs]</a><span class="k">class</span> <span class="nc">WeightDrop</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="WeightDrop"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.WeightDrop">[docs]</a><span class="k">class</span> <span class="nc">WeightDrop</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A custom torch layer that serves as a wrapper on another torch layer.</span>
+<span class="sd">    Primarily responsible for updating the weights in the wrapped module based</span>
+<span class="sd">    on a specified dropout.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;weight_hh_l0&#39;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot; Default constructor for the WeightDrop module</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module (torch.nn.Module): A pytorch layer being wrapped</span>
+<span class="sd">            dropout (float): a dropout value to apply</span>
+<span class="sd">            weights (list(str)): the parameters of the wrapped **module**</span>
+<span class="sd">                which should be fractionally dropped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">module</span><span class="p">,</span><span class="n">weights</span><span class="p">,</span><span class="n">dropout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Terrible temporary solution to an issue regarding compacting weights re: CUDNN RNN</span>
+        <span class="sd">&quot;&quot;&quot; for each string defined in self.weights, the corresponding</span>
+<span class="sd">        attribute in the wrapped module is referenced, then deleted, and subsequently</span>
+<span class="sd">        registered as a new parameter with a slightly modified name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">         Returns:</span>
+<span class="sd">             None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">RNNBase</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span> <span class="o">=</span> <span class="n">noop</span>
         <span class="k">for</span> <span class="n">name_w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">:</span>
             <span class="n">w</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="n">name_w</span><span class="p">)</span>
@@ -75,87 +254,153 @@
 
 
     <span class="k">def</span> <span class="nf">_setweights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Uses pytorch&#39;s built-in dropout function to apply dropout to the parameters of</span>
+<span class="sd">        the wrapped module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">name_w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">:</span>
             <span class="n">raw_w</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="n">name_w</span> <span class="o">+</span> <span class="s1">&#39;_raw&#39;</span><span class="p">)</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">raw_w</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="n">name_w</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WeightDrop.forward"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.rnn_reg.WeightDrop.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_setweights</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="WeightDrop.forward"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.WeightDrop.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; updates weights and delegates the propagation of the tensor to the wrapped module&#39;s</span>
+<span class="sd">        forward method</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            *args: supplied arguments</span>
 
-<div class="viewcode-block" id="embedded_dropout"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.rnn_reg.embedded_dropout">[docs]</a><span class="k">def</span> <span class="nf">embedded_dropout</span><span class="p">(</span><span class="n">embed</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-  <span class="k">if</span> <span class="n">dropout</span><span class="p">:</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">dropout_mask</span><span class="p">(</span><span class="n">embed</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">embed</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dropout</span><span class="p">))</span>
-    <span class="n">masked_embed_weight</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">embed</span><span class="o">.</span><span class="n">weight</span>
-  <span class="k">else</span><span class="p">:</span> <span class="n">masked_embed_weight</span> <span class="o">=</span> <span class="n">embed</span><span class="o">.</span><span class="n">weight</span>
-  <span class="k">if</span> <span class="n">scale</span><span class="p">:</span> <span class="n">masked_embed_weight</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">masked_embed_weight</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tensor obtained by running the forward method on the wrapped module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setweights</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
-  <span class="n">padding_idx</span> <span class="o">=</span> <span class="n">embed</span><span class="o">.</span><span class="n">padding_idx</span>
-  <span class="k">if</span> <span class="n">padding_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">padding_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-  <span class="n">X</span> <span class="o">=</span> <span class="n">embed</span><span class="o">.</span><span class="n">_backend</span><span class="o">.</span><span class="n">Embedding</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">masked_embed_weight</span><span class="p">,</span>
-    <span class="n">padding_idx</span><span class="p">,</span> <span class="n">embed</span><span class="o">.</span><span class="n">max_norm</span><span class="p">,</span> <span class="n">embed</span><span class="o">.</span><span class="n">norm_type</span><span class="p">,</span>
-    <span class="n">embed</span><span class="o">.</span><span class="n">scale_grad_by_freq</span><span class="p">,</span> <span class="n">embed</span><span class="o">.</span><span class="n">sparse</span>
-  <span class="p">)</span>
-  <span class="k">return</span> <span class="n">X</span></div>
+<div class="viewcode-block" id="EmbeddingDropout"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.EmbeddingDropout">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingDropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
+    <span class="sd">&quot;&quot;&quot; Applies dropout in the embedding layer by zeroing out some elements of the embedding vector.</span>
+<span class="sd">    Uses the dropout_mask custom layer to achieve this.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        embed (torch.nn.Embedding): An embedding torch layer</span>
+<span class="sd">        words (torch.nn.Variable): A torch variable</span>
+<span class="sd">        dropout (float): dropout fraction to apply to the embedding weights</span>
+<span class="sd">        scale (float): additional scaling to apply to the modified embedding weights</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tensor of size: (batch_size x seq_length x embedding_size)</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt; embed = torch.nn.Embedding(10,3)</span>
+<span class="sd">    &gt;&gt; words = Variable(torch.LongTensor([[1,2,4,5] ,[4,3,2,9]]))</span>
+<span class="sd">    &gt;&gt; words.size()</span>
+<span class="sd">        (2,4)</span>
+<span class="sd">    &gt;&gt; embed_dropout_layer = EmbeddingDropout(embed)</span>
+<span class="sd">    &gt;&gt; dropout_out_ = embed_dropout_layer(embed, words, dropout=0.40)</span>
+<span class="sd">    &gt;&gt; dropout_out_</span>
+<span class="sd">        Variable containing:</span>
+<span class="sd">        (0 ,.,.) =</span>
+<span class="sd">          1.2549  1.8230  1.9367</span>
+<span class="sd">          0.0000 -0.0000  0.0000</span>
+<span class="sd">          2.2540 -0.1299  1.5448</span>
+<span class="sd">          0.0000 -0.0000 -0.0000</span>
+
+<span class="sd">        (1 ,.,.) =</span>
+<span class="sd">          2.2540 -0.1299  1.5448</span>
+<span class="sd">         -4.0457  2.4815 -0.2897</span>
+<span class="sd">          0.0000 -0.0000  0.0000</span>
+<span class="sd">          1.8796 -0.4022  3.8773</span>
+<span class="sd">        [torch.FloatTensor of size 2x4x3]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embed</span> <span class="o">=</span> <span class="n">embed</span>
+
+<div class="viewcode-block" id="EmbeddingDropout.forward"><a class="viewcode-back" href="../../generated/fastai.rnn_reg.html#fastai.rnn_reg.EmbeddingDropout.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dropout</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">dropout_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">dropout</span><span class="p">))</span>
+            <span class="n">masked_embed_weight</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">weight</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">masked_embed_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">weight</span>
+
+        <span class="k">if</span> <span class="n">scale</span><span class="p">:</span> <span class="n">masked_embed_weight</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">masked_embed_weight</span>
+
+        <span class="n">padding_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">padding_idx</span>
+        <span class="k">if</span> <span class="n">padding_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">padding_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">_backend</span><span class="o">.</span><span class="n">Embedding</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">words</span><span class="p">,</span>
+             <span class="n">masked_embed_weight</span><span class="p">,</span> <span class="n">padding_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">max_norm</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">norm_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">scale_grad_by_freq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span>
+</div></div>
+        <span class="k">return</span> <span class="n">X</span>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
+  
 
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
 
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

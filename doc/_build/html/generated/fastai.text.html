@@ -204,109 +204,109 @@
 <span id="fastai-text-module"></span><h1>fastai.text module<a class="headerlink" href="#module-fastai.text" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="fastai.text.LanguageModel">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">LanguageModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">LanguageModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fastai.core.html#fastai.core.BasicModel" title="fastai.core.BasicModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.core.BasicModel</span></code></a></p>
 <dl class="method">
 <dt id="fastai.text.LanguageModel.get_layer_groups">
-<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModel.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.LanguageModelData">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">LanguageModelData</code><span class="sig-paren">(</span><em>path</em>, <em>pad_idx</em>, <em>nt</em>, <em>trn_dl</em>, <em>val_dl</em>, <em>test_dl=None</em>, <em>bptt=70</em>, <em>backwards=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModelData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">LanguageModelData</code><span class="sig-paren">(</span><em>path</em>, <em>pad_idx</em>, <em>nt</em>, <em>trn_dl</em>, <em>val_dl</em>, <em>test_dl=None</em>, <em>bptt=70</em>, <em>backwards=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModelData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModelData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastai.text.LanguageModelData.get_model">
-<code class="descname">get_model</code><span class="sig-paren">(</span><em>opt_fn</em>, <em>emb_sz</em>, <em>n_hid</em>, <em>n_layers</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModelData.get_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_model</code><span class="sig-paren">(</span><em>opt_fn</em>, <em>emb_sz</em>, <em>n_hid</em>, <em>n_layers</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModelData.get_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModelData.get_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.LanguageModelLoader">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">LanguageModelLoader</code><span class="sig-paren">(</span><em>nums</em>, <em>bs</em>, <em>bptt</em>, <em>backwards=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModelLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">LanguageModelLoader</code><span class="sig-paren">(</span><em>nums</em>, <em>bs</em>, <em>bptt</em>, <em>backwards=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModelLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModelLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastai.text.LanguageModelLoader.batchify">
-<code class="descname">batchify</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModelLoader.batchify" title="Permalink to this definition">¶</a></dt>
+<code class="descname">batchify</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModelLoader.batchify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModelLoader.batchify" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.text.LanguageModelLoader.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>i</em>, <em>seq_len</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.LanguageModelLoader.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>i</em>, <em>seq_len</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#LanguageModelLoader.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.LanguageModelLoader.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.RNN_Learner">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">RNN_Learner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.RNN_Learner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">RNN_Learner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#RNN_Learner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.RNN_Learner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fastai.learner.html#fastai.learner.Learner" title="fastai.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.learner.Learner</span></code></a></p>
 <dl class="method">
 <dt id="fastai.text.RNN_Learner.load_encoder">
-<code class="descname">load_encoder</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.RNN_Learner.load_encoder" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_encoder</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#RNN_Learner.load_encoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.RNN_Learner.load_encoder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.text.RNN_Learner.save_encoder">
-<code class="descname">save_encoder</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.RNN_Learner.save_encoder" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_encoder</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#RNN_Learner.save_encoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.RNN_Learner.save_encoder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.SortSampler">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">SortSampler</code><span class="sig-paren">(</span><em>data_source</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.SortSampler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">SortSampler</code><span class="sig-paren">(</span><em>data_source</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#SortSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.SortSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.sampler.Sampler</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.SortishSampler">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">SortishSampler</code><span class="sig-paren">(</span><em>data_source</em>, <em>key</em>, <em>bs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.SortishSampler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">SortishSampler</code><span class="sig-paren">(</span><em>data_source</em>, <em>key</em>, <em>bs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#SortishSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.SortishSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.sampler.Sampler</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.TextDataset">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">TextDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>backwards=False</em>, <em>sos=None</em>, <em>eos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.TextDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">TextDataset</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>backwards=False</em>, <em>sos=None</em>, <em>eos=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#TextDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.TextDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.TextModel">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">TextModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.TextModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">TextModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#TextModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.TextModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fastai.core.html#fastai.core.BasicModel" title="fastai.core.BasicModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.core.BasicModel</span></code></a></p>
 <dl class="method">
 <dt id="fastai.text.TextModel.get_layer_groups">
-<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.TextModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#TextModel.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.TextModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.text.Tokenizer">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">Tokenizer</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">Tokenizer</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.do_caps">
-<em class="property">static </em><code class="descname">do_caps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.do_caps" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">do_caps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.do_caps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.do_caps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.proc_all">
-<em class="property">static </em><code class="descname">proc_all</code><span class="sig-paren">(</span><em>lang</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_all" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">proc_all</code><span class="sig-paren">(</span><em>lang</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.proc_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.proc_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.proc_all_mp">
-<em class="property">static </em><code class="descname">proc_all_mp</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_all_mp" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">proc_all_mp</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.proc_all_mp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.proc_all_mp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.text.Tokenizer.proc_text">
-<code class="descname">proc_text</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">proc_text</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.proc_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.proc_text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -321,34 +321,34 @@
 
 <dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.replace_rep">
-<em class="property">static </em><code class="descname">replace_rep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.replace_rep" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">replace_rep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.replace_rep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.replace_rep" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.replace_wrep">
-<em class="property">static </em><code class="descname">replace_wrep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.replace_wrep" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">replace_wrep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.replace_wrep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.replace_wrep" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.text.Tokenizer.spacy_tok">
-<code class="descname">spacy_tok</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.spacy_tok" title="Permalink to this definition">¶</a></dt>
+<code class="descname">spacy_tok</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.spacy_tok"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.spacy_tok" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.text.Tokenizer.sub_br">
-<code class="descname">sub_br</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.sub_br" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sub_br</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#Tokenizer.sub_br"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.Tokenizer.sub_br" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="fastai.text.texts_labels_from_folders">
-<code class="descclassname">fastai.text.</code><code class="descname">texts_labels_from_folders</code><span class="sig-paren">(</span><em>path</em>, <em>folders</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.texts_labels_from_folders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.text.</code><code class="descname">texts_labels_from_folders</code><span class="sig-paren">(</span><em>path</em>, <em>folders</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#texts_labels_from_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.texts_labels_from_folders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.text.tokenize">
-<code class="descclassname">fastai.text.</code><code class="descname">tokenize</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.tokenize" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.text.</code><code class="descname">tokenize</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/text.html#tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.text.tokenize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

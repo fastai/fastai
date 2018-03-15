@@ -1,42 +1,162 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai.column_data &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.column_data &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.column_data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for fastai.column_data</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
@@ -45,87 +165,88 @@
 <span class="kn">from</span> <span class="nn">.learner</span> <span class="k">import</span> <span class="o">*</span>
 
 
-<div class="viewcode-block" id="PassthruDataset"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.PassthruDataset">[docs]</a><span class="k">class</span> <span class="nc">PassthruDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="PassthruDataset"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.PassthruDataset">[docs]</a><span class="k">class</span> <span class="nc">PassthruDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="o">*</span><span class="n">xs</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xs</span><span class="p">,</span><span class="n">y</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span> <span class="k">return</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
 
-<div class="viewcode-block" id="PassthruDataset.from_data_frame"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.PassthruDataset.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PassthruDataset.from_data_frame"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.PassthruDataset.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols_x</span><span class="p">,</span> <span class="n">col_y</span><span class="p">):</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">cols_x</span><span class="o">+</span><span class="p">[</span><span class="n">col_y</span><span class="p">]]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">cols</span><span class="p">)</span></div></div>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">cols_x</span><span class="o">+</span><span class="p">[</span><span class="n">col_y</span><span class="p">]]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">*</span><span class="n">cols</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ColumnarDataset"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarDataset">[docs]</a><span class="k">class</span> <span class="nc">ColumnarDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="ColumnarDataset"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarDataset">[docs]</a><span class="k">class</span> <span class="nc">ColumnarDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cats</span><span class="p">,</span> <span class="n">conts</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cats</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">cats</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">conts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">cats</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="k">if</span> <span class="n">cats</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">conts</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">y</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">y</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cats</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">conts</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
 
-<div class="viewcode-block" id="ColumnarDataset.from_data_frames"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarDataset.from_data_frames">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ColumnarDataset.from_data_frames"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarDataset.from_data_frames">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data_frames</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df_cat</span><span class="p">,</span> <span class="n">df_cont</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">cat_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df_cat</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="n">cont_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df_cont</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">cat_cols</span><span class="p">,</span> <span class="n">cont_cols</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+        <span class="n">cont_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df_cont</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">cat_cols</span><span class="p">,</span> <span class="n">cont_cols</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ColumnarDataset.from_data_frame"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarDataset.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_data_frame</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_data_frames</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">cat_flds</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">cat_flds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="ColumnarDataset.from_data_frame"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarDataset.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data_frame</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_data_frames</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">cat_flds</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">cat_flds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ColumnarModelData"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarModelData">[docs]</a><span class="k">class</span> <span class="nc">ColumnarModelData</span><span class="p">(</span><span class="n">ModelData</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_ds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ColumnarModelData"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarModelData">[docs]</a><span class="k">class</span> <span class="nc">ColumnarModelData</span><span class="p">(</span><span class="n">ModelData</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">test_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">test_ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">trn_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">trn_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
             <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">bs</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">test_dl</span><span class="p">)</span>
 
-    <span class="c1">#def from_cats(cls, path, val_idxs, df, y_col, cols):</span>
-        <span class="c1">#x = df[cols]</span>
-        <span class="c1">#y = df[y_col]</span>
-        <span class="c1">#((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, x, y)</span>
-        <span class="c1">#return cls(</span>
+<div class="viewcode-block" id="ColumnarModelData.from_arrays"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarModelData.from_arrays">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_arrays</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">test_xs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="p">((</span><span class="n">val_xs</span><span class="p">,</span> <span class="n">trn_xs</span><span class="p">),</span> <span class="p">(</span><span class="n">val_y</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">))</span> <span class="o">=</span> <span class="n">split_by_idx</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">test_ds</span> <span class="o">=</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">test_xs</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_xs</span><span class="p">))</span> <span class="k">if</span> <span class="n">test_xs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">trn_xs</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">trn_y</span><span class="p">),</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">val_xs</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">val_y</span><span class="p">),</span></div>
+                   <span class="n">bs</span><span class="o">=</span><span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span> <span class="n">test_ds</span><span class="o">=</span><span class="n">test_ds</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ColumnarModelData.from_data_frames"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarModelData.from_data_frames">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ColumnarModelData.from_data_frames"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarModelData.from_data_frames">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data_frames</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">trn_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">,</span> <span class="n">val_y</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">test_ds</span> <span class="o">=</span> <span class="n">ColumnarDataset</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">)</span> <span class="k">if</span> <span class="n">test_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ColumnarDataset</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">trn_df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">),</span>
-                    <span class="n">ColumnarDataset</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">val_df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">val_y</span><span class="p">),</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_ds</span><span class="o">=</span><span class="n">test_ds</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ColumnarDataset</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">trn_df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">),</span></div>
+                    <span class="n">ColumnarDataset</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">val_df</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">val_y</span><span class="p">),</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_ds</span><span class="o">=</span><span class="n">test_ds</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ColumnarModelData.from_data_frame"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarModelData.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ColumnarModelData.from_data_frame"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarModelData.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_data_frame</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="p">((</span><span class="n">val_df</span><span class="p">,</span> <span class="n">trn_df</span><span class="p">),</span> <span class="p">(</span><span class="n">val_y</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">))</span> <span class="o">=</span> <span class="n">split_by_idx</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_data_frames</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">trn_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">,</span> <span class="n">val_y</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="n">test_df</span><span class="p">)</span></div>
+        <span class="p">((</span><span class="n">val_df</span><span class="p">,</span> <span class="n">trn_df</span><span class="p">),</span> <span class="p">(</span><span class="n">val_y</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">))</span> <span class="o">=</span> <span class="n">split_by_idx</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_data_frames</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">trn_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">,</span> <span class="n">val_y</span><span class="p">,</span> <span class="n">cat_flds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="n">test_df</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ColumnarModelData.get_learner"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.ColumnarModelData.get_learner">[docs]</a>    <span class="k">def</span> <span class="nf">get_learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emb_szs</span><span class="p">,</span> <span class="n">n_cont</span><span class="p">,</span> <span class="n">emb_drop</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">drops</span><span class="p">,</span>
+<div class="viewcode-block" id="ColumnarModelData.get_learner"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.ColumnarModelData.get_learner">[docs]</a>    <span class="k">def</span> <span class="nf">get_learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emb_szs</span><span class="p">,</span> <span class="n">n_cont</span><span class="p">,</span> <span class="n">emb_drop</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">drops</span><span class="p">,</span>
                     <span class="n">y_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">MixedInputModel</span><span class="p">(</span><span class="n">emb_szs</span><span class="p">,</span> <span class="n">n_cont</span><span class="p">,</span> <span class="n">emb_drop</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">drops</span><span class="p">,</span> <span class="n">y_range</span><span class="p">,</span> <span class="n">use_bn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">StructuredLearner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">StructuredModel</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">model</span><span class="p">)),</span> <span class="n">opt_fn</span><span class="o">=</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MixedInputModel</span><span class="p">(</span><span class="n">emb_szs</span><span class="p">,</span> <span class="n">n_cont</span><span class="p">,</span> <span class="n">emb_drop</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">drops</span><span class="p">,</span> <span class="n">y_range</span><span class="p">,</span> <span class="n">use_bn</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">StructuredLearner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">StructuredModel</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">model</span><span class="p">)),</span> <span class="n">opt_fn</span><span class="o">=</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="emb_init"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.emb_init">[docs]</a><span class="k">def</span> <span class="nf">emb_init</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="emb_init"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.emb_init">[docs]</a><span class="k">def</span> <span class="nf">emb_init</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">sc</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">x</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="n">sc</span><span class="p">,</span><span class="n">sc</span><span class="p">)</span></div>
+    <span class="n">sc</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="n">x</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="n">sc</span><span class="p">,</span><span class="n">sc</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="MixedInputModel"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.MixedInputModel">[docs]</a><span class="k">class</span> <span class="nc">MixedInputModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="MixedInputModel"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.MixedInputModel">[docs]</a><span class="k">class</span> <span class="nc">MixedInputModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emb_szs</span><span class="p">,</span> <span class="n">n_cont</span><span class="p">,</span> <span class="n">emb_drop</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">,</span> <span class="n">szs</span><span class="p">,</span> <span class="n">drops</span><span class="p">,</span>
                  <span class="n">y_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_bn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="n">emb_szs</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embs</span><span class="p">:</span> <span class="n">emb_init</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span>
         <span class="n">n_emb</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">embedding_dim</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embs</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_emb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cont</span><span class="o">=</span><span class="n">n_emb</span><span class="p">,</span> <span class="n">n_cont</span>
+        
         <span class="n">szs</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_emb</span><span class="o">+</span><span class="n">n_cont</span><span class="p">]</span> <span class="o">+</span> <span class="n">szs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lins</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
             <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">szs</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">szs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
@@ -140,12 +261,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">n_cont</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_bn</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span> <span class="o">=</span> <span class="n">use_bn</span><span class="p">,</span><span class="n">y_range</span>
 
-<div class="viewcode-block" id="MixedInputModel.forward"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.MixedInputModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_cat</span><span class="p">,</span> <span class="n">x_cont</span><span class="p">):</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">(</span><span class="n">x_cat</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embs</span><span class="p">)]</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">x_cont</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">x2</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="MixedInputModel.forward"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.MixedInputModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_cat</span><span class="p">,</span> <span class="n">x_cont</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_emb</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">(</span><span class="n">x_cat</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embs</span><span class="p">)]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cont</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">x_cont</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">x2</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_emb</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">x2</span>
         <span class="k">for</span> <span class="n">l</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">drops</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bns</span><span class="p">):</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">l</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_bn</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">b</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -154,65 +277,65 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">x</span></div></div>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="n">x</span>
 
 
-<div class="viewcode-block" id="StructuredLearner"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.StructuredLearner">[docs]</a><span class="k">class</span> <span class="nc">StructuredLearner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
+<div class="viewcode-block" id="StructuredLearner"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.StructuredLearner">[docs]</a><span class="k">class</span> <span class="nc">StructuredLearner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span>
 
-<div class="viewcode-block" id="StructuredModel"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.StructuredModel">[docs]</a><span class="k">class</span> <span class="nc">StructuredModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span>
-<div class="viewcode-block" id="StructuredModel.get_layer_groups"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.StructuredModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">embs</span><span class="p">,</span> <span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">lins</span><span class="p">)</span><span class="o">+</span><span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bns</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">outp</span><span class="p">]</span></div></div>
+<div class="viewcode-block" id="StructuredModel"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.StructuredModel">[docs]</a><span class="k">class</span> <span class="nc">StructuredModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span>
+<div class="viewcode-block" id="StructuredModel.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.StructuredModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span></div></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">embs</span><span class="p">,</span> <span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">lins</span><span class="p">)</span><span class="o">+</span><span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bns</span><span class="p">),</span> <span class="n">m</span><span class="o">.</span><span class="n">outp</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="CollabFilterDataset"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset">[docs]</a><span class="k">class</span> <span class="nc">CollabFilterDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="CollabFilterDataset"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset">[docs]</a><span class="k">class</span> <span class="nc">CollabFilterDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">user_col</span><span class="p">,</span> <span class="n">item_col</span><span class="p">,</span> <span class="n">ratings</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ratings</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">,</span><span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ratings</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span><span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">user2idx</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">user_col</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_users</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proc_col</span><span class="p">(</span><span class="n">user_col</span><span class="p">)</span>
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">item2idx</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">item_col</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_items</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proc_col</span><span class="p">(</span><span class="n">item_col</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ratings</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">user_col</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">item_col</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ratings</span><span class="p">]</span>
 
-<div class="viewcode-block" id="CollabFilterDataset.from_data_frame"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_data_frame</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">,</span> <span class="n">rating_name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">user_name</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">item_name</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">rating_name</span><span class="p">])</span></div>
+<div class="viewcode-block" id="CollabFilterDataset.from_data_frame"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset.from_data_frame">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data_frame</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">,</span> <span class="n">rating_name</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">user_name</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">item_name</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">rating_name</span><span class="p">])</span>
 
-<div class="viewcode-block" id="CollabFilterDataset.from_csv"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset.from_csv">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CollabFilterDataset.from_csv"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset.from_csv">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_csv</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">csv</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">,</span> <span class="n">rating_name</span><span class="p">):</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">csv</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">,</span> <span class="n">rating_name</span><span class="p">)</span></div>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">csv</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_data_frame</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">item_name</span><span class="p">,</span> <span class="n">rating_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CollabFilterDataset.proc_col"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset.proc_col">[docs]</a>    <span class="k">def</span> <span class="nf">proc_col</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
+<div class="viewcode-block" id="CollabFilterDataset.proc_col"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset.proc_col">[docs]</a>    <span class="k">def</span> <span class="nf">proc_col</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
         <span class="n">uniq</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-        <span class="n">name2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniq</span><span class="p">)}</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">name2idx</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">name2idx</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">col</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq</span><span class="p">))</span></div>
+        <span class="n">name2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniq</span><span class="p">)}</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">name2idx</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">name2idx</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">col</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span> <span class="k">return</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">]</span>
 
-<div class="viewcode-block" id="CollabFilterDataset.get_data"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">bs</span><span class="p">):</span>
-        <span class="n">val</span><span class="p">,</span> <span class="n">trn</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">split_by_idx</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">ColumnarModelData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="n">trn</span><span class="p">),</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="n">val</span><span class="p">),</span> <span class="n">bs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="CollabFilterDataset.get_data"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">bs</span><span class="p">):</span>
+        <span class="n">val</span><span class="p">,</span> <span class="n">trn</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">split_by_idx</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">ColumnarModelData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="n">trn</span><span class="p">),</span> <span class="n">PassthruDataset</span><span class="p">(</span><span class="o">*</span><span class="n">val</span><span class="p">),</span> <span class="n">bs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CollabFilterDataset.get_model"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">):</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDotBias</span><span class="p">(</span><span class="n">n_factors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">CollabFilterModel</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">model</span><span class="p">))</span></div>
+<div class="viewcode-block" id="CollabFilterDataset.get_model"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingDotBias</span><span class="p">(</span><span class="n">n_factors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_users</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">CollabFilterModel</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
 
-<div class="viewcode-block" id="CollabFilterDataset.get_learner"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterDataset.get_learner">[docs]</a>    <span class="k">def</span> <span class="nf">get_learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">CollabFilterLearner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="n">bs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">n_factors</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="CollabFilterDataset.get_learner"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset.get_learner">[docs]</a>    <span class="k">def</span> <span class="nf">get_learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">val_idxs</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">CollabFilterLearner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">val_idxs</span><span class="p">,</span> <span class="n">bs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">n_factors</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_emb"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.get_emb">[docs]</a><span class="k">def</span> <span class="nf">get_emb</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span><span class="n">nf</span><span class="p">):</span>
+<div class="viewcode-block" id="get_emb"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.get_emb">[docs]</a><span class="k">def</span> <span class="nf">get_emb</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span><span class="n">nf</span><span class="p">):</span>
     <span class="n">e</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">)</span>
-    <span class="n">e</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">e</span></div>
+    <span class="n">e</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">e</span>
 
-<div class="viewcode-block" id="EmbeddingDotBias"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.EmbeddingDotBias">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingDotBias</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="EmbeddingDotBias"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.EmbeddingDotBias">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingDotBias</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_items</span><span class="p">,</span> <span class="n">min_score</span><span class="p">,</span> <span class="n">max_score</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="n">min_score</span><span class="p">,</span><span class="n">max_score</span>
@@ -220,75 +343,81 @@
             <span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">),</span> <span class="p">(</span><span class="n">n_items</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">),</span> <span class="p">(</span><span class="n">n_users</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">n_items</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="p">]]</span>
 
-<div class="viewcode-block" id="EmbeddingDotBias.forward"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.EmbeddingDotBias.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+<div class="viewcode-block" id="EmbeddingDotBias.forward"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.EmbeddingDotBias.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
         <span class="n">um</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="n">users</span><span class="p">)</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">um</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ub</span><span class="p">(</span><span class="n">users</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_score</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">min_score</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span></div></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">um</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ub</span><span class="p">(</span><span class="n">users</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_score</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">min_score</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span>
 
-<div class="viewcode-block" id="CollabFilterLearner"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterLearner">[docs]</a><span class="k">class</span> <span class="nc">CollabFilterLearner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
+<div class="viewcode-block" id="CollabFilterLearner"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterLearner">[docs]</a><span class="k">class</span> <span class="nc">CollabFilterLearner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span>
 
-<div class="viewcode-block" id="CollabFilterModel"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterModel">[docs]</a><span class="k">class</span> <span class="nc">CollabFilterModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span>
-<div class="viewcode-block" id="CollabFilterModel.get_layer_groups"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.column_data.CollabFilterModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span></div></div>
+<div class="viewcode-block" id="CollabFilterModel"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterModel">[docs]</a><span class="k">class</span> <span class="nc">CollabFilterModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="CollabFilterModel.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.column_data.html#fastai.column_data.CollabFilterModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
 
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
+  
 
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
 
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

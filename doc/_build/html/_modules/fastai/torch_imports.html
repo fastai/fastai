@@ -1,42 +1,162 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai.torch_imports &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.torch_imports &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.torch_imports</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for fastai.torch_imports</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -60,90 +180,138 @@
 <span class="kn">from</span> <span class="nn">.models.nasnet</span> <span class="k">import</span> <span class="n">nasnetalarge</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Implicit dimension choice&#39;</span><span class="p">,</span>
-                        <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">&#39;.*container.*&#39;</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Implicit dimension choice&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="children"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.children">[docs]</a><span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="n">m</span><span class="p">):</span> <span class="k">return</span> <span class="n">m</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="p">())</span></div>
+<div class="viewcode-block" id="save_model"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.save_model">[docs]</a><span class="k">def</span> <span class="nf">save_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">p</span><span class="p">)</span></div>
+<div class="viewcode-block" id="load_model"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.load_model">[docs]</a><span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span> <span class="n">m</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="k">lambda</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">storage</span><span class="p">))</span>
 
-<div class="viewcode-block" id="children"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.children">[docs]</a><span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="n">m</span><span class="p">):</span> <span class="k">return</span> <span class="n">m</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="p">())</span></div>
-<div class="viewcode-block" id="save_model"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.save_model">[docs]</a><span class="k">def</span> <span class="nf">save_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">p</span><span class="p">)</span></div>
-<span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span> <span class="n">m</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<div class="viewcode-block" id="load_model"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.load_model">[docs]</a><span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span> <span class="n">m</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="k">lambda</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">storage</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="load_pre"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.load_pre">[docs]</a><span class="k">def</span> <span class="nf">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+<div class="viewcode-block" id="load_pre"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.load_pre">[docs]</a><span class="k">def</span> <span class="nf">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">f</span><span class="p">()</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pre</span><span class="p">:</span> <span class="n">load_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{path}</span><span class="s1">/weights/</span><span class="si">{fn}</span><span class="s1">.pth&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">m</span></div>
+    <span class="k">if</span> <span class="n">pre</span><span class="p">:</span> <span class="n">load_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{path}</span><span class="s1">/weights/</span><span class="si">{fn}</span><span class="s1">.pth&#39;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">m</span>
 
-<div class="viewcode-block" id="inception_4"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.inception_4">[docs]</a><span class="k">def</span> <span class="nf">inception_4</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">InceptionV4</span><span class="p">,</span> <span class="s1">&#39;inceptionv4-97ef9c30&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
-<div class="viewcode-block" id="inceptionresnet_2"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.inceptionresnet_2">[docs]</a><span class="k">def</span> <span class="nf">inceptionresnet_2</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">InceptionResnetV2</span><span class="p">,</span> <span class="s1">&#39;inceptionresnetv2-d579a627&#39;</span><span class="p">)</span></div>
-<div class="viewcode-block" id="resnext50"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.resnext50">[docs]</a><span class="k">def</span> <span class="nf">resnext50</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">resnext_50_32x4d</span><span class="p">,</span> <span class="s1">&#39;resnext_50_32x4d&#39;</span><span class="p">)</span></div>
-<div class="viewcode-block" id="resnext101"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.resnext101">[docs]</a><span class="k">def</span> <span class="nf">resnext101</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">resnext_101_32x4d</span><span class="p">,</span> <span class="s1">&#39;resnext_101_32x4d&#39;</span><span class="p">)</span></div>
-<div class="viewcode-block" id="resnext101_64"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.resnext101_64">[docs]</a><span class="k">def</span> <span class="nf">resnext101_64</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">resnext_101_64x4d</span><span class="p">,</span> <span class="s1">&#39;resnext_101_64x4d&#39;</span><span class="p">)</span></div>
-<div class="viewcode-block" id="wrn"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.wrn">[docs]</a><span class="k">def</span> <span class="nf">wrn</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">wrn_50_2f</span><span class="p">,</span> <span class="s1">&#39;wrn_50_2f&#39;</span><span class="p">)</span></div>
-<div class="viewcode-block" id="dn121"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.dn121">[docs]</a><span class="k">def</span> <span class="nf">dn121</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet121</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
-<div class="viewcode-block" id="dn161"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.dn161">[docs]</a><span class="k">def</span> <span class="nf">dn161</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet161</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
-<div class="viewcode-block" id="dn169"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.dn169">[docs]</a><span class="k">def</span> <span class="nf">dn169</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet169</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
-<div class="viewcode-block" id="dn201"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.dn201">[docs]</a><span class="k">def</span> <span class="nf">dn201</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet201</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
-<div class="viewcode-block" id="vgg16"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.vgg16">[docs]</a><span class="k">def</span> <span class="nf">vgg16</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">vgg16_bn</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
-<div class="viewcode-block" id="vgg19"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.torch_imports.vgg19">[docs]</a><span class="k">def</span> <span class="nf">vgg19</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">vgg19_bn</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
+<span class="k">def</span> <span class="nf">_fastai_model</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">paper_title</span><span class="p">,</span> <span class="n">paper_href</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_docs_wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{name}</span><span class="s2"> model from</span>
+<span class="s2">        `&quot;</span><span class="si">{paper_title}</span><span class="s2">&quot; &lt;</span><span class="si">{paper_href}</span><span class="s2">&gt;`_</span>
 
+<span class="s2">        Args:</span>
+<span class="s2">           pre (bool): If True, returns a model pre-trained on ImageNet</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">f</span>
+    <span class="k">return</span> <span class="n">add_docs_wrapper</span>
+
+<div class="viewcode-block" id="inception_4"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.inception_4">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Inception 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1602.07261.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">inception_4</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">InceptionV4</span><span class="p">,</span> <span class="s1">&#39;inceptionv4-97ef9c30&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="inceptionresnet_2"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.inceptionresnet_2">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Inception 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1602.07261.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">inceptionresnet_2</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">InceptionResnetV2</span><span class="p">,</span> <span class="s1">&#39;inceptionresnetv2-d579a627&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="resnext50"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.resnext50">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;ResNeXt 50&#39;</span><span class="p">,</span> <span class="s1">&#39;Aggregated Residual Transformations for Deep Neural Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/abs/1611.05431&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">resnext50</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">resnext_50_32x4d</span><span class="p">,</span> <span class="s1">&#39;resnext_50_32x4d&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="resnext101"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.resnext101">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;ResNeXt 101_32&#39;</span><span class="p">,</span> <span class="s1">&#39;Aggregated Residual Transformations for Deep Neural Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/abs/1611.05431&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">resnext101</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">resnext_101_32x4d</span><span class="p">,</span> <span class="s1">&#39;resnext_101_32x4d&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="resnext101_64"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.resnext101_64">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;ResNeXt 101_64&#39;</span><span class="p">,</span> <span class="s1">&#39;Aggregated Residual Transformations for Deep Neural Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/abs/1611.05431&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">resnext101_64</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">resnext_101_64x4d</span><span class="p">,</span> <span class="s1">&#39;resnext_101_64x4d&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="wrn"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.wrn">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Inception 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Wide Residual Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1605.07146.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">wrn</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">load_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">wrn_50_2f</span><span class="p">,</span> <span class="s1">&#39;wrn_50_2f&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="dn121"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.dn121">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Densenet-121&#39;</span><span class="p">,</span> <span class="s1">&#39;Densely Connected Convolutional Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1608.06993.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">dn121</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet121</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="dn161"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.dn161">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Densenet-169&#39;</span><span class="p">,</span> <span class="s1">&#39;Densely Connected Convolutional Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1608.06993.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">dn161</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet161</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="dn169"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.dn169">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Densenet-161&#39;</span><span class="p">,</span> <span class="s1">&#39;Densely Connected Convolutional Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1608.06993.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">dn169</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet169</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="dn201"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.dn201">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Densenet-201&#39;</span><span class="p">,</span> <span class="s1">&#39;Densely Connected Convolutional Networks&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1608.06993.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">dn201</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">densenet201</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="vgg16"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.vgg16">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Vgg-16 with batch norm added&#39;</span><span class="p">,</span> <span class="s1">&#39;Very Deep Convolutional Networks for Large-Scale Image Recognition&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1409.1556.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">vgg16</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">vgg16_bn</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="vgg19"><a class="viewcode-back" href="../../generated/fastai.torch_imports.html#fastai.torch_imports.vgg19">[docs]</a><span class="nd">@_fastai_model</span><span class="p">(</span><span class="s1">&#39;Vgg-19 with batch norm added&#39;</span><span class="p">,</span> <span class="s1">&#39;Very Deep Convolutional Networks for Large-Scale Image Recognition&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;https://arxiv.org/pdf/1409.1556.pdf&#39;</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">vgg19</span><span class="p">(</span><span class="n">pre</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="n">vgg19_bn</span><span class="p">(</span><span class="n">pre</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
+  
 
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
 
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

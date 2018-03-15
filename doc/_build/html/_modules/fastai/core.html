@@ -1,167 +1,341 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai.core &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.core &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.core</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for fastai.core</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
-
-<div class="viewcode-block" id="sum_geom"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.sum_geom">[docs]</a><span class="k">def</span> <span class="nf">sum_geom</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">n</span> <span class="k">if</span> <span class="n">r</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="o">**</span><span class="n">n</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">))</span></div>
+</div>
+<div class="viewcode-block" id="sum_geom"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.sum_geom">[docs]</a><span class="k">def</span> <span class="nf">sum_geom</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">n</span> <span class="k">if</span> <span class="n">r</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="o">**</span><span class="n">n</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">))</span>
 
 <span class="n">conv_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span>
     <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span>
     <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">}</span>
 
-<div class="viewcode-block" id="T"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.T">[docs]</a><span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="V_"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.V_">[docs]</a><span class="k">def</span> <span class="nf">V_</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="k">return</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">async</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Variable</span><span class="p">)</span> <span class="k">else</span> <span class="n">Variable</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">async</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
-<div class="viewcode-block" id="V"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.V">[docs]</a><span class="k">def</span> <span class="nf">V</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>   <span class="k">return</span> <span class="p">[</span><span class="n">V_</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">V_</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-<div class="viewcode-block" id="VV_"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.VV_">[docs]</a><span class="k">def</span> <span class="nf">VV_</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">async</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Variable</span><span class="p">)</span> <span class="k">else</span> <span class="n">Variable</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">async</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">volatile</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-<div class="viewcode-block" id="VV"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.VV">[docs]</a><span class="k">def</span> <span class="nf">VV</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="k">return</span> <span class="p">[</span><span class="n">VV_</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">VV_</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="to_np"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.to_np">[docs]</a><span class="k">def</span> <span class="nf">to_np</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">data</span>
-    <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="to_gpu"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.to_gpu">[docs]</a><span class="k">def</span> <span class="nf">to_gpu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">cuda</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="viewcode-block" id="T"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.T">[docs]</a><span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">a</span><span class="p">):</span> <span class="n">res</span> <span class="o">=</span> <span class="n">a</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">x</span></div>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="k">async</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="noop"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.noop">[docs]</a><span class="k">def</span> <span class="nf">noop</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="k">return</span></div>
+<div class="viewcode-block" id="create_variable"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.create_variable">[docs]</a><span class="k">def</span> <span class="nf">create_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">volatile</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">volatile</span><span class="o">=</span><span class="n">volatile</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="n">requires_grad</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">x</span>
 
-<div class="viewcode-block" id="split_by_idxs"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.split_by_idxs">[docs]</a><span class="k">def</span> <span class="nf">split_by_idxs</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">idxs</span><span class="p">):</span>
-    <span class="n">last</span><span class="p">,</span> <span class="n">sl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+<div class="viewcode-block" id="V_"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.V_">[docs]</a><span class="k">def</span> <span class="nf">V_</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">create_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="n">requires_grad</span><span class="p">)</span>
+<div class="viewcode-block" id="V"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.V">[docs]</a><span class="k">def</span> <span class="nf">V</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">V_</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">requires_grad</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">V_</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">requires_grad</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="VV_"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.VV_">[docs]</a><span class="k">def</span> <span class="nf">VV_</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">create_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+<div class="viewcode-block" id="VV"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.VV">[docs]</a><span class="k">def</span> <span class="nf">VV</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="k">return</span> <span class="p">[</span><span class="n">VV_</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">VV_</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<div class="viewcode-block" id="to_np"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.to_np">[docs]</a><span class="k">def</span> <span class="nf">to_np</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span> <span class="k">return</span> <span class="p">[</span><span class="n">to_np</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">data</span></div>
+    <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">USE_GPU</span><span class="o">=</span><span class="kc">True</span>
+<div class="viewcode-block" id="to_gpu"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.to_gpu">[docs]</a><span class="k">def</span> <span class="nf">to_gpu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">cuda</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">USE_GPU</span> <span class="k">else</span> <span class="n">x</span>
+</div>
+<div class="viewcode-block" id="noop"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.noop">[docs]</a><span class="k">def</span> <span class="nf">noop</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="k">return</span>
+
+<div class="viewcode-block" id="split_by_idxs"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.split_by_idxs">[docs]</a><span class="k">def</span> <span class="nf">split_by_idxs</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">idxs</span><span class="p">):</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idxs</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">last</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span>
-        <span class="n">last</span> <span class="o">=</span> <span class="n">idx</span>
-    <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">last</span><span class="p">:]</span></div>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">idx</span></div>
+    <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">last</span><span class="p">:]</span>
 
-<div class="viewcode-block" id="trainable_params_"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.trainable_params_">[docs]</a><span class="k">def</span> <span class="nf">trainable_params_</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span></div>
+<div class="viewcode-block" id="trainable_params_"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.trainable_params_">[docs]</a><span class="k">def</span> <span class="nf">trainable_params_</span><span class="p">(</span><span class="n">m</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span>
 
-<div class="viewcode-block" id="chain_params"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.chain_params">[docs]</a><span class="k">def</span> <span class="nf">chain_params</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="chain_params"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.chain_params">[docs]</a><span class="k">def</span> <span class="nf">chain_params</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">trainable_params_</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">trainable_params_</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">trainable_params_</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]))</span></div>
+    <span class="k">return</span> <span class="n">trainable_params_</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-<div class="viewcode-block" id="set_trainable_attr"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.set_trainable_attr">[docs]</a><span class="k">def</span> <span class="nf">set_trainable_attr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">trainable</span><span class="o">=</span><span class="n">b</span>
-    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="o">=</span><span class="n">b</span></div>
+<div class="viewcode-block" id="set_trainable_attr"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.set_trainable_attr">[docs]</a><span class="k">def</span> <span class="nf">set_trainable_attr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">trainable</span><span class="o">=</span><span class="n">b</span></div>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="o">=</span><span class="n">b</span>
 
-<div class="viewcode-block" id="apply_leaf"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.apply_leaf">[docs]</a><span class="k">def</span> <span class="nf">apply_leaf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_leaf"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.apply_leaf">[docs]</a><span class="k">def</span> <span class="nf">apply_leaf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span> <span class="n">f</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span> <span class="n">apply_leaf</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">f</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span></div>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span> <span class="n">apply_leaf</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
 
-<div class="viewcode-block" id="set_trainable"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.set_trainable">[docs]</a><span class="k">def</span> <span class="nf">set_trainable</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="n">apply_leaf</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">set_trainable_attr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">))</span></div>
+<div class="viewcode-block" id="set_trainable"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.set_trainable">[docs]</a><span class="k">def</span> <span class="nf">set_trainable</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span></div>
+    <span class="n">apply_leaf</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">set_trainable_attr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
 
-<div class="viewcode-block" id="SGD_Momentum"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.SGD_Momentum">[docs]</a><span class="k">def</span> <span class="nf">SGD_Momentum</span><span class="p">(</span><span class="n">momentum</span><span class="p">):</span>
-    <span class="k">return</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="n">momentum</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="SGD_Momentum"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.SGD_Momentum">[docs]</a><span class="k">def</span> <span class="nf">SGD_Momentum</span><span class="p">(</span><span class="n">momentum</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="n">momentum</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="one_hot"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.one_hot">[docs]</a><span class="k">def</span> <span class="nf">one_hot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="n">a</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="partition"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.partition">[docs]</a><span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">sz</span><span class="p">):</span> <span class="k">return</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">sz</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">sz</span><span class="p">)]</span>
 
-<div class="viewcode-block" id="one_hot"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.core.one_hot">[docs]</a><span class="k">def</span> <span class="nf">one_hot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="n">a</span><span class="p">]</span></div>
+<div class="viewcode-block" id="partition_by_cores"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.partition_by_cores">[docs]</a><span class="k">def</span> <span class="nf">partition_by_cores</span><span class="p">(</span><span class="n">a</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">partition</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">//</span><span class="n">num_cpus</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="num_cpus"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.num_cpus">[docs]</a><span class="k">def</span> <span class="nf">num_cpus</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sched_getaffinity</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span></div>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="BasicModel"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.BasicModel">[docs]</a><span class="k">class</span> <span class="nc">BasicModel</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;unnamed&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">model</span><span class="p">,</span><span class="n">name</span></div></div>
+<div class="viewcode-block" id="BasicModel.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.BasicModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do_fc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="k">return</span> <span class="n">children</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SingleModel"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.SingleModel">[docs]</a><span class="k">class</span> <span class="nc">SingleModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="SingleModel.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.SingleModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SimpleNet"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.SimpleNet">[docs]</a><span class="k">class</span> <span class="nc">SimpleNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+
+<div class="viewcode-block" id="SimpleNet.forward"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.SimpleNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">l_x</span> <span class="o">=</span> <span class="n">l</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">l_x</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">l_x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s1">&#39;wb&#39;</span><span class="p">))</span></div>
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span> <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">))</span></div>
+<div class="viewcode-block" id="load2"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.load2">[docs]</a><span class="k">def</span> <span class="nf">load2</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span> <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;iso-8859-1&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="load_array"><a class="viewcode-back" href="../../generated/fastai.core.html#fastai.core.load_array">[docs]</a><span class="k">def</span> <span class="nf">load_array</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span> <span class="k">return</span> <span class="n">bcolz</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)[:]</span>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
+  
 
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
 
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

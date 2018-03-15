@@ -1,42 +1,162 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>fastai.conv_learner &#8212; fastai 0.6 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.conv_learner &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.conv_learner</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for fastai.conv_learner</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="o">*</span>
@@ -49,11 +169,11 @@
     <span class="n">vgg16</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">22</span><span class="p">],</span> <span class="n">vgg19</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">22</span><span class="p">],</span>
     <span class="n">resnext50</span><span class="p">:[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">resnext101</span><span class="p">:[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">resnext101_64</span><span class="p">:[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>
     <span class="n">wrn</span><span class="p">:[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">inceptionresnet_2</span><span class="p">:[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span> <span class="n">inception_4</span><span class="p">:[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span>
-    <span class="n">dn121</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">dn161</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">dn169</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">dn201</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>
+    <span class="n">dn121</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">dn161</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">dn169</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="n">dn201</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span>
 <span class="p">}</span>
 <span class="n">model_features</span> <span class="o">=</span> <span class="p">{</span><span class="n">inception_4</span><span class="p">:</span> <span class="mi">3072</span><span class="p">,</span> <span class="n">dn121</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span> <span class="n">dn161</span><span class="p">:</span> <span class="mi">4416</span><span class="p">,}</span> <span class="c1"># nasnetalarge: 4032*2}</span>
 
-<div class="viewcode-block" id="ConvnetBuilder"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvnetBuilder">[docs]</a><span class="k">class</span> <span class="nc">ConvnetBuilder</span><span class="p">():</span>
+<div class="viewcode-block" id="ConvnetBuilder"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvnetBuilder">[docs]</a><span class="k">class</span> <span class="nc">ConvnetBuilder</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Class representing a convolutional network.</span>
 
 <span class="sd">    Arguments:</span>
@@ -64,10 +184,10 @@
 <span class="sd">        is_reg (bool): is a regression?</span>
 <span class="sd">        ps (float or array of float): dropout parameters</span>
 <span class="sd">        xtra_fc (list of ints): list of hidden layers with # hidden neurons</span>
-<span class="sd">        xtra_cut (int): # layers earlier than default to cut the model, detault is 0</span>
+<span class="sd">        xtra_cut (int): # layers earlier than default to cut the model, default is 0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">is_multi</span><span class="p">,</span> <span class="n">is_reg</span><span class="p">,</span> <span class="n">ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_fc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_cut</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">is_multi</span><span class="p">,</span> <span class="n">is_reg</span><span class="p">,</span> <span class="n">ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_fc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_cut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">is_multi</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">is_reg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xtra_cut</span> <span class="o">=</span> <span class="n">f</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">is_multi</span><span class="p">,</span><span class="n">is_reg</span><span class="p">,</span><span class="n">xtra_cut</span>
         <span class="k">if</span> <span class="n">ps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.5</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">xtra_fc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">xtra_fc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">512</span><span class="p">]</span>
@@ -78,29 +198,30 @@
         <span class="n">cut</span><span class="o">-=</span><span class="n">xtra_cut</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="n">cut_model</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">cut</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nf</span> <span class="o">=</span> <span class="n">model_features</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">model_features</span> <span class="k">else</span> <span class="p">(</span><span class="n">num_features</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">AdaptiveConcatPool2d</span><span class="p">(),</span> <span class="n">Flatten</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_head</span><span class="p">:</span> <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">AdaptiveConcatPool2d</span><span class="p">(),</span> <span class="n">Flatten</span><span class="p">()]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 
         <span class="n">n_fc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtra_fc</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">]</span><span class="o">*</span><span class="n">n_fc</span>
 
-        <span class="n">fc_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fc_layers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">custom_head</span><span class="p">:</span> <span class="n">fc_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">custom_head</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">fc_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fc_layers</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_fc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fc_layers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fc_model</span> <span class="o">=</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">fc_layers</span><span class="p">))</span>
-        <span class="n">apply_init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_model</span><span class="p">,</span> <span class="n">kaiming_normal</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom_head</span><span class="p">:</span> <span class="n">apply_init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_model</span><span class="p">,</span> <span class="n">kaiming_normal</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">layers</span><span class="o">+</span><span class="n">fc_layers</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.f.__name__}</span><span class="s1">_</span><span class="si">{self.xtra_cut}</span><span class="s1">&#39;</span>
 
-<div class="viewcode-block" id="ConvnetBuilder.create_fc_layer"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvnetBuilder.create_fc_layer">[docs]</a>    <span class="k">def</span> <span class="nf">create_fc_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">actn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvnetBuilder.create_fc_layer"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvnetBuilder.create_fc_layer">[docs]</a>    <span class="k">def</span> <span class="nf">create_fc_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">actn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="n">ni</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">p</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">))</span>
         <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="n">ni</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="n">nf</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">actn</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span></div>
+        <span class="k">if</span> <span class="n">actn</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actn</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">res</span>
 
-<div class="viewcode-block" id="ConvnetBuilder.get_fc_layers"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvnetBuilder.get_fc_layers">[docs]</a>    <span class="k">def</span> <span class="nf">get_fc_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvnetBuilder.get_fc_layers"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvnetBuilder.get_fc_layers">[docs]</a>    <span class="k">def</span> <span class="nf">get_fc_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span><span class="o">=</span><span class="p">[]</span>
         <span class="n">ni</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nf</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">nf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtra_fc</span><span class="p">):</span>
@@ -108,32 +229,37 @@
             <span class="n">ni</span><span class="o">=</span><span class="n">nf</span>
         <span class="n">final_actn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multi</span> <span class="k">else</span> <span class="n">nn</span><span class="o">.</span><span class="n">LogSoftmax</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_reg</span><span class="p">:</span> <span class="n">final_actn</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">res</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_fc_layer</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">actn</span><span class="o">=</span><span class="n">final_actn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span></div>
+        <span class="n">res</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_fc_layer</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">actn</span><span class="o">=</span><span class="n">final_actn</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">res</span>
 
-<div class="viewcode-block" id="ConvnetBuilder.get_layer_groups"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvnetBuilder.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do_fc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">do_fc</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span><span class="n">idxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_model</span><span class="p">,[]</span>
-        <span class="k">else</span><span class="p">:</span>     <span class="n">m</span><span class="p">,</span><span class="n">idxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,[</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_cut</span><span class="p">,</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fc</span><span class="p">]</span>
-        <span class="n">lgs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">split_by_idxs</span><span class="p">(</span><span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="p">),</span><span class="n">idxs</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">lgs</span></div></div>
+<div class="viewcode-block" id="ConvnetBuilder.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvnetBuilder.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do_fc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">do_fc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_model</span><span class="p">]</span>
+        <span class="n">idxs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_cut</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">children</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span> <span class="n">c</span> <span class="o">=</span> <span class="n">children</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">lgs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">split_by_idxs</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">idxs</span><span class="p">))</span></div></div>
+        <span class="k">return</span> <span class="n">lgs</span><span class="o">+</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_model</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="ConvLearner"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner">[docs]</a><span class="k">class</span> <span class="nc">ConvLearner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner">[docs]</a><span class="k">class</span> <span class="nc">ConvLearner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">binary_cross_entropy</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_multi</span> <span class="k">else</span> <span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_reg</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">l1_loss</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">accuracy_multi</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_multi</span> <span class="k">else</span> <span class="p">[</span><span class="n">accuracy</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;is_multi&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">binary_cross_entropy</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_multi</span> <span class="k">else</span> <span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_reg</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">l1_loss</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">accuracy_thresh</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_multi</span> <span class="k">else</span> <span class="p">[</span><span class="n">accuracy</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">precompute</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_fc1</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="n">precompute</span>
 
-<div class="viewcode-block" id="ConvLearner.pretrained"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.pretrained">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pretrained</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_fc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_cut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">models</span> <span class="o">=</span> <span class="n">ConvnetBuilder</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">is_multi</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">is_reg</span><span class="p">,</span> <span class="n">ps</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span> <span class="n">xtra_fc</span><span class="o">=</span><span class="n">xtra_fc</span><span class="p">,</span> <span class="n">xtra_cut</span><span class="o">=</span><span class="n">xtra_cut</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ConvLearner.pretrained"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.pretrained">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pretrained</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_fc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtra_cut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="n">ConvnetBuilder</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">is_multi</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">is_reg</span><span class="p">,</span>
+            <span class="n">ps</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span> <span class="n">xtra_fc</span><span class="o">=</span><span class="n">xtra_fc</span><span class="p">,</span> <span class="n">xtra_cut</span><span class="o">=</span><span class="n">xtra_cut</span><span class="p">,</span> <span class="n">custom_head</span><span class="o">=</span><span class="n">custom_head</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">precompute</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">fc_model</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">model</span>
@@ -141,33 +267,39 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc_data</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_</span>
 
-<div class="viewcode-block" id="ConvLearner.create_empty_bcolz"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.create_empty_bcolz">[docs]</a>    <span class="k">def</span> <span class="nf">create_empty_bcolz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">bcolz</span><span class="o">.</span><span class="n">carray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">chunklen</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ConvLearner.create_empty_bcolz"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.create_empty_bcolz">[docs]</a>    <span class="k">def</span> <span class="nf">create_empty_bcolz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="n">bcolz</span><span class="o">.</span><span class="n">carray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">chunklen</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ConvLearner.set_data"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner.set_data"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">precompute</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="n">precompute</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_fc1</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ConvLearner.get_layer_groups"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precompute</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ConvLearner.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precompute</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ConvLearner.summary"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner.summary"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">precompute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="n">precompute</span>
-        <span class="k">return</span> <span class="n">res</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="n">precompute</span></div>
+        <span class="k">return</span> <span class="n">res</span>
 
-<div class="viewcode-block" id="ConvLearner.get_activations"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.get_activations">[docs]</a>    <span class="k">def</span> <span class="nf">get_activations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner.get_activations"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.get_activations">[docs]</a>    <span class="k">def</span> <span class="nf">get_activations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">tmpl</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;_</span><span class="si">{self.models.name}</span><span class="s1">_</span><span class="si">{self.data.sz}</span><span class="s1">.bc&#39;</span>
         <span class="c1"># TODO: Somehow check that directory names haven&#39;t changed (e.g. added test set)</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">p</span><span class="o">+</span><span class="n">tmpl</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;x_act&#39;</span><span class="p">,</span> <span class="s1">&#39;x_act_val&#39;</span><span class="p">,</span> <span class="s1">&#39;x_act_test&#39;</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="p">[</span><span class="n">bcolz</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">create_empty_bcolz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">nf</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span></div>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">create_empty_bcolz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">nf</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
 
-<div class="viewcode-block" id="ConvLearner.save_fc1"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.save_fc1">[docs]</a>    <span class="k">def</span> <span class="nf">save_fc1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner.save_fc1"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.save_fc1">[docs]</a>    <span class="k">def</span> <span class="nf">save_fc1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">get_activations</span><span class="p">()</span>
         <span class="n">act</span><span class="p">,</span> <span class="n">val_act</span><span class="p">,</span> <span class="n">test_act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activations</span>
         <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">top_model</span>
@@ -179,20 +311,20 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_dl</span><span class="p">:</span> <span class="n">predict_to_bcolz</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_dl</span><span class="p">,</span> <span class="n">test_act</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fc_data</span> <span class="o">=</span> <span class="n">ImageClassifierData</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
-                <span class="p">(</span><span class="n">act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">trn_y</span><span class="p">),</span> <span class="p">(</span><span class="n">val_act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">val_y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span>
-                <span class="n">test</span> <span class="o">=</span> <span class="n">test_act</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_dl</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span></div>
+                <span class="p">(</span><span class="n">act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">trn_y</span><span class="p">),</span> <span class="p">(</span><span class="n">val_act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">val_y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span></div>
+                <span class="n">test</span> <span class="o">=</span> <span class="n">test_act</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test_dl</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ConvLearner.freeze"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner.freeze"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Freeze all but the very last layer.</span>
 
 <span class="sd">        Make all layers untrainable (i.e. frozen) except for the last layer.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ConvLearner.unfreeze"><a class="viewcode-back" href="../../auto_api_teste/fastai.html#fastai.conv_learner.ConvLearner.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ConvLearner.unfreeze"><a class="viewcode-back" href="../../generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Unfreeze all layers.</span>
 
 <span class="sd">        Make all layers trainable by unfreezing. This will also set the `precompute` to `False` since we can</span>
@@ -201,64 +333,70 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="kc">False</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precompute</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">fastai</a></h1>
+
+    </section>
+
+  </div>
+  
 
 
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
+  
 
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
 
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api.html">fastai API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeremy Howard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

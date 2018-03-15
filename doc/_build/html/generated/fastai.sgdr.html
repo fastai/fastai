@@ -204,189 +204,189 @@
 <span id="fastai-sgdr-module"></span><h1>fastai.sgdr module<a class="headerlink" href="#module-fastai.sgdr" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="fastai.sgdr.Callback">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">Callback</code><a class="headerlink" href="#fastai.sgdr.Callback" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">Callback</code><a class="reference internal" href="../_modules/fastai/sgdr.html#Callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.Callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastai.sgdr.Callback.on_batch_begin">
-<code class="descname">on_batch_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.Callback.on_batch_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#Callback.on_batch_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.Callback.on_batch_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.Callback.on_batch_end">
-<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.Callback.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#Callback.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.Callback.on_batch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.Callback.on_epoch_end">
-<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.Callback.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#Callback.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.Callback.on_epoch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.Callback.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.Callback.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#Callback.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.Callback.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.Callback.on_train_end">
-<code class="descname">on_train_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.Callback.on_train_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#Callback.on_train_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.Callback.on_train_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.CircularLR">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">CircularLR</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>nb</em>, <em>div=4</em>, <em>cut_div=8</em>, <em>on_cycle_end=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.CircularLR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">CircularLR</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>nb</em>, <em>div=4</em>, <em>cut_div=8</em>, <em>on_cycle_end=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#CircularLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.CircularLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.LR_Updater" title="fastai.sgdr.LR_Updater"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.LR_Updater</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.CircularLR.calc_lr">
-<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.CircularLR.calc_lr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#CircularLR.calc_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.CircularLR.calc_lr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.CircularLR.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.CircularLR.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#CircularLR.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.CircularLR.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.CosAnneal">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">CosAnneal</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>nb</em>, <em>on_cycle_end=None</em>, <em>cycle_mult=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.CosAnneal" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">CosAnneal</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>nb</em>, <em>on_cycle_end=None</em>, <em>cycle_mult=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#CosAnneal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.CosAnneal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.LR_Updater" title="fastai.sgdr.LR_Updater"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.LR_Updater</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.CosAnneal.calc_lr">
-<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.CosAnneal.calc_lr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#CosAnneal.calc_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.CosAnneal.calc_lr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.CosAnneal.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.CosAnneal.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#CosAnneal.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.CosAnneal.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.LR_Finder">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LR_Finder</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>nb</em>, <em>end_lr=10</em>, <em>linear=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Finder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LR_Finder</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>nb</em>, <em>end_lr=10</em>, <em>linear=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Finder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Finder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.LR_Updater" title="fastai.sgdr.LR_Updater"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.LR_Updater</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.LR_Finder.calc_lr">
-<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Finder.calc_lr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Finder.calc_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Finder.calc_lr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LR_Finder.on_batch_end">
-<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Finder.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Finder.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Finder.on_batch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LR_Finder.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Finder.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Finder.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Finder.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LR_Finder.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>n_skip=10</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Finder.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>n_skip=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Finder.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Finder.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.LR_Updater">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LR_Updater</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>save_path=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Updater" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LR_Updater</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>save_path=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Updater"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Updater" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.LossRecorder" title="fastai.sgdr.LossRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.LossRecorder</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.LR_Updater.calc_lr">
-<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Updater.calc_lr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calc_lr</code><span class="sig-paren">(</span><em>init_lrs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Updater.calc_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Updater.calc_lr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LR_Updater.on_batch_end">
-<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Updater.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Updater.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Updater.on_batch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LR_Updater.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Updater.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Updater.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Updater.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LR_Updater.update_lr">
-<code class="descname">update_lr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LR_Updater.update_lr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_lr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LR_Updater.update_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LR_Updater.update_lr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.LoggingCallback">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LoggingCallback</code><span class="sig-paren">(</span><em>save_path</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LoggingCallback</code><span class="sig-paren">(</span><em>save_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.Callback" title="fastai.sgdr.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.Callback</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.LoggingCallback.log">
-<code class="descname">log</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback.log" title="Permalink to this definition">¶</a></dt>
+<code class="descname">log</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback.log" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LoggingCallback.on_batch_begin">
-<code class="descname">on_batch_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_batch_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback.on_batch_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_batch_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LoggingCallback.on_batch_end">
-<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_batch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LoggingCallback.on_epoch_end">
-<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_epoch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LoggingCallback.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LoggingCallback.on_train_end">
-<code class="descname">on_train_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_train_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LoggingCallback.on_train_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LoggingCallback.on_train_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.LossRecorder">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LossRecorder</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>save_path=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LossRecorder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">LossRecorder</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>save_path=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LossRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LossRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.Callback" title="fastai.sgdr.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.Callback</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.LossRecorder.on_batch_end">
-<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LossRecorder.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LossRecorder.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LossRecorder.on_batch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LossRecorder.on_epoch_end">
-<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LossRecorder.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LossRecorder.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LossRecorder.on_epoch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LossRecorder.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LossRecorder.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LossRecorder.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LossRecorder.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LossRecorder.plot_loss">
-<code class="descname">plot_loss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LossRecorder.plot_loss" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_loss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LossRecorder.plot_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LossRecorder.plot_loss" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.LossRecorder.plot_lr">
-<code class="descname">plot_lr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.LossRecorder.plot_lr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_lr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#LossRecorder.plot_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.LossRecorder.plot_lr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.SaveBestModel">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">SaveBestModel</code><span class="sig-paren">(</span><em>model</em>, <em>layer_opt</em>, <em>name='best_model'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.SaveBestModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">SaveBestModel</code><span class="sig-paren">(</span><em>model</em>, <em>layer_opt</em>, <em>name='best_model'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#SaveBestModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.SaveBestModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.LossRecorder" title="fastai.sgdr.LossRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.LossRecorder</span></code></a></p>
 <p>Save weigths of the model with
 the best accuracy during training.</p>
@@ -405,33 +405,33 @@ name: the name of filename of the weights without ‘.h5’</dd>
 </dl>
 <dl class="method">
 <dt id="fastai.sgdr.SaveBestModel.on_epoch_end">
-<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.SaveBestModel.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#SaveBestModel.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.SaveBestModel.on_epoch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fastai.sgdr.WeightDecaySchedule">
-<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">WeightDecaySchedule</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>batch_per_epoch</em>, <em>cycle_len</em>, <em>cycle_mult</em>, <em>n_cycles</em>, <em>norm_wds=False</em>, <em>wds_sched_mult=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.sgdr.</code><code class="descname">WeightDecaySchedule</code><span class="sig-paren">(</span><em>layer_opt</em>, <em>batch_per_epoch</em>, <em>cycle_len</em>, <em>cycle_mult</em>, <em>n_cycles</em>, <em>norm_wds=False</em>, <em>wds_sched_mult=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#WeightDecaySchedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fastai.sgdr.Callback" title="fastai.sgdr.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.sgdr.Callback</span></code></a></p>
 <dl class="method">
 <dt id="fastai.sgdr.WeightDecaySchedule.on_batch_begin">
-<code class="descname">on_batch_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_batch_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#WeightDecaySchedule.on_batch_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_batch_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.WeightDecaySchedule.on_batch_end">
-<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#WeightDecaySchedule.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_batch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.WeightDecaySchedule.on_epoch_end">
-<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_epoch_end</code><span class="sig-paren">(</span><em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#WeightDecaySchedule.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_epoch_end" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.sgdr.WeightDecaySchedule.on_train_begin">
-<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/sgdr.html#WeightDecaySchedule.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.sgdr.WeightDecaySchedule.on_train_begin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

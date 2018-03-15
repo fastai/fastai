@@ -19,12 +19,13 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../'))
-#sys.path.insert(0, os.path.abspath('..'))
-#os.path.abspath('../../fastai')
 
 # -- General configuration ------------------------------------------------
+
 numpydoc_show_class_members = False
+
 # If your documentation needs a minimal Sphinx version, state it here.
 #
 # needs_sphinx = '1.0'
@@ -40,7 +41,8 @@ extensions = ['sphinx.ext.autodoc',
     'numpydoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
-    'sphinx_issues']
+    'sphinx_issues',
+    'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

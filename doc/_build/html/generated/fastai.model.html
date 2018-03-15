@@ -204,33 +204,33 @@
 <span id="fastai-model-module"></span><h1>fastai.model module<a class="headerlink" href="#module-fastai.model" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="fastai.model.Stepper">
-<em class="property">class </em><code class="descclassname">fastai.model.</code><code class="descname">Stepper</code><span class="sig-paren">(</span><em>m</em>, <em>opt</em>, <em>crit</em>, <em>clip=0</em>, <em>reg_fn=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.Stepper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.model.</code><code class="descname">Stepper</code><span class="sig-paren">(</span><em>m</em>, <em>opt</em>, <em>crit</em>, <em>clip=0</em>, <em>reg_fn=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#Stepper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.Stepper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastai.model.Stepper.evaluate">
-<code class="descname">evaluate</code><span class="sig-paren">(</span><em>xs</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.Stepper.evaluate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>xs</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#Stepper.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.Stepper.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.model.Stepper.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><em>train=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.Stepper.reset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reset</code><span class="sig-paren">(</span><em>train=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#Stepper.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.Stepper.reset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastai.model.Stepper.step">
-<code class="descname">step</code><span class="sig-paren">(</span><em>xs</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.Stepper.step" title="Permalink to this definition">¶</a></dt>
+<code class="descname">step</code><span class="sig-paren">(</span><em>xs</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#Stepper.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.Stepper.step" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.cut_model">
-<code class="descclassname">fastai.model.</code><code class="descname">cut_model</code><span class="sig-paren">(</span><em>m</em>, <em>cut</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.cut_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">cut_model</code><span class="sig-paren">(</span><em>m</em>, <em>cut</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#cut_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.cut_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.fit">
-<code class="descclassname">fastai.model.</code><code class="descname">fit</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>epochs</em>, <em>opt</em>, <em>crit</em>, <em>metrics=None</em>, <em>callbacks=None</em>, <em>stepper=&lt;class 'fastai.model.Stepper'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.fit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">fit</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>epochs</em>, <em>opt</em>, <em>crit</em>, <em>metrics=None</em>, <em>callbacks=None</em>, <em>stepper=&lt;class 'fastai.model.Stepper'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a model</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -248,52 +248,52 @@ crit: loss function to optimize. Example: F.cross_entropy</p>
 
 <dl class="function">
 <dt id="fastai.model.get_prediction">
-<code class="descclassname">fastai.model.</code><code class="descname">get_prediction</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.get_prediction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">get_prediction</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#get_prediction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.get_prediction" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.model_summary">
-<code class="descclassname">fastai.model.</code><code class="descname">model_summary</code><span class="sig-paren">(</span><em>m</em>, <em>input_size</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.model_summary" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">model_summary</code><span class="sig-paren">(</span><em>m</em>, <em>input_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#model_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.model_summary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.num_features">
-<code class="descclassname">fastai.model.</code><code class="descname">num_features</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.num_features" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">num_features</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#num_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.num_features" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.predict">
-<code class="descclassname">fastai.model.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>m</em>, <em>dl</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>m</em>, <em>dl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.predict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.predict_to_bcolz">
-<code class="descclassname">fastai.model.</code><code class="descname">predict_to_bcolz</code><span class="sig-paren">(</span><em>m</em>, <em>gen</em>, <em>arr</em>, <em>workers=4</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.predict_to_bcolz" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">predict_to_bcolz</code><span class="sig-paren">(</span><em>m</em>, <em>gen</em>, <em>arr</em>, <em>workers=4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#predict_to_bcolz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.predict_to_bcolz" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.predict_with_targs">
-<code class="descclassname">fastai.model.</code><code class="descname">predict_with_targs</code><span class="sig-paren">(</span><em>m</em>, <em>dl</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.predict_with_targs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">predict_with_targs</code><span class="sig-paren">(</span><em>m</em>, <em>dl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#predict_with_targs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.predict_with_targs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.predict_with_targs_">
-<code class="descclassname">fastai.model.</code><code class="descname">predict_with_targs_</code><span class="sig-paren">(</span><em>m</em>, <em>dl</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.predict_with_targs_" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">predict_with_targs_</code><span class="sig-paren">(</span><em>m</em>, <em>dl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#predict_with_targs_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.predict_with_targs_" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.print_stats">
-<code class="descclassname">fastai.model.</code><code class="descname">print_stats</code><span class="sig-paren">(</span><em>epoch</em>, <em>values</em>, <em>decimals=6</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.print_stats" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">print_stats</code><span class="sig-paren">(</span><em>epoch</em>, <em>values</em>, <em>decimals=6</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#print_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.print_stats" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.set_train_mode">
-<code class="descclassname">fastai.model.</code><code class="descname">set_train_mode</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.set_train_mode" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">set_train_mode</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#set_train_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.set_train_mode" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.model.validate">
-<code class="descclassname">fastai.model.</code><code class="descname">validate</code><span class="sig-paren">(</span><em>stepper</em>, <em>dl</em>, <em>metrics</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.model.validate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fastai.model.</code><code class="descname">validate</code><span class="sig-paren">(</span><em>stepper</em>, <em>dl</em>, <em>metrics</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/model.html#validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.model.validate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
