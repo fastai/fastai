@@ -88,7 +88,7 @@ dependencies:
   #- terminado
 - testpath
 - tk
-- tornado
+- tornado<5
 - tqdm
 - traitlets
 - wcwidth
@@ -114,5 +114,5 @@ dependencies:
   - kaggle-cli
   - ipywidgets
   - jupyter_contrib_nbextensions
-  - git+https://github.com/SauceCat/PDPbox.git
+    #- git+https://github.com/SauceCat/PDPbox.git
 

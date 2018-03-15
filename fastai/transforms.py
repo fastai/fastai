@@ -2,7 +2,7 @@ from .imports import *
 from .layer_optimizer import *
 from enum import IntEnum
 
-def scale_min(im, targ):
+def scale_min(im, targ, interpolation=cv2.INTER_AREA):
     """ Scales the image so that the smallest axis is of size targ.
 
     Arguments:
@@ -12,7 +12,7 @@ def scale_min(im, targ):
     r,c,*_ = im.shape
     ratio = targ/min(r,c)
     sz = (scale_to(c, ratio, targ), scale_to(r, ratio, targ))
-    return cv2.resize(im, sz)
+    return cv2.resize(im, sz, interpolation=interpolation)
 
 def zoom_cv(x,z):
     if z==0: return x
@@ -20,10 +20,10 @@ def zoom_cv(x,z):
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
-def stretch_cv(x,sr,sc):
+def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
     if sr==0 and sc==0: return x
     r,c,*_ = im.shape
-    x = cv2.resize(x, None, fx=sr+1, fy=sc+1)
+    x = cv2.resize(x, None, fx=sr+1, fy=sc+1, interpolation=interpolation)
     nr,nc,*_ = im.shape
     cr = (nr-r)//2; cc = (nc-c)//2
     return x[cr:r+cr, cc:c+cc]
@@ -37,7 +37,7 @@ def lighting(im, b, c):
     mu = np.average(im)
     return np.clip((im-mu)*c+mu+b,0.,1.).astype(np.float32)
 
-def rotate_cv(im, deg, mode=cv2.BORDER_CONSTANT):
+def rotate_cv(im, deg, mode=cv2.BORDER_CONSTANT, interpolation=cv2.INTER_AREA):
     """ Rotates an image by deg degrees
 
     Arguments:
@@ -45,13 +45,13 @@ def rotate_cv(im, deg, mode=cv2.BORDER_CONSTANT):
     """
     r,c,*_ = im.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),deg,1)
-    return cv2.warpAffine(im,M,(c,r), borderMode=mode)
+    return cv2.warpAffine(im,M,(c,r), borderMode=mode, flags=cv2.WARP_FILL_OUTLIERS+interpolation)
 
-def no_crop(im, min_sz=None):
+def no_crop(im, min_sz=None, interpolation=cv2.INTER_AREA):
     """ Returns a squared resized image """
     r,c,*_ = im.shape
     if min_sz is None: min_sz = min(r,c)
-    return cv2.resize(im, (min_sz, min_sz))
+    return cv2.resize(im, (min_sz, min_sz), interpolation=interpolation)
 
 def center_crop(im, min_sz=None):
     """ Returns a center crop of an image"""
@@ -111,21 +111,16 @@ def channel_dim(x, y): return np.rollaxis(x, 2), y
 
 
 def to_bb(YY, y):
-    (cols, rows) = np.nonzero(YY)
-    # return 0s when the fish has been cropped
-    if rows.shape[0] == 0:
-        #TODO: log this somewhere
-        print("loss my fish")
-        return np.zeros(4)
+    cols,rows = np.nonzero(YY)
     top_row = np.min(rows)
     left_col = np.min(cols)
     bottom_row = np.max(rows)
     right_col = np.max(cols)
-    return np.array([left_col, top_row, right_col, bottom_row])
+    return np.array([left_col, top_row, right_col, bottom_row], dtype=np.float32)
 
 
 def coords2px(y, x):
-    """ Transforming coordinates to pixes.
+    """ Transforming coordinates to pixels.
 
     Arguments:
         y (np array): vector in which (y[0], y[1]) and (y[2], y[3]) are the
@@ -149,7 +144,7 @@ class TfmType(IntEnum):
         PIXEL: when x and y are images and should be transformed in the same way.
                Example: image segmentation.
         COORD: when y are coordinate or x in which case x and y have
-               to be transformed accordingly. Example: bounding box for fish dataset.
+               to be transformed accordingly.
     """
     NO = 1
     PIXEL = 2
@@ -165,16 +160,17 @@ class Transform():
        TfmType.NO: the target y is not transformed
        TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
            them with the same paramters.
-       TfmType.COORD: assumes that y are some coordinates in the image x. At the momemnt this
-           works for a bounding box around a fish.
+       TfmType.COORD: assumes that y are some coordinates in the image x.
 
     Arguments:
         tfm_y (TfmType): type of transform
     """
-    def __init__(self, tfm_y=TfmType.NO): self.tfm_y=tfm_y
+    def __init__(self, tfm_y=TfmType.NO):
+        self.lock = threading.RLock()
+        self.tfm_y=tfm_y
     def set_state(self): pass
     def __call__(self, x, y):
-        self.set_state()
+        with self.lock: self.set_state()
         x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
                 else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
                 else self.transform_coord(x,y))
@@ -183,27 +179,32 @@ class Transform():
     def transform_coord(self, x, y): return self.transform(x),y
 
     def transform(self, x, y=None):
-        x = self.do_transform(x)
-        return (x, self.do_transform(y)) if y is not None else x
+        x = self.do_transform(x,False)
+        return (x, self.do_transform(y,True)) if y is not None else x
 
-    def do_transform(self, x): raise NotImplementedError
+    def do_transform(self, x, is_y): raise NotImplementedError
 
 
 class CoordTransform(Transform):
-    """ A class that represents a coordinate transform.
+    """ A class that represents a coordinate transform.  """
+    def map_y(self, y0, x):
+        y = random_px_rect(y0, x)
+        y_tr = self.do_transform(y, True)
+        return to_bb(y_tr, y) if y_tr.sum()>1 else y0
 
-    Note: at the moment this works for the bounding box problem.
-    """
-    def transform_coord(self, x, y):
-        y = coords2px(y, x)
-        x,y_tr = self.transform(x,y)
-        return x, to_bb(y_tr, y)
+    def transform_coord(self, x, ys):
+        yp = partition(ys, 4)
+        y2 = [self.map_y(y,x) for y in yp]
+        x = self.do_transform(x, False)
+        return x, np.concatenate(y2)
 
 
 class AddPadding(CoordTransform):
     def __init__(self, pad, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
-        self.pad,self.mode,self.tfm_y = pad,mode,tfm_y
-    def do_transform(self, im):
+        super().__init__(tfm_y)
+        self.pad,self.mode = pad,mode
+
+    def do_transform(self, im, is_y):
         return cv2.copyMakeBorder(im, self.pad, self.pad, self.pad, self.pad, self.mode)
 
 class CenterCrop(CoordTransform):
@@ -214,8 +215,11 @@ class CenterCrop(CoordTransform):
         sz (int): size of the crop.
         tfm_y (TfmType): type of y transformation.
     """
-    def __init__(self, sz, tfm_y=TfmType.NO): self.tfm_y,self.min_sz = tfm_y,sz
-    def do_transform(self, x): return center_crop(x, self.min_sz)
+    def __init__(self, sz, tfm_y=TfmType.NO):
+        super().__init__(tfm_y)
+        self.min_sz = sz
+
+    def do_transform(self, x, is_y): return center_crop(x, self.min_sz)
 
 
 class RandomCrop(CoordTransform):
@@ -227,14 +231,14 @@ class RandomCrop(CoordTransform):
         tfm_y (TfmType): type of y transformation.
     """
     def __init__(self, targ, tfm_y=TfmType.NO):
-        self.tfm_y=tfm_y
+        super().__init__(tfm_y)
         self.targ=targ
 
     def set_state(self):
         self.rand_r = random.uniform(0, 1)
         self.rand_c = random.uniform(0, 1)
 
-    def do_transform(self, x):
+    def do_transform(self, x, is_y):
         r,c,*_ = x.shape
         start_r = np.floor(self.rand_r*(r-self.targ)).astype(int)
         start_c = np.floor(self.rand_c*(c-self.targ)).astype(int)
@@ -250,11 +254,11 @@ class NoCrop(CoordTransform):
         tfm_y (TfmType): type of y transformation.
     """
     def __init__(self, sz, tfm_y=TfmType.NO):
-        self.tfm_y=tfm_y
+        super().__init__(tfm_y)
         self.sz=sz
 
-    def do_transform(self, x):
-       return no_crop(x, self.sz)
+    def do_transform(self, x, is_y):
+       return no_crop(x, self.sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
 
 
 class Scale(CoordTransform):
@@ -265,11 +269,11 @@ class Scale(CoordTransform):
         tfm_y (TfmType): type of y transformation.
     """
     def __init__(self, sz, tfm_y=TfmType.NO):
-        self.tfm_y=tfm_y
+        super().__init__(tfm_y)
         self.sz=sz
 
-    def do_transform(self, x):
-        return scale_min(x, self.sz)
+    def do_transform(self, x, is_y):
+        return scale_min(x, self.sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
 
 
 class RandomScale(CoordTransform):
@@ -283,25 +287,25 @@ class RandomScale(CoordTransform):
         tfm_y (TfmType): type of y transform
     """
     def __init__(self, sz, max_zoom, p=0.75, tfm_y=TfmType.NO):
-        self.sz,self.max_zoom,self.p,self.tfm_y = sz,max_zoom,p,tfm_y
+        super().__init__(tfm_y)
+        self.sz,self.max_zoom,self.p = sz,max_zoom,p
 
     def set_state(self):
         self.new_sz = self.sz
         if random.random()<self.p:
             self.new_sz = int(random.uniform(1., self.max_zoom)*self.sz)
 
-    def do_transform(self, x):
-        return scale_min(x, self.new_sz)
+    def do_transform(self, x, is_y):
+        return scale_min(x, self.new_sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
 
 
 def random_px_rect(y, x):
     """ Returns a 2D image of the size x with random points in a square box.
 
     Arguments:
-        y (array): defines a bounding box (arround a fish) for the
-            fishery datset. Contains the coordinates of the bounding box corners
+        y (array): Contains the coordinates of the bounding box corners
             y = [upper_row, left_col, lower_row, right_col]
-        x (array): image (with the target fish)
+        x (array): image
 
     Returns:
         Y (array): A 2D array of size (x.shape[0], x.shape[1]) with pixes
@@ -322,7 +326,7 @@ def random_px_rect(y, x):
     return Y
 
 
-class RandomRotate(Transform):
+class RandomRotate(CoordTransform):
     """ Rotates images and (optionally) target y.
 
     Rotating coordinates is treated differently for x and y on this
@@ -334,25 +338,17 @@ class RandomRotate(Transform):
         tfm_y (TfmType): type of y transform
     """
     def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
-        self.deg,self.mode,self.p,self.tfm_y = deg,mode,p,tfm_y
+        super().__init__(tfm_y)
+        self.deg,self.mode,self.p = deg,mode,p
 
     def set_state(self):
         self.rdeg = rand0(self.deg)
         self.rp = random.random()<self.p
 
-    def transform_coord(self, x, y):
-        y = random_px_rect(y, x)
-        x,y_tr = self.do_transform(x), self.do_transform_y(y)
-        y = to_bb(y_tr, y)
-        return x, y
-
-    def do_transform(self, x):
-        if self.rp: x = rotate_cv(x, self.rdeg, mode=self.mode)
+    def do_transform(self, x, is_y):
+        if self.rp: x = rotate_cv(x, self.rdeg, mode=self.mode,
+                interpolation=cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
         return x
-
-    def do_transform_y(self, y):
-        if self.rp: y = rotate_cv(y, self.rdeg)
-        return y
 
 
 class RandomDihedral(CoordTransform):
@@ -360,7 +356,7 @@ class RandomDihedral(CoordTransform):
         self.rot_times = random.randint(0,3)
         self.do_flip = random.random()<0.5
 
-    def do_transform(self, x):
+    def do_transform(self, x, is_y):
         x = np.rot90(x, self.rot_times)
         return np.fliplr(x).copy() if self.do_flip else x
 
@@ -369,20 +365,20 @@ class RandomFlip(CoordTransform):
     def set_state(self):
         self.do_flip = random.random()<0.5
 
-    def do_transform(self, x):
+    def do_transform(self, x, is_y):
         return np.fliplr(x).copy() if self.do_flip else x
 
 
 class RandomLighting(Transform):
     def __init__(self, b, c, tfm_y=TfmType.NO):
-        self.tfm_y=tfm_y
+        super().__init__(tfm_y)
         self.b,self.c = b,c
 
     def set_state(self):
         self.b_rand = rand0(self.b)
         self.c_rand = rand0(self.c)
 
-    def do_transform(self, x):
+    def do_transform(self, x, is_y):
         b = self.b_rand
         c = self.c_rand
         c = -1/(c-1) if c<0 else c+1
@@ -398,12 +394,12 @@ class RandomBlur(Transform):
 
     def __init__(self, blur_strengths=5, probability=0.5, tfm_y=TfmType.NO):
         # Blur strength must be an odd number, because it is used as a kernel size.
+        super().__init__(tfm_y)
         self.blur_strengths = (np.array(blur_strengths, ndmin=1) * 2) - 1
         if np.any(self.blur_strengths < 0):
             raise ValueError("all blur_strengths must be > 0")
         self.kernel = (0, 0)
         self.probability = probability
-        self.tfm_y = tfm_y
         self.apply_transform = False
 
     def set_state(self):
@@ -411,15 +407,13 @@ class RandomBlur(Transform):
         kernel_size = np.random.choice(self.blur_strengths)
         self.kernel = (kernel_size, kernel_size)
 
-    def do_transform(self, x):
-        if self.apply_transform:
-            return cv2.GaussianBlur(src=x, ksize=self.kernel, sigmaX=0)
-        else:
-            return x
+    def do_transform(self, x, is_y):
+        return cv2.GaussianBlur(src=x, ksize=self.kernel, sigmaX=0) if self.apply_transform else x
 
 
 def compose(im, y, fns):
     for fn in fns:
+        #pdb.set_trace()
         im, y =fn(im, y)
     return im if y is None else (im, y)
 
@@ -431,13 +425,12 @@ class CropType(IntEnum):
     CENTER = 2
     NO = 3
 
+crop_fn_lu = {CropType.RANDOM: RandomCrop, CropType.CENTER: CenterCrop, CropType.NO: NoCrop}
 
 class Transforms():
     def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER, tfm_y=TfmType.NO):
         self.sz,self.denorm = sz,denorm
-        crop_tfm = CenterCrop(sz, tfm_y)
-        if crop_type == CropType.RANDOM: crop_tfm = RandomCrop(sz, tfm_y)
-        if crop_type == CropType.NO: crop_tfm = NoCrop(sz, tfm_y)
+        crop_tfm = crop_fn_lu[crop_type](sz, tfm_y)
         self.tfms = tfms + [crop_tfm, normalizer, channel_dim]
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
 
@@ -448,12 +441,11 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
     scale = [RandomScale(sz, max_zoom, tfm_y=tfm_y) if max_zoom is not None else Scale(sz, tfm_y)]
     if pad: scale.append(AddPadding(pad, mode=pad_mode))
-    if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
+    #if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
     return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y)
 
 def noop(x): return x
 
-# TODO: find a different solution now that we have tfm_y
 transforms_basic    = [RandomRotate(10), RandomLighting(0.05, 0.05)]
 transforms_side_on  = transforms_basic + [RandomFlip()]
 transforms_top_down = transforms_basic + [RandomDihedral()]
@@ -462,17 +454,20 @@ imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
 
-def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None, pad_mode=cv2.BORDER_REFLECT):
+def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM, tfm_y=None,
+        pad_mode=cv2.BORDER_REFLECT):
     if aug_tfms is None: aug_tfms=[]
     tfm_norm = Normalize(*stats)
     tfm_denorm = Denormalize(*stats)
-    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=CropType.CENTER, tfm_y=tfm_y)
+    val_crop = CropType.CENTER if crop_type==CropType.RANDOM else crop_type
+    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y)
     trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
                       pad=pad, crop_type=crop_type, tfm_y=tfm_y, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
-def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None, pad_mode=cv2.BORDER_REFLECT):
+def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM, tfm_y=None,
+        pad_mode=cv2.BORDER_REFLECT):
     stats = inception_stats if f_model in inception_models else imagenet_stats
     return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type, tfm_y=tfm_y, pad_mode=pad_mode)
 

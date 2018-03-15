@@ -26,7 +26,7 @@ class ConvnetBuilder():
         xtra_cut (int): # layers earlier than default to cut the model, default is 0
     """
 
-    def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0):
+    def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
         if ps is None: ps = [0.25,0.5]
         if xtra_fc is None: xtra_fc = [512]
@@ -37,16 +37,17 @@ class ConvnetBuilder():
         cut-=xtra_cut
         layers = cut_model(f(True), cut)
         self.nf = model_features[f] if f in model_features else (num_features(layers)*2)
-        layers += [AdaptiveConcatPool2d(), Flatten()]
+        if not custom_head: layers += [AdaptiveConcatPool2d(), Flatten()]
         self.top_model = nn.Sequential(*layers)
 
         n_fc = len(self.xtra_fc)+1
         if not isinstance(self.ps, list): self.ps = [self.ps]*n_fc
 
-        fc_layers = self.get_fc_layers()
+        if custom_head: fc_layers = [custom_head]
+        else: fc_layers = self.get_fc_layers()
         self.n_fc = len(fc_layers)
         self.fc_model = to_gpu(nn.Sequential(*fc_layers))
-        apply_init(self.fc_model, kaiming_normal)
+        if not custom_head: apply_init(self.fc_model, kaiming_normal)
         self.model = to_gpu(nn.Sequential(*(layers+fc_layers)))
 
     @property
@@ -84,17 +85,19 @@ class ConvLearner(Learner):
     def __init__(self, data, models, precompute=False, **kwargs):
         self.precompute = False
         super().__init__(data, models, **kwargs)
-        self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
-        if data.is_reg: self.crit = F.l1_loss
-        elif self.metrics is None:
-            self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
+        if hasattr(data, 'is_multi'):
+            self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
+            if data.is_reg: self.crit = F.l1_loss
+            elif self.metrics is None:
+                self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
         if precompute: self.save_fc1()
         self.freeze()
         self.precompute = precompute
 
     @classmethod
-    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, precompute=False, **kwargs):
-        models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg, ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut)
+    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False, **kwargs):
+        models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
+            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head)
         return cls(data, models, precompute, **kwargs)
 
     @property

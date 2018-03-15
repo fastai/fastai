@@ -312,7 +312,7 @@ class TextDataLoader():
     def __init__(self, src, x_fld, y_fld):
         self.src,self.x_fld,self.y_fld = src,x_fld,y_fld
 
-    def __len__(self): return len(self.src)-1
+    def __len__(self): return len(self.src)
 
     def __iter__(self):
         it = iter(self.src)

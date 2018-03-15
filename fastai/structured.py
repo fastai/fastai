@@ -324,7 +324,7 @@ def scale_vars(df, mapper):
     df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
-def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
+def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
 
     """ proc_df takes a data frame df and splits off the response variable, and
@@ -419,8 +419,12 @@ def proc_df(df, y_fld, skip_flds=None, do_scale=False, na_dict=None,
     if subset: df = get_sample(df,subset)
     df = df.copy()
     if preproc_fn: preproc_fn(df)
-    y = df[y_fld].values
-    df.drop(skip_flds+[y_fld], axis=1, inplace=True)
+    if y_fld is None: y = None
+    else:
+        numericalize(df, df[y_fld], y_fld, None)
+        y = df[y_fld].values
+        skip_flds += [y_fld]
+    df.drop(skip_flds, axis=1, inplace=True)
 
     if na_dict is None: na_dict = {}
     for n,c in df.items(): na_dict = fix_missing(df, c, n, na_dict)
