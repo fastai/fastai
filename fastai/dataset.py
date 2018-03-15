@@ -155,6 +155,7 @@ def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
     return full_names, label_arr, all_labels
 
 class BaseDataset(Dataset):
+    """An abstract class representing a fastai dataset, it extends torch.utils.data.Dataset."""
     def __init__(self, transform=None):
         self.transform = transform
         self.n = self.get_n()
@@ -171,19 +172,39 @@ class BaseDataset(Dataset):
         return (x,y) if tfm is None else tfm(x,y)
 
     @abstractmethod
-    def get_n(self): raise NotImplementedError
+    def get_n(self):
+        """Return number of elements in the dataset == len(self)."""
+        raise NotImplementedError
+
     @abstractmethod
-    def get_c(self): raise NotImplementedError
+    def get_c(self):
+        """Return number of classes in a dataset."""
+        raise NotImplementedError
+
     @abstractmethod
-    def get_sz(self): raise NotImplementedError
+    def get_sz(self):
+        """Return maximum size of an image in a dataset."""
+        raise NotImplementedError
+
     @abstractmethod
-    def get_x(self, i): raise NotImplementedError
+    def get_x(self, i):
+        """Return i-th example (image, wav, etc)."""
+        raise NotImplementedError
+
     @abstractmethod
-    def get_y(self, i): raise NotImplementedError
+    def get_y(self, i):
+        """Return i-th label."""
+        raise NotImplementedError
+
     @property
-    def is_multi(self): return False
+    def is_multi(self):
+        """Returns true if this data set contains multiple labels per sample."""
+        return False
+
     @property
-    def is_reg(self): return False
+    def is_reg(self):
+        """True if the data set is used to train regression models."""
+        return False
 
 def open_image(fn):
     """ Opens an image using OpenCV given the file path.
@@ -192,7 +213,7 @@ def open_image(fn):
         fn: the file path of the image
 
     Returns:
-        The numpy array representation of the image in the RGB format
+        The image in RGB format as numpy array of floats normalized to range between 0.0 - 1.0
     """
     flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
     if not os.path.exists(fn):
@@ -447,6 +468,16 @@ class ImageClassifierData(ImageData):
         return cls(path, datasets, bs, num_workers, classes=classes)
 
 def split_by_idx(idxs, *a):
+    """
+    Split each array passed as *a, to a pair of arrays like this (elements selected by idxs,  the remaining elements)
+    This can be used to split multiple arrays containing training data to validation and training set.
+
+    :param idxs [int]: list of indexes selected
+    :param a list: list of np.array, each array should have same amount of elements in the first dimension
+    :return: list of tuples, each containing a split of corresponding array from *a.
+            First element of each tuple is an array composed from elements selected by idxs,
+            second element is an array of remaining elements.
+    """
     mask = np.zeros(len(a[0]),dtype=bool)
     mask[np.array(idxs)] = True
     return [(o[mask],o[~mask]) for o in a]
