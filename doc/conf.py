@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'fastai'
-copyright = '2018, Jeremy Howard'
+copyright = '2018, Jeremy Howard and contributors'
 author = 'Jeremy Howard'
 
 # The version info for the project you're documenting, acts as replacement for

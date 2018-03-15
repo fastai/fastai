@@ -35,7 +35,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/>
+        <link rel="up" title="fastai package" href="fastai.html"/>
+        <link rel="next" title="fastai.torch_imports module" href="fastai.torch_imports.html"/>
+        <link rel="prev" title="fastai.structured module" href="fastai.structured.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -88,10 +91,47 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Package Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="fastai.html">fastai package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="fastai.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="fastai.adaptive_softmax.html">fastai.adaptive_softmax module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.column_data.html">fastai.column_data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.conv_learner.html">fastai.conv_learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.core.html">fastai.core module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.dataloader.html">fastai.dataloader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.dataset.html">fastai.dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.imports.html">fastai.imports module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.initializers.html">fastai.initializers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.io.html">fastai.io module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.layer_optimizer.html">fastai.layer_optimizer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.layers.html">fastai.layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.learner.html">fastai.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.lm_rnn.html">fastai.lm_rnn module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.losses.html">fastai.losses module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.metrics.html">fastai.metrics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.model.html">fastai.model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.nlp.html">fastai.nlp module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.plots.html">fastai.plots module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.rnn_reg.html">fastai.rnn_reg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.rnn_train.html">fastai.rnn_train module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.set_spawn.html">fastai.set_spawn module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.sgdr.html">fastai.sgdr module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.structured.html">fastai.structured module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">fastai.text module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.torch_imports.html">fastai.torch_imports module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.transforms.html">fastai.transforms module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fastai.utils.html">fastai.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fastai.html#module-fastai">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
 </ul>
 
@@ -136,6 +176,10 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Package Reference</a> &raquo;</li>
+        
+          <li><a href="fastai.html">fastai package</a> &raquo;</li>
         
       <li>fastai.text module</li>
     
@@ -243,21 +287,21 @@
 
 <dl class="class">
 <dt id="fastai.text.Tokenizer">
-<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">Tokenizer</code><a class="headerlink" href="#fastai.text.Tokenizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fastai.text.</code><code class="descname">Tokenizer</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.do_caps">
 <em class="property">static </em><code class="descname">do_caps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.do_caps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.proc_all">
-<code class="descname">proc_all</code><span class="sig-paren">(</span><em>ss</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_all" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">proc_all</code><span class="sig-paren">(</span><em>lang</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="fastai.text.Tokenizer.proc_all_mp">
-<code class="descname">proc_all_mp</code><span class="sig-paren">(</span><em>ss</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_all_mp" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">proc_all_mp</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.proc_all_mp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -285,17 +329,17 @@
 <em class="property">static </em><code class="descname">replace_wrep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.replace_wrep" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="fastai.text.Tokenizer.spacy_tok">
+<code class="descname">spacy_tok</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.spacy_tok" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.text.Tokenizer.sub_br">
+<code class="descname">sub_br</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.Tokenizer.sub_br" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
-
-<dl class="function">
-<dt id="fastai.text.spacy_tok">
-<code class="descclassname">fastai.text.</code><code class="descname">spacy_tok</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.spacy_tok" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastai.text.sub_br">
-<code class="descclassname">fastai.text.</code><code class="descname">sub_br</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.text.sub_br" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="fastai.text.texts_labels_from_folders">
@@ -317,12 +361,21 @@
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fastai.torch_imports.html" class="btn btn-neutral float-right" title="fastai.torch_imports module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fastai.structured.html" class="btn btn-neutral" title="fastai.structured module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Jeremy Howard.
+        &copy; Copyright 2018, Jeremy Howard and contributors.
 
     </p>
   </div>
