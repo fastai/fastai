@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.column_data module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.column_data module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.column_data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.column_data">
+<span id="fastai-column-data-module"></span><h1>fastai.column_data module<a class="headerlink" href="#module-fastai.column_data" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.column_data.CollabFilterDataset">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">CollabFilterDataset</code><span class="sig-paren">(</span><em>path</em>, <em>user_col</em>, <em>item_col</em>, <em>ratings</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
+<dl class="classmethod">
+<dt id="fastai.column_data.CollabFilterDataset.from_csv">
+<em class="property">classmethod </em><code class="descname">from_csv</code><span class="sig-paren">(</span><em>path</em>, <em>csv</em>, <em>user_name</em>, <em>item_name</em>, <em>rating_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset.from_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="fastai.column_data.CollabFilterDataset.from_data_frame">
+<em class="property">classmethod </em><code class="descname">from_data_frame</code><span class="sig-paren">(</span><em>path</em>, <em>df</em>, <em>user_name</em>, <em>item_name</em>, <em>rating_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset.from_data_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.column_data.CollabFilterDataset.get_data">
+<code class="descname">get_data</code><span class="sig-paren">(</span><em>val_idxs</em>, <em>bs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.column_data.CollabFilterDataset.get_learner">
+<code class="descname">get_learner</code><span class="sig-paren">(</span><em>n_factors</em>, <em>val_idxs</em>, <em>bs</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset.get_learner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.column_data.CollabFilterDataset.get_model">
+<code class="descname">get_model</code><span class="sig-paren">(</span><em>n_factors</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset.get_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.column_data.CollabFilterDataset.proc_col">
+<code class="descname">proc_col</code><span class="sig-paren">(</span><em>col</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterDataset.proc_col" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.CollabFilterLearner">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">CollabFilterLearner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fastai.learner.html#fastai.learner.Learner" title="fastai.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.learner.Learner</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.CollabFilterModel">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">CollabFilterModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fastai.core.html#fastai.core.BasicModel" title="fastai.core.BasicModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.core.BasicModel</span></code></a></p>
+<dl class="method">
+<dt id="fastai.column_data.CollabFilterModel.get_layer_groups">
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.CollabFilterModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.ColumnarDataset">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">ColumnarDataset</code><span class="sig-paren">(</span><em>cats</em>, <em>conts</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
+<dl class="classmethod">
+<dt id="fastai.column_data.ColumnarDataset.from_data_frame">
+<em class="property">classmethod </em><code class="descname">from_data_frame</code><span class="sig-paren">(</span><em>df</em>, <em>cat_flds</em>, <em>y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarDataset.from_data_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="fastai.column_data.ColumnarDataset.from_data_frames">
+<em class="property">classmethod </em><code class="descname">from_data_frames</code><span class="sig-paren">(</span><em>df_cat</em>, <em>df_cont</em>, <em>y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarDataset.from_data_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.ColumnarModelData">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">ColumnarModelData</code><span class="sig-paren">(</span><em>path</em>, <em>trn_ds</em>, <em>val_ds</em>, <em>bs</em>, <em>test_ds=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarModelData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fastai.dataset.html#fastai.dataset.ModelData" title="fastai.dataset.ModelData"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.dataset.ModelData</span></code></a></p>
+<dl class="classmethod">
+<dt id="fastai.column_data.ColumnarModelData.from_arrays">
+<em class="property">classmethod </em><code class="descname">from_arrays</code><span class="sig-paren">(</span><em>path</em>, <em>val_idxs</em>, <em>xs</em>, <em>y</em>, <em>bs=64</em>, <em>test_xs=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarModelData.from_arrays" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="fastai.column_data.ColumnarModelData.from_data_frame">
+<em class="property">classmethod </em><code class="descname">from_data_frame</code><span class="sig-paren">(</span><em>path</em>, <em>val_idxs</em>, <em>df</em>, <em>y</em>, <em>cat_flds</em>, <em>bs</em>, <em>test_df=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarModelData.from_data_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="fastai.column_data.ColumnarModelData.from_data_frames">
+<em class="property">classmethod </em><code class="descname">from_data_frames</code><span class="sig-paren">(</span><em>path</em>, <em>trn_df</em>, <em>val_df</em>, <em>trn_y</em>, <em>val_y</em>, <em>cat_flds</em>, <em>bs</em>, <em>test_df=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarModelData.from_data_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.column_data.ColumnarModelData.get_learner">
+<code class="descname">get_learner</code><span class="sig-paren">(</span><em>emb_szs</em>, <em>n_cont</em>, <em>emb_drop</em>, <em>out_sz</em>, <em>szs</em>, <em>drops</em>, <em>y_range=None</em>, <em>use_bn=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.ColumnarModelData.get_learner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.EmbeddingDotBias">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">EmbeddingDotBias</code><span class="sig-paren">(</span><em>n_factors</em>, <em>n_users</em>, <em>n_items</em>, <em>min_score</em>, <em>max_score</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.EmbeddingDotBias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="fastai.column_data.EmbeddingDotBias.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>users</em>, <em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.EmbeddingDotBias.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overriden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.MixedInputModel">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">MixedInputModel</code><span class="sig-paren">(</span><em>emb_szs</em>, <em>n_cont</em>, <em>emb_drop</em>, <em>out_sz</em>, <em>szs</em>, <em>drops</em>, <em>y_range=None</em>, <em>use_bn=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.MixedInputModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="fastai.column_data.MixedInputModel.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>x_cat</em>, <em>x_cont</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.MixedInputModel.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overriden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.PassthruDataset">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">PassthruDataset</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.PassthruDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
+<dl class="classmethod">
+<dt id="fastai.column_data.PassthruDataset.from_data_frame">
+<em class="property">classmethod </em><code class="descname">from_data_frame</code><span class="sig-paren">(</span><em>df</em>, <em>cols_x</em>, <em>col_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.PassthruDataset.from_data_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.StructuredLearner">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">StructuredLearner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.StructuredLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fastai.learner.html#fastai.learner.Learner" title="fastai.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.learner.Learner</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.column_data.StructuredModel">
+<em class="property">class </em><code class="descclassname">fastai.column_data.</code><code class="descname">StructuredModel</code><span class="sig-paren">(</span><em>model</em>, <em>name='unnamed'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.StructuredModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fastai.core.html#fastai.core.BasicModel" title="fastai.core.BasicModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.core.BasicModel</span></code></a></p>
+<dl class="method">
+<dt id="fastai.column_data.StructuredModel.get_layer_groups">
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.StructuredModel.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.column_data.emb_init">
+<code class="descclassname">fastai.column_data.</code><code class="descname">emb_init</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.emb_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.column_data.get_emb">
+<code class="descclassname">fastai.column_data.</code><code class="descname">get_emb</code><span class="sig-paren">(</span><em>ni</em>, <em>nf</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.column_data.get_emb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

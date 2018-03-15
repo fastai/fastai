@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API Reference &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="index.html"/>
+        <link rel="prev" title="fastai.utils module" href="generated/fastai.utils.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/modules.html">Package Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dataset">Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adaptivesoftmax">AdaptiveSoftmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#columndata">ColumnData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convlearner">ConvLearner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dataloader">DataLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#io">IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layer-optimizer">Layer Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layers">Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#learner">Learner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lm-rnn">LM RNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nlp">NLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plots">Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rnn-reg">RNN_Reg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sgdr">SGDR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#text">Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>API Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="generated/fastai.dataset.html#module-fastai.dataset" title="fastai.dataset"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fastai.dataset</span></code></a>: Dataset</p>
+<div class="section" id="dataset">
+<h2>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.BaseDataset" title="fastai.dataset.BaseDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.BaseDataset</span></code></a>([transform])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.FilesDataset" title="fastai.dataset.FilesDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.FilesDataset</span></code></a>(fnames,&nbsp;transform,&nbsp;path)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.FilesArrayDataset" title="fastai.dataset.FilesArrayDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.FilesArrayDataset</span></code></a>(fnames,&nbsp;y,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.FilesIndexArrayDataset" title="fastai.dataset.FilesIndexArrayDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.FilesIndexArrayDataset</span></code></a>(fnames,&nbsp;y,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.FilesNhotArrayDataset" title="fastai.dataset.FilesNhotArrayDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.FilesNhotArrayDataset</span></code></a>(fnames,&nbsp;y,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.FilesIndexArrayRegressionDataset" title="fastai.dataset.FilesIndexArrayRegressionDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.FilesIndexArrayRegressionDataset</span></code></a>(…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.ArraysDataset" title="fastai.dataset.ArraysDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.ArraysDataset</span></code></a>(x,&nbsp;y,&nbsp;transform)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.ArraysIndexDataset" title="fastai.dataset.ArraysIndexDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.ArraysIndexDataset</span></code></a>(x,&nbsp;y,&nbsp;transform)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.ArraysNhotDataset" title="fastai.dataset.ArraysNhotDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.ArraysNhotDataset</span></code></a>(x,&nbsp;y,&nbsp;transform)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.ModelData" title="fastai.dataset.ModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.ModelData</span></code></a>(path,&nbsp;trn_dl,&nbsp;val_dl[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.ImageData" title="fastai.dataset.ImageData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.ImageData</span></code></a>(path,&nbsp;datasets,&nbsp;bs,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.dataset.html#fastai.dataset.ImageClassifierData" title="fastai.dataset.ImageClassifierData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset.ImageClassifierData</span></code></a>(path,&nbsp;datasets,&nbsp;…)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="core">
+<h2>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.core.html#fastai.core.BasicModel" title="fastai.core.BasicModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">core.BasicModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.core.html#fastai.core.SingleModel" title="fastai.core.SingleModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">core.SingleModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.core.html#fastai.core.SimpleNet" title="fastai.core.SimpleNet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">core.SimpleNet</span></code></a>(layers)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="adaptivesoftmax">
+<h2>AdaptiveSoftmax<a class="headerlink" href="#adaptivesoftmax" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.adaptive_softmax.html#fastai.adaptive_softmax.AdaptiveSoftmax" title="fastai.adaptive_softmax.AdaptiveSoftmax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adaptive_softmax.AdaptiveSoftmax</span></code></a>(input_size,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.adaptive_softmax.html#fastai.adaptive_softmax.AdaptiveLoss" title="fastai.adaptive_softmax.AdaptiveLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adaptive_softmax.AdaptiveLoss</span></code></a>(cutoff)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="columndata">
+<h2>ColumnData<a class="headerlink" href="#columndata" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.PassthruDataset" title="fastai.column_data.PassthruDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.PassthruDataset</span></code></a>(*args)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.ColumnarDataset" title="fastai.column_data.ColumnarDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.ColumnarDataset</span></code></a>(cats,&nbsp;conts,&nbsp;y)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.ColumnarModelData" title="fastai.column_data.ColumnarModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.ColumnarModelData</span></code></a>(path,&nbsp;trn_ds,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.MixedInputModel" title="fastai.column_data.MixedInputModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.MixedInputModel</span></code></a>(emb_szs,&nbsp;n_cont,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.StructuredLearner" title="fastai.column_data.StructuredLearner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.StructuredLearner</span></code></a>(data,&nbsp;models,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.StructuredModel" title="fastai.column_data.StructuredModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.StructuredModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.CollabFilterDataset" title="fastai.column_data.CollabFilterDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.CollabFilterDataset</span></code></a>(path,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.EmbeddingDotBias" title="fastai.column_data.EmbeddingDotBias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.EmbeddingDotBias</span></code></a>(n_factors,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.CollabFilterLearner" title="fastai.column_data.CollabFilterLearner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.CollabFilterLearner</span></code></a>(data,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.column_data.html#fastai.column_data.CollabFilterModel" title="fastai.column_data.CollabFilterModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_data.CollabFilterModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="convlearner">
+<h2>ConvLearner<a class="headerlink" href="#convlearner" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.conv_learner.html#fastai.conv_learner.ConvLearner" title="fastai.conv_learner.ConvLearner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conv_learner.ConvLearner</span></code></a>(data,&nbsp;models[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.conv_learner.html#fastai.conv_learner.ConvnetBuilder" title="fastai.conv_learner.ConvnetBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conv_learner.ConvnetBuilder</span></code></a>(f,&nbsp;c,&nbsp;is_multi,&nbsp;…)</td>
+<td>Class representing a convolutional network.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dataloader">
+<h2>DataLoader<a class="headerlink" href="#dataloader" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.dataloader.html#fastai.dataloader.DataLoader" title="fastai.dataloader.DataLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataloader.DataLoader</span></code></a>(dataset[,&nbsp;batch_size,&nbsp;…])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="io">
+<h2>IO<a class="headerlink" href="#io" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.io.html#fastai.io.TqdmUpTo" title="fastai.io.TqdmUpTo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io.TqdmUpTo</span></code></a>([iterable,&nbsp;desc,&nbsp;total,&nbsp;leave,&nbsp;…])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="layer-optimizer">
+<h2>Layer Optimizer<a class="headerlink" href="#layer-optimizer" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.layer_optimizer.html#fastai.layer_optimizer.LayerOptimizer" title="fastai.layer_optimizer.LayerOptimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layer_optimizer.LayerOptimizer</span></code></a>(opt_fn,&nbsp;…)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.layers.html#fastai.layers.AdaptiveConcatPool2d" title="fastai.layers.AdaptiveConcatPool2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layers.AdaptiveConcatPool2d</span></code></a>([sz])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.layers.html#fastai.layers.Lambda" title="fastai.layers.Lambda"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layers.Lambda</span></code></a>(f)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.layers.html#fastai.layers.Flatten" title="fastai.layers.Flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layers.Flatten</span></code></a>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="learner">
+<h2>Learner<a class="headerlink" href="#learner" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.learner.html#fastai.learner.Learner" title="fastai.learner.Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">learner.Learner</span></code></a>(data,&nbsp;models[,&nbsp;opt_fn,&nbsp;…])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="lm-rnn">
+<h2>LM RNN<a class="headerlink" href="#lm-rnn" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.lm_rnn.html#fastai.lm_rnn.RNN_Encoder" title="fastai.lm_rnn.RNN_Encoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_rnn.RNN_Encoder</span></code></a>(ntoken,&nbsp;emb_sz,&nbsp;nhid,&nbsp;…)</td>
+<td>A custom RNN encoder network that uses - an embedding matrix to encode input, - a stack of LSTM layers to drive the network, and - variational dropouts in the embedding and LSTM layers</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.lm_rnn.html#fastai.lm_rnn.MultiBatchRNN" title="fastai.lm_rnn.MultiBatchRNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_rnn.MultiBatchRNN</span></code></a>(bptt,&nbsp;max_seq,&nbsp;*args,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.lm_rnn.html#fastai.lm_rnn.LinearDecoder" title="fastai.lm_rnn.LinearDecoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_rnn.LinearDecoder</span></code></a>(n_out,&nbsp;nhid,&nbsp;dropout[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.lm_rnn.html#fastai.lm_rnn.LinearBlock" title="fastai.lm_rnn.LinearBlock"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_rnn.LinearBlock</span></code></a>(ni,&nbsp;nf,&nbsp;drop)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.lm_rnn.html#fastai.lm_rnn.PoolingLinearClassifier" title="fastai.lm_rnn.PoolingLinearClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_rnn.PoolingLinearClassifier</span></code></a>(layers,&nbsp;drops)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.lm_rnn.html#fastai.lm_rnn.SequentialRNN" title="fastai.lm_rnn.SequentialRNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lm_rnn.SequentialRNN</span></code></a>(*args)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.model.html#fastai.model.Stepper" title="fastai.model.Stepper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model.Stepper</span></code></a>(m,&nbsp;opt,&nbsp;crit[,&nbsp;clip,&nbsp;reg_fn])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nlp">
+<h2>NLP<a class="headerlink" href="#nlp" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.DotProdNB" title="fastai.nlp.DotProdNB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.DotProdNB</span></code></a>(nf,&nbsp;ny[,&nbsp;w_adj,&nbsp;r_adj])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.SimpleNB" title="fastai.nlp.SimpleNB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.SimpleNB</span></code></a>(nf,&nbsp;ny)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.BOW_Learner" title="fastai.nlp.BOW_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.BOW_Learner</span></code></a>(data,&nbsp;models,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.BOW_Dataset" title="fastai.nlp.BOW_Dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.BOW_Dataset</span></code></a>(bow,&nbsp;y,&nbsp;max_len)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.BOW_Learner" title="fastai.nlp.BOW_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.BOW_Learner</span></code></a>(data,&nbsp;models,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.TextClassifierData" title="fastai.nlp.TextClassifierData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.TextClassifierData</span></code></a>(path,&nbsp;trn_dl,&nbsp;val_dl)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.LanguageModelLoader" title="fastai.nlp.LanguageModelLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.LanguageModelLoader</span></code></a>(ds,&nbsp;bs,&nbsp;bptt[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.RNN_Learner" title="fastai.nlp.RNN_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.RNN_Learner</span></code></a>(data,&nbsp;models,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.ConcatTextDataset" title="fastai.nlp.ConcatTextDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.ConcatTextDataset</span></code></a>(path,&nbsp;text_field[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.ConcatTextDatasetFromDataFrames" title="fastai.nlp.ConcatTextDatasetFromDataFrames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.ConcatTextDatasetFromDataFrames</span></code></a>(df,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.LanguageModelData" title="fastai.nlp.LanguageModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.LanguageModelData</span></code></a>(path,&nbsp;field,&nbsp;trn_ds,&nbsp;…)</td>
+<td>This class provides the entry point for dealing with supported NLP tasks.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.TextDataLoader" title="fastai.nlp.TextDataLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.TextDataLoader</span></code></a>(src,&nbsp;x_fld,&nbsp;y_fld)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.TextModel" title="fastai.nlp.TextModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.TextModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.nlp.html#fastai.nlp.TextData" title="fastai.nlp.TextData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlp.TextData</span></code></a>(path,&nbsp;trn_dl,&nbsp;val_dl[,&nbsp;test_dl])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.plots.html#fastai.plots.ImageModelResults" title="fastai.plots.ImageModelResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plots.ImageModelResults</span></code></a>(ds,&nbsp;log_preds)</td>
+<td>Visualize the results of an image model</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="rnn-reg">
+<h2>RNN_Reg<a class="headerlink" href="#rnn-reg" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.rnn_reg.html#fastai.rnn_reg.LockedDropout" title="fastai.rnn_reg.LockedDropout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rnn_reg.LockedDropout</span></code></a>([p])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.rnn_reg.html#fastai.rnn_reg.WeightDrop" title="fastai.rnn_reg.WeightDrop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rnn_reg.WeightDrop</span></code></a>(module,&nbsp;dropout[,&nbsp;weights])</td>
+<td>A custom torch layer that serves as a wrapper on another torch layer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.rnn_reg.html#fastai.rnn_reg.EmbeddingDropout" title="fastai.rnn_reg.EmbeddingDropout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rnn_reg.EmbeddingDropout</span></code></a>(embed)</td>
+<td>Applies dropout in the embedding layer by zeroing out some elements of the embedding vector.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="sgdr">
+<h2>SGDR<a class="headerlink" href="#sgdr" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.LogginCallback</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.Callback" title="fastai.sgdr.Callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.Callback</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.LossRecorder" title="fastai.sgdr.LossRecorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.LossRecorder</span></code></a>(layer_opt[,&nbsp;save_path])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.LR_Updater" title="fastai.sgdr.LR_Updater"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.LR_Updater</span></code></a>(layer_opt[,&nbsp;save_path])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.LR_Finder" title="fastai.sgdr.LR_Finder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.LR_Finder</span></code></a>(layer_opt,&nbsp;nb[,&nbsp;end_lr,&nbsp;linear])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.CosAnneal" title="fastai.sgdr.CosAnneal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.CosAnneal</span></code></a>(layer_opt,&nbsp;nb[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.CircularLR" title="fastai.sgdr.CircularLR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.CircularLR</span></code></a>(layer_opt,&nbsp;nb[,&nbsp;div,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.SavesBestModel</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.sgdr.html#fastai.sgdr.WeightDecaySchedule" title="fastai.sgdr.WeightDecaySchedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sgdr.WeightDecaySchedule</span></code></a>(layer_opt,&nbsp;…[,&nbsp;…])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="text">
+<h2>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.Tokenizer" title="fastai.text.Tokenizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.Tokenizer</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.TextDataset" title="fastai.text.TextDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.TextDataset</span></code></a>(x,&nbsp;y[,&nbsp;backwards,&nbsp;sos,&nbsp;eos])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.SortSampler" title="fastai.text.SortSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.SortSampler</span></code></a>(data_source,&nbsp;key)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.SortishSampler" title="fastai.text.SortishSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.SortishSampler</span></code></a>(data_source,&nbsp;key,&nbsp;bs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.LanguageModelLoader" title="fastai.text.LanguageModelLoader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.LanguageModelLoader</span></code></a>(nums,&nbsp;bs,&nbsp;bptt[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.LanguageModel" title="fastai.text.LanguageModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.LanguageModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.LanguageModelData" title="fastai.text.LanguageModelData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.LanguageModelData</span></code></a>(path,&nbsp;pad_idx,&nbsp;nt,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.RNN_Learner" title="fastai.text.RNN_Learner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.RNN_Learner</span></code></a>(data,&nbsp;models,&nbsp;**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.text.html#fastai.text.TextModel" title="fastai.text.TextModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text.TextModel</span></code></a>(model[,&nbsp;name])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id1">
+<h2>Text<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.Denormalize" title="fastai.transforms.Denormalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.Denormalize</span></code></a>(m,&nbsp;s)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.Normalize" title="fastai.transforms.Normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.Normalize</span></code></a>(m,&nbsp;s)</td>
+<td>Normalizes an image.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomRotateZoom" title="fastai.transforms.RandomRotateZoom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomRotateZoom</span></code></a>(deg,&nbsp;zoom,&nbsp;stretch)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.TfmType" title="fastai.transforms.TfmType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.TfmType</span></code></a></td>
+<td>Type of transformation.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.Transform</span></code></a>([tfm_y])</td>
+<td>A class that represents a transform.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.CoordTransform</span></code></a>([tfm_y])</td>
+<td>A class that represents a coordinate transform.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.AddPadding" title="fastai.transforms.AddPadding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.AddPadding</span></code></a>(pad[,&nbsp;mode,&nbsp;tfm_y])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.CenterCrop" title="fastai.transforms.CenterCrop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.CenterCrop</span></code></a>(sz[,&nbsp;tfm_y])</td>
+<td>A class that represents a Center Crop.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomCrop" title="fastai.transforms.RandomCrop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomCrop</span></code></a>(targ[,&nbsp;tfm_y])</td>
+<td>A class that represents a Random Crop transformation.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.NoCrop" title="fastai.transforms.NoCrop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.NoCrop</span></code></a>(sz[,&nbsp;tfm_y])</td>
+<td>A transformation that resize to a square image without cropping.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.Scale" title="fastai.transforms.Scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.Scale</span></code></a>(sz[,&nbsp;tfm_y])</td>
+<td>A transformation that scales the min size to sz.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomScale" title="fastai.transforms.RandomScale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomScale</span></code></a>(sz,&nbsp;max_zoom[,&nbsp;p,&nbsp;tfm_y])</td>
+<td>Scales an image so that the min size is a random number between [sz, sz*max_zoom]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomRotate" title="fastai.transforms.RandomRotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomRotate</span></code></a>(deg[,&nbsp;p,&nbsp;mode,&nbsp;tfm_y])</td>
+<td>Rotates images and (optionally) target y.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomDihedral" title="fastai.transforms.RandomDihedral"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomDihedral</span></code></a>([tfm_y])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomFlip" title="fastai.transforms.RandomFlip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomFlip</span></code></a>([tfm_y])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomLighting" title="fastai.transforms.RandomLighting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomLighting</span></code></a>(b,&nbsp;c[,&nbsp;tfm_y])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.RandomBlur" title="fastai.transforms.RandomBlur"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.RandomBlur</span></code></a>([blur_strengths,&nbsp;…])</td>
+<td>Adds a gaussian blur to the image at chance.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.CropType" title="fastai.transforms.CropType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.CropType</span></code></a></td>
+<td>Type of image cropping.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/fastai.transforms.html#fastai.transforms.Transforms" title="fastai.transforms.Transforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms.Transforms</span></code></a>(sz,&nbsp;tfms,&nbsp;normalizer,&nbsp;…)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utils">
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">utils.MixIterator</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="generated/fastai.utils.html" class="btn btn-neutral" title="fastai.utils module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

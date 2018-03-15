@@ -1,0 +1,729 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.transforms module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.transforms module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.transforms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.transforms">
+<span id="fastai-transforms-module"></span><h1>fastai.transforms module<a class="headerlink" href="#module-fastai.transforms" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.transforms.AddPadding">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">AddPadding</code><span class="sig-paren">(</span><em>pad</em>, <em>mode=2</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.AddPadding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<dl class="method">
+<dt id="fastai.transforms.AddPadding.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>im</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.AddPadding.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.CenterCrop">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CenterCrop</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CenterCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<p>A class that represents a Center Crop.</p>
+<p>This transforms (optionally) transforms x,y at with the same parameters.
+Arguments:</p>
+<blockquote>
+<div>sz (int): size of the crop.
+tfm_y (TfmType): type of y transformation.</div></blockquote>
+<dl class="method">
+<dt id="fastai.transforms.CenterCrop.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CenterCrop.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.CoordTransform">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CoordTransform</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CoordTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.Transform</span></code></a></p>
+<p>A class that represents a coordinate transform.</p>
+<dl class="method">
+<dt id="fastai.transforms.CoordTransform.map_y">
+<code class="descname">map_y</code><span class="sig-paren">(</span><em>y0</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CoordTransform.map_y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.CoordTransform.transform_coord">
+<code class="descname">transform_coord</code><span class="sig-paren">(</span><em>x</em>, <em>ys</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.CoordTransform.transform_coord" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.CropType">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">CropType</code><a class="headerlink" href="#fastai.transforms.CropType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
+<p>Type of image cropping.</p>
+<dl class="attribute">
+<dt id="fastai.transforms.CropType.CENTER">
+<code class="descname">CENTER</code><em class="property"> = 2</em><a class="headerlink" href="#fastai.transforms.CropType.CENTER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.transforms.CropType.NO">
+<code class="descname">NO</code><em class="property"> = 3</em><a class="headerlink" href="#fastai.transforms.CropType.NO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.transforms.CropType.RANDOM">
+<code class="descname">RANDOM</code><em class="property"> = 1</em><a class="headerlink" href="#fastai.transforms.CropType.RANDOM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.Denormalize">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Denormalize</code><span class="sig-paren">(</span><em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Denormalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.NoCrop">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">NoCrop</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.NoCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<p>A transformation that resize to a square image without cropping.</p>
+<p>This transforms (optionally) resizes x,y at with the same parameters.
+Arguments:</p>
+<blockquote>
+<div>targ (int): target size of the crop.
+tfm_y (TfmType): type of y transformation.</div></blockquote>
+<dl class="method">
+<dt id="fastai.transforms.NoCrop.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.NoCrop.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.Normalize">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Normalize</code><span class="sig-paren">(</span><em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Normalizes an image.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomBlur">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomBlur</code><span class="sig-paren">(</span><em>blur_strengths=5</em>, <em>probability=0.5</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomBlur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.Transform</span></code></a></p>
+<p>Adds a gaussian blur to the image at chance.
+Multiple blur strengths can be configured, one of them is used by random chance.</p>
+<dl class="method">
+<dt id="fastai.transforms.RandomBlur.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomBlur.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomBlur.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomBlur.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomCrop">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomCrop</code><span class="sig-paren">(</span><em>targ</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<p>A class that represents a Random Crop transformation.</p>
+<p>This transforms (optionally) transforms x,y at with the same parameters.
+Arguments:</p>
+<blockquote>
+<div>targ (int): target size of the crop.
+tfm_y (TfmType): type of y transformation.</div></blockquote>
+<dl class="method">
+<dt id="fastai.transforms.RandomCrop.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomCrop.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomCrop.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomCrop.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomDihedral">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomDihedral</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomDihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<dl class="method">
+<dt id="fastai.transforms.RandomDihedral.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomDihedral.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomDihedral.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomDihedral.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomFlip">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomFlip</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomFlip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<dl class="method">
+<dt id="fastai.transforms.RandomFlip.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomFlip.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomFlip.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomFlip.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomLighting">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomLighting</code><span class="sig-paren">(</span><em>b</em>, <em>c</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomLighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.Transform" title="fastai.transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.Transform</span></code></a></p>
+<dl class="method">
+<dt id="fastai.transforms.RandomLighting.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomLighting.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomLighting.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomLighting.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomRotate">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomRotate</code><span class="sig-paren">(</span><em>deg</em>, <em>p=0.75</em>, <em>mode=2</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<p>Rotates images and (optionally) target y.</p>
+<p>Rotating coordinates is treated differently for x and y on this
+transform.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd>deg (float): degree to rotate.
+p (float): probability of rotation
+mode: type of border
+tfm_y (TfmType): type of y transform</dd>
+</dl>
+</div></blockquote>
+<dl class="method">
+<dt id="fastai.transforms.RandomRotate.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotate.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomRotate.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotate.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomRotateZoom">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomRotateZoom</code><span class="sig-paren">(</span><em>deg</em>, <em>zoom</em>, <em>stretch</em>, <em>mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomRotateZoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.RandomScale">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">RandomScale</code><span class="sig-paren">(</span><em>sz</em>, <em>max_zoom</em>, <em>p=0.75</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomScale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<p>Scales an image so that the min size is a random number between [sz, sz*max_zoom]</p>
+<p>This transforms (optionally) scales x,y at with the same parameters.
+Arguments:</p>
+<blockquote>
+<div>sz (int): target size
+max_zoom (float): float &gt;= 1.0
+p (float): a probability for doing the random sizing
+tfm_y (TfmType): type of y transform</div></blockquote>
+<dl class="method">
+<dt id="fastai.transforms.RandomScale.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomScale.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.RandomScale.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.RandomScale.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.Scale">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Scale</code><span class="sig-paren">(</span><em>sz</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.transforms.CoordTransform" title="fastai.transforms.CoordTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.transforms.CoordTransform</span></code></a></p>
+<p>A transformation that scales the min size to sz.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>sz (int): target size to scale minimum size.
+tfm_y (TfmType): type of y transformation.</dd>
+</dl>
+<dl class="method">
+<dt id="fastai.transforms.Scale.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Scale.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.TfmType">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">TfmType</code><a class="headerlink" href="#fastai.transforms.TfmType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.IntEnum</span></code></p>
+<p>Type of transformation.</p>
+<p>NO: is the default, y does not get transformed when x is transformed.
+PIXEL: when x and y are images and should be transformed in the same way.</p>
+<blockquote>
+<div>Example: image segmentation.</div></blockquote>
+<dl class="docutils">
+<dt>COORD: when y are coordinate or x in which case x and y have</dt>
+<dd>to be transformed accordingly.</dd>
+</dl>
+<dl class="attribute">
+<dt id="fastai.transforms.TfmType.COORD">
+<code class="descname">COORD</code><em class="property"> = 3</em><a class="headerlink" href="#fastai.transforms.TfmType.COORD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.transforms.TfmType.NO">
+<code class="descname">NO</code><em class="property"> = 1</em><a class="headerlink" href="#fastai.transforms.TfmType.NO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.transforms.TfmType.PIXEL">
+<code class="descname">PIXEL</code><em class="property"> = 2</em><a class="headerlink" href="#fastai.transforms.TfmType.PIXEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.Transform">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Transform</code><span class="sig-paren">(</span><em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that represents a transform.</p>
+<p>All other transforms should subclass it. All subclasses should override
+do_transform.
+We have 3 types of transforms:</p>
+<blockquote>
+<div><p>TfmType.NO: the target y is not transformed
+TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms</p>
+<blockquote>
+<div>them with the same paramters.</div></blockquote>
+<p>TfmType.COORD: assumes that y are some coordinates in the image x.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>tfm_y (TfmType): type of transform</dd>
+</dl>
+<dl class="method">
+<dt id="fastai.transforms.Transform.do_transform">
+<code class="descname">do_transform</code><span class="sig-paren">(</span><em>x</em>, <em>is_y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.do_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.Transform.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.set_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.Transform.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.transforms.Transform.transform_coord">
+<code class="descname">transform_coord</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transform.transform_coord" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.transforms.Transforms">
+<em class="property">class </em><code class="descclassname">fastai.transforms.</code><code class="descname">Transforms</code><span class="sig-paren">(</span><em>sz</em>, <em>tfms</em>, <em>normalizer</em>, <em>denorm</em>, <em>crop_type=&lt;CropType.CENTER: 2&gt;</em>, <em>tfm_y=&lt;TfmType.NO: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.Transforms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.center_crop">
+<code class="descclassname">fastai.transforms.</code><code class="descname">center_crop</code><span class="sig-paren">(</span><em>im</em>, <em>min_sz=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.center_crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a center crop of an image</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.channel_dim">
+<code class="descclassname">fastai.transforms.</code><code class="descname">channel_dim</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.channel_dim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.compose">
+<code class="descclassname">fastai.transforms.</code><code class="descname">compose</code><span class="sig-paren">(</span><em>im</em>, <em>y</em>, <em>fns</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.compose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.coords2px">
+<code class="descclassname">fastai.transforms.</code><code class="descname">coords2px</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.coords2px" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforming coordinates to pixels.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first docutils">
+<dt>y (np array): vector in which (y[0], y[1]) and (y[2], y[3]) are the</dt>
+<dd>the corners of a bounding box.</dd>
+</dl>
+<p class="last">x (image): an image</p>
+</dd>
+<dt>Returns:</dt>
+<dd>Y (image): of shape x.shape</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.crop">
+<code class="descclassname">fastai.transforms.</code><code class="descname">crop</code><span class="sig-paren">(</span><em>im</em>, <em>r</em>, <em>c</em>, <em>sz</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.crop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.det_dihedral">
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_dihedral</code><span class="sig-paren">(</span><em>dih</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_dihedral" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.det_lighting">
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_lighting</code><span class="sig-paren">(</span><em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_lighting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.det_rotate">
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_rotate</code><span class="sig-paren">(</span><em>deg</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_rotate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.det_stretch">
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_stretch</code><span class="sig-paren">(</span><em>sr</em>, <em>sc</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_stretch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.det_zoom">
+<code class="descclassname">fastai.transforms.</code><code class="descname">det_zoom</code><span class="sig-paren">(</span><em>zoom</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.det_zoom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.dihedral">
+<code class="descclassname">fastai.transforms.</code><code class="descname">dihedral</code><span class="sig-paren">(</span><em>x</em>, <em>dih</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.dihedral" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.image_gen">
+<code class="descclassname">fastai.transforms.</code><code class="descname">image_gen</code><span class="sig-paren">(</span><em>normalizer</em>, <em>denorm</em>, <em>sz</em>, <em>tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=None</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.image_gen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.lighting">
+<code class="descclassname">fastai.transforms.</code><code class="descname">lighting</code><span class="sig-paren">(</span><em>im</em>, <em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.lighting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.no_crop">
+<code class="descclassname">fastai.transforms.</code><code class="descname">no_crop</code><span class="sig-paren">(</span><em>im</em>, <em>min_sz=None</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.no_crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a squared resized image</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.noop">
+<code class="descclassname">fastai.transforms.</code><code class="descname">noop</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.noop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.rand0">
+<code class="descclassname">fastai.transforms.</code><code class="descname">rand0</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.rand0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.random_px_rect">
+<code class="descclassname">fastai.transforms.</code><code class="descname">random_px_rect</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.random_px_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a 2D image of the size x with random points in a square box.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first docutils">
+<dt>y (array): Contains the coordinates of the bounding box corners</dt>
+<dd>y = [upper_row, left_col, lower_row, right_col]</dd>
+</dl>
+<p class="last">x (array): image</p>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>Y (array): A 2D array of size (x.shape[0], x.shape[1]) with pixes</dt>
+<dd>on corners of the bounding box and random points in the boundary of the box.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.rotate_cv">
+<code class="descclassname">fastai.transforms.</code><code class="descname">rotate_cv</code><span class="sig-paren">(</span><em>im</em>, <em>deg</em>, <em>mode=0</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.rotate_cv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates an image by deg degrees</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>deg (float): degree to rotate.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.scale_min">
+<code class="descclassname">fastai.transforms.</code><code class="descname">scale_min</code><span class="sig-paren">(</span><em>im</em>, <em>targ</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.scale_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scales the image so that the smallest axis is of size targ.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>im (array): image
+targ (int): target size</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.scale_to">
+<code class="descclassname">fastai.transforms.</code><code class="descname">scale_to</code><span class="sig-paren">(</span><em>x</em>, <em>ratio</em>, <em>targ</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.scale_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.stretch_cv">
+<code class="descclassname">fastai.transforms.</code><code class="descname">stretch_cv</code><span class="sig-paren">(</span><em>x</em>, <em>sr</em>, <em>sc</em>, <em>interpolation=3</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.stretch_cv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.tfms_from_model">
+<code class="descclassname">fastai.transforms.</code><code class="descname">tfms_from_model</code><span class="sig-paren">(</span><em>f_model</em>, <em>sz</em>, <em>aug_tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=&lt;CropType.RANDOM: 1&gt;</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.tfms_from_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.tfms_from_stats">
+<code class="descclassname">fastai.transforms.</code><code class="descname">tfms_from_stats</code><span class="sig-paren">(</span><em>stats</em>, <em>sz</em>, <em>aug_tfms=None</em>, <em>max_zoom=None</em>, <em>pad=0</em>, <em>crop_type=&lt;CropType.RANDOM: 1&gt;</em>, <em>tfm_y=None</em>, <em>pad_mode=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.tfms_from_stats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.to_bb">
+<code class="descclassname">fastai.transforms.</code><code class="descname">to_bb</code><span class="sig-paren">(</span><em>YY</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.to_bb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.transforms.zoom_cv">
+<code class="descclassname">fastai.transforms.</code><code class="descname">zoom_cv</code><span class="sig-paren">(</span><em>x</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.transforms.zoom_cv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.learner module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.learner module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.learner.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.learner">
+<span id="fastai-learner-module"></span><h1>fastai.learner module<a class="headerlink" href="#module-fastai.learner" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.learner.Learner">
+<em class="property">class </em><code class="descclassname">fastai.learner.</code><code class="descname">Learner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>opt_fn=None</em>, <em>tmp_name='tmp'</em>, <em>models_name='models'</em>, <em>metrics=None</em>, <em>clip=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="fastai.learner.Learner.TTA">
+<code class="descname">TTA</code><span class="sig-paren">(</span><em>n_aug=4</em>, <em>is_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.TTA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict with Test Time Augmentation (TTA)</p>
+<p>Additional to the original test/validation images, apply image augmentation to them
+(just like for training images) and calculate the mean of predictions. The intent
+is to increase the accuracy of predictions by examining the images using multiple
+perspectives.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>n_aug: a number of augmentation images to use per original image
+is_test: indicate to use test images; otherwise use validation images</dd>
+<dt>Returns:</dt>
+<dd><p class="first">(tuple): a tuple containing:</p>
+<blockquote class="last">
+<div>log predictions (numpy.ndarray): log predictions (i.e. <cite>np.exp(log_preds)</cite> will return probabilities)
+targs (numpy.ndarray): target values when <cite>is_test==False</cite>; zeros otherwise.</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.bn_freeze">
+<code class="descname">bn_freeze</code><span class="sig-paren">(</span><em>do_freeze</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.bn_freeze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.learner.Learner.children">
+<code class="descname">children</code><a class="headerlink" href="#fastai.learner.Learner.children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.learner.Learner.data">
+<code class="descname">data</code><a class="headerlink" href="#fastai.learner.Learner.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>lrs</em>, <em>n_cycle</em>, <em>wds=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method gets an instance of LayerOptimizer and delegates to self.fit_gen(..)</p>
+<p>Note that one can specify a list of learning rates which, when appropriately
+defined, will be applied to different segments of an architecture. This seems
+mostly relevant to ImageNet-trained models, where we want to alter the layers
+closest to the images by much smaller amounts.</p>
+<p>Likewise, a single or list of weight decay parameters can be specified, which
+if appropriate for a model, will apply variable weight decay parameters to
+different segments of the model.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">lrs (float or list(float)): learning rate for the model</p>
+<p>n_cycle (int): number of cycles (or iterations) to fit the model for</p>
+<p>wds (float or list(float)): weight decay parameter(s).</p>
+<p class="last">kwargs: other arguments</p>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.fit_gen">
+<code class="descname">fit_gen</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>layer_opt</em>, <em>n_cycle</em>, <em>cycle_len=None</em>, <em>cycle_mult=1</em>, <em>cycle_save_name=None</em>, <em>best_save_name=None</em>, <em>use_clr=None</em>, <em>metrics=None</em>, <em>callbacks=None</em>, <em>use_wd_sched=False</em>, <em>norm_wds=False</em>, <em>wds_sched_mult=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.fit_gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method does some preparation before finally delegating to the ‘fit’ method for
+fitting the model. Namely, if cycle_len is defined, it adds a ‘Cosine Annealing’
+scheduler for varying the learning rate across iterations.</p>
+<p>Method also computes the total number of epochs to fit based on provided ‘cycle_len’,
+‘cycle_mult’, and ‘n_cycle’ parameters.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>model (Learner):  Any neural architecture for solving a supported problem.</dt>
+<dd>Eg. ResNet-34, RNN_Learner etc.</dd>
+</dl>
+<p>data (ModelData): An instance of ModelData.</p>
+<p>layer_opt (LayerOptimizer): An instance of the LayerOptimizer class</p>
+<p>n_cycle (int): number of cycles</p>
+<dl class="docutils">
+<dt>cycle_len (int):  number of cycles before lr is reset to the initial value.</dt>
+<dd>E.g if cycle_len = 3, then the lr is varied between a maximum
+and minimum value over 3 epochs.</dd>
+<dt>cycle_mult (int): additional parameter for influencing how the lr resets over</dt>
+<dd>the cycles. For an intuitive explanation, please see
+<a class="reference external" href="https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb">https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb</a></dd>
+</dl>
+<p>cycle_save_name (str): use to save the weights at end of each cycle</p>
+<p>best_save_name (str): use to save weights of best model during training.</p>
+<p>metrics (function): some function for evaluating a desired metric. Eg. accuracy.</p>
+<p>callbacks (list(Callback)): callbacks to apply during the training.</p>
+<dl class="docutils">
+<dt>use_wd_sched (bool, optional): set to True to enable weight regularization using</dt>
+<dd>the technique mentioned in <a class="reference external" href="https://arxiv.org/abs/1711.05101">https://arxiv.org/abs/1711.05101</a>. When this is True
+alone (see below), the regularization is detached from gradient update and
+applied directly to the weights.</dd>
+<dt>norm_wds (bool, optional): when this is set to True along with use_wd_sched, the</dt>
+<dd>regularization factor is normalized with each training cycle.</dd>
+<dt>wds_sched_mult (function, optional): when this is provided along with use_wd_sched</dt>
+<dd><p class="first">as True, the value computed by this function is multiplied with the regularization
+strength. This function is passed the WeightDecaySchedule object. And example
+function that can be passed is:</p>
+<blockquote class="last">
+<div>f = lambda x: np.array(x.layer_opt.lrs) / x.init_lrs</div></blockquote>
+</dd>
+</dl>
+<p class="last">kwargs: other optional arguments</p>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.freeze_to">
+<code class="descname">freeze_to</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.freeze_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="fastai.learner.Learner.from_model_data">
+<em class="property">classmethod </em><code class="descname">from_model_data</code><span class="sig-paren">(</span><em>m</em>, <em>data</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.from_model_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.get_cycle_end">
+<code class="descname">get_cycle_end</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_cycle_end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.get_layer_groups">
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.get_layer_opt">
+<code class="descname">get_layer_opt</code><span class="sig-paren">(</span><em>lrs</em>, <em>wds</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_layer_opt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method returns an instance of the LayerOptimizer class, which
+allows for setting differential learning rates for different
+parts of the model.</p>
+<p>An example of how a model maybe differentiated into different parts
+for application of differential learning rates and weight decays is
+seen in ../…/courses/dl1/fastai/conv_learner.py, using the dict
+‘model_meta’. Currently, this seems supported only for convolutional
+networks such as VGG-19, ResNet-XX etc.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">lrs (float or list(float)): learning rate(s) for the model</p>
+<p class="last">wds (float or list(float)): weight decay parameter(s).</p>
+</dd>
+<dt>Returns:</dt>
+<dd>An instance of a LayerOptimizer</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.get_model_path">
+<code class="descname">get_model_path</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.get_model_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.load_cycle">
+<code class="descname">load_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.load_cycle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.lr_find">
+<code class="descname">lr_find</code><span class="sig-paren">(</span><em>start_lr=1e-05</em>, <em>end_lr=10</em>, <em>wds=None</em>, <em>linear=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.lr_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helps you find an optimal learning rate for a model.</p>
+<blockquote>
+<div>It uses the technique developed in the 2015 paper
+<cite>Cyclical Learning Rates for Training Neural Networks</cite>, where
+we simply keep increasing the learning rate from a very small value,
+until the loss starts decreasing.</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>start_lr (float/numpy array) <span class="classifier-delimiter">:</span> <span class="classifier">Passing in a numpy array allows you</span></dt>
+<dd>to specify learning rates for a learner’s layer_groups</dd>
+</dl>
+<p class="last">end_lr (float) : The maximum learning rate to try.
+wds (iterable/float)</p>
+</dd>
+<dt>Examples:</dt>
+<dd><p class="first">As training moves us closer to the optimal weights for a model,
+the optimal learning rate will be smaller. We can take advantage of
+that knowledge and provide lr_find() with a starting learning rate
+1000x smaller than the model’s current learning rate as such:</p>
+<p>&gt;&gt; learn.lr_find(lr/1000)</p>
+<p class="last">&gt;&gt; lrs = np.array([ 1e-4, 1e-3, 1e-2 ])
+&gt;&gt; learn.lr_find(lrs / 1000)</p>
+</dd>
+<dt>Notes:</dt>
+<dd>lr_find() may finish before going through each batch of examples if
+the loss decreases enough.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.learner.Learner.model">
+<code class="descname">model</code><a class="headerlink" href="#fastai.learner.Learner.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.predict_array">
+<code class="descname">predict_array</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.predict_dl">
+<code class="descname">predict_dl</code><span class="sig-paren">(</span><em>dl</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict_dl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.predict_with_targs">
+<code class="descname">predict_with_targs</code><span class="sig-paren">(</span><em>is_test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.predict_with_targs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.save_cycle">
+<code class="descname">save_cycle</code><span class="sig-paren">(</span><em>name</em>, <em>cycle</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.save_cycle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.set_bn_freeze">
+<code class="descname">set_bn_freeze</code><span class="sig-paren">(</span><em>m</em>, <em>do_freeze</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.set_bn_freeze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.set_data">
+<code class="descname">set_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.set_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.summary">
+<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.unfreeze">
+<code class="descname">unfreeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.unfreeze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.learner.Learner.warm_up">
+<code class="descname">warm_up</code><span class="sig-paren">(</span><em>lr</em>, <em>wds=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastai.learner.Learner.warm_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
