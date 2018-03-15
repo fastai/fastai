@@ -15,6 +15,7 @@ from IPython.lib.display import FileLink
 from PIL import Image, ImageEnhance, ImageOps
 from sklearn import metrics, ensemble, preprocessing
 from operator import itemgetter, attrgetter
+from pathlib import Path
 
 from matplotlib import pyplot as plt, rcParams, animation
 from ipywidgets import interact, interactive, fixed, widgets

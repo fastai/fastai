@@ -5,15 +5,6 @@ from torch.utils.data.sampler import Sampler
 import spacy
 from spacy.symbols import ORTH
 
-re_br = re.compile(r'<\s*br\s*/?>', re.IGNORECASE)
-def sub_br(x): return re_br.sub("\n", x)
-
-my_tok = spacy.load('en')
-my_tok.tokenizer.add_special_case('<eos>', [{ORTH: '<eos>'}])
-my_tok.tokenizer.add_special_case('<bos>', [{ORTH: '<bos>'}])
-my_tok.tokenizer.add_special_case('<unk>', [{ORTH: '<unk>'}])
-def spacy_tok(x): return [tok.text for tok in my_tok.tokenizer(sub_br(x))]
-
 re_tok = re.compile(f'([{string.punctuation}“”¨«»®´·º½¾¿¡§£₤‘’])')
 def tokenize(s): return re_tok.sub(r' \1 ', s).split()
 
@@ -25,16 +16,18 @@ def texts_labels_from_folders(path, folders):
             labels.append(idx)
     return texts, np.array(labels).astype(np.int64)
 
-#def texts_from_files(src, names):
-    #texts,labels = [],[]
-    #for idx,name in enumerate(names):
-        #path = os.path.join(src, name)
-        #t = [o.strip() for o in open(path, encoding = "ISO-8859-1")]
-        #texts += t
-        #labels += ([idx] * len(t))
-    #return texts,np.array(labels)
-
 class Tokenizer():
+    def __init__(self, lang='en'):
+        self.re_br = re.compile(r'<\s*br\s*/?>', re.IGNORECASE)
+        self.tok = spacy.load(lang)
+        for w in ('<eos>','<bos>','<unk>'):
+            self.tok.tokenizer.add_special_case(w, [{ORTH: w}])
+
+    def sub_br(self,x): return self.re_br.sub("\n", x)
+
+    def spacy_tok(self,x):
+        return [t.text for t in self.tok.tokenizer(self.sub_br(x))]
+
     re_rep = re.compile(r'(\S)(\1{3,})')
     re_word_rep = re.compile(r'(\b\w+\W+)(\1{3,})')
 
@@ -70,13 +63,18 @@ class Tokenizer():
         s = Tokenizer.do_caps(s)
         s = re.sub(r'([/#])', r' \1 ', s)
         s = re.sub(' {2,}', ' ', s)
-        return spacy_tok(s)
+        return self.spacy_tok(s)
 
-    def proc_all(self, ss): return [self.proc_text(s) for s in ss]
+    @staticmethod
+    def proc_all(ss, lang):
+        tok = Tokenizer(lang)
+        return [tok.proc_text(s) for s in ss]
 
-    def proc_all_mp(self, ss):
+    @staticmethod
+    def proc_all_mp(ss, lang='en'):
         ncpus = num_cpus()//2
-        with ProcessPoolExecutor(ncpus) as e: return sum(e.map(self.proc_all, ss), [])
+        with ProcessPoolExecutor(ncpus) as e:
+            return sum(e.map(Tokenizer.proc_all, ss, [lang]*len(ss)), [])
 
 
 class TextDataset(Dataset):

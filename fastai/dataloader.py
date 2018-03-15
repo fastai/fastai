@@ -41,10 +41,11 @@ def get_tensor(batch, pin):
 
 class DataLoader(object):
     def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None, pad_idx=0,
-                 num_workers=None, collate_fn=np_collate, pin_memory=False, drop_last=False, transpose=False):
+                 num_workers=None, collate_fn=np_collate, pin_memory=False, drop_last=False,
+                 transpose=False, transpose_y=False):
         self.dataset,self.batch_size,self.num_workers = dataset,batch_size,num_workers
         self.collate_fn,self.pin_memory,self.drop_last = collate_fn,pin_memory,drop_last
-        self.transpose,self.pad_idx = transpose,pad_idx
+        self.transpose,self.transpose_y,self.pad_idx = transpose,transpose_y,pad_idx
 
         if batch_sampler is not None:
             if batch_size > 1 or shuffle or sampler is not None or drop_last:
@@ -66,8 +67,8 @@ class DataLoader(object):
 
     def get_batch(self, indices):
         res = self.collate_fn([self.dataset[i] for i in indices], self.pad_idx)
-        if not self.transpose: return res
-        res[0] = res[0].T
+        if self.transpose:   res[0] = res[0].T
+        if self.transpose_y: res[1] = res[1].T
         return res
 
     def __iter__(self):
