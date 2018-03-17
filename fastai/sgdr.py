@@ -9,7 +9,7 @@ class Callback:
     def on_epoch_end(self, metrics): pass
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
-    
+
 # Useful for maintaining status of a long-running job.
 # 
 # Usage:
@@ -18,20 +18,20 @@ class LoggingCallback(Callback):
     def __init__(self, save_path):
         super().__init__()
         self.save_path=save_path
-    def on_train_begin(self): 
+    def on_train_begin(self):
         self.batch = 0
         self.epoch = 0
         self.f = open(self.save_path, "a", 1)
         self.log("\ton_train_begin")
-    def on_batch_begin(self): 
+    def on_batch_begin(self):
         self.log(str(self.batch)+"\ton_batch_begin")
-    def on_epoch_end(self, metrics): 
+    def on_epoch_end(self, metrics):
         self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
         self.epoch += 1
-    def on_batch_end(self, metrics): 
+    def on_batch_end(self, metrics):
         self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
         self.batch += 1
-    def on_train_end(self): 
+    def on_train_end(self):
         self.log("\ton_train_end")
         self.f.close()
     def log(self, string):
@@ -59,8 +59,7 @@ class LossRecorder(Callback):
         self.losses.append(loss)
 
     def plot_loss(self):
-        if not in_ipynb():
-            plt.switch_backend('agg')
+        if not in_ipynb(): plt.switch_backend('agg')
         plt.plot(self.iterations[10:], self.losses[10:])
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'loss_plot.png'))
@@ -115,10 +114,10 @@ class LR_Finder(LR_Updater):
         if (loss<self.best and self.iteration>10): self.best=loss
         return super().on_batch_end(loss)
 
-    def plot(self, n_skip=10):
+    def plot(self, n_skip=10, n_skip_end=5):
         plt.ylabel("loss")
         plt.xlabel("learning rate (log scale)")
-        plt.plot(self.lrs[n_skip:-5], self.losses[n_skip:-5])
+        plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         plt.xscale('log')
 
 
