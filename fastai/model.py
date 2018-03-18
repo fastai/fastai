@@ -35,7 +35,7 @@ class Stepper():
         else: self.m.eval()
         if hasattr(self.m, 'reset'): self.m.reset()
 
-    def step(self, xs, y):
+    def step(self, xs, y, epoch):
         xtra = []
         output = self.m(*xs)
         if isinstance(output,tuple): output,*xtra = output
@@ -93,7 +93,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
-            loss = stepper.step(V(x),V(y))
+            loss = stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
@@ -118,7 +118,7 @@ def print_stats(epoch, values, decimals=6):
     layout = "{!s:^10}" + " {!s:10}" * len(values)
     values = [epoch] + list(np.round(values, decimals))
     print(layout.format(*values))
-    
+
 def validate(stepper, dl, metrics):
     loss,res = [],[]
     stepper.reset(False)
