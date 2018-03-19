@@ -136,6 +136,11 @@ def predict(m, dl):
     preda,_ = predict_with_targs_(m, dl)
     return to_np(torch.cat(preda))
 
+def predict_batch(m, x):
+    m.eval()
+    if hasattr(m, 'reset'): m.reset()
+    return m(VV(x))
+
 def predict_with_targs_(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
