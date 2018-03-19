@@ -40,7 +40,7 @@ class Stepper():
         output = self.m(*xs)
         if isinstance(output,tuple): output,*xtra = output
         self.opt.zero_grad()
-        loss = raw_loss = self.crit(output, y)
+        loss = raw_loss = self.crit(output, y.long())
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
         loss.backward()
         if self.clip:   # Gradient clipping
