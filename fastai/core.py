@@ -7,6 +7,9 @@ conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTe
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
 
+def A(*a):
+    return np.array(a[0]) if len(a)==1 else [np.array(o) for o in a]
+
 def T(a):
     if torch.is_tensor(a): res = a
     else:
@@ -23,10 +26,11 @@ def create_variable(x, volatile, requires_grad=False):
         x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
     return x
 
-def V_(x, requires_grad=False):
-    return create_variable(x, False, requires_grad=requires_grad)
-def V(x, requires_grad=False):
-    return [V_(o, requires_grad) for o in x] if isinstance(x,list) else V_(x, requires_grad)
+def V_(x, requires_grad=False, volatile=False):
+    return create_variable(x, volatile=volatile, requires_grad=requires_grad)
+def V(x, requires_grad=False, volatile=False):
+    return [V_(o, requires_grad=requires_grad, volatile=volatile)
+            for o in x] if isinstance(x,list) else V_(x, requires_grad=requires_grad, volatile=volatile)
 
 def VV_(x): return create_variable(x, True)
 def VV(x):  return [VV_(o) for o in x] if isinstance(x,list) else VV_(x)
