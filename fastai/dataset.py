@@ -100,7 +100,7 @@ def folder_source(path, folder):
     label_arr = np.array(idxs, dtype=int)
     return fnames, label_arr, all_labels
 
-def parse_csv_labels(fn, skip_header=True):
+def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     """Parse filenames and label sets from a CSV file.
 
     This method expects that the csv file at path :fn: has two columns. If it
@@ -120,6 +120,7 @@ def parse_csv_labels(fn, skip_header=True):
             be one-hot encoded.
         )
     .
+    :param cat_separator: the separator for the categories column
     """
     with open(fn) as fileobj:
         reader = csv.reader(fileobj)
@@ -129,7 +130,7 @@ def parse_csv_labels(fn, skip_header=True):
         csv_lines = [l for l in reader]
 
     fnames = [fname for fname, _ in csv_lines]
-    csv_labels = {a:b.split(' ') for a,b in csv_lines}
+    csv_labels = {a:b.split(cat_separator) for a,b in csv_lines}
     return sorted(fnames), csv_labels
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
