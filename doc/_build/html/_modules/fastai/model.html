@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.model &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fastai.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.layer_optimizer</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="cut_model"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.cut_model">[docs]</a><span class="k">def</span> <span class="nf">cut_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">cut</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="p">())[:</span><span class="n">cut</span><span class="p">]</span> <span class="k">if</span> <span class="n">cut</span> <span class="k">else</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
+
+<div class="viewcode-block" id="predict_to_bcolz"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.predict_to_bcolz">[docs]</a><span class="k">def</span> <span class="nf">predict_to_bcolz</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">arr</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">arr</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+    <span class="n">lock</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">to_np</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">VV</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">lock</span><span class="p">:</span>
+            <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
+            <span class="n">arr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+<div class="viewcode-block" id="num_features"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.num_features">[docs]</a><span class="k">def</span> <span class="nf">num_features</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">children</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s1">&#39;num_features&#39;</span><span class="p">):</span> <span class="k">return</span> <span class="n">l</span><span class="o">.</span><span class="n">num_features</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">num_features</span><span class="p">(</span><span class="n">l</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">res</span>
+
+
+<div class="viewcode-block" id="Stepper"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.Stepper">[docs]</a><span class="k">class</span> <span class="nc">Stepper</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">crit</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">crit</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">reg_fn</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span><span class="n">opt</span><span class="p">,</span><span class="n">crit</span><span class="p">,</span><span class="n">clip</span><span class="p">,</span><span class="n">reg_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Stepper.reset"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.Stepper.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">train</span><span class="p">:</span> <span class="n">apply_leaf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">set_train_mode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Stepper.step"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.Stepper.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">xtra</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span> <span class="n">output</span><span class="p">,</span><span class="o">*</span><span class="n">xtra</span> <span class="o">=</span> <span class="n">output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">raw_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crit</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg_fn</span><span class="p">:</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg_fn</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">xtra</span><span class="p">,</span> <span class="n">raw_loss</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">:</span>   <span class="c1"># Gradient clipping</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm</span><span class="p">(</span><span class="n">trainable_params_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">raw_loss</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Stepper.evaluate"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.Stepper.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span> <span class="n">preds</span><span class="o">=</span><span class="n">preds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="n">preds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">crit</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="set_train_mode"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.set_train_mode">[docs]</a><span class="k">def</span> <span class="nf">set_train_mode</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;running_mean&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="s1">&#39;bn_freeze&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+              <span class="ow">or</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="s1">&#39;trainable&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">))):</span> <span class="n">m</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="s1">&#39;drop_freeze&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">)</span>
+          <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;drop&#39;</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">())):</span> <span class="n">m</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+    <span class="k">else</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">crit</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stepper</span><span class="o">=</span><span class="n">Stepper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Fits a model</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">       model (model): any pytorch module</span>
+<span class="sd">           net = to_gpu(net)</span>
+<span class="sd">       data (ModelData): see ModelData class and subclasses</span>
+<span class="sd">       opt: optimizer. Example: opt=optim.Adam(net.parameters())</span>
+<span class="sd">       epochs(int): number of epochs</span>
+<span class="sd">       crit: loss function to optimize. Example: F.cross_entropy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stepper</span> <span class="o">=</span> <span class="n">stepper</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">crit</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">avg_mom</span><span class="o">=</span><span class="mf">0.98</span>
+    <span class="n">batch_num</span><span class="p">,</span><span class="n">avg_loss</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.</span>
+    <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">cb</span><span class="o">.</span><span class="n">on_train_begin</span><span class="p">()</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">,</span> <span class="s2">&quot;trn_loss&quot;</span><span class="p">,</span> <span class="s2">&quot;val_loss&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">]</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{!s:10}</span><span class="s2"> &quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="n">num_batch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">epochs</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">num_batch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_batch</span><span class="o">*</span><span class="n">epochs</span><span class="p">)</span>
+        <span class="n">epochs</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="n">tnrange</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Epoch&#39;</span><span class="p">):</span>
+        <span class="n">stepper</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">),</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">num_batch</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">batch_num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">cb</span><span class="o">.</span><span class="n">on_batch_begin</span><span class="p">()</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">stepper</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">V</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">V</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+            <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">*</span> <span class="n">avg_mom</span> <span class="o">+</span> <span class="n">loss</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">avg_mom</span><span class="p">)</span>
+            <span class="n">debias_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">avg_mom</span><span class="o">**</span><span class="n">batch_num</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">debias_loss</span><span class="p">)</span>
+            <span class="n">stop</span><span class="o">=</span><span class="kc">False</span>
+            <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="ow">or</span> <span class="n">cb</span><span class="o">.</span><span class="n">on_batch_end</span><span class="p">(</span><span class="n">debias_loss</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">stop</span><span class="p">:</span> <span class="k">return</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">num_batch</span><span class="p">:</span> <span class="k">break</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">val_dl</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">names</span><span class="p">))</span>
+        <span class="n">print_stats</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="p">[</span><span class="n">debias_loss</span><span class="p">]</span> <span class="o">+</span> <span class="n">vals</span><span class="p">)</span>
+        <span class="n">stop</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="ow">or</span> <span class="n">cb</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stop</span><span class="p">:</span> <span class="k">break</span>
+
+    <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">cb</span><span class="o">.</span><span class="n">on_train_end</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">vals</span>
+
+
+<div class="viewcode-block" id="print_stats"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.print_stats">[docs]</a><span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{!s:^10}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="si">{!s:10}</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">epoch</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">decimals</span><span class="p">))</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">))</span>
+    
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">stepper</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span><span class="n">res</span> <span class="o">=</span> <span class="p">[],[]</span>
+    <span class="n">stepper</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">):</span>
+        <span class="n">preds</span><span class="p">,</span><span class="n">l</span> <span class="o">=</span> <span class="n">stepper</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">VV</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">VV</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_np</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">f</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss</span><span class="p">)]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="mi">0</span><span class="p">))</span>
+
+<div class="viewcode-block" id="get_prediction"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.get_prediction">[docs]</a><span class="k">def</span> <span class="nf">get_prediction</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">)):</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span>
+
+<div class="viewcode-block" id="predict"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.predict">[docs]</a><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dl</span><span class="p">):</span>
+    <span class="n">preda</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">predict_with_targs_</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">to_np</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">preda</span><span class="p">))</span>
+
+<div class="viewcode-block" id="predict_with_targs_"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.predict_with_targs_">[docs]</a><span class="k">def</span> <span class="nf">predict_with_targs_</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dl</span><span class="p">):</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">):</span> <span class="n">m</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dl</span><span class="p">):</span> <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">get_prediction</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="o">*</span><span class="n">VV</span><span class="p">(</span><span class="n">x</span><span class="p">))),</span><span class="n">y</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">res</span><span class="p">)</span>
+
+<div class="viewcode-block" id="predict_with_targs"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.predict_with_targs">[docs]</a><span class="k">def</span> <span class="nf">predict_with_targs</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dl</span><span class="p">):</span>
+    <span class="n">preda</span><span class="p">,</span><span class="n">targa</span> <span class="o">=</span> <span class="n">predict_with_targs_</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">to_np</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">preda</span><span class="p">)),</span> <span class="n">to_np</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">targa</span><span class="p">))</span>
+
+<span class="c1"># From https://github.com/ncullen93/torchsample</span>
+<div class="viewcode-block" id="model_summary"><a class="viewcode-back" href="../../generated/fastai.model.html#fastai.model.model_summary">[docs]</a><span class="k">def</span> <span class="nf">model_summary</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">input_size</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">register_hook</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">module_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+
+            <span class="n">m_key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">module_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">&#39;input_shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+            <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">&#39;input_shape&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">&#39;output_shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+            <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">&#39;output_shape&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+            <span class="n">params</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">):</span>
+                <span class="n">params</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">size</span><span class="p">())))</span>
+                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">&#39;trainable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">requires_grad</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;bias&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">module</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">params</span> <span class="o">+=</span>  <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">size</span><span class="p">())))</span>
+            <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">&#39;nb_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span> <span class="ow">and</span>
+           <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">)</span> <span class="ow">and</span>
+           <span class="ow">not</span> <span class="p">(</span><span class="n">module</span> <span class="o">==</span> <span class="n">m</span><span class="p">)):</span>
+            <span class="n">hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">hook</span><span class="p">))</span>
+
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">hooks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">register_hook</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">in_size</span><span class="p">)))</span> <span class="k">for</span> <span class="n">in_size</span> <span class="ow">in</span> <span class="n">input_size</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">input_size</span><span class="p">)))]</span>
+    <span class="n">m</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hooks</span><span class="p">:</span> <span class="n">h</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">summary</span>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

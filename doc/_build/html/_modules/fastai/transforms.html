@@ -1,0 +1,698 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.transforms &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.transforms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fastai.transforms</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.layer_optimizer</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">IntEnum</span>
+
+<div class="viewcode-block" id="scale_min"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.scale_min">[docs]</a><span class="k">def</span> <span class="nf">scale_min</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Scales the image so that the smallest axis is of size targ.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        im (array): image</span>
+<span class="sd">        targ (int): target size</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">targ</span><span class="o">/</span><span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">sz</span> <span class="o">=</span> <span class="p">(</span><span class="n">scale_to</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">targ</span><span class="p">),</span> <span class="n">scale_to</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">targ</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">)</span>
+
+<div class="viewcode-block" id="zoom_cv"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.zoom_cv">[docs]</a><span class="k">def</span> <span class="nf">zoom_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">z</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">((</span><span class="n">c</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">r</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="n">z</span><span class="o">+</span><span class="mf">1.</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">M</span><span class="p">,(</span><span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">))</span>
+
+<div class="viewcode-block" id="stretch_cv"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.stretch_cv">[docs]</a><span class="k">def</span> <span class="nf">stretch_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sr</span><span class="p">,</span><span class="n">sc</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">sr</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">sc</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fx</span><span class="o">=</span><span class="n">sr</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">fy</span><span class="o">=</span><span class="n">sc</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">)</span>
+    <span class="n">nr</span><span class="p">,</span><span class="n">nc</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">cr</span> <span class="o">=</span> <span class="p">(</span><span class="n">nr</span><span class="o">-</span><span class="n">r</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">;</span> <span class="n">cc</span> <span class="o">=</span> <span class="p">(</span><span class="n">nc</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">cr</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="n">cr</span><span class="p">,</span> <span class="n">cc</span><span class="p">:</span><span class="n">c</span><span class="o">+</span><span class="n">cc</span><span class="p">]</span>
+
+<div class="viewcode-block" id="dihedral"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.dihedral">[docs]</a><span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dih</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dih</span><span class="o">%</span><span class="mi">4</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">dih</span><span class="o">&lt;</span><span class="mi">4</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<div class="viewcode-block" id="lighting"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.lighting">[docs]</a><span class="k">def</span> <span class="nf">lighting</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">b</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">c</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">im</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">im</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">im</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">c</span><span class="o">+</span><span class="n">mu</span><span class="o">+</span><span class="n">b</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<div class="viewcode-block" id="rotate_cv"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.rotate_cv">[docs]</a><span class="k">def</span> <span class="nf">rotate_cv</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">deg</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_CONSTANT</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Rotates an image by deg degrees</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        deg (float): degree to rotate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">((</span><span class="n">c</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">r</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span><span class="n">deg</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">im</span><span class="p">,</span><span class="n">M</span><span class="p">,(</span><span class="n">c</span><span class="p">,</span><span class="n">r</span><span class="p">),</span> <span class="n">borderMode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">WARP_FILL_OUTLIERS</span><span class="o">+</span><span class="n">interpolation</span><span class="p">)</span>
+
+<div class="viewcode-block" id="no_crop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.no_crop">[docs]</a><span class="k">def</span> <span class="nf">no_crop</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">min_sz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a squared resized image &quot;&quot;&quot;</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">min_sz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">min_sz</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="p">(</span><span class="n">min_sz</span><span class="p">,</span> <span class="n">min_sz</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">)</span>
+
+<div class="viewcode-block" id="center_crop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.center_crop">[docs]</a><span class="k">def</span> <span class="nf">center_crop</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">min_sz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a center crop of an image&quot;&quot;&quot;</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">min_sz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">min_sz</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">start_r</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">r</span><span class="o">-</span><span class="n">min_sz</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">start_c</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">c</span><span class="o">-</span><span class="n">min_sz</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">crop</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">start_r</span><span class="p">,</span> <span class="n">start_c</span><span class="p">,</span> <span class="n">min_sz</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="scale_to"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.scale_to">[docs]</a><span class="k">def</span> <span class="nf">scale_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">targ</span><span class="p">):</span> <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">ratio</span><span class="p">),</span> <span class="n">targ</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="crop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.crop">[docs]</a><span class="k">def</span> <span class="nf">crop</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">sz</span><span class="p">):</span> <span class="k">return</span> <span class="n">im</span><span class="p">[</span><span class="n">r</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="n">sz</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="n">c</span><span class="o">+</span><span class="n">sz</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="det_dihedral"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.det_dihedral">[docs]</a><span class="k">def</span> <span class="nf">det_dihedral</span><span class="p">(</span><span class="n">dih</span><span class="p">):</span> <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dihedral</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dih</span><span class="p">)</span></div>
+<div class="viewcode-block" id="det_stretch"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.det_stretch">[docs]</a><span class="k">def</span> <span class="nf">det_stretch</span><span class="p">(</span><span class="n">sr</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span> <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">stretch_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span></div>
+<div class="viewcode-block" id="det_lighting"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.det_lighting">[docs]</a><span class="k">def</span> <span class="nf">det_lighting</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span> <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">lighting</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></div>
+<div class="viewcode-block" id="det_rotate"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.det_rotate">[docs]</a><span class="k">def</span> <span class="nf">det_rotate</span><span class="p">(</span><span class="n">deg</span><span class="p">):</span> <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">rotate_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">deg</span><span class="p">)</span></div>
+<div class="viewcode-block" id="det_zoom"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.det_zoom">[docs]</a><span class="k">def</span> <span class="nf">det_zoom</span><span class="p">(</span><span class="n">zoom</span><span class="p">):</span> <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">zoom_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="rand0"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.rand0">[docs]</a><span class="k">def</span> <span class="nf">rand0</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">s</span>
+
+<div class="viewcode-block" id="Denormalize"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Denormalize">[docs]</a><span class="k">class</span> <span class="nc">Denormalize</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span>
+
+
+<div class="viewcode-block" id="Normalize"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Normalize">[docs]</a><span class="k">class</span> <span class="nc">Normalize</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Normalizes an image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">y</span>
+
+
+<div class="viewcode-block" id="RandomRotateZoom"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomRotateZoom">[docs]</a><span class="k">class</span> <span class="nc">RandomRotateZoom</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deg</span><span class="p">,</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">stretch</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REFLECT</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">zoom</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">stretch</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">deg</span><span class="p">,</span><span class="n">zoom</span><span class="p">,</span><span class="n">stretch</span><span class="p">,</span><span class="n">mode</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">choice</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">choice</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">choice</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">rotate_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rand0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deg</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">choice</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">zoom_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zoom</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">choice</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">str_choice</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">sa</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">stretch</span>
+            <span class="k">if</span> <span class="n">str_choice</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">stretch_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sa</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>             <span class="n">x</span> <span class="o">=</span> <span class="n">stretch_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sa</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># not implemented</span></div>
+        <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<div class="viewcode-block" id="channel_dim"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.channel_dim">[docs]</a><span class="k">def</span> <span class="nf">channel_dim</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rollaxis</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">y</span>
+
+
+<div class="viewcode-block" id="to_bb"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.to_bb">[docs]</a><span class="k">def</span> <span class="nf">to_bb</span><span class="p">(</span><span class="n">YY</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">cols</span><span class="p">,</span><span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">YY</span><span class="p">)</span>
+    <span class="n">top_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="n">left_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+    <span class="n">bottom_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="n">right_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">left_col</span><span class="p">,</span> <span class="n">top_row</span><span class="p">,</span> <span class="n">right_col</span><span class="p">,</span> <span class="n">bottom_row</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="coords2px"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.coords2px">[docs]</a><span class="k">def</span> <span class="nf">coords2px</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Transforming coordinates to pixels.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        y (np array): vector in which (y[0], y[1]) and (y[2], y[3]) are the</span>
+<span class="sd">            the corners of a bounding box.</span>
+<span class="sd">        x (image): an image</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Y (image): of shape x.shape</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">([</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">([</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">Y</span><span class="p">[</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span></div>
+    <span class="k">return</span> <span class="n">Y</span>
+
+
+<div class="viewcode-block" id="TfmType"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.TfmType">[docs]</a><span class="k">class</span> <span class="nc">TfmType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Type of transformation.</span>
+
+<span class="sd">        NO: is the default, y does not get transformed when x is transformed.</span>
+<span class="sd">        PIXEL: when x and y are images and should be transformed in the same way.</span>
+<span class="sd">               Example: image segmentation.</span>
+<span class="sd">        COORD: when y are coordinate or x in which case x and y have</span>
+<span class="sd">               to be transformed accordingly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NO</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">PIXEL</span> <span class="o">=</span> <span class="mi">2</span></div>
+    <span class="n">COORD</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<div class="viewcode-block" id="Transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Transform">[docs]</a><span class="k">class</span> <span class="nc">Transform</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; A class that represents a transform.</span>
+
+<span class="sd">    All other transforms should subclass it. All subclasses should override</span>
+<span class="sd">    do_transform.</span>
+<span class="sd">    We have 3 types of transforms:</span>
+<span class="sd">       TfmType.NO: the target y is not transformed</span>
+<span class="sd">       TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms</span>
+<span class="sd">           them with the same paramters.</span>
+<span class="sd">       TfmType.COORD: assumes that y are some coordinates in the image x.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        tfm_y (TfmType): type of transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfm_y</span><span class="o">=</span><span class="n">tfm_y</span></div>
+<div class="viewcode-block" id="Transform.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Transform.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_state</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfm_y</span><span class="o">==</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfm_y</span><span class="o">==</span><span class="n">TfmType</span><span class="o">.</span><span class="n">PIXEL</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_coord</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+</div>
+<div class="viewcode-block" id="Transform.transform_coord"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Transform.transform_coord">[docs]</a>    <span class="k">def</span> <span class="nf">transform_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">y</span>
+
+<div class="viewcode-block" id="Transform.transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Transform.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_transform</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="kc">True</span><span class="p">))</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">x</span>
+</div></div>
+<div class="viewcode-block" id="Transform.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Transform.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<div class="viewcode-block" id="CoordTransform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.CoordTransform">[docs]</a><span class="k">class</span> <span class="nc">CoordTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class that represents a coordinate transform.  &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CoordTransform.map_y"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.CoordTransform.map_y">[docs]</a>    <span class="k">def</span> <span class="nf">map_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">random_px_rect</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">y_tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_transform</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">to_bb</span><span class="p">(</span><span class="n">y_tr</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">y_tr</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="n">y0</span>
+
+<div class="viewcode-block" id="CoordTransform.transform_coord"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.CoordTransform.transform_coord">[docs]</a>    <span class="k">def</span> <span class="nf">transform_coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ys</span><span class="p">):</span>
+        <span class="n">yp</span> <span class="o">=</span> <span class="n">partition</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">map_y</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yp</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_transform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">y2</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AddPadding"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.AddPadding">[docs]</a><span class="k">class</span> <span class="nc">AddPadding</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REFLECT</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">pad</span><span class="p">,</span><span class="n">mode</span>
+
+<div class="viewcode-block" id="AddPadding.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.AddPadding.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">copyMakeBorder</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CenterCrop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.CenterCrop">[docs]</a><span class="k">class</span> <span class="nc">CenterCrop</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class that represents a Center Crop.</span>
+
+<span class="sd">    This transforms (optionally) transforms x,y at with the same parameters.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        sz (int): size of the crop.</span>
+<span class="sd">        tfm_y (TfmType): type of y transformation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_sz</span> <span class="o">=</span> <span class="n">sz</span>
+</div></div>
+<div class="viewcode-block" id="CenterCrop.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.CenterCrop.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span> <span class="k">return</span> <span class="n">center_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_sz</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RandomCrop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomCrop">[docs]</a><span class="k">class</span> <span class="nc">RandomCrop</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A class that represents a Random Crop transformation.</span>
+
+<span class="sd">    This transforms (optionally) transforms x,y at with the same parameters.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        targ (int): target size of the crop.</span>
+<span class="sd">        tfm_y (TfmType): type of y transformation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targ</span><span class="o">=</span><span class="n">targ</span>
+
+<div class="viewcode-block" id="RandomCrop.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomCrop.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rand_r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rand_c</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RandomCrop.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomCrop.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span>
+        <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">start_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_r</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">targ</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">start_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rand_c</span><span class="o">*</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">targ</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_r</span><span class="p">,</span> <span class="n">start_c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">targ</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NoCrop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.NoCrop">[docs]</a><span class="k">class</span> <span class="nc">NoCrop</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;  A transformation that resize to a square image without cropping.</span>
+
+<span class="sd">    This transforms (optionally) resizes x,y at with the same parameters.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        targ (int): target size of the crop.</span>
+<span class="sd">        tfm_y (TfmType): type of y transformation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="o">=</span><span class="n">sz</span>
+
+<div class="viewcode-block" id="NoCrop.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.NoCrop.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span></div></div>
+       <span class="k">return</span> <span class="n">no_crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_NEAREST</span> <span class="k">if</span> <span class="n">is_y</span> <span class="k">else</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Scale"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Scale">[docs]</a><span class="k">class</span> <span class="nc">Scale</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A transformation that scales the min size to sz.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        sz (int): target size to scale minimum size.</span>
+<span class="sd">        tfm_y (TfmType): type of y transformation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="o">=</span><span class="n">sz</span>
+
+<div class="viewcode-block" id="Scale.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Scale.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">scale_min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_NEAREST</span> <span class="k">if</span> <span class="n">is_y</span> <span class="k">else</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RandomScale"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomScale">[docs]</a><span class="k">class</span> <span class="nc">RandomScale</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Scales an image so that the min size is a random number between [sz, sz*max_zoom]</span>
+
+<span class="sd">    This transforms (optionally) scales x,y at with the same parameters.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        sz (int): target size</span>
+<span class="sd">        max_zoom (float): float &gt;= 1.0</span>
+<span class="sd">        p (float): a probability for doing the random sizing</span>
+<span class="sd">        tfm_y (TfmType): type of y transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">max_zoom</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">max_zoom</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">sz</span><span class="p">,</span><span class="n">max_zoom</span><span class="p">,</span><span class="n">p</span>
+
+<div class="viewcode-block" id="RandomScale.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomScale.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_sz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sz</span>
+        <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_sz</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_zoom</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RandomScale.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomScale.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">scale_min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_sz</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_NEAREST</span> <span class="k">if</span> <span class="n">is_y</span> <span class="k">else</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="random_px_rect"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.random_px_rect">[docs]</a><span class="k">def</span> <span class="nf">random_px_rect</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a 2D image of the size x with random points in a square box.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        y (array): Contains the coordinates of the bounding box corners</span>
+<span class="sd">            y = [upper_row, left_col, lower_row, right_col]</span>
+<span class="sd">        x (array): image</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Y (array): A 2D array of size (x.shape[0], x.shape[1]) with pixes</span>
+<span class="sd">            on corners of the bounding box and random points in the boundary of the box.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+    <span class="n">cols0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+    <span class="n">rand_rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+    <span class="n">fixed_cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">])])</span>
+    <span class="n">rand_cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
+    <span class="n">fixed_rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">])])</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">rows0</span><span class="p">,</span> <span class="n">rand_rows</span><span class="p">,</span> <span class="n">fixed_rows</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">cols0</span><span class="p">,</span> <span class="n">fixed_cols</span><span class="p">,</span> <span class="n">rand_cols</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">Y</span><span class="p">[</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span></div>
+    <span class="k">return</span> <span class="n">Y</span>
+
+
+<div class="viewcode-block" id="RandomRotate"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomRotate">[docs]</a><span class="k">class</span> <span class="nc">RandomRotate</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Rotates images and (optionally) target y.</span>
+
+<span class="sd">    Rotating coordinates is treated differently for x and y on this</span>
+<span class="sd">    transform.</span>
+<span class="sd">     Arguments:</span>
+<span class="sd">        deg (float): degree to rotate.</span>
+<span class="sd">        p (float): probability of rotation</span>
+<span class="sd">        mode: type of border</span>
+<span class="sd">        tfm_y (TfmType): type of y transform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deg</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REFLECT</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">deg</span><span class="p">,</span><span class="n">mode</span><span class="p">,</span><span class="n">p</span>
+
+<div class="viewcode-block" id="RandomRotate.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomRotate.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdeg</span> <span class="o">=</span> <span class="n">rand0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rp</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+
+<div class="viewcode-block" id="RandomRotate.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomRotate.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rp</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">rotate_cv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdeg</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+                <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_NEAREST</span> <span class="k">if</span> <span class="n">is_y</span> <span class="k">else</span> <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="RandomDihedral"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomDihedral">[docs]</a><span class="k">class</span> <span class="nc">RandomDihedral</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomDihedral.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomDihedral.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rot_times</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_flip</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">&lt;</span><span class="mf">0.5</span>
+
+<div class="viewcode-block" id="RandomDihedral.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomDihedral.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rot_times</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_flip</span> <span class="k">else</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="RandomFlip"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomFlip">[docs]</a><span class="k">class</span> <span class="nc">RandomFlip</span><span class="p">(</span><span class="n">CoordTransform</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomFlip.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomFlip.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_flip</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">&lt;</span><span class="mf">0.5</span>
+
+<div class="viewcode-block" id="RandomFlip.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomFlip.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_flip</span> <span class="k">else</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="RandomLighting"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomLighting">[docs]</a><span class="k">class</span> <span class="nc">RandomLighting</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span><span class="n">c</span>
+
+<div class="viewcode-block" id="RandomLighting.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomLighting.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_rand</span> <span class="o">=</span> <span class="n">rand0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_rand</span> <span class="o">=</span> <span class="n">rand0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RandomLighting.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomLighting.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_rand</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_rand</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">else</span> <span class="n">c</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">lighting</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="RandomBlur"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomBlur">[docs]</a><span class="k">class</span> <span class="nc">RandomBlur</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a gaussian blur to the image at chance.</span>
+<span class="sd">    Multiple blur strengths can be configured, one of them is used by random chance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blur_strengths</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="c1"># Blur strength must be an odd number, because it is used as a kernel size.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blur_strengths</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">blur_strengths</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blur_strengths</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;all blur_strengths must be &gt; 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probability</span> <span class="o">=</span> <span class="n">probability</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_transform</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="RandomBlur.set_state"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomBlur.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_transform</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blur_strengths</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="p">(</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RandomBlur.do_transform"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.RandomBlur.do_transform">[docs]</a>    <span class="k">def</span> <span class="nf">do_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">is_y</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">,</span> <span class="n">sigmaX</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_transform</span> <span class="k">else</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="compose"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.compose">[docs]</a><span class="k">def</span> <span class="nf">compose</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fns</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span>
+        <span class="c1">#pdb.set_trace()</span>
+        <span class="n">im</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span><span class="n">fn</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">im</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CropType"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.CropType">[docs]</a><span class="k">class</span> <span class="nc">CropType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Type of image cropping.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">RANDOM</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CENTER</span> <span class="o">=</span> <span class="mi">2</span></div>
+    <span class="n">NO</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">crop_fn_lu</span> <span class="o">=</span> <span class="p">{</span><span class="n">CropType</span><span class="o">.</span><span class="n">RANDOM</span><span class="p">:</span> <span class="n">RandomCrop</span><span class="p">,</span> <span class="n">CropType</span><span class="o">.</span><span class="n">CENTER</span><span class="p">:</span> <span class="n">CenterCrop</span><span class="p">,</span> <span class="n">CropType</span><span class="o">.</span><span class="n">NO</span><span class="p">:</span> <span class="n">NoCrop</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Transforms"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.Transforms">[docs]</a><span class="k">class</span> <span class="nc">Transforms</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">normalizer</span><span class="p">,</span> <span class="n">denorm</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="n">CropType</span><span class="o">.</span><span class="n">CENTER</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">denorm</span> <span class="o">=</span> <span class="n">sz</span><span class="p">,</span><span class="n">denorm</span>
+        <span class="n">crop_tfm</span> <span class="o">=</span> <span class="n">crop_fn_lu</span><span class="p">[</span><span class="n">crop_type</span><span class="p">](</span><span class="n">sz</span><span class="p">,</span> <span class="n">tfm_y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfms</span> <span class="o">=</span> <span class="n">tfms</span> <span class="o">+</span> <span class="p">[</span><span class="n">crop_tfm</span><span class="p">,</span> <span class="n">normalizer</span><span class="p">,</span> <span class="n">channel_dim</span><span class="p">]</span></div>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="k">return</span> <span class="n">compose</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfms</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="image_gen"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.image_gen">[docs]</a><span class="k">def</span> <span class="nf">image_gen</span><span class="p">(</span><span class="n">normalizer</span><span class="p">,</span> <span class="n">denorm</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad_mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REFLECT</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">tfm_y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">TfmType</span><span class="o">.</span><span class="n">NO</span>
+    <span class="k">if</span> <span class="n">tfms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tfms</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span> <span class="n">tfms</span><span class="o">=</span><span class="p">[</span><span class="n">tfms</span><span class="p">]</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">RandomScale</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">max_zoom</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">tfm_y</span><span class="p">)</span> <span class="k">if</span> <span class="n">max_zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Scale</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">tfm_y</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">pad</span><span class="p">:</span> <span class="n">scale</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AddPadding</span><span class="p">(</span><span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">pad_mode</span><span class="p">))</span>
+    <span class="c1">#if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM</span></div>
+    <span class="k">return</span> <span class="n">Transforms</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">tfms</span><span class="p">,</span> <span class="n">normalizer</span><span class="p">,</span> <span class="n">denorm</span><span class="p">,</span> <span class="n">crop_type</span><span class="p">,</span> <span class="n">tfm_y</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="noop"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.noop">[docs]</a><span class="k">def</span> <span class="nf">noop</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">transforms_basic</span>    <span class="o">=</span> <span class="p">[</span><span class="n">RandomRotate</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">RandomLighting</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)]</span>
+<span class="n">transforms_side_on</span>  <span class="o">=</span> <span class="n">transforms_basic</span> <span class="o">+</span> <span class="p">[</span><span class="n">RandomFlip</span><span class="p">()]</span>
+<span class="n">transforms_top_down</span> <span class="o">=</span> <span class="n">transforms_basic</span> <span class="o">+</span> <span class="p">[</span><span class="n">RandomDihedral</span><span class="p">()]</span>
+
+<span class="n">imagenet_stats</span> <span class="o">=</span> <span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>
+<span class="n">inception_stats</span> <span class="o">=</span> <span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">inception_models</span> <span class="o">=</span> <span class="p">(</span><span class="n">inception_4</span><span class="p">,</span> <span class="n">inceptionresnet_2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="tfms_from_stats"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.tfms_from_stats">[docs]</a><span class="k">def</span> <span class="nf">tfms_from_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">aug_tfms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="n">CropType</span><span class="o">.</span><span class="n">RANDOM</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pad_mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REFLECT</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">aug_tfms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">aug_tfms</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">tfm_norm</span> <span class="o">=</span> <span class="n">Normalize</span><span class="p">(</span><span class="o">*</span><span class="n">stats</span><span class="p">)</span>
+    <span class="n">tfm_denorm</span> <span class="o">=</span> <span class="n">Denormalize</span><span class="p">(</span><span class="o">*</span><span class="n">stats</span><span class="p">)</span>
+    <span class="n">val_crop</span> <span class="o">=</span> <span class="n">CropType</span><span class="o">.</span><span class="n">CENTER</span> <span class="k">if</span> <span class="n">crop_type</span><span class="o">==</span><span class="n">CropType</span><span class="o">.</span><span class="n">RANDOM</span> <span class="k">else</span> <span class="n">crop_type</span>
+    <span class="n">val_tfm</span> <span class="o">=</span> <span class="n">image_gen</span><span class="p">(</span><span class="n">tfm_norm</span><span class="p">,</span> <span class="n">tfm_denorm</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="n">val_crop</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">tfm_y</span><span class="p">)</span>
+    <span class="n">trn_tfm</span><span class="o">=</span><span class="n">image_gen</span><span class="p">(</span><span class="n">tfm_norm</span><span class="p">,</span> <span class="n">tfm_denorm</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">aug_tfms</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="n">max_zoom</span><span class="p">,</span>
+                      <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="n">crop_type</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">tfm_y</span><span class="p">,</span> <span class="n">pad_mode</span><span class="o">=</span><span class="n">pad_mode</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">trn_tfm</span><span class="p">,</span> <span class="n">val_tfm</span>
+
+
+<div class="viewcode-block" id="tfms_from_model"><a class="viewcode-back" href="../../generated/fastai.transforms.html#fastai.transforms.tfms_from_model">[docs]</a><span class="k">def</span> <span class="nf">tfms_from_model</span><span class="p">(</span><span class="n">f_model</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">aug_tfms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="n">CropType</span><span class="o">.</span><span class="n">RANDOM</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pad_mode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REFLECT</span><span class="p">):</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">inception_stats</span> <span class="k">if</span> <span class="n">f_model</span> <span class="ow">in</span> <span class="n">inception_models</span> <span class="k">else</span> <span class="n">imagenet_stats</span></div>
+    <span class="k">return</span> <span class="n">tfms_from_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">aug_tfms</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="n">max_zoom</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span> <span class="n">crop_type</span><span class="o">=</span><span class="n">crop_type</span><span class="p">,</span> <span class="n">tfm_y</span><span class="o">=</span><span class="n">tfm_y</span><span class="p">,</span> <span class="n">pad_mode</span><span class="o">=</span><span class="n">pad_mode</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

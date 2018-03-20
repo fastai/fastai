@@ -1,0 +1,230 @@
+fastai package
+==============
+
+Submodules
+----------
+
+fastai\.adaptive\_softmax module
+--------------------------------
+
+.. automodule:: fastai.adaptive_softmax
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.column\_data module
+---------------------------
+
+.. automodule:: fastai.column_data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.conv\_learner module
+----------------------------
+
+.. automodule:: fastai.conv_learner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.core module
+-------------------
+
+.. automodule:: fastai.core
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.dataloader module
+-------------------------
+
+.. automodule:: fastai.dataloader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.dataset module
+----------------------
+
+.. automodule:: fastai.dataset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.imports module
+----------------------
+
+.. automodule:: fastai.imports
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.initializers module
+---------------------------
+
+.. automodule:: fastai.initializers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.io module
+-----------------
+
+.. automodule:: fastai.io
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.layer\_optimizer module
+-------------------------------
+
+.. automodule:: fastai.layer_optimizer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.layers module
+---------------------
+
+.. automodule:: fastai.layers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.learner module
+----------------------
+
+.. automodule:: fastai.learner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.lm\_rnn module
+----------------------
+
+.. automodule:: fastai.lm_rnn
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.losses module
+---------------------
+
+.. automodule:: fastai.losses
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.metrics module
+----------------------
+
+.. automodule:: fastai.metrics
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.model module
+--------------------
+
+.. automodule:: fastai.model
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.nlp module
+------------------
+
+.. automodule:: fastai.nlp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.plots module
+--------------------
+
+.. automodule:: fastai.plots
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.rnn\_reg module
+-----------------------
+
+.. automodule:: fastai.rnn_reg
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.rnn\_train module
+-------------------------
+
+.. automodule:: fastai.rnn_train
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.set\_spawn module
+-------------------------
+
+.. automodule:: fastai.set_spawn
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.sgdr module
+-------------------
+
+.. automodule:: fastai.sgdr
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.structured module
+-------------------------
+
+.. automodule:: fastai.structured
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.text module
+-------------------
+
+.. automodule:: fastai.text
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.torch\_imports module
+-----------------------------
+
+.. automodule:: fastai.torch_imports
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.transforms module
+-------------------------
+
+.. automodule:: fastai.transforms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+fastai\.utils module
+--------------------
+
+.. automodule:: fastai.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: fastai
+    :members:
+    :undoc-members:
+    :show-inheritance:

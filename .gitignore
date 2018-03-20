@@ -117,3 +117,5 @@ ENV/
 ehthumbs.db
 Thumbs.db
 .idea
+
+doc/_build

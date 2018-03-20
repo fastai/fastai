@@ -1,0 +1,588 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.nlp &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.nlp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fastai.nlp</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.dataset</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.learner</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.text</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.lm_rnn</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">CountVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">torchtext.datasets</span> <span class="k">import</span> <span class="n">language_modeling</span>
+
+<div class="viewcode-block" id="DotProdNB"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.DotProdNB">[docs]</a><span class="k">class</span> <span class="nc">DotProdNB</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">w_adj</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">r_adj</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_adj</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">r_adj</span> <span class="o">=</span> <span class="n">w_adj</span><span class="p">,</span><span class="n">r_adj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">nf</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">nf</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DotProdNB.forward"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.DotProdNB.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_idx</span><span class="p">,</span> <span class="n">feat_cnt</span><span class="p">,</span> <span class="n">sz</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">((</span><span class="n">w</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">w_adj</span><span class="p">)</span><span class="o">*</span><span class="n">r</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">r_adj</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SimpleNB"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.SimpleNB">[docs]</a><span class="k">class</span> <span class="nc">SimpleNB</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">nf</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ny</span><span class="p">,))</span>
+
+<div class="viewcode-block" id="SimpleNB.forward"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.SimpleNB.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_idx</span><span class="p">,</span> <span class="n">feat_cnt</span><span class="p">,</span> <span class="n">sz</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span></div></div>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BOW_Learner"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.BOW_Learner">[docs]</a><span class="k">class</span> <span class="nc">BOW_Learner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">l1_loss</span>
+
+<div class="viewcode-block" id="calc_pr"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.calc_pr">[docs]</a><span class="k">def</span> <span class="nf">calc_pr</span><span class="p">(</span><span class="n">y_i</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">((</span><span class="n">y</span><span class="o">==</span><span class="n">y_i</span><span class="p">)</span><span class="o">==</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span></div>
+    <span class="k">return</span> <span class="n">p</span><span class="o">/</span><span class="p">((</span><span class="n">y</span><span class="o">==</span><span class="n">y_i</span><span class="p">)</span><span class="o">==</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<div class="viewcode-block" id="calc_r"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.calc_r">[docs]</a><span class="k">def</span> <span class="nf">calc_r</span><span class="p">(</span><span class="n">y_i</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">calc_pr</span><span class="p">(</span><span class="n">y_i</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="n">calc_pr</span><span class="p">(</span><span class="n">y_i</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+<div class="viewcode-block" id="BOW_Dataset"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.BOW_Dataset">[docs]</a><span class="k">class</span> <span class="nc">BOW_Dataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bow</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_len</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bow</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">bow</span><span class="p">,</span><span class="n">max_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">bow</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">one_hot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bow</span><span class="o">.</span><span class="n">sign</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">calc_r</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">A1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bow</span><span class="o">.</span><span class="n">getrow</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">num_row_entries</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_row_entries</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:</span>
+            <span class="c1"># If short, pad</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">-</span> <span class="n">num_row_entries</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">-</span> <span class="n">num_row_entries</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If long, truncate</span>
+            <span class="n">indices</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:],</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:]</span>
+
+        <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="n">num_row_entries</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</div>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bow</span><span class="o">.</span><span class="n">indptr</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+
+<div class="viewcode-block" id="TextClassifierData"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextClassifierData">[docs]</a><span class="k">class</span> <span class="nc">TextClassifierData</span><span class="p">(</span><span class="n">ModelData</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">c</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">r</span><span class="p">]))</span>
+
+<div class="viewcode-block" id="TextClassifierData.get_model"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextClassifierData.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">to_gpu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">BasicModel</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">BOW_Learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy_thresh</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)],</span> <span class="n">opt_fn</span><span class="o">=</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TextClassifierData.dotprod_nb_learner"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextClassifierData.dotprod_nb_learner">[docs]</a>    <span class="k">def</span> <span class="nf">dotprod_nb_learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">DotProdNB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="TextClassifierData.nb_learner"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextClassifierData.nb_learner">[docs]</a>    <span class="k">def</span> <span class="nf">nb_learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">SimpleNB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TextClassifierData.from_bow"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextClassifierData.from_bow">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_bow</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">trn_bow</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">,</span> <span class="n">val_bow</span><span class="p">,</span> <span class="n">val_y</span><span class="p">,</span> <span class="n">sl</span><span class="p">):</span>
+        <span class="n">trn_ds</span> <span class="o">=</span> <span class="n">BOW_Dataset</span><span class="p">(</span><span class="n">trn_bow</span><span class="p">,</span> <span class="n">trn_y</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span>
+        <span class="n">val_ds</span> <span class="o">=</span> <span class="n">BOW_Dataset</span><span class="p">(</span><span class="n">val_bow</span><span class="p">,</span> <span class="n">val_y</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span>
+        <span class="n">trn_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">trn_ds</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">val_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_ds</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">trn_dl</span><span class="p">,</span> <span class="n">val_dl</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="flip_tensor"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.flip_tensor">[docs]</a><span class="k">def</span> <span class="nf">flip_tensor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="n">xsize</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">+</span> <span class="n">dim</span> <span class="k">if</span> <span class="n">dim</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">dim</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">xsize</span><span class="p">[</span><span class="n">dim</span><span class="p">:])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="s1">&#39;cuda&#39;</span><span class="p">)[</span><span class="n">x</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">])()</span><span class="o">.</span><span class="n">long</span><span class="p">(),</span> <span class="p">:]</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">xsize</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LanguageModelLoader"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelLoader">[docs]</a><span class="k">class</span> <span class="nc">LanguageModelLoader</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="n">backwards</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">bptt</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">backwards</span> <span class="o">=</span> <span class="n">bs</span><span class="p">,</span><span class="n">bptt</span><span class="p">,</span><span class="n">backwards</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">],</span> <span class="p">[])</span>
+        <span class="n">fld</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+        <span class="n">nums</span> <span class="o">=</span> <span class="n">fld</span><span class="o">.</span><span class="n">numericalize</span><span class="p">([</span><span class="n">text</span><span class="p">],</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batchify</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">iter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">iter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">bptt</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter</span><span class="o">&gt;=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">StopIteration</span>
+        <span class="n">bptt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bptt</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.95</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">bptt</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">seq_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">bptt</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">+=</span> <span class="n">seq_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+<div class="viewcode-block" id="LanguageModelLoader.batchify"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelLoader.batchify">[docs]</a>    <span class="k">def</span> <span class="nf">batchify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">nb</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">bs</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">nb</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">t</span><span class="p">()</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backwards</span><span class="p">:</span> <span class="n">data</span><span class="o">=</span><span class="n">flip_tensor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">to_gpu</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LanguageModelLoader.get_batch"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelLoader.get_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">):</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">seq_len</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">source</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">seq_len</span><span class="p">],</span> <span class="n">source</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">seq_len</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RNN_Learner"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.RNN_Learner">[docs]</a><span class="k">class</span> <span class="nc">RNN_Learner</span><span class="p">(</span><span class="n">Learner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span>
+</div>
+<div class="viewcode-block" id="RNN_Learner.save_encoder"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.RNN_Learner.save_encoder">[docs]</a>    <span class="k">def</span> <span class="nf">save_encoder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">save_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_path</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div></div>
+<div class="viewcode-block" id="RNN_Learner.load_encoder"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.RNN_Learner.load_encoder">[docs]</a>    <span class="k">def</span> <span class="nf">load_encoder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">load_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_path</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="ConcatTextDataset"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.ConcatTextDataset">[docs]</a><span class="k">class</span> <span class="nc">ConcatTextDataset</span><span class="p">(</span><span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">text_field</span><span class="p">,</span> <span class="n">newline_eos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">text_field</span><span class="p">)]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span> <span class="n">paths</span><span class="o">=</span><span class="n">glob</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{path}</span><span class="s1">/*.*&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">paths</span><span class="o">=</span><span class="p">[</span><span class="n">path</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">):</span> <span class="n">text</span> <span class="o">+=</span> <span class="n">text_field</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">newline_eos</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;eos&gt;&#39;</span><span class="p">)</span>
+
+        <span class="n">examples</span> <span class="o">=</span> <span class="p">[</span><span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Example</span><span class="o">.</span><span class="n">fromlist</span><span class="p">([</span><span class="n">text</span><span class="p">],</span> <span class="n">fields</span><span class="p">)]</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ConcatTextDatasetFromDataFrames"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.ConcatTextDatasetFromDataFrames">[docs]</a><span class="k">class</span> <span class="nc">ConcatTextDatasetFromDataFrames</span><span class="p">(</span><span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">text_field</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">newline_eos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">text_field</span><span class="p">)]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">text</span> <span class="o">+=</span> <span class="n">text_field</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &lt;eos&gt; &#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">newline_eos</span><span class="p">):</span> <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;eos&gt;&#39;</span><span class="p">)</span>
+
+        <span class="n">examples</span> <span class="o">=</span> <span class="p">[</span><span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Example</span><span class="o">.</span><span class="n">fromlist</span><span class="p">([</span><span class="n">text</span><span class="p">],</span> <span class="n">fields</span><span class="p">)]</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConcatTextDatasetFromDataFrames.splits"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.ConcatTextDatasetFromDataFrames.splits">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">splits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">train_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">val_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">train_df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="p">(</span><span class="n">train_df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">val_data</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">val_df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="p">(</span><span class="n">val_df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">test_df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div></div>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span> <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LanguageModelData"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelData">[docs]</a><span class="k">class</span> <span class="nc">LanguageModelData</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class provides the entry point for dealing with supported NLP tasks.</span>
+<span class="sd">    Usage:</span>
+<span class="sd">    1.  Use one of the factory constructors (from_dataframes, from_text-files) to</span>
+<span class="sd">        obtain an instance of the class.</span>
+<span class="sd">    2.  Use the get_model method to return a RNN_Learner instance (a network suited</span>
+<span class="sd">        for NLP tasks), then proceed with training.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt; TEXT = data.Field(lower=True, tokenize=spacy_tok)</span>
+<span class="sd">            &gt;&gt; FILES = dict(train=TRN_PATH, validation=VAL_PATH, test=VAL_PATH)</span>
+<span class="sd">            &gt;&gt; md = LanguageModelData.from_text_files(PATH, TEXT, **FILES, bs=64, bptt=70, min_freq=10)</span>
+
+<span class="sd">            &gt;&gt; em_sz = 200  # size of each embedding vector</span>
+<span class="sd">            &gt;&gt; nh = 500     # number of hidden activations per layer</span>
+<span class="sd">            &gt;&gt; nl = 3       # number of layers</span>
+
+<span class="sd">            &gt;&gt; opt_fn = partial(optim.Adam, betas=(0.7, 0.99))</span>
+<span class="sd">            &gt;&gt; learner = md.get_model(opt_fn, em_sz, nh, nl,</span>
+<span class="sd">                           dropouti=0.05, dropout=0.05, wdrop=0.1, dropoute=0.02, dropouth=0.05)</span>
+<span class="sd">            &gt;&gt; learner.reg_fn = seq2seq_reg</span>
+<span class="sd">            &gt;&gt; learner.clip=0.3</span>
+
+<span class="sd">            &gt;&gt; learner.fit(3e-3, 4, wds=1e-6, cycle_len=1, cycle_mult=2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">test_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="n">backwards</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor for the class. An important thing that happens here is</span>
+<span class="sd">            that the field&#39;s &quot;build_vocab&quot; method is invoked, which builds the vocabulary</span>
+<span class="sd">            for this NLP model.</span>
+
+<span class="sd">            Also, three instances of the LanguageModelLoader is constructed; one each</span>
+<span class="sd">            for training data (self.trn_dl), validation data (self.val_dl), and the</span>
+<span class="sd">            testing data (self.test_dl)</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                path (str): testing path</span>
+<span class="sd">                field (Field): torchtext field object</span>
+<span class="sd">                trn_ds (Dataset): training dataset</span>
+<span class="sd">                val_ds (Dataset): validation dataset</span>
+<span class="sd">                test_ds (Dataset): testing dataset</span>
+<span class="sd">                bs (int): batch size</span>
+<span class="sd">                bptt (int): back propagation through time</span>
+<span class="sd">                kwargs: other argumetns</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="n">bs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span> <span class="o">=</span> <span class="n">trn_ds</span><span class="p">;</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span> <span class="o">=</span> <span class="n">val_ds</span><span class="p">;</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span> <span class="o">=</span> <span class="n">test_ds</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s1">&#39;vocab&#39;</span><span class="p">):</span> <span class="n">field</span><span class="o">.</span><span class="n">build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad_idx</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">pad_token</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">trn_dl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_dl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_dl</span> <span class="o">=</span> <span class="p">[</span><span class="n">LanguageModelLoader</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="n">backwards</span><span class="o">=</span><span class="n">backwards</span><span class="p">)</span>
+                                                  <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trn_ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span><span class="p">)</span> <span class="p">]</span>
+
+<div class="viewcode-block" id="LanguageModelData.get_model"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelData.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opt_fn</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">n_hid</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Method returns a RNN_Learner object, that wraps an instance of the RNN_Encoder module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            opt_fn (Optimizer): the torch optimizer function to use</span>
+<span class="sd">            emb_sz (int): embedding size</span>
+<span class="sd">            n_hid (int): number of hidden inputs</span>
+<span class="sd">            n_layers (int): number of hidden layers</span>
+<span class="sd">            kwargs: other arguments</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of the RNN_Learner class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">get_language_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nt</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">n_hid</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_idx</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SingleModel</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">m</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">RNN_Learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">opt_fn</span><span class="o">=</span><span class="n">opt_fn</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LanguageModelData.from_dataframes"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelData.from_dataframes">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dataframes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">bptt</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">test_ds</span> <span class="o">=</span> <span class="n">ConcatTextDatasetFromDataFrames</span><span class="o">.</span><span class="n">splits</span><span class="p">(</span><span class="n">text_field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">,</span>
+                                    <span class="n">train_df</span><span class="o">=</span><span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="o">=</span><span class="n">val_df</span><span class="p">,</span> <span class="n">test_df</span><span class="o">=</span><span class="n">test_df</span><span class="p">)</span>
+</div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">test_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LanguageModelData.from_text_files"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.LanguageModelData.from_text_files">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_text_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">validation</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">bptt</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Method used to instantiate a LanguageModelData object that can be used for a</span>
+<span class="sd">            supported nlp task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): the absolute path in which temporary model data will be saved</span>
+<span class="sd">            field (Field): torchtext field</span>
+<span class="sd">            train (str): file location of the training data</span>
+<span class="sd">            validation (str): file location of the validation data</span>
+<span class="sd">            test (str): file location of the testing data</span>
+<span class="sd">            bs (int): batch size to use</span>
+<span class="sd">            bptt (int): back propagation through time hyper-parameter</span>
+<span class="sd">            kwargs: other arguments</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a LanguageModelData instance, which most importantly, provides us the datasets for training,</span>
+<span class="sd">                validation, and testing</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The train, validation, and test path can be pointed to any file (or folder) that contains a valid</span>
+<span class="sd">                text corpus.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">test_ds</span> <span class="o">=</span> <span class="n">ConcatTextDataset</span><span class="o">.</span><span class="n">splits</span><span class="p">(</span>
+                                    <span class="n">path</span><span class="p">,</span> <span class="n">text_field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="n">train</span><span class="p">,</span> <span class="n">validation</span><span class="o">=</span><span class="n">validation</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
+</div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">trn_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">test_ds</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TextDataLoader"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextDataLoader">[docs]</a><span class="k">class</span> <span class="nc">TextDataLoader</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">x_fld</span><span class="p">,</span> <span class="n">y_fld</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_fld</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_fld</span> <span class="o">=</span> <span class="n">src</span><span class="p">,</span><span class="n">x_fld</span><span class="p">,</span><span class="n">y_fld</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span></div>
+            <span class="k">yield</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_fld</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_fld</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+
+<div class="viewcode-block" id="TextModel"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextModel">[docs]</a><span class="k">class</span> <span class="nc">TextModel</span><span class="p">(</span><span class="n">BasicModel</span><span class="p">):</span>
+<div class="viewcode-block" id="TextModel.get_layer_groups"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextModel.get_layer_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">m</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">dropouti</span><span class="p">),</span> <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">rnns</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">dropouths</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+
+<div class="viewcode-block" id="TextData"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextData">[docs]</a><span class="k">class</span> <span class="nc">TextData</span><span class="p">(</span><span class="n">ModelData</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TextData.create_td"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextData.create_td">[docs]</a>    <span class="k">def</span> <span class="nf">create_td</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">it</span><span class="p">):</span> <span class="k">return</span> <span class="n">TextDataLoader</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_fld</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_fld</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TextData.from_splits"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextData.from_splits">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_splits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">splits</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">text_name</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">label_name</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">):</span>
+        <span class="n">text_fld</span> <span class="o">=</span> <span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">text_name</span><span class="p">]</span>
+        <span class="n">label_fld</span> <span class="o">=</span> <span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">label_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">label_fld</span><span class="p">,</span> <span class="s1">&#39;build_vocab&#39;</span><span class="p">):</span> <span class="n">label_fld</span><span class="o">.</span><span class="n">build_vocab</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">iters</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">BucketIterator</span><span class="o">.</span><span class="n">splits</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">bs</span><span class="p">)</span>
+        <span class="n">trn_iter</span><span class="p">,</span><span class="n">val_iter</span><span class="p">,</span><span class="n">test_iter</span> <span class="o">=</span> <span class="n">iters</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">iters</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="kc">None</span>
+        <span class="n">test_dl</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">iters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">test_iter</span> <span class="o">=</span> <span class="n">iters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">test_dl</span> <span class="o">=</span> <span class="n">TextDataLoader</span><span class="p">(</span><span class="n">test_iter</span><span class="p">,</span> <span class="n">text_name</span><span class="p">,</span> <span class="n">label_name</span><span class="p">)</span>
+        <span class="n">trn_dl</span> <span class="o">=</span> <span class="n">TextDataLoader</span><span class="p">(</span><span class="n">trn_iter</span><span class="p">,</span> <span class="n">text_name</span><span class="p">,</span> <span class="n">label_name</span><span class="p">)</span>
+        <span class="n">val_dl</span> <span class="o">=</span> <span class="n">TextDataLoader</span><span class="p">(</span><span class="n">val_iter</span><span class="p">,</span> <span class="n">text_name</span><span class="p">,</span> <span class="n">label_name</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">trn_dl</span><span class="p">,</span> <span class="n">val_dl</span><span class="p">,</span> <span class="n">test_dl</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="n">bs</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">pad_idx</span> <span class="o">=</span> <span class="n">text_fld</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span><span class="p">[</span><span class="n">text_fld</span><span class="o">.</span><span class="n">pad_token</span><span class="p">]</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text_fld</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">label_fld</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">label_fld</span><span class="p">,</span> <span class="s1">&#39;vocab&#39;</span><span class="p">)</span>
+                 <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">label_name</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="TextData.to_model"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextData.to_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">opt_fn</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TextModel</span><span class="p">(</span><span class="n">to_gpu</span><span class="p">(</span><span class="n">m</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">RNN_Learner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">opt_fn</span><span class="o">=</span><span class="n">opt_fn</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TextData.get_model"><a class="viewcode-back" href="../../generated/fastai.nlp.html#fastai.nlp.TextData.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opt_fn</span><span class="p">,</span> <span class="n">max_sl</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">n_hid</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">get_rnn_classifer</span><span class="p">(</span><span class="n">bptt</span><span class="p">,</span> <span class="n">max_sl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nt</span><span class="p">,</span>
+              <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="n">emb_sz</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">],</span> <span class="n">drops</span><span class="o">=</span><span class="p">[</span><span class="n">dropout</span><span class="p">],</span>
+              <span class="n">emb_sz</span><span class="o">=</span><span class="n">emb_sz</span><span class="p">,</span> <span class="n">n_hid</span><span class="o">=</span><span class="n">n_hid</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">pad_token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_idx</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">opt_fn</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

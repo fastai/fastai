@@ -262,7 +262,8 @@ class FilesArrayDataset(FilesDataset):
         return self.y.shape[1] if len(self.y.shape)>1 else 0
 
 class FilesIndexArrayDataset(FilesArrayDataset):
-    def get_c(self): return int(self.y.max())+1
+    def get_c(self): 
+        return int(self.y.max())+1
 
 
 class FilesNhotArrayDataset(FilesArrayDataset):

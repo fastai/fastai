@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.plots module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.plots module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.plots.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.plots">
+<span id="fastai-plots-module"></span><h1>fastai.plots module<a class="headerlink" href="#module-fastai.plots" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.plots.ImageModelResults">
+<em class="property">class </em><code class="descclassname">fastai.plots.</code><code class="descname">ImageModelResults</code><span class="sig-paren">(</span><em>ds</em>, <em>log_preds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Visualize the results of an image model</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>ds (dataset): a dataset which contains the images
+log_preds (numpy.ndarray): predictions for the dataset in log scale</dd>
+<dt>Returns:</dt>
+<dd>ImageModelResults</dd>
+</dl>
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.most_by_correct">
+<code class="descname">most_by_correct</code><span class="sig-paren">(</span><em>y</em>, <em>is_correct</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.most_by_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.most_by_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the predicted classes which correspond to the selected class (y) and to the specific case (prediction is correct - is_true=True, prediction is wrong - is_true=False)</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>y (int): the selected class
+is_correct (boolean): a boolean flag (True, False) which specify the what to look for. Ex: True - most correct samples, False - most incorrect samples</dd>
+<dt>Returns:</dt>
+<dd>idxs (numpy.ndarray): An array of indexes (numpy.ndarray)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.most_by_mask">
+<code class="descname">most_by_mask</code><span class="sig-paren">(</span><em>mask</em>, <em>y</em>, <em>mult</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.most_by_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.most_by_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the first 4 most correct/incorrect indexes from the ordered list of probabilities</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>mask (numpy.ndarray): the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
+y (int): the selected class
+mult (int): sets the ordering; -1 descending, 1 ascending</dd>
+<dt>Returns:</dt>
+<dd>idxs (ndarray): An array of indexes of length 4</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.most_by_uncertain">
+<code class="descname">most_by_uncertain</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.most_by_uncertain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.most_by_uncertain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the predicted classes which correspond to the selected class (y) and have probabilities nearest to 1/number_of_classes (eg. 0.5 for 2 classes, 0.33 for 3 classes) for the selected class.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>y (int): the selected class</dd>
+<dt>Returns:</dt>
+<dd>idxs (numpy.ndarray): An array of indexes (numpy.ndarray)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.most_uncertain_by_mask">
+<code class="descname">most_uncertain_by_mask</code><span class="sig-paren">(</span><em>mask</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.most_uncertain_by_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.most_uncertain_by_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the first 4 most uncertain indexes from the ordered list of probabilities</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>mask (numpy.ndarray): the mask of probabilities specific to the selected class; a boolean array with shape (num_of_samples,) which contains True where class==selected_class, and False everywhere else
+y (int): the selected class</dd>
+<dt>Returns:</dt>
+<dd>idxs (ndarray): An array of indexes of length 4</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.plot_by_correct">
+<code class="descname">plot_by_correct</code><span class="sig-paren">(</span><em>y</em>, <em>is_correct</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.plot_by_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.plot_by_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the images which correspond to the selected class (y) and to the specific case (prediction is correct - is_true=True, prediction is wrong - is_true=False)</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>y (int): the selected class
+is_correct (boolean): a boolean flag (True, False) which specify the what to look for. Ex: True - most correct samples, False - most incorrect samples</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.plot_most_correct">
+<code class="descname">plot_most_correct</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.plot_most_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.plot_most_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the images which correspond to the selected class (y) and are most correct.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>y (int): the selected class</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.plot_most_incorrect">
+<code class="descname">plot_most_incorrect</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.plot_most_incorrect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.plot_most_incorrect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the images which correspond to the selected class (y) and are most incorrect.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>y (int): the selected class</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.plot_most_uncertain">
+<code class="descname">plot_most_uncertain</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.plot_most_uncertain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.plot_most_uncertain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the images which correspond to the selected class (y) and are most uncertain i.e have probabilities nearest to 1/number_of_classes.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>y (int): the selected class</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.plots.ImageModelResults.plot_val_with_title">
+<code class="descname">plot_val_with_title</code><span class="sig-paren">(</span><em>idxs</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ImageModelResults.plot_val_with_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ImageModelResults.plot_val_with_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the images and their probabilities of belonging to a certain class</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>idxs (numpy.ndarray): indexes of the image samples from the dataset
+y (int): the selected class</dd>
+<dt>Returns:</dt>
+<dd>Plots the images in n rows [rows = n]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.plots.ceildiv">
+<code class="descclassname">fastai.plots.</code><code class="descname">ceildiv</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#ceildiv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.ceildiv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.plots.load_img_id">
+<code class="descclassname">fastai.plots.</code><code class="descname">load_img_id</code><span class="sig-paren">(</span><em>ds</em>, <em>idx</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#load_img_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.load_img_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.plots.plot_confusion_matrix">
+<code class="descclassname">fastai.plots.</code><code class="descname">plot_confusion_matrix</code><span class="sig-paren">(</span><em>cm</em>, <em>classes</em>, <em>normalize=False</em>, <em>title='Confusion matrix'</em>, <em>cmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em>, <em>figsize=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#plot_confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.plot_confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function prints and plots the confusion matrix.
+Normalization can be applied by setting <cite>normalize=True</cite>.
+(This function is copied from the scikit docs.)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.plots.plots">
+<code class="descclassname">fastai.plots.</code><code class="descname">plots</code><span class="sig-paren">(</span><em>ims</em>, <em>figsize=(12</em>, <em>6)</em>, <em>rows=1</em>, <em>interp=False</em>, <em>titles=None</em>, <em>maintitle=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#plots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.plots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.plots.plots_from_files">
+<code class="descclassname">fastai.plots.</code><code class="descname">plots_from_files</code><span class="sig-paren">(</span><em>imspaths</em>, <em>figsize=(10</em>, <em>5)</em>, <em>rows=1</em>, <em>titles=None</em>, <em>maintitle=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#plots_from_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.plots_from_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots images given image files.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>im_paths (list): list of paths
+figsize (tuple): figure size
+rows (int): number of rows
+titles (list): list of titles
+maintitle (string): main title</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.plots.plots_raw">
+<code class="descclassname">fastai.plots.</code><code class="descname">plots_raw</code><span class="sig-paren">(</span><em>ims</em>, <em>figsize=(12</em>, <em>6)</em>, <em>rows=1</em>, <em>titles=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/plots.html#plots_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.plots.plots_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.structured module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.structured module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.structured.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.structured">
+<span id="fastai-structured-module"></span><h1>fastai.structured module<a class="headerlink" href="#module-fastai.structured" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="fastai.structured.add_datepart">
+<code class="descclassname">fastai.structured.</code><code class="descname">add_datepart</code><span class="sig-paren">(</span><em>df</em>, <em>fldname</em>, <em>drop=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#add_datepart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.add_datepart" title="Permalink to this definition">¶</a></dt>
+<dd><p>add_datepart converts a column of df from a datetime64 to many columns containing
+the information from the date. This applies changes inplace.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.apply_cats">
+<code class="descclassname">fastai.structured.</code><code class="descname">apply_cats</code><span class="sig-paren">(</span><em>df</em>, <em>trn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#apply_cats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.apply_cats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes any columns of strings in df into categorical variables using trn as
+a template for the category codes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.combine_date">
+<code class="descclassname">fastai.structured.</code><code class="descname">combine_date</code><span class="sig-paren">(</span><em>years</em>, <em>months=1</em>, <em>days=1</em>, <em>weeks=None</em>, <em>hours=None</em>, <em>minutes=None</em>, <em>seconds=None</em>, <em>milliseconds=None</em>, <em>microseconds=None</em>, <em>nanoseconds=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#combine_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.combine_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.draw_tree">
+<code class="descclassname">fastai.structured.</code><code class="descname">draw_tree</code><span class="sig-paren">(</span><em>t</em>, <em>df</em>, <em>size=10</em>, <em>ratio=0.6</em>, <em>precision=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#draw_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.draw_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a representation of a random forest in IPython.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.fix_missing">
+<code class="descclassname">fastai.structured.</code><code class="descname">fix_missing</code><span class="sig-paren">(</span><em>df</em>, <em>col</em>, <em>name</em>, <em>na_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#fix_missing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.fix_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill missing data in a column of df with the median, and add a {name}_na column
+which specifies if the data was missing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.get_nn_mappers">
+<code class="descclassname">fastai.structured.</code><code class="descname">get_nn_mappers</code><span class="sig-paren">(</span><em>df</em>, <em>cat_vars</em>, <em>contin_vars</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#get_nn_mappers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.get_nn_mappers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.get_sample">
+<code class="descclassname">fastai.structured.</code><code class="descname">get_sample</code><span class="sig-paren">(</span><em>df</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#get_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.get_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a random sample of n rows from df, without replacement.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.is_date">
+<code class="descclassname">fastai.structured.</code><code class="descname">is_date</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#is_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.is_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.numericalize">
+<code class="descclassname">fastai.structured.</code><code class="descname">numericalize</code><span class="sig-paren">(</span><em>df</em>, <em>col</em>, <em>name</em>, <em>max_n_cat</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#numericalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.numericalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the column col from a categorical type to it’s integer codes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.parallel_trees">
+<code class="descclassname">fastai.structured.</code><code class="descname">parallel_trees</code><span class="sig-paren">(</span><em>m</em>, <em>fn</em>, <em>n_jobs=8</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#parallel_trees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.parallel_trees" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.proc_df">
+<code class="descclassname">fastai.structured.</code><code class="descname">proc_df</code><span class="sig-paren">(</span><em>df</em>, <em>y_fld=None</em>, <em>skip_flds=None</em>, <em>do_scale=False</em>, <em>na_dict=None</em>, <em>preproc_fn=None</em>, <em>max_n_cat=None</em>, <em>subset=None</em>, <em>mapper=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#proc_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.proc_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>proc_df takes a data frame df and splits off the response variable, and
+changes the df into an entirely numeric dataframe.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.reset_rf_samples">
+<code class="descclassname">fastai.structured.</code><code class="descname">reset_rf_samples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#reset_rf_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.reset_rf_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undoes the changes produced by set_rf_samples.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.rf_feat_importance">
+<code class="descclassname">fastai.structured.</code><code class="descname">rf_feat_importance</code><span class="sig-paren">(</span><em>m</em>, <em>df</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#rf_feat_importance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.rf_feat_importance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.scale_vars">
+<code class="descclassname">fastai.structured.</code><code class="descname">scale_vars</code><span class="sig-paren">(</span><em>df</em>, <em>mapper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#scale_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.scale_vars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.set_plot_sizes">
+<code class="descclassname">fastai.structured.</code><code class="descname">set_plot_sizes</code><span class="sig-paren">(</span><em>sml</em>, <em>med</em>, <em>big</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#set_plot_sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.set_plot_sizes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.set_rf_samples">
+<code class="descclassname">fastai.structured.</code><code class="descname">set_rf_samples</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#set_rf_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.set_rf_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes Scikit learn’s random forests to give each tree a random sample of
+n random rows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.structured.train_cats">
+<code class="descclassname">fastai.structured.</code><code class="descname">train_cats</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/structured.html#train_cats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.structured.train_cats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change any columns of strings in a panda’s dataframe to a column of
+catagorical values. This applies the changes inplace.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+Dataset
+=======
+
+.. automodule:: fastai.fastai.dataset
+   :members:
+   :show-inheritance:

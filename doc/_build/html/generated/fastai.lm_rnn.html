@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.lm_rnn module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.lm_rnn module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.lm_rnn.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.lm_rnn">
+<span id="fastai-lm-rnn-module"></span><h1>fastai.lm_rnn module<a class="headerlink" href="#module-fastai.lm_rnn" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.lm_rnn.LinearBlock">
+<em class="property">class </em><code class="descclassname">fastai.lm_rnn.</code><code class="descname">LinearBlock</code><span class="sig-paren">(</span><em>ni</em>, <em>nf</em>, <em>drop</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#LinearBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.LinearBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="fastai.lm_rnn.LinearBlock.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#LinearBlock.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.LinearBlock.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overriden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.lm_rnn.LinearDecoder">
+<em class="property">class </em><code class="descclassname">fastai.lm_rnn.</code><code class="descname">LinearDecoder</code><span class="sig-paren">(</span><em>n_out</em>, <em>nhid</em>, <em>dropout</em>, <em>tie_encoder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#LinearDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.LinearDecoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="fastai.lm_rnn.LinearDecoder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#LinearDecoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.LinearDecoder.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overriden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.lm_rnn.LinearDecoder.initrange">
+<code class="descname">initrange</code><em class="property"> = 0.1</em><a class="headerlink" href="#fastai.lm_rnn.LinearDecoder.initrange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.lm_rnn.MultiBatchRNN">
+<em class="property">class </em><code class="descclassname">fastai.lm_rnn.</code><code class="descname">MultiBatchRNN</code><span class="sig-paren">(</span><em>bptt</em>, <em>max_seq</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#MultiBatchRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.MultiBatchRNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastai.lm_rnn.RNN_Encoder" title="fastai.lm_rnn.RNN_Encoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.lm_rnn.RNN_Encoder</span></code></a></p>
+<dl class="method">
+<dt id="fastai.lm_rnn.MultiBatchRNN.concat">
+<code class="descname">concat</code><span class="sig-paren">(</span><em>arrs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#MultiBatchRNN.concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.MultiBatchRNN.concat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.lm_rnn.MultiBatchRNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#MultiBatchRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.MultiBatchRNN.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked during the forward propagation of the RNN_Encoder module.
+Args:</p>
+<blockquote>
+<div>input (Tensor): input of shape (batch_size x sentence length)</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>raw_outputs (tuple(list (Tensor), list(Tensor)): list of tensors evaluated from each RNN layer without using
+dropouth, list of tensors evaluated from each RNN layer using dropouth,</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.lm_rnn.PoolingLinearClassifier">
+<em class="property">class </em><code class="descclassname">fastai.lm_rnn.</code><code class="descname">PoolingLinearClassifier</code><span class="sig-paren">(</span><em>layers</em>, <em>drops</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#PoolingLinearClassifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.PoolingLinearClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="fastai.lm_rnn.PoolingLinearClassifier.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#PoolingLinearClassifier.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.PoolingLinearClassifier.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overriden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.lm_rnn.PoolingLinearClassifier.pool">
+<code class="descname">pool</code><span class="sig-paren">(</span><em>x</em>, <em>bs</em>, <em>is_max</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#PoolingLinearClassifier.pool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.PoolingLinearClassifier.pool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.lm_rnn.RNN_Encoder">
+<em class="property">class </em><code class="descclassname">fastai.lm_rnn.</code><code class="descname">RNN_Encoder</code><span class="sig-paren">(</span><em>ntoken</em>, <em>emb_sz</em>, <em>nhid</em>, <em>nlayers</em>, <em>pad_token</em>, <em>bidir=False</em>, <em>dropouth=0.3</em>, <em>dropouti=0.65</em>, <em>dropoute=0.1</em>, <em>wdrop=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#RNN_Encoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.RNN_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>A custom RNN encoder network that uses
+- an embedding matrix to encode input,
+- a stack of LSTM layers to drive the network, and
+- variational dropouts in the embedding and LSTM layers</p>
+<p>The architecture for this network was inspired by the work done in
+“Regularizing and Optimizing LSTM Language Models”.
+(<a class="reference external" href="https://arxiv.org/pdf/1708.02182.pdf">https://arxiv.org/pdf/1708.02182.pdf</a>)</p>
+<dl class="method">
+<dt id="fastai.lm_rnn.RNN_Encoder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#RNN_Encoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.RNN_Encoder.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked during the forward propagation of the RNN_Encoder module.
+Args:</p>
+<blockquote>
+<div>input (Tensor): input of shape (batch_size x sentence length)</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>raw_outputs (tuple(list (Tensor), list(Tensor)): list of tensors evaluated from each RNN layer without using
+dropouth, list of tensors evaluated from each RNN layer using dropouth,</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.lm_rnn.RNN_Encoder.initrange">
+<code class="descname">initrange</code><em class="property"> = 0.1</em><a class="headerlink" href="#fastai.lm_rnn.RNN_Encoder.initrange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.lm_rnn.RNN_Encoder.one_hidden">
+<code class="descname">one_hidden</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#RNN_Encoder.one_hidden"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.RNN_Encoder.one_hidden" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.lm_rnn.RNN_Encoder.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#RNN_Encoder.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.RNN_Encoder.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.lm_rnn.SequentialRNN">
+<em class="property">class </em><code class="descclassname">fastai.lm_rnn.</code><code class="descname">SequentialRNN</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#SequentialRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.SequentialRNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.container.Sequential</span></code></p>
+<dl class="method">
+<dt id="fastai.lm_rnn.SequentialRNN.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#SequentialRNN.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.SequentialRNN.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.lm_rnn.get_language_model">
+<code class="descclassname">fastai.lm_rnn.</code><code class="descname">get_language_model</code><span class="sig-paren">(</span><em>n_tok</em>, <em>emb_sz</em>, <em>nhid</em>, <em>nlayers</em>, <em>pad_token</em>, <em>dropout=0.4</em>, <em>dropouth=0.3</em>, <em>dropouti=0.5</em>, <em>dropoute=0.1</em>, <em>wdrop=0.5</em>, <em>tie_weights=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#get_language_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.get_language_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a SequentialRNN model.</p>
+<p>A RNN_Encoder layer is instantiated using the parameters provided.</p>
+<p>This is followed by the creation of a LinearDecoder layer.</p>
+<p>Also by default (i.e. tie_weights = True), the embedding matrix used in the RNN_Encoder
+is used to  instantiate the weights for the LinearDecoder layer.</p>
+<p>The SequentialRNN layer is the native torch’s Sequential wrapper that puts the RNN_Encoder and
+LinearDecoder layers sequentially in the model.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">ntoken (int): number of vocabulary (or tokens) in the source dataset
+emb_sz (int): the embedding size to use to encode each token
+nhid (int): number of hidden activation per LSTM layer
+nlayers (int): number of LSTM layers to use in the architecture
+pad_token (int): the int value used for padding text.
+dropouth (float): dropout to apply to the activations going from one LSTM layer to another
+dropouti (float): dropout to apply to the input layer.
+dropoute (float): dropout to apply to the embedding layer.
+wdrop (float): dropout used for a LSTM’s internal (or hidden) recurrent weights.
+tie_weights (bool): decide if the weights of the embedding matrix in the RNN encoder should be tied to the</p>
+<blockquote class="last">
+<div>weights of the LinearDecoder layer.</div></blockquote>
+</dd>
+<dt>Returns:</dt>
+<dd>A SequentialRNN model</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.lm_rnn.get_rnn_classifer">
+<code class="descclassname">fastai.lm_rnn.</code><code class="descname">get_rnn_classifer</code><span class="sig-paren">(</span><em>bptt</em>, <em>max_seq</em>, <em>n_class</em>, <em>n_tok</em>, <em>emb_sz</em>, <em>n_hid</em>, <em>n_layers</em>, <em>pad_token</em>, <em>layers</em>, <em>drops</em>, <em>bidir=False</em>, <em>dropouth=0.3</em>, <em>dropouti=0.5</em>, <em>dropoute=0.1</em>, <em>wdrop=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#get_rnn_classifer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.get_rnn_classifer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastai.lm_rnn.repackage_var">
+<code class="descclassname">fastai.lm_rnn.</code><code class="descname">repackage_var</code><span class="sig-paren">(</span><em>h</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#repackage_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.repackage_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps h in new Variables, to detach them from their history.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastai.lm_rnn.seq2seq_reg">
+<code class="descclassname">fastai.lm_rnn.</code><code class="descname">seq2seq_reg</code><span class="sig-paren">(</span><em>output</em>, <em>xtra</em>, <em>loss</em>, <em>alpha=0</em>, <em>beta=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/lm_rnn.html#seq2seq_reg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.lm_rnn.seq2seq_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

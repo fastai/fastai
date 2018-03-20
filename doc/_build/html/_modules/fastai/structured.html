@@ -1,0 +1,688 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.structured &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.structured</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fastai.structured</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="k">import</span> <span class="n">DataFrameMapper</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">LabelEncoder</span><span class="p">,</span> <span class="n">Imputer</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">pandas.api.types</span> <span class="k">import</span> <span class="n">is_string_dtype</span><span class="p">,</span> <span class="n">is_numeric_dtype</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">forest</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="k">import</span> <span class="n">export_graphviz</span>
+
+
+<div class="viewcode-block" id="set_plot_sizes"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.set_plot_sizes">[docs]</a><span class="k">def</span> <span class="nf">set_plot_sizes</span><span class="p">(</span><span class="n">sml</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">big</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">sml</span><span class="p">)</span>          <span class="c1"># controls default text sizes</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">sml</span><span class="p">)</span>     <span class="c1"># fontsize of the axes title</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">med</span><span class="p">)</span>    <span class="c1"># fontsize of the x and y labels</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;xtick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">sml</span><span class="p">)</span>    <span class="c1"># fontsize of the tick labels</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">sml</span><span class="p">)</span>    <span class="c1"># fontsize of the tick labels</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;legend&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">sml</span><span class="p">)</span>    <span class="c1"># legend fontsize</span></div>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;figure&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">big</span><span class="p">)</span>  <span class="c1"># fontsize of the figure title</span>
+
+<div class="viewcode-block" id="parallel_trees"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.parallel_trees">[docs]</a><span class="k">def</span> <span class="nf">parallel_trees</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">estimators_</span><span class="p">))</span>
+
+<div class="viewcode-block" id="draw_tree"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.draw_tree">[docs]</a><span class="k">def</span> <span class="nf">draw_tree</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Draws a representation of a random forest in IPython.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    t: The tree you wish to draw</span>
+<span class="sd">    df: The data used to train the tree. This is used to get the names of the features.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">export_graphviz</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                      <span class="n">special_characters</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span>
+    <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">graphviz</span><span class="o">.</span><span class="n">Source</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;Tree {&#39;</span><span class="p">,</span></div>
+       <span class="n">f</span><span class="s1">&#39;Tree {{ size=</span><span class="si">{size}</span><span class="s1">; ratio=</span><span class="si">{ratio}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="combine_date"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.combine_date">[docs]</a><span class="k">def</span> <span class="nf">combine_date</span><span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="n">months</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weeks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">milliseconds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">microseconds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nanoseconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">years</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1970</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">months</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">days</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">types</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;M8[Y]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[M]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[D]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[W]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[h]&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;&lt;m8[m]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[s]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[ms]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[us]&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;m8[ns]&#39;</span><span class="p">)</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="n">months</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">weeks</span><span class="p">,</span> <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span><span class="p">,</span>
+            <span class="n">milliseconds</span><span class="p">,</span> <span class="n">microseconds</span><span class="p">,</span> <span class="n">nanoseconds</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span></div>
+               <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="get_sample"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.get_sample">[docs]</a><span class="k">def</span> <span class="nf">get_sample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Gets a random sample of n rows from df, without replacement.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: A pandas data frame, that you wish to sample from.</span>
+<span class="sd">    n: The number of rows you wish to sample.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    return value: A random sample of n rows of df.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, 2, 3], &#39;col2&#39; : [&#39;a&#39;, &#39;b&#39;, &#39;a&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    &gt;&gt;&gt; get_sample(df, 2)</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">idxs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))[:</span><span class="n">n</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idxs</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<div class="viewcode-block" id="add_datepart"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.add_datepart">[docs]</a><span class="k">def</span> <span class="nf">add_datepart</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">fldname</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;add_datepart converts a column of df from a datetime64 to many columns containing</span>
+<span class="sd">    the information from the date. This applies changes inplace.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: A pandas data frame. df gain several new columns.</span>
+<span class="sd">    fldname: A string that is the name of the date column you wish to expand.</span>
+<span class="sd">        If it is not a datetime64 series, it will be converted to one with pd.to_datetime.</span>
+<span class="sd">    drop: If true then the original date column will be removed.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({ &#39;A&#39; : pd.to_datetime([&#39;3/11/2000&#39;, &#39;3/12/2000&#39;, &#39;3/13/2000&#39;], infer_datetime_format=False) })</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+
+<span class="sd">        A</span>
+<span class="sd">    0   2000-03-11</span>
+<span class="sd">    1   2000-03-12</span>
+<span class="sd">    2   2000-03-13</span>
+
+<span class="sd">    &gt;&gt;&gt; add_datepart(df, &#39;A&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+
+<span class="sd">        AYear AMonth AWeek ADay ADayofweek ADayofyear AIs_month_end AIs_month_start AIs_quarter_end AIs_quarter_start AIs_year_end AIs_year_start AElapsed</span>
+<span class="sd">    0   2000  3      10    11   5          71         False         False           False           False             False        False          952732800</span>
+<span class="sd">    1   2000  3      10    12   6          72         False         False           False           False             False        False          952819200</span>
+<span class="sd">    2   2000  3      11    13   0          73         False         False           False           False             False        False          952905600</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fld</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">fldname</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">fld</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">fldname</span><span class="p">]</span> <span class="o">=</span> <span class="n">fld</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">fld</span><span class="p">,</span> <span class="n">infer_datetime_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">targ_pre</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[Dd]ate$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fldname</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="s1">&#39;Week&#39;</span><span class="p">,</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="s1">&#39;Dayofweek&#39;</span><span class="p">,</span> <span class="s1">&#39;Dayofyear&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Is_month_end&#39;</span><span class="p">,</span> <span class="s1">&#39;Is_month_start&#39;</span><span class="p">,</span> <span class="s1">&#39;Is_quarter_end&#39;</span><span class="p">,</span> <span class="s1">&#39;Is_quarter_start&#39;</span><span class="p">,</span> <span class="s1">&#39;Is_year_end&#39;</span><span class="p">,</span> <span class="s1">&#39;Is_year_start&#39;</span><span class="p">):</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">targ_pre</span><span class="o">+</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fld</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span><span class="n">n</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">targ_pre</span><span class="o">+</span><span class="s1">&#39;Elapsed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fld</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span></div>
+    <span class="k">if</span> <span class="n">drop</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">fldname</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="is_date"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.is_date">[docs]</a><span class="k">def</span> <span class="nf">is_date</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
+
+<div class="viewcode-block" id="train_cats"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.train_cats">[docs]</a><span class="k">def</span> <span class="nf">train_cats</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Change any columns of strings in a panda&#39;s dataframe to a column of</span>
+<span class="sd">    catagorical values. This applies the changes inplace.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: A pandas dataframe. Any columns of strings will be changed to</span>
+<span class="sd">        categorical values.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, 2, 3], &#39;col2&#39; : [&#39;a&#39;, &#39;b&#39;, &#39;a&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    note the type of col2 is string</span>
+
+<span class="sd">    &gt;&gt;&gt; train_cats(df)</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    now the type of col2 is category</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">items</span><span class="p">():</span></div>
+        <span class="k">if</span> <span class="n">is_string_dtype</span><span class="p">(</span><span class="n">c</span><span class="p">):</span> <span class="n">df</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">as_ordered</span><span class="p">()</span>
+
+<div class="viewcode-block" id="apply_cats"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.apply_cats">[docs]</a><span class="k">def</span> <span class="nf">apply_cats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">trn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Changes any columns of strings in df into categorical variables using trn as</span>
+<span class="sd">    a template for the category codes.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: A pandas dataframe. Any columns of strings will be changed to</span>
+<span class="sd">        categorical values. The category codes are determined by trn.</span>
+
+<span class="sd">    trn: A pandas dataframe. When creating a category for df, it looks up the</span>
+<span class="sd">        what the category&#39;s code were in trn and makes those the category codes</span>
+<span class="sd">        for df.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, 2, 3], &#39;col2&#39; : [&#39;a&#39;, &#39;b&#39;, &#39;a&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    note the type of col2 is string</span>
+
+<span class="sd">    &gt;&gt;&gt; train_cats(df)</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    now the type of col2 is category {a : 1, b : 2}</span>
+
+<span class="sd">    &gt;&gt;&gt; df2 = pd.DataFrame({&#39;col1&#39; : [1, 2, 3], &#39;col2&#39; : [&#39;b&#39;, &#39;a&#39;, &#39;a&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; apply_cats(df2, df)</span>
+
+<span class="sd">           col1 col2</span>
+<span class="sd">        0     1    b</span>
+<span class="sd">        1     2    a</span>
+<span class="sd">        2     3    a</span>
+
+<span class="sd">    now the type of col is category {a : 1, b : 2}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="ow">in</span> <span class="n">trn</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">trn</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="s1">&#39;category&#39;</span><span class="p">):</span></div>
+            <span class="n">df</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">trn</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="fix_missing"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.fix_missing">[docs]</a><span class="k">def</span> <span class="nf">fix_missing</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">na_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Fill missing data in a column of df with the median, and add a {name}_na column</span>
+<span class="sd">    which specifies if the data was missing.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: The data frame that will be changed.</span>
+
+<span class="sd">    col: The column of data to fix by filling in missing data.</span>
+
+<span class="sd">    name: The name of the new filled column in df.</span>
+
+<span class="sd">    na_dict: A dictionary of values to create na&#39;s of and the value to insert. If</span>
+<span class="sd">        name is not a key of na_dict the median will fill any missing data. Also</span>
+<span class="sd">        if name is not a key of na_dict and there is no missing data in col, then</span>
+<span class="sd">        no {name}_na column is not created.</span>
+
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, np.NaN, 3], &#39;col2&#39; : [5, 2, 2]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    5</span>
+<span class="sd">    1   nan    2</span>
+<span class="sd">    2     3    2</span>
+
+<span class="sd">    &gt;&gt;&gt; fix_missing(df, df[&#39;col1&#39;], &#39;col1&#39;, {})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2 col1_na</span>
+<span class="sd">    0     1    5   False</span>
+<span class="sd">    1     2    2    True</span>
+<span class="sd">    2     3    2   False</span>
+
+
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, np.NaN, 3], &#39;col2&#39; : [5, 2, 2]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    5</span>
+<span class="sd">    1   nan    2</span>
+<span class="sd">    2     3    2</span>
+
+<span class="sd">    &gt;&gt;&gt; fix_missing(df, df[&#39;col2&#39;], &#39;col2&#39;, {})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    5</span>
+<span class="sd">    1   nan    2</span>
+<span class="sd">    2     3    2</span>
+
+
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, np.NaN, 3], &#39;col2&#39; : [5, 2, 2]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    5</span>
+<span class="sd">    1   nan    2</span>
+<span class="sd">    2     3    2</span>
+
+<span class="sd">    &gt;&gt;&gt; fix_missing(df, df[&#39;col1&#39;], &#39;col1&#39;, {&#39;col1&#39; : 500})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2 col1_na</span>
+<span class="sd">    0     1    5   False</span>
+<span class="sd">    1   500    2    True</span>
+<span class="sd">    2     3    2   False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_numeric_dtype</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">na_dict</span><span class="p">):</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_na&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+            <span class="n">filler</span> <span class="o">=</span> <span class="n">na_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">na_dict</span> <span class="k">else</span> <span class="n">col</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">filler</span><span class="p">)</span>
+            <span class="n">na_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">filler</span></div>
+    <span class="k">return</span> <span class="n">na_dict</span>
+
+<div class="viewcode-block" id="numericalize"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.numericalize">[docs]</a><span class="k">def</span> <span class="nf">numericalize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">max_n_cat</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Changes the column col from a categorical type to it&#39;s integer codes.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: A pandas dataframe. df[name] will be filled with the integer codes from</span>
+<span class="sd">        col.</span>
+
+<span class="sd">    col: The column you wish to change into the categories.</span>
+<span class="sd">    name: The column name you wish to insert into df. This column will hold the</span>
+<span class="sd">        integer codes.</span>
+
+<span class="sd">    max_n_cat: If col has more categories than max_n_cat it will not change the</span>
+<span class="sd">        it to its integer codes. If max_n_cat is None, then col will always be</span>
+<span class="sd">        converted.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, 2, 3], &#39;col2&#39; : [&#39;a&#39;, &#39;b&#39;, &#39;a&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    note the type of col2 is string</span>
+
+<span class="sd">    &gt;&gt;&gt; train_cats(df)</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    now the type of col2 is category { a : 1, b : 2}</span>
+
+<span class="sd">    &gt;&gt;&gt; numericalize(df, df[&#39;col2&#39;], &#39;col3&#39;, None)</span>
+
+<span class="sd">       col1 col2 col3</span>
+<span class="sd">    0     1    a    1</span>
+<span class="sd">    1     2    b    2</span>
+<span class="sd">    2     3    a    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_numeric_dtype</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span> <span class="n">max_n_cat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">col</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="o">&gt;</span><span class="n">max_n_cat</span><span class="p">):</span></div>
+        <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span><span class="o">+</span><span class="mi">1</span>
+
+<div class="viewcode-block" id="scale_vars"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.scale_vars">[docs]</a><span class="k">def</span> <span class="nf">scale_vars</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">mapper</span><span class="p">):</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">sklearn</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DataConversionWarning</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mapper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">map_f</span> <span class="o">=</span> <span class="p">[([</span><span class="n">n</span><span class="p">],</span><span class="n">StandardScaler</span><span class="p">())</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">is_numeric_dtype</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">n</span><span class="p">])]</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">DataFrameMapper</span><span class="p">(</span><span class="n">map_f</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">mapper</span><span class="o">.</span><span class="n">transformed_names_</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">mapper</span>
+
+<div class="viewcode-block" id="proc_df"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.proc_df">[docs]</a><span class="k">def</span> <span class="nf">proc_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y_fld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_flds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">do_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">preproc_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_n_cat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mapper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot; proc_df takes a data frame df and splits off the response variable, and</span>
+<span class="sd">    changes the df into an entirely numeric dataframe.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    df: The data frame you wish to process.</span>
+
+<span class="sd">    y_fld: The name of the response variable</span>
+
+<span class="sd">    skip_flds: A list of fields that dropped from df.</span>
+
+<span class="sd">    do_scale: Standardizes each column in df,Takes Boolean Values(True,False)</span>
+
+<span class="sd">    na_dict: a dictionary of na columns to add. Na columns are also added if there</span>
+<span class="sd">        are any missing values.</span>
+
+<span class="sd">    preproc_fn: A function that gets applied to df.</span>
+
+<span class="sd">    max_n_cat: The maximum number of categories to break into dummy values, instead</span>
+<span class="sd">        of integer codes.</span>
+
+<span class="sd">    subset: Takes a random subset of size subset from df.</span>
+
+<span class="sd">    mapper: If do_scale is set as True, the mapper variable</span>
+<span class="sd">        calculates the values used for scaling of variables during training time(mean and standard deviation).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    [x, y, nas, mapper(optional)]:</span>
+
+<span class="sd">        x: x is the transformed version of df. x will not have the response variable</span>
+<span class="sd">            and is entirely numeric.</span>
+
+<span class="sd">        y: y is the response variable</span>
+
+<span class="sd">        nas: returns a dictionary of which nas it created, and the associated median.</span>
+
+<span class="sd">        mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continous</span>
+<span class="sd">        variables which is then used for scaling of during test-time.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({&#39;col1&#39; : [1, 2, 3], &#39;col2&#39; : [&#39;a&#39;, &#39;b&#39;, &#39;a&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    note the type of col2 is string</span>
+
+<span class="sd">    &gt;&gt;&gt; train_cats(df)</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+
+<span class="sd">       col1 col2</span>
+<span class="sd">    0     1    a</span>
+<span class="sd">    1     2    b</span>
+<span class="sd">    2     3    a</span>
+
+<span class="sd">    now the type of col2 is category { a : 1, b : 2}</span>
+
+<span class="sd">    &gt;&gt;&gt; x, y, nas = proc_df(df, &#39;col1&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x</span>
+
+<span class="sd">       col2</span>
+<span class="sd">    0     1</span>
+<span class="sd">    1     2</span>
+<span class="sd">    2     1</span>
+
+<span class="sd">    &gt;&gt;&gt; data = DataFrame(pet=[&quot;cat&quot;, &quot;dog&quot;, &quot;dog&quot;, &quot;fish&quot;, &quot;cat&quot;, &quot;dog&quot;, &quot;cat&quot;, &quot;fish&quot;],</span>
+<span class="sd">                 children=[4., 6, 3, 3, 2, 3, 5, 4],</span>
+<span class="sd">                 salary=[90, 24, 44, 27, 32, 59, 36, 27])</span>
+
+<span class="sd">    &gt;&gt;&gt; mapper = DataFrameMapper([(:pet, LabelBinarizer()),</span>
+<span class="sd">                          ([:children], StandardScaler())])</span>
+
+<span class="sd">    &gt;&gt;&gt;round(fit_transform!(mapper, copy(data)), 2)</span>
+
+<span class="sd">    8x4 Array{Float64,2}:</span>
+<span class="sd">    1.0  0.0  0.0   0.21</span>
+<span class="sd">    0.0  1.0  0.0   1.88</span>
+<span class="sd">    0.0  1.0  0.0  -0.63</span>
+<span class="sd">    0.0  0.0  1.0  -0.63</span>
+<span class="sd">    1.0  0.0  0.0  -1.46</span>
+<span class="sd">    0.0  1.0  0.0  -0.63</span>
+<span class="sd">    1.0  0.0  0.0   1.04</span>
+<span class="sd">    0.0  0.0  1.0   0.21</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_flds</span><span class="p">:</span> <span class="n">skip_flds</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">if</span> <span class="n">subset</span><span class="p">:</span> <span class="n">df</span> <span class="o">=</span> <span class="n">get_sample</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">subset</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">preproc_fn</span><span class="p">:</span> <span class="n">preproc_fn</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y_fld</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">numericalize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">y_fld</span><span class="p">],</span> <span class="n">y_fld</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">y_fld</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">skip_flds</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y_fld</span><span class="p">]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">skip_flds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">na_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">na_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">items</span><span class="p">():</span> <span class="n">na_dict</span> <span class="o">=</span> <span class="n">fix_missing</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">na_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">do_scale</span><span class="p">:</span> <span class="n">mapper</span> <span class="o">=</span> <span class="n">scale_vars</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">mapper</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">items</span><span class="p">():</span> <span class="n">numericalize</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">max_n_cat</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">dummy_na</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">na_dict</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">do_scale</span><span class="p">:</span> <span class="n">res</span> <span class="o">=</span> <span class="n">res</span> <span class="o">+</span> <span class="p">[</span><span class="n">mapper</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">res</span>
+
+<div class="viewcode-block" id="rf_feat_importance"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.rf_feat_importance">[docs]</a><span class="k">def</span> <span class="nf">rf_feat_importance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;cols&#39;</span><span class="p">:</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="s1">&#39;imp&#39;</span><span class="p">:</span><span class="n">m</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">}</span></div>
+                       <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;imp&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="set_rf_samples"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.set_rf_samples">[docs]</a><span class="k">def</span> <span class="nf">set_rf_samples</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Changes Scikit learn&#39;s random forests to give each tree a random sample of</span>
+<span class="sd">    n random rows.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">forest</span><span class="o">.</span><span class="n">_generate_sample_indices</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">rs</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span></div>
+        <span class="n">forest</span><span class="o">.</span><span class="n">check_random_state</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+<div class="viewcode-block" id="reset_rf_samples"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.reset_rf_samples">[docs]</a><span class="k">def</span> <span class="nf">reset_rf_samples</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Undoes the changes produced by set_rf_samples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">forest</span><span class="o">.</span><span class="n">_generate_sample_indices</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">rs</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span></div>
+        <span class="n">forest</span><span class="o">.</span><span class="n">check_random_state</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">))</span>
+
+<div class="viewcode-block" id="get_nn_mappers"><a class="viewcode-back" href="../../generated/fastai.structured.html#fastai.structured.get_nn_mappers">[docs]</a><span class="k">def</span> <span class="nf">get_nn_mappers</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cat_vars</span><span class="p">,</span> <span class="n">contin_vars</span><span class="p">):</span>
+    <span class="c1"># Replace nulls with 0 for continuous, &quot;&quot; for categorical.</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">contin_vars</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">100</span><span class="p">,)</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cat_vars</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;#NA#&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># list of tuples, containing variable and instance of a transformer for that variable</span>
+    <span class="c1"># for categoricals, use LabelEncoder to map to integers. For continuous, standardize</span>
+    <span class="n">cat_maps</span> <span class="o">=</span> <span class="p">[(</span><span class="n">o</span><span class="p">,</span> <span class="n">LabelEncoder</span><span class="p">())</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">cat_vars</span><span class="p">]</span>
+    <span class="n">contin_maps</span> <span class="o">=</span> <span class="p">[([</span><span class="n">o</span><span class="p">],</span> <span class="n">StandardScaler</span><span class="p">())</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">contin_vars</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">(</span><span class="n">cat_maps</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="n">DataFrameMapper</span><span class="p">(</span><span class="n">contin_maps</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

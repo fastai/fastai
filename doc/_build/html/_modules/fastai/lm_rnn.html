@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.lm_rnn &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fastai.lm_rnn</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fastai.lm_rnn</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">.imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.torch_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.rnn_reg</span> <span class="k">import</span> <span class="n">LockedDropout</span><span class="p">,</span><span class="n">WeightDrop</span><span class="p">,</span><span class="n">EmbeddingDropout</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="k">import</span> <span class="n">Stepper</span>
+
+
+<div class="viewcode-block" id="seq2seq_reg"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.seq2seq_reg">[docs]</a><span class="k">def</span> <span class="nf">seq2seq_reg</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">xtra</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">hs</span><span class="p">,</span><span class="n">dropped_hs</span> <span class="o">=</span> <span class="n">xtra</span>
+    <span class="k">if</span> <span class="n">alpha</span><span class="p">:</span>  <span class="c1"># Activation Regularization</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">dropped_hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">beta</span><span class="p">:</span>   <span class="c1"># Temporal Activation Regularization (slowness)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">h</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span></div>
+    <span class="k">return</span> <span class="n">loss</span>
+
+
+<div class="viewcode-block" id="repackage_var"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.repackage_var">[docs]</a><span class="k">def</span> <span class="nf">repackage_var</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wraps h in new Variables, to detach them from their history.&quot;&quot;&quot;</span></div>
+    <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">==</span> <span class="n">Variable</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">repackage_var</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">h</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RNN_Encoder"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.RNN_Encoder">[docs]</a><span class="k">class</span> <span class="nc">RNN_Encoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;A custom RNN encoder network that uses</span>
+<span class="sd">        - an embedding matrix to encode input,</span>
+<span class="sd">        - a stack of LSTM layers to drive the network, and</span>
+<span class="sd">        - variational dropouts in the embedding and LSTM layers</span>
+
+<span class="sd">        The architecture for this network was inspired by the work done in</span>
+<span class="sd">        &quot;Regularizing and Optimizing LSTM Language Models&quot;.</span>
+<span class="sd">        (https://arxiv.org/pdf/1708.02182.pdf)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">initrange</span><span class="o">=</span><span class="mf">0.1</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ntoken</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">nhid</span><span class="p">,</span> <span class="n">nlayers</span><span class="p">,</span> <span class="n">pad_token</span><span class="p">,</span> <span class="n">bidir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">dropouth</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">dropouti</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span> <span class="n">dropoute</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wdrop</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Default constructor for the RNN_Encoder class</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                bs (int): batch size of input data</span>
+<span class="sd">                ntoken (int): number of vocabulary (or tokens) in the source dataset</span>
+<span class="sd">                emb_sz (int): the embedding size to use to encode each token</span>
+<span class="sd">                nhid (int): number of hidden activation per LSTM layer</span>
+<span class="sd">                nlayers (int): number of LSTM layers to use in the architecture</span>
+<span class="sd">                pad_token (int): the int value used for padding text.</span>
+<span class="sd">                dropouth (float): dropout to apply to the activations going from one LSTM layer to another</span>
+<span class="sd">                dropouti (float): dropout to apply to the input layer.</span>
+<span class="sd">                dropoute (float): dropout to apply to the embedding layer.</span>
+<span class="sd">                wdrop (float): dropout used for a LSTM&#39;s internal (or hidden) recurrent weights.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                None</span>
+<span class="sd">          &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndir</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">bidir</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">ntoken</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="n">pad_token</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_with_dropout</span> <span class="o">=</span> <span class="n">EmbeddingDropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnns</span> <span class="o">=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">emb_sz</span> <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">nhid</span><span class="p">,</span> <span class="p">(</span><span class="n">nhid</span> <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="n">nlayers</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">emb_sz</span><span class="p">)</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">ndir</span><span class="p">,</span>
+             <span class="mi">1</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidir</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropouth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlayers</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">wdrop</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnns</span> <span class="o">=</span> <span class="p">[</span><span class="n">WeightDrop</span><span class="p">(</span><span class="n">rnn</span><span class="p">,</span> <span class="n">wdrop</span><span class="p">)</span> <span class="k">for</span> <span class="n">rnn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnns</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnns</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rnns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">initrange</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initrange</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb_sz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nhid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">dropoute</span> <span class="o">=</span> <span class="n">emb_sz</span><span class="p">,</span><span class="n">nhid</span><span class="p">,</span><span class="n">nlayers</span><span class="p">,</span><span class="n">dropoute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropouti</span> <span class="o">=</span> <span class="n">LockedDropout</span><span class="p">(</span><span class="n">dropouti</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropouths</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">LockedDropout</span><span class="p">(</span><span class="n">dropouth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlayers</span><span class="p">)])</span>
+
+<div class="viewcode-block" id="RNN_Encoder.forward"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.RNN_Encoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Invoked during the forward propagation of the RNN_Encoder module.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            input (Tensor): input of shape (batch_size x sentence length)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            raw_outputs (tuple(list (Tensor), list(Tensor)): list of tensors evaluated from each RNN layer without using</span>
+<span class="sd">            dropouth, list of tensors evaluated from each RNN layer using dropouth,</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sl</span><span class="p">,</span><span class="n">bs</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">bs</span><span class="o">!=</span><span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="o">=</span><span class="n">bs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="n">emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder_with_dropout</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropoute</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropouti</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span>
+
+        <span class="n">raw_output</span> <span class="o">=</span> <span class="n">emb</span>
+        <span class="n">new_hidden</span><span class="p">,</span><span class="n">raw_outputs</span><span class="p">,</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">[],[],[]</span>
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">rnn</span><span class="p">,</span><span class="n">drop</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rnns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropouths</span><span class="p">)):</span>
+            <span class="n">current_input</span> <span class="o">=</span> <span class="n">raw_output</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+                <span class="n">raw_output</span><span class="p">,</span> <span class="n">new_h</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">raw_output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+            <span class="n">new_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_h</span><span class="p">)</span>
+            <span class="n">raw_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_output</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlayers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="n">raw_output</span> <span class="o">=</span> <span class="n">drop</span><span class="p">(</span><span class="n">raw_output</span><span class="p">)</span>
+            <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_output</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">repackage_var</span><span class="p">(</span><span class="n">new_hidden</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">raw_outputs</span><span class="p">,</span> <span class="n">outputs</span>
+
+<div class="viewcode-block" id="RNN_Encoder.one_hidden"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.RNN_Encoder.one_hidden">[docs]</a>    <span class="k">def</span> <span class="nf">one_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+        <span class="n">nh</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nhid</span> <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlayers</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb_sz</span><span class="p">)</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">ndir</span></div>
+        <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">nh</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">(),</span> <span class="n">volatile</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RNN_Encoder.reset"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.RNN_Encoder.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">data</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">one_hidden</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hidden</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nlayers</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="MultiBatchRNN"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.MultiBatchRNN">[docs]</a><span class="k">class</span> <span class="nc">MultiBatchRNN</span><span class="p">(</span><span class="n">RNN_Encoder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bptt</span><span class="p">,</span> <span class="n">max_seq</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_seq</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">bptt</span> <span class="o">=</span> <span class="n">max_seq</span><span class="p">,</span><span class="n">bptt</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultiBatchRNN.concat"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.MultiBatchRNN.concat">[docs]</a>    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrs</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">l</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">arrs</span><span class="p">])</span> <span class="k">for</span> <span class="n">si</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+
+<div class="viewcode-block" id="MultiBatchRNN.forward"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.MultiBatchRNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="n">sl</span><span class="p">,</span><span class="n">bs</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span> <span class="n">h</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="n">raw_outputs</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="p">[],[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bptt</span><span class="p">):</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">bptt</span><span class="p">,</span> <span class="n">sl</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sl</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_seq</span><span class="p">):</span>
+                <span class="n">raw_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">raw_outputs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LinearDecoder"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.LinearDecoder">[docs]</a><span class="k">class</span> <span class="nc">LinearDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="n">initrange</span><span class="o">=</span><span class="mf">0.1</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_out</span><span class="p">,</span> <span class="n">nhid</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">tie_encoder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">nhid</span><span class="p">,</span> <span class="n">n_out</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">initrange</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initrange</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">LockedDropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tie_encoder</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">tie_encoder</span><span class="o">.</span><span class="n">weight</span>
+
+<div class="viewcode-block" id="LinearDecoder.forward"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.LinearDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="n">raw_outputs</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">decoded</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">decoded</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span></div></div>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">raw_outputs</span><span class="p">,</span> <span class="n">outputs</span>
+
+
+<div class="viewcode-block" id="LinearBlock"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.LinearBlock">[docs]</a><span class="k">class</span> <span class="nc">LinearBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">drop</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">drop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">ni</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="LinearBlock.forward"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.LinearBlock.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+
+
+<div class="viewcode-block" id="PoolingLinearClassifier"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.PoolingLinearClassifier">[docs]</a><span class="k">class</span> <span class="nc">PoolingLinearClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">drops</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">LinearBlock</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">drops</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+
+<div class="viewcode-block" id="PoolingLinearClassifier.pool"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.PoolingLinearClassifier.pool">[docs]</a>    <span class="k">def</span> <span class="nf">pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">is_max</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">adaptive_max_pool1d</span> <span class="k">if</span> <span class="n">is_max</span> <span class="k">else</span> <span class="n">F</span><span class="o">.</span><span class="n">adaptive_avg_pool1d</span></div>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PoolingLinearClassifier.forward"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.PoolingLinearClassifier.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="n">raw_outputs</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">sl</span><span class="p">,</span><span class="n">bs</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="n">avgpool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">mxpool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">output</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mxpool</span><span class="p">,</span> <span class="n">avgpool</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">l_x</span> <span class="o">=</span> <span class="n">l</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">l_x</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">l_x</span><span class="p">,</span> <span class="n">raw_outputs</span><span class="p">,</span> <span class="n">outputs</span>
+
+
+<div class="viewcode-block" id="SequentialRNN"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.SequentialRNN">[docs]</a><span class="k">class</span> <span class="nc">SequentialRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+<div class="viewcode-block" id="SequentialRNN.reset"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.SequentialRNN.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">():</span></div></div>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s1">&#39;reset&#39;</span><span class="p">):</span> <span class="n">c</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_language_model"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.get_language_model">[docs]</a><span class="k">def</span> <span class="nf">get_language_model</span><span class="p">(</span><span class="n">n_tok</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">nhid</span><span class="p">,</span> <span class="n">nlayers</span><span class="p">,</span> <span class="n">pad_token</span><span class="p">,</span>
+                 <span class="n">dropout</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">dropouth</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">dropouti</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">dropoute</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wdrop</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">tie_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a SequentialRNN model.</span>
+
+<span class="sd">    A RNN_Encoder layer is instantiated using the parameters provided.</span>
+
+<span class="sd">    This is followed by the creation of a LinearDecoder layer.</span>
+
+<span class="sd">    Also by default (i.e. tie_weights = True), the embedding matrix used in the RNN_Encoder</span>
+<span class="sd">    is used to  instantiate the weights for the LinearDecoder layer.</span>
+
+<span class="sd">    The SequentialRNN layer is the native torch&#39;s Sequential wrapper that puts the RNN_Encoder and</span>
+<span class="sd">    LinearDecoder layers sequentially in the model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ntoken (int): number of vocabulary (or tokens) in the source dataset</span>
+<span class="sd">        emb_sz (int): the embedding size to use to encode each token</span>
+<span class="sd">        nhid (int): number of hidden activation per LSTM layer</span>
+<span class="sd">        nlayers (int): number of LSTM layers to use in the architecture</span>
+<span class="sd">        pad_token (int): the int value used for padding text.</span>
+<span class="sd">        dropouth (float): dropout to apply to the activations going from one LSTM layer to another</span>
+<span class="sd">        dropouti (float): dropout to apply to the input layer.</span>
+<span class="sd">        dropoute (float): dropout to apply to the embedding layer.</span>
+<span class="sd">        wdrop (float): dropout used for a LSTM&#39;s internal (or hidden) recurrent weights.</span>
+<span class="sd">        tie_weights (bool): decide if the weights of the embedding matrix in the RNN encoder should be tied to the</span>
+<span class="sd">            weights of the LinearDecoder layer.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A SequentialRNN model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rnn_enc</span> <span class="o">=</span> <span class="n">RNN_Encoder</span><span class="p">(</span><span class="n">n_tok</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">nhid</span><span class="o">=</span><span class="n">nhid</span><span class="p">,</span> <span class="n">nlayers</span><span class="o">=</span><span class="n">nlayers</span><span class="p">,</span> <span class="n">pad_token</span><span class="o">=</span><span class="n">pad_token</span><span class="p">,</span>
+                 <span class="n">dropouth</span><span class="o">=</span><span class="n">dropouth</span><span class="p">,</span> <span class="n">dropouti</span><span class="o">=</span><span class="n">dropouti</span><span class="p">,</span> <span class="n">dropoute</span><span class="o">=</span><span class="n">dropoute</span><span class="p">,</span> <span class="n">wdrop</span><span class="o">=</span><span class="n">wdrop</span><span class="p">)</span>
+    <span class="n">enc</span> <span class="o">=</span> <span class="n">rnn_enc</span><span class="o">.</span><span class="n">encoder</span> <span class="k">if</span> <span class="n">tie_weights</span> <span class="k">else</span> <span class="kc">None</span></div>
+    <span class="k">return</span> <span class="n">SequentialRNN</span><span class="p">(</span><span class="n">rnn_enc</span><span class="p">,</span> <span class="n">LinearDecoder</span><span class="p">(</span><span class="n">n_tok</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">tie_encoder</span><span class="o">=</span><span class="n">enc</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="get_rnn_classifer"><a class="viewcode-back" href="../../generated/fastai.lm_rnn.html#fastai.lm_rnn.get_rnn_classifer">[docs]</a><span class="k">def</span> <span class="nf">get_rnn_classifer</span><span class="p">(</span><span class="n">bptt</span><span class="p">,</span> <span class="n">max_seq</span><span class="p">,</span> <span class="n">n_class</span><span class="p">,</span> <span class="n">n_tok</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">n_hid</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">pad_token</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">drops</span><span class="p">,</span> <span class="n">bidir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">dropouth</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">dropouti</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">dropoute</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">wdrop</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="n">rnn_enc</span> <span class="o">=</span> <span class="n">MultiBatchRNN</span><span class="p">(</span><span class="n">bptt</span><span class="p">,</span> <span class="n">max_seq</span><span class="p">,</span> <span class="n">n_tok</span><span class="p">,</span> <span class="n">emb_sz</span><span class="p">,</span> <span class="n">n_hid</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">pad_token</span><span class="o">=</span><span class="n">pad_token</span><span class="p">,</span> <span class="n">bidir</span><span class="o">=</span><span class="n">bidir</span><span class="p">,</span>
+                      <span class="n">dropouth</span><span class="o">=</span><span class="n">dropouth</span><span class="p">,</span> <span class="n">dropouti</span><span class="o">=</span><span class="n">dropouti</span><span class="p">,</span> <span class="n">dropoute</span><span class="o">=</span><span class="n">dropoute</span><span class="p">,</span> <span class="n">wdrop</span><span class="o">=</span><span class="n">wdrop</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">SequentialRNN</span><span class="p">(</span><span class="n">rnn_enc</span><span class="p">,</span> <span class="n">PoolingLinearClassifier</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">drops</span><span class="p">))</span>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

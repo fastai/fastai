@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fastai.conv_learner module &mdash; fastai 0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="fastai 0.6 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fastai
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/basic.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fastai</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>fastai.conv_learner module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/fastai.conv_learner.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-fastai.conv_learner">
+<span id="fastai-conv-learner-module"></span><h1>fastai.conv_learner module<a class="headerlink" href="#module-fastai.conv_learner" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fastai.conv_learner.ConvLearner">
+<em class="property">class </em><code class="descclassname">fastai.conv_learner.</code><code class="descname">ConvLearner</code><span class="sig-paren">(</span><em>data</em>, <em>models</em>, <em>precompute=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fastai.learner.html#fastai.learner.Learner" title="fastai.learner.Learner"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastai.learner.Learner</span></code></a></p>
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.create_empty_bcolz">
+<code class="descname">create_empty_bcolz</code><span class="sig-paren">(</span><em>n</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.create_empty_bcolz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.create_empty_bcolz" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.conv_learner.ConvLearner.data">
+<code class="descname">data</code><a class="headerlink" href="#fastai.conv_learner.ConvLearner.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.freeze">
+<code class="descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.freeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Freeze all but the very last layer.</p>
+<p>Make all layers untrainable (i.e. frozen) except for the last layer.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.get_activations">
+<code class="descname">get_activations</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.get_activations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.get_activations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.get_layer_groups">
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.conv_learner.ConvLearner.model">
+<code class="descname">model</code><a class="headerlink" href="#fastai.conv_learner.ConvLearner.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="fastai.conv_learner.ConvLearner.pretrained">
+<em class="property">classmethod </em><code class="descname">pretrained</code><span class="sig-paren">(</span><em>f</em>, <em>data</em>, <em>ps=None</em>, <em>xtra_fc=None</em>, <em>xtra_cut=0</em>, <em>custom_head=None</em>, <em>precompute=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.pretrained"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.pretrained" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.save_fc1">
+<code class="descname">save_fc1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.save_fc1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.save_fc1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.set_data">
+<code class="descname">set_data</code><span class="sig-paren">(</span><em>data</em>, <em>precompute=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.set_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.set_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.summary">
+<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvLearner.unfreeze">
+<code class="descname">unfreeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvLearner.unfreeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvLearner.unfreeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unfreeze all layers.</p>
+<p>Make all layers trainable by unfreezing. This will also set the <cite>precompute</cite> to <cite>False</cite> since we can
+no longer pre-calculate the activation of frozen layers.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fastai.conv_learner.ConvnetBuilder">
+<em class="property">class </em><code class="descclassname">fastai.conv_learner.</code><code class="descname">ConvnetBuilder</code><span class="sig-paren">(</span><em>f</em>, <em>c</em>, <em>is_multi</em>, <em>is_reg</em>, <em>ps=None</em>, <em>xtra_fc=None</em>, <em>xtra_cut=0</em>, <em>custom_head=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvnetBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvnetBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class representing a convolutional network.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><p class="first">f: a model creation function (e.g. resnet34, vgg16, etc)
+c (int): size of the last layer
+is_multi (bool): is multilabel classification?</p>
+<blockquote>
+<div>(def here <a class="reference external" href="http://scikit-learn.org/stable/modules/multiclass.html">http://scikit-learn.org/stable/modules/multiclass.html</a>)</div></blockquote>
+<p class="last">is_reg (bool): is a regression?
+ps (float or array of float): dropout parameters
+xtra_fc (list of ints): list of hidden layers with # hidden neurons
+xtra_cut (int): # layers earlier than default to cut the model, default is 0</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="fastai.conv_learner.ConvnetBuilder.create_fc_layer">
+<code class="descname">create_fc_layer</code><span class="sig-paren">(</span><em>ni</em>, <em>nf</em>, <em>p</em>, <em>actn=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvnetBuilder.create_fc_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvnetBuilder.create_fc_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvnetBuilder.get_fc_layers">
+<code class="descname">get_fc_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvnetBuilder.get_fc_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvnetBuilder.get_fc_layers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastai.conv_learner.ConvnetBuilder.get_layer_groups">
+<code class="descname">get_layer_groups</code><span class="sig-paren">(</span><em>do_fc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/fastai/conv_learner.html#ConvnetBuilder.get_layer_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fastai.conv_learner.ConvnetBuilder.get_layer_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastai.conv_learner.ConvnetBuilder.name">
+<code class="descname">name</code><a class="headerlink" href="#fastai.conv_learner.ConvnetBuilder.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeremy Howard and contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
