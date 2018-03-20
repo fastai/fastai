@@ -35,6 +35,7 @@ dependencies:
 - jinja2
 - jsonschema
 - jupyter
+- jupyterlab
 - jupyter_client
 - jupyter_console
 - jupyter_core
