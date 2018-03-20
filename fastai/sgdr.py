@@ -170,8 +170,10 @@ class CircularLR(LR_Updater):
 
 class SaveBestModel(LossRecorder):
     
-    """ Save weigths of the model with
-        the best accuracy during training.
+    """ Save weigths of the best model based during training.
+        If metrics are provided, the first metric in the list is used to
+        find the best model. 
+        If no metrics are provided, the loss is used.
         
         Args:
             model: the fastai model
@@ -187,16 +189,22 @@ class SaveBestModel(LossRecorder):
             For more details see http://forums.fast.ai/t/a-code-snippet-to-save-the-best-model-during-training/12066
  
     """
-    def __init__(self, model, layer_opt, name='best_model'):
+    def __init__(self, model, layer_opt, metrics, name='best_model'):
         super().__init__(layer_opt)
         self.name = name
         self.model = model
         self.best_loss = None
         self.best_acc = None
-
-    def on_epoch_end(self, metrics):
-        super().on_epoch_end(metrics)
-        loss, acc = metrics
+        self.save_method = self.save_when_only_loss if metrics==None else self.save_when_acc
+        
+    def save_when_only_loss(self, metrics):
+        loss = metrics[0]
+        if self.best_loss == None or loss < self.best_loss:
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+    
+    def save_when_acc(self, metrics):
+        loss, acc = metrics[0], metrics[1]
         if self.best_acc == None or acc > self.best_acc:
             self.best_acc = acc
             self.best_loss = loss
@@ -204,6 +212,10 @@ class SaveBestModel(LossRecorder):
         elif acc == self.best_acc and  loss < self.best_loss:
             self.best_loss = loss
             self.model.save(f'{self.name}')
+        
+    def on_epoch_end(self, metrics):
+        super().on_epoch_end(metrics)
+        self.save_method(metrics)
 
 
 class WeightDecaySchedule(Callback):
