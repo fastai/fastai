@@ -73,6 +73,21 @@ def det_zoom(zoom): return lambda x: zoom_cv(x, zoom)
 
 def rand0(s): return random.random()*(s*2)-s
 
+
+class TfmType(IntEnum):
+    """ Type of transformation.
+
+        NO: is the default, y does not get transformed when x is transformed.
+        PIXEL: when x and y are images and should be transformed in the same way.
+               Example: image segmentation.
+        COORD: when y are coordinate or x in which case x and y have
+               to be transformed accordingly.
+    """
+    NO = 1
+    PIXEL = 2
+    COORD = 3
+
+
 class Denormalize():
     def __init__(self, m, s):
         self.m=np.array(m, dtype=np.float32)
@@ -83,10 +98,16 @@ class Denormalize():
 class Normalize():
     """ Normalizes an image.
     """
-    def __init__(self, m, s):
+    def __init__(self, m, s, tfm_y=TfmType.NO):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
-    def __call__(self, x, y): return (x-self.m)/self.s, y
+        self.tfm_y=tfm_y
+
+    def __call__(self, x, y=None):
+        x = (x-self.m)/self.s
+        if self.tfm_y==TfmType.PIXEL and y is not None:
+            y = (y-self.m)/self.s
+        return x,y
 
 
 class RandomRotateZoom():
@@ -107,11 +128,16 @@ class RandomRotateZoom():
         return x
 
 
-def channel_dim(x, y): return np.rollaxis(x, 2), y
+def channel_dim(x, y):
+    x = np.rollaxis(x, 2)
+    if isinstance(y,np.ndarray) and (len(y.shape)==3):
+        y = np.rollaxis(y, 2)
+    return x,y
 
 
 def to_bb(YY, y):
     cols,rows = np.nonzero(YY)
+    if len(cols)==0: return np.zeros(4, dtype=np.float32)
     top_row = np.min(rows)
     left_col = np.min(cols)
     bottom_row = np.max(rows)
@@ -135,20 +161,6 @@ def coords2px(y, x):
     Y = np.zeros((r, c))
     Y[rows, cols] = 1
     return Y
-
-
-class TfmType(IntEnum):
-    """ Type of transformation.
-
-        NO: is the default, y does not get transformed when x is transformed.
-        PIXEL: when x and y are images and should be transformed in the same way.
-               Example: image segmentation.
-        COORD: when y are coordinate or x in which case x and y have
-               to be transformed accordingly.
-    """
-    NO = 1
-    PIXEL = 2
-    COORD = 3
 
 
 class Transform():
@@ -186,11 +198,20 @@ class Transform():
 
 
 class CoordTransform(Transform):
-    """ A class that represents a coordinate transform.  """
+    """ A coordinate transform.  """
+
+    @staticmethod
+    def make_square(y, x):
+        r,c,*_ = x.shape
+        y1 = np.zeros((r, c))
+        y = y.astype(np.int)
+        y1[y[0]:y[2], y[1]:y[3]] = 1.
+        return y1
+
     def map_y(self, y0, x):
-        y = random_px_rect(y0, x)
+        y = CoordTransform.make_square(y0, x)
         y_tr = self.do_transform(y, True)
-        return to_bb(y_tr, y) if y_tr.sum()>1 else y0
+        return to_bb(y_tr, y)
 
     def transform_coord(self, x, ys):
         yp = partition(ys, 4)
@@ -215,11 +236,12 @@ class CenterCrop(CoordTransform):
         sz (int): size of the crop.
         tfm_y (TfmType): type of y transformation.
     """
-    def __init__(self, sz, tfm_y=TfmType.NO):
+    def __init__(self, sz, tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-        self.min_sz = sz
+        self.min_sz,self.sz_y = sz,sz_y
 
-    def do_transform(self, x, is_y): return center_crop(x, self.min_sz)
+    def do_transform(self, x, is_y):
+        return center_crop(x, self.sz_y if is_y else self.min_sz)
 
 
 class RandomCrop(CoordTransform):
@@ -230,9 +252,9 @@ class RandomCrop(CoordTransform):
         targ (int): target size of the crop.
         tfm_y (TfmType): type of y transformation.
     """
-    def __init__(self, targ, tfm_y=TfmType.NO):
+    def __init__(self, targ_sz, tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-        self.targ=targ
+        self.targ_sz,self.sz_y = targ_sz,sz_y
 
     def set_state(self):
         self.rand_r = random.uniform(0, 1)
@@ -240,9 +262,10 @@ class RandomCrop(CoordTransform):
 
     def do_transform(self, x, is_y):
         r,c,*_ = x.shape
-        start_r = np.floor(self.rand_r*(r-self.targ)).astype(int)
-        start_c = np.floor(self.rand_c*(c-self.targ)).astype(int)
-        return crop(x, start_r, start_c, self.targ)
+        sz = self.sz_y if is_y else self.targ_sz
+        start_r = np.floor(self.rand_r*(r-sz)).astype(int)
+        start_c = np.floor(self.rand_c*(c-sz)).astype(int)
+        return crop(x, start_r, start_c, sz)
 
 
 class NoCrop(CoordTransform):
@@ -253,12 +276,13 @@ class NoCrop(CoordTransform):
         targ (int): target size of the crop.
         tfm_y (TfmType): type of y transformation.
     """
-    def __init__(self, sz, tfm_y=TfmType.NO):
+    def __init__(self, sz, tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-        self.sz=sz
+        self.sz,self.sz_y = sz,sz_y
 
     def do_transform(self, x, is_y):
-       return no_crop(x, self.sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
+        if is_y: return no_crop(x, self.sz_y, cv2.INTER_NEAREST)
+        else   : return no_crop(x, self.sz,   cv2.INTER_AREA   )
 
 
 class Scale(CoordTransform):
@@ -268,12 +292,13 @@ class Scale(CoordTransform):
         sz (int): target size to scale minimum size.
         tfm_y (TfmType): type of y transformation.
     """
-    def __init__(self, sz, tfm_y=TfmType.NO):
+    def __init__(self, sz, tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-        self.sz=sz
+        self.sz,self.sz_y = sz,sz_y
 
     def do_transform(self, x, is_y):
-        return scale_min(x, self.sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
+        if is_y: return scale_min(x, self.sz_y, cv2.INTER_NEAREST)
+        else   : return scale_min(x, self.sz,   cv2.INTER_AREA   )
 
 
 class RandomScale(CoordTransform):
@@ -286,17 +311,20 @@ class RandomScale(CoordTransform):
         p (float): a probability for doing the random sizing
         tfm_y (TfmType): type of y transform
     """
-    def __init__(self, sz, max_zoom, p=0.75, tfm_y=TfmType.NO):
+    def __init__(self, sz, max_zoom, p=0.75, tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-        self.sz,self.max_zoom,self.p = sz,max_zoom,p
+        self.sz,self.max_zoom,self.p,self.sz_y = sz,max_zoom,p,sz_y
 
     def set_state(self):
         self.new_sz = self.sz
         if random.random()<self.p:
-            self.new_sz = int(random.uniform(1., self.max_zoom)*self.sz)
+            self.mult = random.uniform(1., self.max_zoom)
+            self.new_sz = int(self.mult*self.sz)
+            if self.sz_y is not None: self.new_sz_y = int(self.mult*self.sz_y)
 
     def do_transform(self, x, is_y):
-        return scale_min(x, self.new_sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
+        if is_y: return scale_min(x, self.new_sz_y, cv2.INTER_NEAREST)
+        else   : return scale_min(x, self.new_sz,   cv2.INTER_AREA   )
 
 
 def random_px_rect(y, x):
@@ -428,21 +456,25 @@ class CropType(IntEnum):
 crop_fn_lu = {CropType.RANDOM: RandomCrop, CropType.CENTER: CenterCrop, CropType.NO: NoCrop}
 
 class Transforms():
-    def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER, tfm_y=TfmType.NO):
-        self.sz,self.denorm = sz,denorm
-        crop_tfm = crop_fn_lu[crop_type](sz, tfm_y)
+    def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER, tfm_y=TfmType.NO, sz_y=None):
+        if sz_y is None: sz_y = sz
+        self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
+        crop_tfm = crop_fn_lu[crop_type](sz, tfm_y, sz_y)
         self.tfms = tfms + [crop_tfm, normalizer, channel_dim]
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
 
 
-def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None, tfm_y=None, pad_mode=cv2.BORDER_REFLECT):
+def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None,
+              tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     if tfm_y is None: tfm_y=TfmType.NO
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
-    scale = [RandomScale(sz, max_zoom, tfm_y=tfm_y) if max_zoom is not None else Scale(sz, tfm_y)]
+    if sz_y is None: sz_y = sz
+    scale = [RandomScale(sz, max_zoom, tfm_y=tfm_y, sz_y=sz_y) if max_zoom is not None
+             else Scale(sz, tfm_y, sz_y=sz_y)]
     if pad: scale.append(AddPadding(pad, mode=pad_mode))
     #if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
-    return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y)
+    return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y=tfm_y, sz_y=sz_y)
 
 def noop(x): return x
 
@@ -450,24 +482,25 @@ transforms_basic    = [RandomRotate(10), RandomLighting(0.05, 0.05)]
 transforms_side_on  = transforms_basic + [RandomFlip()]
 transforms_top_down = transforms_basic + [RandomDihedral()]
 
-imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-inception_stats = ([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+imagenet_stats = A([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+inception_stats = A([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
 
-def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM, tfm_y=None,
-        pad_mode=cv2.BORDER_REFLECT):
+def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
+                    tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     if aug_tfms is None: aug_tfms=[]
-    tfm_norm = Normalize(*stats)
+    tfm_norm = Normalize(*stats, tfm_y=tfm_y)
     tfm_denorm = Denormalize(*stats)
     val_crop = CropType.CENTER if crop_type==CropType.RANDOM else crop_type
-    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y)
+    val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y, sz_y=sz_y)
     trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type, tfm_y=tfm_y, pad_mode=pad_mode)
+                      pad=pad, crop_type=crop_type, tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
-def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM, tfm_y=None,
-        pad_mode=cv2.BORDER_REFLECT):
+def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
+                    tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     stats = inception_stats if f_model in inception_models else imagenet_stats
-    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type, tfm_y=tfm_y, pad_mode=pad_mode)
+    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type,
+                       tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
 

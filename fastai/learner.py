@@ -101,7 +101,7 @@ class Learner():
                 https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb
 
             cycle_save_name (str): use to save the weights at end of each cycle
-            
+
             best_save_name (str): use to save weights of best model during training.
 
             metrics (function): some function for evaluating a desired metric. Eg. accuracy.
@@ -153,10 +153,9 @@ class Learner():
             self.sched = CosAnneal(layer_opt, cycle_batches, on_cycle_end=cycle_end, cycle_mult=cycle_mult)
         elif not self.sched: self.sched=LossRecorder(layer_opt)
         callbacks+=[self.sched]
-        
+
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
-            
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
@@ -267,7 +266,10 @@ class Learner():
         return predict_with_targs(self.model, dl)
 
     def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
-    def predict_array(self, arr): return to_np(self.model(V(T(arr).cuda())))
+
+    def predict_array(self, arr):
+        self.model.eval()
+        return to_np(self.model(V(T(arr).cuda())))
 
     def TTA(self, n_aug=4, is_test=False):
         """ Predict with Test Time Augmentation (TTA)
