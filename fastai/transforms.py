@@ -178,16 +178,13 @@ class Transform():
         tfm_y (TfmType): type of transform
     """
     def __init__(self, tfm_y=TfmType.NO):
-        self.lock = threading.RLock()
         self.tfm_y=tfm_y
         self.store = threading.local()
 
-        
     def set_state(self): pass
+
     def __call__(self, x, y):
-        with self.lock: 
-            self.set_state()
-            
+        self.set_state()
         x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
                 else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
                 else self.transform_coord(x,y))
@@ -264,7 +261,7 @@ class RandomCrop(CoordTransform):
     def set_state(self):
         self.store.rand_r = random.uniform(0, 1)
         self.store.rand_c = random.uniform(0, 1)
-        
+
     def do_transform(self, x, is_y):
         r,c,*_ = x.shape
         sz = self.sz_y if is_y else self.targ_sz
@@ -321,11 +318,9 @@ class RandomScale(CoordTransform):
         self.sz,self.max_zoom,self.p,self.sz_y = sz,max_zoom,p,sz_y
 
     def set_state(self):
-        self.store.new_sz = self.sz
-        if random.random()<self.p:
-            self.store.mult = random.uniform(1., self.max_zoom)
-            self.store.new_sz = int(self.mult*self.sz)
-            if self.sz_y is not None: self.store.new_sz_y = int(self.mult*self.sz_y)
+        self.store.mult = random.uniform(1., self.max_zoom) if random.random()<self.p else 1
+        self.store.new_sz = int(self.store.mult*self.sz)
+        if self.sz_y is not None: self.store.new_sz_y = int(self.store.mult*self.sz_y)
 
     def do_transform(self, x, is_y):
         if is_y: return scale_min(x, self.store.new_sz_y, cv2.INTER_NEAREST)
