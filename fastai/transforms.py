@@ -178,11 +178,13 @@ class Transform():
         tfm_y (TfmType): type of transform
     """
     def __init__(self, tfm_y=TfmType.NO):
-        self.lock = threading.RLock()
         self.tfm_y=tfm_y
+        self.store = threading.local()
+
     def set_state(self): pass
+
     def __call__(self, x, y):
-        with self.lock: self.set_state()
+        self.set_state()
         x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
                 else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
                 else self.transform_coord(x,y))
@@ -257,14 +259,14 @@ class RandomCrop(CoordTransform):
         self.targ_sz,self.sz_y = targ_sz,sz_y
 
     def set_state(self):
-        self.rand_r = random.uniform(0, 1)
-        self.rand_c = random.uniform(0, 1)
+        self.store.rand_r = random.uniform(0, 1)
+        self.store.rand_c = random.uniform(0, 1)
 
     def do_transform(self, x, is_y):
         r,c,*_ = x.shape
         sz = self.sz_y if is_y else self.targ_sz
-        start_r = np.floor(self.rand_r*(r-sz)).astype(int)
-        start_c = np.floor(self.rand_c*(c-sz)).astype(int)
+        start_r = np.floor(self.store.rand_r*(r-sz)).astype(int)
+        start_c = np.floor(self.store.rand_c*(c-sz)).astype(int)
         return crop(x, start_r, start_c, sz)
 
 
@@ -316,15 +318,13 @@ class RandomScale(CoordTransform):
         self.sz,self.max_zoom,self.p,self.sz_y = sz,max_zoom,p,sz_y
 
     def set_state(self):
-        self.new_sz = self.sz
-        if random.random()<self.p:
-            self.mult = random.uniform(1., self.max_zoom)
-            self.new_sz = int(self.mult*self.sz)
-            if self.sz_y is not None: self.new_sz_y = int(self.mult*self.sz_y)
+        self.store.mult = random.uniform(1., self.max_zoom) if random.random()<self.p else 1
+        self.store.new_sz = int(self.store.mult*self.sz)
+        if self.sz_y is not None: self.store.new_sz_y = int(self.store.mult*self.sz_y)
 
     def do_transform(self, x, is_y):
-        if is_y: return scale_min(x, self.new_sz_y, cv2.INTER_NEAREST)
-        else   : return scale_min(x, self.new_sz,   cv2.INTER_AREA   )
+        if is_y: return scale_min(x, self.store.new_sz_y, cv2.INTER_NEAREST)
+        else   : return scale_min(x, self.store.new_sz,   cv2.INTER_AREA   )
 
 
 def random_px_rect(y, x):
@@ -370,31 +370,31 @@ class RandomRotate(CoordTransform):
         self.deg,self.mode,self.p = deg,mode,p
 
     def set_state(self):
-        self.rdeg = rand0(self.deg)
-        self.rp = random.random()<self.p
+        self.store.rdeg = rand0(self.deg)
+        self.store.rp = random.random()<self.p
 
     def do_transform(self, x, is_y):
-        if self.rp: x = rotate_cv(x, self.rdeg, mode=self.mode,
+        if self.store.rp: x = rotate_cv(x, self.store.rdeg, mode=self.mode,
                 interpolation=cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
         return x
 
 
 class RandomDihedral(CoordTransform):
     def set_state(self):
-        self.rot_times = random.randint(0,3)
-        self.do_flip = random.random()<0.5
+        self.store.rot_times = random.randint(0,3)
+        self.store.do_flip = random.random()<0.5
 
     def do_transform(self, x, is_y):
-        x = np.rot90(x, self.rot_times)
-        return np.fliplr(x).copy() if self.do_flip else x
+        x = np.rot90(x, self.store.rot_times)
+        return np.fliplr(x).copy() if self.store.do_flip else x
 
 
 class RandomFlip(CoordTransform):
     def set_state(self):
-        self.do_flip = random.random()<0.5
+        self.store.do_flip = random.random()<0.5
 
     def do_transform(self, x, is_y):
-        return np.fliplr(x).copy() if self.do_flip else x
+        return np.fliplr(x).copy() if self.store.do_flip else x
 
 
 class RandomLighting(Transform):
@@ -403,12 +403,12 @@ class RandomLighting(Transform):
         self.b,self.c = b,c
 
     def set_state(self):
-        self.b_rand = rand0(self.b)
-        self.c_rand = rand0(self.c)
+        self.store.b_rand = rand0(self.b)
+        self.store.c_rand = rand0(self.c)
 
     def do_transform(self, x, is_y):
-        b = self.b_rand
-        c = self.c_rand
+        b = self.store.b_rand
+        c = self.store.c_rand
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x
@@ -426,17 +426,16 @@ class RandomBlur(Transform):
         self.blur_strengths = (np.array(blur_strengths, ndmin=1) * 2) - 1
         if np.any(self.blur_strengths < 0):
             raise ValueError("all blur_strengths must be > 0")
-        self.kernel = (0, 0)
         self.probability = probability
         self.apply_transform = False
 
     def set_state(self):
-        self.apply_transform = random.random() < self.probability
+        self.store.apply_transform = random.random() < self.probability
         kernel_size = np.random.choice(self.blur_strengths)
-        self.kernel = (kernel_size, kernel_size)
+        self.store.kernel = (kernel_size, kernel_size)
 
     def do_transform(self, x, is_y):
-        return cv2.GaussianBlur(src=x, ksize=self.kernel, sigmaX=0) if self.apply_transform else x
+        return cv2.GaussianBlur(src=x, ksize=self.store.kernel, sigmaX=0) if self.apply_transform else x
 
 
 def compose(im, y, fns):
