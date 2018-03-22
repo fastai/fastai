@@ -89,6 +89,8 @@ class TfmType(IntEnum):
 
 
 class Denormalize():
+    """ De-normalizes an image, returning it to original format. 
+    """
     def __init__(self, m, s):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
@@ -178,13 +180,11 @@ class Transform():
         tfm_y (TfmType): type of transform
     """
     def __init__(self, tfm_y=TfmType.NO):
+        self.lock = threading.RLock()
         self.tfm_y=tfm_y
-        self.store = threading.local()
-
     def set_state(self): pass
-
     def __call__(self, x, y):
-        self.set_state()
+        with self.lock: self.set_state()
         x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
                 else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
                 else self.transform_coord(x,y))
@@ -223,6 +223,13 @@ class CoordTransform(Transform):
 
 
 class AddPadding(CoordTransform):
+    """ A class that represents adding paddings to an image.
+
+    The default padding is border_reflect
+    Arguments:
+        pad: size of padding on top, bottom, left and right
+        mode: type of cv2 padding modes. (e.g., constant, reflect, wrap, replicate. etc. )
+    """
     def __init__(self, pad, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
         self.pad,self.mode = pad,mode
@@ -259,14 +266,14 @@ class RandomCrop(CoordTransform):
         self.targ_sz,self.sz_y = targ_sz,sz_y
 
     def set_state(self):
-        self.store.rand_r = random.uniform(0, 1)
-        self.store.rand_c = random.uniform(0, 1)
+        self.rand_r = random.uniform(0, 1)
+        self.rand_c = random.uniform(0, 1)
 
     def do_transform(self, x, is_y):
         r,c,*_ = x.shape
         sz = self.sz_y if is_y else self.targ_sz
-        start_r = np.floor(self.store.rand_r*(r-sz)).astype(int)
-        start_c = np.floor(self.store.rand_c*(c-sz)).astype(int)
+        start_r = np.floor(self.rand_r*(r-sz)).astype(int)
+        start_c = np.floor(self.rand_c*(c-sz)).astype(int)
         return crop(x, start_r, start_c, sz)
 
 
@@ -318,13 +325,15 @@ class RandomScale(CoordTransform):
         self.sz,self.max_zoom,self.p,self.sz_y = sz,max_zoom,p,sz_y
 
     def set_state(self):
-        self.store.mult = random.uniform(1., self.max_zoom) if random.random()<self.p else 1
-        self.store.new_sz = int(self.store.mult*self.sz)
-        if self.sz_y is not None: self.store.new_sz_y = int(self.store.mult*self.sz_y)
+        self.new_sz = self.sz
+        if random.random()<self.p:
+            self.mult = random.uniform(1., self.max_zoom)
+            self.new_sz = int(self.mult*self.sz)
+            if self.sz_y is not None: self.new_sz_y = int(self.mult*self.sz_y)
 
     def do_transform(self, x, is_y):
-        if is_y: return scale_min(x, self.store.new_sz_y, cv2.INTER_NEAREST)
-        else   : return scale_min(x, self.store.new_sz,   cv2.INTER_AREA   )
+        if is_y: return scale_min(x, self.new_sz_y, cv2.INTER_NEAREST)
+        else   : return scale_min(x, self.new_sz,   cv2.INTER_AREA   )
 
 
 def random_px_rect(y, x):
@@ -370,31 +379,33 @@ class RandomRotate(CoordTransform):
         self.deg,self.mode,self.p = deg,mode,p
 
     def set_state(self):
-        self.store.rdeg = rand0(self.deg)
-        self.store.rp = random.random()<self.p
+        self.rdeg = rand0(self.deg)
+        self.rp = random.random()<self.p
 
     def do_transform(self, x, is_y):
-        if self.store.rp: x = rotate_cv(x, self.store.rdeg, mode=self.mode,
+        if self.rp: x = rotate_cv(x, self.rdeg, mode=self.mode,
                 interpolation=cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
         return x
 
 
 class RandomDihedral(CoordTransform):
+    """ Rotates images by random multiples of 90 degrees. 
+    """
     def set_state(self):
-        self.store.rot_times = random.randint(0,3)
-        self.store.do_flip = random.random()<0.5
+        self.rot_times = random.randint(0,3)
+        self.do_flip = random.random()<0.5
 
     def do_transform(self, x, is_y):
-        x = np.rot90(x, self.store.rot_times)
-        return np.fliplr(x).copy() if self.store.do_flip else x
+        x = np.rot90(x, self.rot_times)
+        return np.fliplr(x).copy() if self.do_flip else x
 
 
 class RandomFlip(CoordTransform):
     def set_state(self):
-        self.store.do_flip = random.random()<0.5
+        self.do_flip = random.random()<0.5
 
     def do_transform(self, x, is_y):
-        return np.fliplr(x).copy() if self.store.do_flip else x
+        return np.fliplr(x).copy() if self.do_flip else x
 
 
 class RandomLighting(Transform):
@@ -403,12 +414,12 @@ class RandomLighting(Transform):
         self.b,self.c = b,c
 
     def set_state(self):
-        self.store.b_rand = rand0(self.b)
-        self.store.c_rand = rand0(self.c)
+        self.b_rand = rand0(self.b)
+        self.c_rand = rand0(self.c)
 
     def do_transform(self, x, is_y):
-        b = self.store.b_rand
-        c = self.store.c_rand
+        b = self.b_rand
+        c = self.c_rand
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x
@@ -426,19 +437,22 @@ class RandomBlur(Transform):
         self.blur_strengths = (np.array(blur_strengths, ndmin=1) * 2) - 1
         if np.any(self.blur_strengths < 0):
             raise ValueError("all blur_strengths must be > 0")
+        self.kernel = (0, 0)
         self.probability = probability
         self.apply_transform = False
 
     def set_state(self):
-        self.store.apply_transform = random.random() < self.probability
+        self.apply_transform = random.random() < self.probability
         kernel_size = np.random.choice(self.blur_strengths)
-        self.store.kernel = (kernel_size, kernel_size)
+        self.kernel = (kernel_size, kernel_size)
 
     def do_transform(self, x, is_y):
-        return cv2.GaussianBlur(src=x, ksize=self.store.kernel, sigmaX=0) if self.apply_transform else x
+        return cv2.GaussianBlur(src=x, ksize=self.kernel, sigmaX=0) if self.apply_transform else x
 
 
 def compose(im, y, fns):
+    """ apply a collection of transformation functions fns to images
+    """
     for fn in fns:
         #pdb.set_trace()
         im, y =fn(im, y)
@@ -465,6 +479,21 @@ class Transforms():
 
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None,
               tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
+    """
+    Returns transformer for specified image operations.
+    
+    Arguments:
+    normalizer: image normalizing funciton
+    denorm: image denormalizing function
+    sz: size, sz_y = sz if not specified.  
+    tfms: iterable collection of transformation functions
+    max_zoom: maximum zoom
+    pad: padding on top, left, right and bottom
+    crop_type: crop type
+    tfm_y: y axis specific transformations
+    sz_y: y size, height
+    pad_mode: cv2 padding style: repeat, reflect, etc. 
+    """
     if tfm_y is None: tfm_y=TfmType.NO
     if tfms is None: tfms=[]
     elif not isinstance(tfms, collections.Iterable): tfms=[tfms]
@@ -473,20 +502,28 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
              else Scale(sz, tfm_y, sz_y=sz_y)]
     if pad: scale.append(AddPadding(pad, mode=pad_mode))
     #if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
-    return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y=tfm_y, sz_y=sz_y)
+    return Transforms(sz, scale + tfms, 
+                      , denorm, crop_type, tfm_y=tfm_y, sz_y=sz_y)
 
-def noop(x): return x
+def noop(x): 
+    """dummy function for do-nothing. 
+    equivalent to: lambda x: x"""
+    return x
 
 transforms_basic    = [RandomRotate(10), RandomLighting(0.05, 0.05)]
 transforms_side_on  = transforms_basic + [RandomFlip()]
 transforms_top_down = transforms_basic + [RandomDihedral()]
 
 imagenet_stats = A([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+"""Statistics pertaining to image data from image net. mean and std of the images of each color channel"""
 inception_stats = A([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
+"""pretrained pytorch inception models"""
 
 def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
+    """ Given the statistics of the traning image sets, returns seperate traning and valication transform functions
+    """
     if aug_tfms is None: aug_tfms=[]
     tfm_norm = Normalize(*stats, tfm_y=tfm_y)
     tfm_denorm = Denormalize(*stats)
@@ -499,6 +536,12 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
 
 def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
+    """ Returns seperate transformers of images for traning and validation.
+    Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
+    
+    Arguments:
+        f_model: model, pretrained or not pretrained
+    """
     stats = inception_stats if f_model in inception_models else imagenet_stats
     return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type,
                        tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
