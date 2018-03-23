@@ -394,24 +394,6 @@ class RandomLighting(Transform):
         return x
     
 class RandomRotateZoom(CoordTransform):
-    def __init__(self, deg, zoom, stretch, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
-        super().__init__(tfm_y)
-        self.rotate,self.zoom = RandomRotate(deg, p=1, mode=mode, tfm_y=tfm_y), RandomZoom(zoom, tfm_y=tfm_y)
-        self.stretch, self.pass_t = RandomStretch(stretch, tfm_y=tfm_y), PassThru(tfm_y=tfm_y)
-    
-    def set_state(self):
-        choice = random.randint(0,3)
-        if choice==0: a = self.pass_t
-        elif choice==1: a = self.rotate
-        elif choice==2: a = self.zoom
-        elif choice==3: a = self.stretch
-        self.store.trans = a
-    
-    def __call__(self, x, y):
-        self.set_state()
-        return self.store.trans(x, y)
-    
-class RandomRotateZoom(CoordTransform):
     def __init__(self, deg, zoom, stretch, ps=(0.25,0.25,0.25,0.25), mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
         self.transforms = RandomRotate(deg, p=1, mode=mode), RandomZoom(zoom), RandomStretch(stretch)
@@ -423,10 +405,8 @@ class RandomRotateZoom(CoordTransform):
         for i in range(len(self.transforms)):
             if self.store.choice < self.cum_ps[i]:
                 self.store.trans = self.transforms[i]
-                print(self.store.trans)
                 return
         self.store.trans = self.pass_t
-        print(self.store.trans)
     
     def __call__(self, x, y):
         self.set_state()
