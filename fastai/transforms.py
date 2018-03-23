@@ -16,15 +16,15 @@ def scale_min(im, targ, interpolation=cv2.INTER_AREA):
 
 def zoom_cv(x,z):
     if z==0: return x
-    r,c,*_ = im.shape
+    r,c,*_ = x.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
 def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
     if sr==0 and sc==0: return x
-    r,c,*_ = im.shape
+    r,c,*_ = x.shape
     x = cv2.resize(x, None, fx=sr+1, fy=sc+1, interpolation=interpolation)
-    nr,nc,*_ = im.shape
+    nr,nc,*_ = x.shape
     cr = (nr-r)//2; cc = (nc-c)//2
     return x[cr:r+cr, cc:c+cc]
 
@@ -108,25 +108,6 @@ class Normalize():
         if self.tfm_y==TfmType.PIXEL and y is not None:
             y = (y-self.m)/self.s
         return x,y
-
-
-class RandomRotateZoom():
-    def __init__(self, deg, zoom, stretch, mode=cv2.BORDER_REFLECT):
-        self.deg,self.zoom,self.stretch,self.mode = deg,zoom,stretch,mode
-
-    def __call__(self, x, y=None):
-        choice = random.randint(0,3)
-        if choice==0: pass
-        elif choice==1: x = rotate_cv(x, rand0(self.deg), self.mode)
-        elif choice==2: x = zoom_cv(x, random.random()*self.zoom)
-        elif choice==3:
-            str_choice = random.randint(0,1)
-            sa = random.random()*self.stretch
-            if str_choice==0: x = stretch_cv(x, sa, 0)
-            else:             x = stretch_cv(x, 0, sa)
-        assert (y is None) # not implemented
-        return x
-
 
 def channel_dim(x, y):
     x = np.rollaxis(x, 2)
@@ -388,7 +369,6 @@ class RandomDihedral(CoordTransform):
         x = np.rot90(x, self.store.rot_times)
         return np.fliplr(x).copy() if self.store.do_flip else x
 
-
 class RandomFlip(CoordTransform):
     def set_state(self):
         self.store.do_flip = random.random()<0.5
@@ -412,8 +392,54 @@ class RandomLighting(Transform):
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x
+    
+class RandomRotateZoom(CoordTransform):
+    def __init__(self, deg, zoom, stretch, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
+        super().__init__(tfm_y)
+        self.rotate,self.zoom = RandomRotate(deg, p=1, mode=mode, tfm_y=tfm_y), RandomZoom(zoom, tfm_y=tfm_y)
+        self.stretch, self.pass_t = RandomStretch(stretch, tfm_y=tfm_y), PassThru(tfm_y=tfm_y)
+    
+    def set_state(self):
+        choice = random.randint(0,3)
+        if choice==0: a = self.pass_t
+        elif choice==1: a = self.rotate
+        elif choice==2: a = self.zoom
+        elif choice==3: a = self.stretch
+        self.store.trans = a
+    
+    def __call__(self, x, y):
+        self.set_state()
+        return self.store.trans(x, y)
+    
+class RandomZoom(CoordTransform):
+    def __init__(self, zoom_max, zoom_min=0, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
+        super().__init__(tfm_y)
+        self.zoom_max, self.zoom_min = zoom_max, zoom_min
+    
+    def set_state(self):
+        self.store.zoom = self.zoom_min+(self.zoom_max-self.zoom_min)*random.random()
 
+    def do_transform(self, x, is_y):
+        return zoom_cv(x, self.store.zoom)
 
+class RandomStretch(CoordTransform):
+    def __init__(self, max_stretch, tfm_y=TfmType.NO):
+        super().__init__(tfm_y)
+        self.max_stretch = max_stretch
+    
+    def set_state(self):
+        self.store.stretch = self.max_stretch*random.random()
+        self.store.stretch_dir = random.randint(0,1)
+
+    def do_transform(self, x, is_y):
+        if self.store.stretch_dir==0: x = stretch_cv(x, self.store.stretch, 0)
+        else:             x = stretch_cv(x, 0, self.store.stretch)
+        return x
+    
+class PassThru(CoordTransform):
+    def do_transform(self, x, is_y):
+        return x
+    
 class RandomBlur(Transform):
     """
     Adds a gaussian blur to the image at chance.
