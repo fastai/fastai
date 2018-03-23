@@ -299,7 +299,11 @@ class RandomScale(CoordTransform):
         self.sz,self.max_zoom,self.p,self.sz_y = sz,max_zoom,p,sz_y
 
     def set_state(self):
-        self.store.mult = random.uniform(1., self.max_zoom) if random.random()<self.p else 1
+        min_z = 1.
+        max_z = self.max_zoom
+        if isinstance(self.max_zoom, collections.Iterable):
+            min_z, max_z = self.max_zoom
+        self.store.mult = random.uniform(min_z, max_z) if random.random()<self.p else 1
         self.store.new_sz = int(self.store.mult*self.sz)
         if self.sz_y is not None: self.store.new_sz_y = int(self.store.mult*self.sz_y)
 
