@@ -1,13 +1,46 @@
 ## [\[source\]](../fastai/transforms.js)
 
-# Classes
+## Classes
 
-### class transforms 
+* <a href="normalize">Normalize</a>
+* <a href="normalize">Denormalize</a>
+
+#### <a href="#normalize">class Normalize</a>
+Normalizes an image
+  * code
+    ```python
+    class Normalize():
+    def __init__(self, m, s, tfm_y=TfmType.NO):
+        self.m=np.array(m, dtype=np.float32)
+        self.s=np.array(s, dtype=np.float32)
+        self.tfm_y=tfm_y
+
+    def __call__(self, x, y=None):
+        x = (x-self.m)/self.s
+        if self.tfm_y==TfmType.PIXEL and y is not None:
+            y = (y-self.m)/self.s
+        return x,y
+        
+    ```
+  * arguments
+  
+#### <a href="#denormalize">class Denormalize</a>
+
+Denormalizes an image
+  * code
+    ```python
+    def __init__(self, m, s):
+        self.m=np.array(m, dtype=np.float32)
+        self.s=np.array(s, dtype=np.float32)
+    def __call__(self, x): return x*self.s+self.m
+    ```
+  * arguments
+
 
 ## Functions
 
 * <a href="image_gen">image_gen</a>
-* noop
+* <a href="Transforms">Transforms</a>
 
 #### <a href="#image_gen">def image_gen</a>
 
@@ -28,7 +61,24 @@ Generate a standard set of transformations
         return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y=tfm_y, sz_y=sz_y)
      ```
   * arguments
-    * normalizer : 
-       image normalizing funciton
-
+    * normalizer :  
+      image normalizing funciton
+    * denorm:  
+       image denormalizing function
+    * sz:  
+      size, sz_y = sz if not specified.  
+    * tfms:  
+      iterable collection of transformation functions
+    * max_zoom:  
+      maximum zoom
+    * pad:  
+      padding on top, left, right and bottom
+    * crop_type:  
+      crop type
+    * tfm_y:  
+      y axis specific transformations
+    * sz_y:  
+      y size, height
+    * pad_mode:  
+      cv2 padding style: repeat, reflect, etc. 
 
