@@ -122,16 +122,10 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     .
     :param cat_separator: the separator for the categories column
     """
-    with open(fn) as fileobj:
-        reader = csv.reader(fileobj)
-        if skip_header:
-            next(reader)
-
-        csv_lines = [l for l in reader]
-
-    fnames = [fname for fname, _ in csv_lines]
-    csv_labels = {a:b.split(cat_separator) for a,b in csv_lines}
-    return sorted(fnames), csv_labels
+    df = pd.read_csv(fn, index_col=0, header=0 if skip_header else None, dtype=str)
+    fnames = df.index.values
+    df.iloc[:,0] = df.iloc[:,0].str.split(cat_separator)
+    return sorted(fnames), list(df.to_dict().values())[0]
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
     all_idx = {k: n_hot([label2idx[o] for o in v], c)
