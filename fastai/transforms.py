@@ -396,7 +396,7 @@ class RandomLighting(Transform):
 class RandomRotateZoom(CoordTransform):
     def __init__(self, deg, zoom, stretch, ps=(0.25,0.25,0.25,0.25), mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
-        self.transforms = RandomRotate(deg, p=1, mode=mode), RandomZoom(zoom), RandomStretch(stretch)
+        self.transforms = RandomRotate(deg, p=1, mode=mode, tfm_y=tfm_y), RandomZoom(zoom, tfm_y=tfm_y), RandomStretch(stretch, tfm_y=tfm_y)
         self.pass_t = PassThru()
         self.cum_ps = np.cumsum(ps)
     
