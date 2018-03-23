@@ -128,7 +128,7 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
             next(reader)
 
         csv_lines = [l for l in reader]
-
+    import pdb;pdb.set_trace()
     fnames = [fname for fname, _ in csv_lines]
     csv_labels = {a:b.split(cat_separator) for a,b in csv_lines}
     return sorted(fnames), csv_labels
@@ -150,6 +150,7 @@ def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
                 for i in fnames])
     else:
         label2idx = {v:k for k,v in enumerate(all_labels)}
+        import pdb; pdb.set_trace()
         label_arr = nhot_labels(label2idx, csv_labels, fnames, len(all_labels))
         is_single = np.all(label_arr.sum(axis=1)==1)
         if is_single: label_arr = np.argmax(label_arr, axis=1)
@@ -389,7 +390,7 @@ class ImageClassifierData(ImageData):
                 shape of `(5000, 784)` and `y` has the shape of `(5000,)`)
             val: a tuple of validation data matrix and target label/classification array.
             bs: batch size
-            tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
+            tfms: tuple of two transformations (for data augmentations), one for training and one for validation data. e.g. output of `tfms_from_model` or `tfms_from_stats`
             classes: a list of all labels/classifications
             num_workers: a number of workers
             test: a matrix of test data (the shape should match `trn[0]`)
