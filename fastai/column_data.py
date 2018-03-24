@@ -5,10 +5,10 @@ from .learner import *
 
 
 class PassthruDataset(Dataset):
-    def __init__(self,*args, **kwargs):
+    def __init__(self,*args, is_reg=True):
         *xs,y=args
         self.xs,self.y = xs,y
-        self.is_reg = kwargs.get('is_reg', True)
+        self.is_reg = is_reg
 
     def __len__(self): return len(self.y)
     def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.y[idx]]
