@@ -9,6 +9,7 @@ from .layer_optimizer import *
 from .layers import *
 from .metrics import *
 from .losses import *
+from .swa import *
 import time
 
 
@@ -73,7 +74,8 @@ class Learner():
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):
+                use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None,            
+                use_swa=False, swa_start=0, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -156,6 +158,11 @@ class Learner():
         
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, best_save_name)]
+            
+        if use_swa:
+            # make a copy of the model to track average weights
+            self.swa_model = copy.deepcopy(model)
+            callbacks+=[SWA(model, self.swa_model, swa_start)]
             
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
