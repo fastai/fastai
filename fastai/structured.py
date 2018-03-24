@@ -421,7 +421,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     if preproc_fn: preproc_fn(df)
     if y_fld is None: y = None
     else:
-        numericalize(df, df[y_fld], y_fld, None)
+        if not is_numeric_dtype(df[y_fld]): df[y_fld] = df[y_fld].cat.codes
         y = df[y_fld].values
         skip_flds += [y_fld]
     df.drop(skip_flds, axis=1, inplace=True)
