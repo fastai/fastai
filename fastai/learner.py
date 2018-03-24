@@ -14,6 +14,18 @@ import time
 
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+        """
+        Learner is a class that combines a ModelData object with a nn.Module object, such that you can train that
+        module.
+        data (ModelData): An instance of ModelData.
+        models: chosen neural architecture for solving a supported problem.
+                Eg. ResNet-34
+        opt_fn: optimizer function, uses SGD with Momentum of .9 if none.
+        tmp_name: output name of the directory containing temporary files from training process
+        models_name: output name of the directory containing the trained model
+        metrics(function): some function for evaluating a desired metric. Eg. accuracy.
+        clip: gradient clip chosen to limit the change in the gradient to prevent exploding gradients
+        """
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
         self.wd_sched = None
