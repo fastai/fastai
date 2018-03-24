@@ -275,7 +275,7 @@ class ArraysDataset(BaseDataset):
     def get_x(self, i): return self.x[i]
     def get_y(self, i): return self.y[i]
     def get_n(self): return len(self.y)
-    def get_sz(self): return self.x.shape[1]
+    def get_sz(self): return self.x.shape[2]
 
 
 class ArraysIndexDataset(ArraysDataset):
@@ -375,12 +375,13 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
-        """ Read in images and their labels given as numpy arrays
+        """ Read in images and their labels given as numpy arrays. 
+        Image array must have dimensions [n_samples, channels, height, width].
 
         Arguments:
             path: a root path of the data (used for storing trained models, precomputed values, etc)
             trn: a tuple of training data matrix and target label/classification array (e.g. `trn=(x,y)` where `x` has the
-                shape of `(5000, 784)` and `y` has the shape of `(5000,)`)
+                shape of `(5000, 3, 128, 128)` and `y` has the shape of `(5000,)`)
             val: a tuple of validation data matrix and target label/classification array.
             bs: batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
