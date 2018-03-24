@@ -77,7 +77,7 @@ def rand0(s): return random.random()*(s*2)-s
 class TfmType(IntEnum):
     """ Type of transformation.
     Parameters
-        IntEnum: predefined types of tansformations
+        IntEnum: predefined types of transformations
             NO: is the default, y does not get transformed when x is transformed.
             PIXEL: when x and y are images and should be transformed in the same way.
                    Example: image segmentation.
@@ -157,8 +157,8 @@ class Transform():
     do_transform.
     We have 3 types of transforms:
        TfmType.NO: the target y is not transformed
-       TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
-           them with the same paramters.
+       TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and transforms
+           them with the same parameters.
        TfmType.COORD: assumes that y are some coordinates in the image x.
 
     Arguments
@@ -538,7 +538,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     Arguments
     ---------
      normalizer : 
-         image normalizing funciton
+         image normalizing function
      denorm :
          image denormalizing function
      sz : 
@@ -594,7 +594,7 @@ inception_models = (inception_4, inceptionresnet_2)
 
 def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
-    """ Given the statistics of the traning image sets, returns seperate traning and valication transform functions
+    """ Given the statistics of the training image sets, returns separate training and validation transform functions
     """
     if aug_tfms is None: aug_tfms=[]
     tfm_norm = Normalize(*stats, tfm_y=tfm_y)
@@ -608,7 +608,7 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
 
 def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
-    """ Returns seperate transformers of images for traning and validation.
+    """ Returns separate transformers of images for training and validation.
     Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
     
     Arguments:
