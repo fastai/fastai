@@ -5,7 +5,7 @@ import os
 import sys
 
 model_urls = {
-    'imagenet': 'http://webia.lip6.fr/~cadene/Downloads/inceptionv4-97ef9c30.pth'
+    'imagenet': 'https://s3.amazonaws.com/pytorch/models/inceptionv4-58153ba9.pth'
 }
 
 class BasicConv2d(nn.Module):
@@ -40,12 +40,12 @@ class Mixed_4a(nn.Module):
     def __init__(self):
         super(Mixed_4a, self).__init__()
 
-        self.branch0 = nn.Sequential(
+        self.block0 = nn.Sequential(
             BasicConv2d(160, 64, kernel_size=1, stride=1),
             BasicConv2d(64, 96, kernel_size=3, stride=1)
         )
 
-        self.branch1 = nn.Sequential(
+        self.block1 = nn.Sequential(
             BasicConv2d(160, 64, kernel_size=1, stride=1),
             BasicConv2d(64, 64, kernel_size=(1,7), stride=1, padding=(0,3)),
             BasicConv2d(64, 64, kernel_size=(7,1), stride=1, padding=(3,0)),
@@ -53,8 +53,8 @@ class Mixed_4a(nn.Module):
         )
 
     def forward(self, x):
-        x0 = self.branch0(x)
-        x1 = self.branch1(x)
+        x0 = self.block0(x)
+        x1 = self.block1(x)
         out = torch.cat((x0, x1), 1)
         return out
 
@@ -75,29 +75,29 @@ class Inception_A(nn.Module):
 
     def __init__(self):
         super(Inception_A, self).__init__()
-        self.branch0 = BasicConv2d(384, 96, kernel_size=1, stride=1)
+        self.block0 = BasicConv2d(384, 96, kernel_size=1, stride=1)
 
-        self.branch1 = nn.Sequential(
+        self.block1 = nn.Sequential(
             BasicConv2d(384, 64, kernel_size=1, stride=1),
             BasicConv2d(64, 96, kernel_size=3, stride=1, padding=1)
         )
 
-        self.branch2 = nn.Sequential(
+        self.block2 = nn.Sequential(
             BasicConv2d(384, 64, kernel_size=1, stride=1),
             BasicConv2d(64, 96, kernel_size=3, stride=1, padding=1),
             BasicConv2d(96, 96, kernel_size=3, stride=1, padding=1)
         )
 
-        self.branch3 = nn.Sequential(
+        self.block3 = nn.Sequential(
             nn.AvgPool2d(3, stride=1, padding=1, count_include_pad=False),
             BasicConv2d(384, 96, kernel_size=1, stride=1)
         )
 
     def forward(self, x):
-        x0 = self.branch0(x)
-        x1 = self.branch1(x)
-        x2 = self.branch2(x)
-        x3 = self.branch3(x)
+        x0 = self.block0(x)
+        x1 = self.block1(x)
+        x2 = self.block2(x)
+        x3 = self.block3(x)
         out = torch.cat((x0, x1, x2, x3), 1)
         return out
 
@@ -105,20 +105,20 @@ class Reduction_A(nn.Module):
 
     def __init__(self):
         super(Reduction_A, self).__init__()
-        self.branch0 = BasicConv2d(384, 384, kernel_size=3, stride=2)
+        self.block0 = BasicConv2d(384, 384, kernel_size=3, stride=2)
 
-        self.branch1 = nn.Sequential(
+        self.block1 = nn.Sequential(
             BasicConv2d(384, 192, kernel_size=1, stride=1),
             BasicConv2d(192, 224, kernel_size=3, stride=1, padding=1),
             BasicConv2d(224, 256, kernel_size=3, stride=2)
         )
         
-        self.branch2 = nn.MaxPool2d(3, stride=2)
+        self.block2 = nn.MaxPool2d(3, stride=2)
 
     def forward(self, x):
-        x0 = self.branch0(x)
-        x1 = self.branch1(x)
-        x2 = self.branch2(x)
+        x0 = self.block0(x)
+        x1 = self.block1(x)
+        x2 = self.block2(x)
         out = torch.cat((x0, x1, x2), 1)
         return out
 
@@ -126,15 +126,15 @@ class Inception_B(nn.Module):
 
     def __init__(self):
         super(Inception_B, self).__init__()
-        self.branch0 = BasicConv2d(1024, 384, kernel_size=1, stride=1)
+        self.block0 = BasicConv2d(1024, 384, kernel_size=1, stride=1)
         
-        self.branch1 = nn.Sequential(
+        self.block1 = nn.Sequential(
             BasicConv2d(1024, 192, kernel_size=1, stride=1),
             BasicConv2d(192, 224, kernel_size=(1,7), stride=1, padding=(0,3)),
             BasicConv2d(224, 256, kernel_size=(7,1), stride=1, padding=(3,0))
         )
 
-        self.branch2 = nn.Sequential(
+        self.block2 = nn.Sequential(
             BasicConv2d(1024, 192, kernel_size=1, stride=1),
             BasicConv2d(192, 192, kernel_size=(7,1), stride=1, padding=(3,0)),
             BasicConv2d(192, 224, kernel_size=(1,7), stride=1, padding=(0,3)),
@@ -142,16 +142,16 @@ class Inception_B(nn.Module):
             BasicConv2d(224, 256, kernel_size=(1,7), stride=1, padding=(0,3))
         )
 
-        self.branch3 = nn.Sequential(
+        self.block3 = nn.Sequential(
             nn.AvgPool2d(3, stride=1, padding=1, count_include_pad=False),
             BasicConv2d(1024, 128, kernel_size=1, stride=1)
         )
 
     def forward(self, x):
-        x0 = self.branch0(x)
-        x1 = self.branch1(x)
-        x2 = self.branch2(x)
-        x3 = self.branch3(x)
+        x0 = self.block0(x)
+        x1 = self.block1(x)
+        x2 = self.block2(x)
+        x3 = self.block3(x)
         out = torch.cat((x0, x1, x2, x3), 1)
         return out
 
@@ -160,24 +160,24 @@ class Reduction_B(nn.Module):
     def __init__(self):
         super(Reduction_B, self).__init__()
 
-        self.branch0 = nn.Sequential(
+        self.block0 = nn.Sequential(
             BasicConv2d(1024, 192, kernel_size=1, stride=1),
             BasicConv2d(192, 192, kernel_size=3, stride=2)
         )
 
-        self.branch1 = nn.Sequential(
+        self.block1 = nn.Sequential(
             BasicConv2d(1024, 256, kernel_size=1, stride=1),
             BasicConv2d(256, 256, kernel_size=(1,7), stride=1, padding=(0,3)),
             BasicConv2d(256, 320, kernel_size=(7,1), stride=1, padding=(3,0)),
             BasicConv2d(320, 320, kernel_size=3, stride=2)
         )
 
-        self.branch2 = nn.MaxPool2d(3, stride=2)
+        self.block2 = nn.MaxPool2d(3, stride=2)
 
     def forward(self, x):
-        x0 = self.branch0(x)
-        x1 = self.branch1(x)
-        x2 = self.branch2(x)
+        x0 = self.block0(x)
+        x1 = self.block1(x)
+        x2 = self.block2(x)
         out = torch.cat((x0, x1, x2), 1)
         return out
 
@@ -185,40 +185,39 @@ class Inception_C(nn.Module):
 
     def __init__(self):
         super(Inception_C, self).__init__()
-
-        self.branch0 = BasicConv2d(1536, 256, kernel_size=1, stride=1)
+        self.block0 = BasicConv2d(1536, 256, kernel_size=1, stride=1)
         
-        self.branch1_0 = BasicConv2d(1536, 384, kernel_size=1, stride=1)
-        self.branch1_1a = BasicConv2d(384, 256, kernel_size=(1,3), stride=1, padding=(0,1))
-        self.branch1_1b = BasicConv2d(384, 256, kernel_size=(3,1), stride=1, padding=(1,0))
+        self.block1_0 = BasicConv2d(1536, 384, kernel_size=1, stride=1)
+        self.block1_1a = BasicConv2d(384, 256, kernel_size=(1,3), stride=1, padding=(0,1))
+        self.block1_1b = BasicConv2d(384, 256, kernel_size=(3,1), stride=1, padding=(1,0))
         
-        self.branch2_0 = BasicConv2d(1536, 384, kernel_size=1, stride=1)
-        self.branch2_1 = BasicConv2d(384, 448, kernel_size=(3,1), stride=1, padding=(1,0))
-        self.branch2_2 = BasicConv2d(448, 512, kernel_size=(1,3), stride=1, padding=(0,1))
-        self.branch2_3a = BasicConv2d(512, 256, kernel_size=(1,3), stride=1, padding=(0,1))
-        self.branch2_3b = BasicConv2d(512, 256, kernel_size=(3,1), stride=1, padding=(1,0))
+        self.block2_0 = BasicConv2d(1536, 384, kernel_size=1, stride=1)
+        self.block2_1 = BasicConv2d(384, 448, kernel_size=(3,1), stride=1, padding=(1,0))
+        self.block2_2 = BasicConv2d(448, 512, kernel_size=(1,3), stride=1, padding=(0,1))
+        self.block2_3a = BasicConv2d(512, 256, kernel_size=(1,3), stride=1, padding=(0,1))
+        self.block2_3b = BasicConv2d(512, 256, kernel_size=(3,1), stride=1, padding=(1,0))
         
-        self.branch3 = nn.Sequential(
+        self.block3 = nn.Sequential(
             nn.AvgPool2d(3, stride=1, padding=1, count_include_pad=False),
             BasicConv2d(1536, 256, kernel_size=1, stride=1)
         )
 
     def forward(self, x):
-        x0 = self.branch0(x)
+        x0 = self.block0(x)
         
-        x1_0 = self.branch1_0(x)
-        x1_1a = self.branch1_1a(x1_0)
-        x1_1b = self.branch1_1b(x1_0)
+        x1_0 = self.block1_0(x)
+        x1_1a = self.block1_1a(x1_0)
+        x1_1b = self.block1_1b(x1_0)
         x1 = torch.cat((x1_1a, x1_1b), 1)
 
-        x2_0 = self.branch2_0(x)
-        x2_1 = self.branch2_1(x2_0)
-        x2_2 = self.branch2_2(x2_1)
-        x2_3a = self.branch2_3a(x2_2)
-        x2_3b = self.branch2_3b(x2_2)
+        x2_0 = self.block2_0(x)
+        x2_1 = self.block2_1(x2_0)
+        x2_2 = self.block2_2(x2_1)
+        x2_3a = self.block2_3a(x2_2)
+        x2_3b = self.block2_3b(x2_2)
         x2 = torch.cat((x2_3a, x2_3b), 1)
 
-        x3 = self.branch3(x)
+        x3 = self.block3(x)
 
         out = torch.cat((x0, x1, x2, x3), 1)
         return out
@@ -259,8 +258,15 @@ class InceptionV4(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.classif(x) 
         return x
-    
+
+
 def inceptionv4(pretrained=True):
+    r"""InceptionV4 model architecture from the
+    `"Inception-v4, Inception-ResNet..." <https://arxiv.org/abs/1602.07261>`_ paper.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
     model = InceptionV4()
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['imagenet']))
