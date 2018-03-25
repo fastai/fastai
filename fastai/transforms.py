@@ -78,15 +78,16 @@ class TfmType(IntEnum):
     """ Type of transformation.
     Parameters
         IntEnum: predefined types of tansformations
-            NO: is the default, y does not get transformed when x is transformed.
-            PIXEL: when x and y are images and should be transformed in the same way.
+            NO:    the default, y does not get transformed when x is transformed.
+            PIXEL: x and y are images and should be transformed in the same way.
                    Example: image segmentation.
-            COORD: when y are coordinate or x in which case x and y have
-                   to be transformed accordingly.
+            COORD: y are coordinates (i.e bounding boxes)
+            CLASS: y are class labels (same behaviour as PIXEL, except no normalization)
     """
     NO = 1
     PIXEL = 2
     COORD = 3
+    CLASS = 4
 
 
 class Denormalize():
@@ -99,8 +100,7 @@ class Denormalize():
 
 
 class Normalize():
-    """ Normalizes an image.
-    """
+    """ Normalizes an image.  """
     def __init__(self, m, s, tfm_y=TfmType.NO):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
@@ -108,15 +108,18 @@ class Normalize():
 
     def __call__(self, x, y=None):
         x = (x-self.m)/self.s
-        if self.tfm_y==TfmType.PIXEL and y is not None:
-            y = (y-self.m)/self.s
+        if self.tfm_y==TfmType.PIXEL and y is not None: y = (y-self.m)/self.s
         return x,y
 
-def channel_dim(x, y):
-    x = np.rollaxis(x, 2)
-    if isinstance(y,np.ndarray) and (len(y.shape)==3):
-        y = np.rollaxis(y, 2)
-    return x,y
+class ChannelOrder():
+    def __init__(self, tfm_y=TfmType.NO): self.tfm_y=tfm_y
+
+    def __call__(self, x, y):
+        x = np.rollaxis(x, 2)
+        #if isinstance(y,np.ndarray) and (len(y.shape)==3):
+        if self.tfm_y==TfmType.PIXEL: y = np.rollaxis(y, 2)
+        elif self.tfm_y==TfmType.CLASS: y = y[...,0]
+        return x,y
 
 
 def to_bb(YY, y):
@@ -155,11 +158,6 @@ class Transform():
 
     All other transforms should subclass it. All subclasses should override
     do_transform.
-    We have 3 types of transforms:
-       TfmType.NO: the target y is not transformed
-       TfmType.PIXEL: assumes x and y are images of the same (cols, rows) and trasforms
-           them with the same paramters.
-       TfmType.COORD: assumes that y are some coordinates in the image x.
 
     Arguments
     ---------
@@ -174,7 +172,7 @@ class Transform():
     def __call__(self, x, y):
         self.set_state()
         x,y = ((self.transform(x),y) if self.tfm_y==TfmType.NO
-                else self.transform(x,y) if self.tfm_y==TfmType.PIXEL
+                else self.transform(x,y) if self.tfm_y in (TfmType.PIXEL, TfmType.CLASS)
                 else self.transform_coord(x,y))
         return x, y
 
@@ -431,7 +429,7 @@ class RandomLighting(Transform):
         c = -1/(c-1) if c<0 else c+1
         x = lighting(x, b, c)
         return x
-    
+
 class RandomRotateZoom(CoordTransform):
     def __init__(self, deg, zoom, stretch, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
@@ -449,7 +447,7 @@ class RandomRotateZoom(CoordTransform):
     def __call__(self, x, y):
         self.set_state()
         return self.store.trans(x, y)
-    
+
 class RandomZoom(CoordTransform):
     def __init__(self, zoom_max, zoom_min=0, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
@@ -474,11 +472,11 @@ class RandomStretch(CoordTransform):
         if self.store.stretch_dir==0: x = stretch_cv(x, self.store.stretch, 0)
         else:             x = stretch_cv(x, 0, self.store.stretch)
         return x
-    
+
 class PassThru(CoordTransform):
     def do_transform(self, x, is_y):
         return x
-    
+
 class RandomBlur(Transform):
     """
     Adds a gaussian blur to the image at chance.
@@ -526,8 +524,9 @@ class Transforms():
         if sz_y is None: sz_y = sz
         self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
         crop_tfm = crop_fn_lu[crop_type](sz, tfm_y, sz_y)
-        self.tfms = tfms + [crop_tfm, normalizer, channel_dim]
+        self.tfms = tfms + [crop_tfm, normalizer, ChannelOrder(tfm_y)]
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
+    def __repr__(self): return str(self.tfms)
 
 
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None,

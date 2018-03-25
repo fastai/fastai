@@ -79,6 +79,7 @@ class DataLoader(object):
                 yield get_tensor(batch, self.pin_memory)
         else:
             with ThreadPoolExecutor(max_workers=self.num_workers) as e:
+                e._work_queue = queue.Queue(self.num_workers*100)
                 for batch in e.map(self.get_batch, iter(self.batch_sampler)):
                     yield get_tensor(batch, self.pin_memory)
 
