@@ -5,25 +5,29 @@ from .learner import *
 
 
 class PassthruDataset(Dataset):
-    def __init__(self,*args):
+    def __init__(self,*args, is_reg=True):
         *xs,y=args
         self.xs,self.y = xs,y
+        self.is_reg = is_reg
 
     def __len__(self): return len(self.y)
     def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.y[idx]]
 
     @classmethod
-    def from_data_frame(self, df, cols_x, col_y):
+    def from_data_frame(self, df, cols_x, col_y, is_reg=True):
         cols = [df[o] for o in cols_x+[col_y]]
-        return self(*cols)
+        return self(*cols, is_reg=is_reg)
 
 
 class ColumnarDataset(Dataset):
-    def __init__(self, cats, conts, y):
+    def __init__(self, cats, conts, y, is_reg):
         n = len(cats[0]) if cats else len(conts[0])
         self.cats = np.stack(cats, 1).astype(np.int64) if cats else np.zeros((n,1))
         self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((n,1))
-        self.y = np.zeros((n,1)) if y is None else y[:,None]
+        self.y = np.zeros((n,1)) if y is None else y
+        if is_reg:
+            self.y =  self.y[:,None]
+        self.is_reg = is_reg
 
     def __len__(self): return len(self.y)
 
@@ -31,14 +35,14 @@ class ColumnarDataset(Dataset):
         return [self.cats[idx], self.conts[idx], self.y[idx]]
 
     @classmethod
-    def from_data_frames(cls, df_cat, df_cont, y=None):
+    def from_data_frames(cls, df_cat, df_cont, y=None, is_reg=True):
         cat_cols = [c.values for n,c in df_cat.items()]
         cont_cols = [c.values for n,c in df_cont.items()]
-        return cls(cat_cols, cont_cols, y)
+        return cls(cat_cols, cont_cols, y, is_reg)
 
     @classmethod
-    def from_data_frame(cls, df, cat_flds, y=None):
-        return cls.from_data_frames(df[cat_flds], df.drop(cat_flds, axis=1), y)
+    def from_data_frame(cls, df, cat_flds, y=None, is_reg=True):
+        return cls.from_data_frames(df[cat_flds], df.drop(cat_flds, axis=1), y, is_reg)
 
 
 class ColumnarModelData(ModelData):
@@ -48,26 +52,26 @@ class ColumnarModelData(ModelData):
             DataLoader(val_ds, bs*2, shuffle=False, num_workers=1), test_dl)
 
     @classmethod
-    def from_arrays(cls, path, val_idxs, xs, y, bs=64, test_xs=None, shuffle=True):
+    def from_arrays(cls, path, val_idxs, xs, y, is_reg=True, bs=64, test_xs=None, shuffle=True):
         ((val_xs, trn_xs), (val_y, trn_y)) = split_by_idx(val_idxs, xs, y)
-        test_ds = PassthruDataset(*(test_xs.T), [0] * len(test_xs)) if test_xs is not None else None
-        return cls(path, PassthruDataset(*(trn_xs.T), trn_y), PassthruDataset(*(val_xs.T), val_y),
+        test_ds = PassthruDataset(*(test_xs.T), [0] * len(test_xs), is_reg=is_reg) if test_xs is not None else None
+        return cls(path, PassthruDataset(*(trn_xs.T), trn_y, is_reg=is_reg), PassthruDataset(*(val_xs.T), val_y, is_reg=is_reg),
                    bs=bs, shuffle=shuffle, test_ds=test_ds)
 
     @classmethod
-    def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=None):
-        test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds) if test_df is not None else None
-        return cls(path, ColumnarDataset.from_data_frame(trn_df, cat_flds, trn_y),
-                    ColumnarDataset.from_data_frame(val_df, cat_flds, val_y), bs, test_ds=test_ds)
+    def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, test_df=None):
+        test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds, is_reg) if test_df is not None else None
+        return cls(path, ColumnarDataset.from_data_frame(trn_df, cat_flds, trn_y, is_reg),
+                    ColumnarDataset.from_data_frame(val_df, cat_flds, val_y, is_reg), bs, test_ds=test_ds)
 
     @classmethod
-    def from_data_frame(cls, path, val_idxs, df, y, cat_flds, bs, test_df=None):
+    def from_data_frame(cls, path, val_idxs, df, y, cat_flds, bs, is_reg=True, test_df=None):
         ((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, df, y)
-        return cls.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs, test_df=test_df)
+        return cls.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, test_df=test_df)
 
     def get_learner(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
                     y_range=None, use_bn=False, **kwargs):
-        model = MixedInputModel(emb_szs, n_cont, emb_drop, out_sz, szs, drops, y_range, use_bn)
+        model = MixedInputModel(emb_szs, n_cont, emb_drop, out_sz, szs, drops, y_range, use_bn, self.is_reg)
         return StructuredLearner(self, StructuredModel(to_gpu(model)), opt_fn=optim.Adam, **kwargs)
 
 
@@ -79,7 +83,7 @@ def emb_init(x):
 
 class MixedInputModel(nn.Module):
     def __init__(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
-                 y_range=None, use_bn=False):
+                 y_range=None, use_bn=False, is_reg=True):
         super().__init__()
         self.embs = nn.ModuleList([nn.Embedding(c, s) for c,s in emb_szs])
         for emb in self.embs: emb_init(emb)
@@ -99,6 +103,7 @@ class MixedInputModel(nn.Module):
         self.drops = nn.ModuleList([nn.Dropout(drop) for drop in drops])
         self.bn = nn.BatchNorm1d(n_cont)
         self.use_bn,self.y_range = use_bn,y_range
+        self.is_reg = is_reg
 
     def forward(self, x_cat, x_cont):
         if self.n_emb != 0:
@@ -113,7 +118,9 @@ class MixedInputModel(nn.Module):
             if self.use_bn: x = b(x)
             x = d(x)
         x = self.outp(x)
-        if self.y_range:
+        if not self.is_reg:
+            x = F.log_softmax(x)
+        elif self.y_range:
             x = F.sigmoid(x)
             x = x*(self.y_range[1] - self.y_range[0])
             x = x+self.y_range[0]
@@ -123,7 +130,8 @@ class MixedInputModel(nn.Module):
 class StructuredLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.mse_loss
+        self.crit = F.mse_loss if data.is_reg else F.nll_loss 
+            
 
 class StructuredModel(BasicModel):
     def get_layer_groups(self):
