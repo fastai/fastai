@@ -117,3 +117,15 @@ def load(fn): return pickle.load(open(fn,'rb'))
 def load2(fn): return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
 
 def load_array(fname): return bcolz.open(fname)[:]
+
+
+def chunk_iter(iterable, chunk_size):
+    while True:
+        chunk = []
+        try:
+            for _ in range(chunk_size): chunk.append(next(iterable))
+            yield chunk
+        except StopIteration:
+            if chunk: yield chunk
+            break
+
