@@ -114,10 +114,11 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         vals = validate(model_stepper, data.val_dl, metrics)
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
-        if (epoch + 1) - swa_start == 0 or (epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == epochs - 1:
-            fix_batchnorm(swa_model, data.trn_dl)
-            swa_vals = validate(swa_stepper, data.val_dl, metrics)
-            vals += swa_vals
+        if swa_model is not None:
+            if (epoch + 1) - swa_start == 0 or (epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == epochs - 1:
+                fix_batchnorm(swa_model, data.trn_dl)
+                swa_vals = validate(swa_stepper, data.val_dl, metrics)
+                vals += swa_vals
 
         if epoch == 0: print(layout.format(*names))
         print_stats(epoch, [debias_loss] + vals)
