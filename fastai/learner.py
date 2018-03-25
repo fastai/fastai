@@ -75,7 +75,7 @@ class Learner():
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
                 use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None,            
-                use_swa=False, swa_start=0, **kwargs):
+                use_swa=False, swa_start=0, swa_eval_freq=5, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -166,7 +166,8 @@ class Learner():
             
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip,
+            swa_model=self.swa_model, swa_start=swa_start, swa_eval_freq=swa_eval_freq, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 

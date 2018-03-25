@@ -2,6 +2,7 @@ from .imports import *
 from .torch_imports import *
 from .core import *
 from .layer_optimizer import *
+from .swa import *
 
 def cut_model(m, cut):
     return list(m.children())[:cut] if cut else [m]
@@ -61,7 +62,8 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, 
+        swa_model=None, swa_start=None, swa_eval_freq=None, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -72,13 +74,19 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
-    stepper = stepper(model, opt, crit, **kwargs)
+    model_stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
     batch_num,avg_loss=0,0.
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
+    if swa_model is not None:
+        swa_names = ['swa_loss'] + [f'swa_{f.__name__}' for f in metrics]
+        names += swa_names
+        # will use this to call evaluate later
+        swa_stepper = stepper(swa_model, None, crit, **kwargs)
+        
     layout = "{!s:10} " * len(names)
 
     num_batch = len(data.trn_dl)
@@ -87,13 +95,13 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         epochs = 1
 
     for epoch in tnrange(epochs, desc='Epoch'):
-        stepper.reset(True)
+        model_stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
         i = 0
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
-            loss = stepper.step(V(x),V(y), epoch)
+            loss = model_stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
@@ -103,11 +111,16 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             if i>num_batch: break
             i += 1
 
-        vals = validate(stepper, data.val_dl, metrics)
-        if epoch == 0: print(layout.format(*names))
-        print_stats(epoch, [debias_loss] + vals)
+        vals = validate(model_stepper, data.val_dl, metrics)
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
+        if (epoch + 1) - swa_start == 0 or (epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == epochs - 1:
+            fix_batchnorm(swa_model, data.trn_dl)
+            swa_vals = validate(swa_stepper, data.val_dl, metrics)
+            vals += swa_vals
+
+        if epoch == 0: print(layout.format(*names))
+        print_stats(epoch, [debias_loss] + vals)
         if stop: break
 
     for cb in callbacks: cb.on_train_end()
