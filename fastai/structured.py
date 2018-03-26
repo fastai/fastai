@@ -1,10 +1,32 @@
 from .imports import *
 
 from sklearn_pandas import DataFrameMapper
-from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
+from sklearn.preprocessing import LabelEncoder, Imputer
 from pandas.api.types import is_string_dtype, is_numeric_dtype
 from sklearn.ensemble import forest
 from sklearn.tree import export_graphviz
+from sklearn.base import TransformerMixin, BaseEstimator
+
+class StandardScalerFAI(TransformerMixin, BaseEstimator):
+    def __init__(self, copy=True, with_mean=True, with_std=True):
+        self.with_mean = with_mean
+        self.with_std = with_std
+        self.copy = copy
+    
+    def fit(self, X, y=None):
+        # fits without nas via pandas library
+        if type(X) == np.ndarray:
+            X = pd.Series(X.reshape(-1))
+        self.mean_ = [X.dropna().mean()]
+        self.var_ = [X.dropna().var()]
+        return self
+
+    def transform(self, X):
+        mean = self.mean_
+        std_dev = np.sqrt(self.var_)
+        if std_dev == 0:
+            return X
+        return (X-mean)/std_dev
 
 
 def set_plot_sizes(sml, med, big):
@@ -316,12 +338,11 @@ def numericalize(df, col, name, max_n_cat):
     if not is_numeric_dtype(col) and ( max_n_cat is None or col.nunique()>max_n_cat):
         df[name] = col.cat.codes+1
 
-def scale_vars(df, mapper):
+def fit_scalers(df, mapper):
     warnings.filterwarnings('ignore', category=sklearn.exceptions.DataConversionWarning)
     if mapper is None:
-        map_f = [([n],StandardScaler()) for n in df.columns if is_numeric_dtype(df[n])]
+        map_f = [([n],StandardScalerFAI()) for n in df.columns if is_numeric_dtype(df[n])]
         mapper = DataFrameMapper(map_f).fit(df)
-    df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
 def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
@@ -425,12 +446,14 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
         y = df[y_fld].values
         skip_flds += [y_fld]
     df.drop(skip_flds, axis=1, inplace=True)
-
+    # fit the scalers before fixing nas
+    if do_scale: mapper = fit_scalers(df, mapper)    
     if na_dict is None: na_dict = {}
     for n,c in df.items(): na_dict = fix_missing(df, c, n, na_dict)
-    if do_scale: mapper = scale_vars(df, mapper)
-    for n,c in df.items(): numericalize(df, c, n, max_n_cat)
-    res = [pd.get_dummies(df, dummy_na=True), y, na_dict]
+    # transform with mapper after fixing nas
+    df[mapper.transformed_names_] = mapper.transform(df)
+    df = pd.get_dummies(df, dummy_na=True)
+    res = [pd.get_dummies(df, dummy_na=True).astype(float), y, na_dict]
     if do_scale: res = res + [mapper]
     return res
 
