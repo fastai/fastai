@@ -4,7 +4,7 @@ import os
 
 
 class HTML:
-    def __init__(self, web_dir, title, reflesh=0):
+    def __init__(self, web_dir, title, refresh=0):
         self.title = title
         self.web_dir = web_dir
         self.img_dir = os.path.join(self.web_dir, 'images')
@@ -15,9 +15,9 @@ class HTML:
         # print(self.img_dir)
 
         self.doc = dominate.document(title=title)
-        if reflesh > 0:
+        if refresh > 0:
             with self.doc.head:
-                meta(http_equiv="reflesh", content=str(reflesh))
+                meta(http_equiv="refresh", content=str(refresh))
 
     def get_image_dir(self):
         return self.img_dir
