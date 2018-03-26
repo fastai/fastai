@@ -1,6 +1,7 @@
 from .imports import *
 from .layer_optimizer import *
 from enum import IntEnum
+import pdb
 
 def scale_min(im, targ, interpolation=cv2.INTER_AREA):
     """ Scales the image so that the smallest axis is of size targ.
@@ -181,6 +182,9 @@ class Transform():
     def transform_coord(self, x, y): return self.transform(x),y
 
     def transform(self, x, y=None):
+        """
+        factoring the provision that x and Y might be transformed differently. 
+        """
         x = self.do_transform(x,False)
         return (x, self.do_transform(y,True)) if y is not None else x
 
@@ -507,7 +511,6 @@ def compose(im, y, fns):
     """ apply a collection of transformation functions fns to images
     """
     for fn in fns:
-        #pdb.set_trace()
         im, y =fn(im, y)
     return im if y is None else (im, y)
 
@@ -527,7 +530,8 @@ class Transforms():
         self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
         crop_tfm = crop_fn_lu[crop_type](sz, tfm_y, sz_y)
         self.tfms = tfms + [crop_tfm, normalizer, channel_dim]
-    def __call__(self, im, y=None): return compose(im, y, self.tfms)
+    def __call__(self, im, y=None):
+        return compose(im, y, self.tfms)
 
 
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None,

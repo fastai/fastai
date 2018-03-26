@@ -8,9 +8,15 @@ conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTe
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
 
 def A(*a):
+    """
+    convert iterable object into numpy array
+    """
     return np.array(a[0]) if len(a)==1 else [np.array(o) for o in a]
 
 def T(a):
+    """Convert numpy array into a pytorch tensor. 
+    if Cuda is available and USE_GPU=ture, store resulting tensor in GPU.
+    """
     if torch.is_tensor(a): res = a
     else:
         a = np.array(np.ascontiguousarray(a))
@@ -22,6 +28,13 @@ def T(a):
     return to_gpu(res, async=True)
 
 def create_variable(x, volatile, requires_grad=False):
+    """
+    Wrapper function for creating pytorch tensors
+    Arguments: 
+        x: numpy array or tensor to be converted
+        volatile: True if x does not require gradients
+        requires_grad: fine grain exclusion of x from gradient computation
+    """
     if not isinstance(x, Variable):
         x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
     return x
@@ -79,7 +92,10 @@ def SGD_Momentum(momentum):
 
 def one_hot(a,c): return np.eye(c)[a]
 
-def partition(a, sz): return [a[i:i+sz] for i in range(0, len(a), sz)]
+def partition(a, sz): 
+    """splits iterables a in equal parts of size sz
+    """
+    return [a[i:i+sz] for i in range(0, len(a), sz)]
 
 def partition_by_cores(a):
     return partition(a, len(a)//num_cpus() + 1)
@@ -112,8 +128,20 @@ class SimpleNet(nn.Module):
         return F.log_softmax(l_x, dim=-1)
 
 
-def save(fn, a): pickle.dump(a, open(fn,'wb'))
-def load(fn): return pickle.load(open(fn,'rb'))
-def load2(fn): return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
+def save(fn, a): 
+    """
+    Utility function that savess model, function, etc as pickle
+    """    
+    pickle.dump(a, open(fn,'wb'))
+def load(fn): 
+    """
+    Utility function that loads model, function, etc as pickle
+    """
+    return pickle.load(open(fn,'rb'))
+def load2(fn):
+    """
+    Utility funciton allowing model piclking across Python2 and Python3
+    """
+    return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
 
 def load_array(fname): return bcolz.open(fname)[:]
