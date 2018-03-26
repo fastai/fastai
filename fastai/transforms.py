@@ -341,33 +341,6 @@ class RandomScale(CoordTransform):
         else   : return scale_min(x, self.store.new_sz,   cv2.INTER_AREA   )
 
 
-def random_px_rect(y, x):
-    """ Returns a 2D image of the size x with random points in a square box.
-
-    Arguments:
-        y (array): Contains the coordinates of the bounding box corners
-            y = [upper_row, left_col, lower_row, right_col]
-        x (array): image
-
-    Returns:
-        Y (array): A 2D array of size (x.shape[0], x.shape[1]) with pixes
-            on corners of the bounding box and random points in the boundary of the box.
-    """
-    rows0 = np.array([y[0], y[0], y[2], y[2]])
-    cols0 = np.array([y[1], y[3], y[1], y[3]])
-    n = [np.random.randint(10, 20) for i in range(4)]
-    rand_rows = np.hstack([np.random.uniform(y[0], y[2], size=n[i]) for i in range(2)])
-    fixed_cols = np.hstack([ y[j] * np.ones(n[i]) for i, j in zip(range(0,2), [1,3])])
-    rand_cols = np.hstack([np.random.uniform(y[1], y[3], size=n[i]) for i in range(2,4)])
-    fixed_rows = np.hstack([y[j] * np.ones(n[i]) for i, j in zip(range(2,4),[0,2])])
-    rows = np.hstack([rows0, rand_rows, fixed_rows]).astype(int)
-    cols = np.hstack([cols0, fixed_cols, rand_cols]).astype(int)
-    r,c,*_ = x.shape
-    Y = np.zeros((r, c))
-    Y[rows, cols] = 1
-    return Y
-
-
 class RandomRotate(CoordTransform):
     """ Rotates images and (optionally) target y.
 
@@ -394,7 +367,7 @@ class RandomRotate(CoordTransform):
 
 
 class RandomDihedral(CoordTransform):
-    """ 
+    """
     Rotates images by random multiples of 90 degrees and/or reflection.
     Please reference D8(dihedral group of order eight), the group of all symmetries of the square.
     """
@@ -470,7 +443,7 @@ class RandomStretch(CoordTransform):
 
     def do_transform(self, x, is_y):
         if self.store.stretch_dir==0: x = stretch_cv(x, self.store.stretch, 0)
-        else:             x = stretch_cv(x, 0, self.store.stretch)
+        else:                         x = stretch_cv(x, 0, self.store.stretch)
         return x
 
 class PassThru(CoordTransform):
@@ -576,7 +549,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     #if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
     return Transforms(sz, scale + tfms, normalizer, denorm, crop_type, tfm_y=tfm_y, sz_y=sz_y)
 
-def noop(x): 
+def noop(x):
     """dummy function for do-nothing. 
     equivalent to: lambda x: x"""
     return x
