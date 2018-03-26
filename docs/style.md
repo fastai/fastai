@@ -144,3 +144,12 @@ import PIL, os, numpy as np, math, collections, threading
 - We haven't figured out something we're happy with here yet. We're working on it...
 - My ideal would be to have a decorator with a single line of documentation that links to a more detailed markdown doc.
 
+## FAQ
+
+<dl>
+  <dt>Why not use PEP 8?</dt><dd>I don't think it's ideal for the style of programming that we use, or for math-heavy code. If you've never used anything except PEP 8, here's a chance to experiment and learn something new!</dd>
+  <dt>My editor is complaining about PEP 8 violations in fastai; what should I do?</dt><dd>Pretty much all editors have the ability to disable linting for a project; figure out how to do that in your editor.</dd>
+  <dt>Are you worried that using a different style guide might put off new contributors?</dt><dd>Not really. We're really not that fussy about style, so we won't be rejecting PRs that aren't formatted according to this document. And whilst there are people around who are so closed-minded that they can't handle new things, they're certainly not the kind of people we want to be working with!</dd>
+  <dt></dt><dd></dd>
+</dl>
+
