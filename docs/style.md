@@ -18,7 +18,7 @@ My personal approach to coding style is informed heavily by [Iverson's](https://
 One key idea in the paper is that "*brevity facilitates reasoning*", which has been incorporated into various guidelines such as "[shorten lines of communication](http://archive.vector.org.uk/art10009750)". This is sometimes incorrectly assumed to just mean 'terseness', but it is a much deeper idea, as described in [this Hacker News thread](https://news.ycombinator.com/item?id=13595729). I can't hope to summarize this thinking here, but I can point out a couple of key benefits:
 
 - It supports [expository programming](http://vector.org.uk/art10000980), particularly when combined with the use of Jupyter Notebook or a similar tool designed for experimentation
-- The most productive programmers I'm aware of in the world, such as the extraordinary [Arthur Whitney](https://en.wikipedia.org/wiki/Arthur_Whitney_(computer_scientist) often use this coding style (which may or may not be a coincidence!)
+- The most productive programmers I'm aware of in the world, such as the extraordinary [Arthur Whitney](https://en.wikipedia.org/wiki/Arthur_Whitney_\(computer_scientist\)) often use this coding style (which may or may not be a coincidence!)
 
 ## Style guide
 
