@@ -167,7 +167,8 @@ class Learner():
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip,
-            swa_model=self.swa_model, swa_start=swa_start, swa_eval_freq=swa_eval_freq, **kwargs)
+            swa_model=self.swa_model if use_swa else None, swa_start=swa_start, 
+            swa_eval_freq=swa_eval_freq, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 
