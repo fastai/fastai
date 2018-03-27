@@ -269,7 +269,7 @@ class Learner():
 
     def predict_array(self, arr):
         self.model.eval()
-        return to_np(self.model(V(T(arr).cuda())))
+        return to_np(self.model(to_gpu(V(T(arr)))))
 
     def TTA(self, n_aug=4, is_test=False):
         """ Predict with Test Time Augmentation (TTA)
