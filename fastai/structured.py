@@ -324,6 +324,8 @@ def scale_vars(df, mapper):
     df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
+# def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
+            # preproc_fn=None, max_n_cat=None, subset=None, mapper=None, ignore_flds=None):
 def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None, ignore_flds=None):
 
@@ -415,11 +417,10 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     1.0  0.0  0.0   1.04
     0.0  0.0  1.0   0.21
     """
-    if ignore_flds:
-        ignored_flds =  df.loc[:, ignore_flds]
-    else:
-        ignored_flds = df.loc[:, []]
+    if not ignore_flds: ignore_flds=[]
     if not skip_flds: skip_flds=[]
+    ignored_flds = df.loc[:, ignore_flds]
+    df.drop(ignore_flds, axis=1, inplace=True)
     if subset: df = get_sample(df,subset)
     df = df.copy()
     if preproc_fn: preproc_fn(df)
