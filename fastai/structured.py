@@ -338,7 +338,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
 
     skip_flds: A list of fields that dropped from df.
 
-    do_scale: Standardizes each column in df,Takes Boolean Values(True,False)
+    do_scale: Standardizes each column in df. Takes Boolean Values(True,False)
 
     na_dict: a dictionary of na columns to add. Na columns are also added if there
         are any missing values.
@@ -351,7 +351,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     subset: Takes a random subset of size subset from df.
 
     mapper: If do_scale is set as True, the mapper variable
-        calculates the values used for scaling of variables during training time(mean and standard deviation).
+        calculates the values used for scaling of variables during training time (mean and standard deviation).
 
     Returns:
     --------
@@ -364,7 +364,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
 
         nas: returns a dictionary of which nas it created, and the associated median.
 
-        mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continous
+        mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continuous
         variables which is then used for scaling of during test-time.
 
     Examples:
@@ -421,7 +421,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     if preproc_fn: preproc_fn(df)
     if y_fld is None: y = None
     else:
-        numericalize(df, df[y_fld], y_fld, None)
+        if not is_numeric_dtype(df[y_fld]): df[y_fld] = df[y_fld].cat.codes
         y = df[y_fld].values
         skip_flds += [y_fld]
     df.drop(skip_flds, axis=1, inplace=True)

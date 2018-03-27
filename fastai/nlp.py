@@ -240,7 +240,7 @@ class LanguageModelData():
                 test_ds (Dataset): testing dataset
                 bs (int): batch size
                 bptt (int): back propagation through time
-                kwargs: other argumetns
+                kwargs: other arguments
         """
         self.bs = bs
         self.path = path
