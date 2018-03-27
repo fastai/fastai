@@ -26,10 +26,11 @@ def create_variable(x, volatile, requires_grad=False):
         x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
     return x
 
-def V_(x, requires_grad=False):
-    return create_variable(x, False, requires_grad=requires_grad)
-def V(x, requires_grad=False):
-    return [V_(o, requires_grad) for o in x] if isinstance(x,list) else V_(x, requires_grad)
+def V_(x, requires_grad=False, volatile=False):
+    return create_variable(x, volatile=volatile, requires_grad=requires_grad)
+def V(x, requires_grad=False, volatile=False):
+    return [V_(o, requires_grad=requires_grad, volatile=volatile)
+            for o in x] if isinstance(x,list) else V_(x, requires_grad=requires_grad, volatile=volatile)
 
 def VV_(x): return create_variable(x, True)
 def VV(x):  return [VV_(o) for o in x] if isinstance(x,list) else VV_(x)
