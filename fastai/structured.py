@@ -324,8 +324,8 @@ def scale_vars(df, mapper):
     df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
-def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
-            preproc_fn=None, max_n_cat=None, subset=None, mapper=None, ignore_flds=None):
+def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na_dict=None,
+            preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
 
     """ proc_df takes a data frame df and splits off the response variable, and
     changes the df into an entirely numeric dataframe.
@@ -337,6 +337,8 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     y_fld: The name of the response variable
 
     skip_flds: A list of fields that dropped from df.
+
+    ignore_flds: A list of fields that are ignored during processing.
 
     do_scale: Standardizes each column in df. Takes Boolean Values(True,False)
 
