@@ -326,7 +326,6 @@ def scale_vars(df, mapper):
 
 def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
-
     """ proc_df takes a data frame df and splits off the response variable, and
     changes the df into an entirely numeric dataframe.
 
@@ -417,12 +416,11 @@ def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na
     1.0  0.0  0.0   1.04
     0.0  0.0  1.0   0.21
     """
-    if ignore_flds:
-        ignored_flds =  df.loc[:, ignore_flds]
-    else:
-        ignored_flds = df.loc[:, []]
+    if not ignore_flds: ignore_flds=[]
     if not skip_flds: skip_flds=[]
     if subset: df = get_sample(df,subset)
+    ignored_flds = df.loc[:, ignore_flds]
+    df.drop(ignore_flds, axis=1, inplace=True)
     df = df.copy()
     if preproc_fn: preproc_fn(df)
     if y_fld is None: y = None
@@ -437,7 +435,7 @@ def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na
     if do_scale: mapper = scale_vars(df, mapper)
     for n,c in df.items(): numericalize(df, c, n, max_n_cat)
     df = pd.get_dummies(df, dummy_na=True)
-    df = pd.concat([df, ignored_flds], axis=1)
+    df = pd.concat([ignored_flds, df], axis=1)
     res = [df, y, na_dict]
     if do_scale: res = res + [mapper]
     return res
