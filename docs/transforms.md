@@ -1,11 +1,9 @@
-## [\[source\]](../fastai/transforms.js)
-
 ## Classes
 
-* <a href="normalize">Normalize</a>
-* <a href="normalize">Denormalize</a>
+* [Normalize](#normalize)
+* [Denormalize](#denormalize)
 
-#### <a href="#normalize">class Normalize</a>
+#### <a name="normalize">class Normalize</a>
 Normalizes an image
   * code
     ```python
@@ -24,7 +22,7 @@ Normalizes an image
     ```
   * arguments
   
-#### <a href="#denormalize">class Denormalize</a>
+#### <a name="denormalize">class Denormalize</a>
 
 Denormalizes an image
   * code
@@ -39,10 +37,10 @@ Denormalizes an image
 
 ## Functions
 
-* <a href="image_gen">image_gen</a>
-* <a href="Transforms">Transforms</a>
+* image_gen
+* Transforms
 
-#### <a href="#image_gen">def image_gen</a>
+#### <a name="#image_gen">def image_gen</a>
 
 Generate a standard set of transformations
 
