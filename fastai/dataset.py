@@ -138,7 +138,7 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
 
 def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
     all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
-    full_names = [os.path.join(folder,fn+suffix) for fn in fnames]
+    full_names = [os.path.join(folder,str(fn)+suffix) for fn in fnames]
     if continuous:
         label_arr = np.array([np.array(csv_labels[i]).astype(np.float32)
                 for i in fnames])

@@ -6,7 +6,7 @@ This is a brief discussion of fastai's coding style, which is loosely informed b
 
 Everyone has strong opinions about coding style, except perhaps some very experienced coders, who have used many languages, who realize there's lots of different perfectly acceptable approaches. The python community has particularly strongly held views, on the whole. I suspect this is related to Python being a language targeted at beginners, and therefore there are a lot of users with limited experience in other languages; however this is just a guess. Anyway, I don't much mind what coding style you use when contributing to fastai, as long as:
 
-- You don't change existing code to reduce its compliance with this style guide (especially: don't use an automatic linter!)
+- You don't change existing code to reduce its compliance with this style guide (especially: don't use an automatic linter / formatter!)
 - You make some basic attempt to make your code not wildly different from the code that surrounds it.
 
 Having said that, I do hope that you find the ideas in this style guide at least a little thought provoking, and that you consider adopting them to some extent when contributing to this library.
@@ -131,8 +131,7 @@ import PIL, os, numpy as np, math, collections, threading
   classes, they can use code folding - they don't need to rely on having two lines between classes. If they want to see
   the definition of a symbol they can jump to the reference/tag, then don't need a list of imports at the top of the
   file. And so forth...
-- Don't use an automatic linter. No automatic tool can lay out your code with the care and domain understanding that
-  your can. And it'll break all the care and domain understanding that previous contributors have used in that file!
+- Don't use an automatic linter like autopep8 or formatter like yapf. No automatic tool can lay out your code with the care and domain understanding that you can. And it'll break all the care and domain understanding that previous contributors have used in that file!
 - Keep your PRs small, and for anything controversial or tricky discuss it on [the forums](http://forums.fast.ai)
   first.
 - When submitting a PR on a notebook, don't re-run the whole thing such that the diff ends up with changes for every
