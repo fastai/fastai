@@ -4,10 +4,10 @@ from .core import *
 from .layer_optimizer import *
 
 def cut_model(m, cut):
-    c = list(m.children())
-    return c[:cut] if cut else c
+    return list(m.children())[:cut] if cut else [m]
 
 def predict_to_bcolz(m, gen, arr, workers=4):
+    arr.trim(len(arr))
     lock=threading.Lock()
     m.eval()
     for x,*_ in tqdm(gen):
@@ -35,10 +35,10 @@ class Stepper():
         else: self.m.eval()
         if hasattr(self.m, 'reset'): self.m.reset()
 
-    def step(self, xs, y):
+    def step(self, xs, y, epoch):
         xtra = []
         output = self.m(*xs)
-        if isinstance(output,(tuple,list)): output,*xtra = output
+        if isinstance(output,tuple): output,*xtra = output
         self.opt.zero_grad()
         loss = raw_loss = self.crit(output, y)
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
@@ -50,16 +50,18 @@ class Stepper():
 
     def evaluate(self, xs, y):
         preds = self.m(*xs)
-        if isinstance(preds,(tuple,list)): preds=preds[0]
-        return preds, self.crit(preds,y)
+        if isinstance(preds,tuple): preds=preds[0]
+        return preds, self.crit(preds, y)
 
 def set_train_mode(m):
-    if (hasattr(m, 'running_mean') and
-        (getattr(m,'bn_freeze',False) or not getattr(m,'trainable',False))): m.eval()
+    if (hasattr(m, 'running_mean') and (getattr(m,'bn_freeze',False)
+              or not getattr(m,'trainable',False))): m.eval()
+    elif (getattr(m,'drop_freeze',False) and hasattr(m, 'p')
+          and ('drop' in type(m).__name__.lower())): m.eval()
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -70,30 +72,52 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
-    stepper = Stepper(model, opt, crit, **kwargs)
+    stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
     batch_num,avg_loss=0,0.
+    for cb in callbacks: cb.on_train_begin()
+    names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
+    layout = "{!s:10} " * len(names)
+
+    num_batch = len(data.trn_dl)
+    if epochs<1:
+        num_batch = int(num_batch*epochs)
+        epochs = 1
 
     for epoch in tnrange(epochs, desc='Epoch'):
         stepper.reset(True)
-        t = tqdm(iter(data.trn_dl), leave=False)
+        t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
+        i = 0
         for (*x,y) in t:
             batch_num += 1
-            loss = stepper.step(V(x),V(y))
+            for cb in callbacks: cb.on_batch_begin()
+            loss = stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
             stop=False
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
             if stop: return
+            if i>num_batch: break
+            i += 1
 
         vals = validate(stepper, data.val_dl, metrics)
-        print(np.round([epoch, avg_loss] + vals, 6))
+        if epoch == 0: print(layout.format(*names))
+        print_stats(epoch, [debias_loss] + vals)
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
+
+    for cb in callbacks: cb.on_train_end()
+    return vals
+
+
+def print_stats(epoch, values, decimals=6):
+    layout = "{!s:^10}" + " {!s:10}" * len(values)
+    values = [epoch] + list(np.round(values, decimals))
+    print(layout.format(*values))
 
 def validate(stepper, dl, metrics):
     loss,res = [],[]
@@ -101,20 +125,31 @@ def validate(stepper, dl, metrics):
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
         loss.append(to_np(l))
-        res.append([f(to_np(preds),to_np(y)) for f in metrics])
+        res.append([f(preds.data,y) for f in metrics])
     return [np.mean(loss)] + list(np.mean(np.stack(res),0))
 
 def get_prediction(x):
     if isinstance(x,(tuple,list)): x=x[0]
     return x.data
 
-def predict(m, dl): return predict_with_targs(m, dl)[0]
+def predict(m, dl):
+    preda,_ = predict_with_targs_(m, dl)
+    return to_np(torch.cat(preda))
 
-def predict_with_targs(m, dl):
+def predict_batch(m, x):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
-    preda,targa = zip(*[(get_prediction(m(*VV(x))),y)
-                        for *x,y in iter(dl)])
+    return m(VV(x))
+
+def predict_with_targs_(m, dl):
+    m.eval()
+    if hasattr(m, 'reset'): m.reset()
+    res = []
+    for *x,y in iter(dl): res.append([get_prediction(m(*VV(x))),y])
+    return zip(*res)
+
+def predict_with_targs(m, dl):
+    preda,targa = predict_with_targs_(m, dl)
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
 # From https://github.com/ncullen93/torchsample

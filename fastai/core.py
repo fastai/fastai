@@ -1,40 +1,53 @@
 from .imports import *
 from .torch_imports import *
 
-def sum_geom(a,r,n):
-    return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
+def sum_geom(a,r,n): return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
 
 conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
 
-def T(a):
-    a = np.array(a)
-    if a.dtype in (np.int8, np.int16, np.int32, np.int64):
-        return torch.LongTensor(a.astype(np.int64))
-    if a.dtype in (np.float32, np.float64):
-        return torch.FloatTensor(a.astype(np.float32))
-    raise NotImplementedError
+def A(*a):
+    return np.array(a[0]) if len(a)==1 else [np.array(o) for o in a]
 
-def V_(x):  return to_gpu(x, async=True) if isinstance(x, Variable) else Variable(to_gpu(x, async=True))
-def V(x):   return [V_(o) for o in x] if isinstance(x,list) else V_(x)
-def VV_(x): return to_gpu(x, async=True) if isinstance(x, Variable) else Variable(to_gpu(x, async=True), volatile=True)
+def T(a):
+    if torch.is_tensor(a): res = a
+    else:
+        a = np.array(np.ascontiguousarray(a))
+        if a.dtype in (np.int8, np.int16, np.int32, np.int64):
+            res = torch.LongTensor(a.astype(np.int64))
+        elif a.dtype in (np.float32, np.float64):
+            res = torch.FloatTensor(a.astype(np.float32))
+        else: raise NotImplementedError(a.dtype)
+    return to_gpu(res, async=True)
+
+def create_variable(x, volatile, requires_grad=False):
+    if not isinstance(x, Variable):
+        x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
+    return x
+
+def V_(x, requires_grad=False, volatile=False):
+    return create_variable(x, volatile=volatile, requires_grad=requires_grad)
+def V(x, requires_grad=False, volatile=False):
+    return [V_(o, requires_grad=requires_grad, volatile=volatile)
+            for o in x] if isinstance(x,(list,tuple)) else V_(x, requires_grad=requires_grad, volatile=volatile)
+
+def VV_(x): return create_variable(x, True)
 def VV(x):  return [VV_(o) for o in x] if isinstance(x,list) else VV_(x)
 
 def to_np(v):
+    if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data
     return v.cpu().numpy()
 
+USE_GPU=True
 def to_gpu(x, *args, **kwargs):
-    if torch.cuda.is_available():
-        return x.cuda(*args, **kwargs)
-    else:
-        return x
+    return x.cuda(*args, **kwargs) if torch.cuda.is_available() and USE_GPU else x
 
 def noop(*args, **kwargs): return
 
 def split_by_idxs(seq, idxs):
-    last, sl = 0, len(seq)
+    last = 0
     for idx in idxs:
         yield seq[last:idx]
         last = idx
@@ -65,3 +78,54 @@ def SGD_Momentum(momentum):
     return lambda *args, **kwargs: optim.SGD(*args, momentum=momentum, **kwargs)
 
 def one_hot(a,c): return np.eye(c)[a]
+
+def partition(a, sz): return [a[i:i+sz] for i in range(0, len(a), sz)]
+
+def partition_by_cores(a):
+    return partition(a, len(a)//num_cpus() + 1)
+
+def num_cpus():
+    try:
+        return len(os.sched_getaffinity(0))
+    except AttributeError:
+        return os.cpu_count()
+
+
+class BasicModel():
+    def __init__(self,model,name='unnamed'): self.model,self.name = model,name
+    def get_layer_groups(self, do_fc=False): return children(self.model)
+
+class SingleModel(BasicModel):
+    def get_layer_groups(self): return [self.model]
+
+class SimpleNet(nn.Module):
+    def __init__(self, layers):
+        super().__init__()
+        self.layers = nn.ModuleList([
+            nn.Linear(layers[i], layers[i + 1]) for i in range(len(layers) - 1)])
+
+    def forward(self, x):
+        x = x.view(x.size(0), -1)
+        for l in self.layers:
+            l_x = l(x)
+            x = F.relu(l_x)
+        return F.log_softmax(l_x, dim=-1)
+
+
+def save(fn, a): pickle.dump(a, open(fn,'wb'))
+def load(fn): return pickle.load(open(fn,'rb'))
+def load2(fn): return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
+
+def load_array(fname): return bcolz.open(fname)[:]
+
+
+def chunk_iter(iterable, chunk_size):
+    while True:
+        chunk = []
+        try:
+            for _ in range(chunk_size): chunk.append(next(iterable))
+            yield chunk
+        except StopIteration:
+            if chunk: yield chunk
+            break
+

@@ -1,10 +1,20 @@
 name: fastai
 channels:
 - fastai
-- soumith
+- pytorch
 - defaults
+- peterjc123
 dependencies:
+- scipy
+- cuda90
+- cudnn
+- numpy
 - pillow
+- jpeg
+- spacy
+- zlib
+- freetype
+- libtiff
 - bleach
 - certifi
 - cffi
@@ -12,31 +22,28 @@ dependencies:
 - decorator
 - entrypoints
 - expat
-- fontconfig
-- freetype
-- glib
+  #- fontconfig
+  #- glib
 - html5lib
 - icu
 - ipykernel
 - ipython
 - ipython_genutils
 - ipywidgets
-- jbig
+  #- jbig
 - jedi
 - jinja2
-- jpeg
 - jsonschema
 - jupyter
 - jupyter_client
 - jupyter_console
 - jupyter_core
-- libffi
-- libgcc
-- libgfortran
+  #- libffi
+  #- libgcc
+  #- libgfortran
 - libiconv
 - libpng
 - libsodium
-- libtiff
 - libxml2
 - markupsafe
 - matplotlib
@@ -58,7 +65,7 @@ dependencies:
 - pillow
 - pip
 - prompt_toolkit
-- ptyprocess
+  #- ptyprocess
 - pycparser
 - pygments
 - pyparsing
@@ -69,7 +76,7 @@ dependencies:
 - pyzmq
 - qt
 - qtconsole
-- readline
+  #- readline
 - scipy
 - seaborn
 - setuptools
@@ -78,10 +85,10 @@ dependencies:
 - six
 - sqlite
 - statsmodels
-- terminado
+  #- terminado
 - testpath
 - tk
-- tornado
+- tornado<5
 - tqdm
 - traitlets
 - wcwidth
@@ -89,12 +96,11 @@ dependencies:
 - widgetsnbextension
 - xz
 - zeromq
-- zlib
 - pytorch>=0.2.0
-- torchvision>=0.1.9
 - bcolz
 - prompt_toolkit
 - pip:
+  - torchvision>=0.1.9
   - opencv-python
   - isoweek
   - pandas_summary
@@ -104,8 +110,9 @@ dependencies:
   - feather-format
   - jupyter_contrib_nbextensions
   - plotnine
-  - docrepr
   - awscli
   - kaggle-cli
-  - git+https://github.com/SauceCat/PDPbox.git
+  - ipywidgets
+  - jupyter_contrib_nbextensions
+    #- git+https://github.com/SauceCat/PDPbox.git
 

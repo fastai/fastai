@@ -17,6 +17,8 @@ class LayerOptimizer():
         self.opt = opt_fn(self.opt_params())
 
     def opt_params(self):
+        assert(len(self.layer_groups) == len(self.lrs))
+        assert(len(self.layer_groups) == len(self.wds))
         params = list(zip(self.layer_groups,self.lrs,self.wds))
         return [opt_params(*p) for p in params]
 
@@ -27,7 +29,16 @@ class LayerOptimizer():
         self.lrs=lrs
         set_lrs(self.opt, lrs)
 
+    def set_wds(self, wds):
+        self.wds=wds
+        set_wds(self.opt, wds)
+
 def set_lrs(opt, lrs):
     if not isinstance(lrs, Iterable): lrs=[lrs]
     if len(lrs)==1: lrs=lrs*len(opt.param_groups)
     for pg,lr in zip(opt.param_groups,lrs): pg['lr'] = lr
+
+def set_wds(opt, wds):
+    if not isinstance(wds, Iterable): wds=[wds]
+    if len(wds)==1: wds=wds*len(opt.param_groups)
+    for pg,wd in zip(opt.param_groups,wds): pg['weight_decay'] = wd
