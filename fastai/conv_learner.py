@@ -82,6 +82,14 @@ class ConvnetBuilder():
 
 
 class ConvLearner(Learner):
+    """
+    Class used to train a chosen supported covnet model. Eg. ResNet-34, etc.
+    Arguments:
+        data: training data for model
+        models: model architectures to base learner
+        precompute: bool to reuse precomputed activations
+        **kwargs: parameters from Learner() class
+    """
     def __init__(self, data, models, precompute=False, **kwargs):
         self.precompute = False
         super().__init__(data, models, **kwargs)
