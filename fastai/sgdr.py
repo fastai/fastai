@@ -170,7 +170,7 @@ class CircularLR(LR_Updater):
 
 class SaveBestModel(LossRecorder):
     
-    """ Save weigths of the best model based during training.
+    """ Save weights of the best model based during training.
         If metrics are provided, the first metric in the list is used to
         find the best model. 
         If no metrics are provided, the loss is used.
