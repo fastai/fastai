@@ -37,10 +37,9 @@ Denormalizes an image
 
 ## Functions
 
-* image_gen
-* Transforms
+* [image_gen](#image_gen)
 
-#### <a name="#image_gen">def image_gen</a>
+#### <a name="image_gen">def image_gen</a>
 
 Generate a standard set of transformations
 
