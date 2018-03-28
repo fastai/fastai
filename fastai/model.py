@@ -184,8 +184,8 @@ def model_summary(m, input_size):
     m.apply(register_hook)
 
     if isinstance(input_size[0], (list, tuple)):
-        x = [to_gpu(Variable(torch.rand(1,*in_size))) for in_size in input_size]
-    else: x = [to_gpu(Variable(torch.rand(1,*input_size)))]
+        x = [to_gpu(Variable(torch.rand(3,*in_size))) for in_size in input_size]
+    else: x = [to_gpu(Variable(torch.rand(3,*input_size)))]
     m(*x)
 
     for h in hooks: h.remove()
