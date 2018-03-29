@@ -81,4 +81,3 @@ class DataLoader(object):
             with ThreadPoolExecutor(max_workers=self.num_workers) as e:
                 for batch in e.map(self.get_batch, iter(self.batch_sampler)):
                     yield get_tensor(batch, self.pin_memory)
-
