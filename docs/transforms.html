@@ -1,0 +1,44 @@
+﻿<h1 class="module">Module: fastai.transforms</h1>
+
+<ul class="toc">
+...insert here (use JS? or jekyll?)...
+</ul>
+
+<h2>Introduction and overview</h2>
+
+<p>
+The fastai transforms pipeline for images is designed to convert your independent and dependent variables into a form ready to be batched by your DataLoader and passed to your model. It is most commonly used like this:
+</p>
+
+..etc...
+
+<h2 id="Transform" class="class">Class: Transform(<span class="params">tfm_y=TfmType.NO</span></h2>
+
+<div class="summary">Abstract parent for all transforms.</div>
+
+<p>Override do_transform to implement transformation of a single object.</p>
+
+<h3 class="args">Arguments</h3>
+
+<ul class="arglist">
+<li class="arg">
+<span class="argname">tfm_y</span> (<span class="argtype">TfmType</span>)<br />
+Type of transform. For details, see <a href="#TfmType">TfmType</a>.
+</li>
+</ul>
+
+<h3 class="methods">Methods</h3>
+
+<ul class="methodlist">
+<li id="Transform-set_state" class="method">
+<span class="methodname">set_state</span>
+
+<p>A transform may include a random component. If it does, it will often need to transform `y` using the same random values as `x` (e.g. a horizontal flip in segmentation must be applied to the mask as well). Therefore, this method is used to ensure all random state is calculated in one place.</p>
+
+<p><b>NB:</b> Transformations are often run in multiple threads. Therefore any state must be stored in thread local storage. The `Transform` class provide a thread local `store` attribute for you to use. See {xref RandomFlip} for an example of how to use random state safely in `Transform` subclasses.</p>
+
+link_doc(learn.fit)
+>>> http://docs.fast.ai/learner.md/#Learner.fit
+
+show_doc(learn.fit)
+>>> <displays html docs with working links>

@@ -163,8 +163,11 @@ def model_summary(m, input_size):
             summary[m_key] = OrderedDict()
             summary[m_key]['input_shape'] = list(input[0].size())
             summary[m_key]['input_shape'][0] = -1
-            summary[m_key]['output_shape'] = list(output.size())
-            summary[m_key]['output_shape'][0] = -1
+            if isinstance(output,(list,tuple)):
+                summary[m_key]['output_shape'] = [[-1] + list(o.size())[1:] for o in output]
+            else:
+                summary[m_key]['output_shape'] = list(output.size())
+                summary[m_key]['output_shape'][0] = -1
 
             params = 0
             if hasattr(module, 'weight'):
