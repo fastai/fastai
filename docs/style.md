@@ -38,6 +38,7 @@ Although Python will always be more verbose than many languages, by using these 
 
 > In metaphorical honor of Huffman's compression code that assigns smaller numbers of bits to more common bytes. In terms of syntax, it simply means that commonly used things should be shorter, but you shouldn't waste short sequences on less common constructs.
 
+- A fairly complete list of abbreviations is in [abbr.md](abbr.md); if you see anything missing, feel free to edit this file.
 - For example, that in computer vision code, where we say 'size' and 'image' all the time, we use shortened forms `sz` and `img`. Or in NLP code, we would say `lm` instead of 'language model'
 - Use `o` for an object in a comprehension, `i` for an index, and `k` and `v` for a key and value in a dictionary comprehension.
 - Use `x` for a tensor input to an algorithm (e.g. layer, transform, etc), unless interoperating with a libary where
@@ -45,8 +46,6 @@ Although Python will always be more verbose than many languages, by using these 
   for that library).
 - Take a look at the naming conventions in the part of code you're working on, and try to stick with them. E.g. in
   `fastai.transforms` you'll see 'det' for 'deterministic', 'tfm' for 'transform', and 'coord' for coordinate.
-- If you find the abbreviations in a module non-obvious, feel free to add a list of them to the module's markdown file
-  in this docs folder (create one if needed) to help you (and the next coder) get oriented.
 - Assume the coder has knowledge of the domain in which you're working
   - For instance, use `kl_divergence` not `kullback_leibler_divergence`; or (like pytorch) use `nll` not `negative_log_liklihood`. If the coder doesn't know these terms, they will need to look them up in the docs anyway and learn the concepts; if they do know the terms, the abbreviations will be well understood
   - When implementing a paper, aim to follow the paper's nomenclature, unless it's inconsistent with other widely-used conventions. E.g. `conv1` not `first_convolutional_layer`
