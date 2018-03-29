@@ -274,6 +274,7 @@ class ArraysDataset(BaseDataset):
         super().__init__(transform)
     def get_x(self, i): return self.x[i]
     def get_y(self, i): return self.y[i]
+    def get_c(self): return int(self.y.max())+1
     def get_n(self): return len(self.y)
     def get_sz(self): return self.x.shape[1]
 
