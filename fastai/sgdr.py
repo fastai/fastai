@@ -122,6 +122,10 @@ class LR_Finder(LR_Updater):
 
 
 class CosAnneal(LR_Updater):
+    """
+    cosine annilation. 
+    see paper: https://openreview.net/pdf?id=BJYwwY9ll
+    """
     def __init__(self, layer_opt, nb, on_cycle_end=None, cycle_mult=1):
         self.nb,self.on_cycle_end,self.cycle_mult = nb,on_cycle_end,cycle_mult
         super().__init__(layer_opt)
@@ -146,6 +150,11 @@ class CosAnneal(LR_Updater):
 
 
 class CircularLR(LR_Updater):
+    """
+    Cyclical learning rate technique, for leanring rate scheduling.
+    It is an approach to LR adjustments where the value is cycled between a lower bound and upper bound.
+    read: http://teleported.in/posts/cyclic-learning-rate/
+    """
     def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None):
         self.nb,self.div,self.cut_div,self.on_cycle_end = nb,div,cut_div,on_cycle_end
         super().__init__(layer_opt)
