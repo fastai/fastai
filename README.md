@@ -48,9 +48,9 @@ However this is not currently the recommended approach, since the library is bei
 
 ## Docker
 #### Requirements
-You need [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker) to be run
+You need [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker) to run
 the fastai image. Version 1 of nvidia-docker works just find, but you have
-to change the docker run script yourself.
+to adapt the docker run script yourself.
 
 #### Build fastai image
 Run the following line at the fastai directory:
@@ -62,7 +62,7 @@ Make sure that you have enough space for it.
 
 #### Run fastai image
 To make it easy for updating fastai, the project is not copied but mounted
-into the container. Whenever you need update fastai, you can git pull fastai 
+into the container. Whenever you need to update fastai, just git pull 
 and restart the container.
 ```sh
 docker run --runtime=nvidia -d -v ${PWD}:/fastai -p 8888:8888 fastai:latest
