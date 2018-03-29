@@ -46,3 +46,24 @@ pip install fastai
 
 However this is not currently the recommended approach, since the library is being updated much more frequently than the pip release, fewer people are using and testing the pip version, and pip needs to compile many libraries from scratch (which can be slow). 
 
+## Docker
+#### Requirements
+You need [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker) to run
+the fastai image. Version 1 of nvidia-docker works just find, but you have
+to adapt the docker run script yourself.
+
+#### Build fastai image
+Run the following line at the fastai directory:
+```sh
+docker build . -t fastai:latest
+```
+The building process can take up to an hour, and the image is *9.96GB*.
+Make sure that you have enough space for it.
+
+#### Run fastai image
+To make it easy for updating fastai, the project is not copied but mounted
+into the container. Whenever you need to update fastai, just git pull 
+and restart the container.
+```sh
+docker run --runtime=nvidia -d -v ${PWD}:/fastai -p 8888:8888 fastai:latest
+```
