@@ -406,11 +406,22 @@ class RandomLighting(Transform):
         return x
 
 class RandomRotateZoom(CoordTransform):
-    def __init__(self, deg, zoom, stretch, ps=(0.25,0.25,0.25,0.25), mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
+    """ 
+        Selects between a rotate, zoom, stretch, or no transform.
+        Arguments:
+            deg - maximum degrees of rotation.
+            zoom - maximum fraction of zoom.
+            stretch - maximum fraction of stretch.
+            ps - probabilities for each transform. List of length 4. The order for these probabilities is as listed respectively (4th probability is 'no transform'.
+    """
+    def __init__(self, deg, zoom, stretch, ps=None, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
+        if ps is None: ps = [0.25,0.25,0.25,0.25]
+        assert len(ps) == 4, 'does not have 4 probabilities for p, it has %d' % len(ps)
         self.transforms = RandomRotate(deg, p=1, mode=mode, tfm_y=tfm_y), RandomZoom(zoom, tfm_y=tfm_y), RandomStretch(stretch,tfm_y=tfm_y)
         self.pass_t = PassThru()
         self.cum_ps = np.cumsum(ps)
+        assert self.cum_ps[3]==1, 'probabilites do not sum to 1; they sum to %d' % self.cum_ps[3]
     
     def set_state(self):
         self.store.choice = self.cum_ps[3]*random.random()
