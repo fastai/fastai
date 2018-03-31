@@ -300,7 +300,7 @@ class ModelData():
         return cls(path, trn_dl, val_dl, test_dl)
 
     @property
-    def is_reg(self): return self.trn_ds.is_reg
+    def is_reg(self): return self.trn_dl.is_reg
     @property
     def trn_ds(self): return self.trn_dl.dataset
     @property
@@ -308,9 +308,9 @@ class ModelData():
     @property
     def test_ds(self): return self.test_dl.dataset
     @property
-    def trn_y(self): return self.trn_ds.y
+    def trn_y(self): return self.trn_dl.y
     @property
-    def val_y(self): return self.val_ds.y
+    def val_y(self): return self.val_dl.y
 
 
 class ImageData(ModelData):
@@ -330,9 +330,9 @@ class ImageData(ModelData):
             num_workers=self.num_workers, pin_memory=False)
 
     @property
-    def sz(self): return self.trn_ds.sz
+    def sz(self): return self.trn_dl.sz
     @property
-    def c(self): return self.trn_ds.c
+    def c(self): return self.trn_dl.c
 
     def resized(self, dl, targ, new_path):
         return dl.dataset.resize_imgs(targ,new_path) if dl else None
