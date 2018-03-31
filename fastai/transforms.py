@@ -182,6 +182,7 @@ class Transform():
         x = self.do_transform(x,False)
         return (x, self.do_transform(y,True)) if y is not None else x
 
+    @abstractmethod
     def do_transform(self, x, is_y): raise NotImplementedError
 
 
@@ -576,7 +577,6 @@ imagenet_stats = A([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 """Statistics pertaining to image data from image net. mean and std of the images of each color channel"""
 inception_stats = A([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
-"""pretrained pytorch inception models"""
 
 def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):

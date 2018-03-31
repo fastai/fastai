@@ -131,7 +131,7 @@ class StructuredLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
         self.crit = F.mse_loss if data.is_reg else F.nll_loss 
-            
+
 
 class StructuredModel(BasicModel):
     def get_layer_groups(self):
