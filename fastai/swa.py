@@ -20,66 +20,46 @@ class SWA(Callback):
         self.epoch += 1
             
     def update_average_model(self):
-        # update running average of parameters  
+        # update running average of parameters
         model_params = self.model.parameters()
         swa_params = self.swa_model.parameters()
         for model_param, swa_param in zip(model_params, swa_params):
             swa_param.data *= self.swa_n
             swa_param.data += model_param.data
-            swa_param.data /= (self.swa_n + 1)
-            
+            swa_param.data /= (self.swa_n + 1)            
+    
+def collect_bn_modules(module, bn_modules):
+    if isinstance(module, torch.nn.modules.batchnorm._BatchNorm):
+        bn_modules.append(module)
 
-def _is_bn(module): return isinstance(module, torch.nn.modules.batchnorm._BatchNorm)
-    
-def _is_bn_flag(module, flag): 
-    if _is_bn(module): flag[0] = True
-    
-def uses_bn(model):
-    flag = [False]
-    model.apply(lambda module: _is_bn_flag(module, flag))
-    return flag[0]
-
-def _reset_bn(module):
-    if _is_bn(module):
-        module.running_mean = torch.zeros_like(module.running_mean)
-        module.running_var = torch.ones_like(module.running_var)
-
-def reset_bn_stats(model):
-    model.apply(_reset_bn)
-    
-def _get_momenta(module, momenta):
-    if _is_bn(module):
-        momenta[module] = module.momentum
-    
-def _set_momenta(module, momenta):
-    if _is_bn(module):
-        module.momentum = momenta[module]
-        
 def fix_batchnorm(swa_model, train_dl):
-    if not uses_bn(swa_model):
+    bn_modules = []
+    swa_model.apply(lambda module: collect_bn_modules(module, bn_modules))
+    
+    if not bn_modules:
         return
 
     swa_model.train()
 
-    reset_bn_stats(swa_model)
-
-    momenta = {}
-    swa_model.apply(lambda module: _get_momenta(module, momenta))            
+    for module in bn_modules:
+        module.running_mean = torch.zeros_like(module.running_mean)
+        module.running_var = torch.ones_like(module.running_var)
+    
+    momenta = [m.momentum for m in bn_modules]
 
     inputs_seen = 0
 
-    for (*x,y) in iter(train_dl):
+    for (*x,y) in iter(train_dl):        
         xs = V(x)
         batch_size = xs[0].size(0)
 
         momentum = batch_size / (inputs_seen + batch_size)
-        for module in momenta.keys():
+        for module in bn_modules:
             module.momentum = momentum
-                
-        swa_model.apply(lambda module: _set_momenta(module, momenta))
-
-        swa_model(*xs)        
+                            
+        res = swa_model(*xs)        
         
         inputs_seen += batch_size
                 
-    swa_model.apply(lambda module: _set_momenta(module, momenta))            
+    for module, momentum in zip(bn_modules, momenta):
+        module.momentum = momentum    
