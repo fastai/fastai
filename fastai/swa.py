@@ -1,3 +1,13 @@
+"""
+    From the paper:
+        Averaging Weights Leads to Wider Optima and Better Generalization
+        Pavel Izmailov, Dmitrii Podoprikhin, Timur Garipov, Dmitry Vetrov, Andrew Gordon Wilson
+        https://arxiv.org/abs/1803.05407
+        2018
+        
+    Author's implementation: https://github.com/timgaripov/swa
+"""
+
 import torch
 from .sgdr import *
 from .core import *

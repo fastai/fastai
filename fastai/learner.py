@@ -129,8 +129,20 @@ class Learner():
                 strength. This function is passed the WeightDecaySchedule object. And example
                 function that can be passed is:
                             f = lambda x: np.array(x.layer_opt.lrs) / x.init_lrs
-
-            kwargs: other optional arguments
+                            
+            use_swa (bool, optional): when this is set to True, it will enable the use of
+                Stochastic Weight Averaging (https://arxiv.org/abs/1803.05407). The learner will
+                include an additional model (in the swa_model attribute) for keeping track of the 
+                average weights as described in the paper.
+                
+            swa_start (int, optional): if use_swa is set to True, then this determines the epoch
+                to start keeping track of the average weights. It is 1-indexed per the paper's
+                conventions.
+                
+            swa_eval_freq (int, optional): if use_swa is set to True, this determines the frequency
+                at which to evaluate the performance of the swa_model. This evaluation can be costly
+                for models using BatchNorm (requiring a full pass through the data), which is why the
+                default is not to evaluate after each epoch.
 
         Returns:
             None
