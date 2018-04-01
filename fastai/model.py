@@ -115,7 +115,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         stop=False
         for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if swa_model is not None:
-            if (epoch + 1) - swa_start == 0 or (epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == epochs - 1:
+            if (epoch + 1) >= swa_start and ((epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == epochs - 1):
                 fix_batchnorm(swa_model, data.trn_dl)
                 swa_vals = validate(swa_stepper, data.val_dl, metrics)
                 vals += swa_vals
