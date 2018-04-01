@@ -61,8 +61,14 @@ class Learner():
     def unfreeze(self): self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
-    def save(self, name): save_model(self.model, self.get_model_path(name))
-    def load(self, name): load_model(self.model, self.get_model_path(name))
+    
+    def save(self, name): 
+        save_model(self.model, self.get_model_path(name))
+        if hasattr(self, 'swa_model'): save_model(self.swa_model, self.get_model_path(name)[:-3]+'-swa.h5')
+                       
+    def load(self, name): 
+        load_model(self.model, self.get_model_path(name))
+        if hasattr(self, 'swa_model'): load_model(self.swa_model, self.get_model_path(name)[:-3]+'-swa.h5')
 
     def set_data(self, data): self.data_ = data
 
