@@ -267,13 +267,15 @@ class Learner():
         self.fit_gen(self.model, self.data, layer_opt, 1)
         self.load('tmp')
 
-    def predict(self, is_test=False):
+    def predict(self, is_test=False, use_swa=False):
         dl = self.data.test_dl if is_test else self.data.val_dl
-        return predict(self.model, dl)
+        m = self.swa_model if use_swa else self.model
+        return predict(m, dl)
 
-    def predict_with_targs(self, is_test=False):
+    def predict_with_targs(self, is_test=False, use_swa=False):
         dl = self.data.test_dl if is_test else self.data.val_dl
-        return predict_with_targs(self.model, dl)
+        m = self.swa_model if use_swa else self.model
+        return predict_with_targs(m, dl)
 
     def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
     def predict_array(self, arr): return to_np(self.model(V(T(arr).cuda())))
