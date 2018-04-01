@@ -15,6 +15,17 @@ import time
 
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+        """
+        Combines a ModelData object with a nn.Module object, such that you can train that
+        module.
+        data (ModelData): An instance of ModelData.
+        models(module): chosen neural architecture for solving a supported problem.
+        opt_fn(function): optimizer function, uses SGD with Momentum of .9 if none.
+        tmp_name(str): output name of the directory containing temporary files from training process
+        models_name(str): output name of the directory containing the trained model
+        metrics(list): array of functions for evaluating a desired metric. Eg. accuracy.
+        clip(float): gradient clip chosen to limit the change in the gradient to prevent exploding gradients Eg. .3
+        """
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
         self.wd_sched = None
@@ -109,7 +120,7 @@ class Learner():
                 https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb
 
             cycle_save_name (str): use to save the weights at end of each cycle
-            
+
             best_save_name (str): use to save weights of best model during training.
 
             metrics (function): some function for evaluating a desired metric. Eg. accuracy.
@@ -173,15 +184,15 @@ class Learner():
             self.sched = CosAnneal(layer_opt, cycle_batches, on_cycle_end=cycle_end, cycle_mult=cycle_mult)
         elif not self.sched: self.sched=LossRecorder(layer_opt)
         callbacks+=[self.sched]
-        
+
         if best_save_name is not None:
-            callbacks+=[SaveBestModel(self, layer_opt, best_save_name)]
+            callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
             
         if use_swa:
             # make a copy of the model to track average weights
             self.swa_model = copy.deepcopy(model)
             callbacks+=[SWA(model, self.swa_model, swa_start)]
-            
+
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip,
@@ -296,7 +307,10 @@ class Learner():
         return predict_with_targs(m, dl)
 
     def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
-    def predict_array(self, arr): return to_np(self.model(V(T(arr).cuda())))
+
+    def predict_array(self, arr):
+        self.model.eval()
+        return to_np(self.model(to_gpu(V(T(arr)))))
 
     def TTA(self, n_aug=4, is_test=False):
         """ Predict with Test Time Augmentation (TTA)
