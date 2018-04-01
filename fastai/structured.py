@@ -111,8 +111,7 @@ def add_datepart(df, fldname, drop=True, time=False):
     attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
             'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
     if time: attr = attr + ['Hour', 'Minute', 'Second']
-    for n in attr:
-        df[targ_pre + n] = getattr(fld.dt, n.lower())
+    for n in attr: df[targ_pre + n] = getattr(fld.dt, n.lower())
     df[targ_pre + 'Elapsed'] = fld.astype(np.int64) // 10 ** 9
     if drop: df.drop(fldname, axis=1, inplace=True)
 
