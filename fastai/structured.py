@@ -73,7 +73,7 @@ def get_sample(df,n):
     idxs = sorted(np.random.permutation(len(df))[:n])
     return df.iloc[idxs].copy()
 
-def add_datepart(df, fldname, drop=True):
+def add_datepart(df, fldname, drop=True, time=False):
     """add_datepart converts a column of df from a datetime64 to many columns containing
     the information from the date. This applies changes inplace.
 
@@ -83,6 +83,7 @@ def add_datepart(df, fldname, drop=True):
     fldname: A string that is the name of the date column you wish to expand.
         If it is not a datetime64 series, it will be converted to one with pd.to_datetime.
     drop: If true then the original date column will be removed.
+    time: If true time features: Hour, Minute, Second will be added.
 
     Examples:
     ---------
@@ -107,10 +108,11 @@ def add_datepart(df, fldname, drop=True):
     if not np.issubdtype(fld.dtype, np.datetime64):
         df[fldname] = fld = pd.to_datetime(fld, infer_datetime_format=True)
     targ_pre = re.sub('[Dd]ate$', '', fldname)
-    for n in ('Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
-            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
-        df[targ_pre+n] = getattr(fld.dt,n.lower())
-    df[targ_pre+'Elapsed'] = fld.astype(np.int64) // 10**9
+    attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
+            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+    if time: attr = attr + ['Hour', 'Minute', 'Second']
+    for n in attr: df[targ_pre + n] = getattr(fld.dt, n.lower())
+    df[targ_pre + 'Elapsed'] = fld.astype(np.int64) // 10 ** 9
     if drop: df.drop(fldname, axis=1, inplace=True)
 
 def is_date(x): return np.issubdtype(x.dtype, np.datetime64)
