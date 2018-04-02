@@ -14,6 +14,17 @@ import time
 
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+        """
+        Combines a ModelData object with a nn.Module object, such that you can train that
+        module.
+        data (ModelData): An instance of ModelData.
+        models(module): chosen neural architecture for solving a supported problem.
+        opt_fn(function): optimizer function, uses SGD with Momentum of .9 if none.
+        tmp_name(str): output name of the directory containing temporary files from training process
+        models_name(str): output name of the directory containing the trained model
+        metrics(list): array of functions for evaluating a desired metric. Eg. accuracy.
+        clip(float): gradient clip chosen to limit the change in the gradient to prevent exploding gradients Eg. .3
+        """
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
         self.wd_sched = None
@@ -269,7 +280,7 @@ class Learner():
 
     def predict_array(self, arr):
         self.model.eval()
-        return to_np(self.model(V(T(arr).cuda())))
+        return to_np(self.model(to_gpu(V(T(arr)))))
 
     def TTA(self, n_aug=4, is_test=False):
         """ Predict with Test Time Augmentation (TTA)

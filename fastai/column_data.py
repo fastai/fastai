@@ -60,7 +60,7 @@ class ColumnarModelData(ModelData):
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, test_df=None):
-        test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds, is_reg) if test_df is not None else None
+        test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds, None, is_reg) if test_df is not None else None
         return cls(path, ColumnarDataset.from_data_frame(trn_df, cat_flds, trn_y, is_reg),
                     ColumnarDataset.from_data_frame(val_df, cat_flds, val_y, is_reg), bs, test_ds=test_ds)
 
@@ -131,7 +131,7 @@ class StructuredLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
         self.crit = F.mse_loss if data.is_reg else F.nll_loss 
-            
+
 
 class StructuredModel(BasicModel):
     def get_layer_groups(self):
