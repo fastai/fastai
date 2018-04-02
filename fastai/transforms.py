@@ -423,7 +423,7 @@ class RandomRotateZoom(CoordTransform):
         self.pass_t = PassThru()
         self.cum_ps = np.cumsum(ps)
         assert self.cum_ps[3]==1, 'probabilites do not sum to 1; they sum to %d' % self.cum_ps[3]
-    
+
     def set_state(self):
         self.store.choice = self.cum_ps[3]*random.random()
         for i in range(len(self.transforms)):
@@ -431,7 +431,7 @@ class RandomRotateZoom(CoordTransform):
                 self.store.trans = self.transforms[i]
                 return
         self.store.trans = self.pass_t
-    
+
     def __call__(self, x, y):
         self.set_state()
         return self.store.trans(x, y)

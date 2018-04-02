@@ -5,6 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.2">
+<meta name="author" content="Jeremy Howard and contributors">
 <title>fastai.transforms</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -428,6 +429,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article">
 <div id="header">
 <h1>fastai.transforms</h1>
+<div class="details">
+<span id="author" class="author">Jeremy Howard and contributors</span><br>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction_and_overview">Introduction and overview</a></li>
+<li><a href="#_class_transform_span_class_small_tfm_y_tfmtype_no_span">Class Transform <span class="small">(tfm_y=TfmType.NO)</span></a>
+<ul class="sectlevel2">
+<li><a href="#_arguments">Arguments</a></li>
+<li><a href="#_methods">Methods</a></li>
+</ul>
+</li>
+<li><a href="#TfmType">Class TfmType:IntEnum</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -456,7 +473,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_class_transform_tfm_y_tfmtype_no">Class Transform(tfm_y=TfmType.NO)</h2>
+<h2 id="_class_transform_span_class_small_tfm_y_tfmtype_no_span">Class Transform <span class="small">(tfm_y=TfmType.NO)</span></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <div class="title">Abstract parent for all transforms.</div>
@@ -468,7 +485,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <dl>
 <dt class="hdlist1">tfm_y (type TfmType, default TfmType.NO)</dt>
 <dd>
-<p>Type of transform. For details, see #TfmType[TfmType]</p>
+<p>Type of transform. For details, see <a href="#TfmType">TfmType</a></p>
 </dd>
 </dl>
 </div>
@@ -489,10 +506,36 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="TfmType">Class TfmType:IntEnum</h2>
+<div class="sectionbody">
+<div class="dlist">
+<div class="title">Type of transformation.</div>
+<dl>
+<dt class="hdlist1">NO</dt>
+<dd>
+<p>the default, y does not get transformed when x is transformed.</p>
+</dd>
+<dt class="hdlist1">PIXEL</dt>
+<dd>
+<p>x and y are images and should be transformed in the same way. <em>E.g.: image segmentation.</em></p>
+</dd>
+<dt class="hdlist1">COORD</dt>
+<dd>
+<p>y are coordinates (i.e bounding boxes)</p>
+</dd>
+<dt class="hdlist1">CLASS</dt>
+<dd>
+<p>y are class labels (same behaviour as PIXEL, except no normalization)</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-02 14:58:28 PDT
+Last updated 2018-04-02 16:11:49 PDT
 </div>
 </div>
 </body>

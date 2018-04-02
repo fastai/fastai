@@ -1,4 +1,4 @@
-﻿= fastai.transforms
+= fastai.transforms
 
 == Introduction and overview
 
