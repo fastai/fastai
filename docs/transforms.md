@@ -2,7 +2,7 @@
 
 ## Introduction and overview
 
-The fastai transforms pipeline for images is designed to convert your independent and dependent variables into a form ready to be batched by your DataLoader and passed to your model. It is most commonly used like this:
+The fastai transforms paipeline for images is designed to convert your independent and dependent variables into a form ready to be batched by your DataLoader and passed to your model. It is most commonly used like this:
 
 ```
 ...example...
