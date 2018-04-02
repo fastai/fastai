@@ -19,6 +19,7 @@ You can create custom transform pipelines using an approach like: ...
 
 If you want to create a custom transform, you will need to : ...
 
+[[Transform]]
 == Class Transform [.small]#(tfm_y=TfmType.NO)#
 
 .Abstract parent for all transforms.
