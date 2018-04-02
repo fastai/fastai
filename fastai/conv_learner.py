@@ -26,7 +26,7 @@ class ConvnetBuilder():
         xtra_cut (int): # layers earlier than default to cut the model, default is 0
     """
 
-    def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None):
+    def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, pretrained=True):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
         if ps is None: ps = [0.25,0.5]
         if xtra_fc is None: xtra_fc = [512]
@@ -35,7 +35,7 @@ class ConvnetBuilder():
         if f in model_meta: cut,self.lr_cut = model_meta[f]
         else: cut,self.lr_cut = 0,0
         cut-=xtra_cut
-        layers = cut_model(f(True), cut)
+        layers = cut_model(f(pretrained), cut)
         self.nf = model_features[f] if f in model_features else (num_features(layers)*2)
         if not custom_head: layers += [AdaptiveConcatPool2d(), Flatten()]
         self.top_model = nn.Sequential(*layers)
