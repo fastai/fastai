@@ -120,13 +120,14 @@ def print_stats(epoch, values, decimals=6):
     print(layout.format(*values))
 
 def validate(stepper, dl, metrics):
-    loss,res = [],[]
+    batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
+        batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
-    return [np.mean(loss)] + list(np.mean(np.stack(res),0))
+    return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
 
 def get_prediction(x):
     if isinstance(x,(tuple,list)): x=x[0]
