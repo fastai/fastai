@@ -46,7 +46,7 @@ class Stepper():
         if self.clip:   # Gradient clipping
             nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         self.opt.step()
-        return raw_loss.data[0]
+        return raw_loss.data.item()
 
     def evaluate(self, xs, y):
         preds = self.m(*xs)
@@ -95,7 +95,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             for cb in callbacks: cb.on_batch_begin()
             loss = stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
-            debias_loss = avg_loss / (1 - avg_mom**batch_num)
+            debias_loss = float(avg_loss / (1 - avg_mom**batch_num))
             t.set_postfix(loss=debias_loss)
             stop=False
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
