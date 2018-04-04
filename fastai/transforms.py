@@ -355,14 +355,19 @@ class RandomRotate(CoordTransform):
     """
     def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
-        self.deg,self.mode,self.p = deg,mode,p
+        self.deg,self.p = deg,p
+        if tfm_y == TfmType.COORD or tfm_y == TfmType.CLASS:
+            self.modes = (mode,cv2.BORDER_CONSTANT)
+        else:
+            self.modes = (mode,mode)
 
     def set_state(self):
         self.store.rdeg = rand0(self.deg)
         self.store.rp = random.random()<self.p
 
     def do_transform(self, x, is_y):
-        if self.store.rp: x = rotate_cv(x, self.store.rdeg, mode=self.mode,
+        if self.store.rp: x = rotate_cv(x, self.store.rdeg, 
+                mode= self.modes[1] if is_y else self.modes[0],
                 interpolation=cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
         return x
 
@@ -423,7 +428,7 @@ class RandomRotateZoom(CoordTransform):
         self.pass_t = PassThru()
         self.cum_ps = np.cumsum(ps)
         assert self.cum_ps[3]==1, 'probabilites do not sum to 1; they sum to %d' % self.cum_ps[3]
-    
+
     def set_state(self):
         self.store.choice = self.cum_ps[3]*random.random()
         for i in range(len(self.transforms)):
@@ -431,7 +436,7 @@ class RandomRotateZoom(CoordTransform):
                 self.store.trans = self.transforms[i]
                 return
         self.store.trans = self.pass_t
-    
+
     def __call__(self, x, y):
         self.set_state()
         return self.store.trans(x, y)
@@ -587,8 +592,8 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
     tfm_denorm = Denormalize(*stats)
     val_crop = CropType.CENTER if crop_type==CropType.RANDOM else crop_type
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y, sz_y=sz_y)
-    trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type, tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
+    trn_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y, sz_y=sz_y,
+                        tfms=aug_tfms, max_zoom=max_zoom, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
