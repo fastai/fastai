@@ -46,8 +46,7 @@ def fix_batchnorm(swa_model, train_dl):
     bn_modules = []
     swa_model.apply(lambda module: collect_bn_modules(module, bn_modules))
     
-    if not bn_modules:
-        return
+    if not bn_modules: return
 
     swa_model.train()
 
