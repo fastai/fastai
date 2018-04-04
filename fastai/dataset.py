@@ -383,7 +383,7 @@ class ImageClassifierData(ImageData):
                 shape of `(5000, 784)` and `y` has the shape of `(5000,)`)
             val: a tuple of validation data matrix and target label/classification array.
             bs: batch size
-            tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
+            tfms: tuple of two transformations (for data augmentations), one for training and one for validation data. e.g. output of `tfms_from_model` or `tfms_from_stats`
             classes: a list of all labels/classifications
             num_workers: a number of workers
             test: a matrix of test data (the shape should match `trn[0]`)

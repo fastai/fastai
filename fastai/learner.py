@@ -64,11 +64,18 @@ class Learner():
         apply_leaf(self.model, lambda m: self.set_bn_freeze(m, do_freeze))
 
     def freeze_to(self, n):
+        """
+        freeze the last n layers of the model, making them untrainable. Set all the rest of the layers as trainable. 
+        """
         c=self.get_layer_groups()
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 
-    def unfreeze(self): self.freeze_to(0)
+    def unfreeze(self): 
+        """
+        Set all layers of the model as trainable.
+        """
+        self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
     def save(self, name): save_model(self.model, self.get_model_path(name))
