@@ -43,6 +43,15 @@ def collect_bn_modules(module, bn_modules):
         bn_modules.append(module)
 
 def fix_batchnorm(swa_model, train_dl):
+    """
+    During training, batch norm layers keep track of a running mean and
+    variance of the previous layer's activations. Because the parameters
+    of the SWA model are computed as the average of other models' parameters,
+    the SWA model never sees the training data itself, and therefore has no
+    opportunity to compute the correct batch norm statistics. Before performing 
+    inference with the SWA model, we perform a single pass over the training data
+    to calculate an accurate running mean and variance for each batch norm layer.
+    """
     bn_modules = []
     swa_model.apply(lambda module: collect_bn_modules(module, bn_modules))
     
