@@ -8,6 +8,15 @@ from .layer_optimizer import *
 from .dataloader import DataLoader
 
 def get_cv_idxs(n, cv_idx=0, val_pct=0.2, seed=42):
+    """ Returns validation indexes selected at random with fixed seed
+
+    Parameters:
+    -----------
+    n: Number of indexes in the training set
+    cv_idx:  offset?
+    val_pct: precentage of the valuation set
+    seed:  fixed random seed
+    """
     np.random.seed(seed)
     n_val = int(val_pct*n)
     idx_start = cv_idx*n_val

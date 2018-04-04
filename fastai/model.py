@@ -155,6 +155,12 @@ def predict_with_targs(m, dl):
 
 # From https://github.com/ncullen93/torchsample
 def model_summary(m, input_size):
+    """Returns model summary as OrderedDict
+
+    :param m: model
+    :param input_size: the size of input expected by Model without batch size ex. [CHANNELS, WEIGHT, HEIGHT]
+    :return: OrderdDict representing model summary
+    """
     def register_hook(module):
         def hook(module, input, output):
             class_name = str(module.__class__).split('.')[-1].split("'")[0]
