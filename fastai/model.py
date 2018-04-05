@@ -120,13 +120,14 @@ def print_stats(epoch, values, decimals=6):
     print(layout.format(*values))
 
 def validate(stepper, dl, metrics):
-    loss,res = [],[]
+    batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
+        batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
-    return [np.mean(loss)] + list(np.mean(np.stack(res),0))
+    return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
 
 def get_prediction(x):
     if isinstance(x,(tuple,list)): x=x[0]
@@ -163,8 +164,11 @@ def model_summary(m, input_size):
             summary[m_key] = OrderedDict()
             summary[m_key]['input_shape'] = list(input[0].size())
             summary[m_key]['input_shape'][0] = -1
-            summary[m_key]['output_shape'] = list(output.size())
-            summary[m_key]['output_shape'][0] = -1
+            if isinstance(output,(list,tuple)):
+                summary[m_key]['output_shape'] = [[-1] + list(o.size())[1:] for o in output]
+            else:
+                summary[m_key]['output_shape'] = list(output.size())
+                summary[m_key]['output_shape'][0] = -1
 
             params = 0
             if hasattr(module, 'weight'):
@@ -184,8 +188,8 @@ def model_summary(m, input_size):
     m.apply(register_hook)
 
     if isinstance(input_size[0], (list, tuple)):
-        x = [to_gpu(Variable(torch.rand(1,*in_size))) for in_size in input_size]
-    else: x = [to_gpu(Variable(torch.rand(1,*input_size)))]
+        x = [to_gpu(Variable(torch.rand(3,*in_size))) for in_size in input_size]
+    else: x = [to_gpu(Variable(torch.rand(3,*input_size)))]
     m(*x)
 
     for h in hooks: h.remove()

@@ -182,6 +182,7 @@ class Transform():
         x = self.do_transform(x,False)
         return (x, self.do_transform(y,True)) if y is not None else x
 
+    @abstractmethod
     def do_transform(self, x, is_y): raise NotImplementedError
 
 
@@ -354,14 +355,19 @@ class RandomRotate(CoordTransform):
     """
     def __init__(self, deg, p=0.75, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
-        self.deg,self.mode,self.p = deg,mode,p
+        self.deg,self.p = deg,p
+        if tfm_y == TfmType.COORD or tfm_y == TfmType.CLASS:
+            self.modes = (mode,cv2.BORDER_CONSTANT)
+        else:
+            self.modes = (mode,mode)
 
     def set_state(self):
         self.store.rdeg = rand0(self.deg)
         self.store.rp = random.random()<self.p
 
     def do_transform(self, x, is_y):
-        if self.store.rp: x = rotate_cv(x, self.store.rdeg, mode=self.mode,
+        if self.store.rp: x = rotate_cv(x, self.store.rdeg, 
+                mode= self.modes[1] if is_y else self.modes[0],
                 interpolation=cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
         return x
 
@@ -406,18 +412,30 @@ class RandomLighting(Transform):
         return x
 
 class RandomRotateZoom(CoordTransform):
-    def __init__(self, deg, zoom, stretch, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
+    """ 
+        Selects between a rotate, zoom, stretch, or no transform.
+        Arguments:
+            deg - maximum degrees of rotation.
+            zoom - maximum fraction of zoom.
+            stretch - maximum fraction of stretch.
+            ps - probabilities for each transform. List of length 4. The order for these probabilities is as listed respectively (4th probability is 'no transform'.
+    """
+    def __init__(self, deg, zoom, stretch, ps=None, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
-        self.rotate,self.zoom = RandomRotate(deg, p=1, mode=mode, tfm_y=tfm_y), RandomZoom(zoom, tfm_y=tfm_y)
-        self.stretch, self.pass_t = RandomStretch(stretch, tfm_y=tfm_y), PassThru(tfm_y=tfm_y)
+        if ps is None: ps = [0.25,0.25,0.25,0.25]
+        assert len(ps) == 4, 'does not have 4 probabilities for p, it has %d' % len(ps)
+        self.transforms = RandomRotate(deg, p=1, mode=mode, tfm_y=tfm_y), RandomZoom(zoom, tfm_y=tfm_y), RandomStretch(stretch,tfm_y=tfm_y)
+        self.pass_t = PassThru()
+        self.cum_ps = np.cumsum(ps)
+        assert self.cum_ps[3]==1, 'probabilites do not sum to 1; they sum to %d' % self.cum_ps[3]
 
     def set_state(self):
-        choice = random.randint(0,3)
-        if choice==0: a = self.pass_t
-        elif choice==1: a = self.rotate
-        elif choice==2: a = self.zoom
-        elif choice==3: a = self.stretch
-        self.store.trans = a
+        self.store.choice = self.cum_ps[3]*random.random()
+        for i in range(len(self.transforms)):
+            if self.store.choice < self.cum_ps[i]:
+                self.store.trans = self.transforms[i]
+                return
+        self.store.trans = self.pass_t
 
     def __call__(self, x, y):
         self.set_state()
@@ -564,7 +582,6 @@ imagenet_stats = A([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 """Statistics pertaining to image data from image net. mean and std of the images of each color channel"""
 inception_stats = A([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
-"""pretrained pytorch inception models"""
 
 def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
@@ -575,8 +592,8 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
     tfm_denorm = Denormalize(*stats)
     val_crop = CropType.CENTER if crop_type==CropType.RANDOM else crop_type
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y, sz_y=sz_y)
-    trn_tfm=image_gen(tfm_norm, tfm_denorm, sz, tfms=aug_tfms, max_zoom=max_zoom,
-                      pad=pad, crop_type=crop_type, tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
+    trn_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y, sz_y=sz_y,
+                        tfms=aug_tfms, max_zoom=max_zoom, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
