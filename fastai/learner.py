@@ -57,6 +57,11 @@ class Learner():
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 
+    def freeze_all_but(self, n):
+        c=self.get_layer_groups()
+        for l in c: set_trainable(l, False)
+        set_trainable(c[n], True)
+
     def unfreeze(self): self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
