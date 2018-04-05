@@ -35,10 +35,10 @@ class Stepper():
         else: self.m.eval()
         if hasattr(self.m, 'reset'): self.m.reset()
 
-    def step(self, xs, y):
+    def step(self, xs, y, epoch):
         xtra = []
         output = self.m(*xs)
-        if isinstance(output,(tuple,list)): output,*xtra = output
+        if isinstance(output,tuple): output,*xtra = output
         self.opt.zero_grad()
         loss = raw_loss = self.crit(output, y)
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
@@ -50,7 +50,7 @@ class Stepper():
 
     def evaluate(self, xs, y):
         preds = self.m(*xs)
-        if isinstance(preds,(tuple,list)): preds=preds[0]
+        if isinstance(preds,tuple): preds=preds[0]
         return preds, self.crit(preds, y)
 
 def set_train_mode(m):
@@ -61,7 +61,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -72,7 +72,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
-    stepper = Stepper(model, opt, crit, **kwargs)
+    stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
@@ -80,7 +80,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
     layout = "{!s:10} " * len(names)
-    
+
     num_batch = len(data.trn_dl)
     if epochs<1:
         num_batch = int(num_batch*epochs)
@@ -93,7 +93,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, **kwargs):
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
-            loss = stepper.step(V(x),V(y))
+            loss = stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
@@ -118,28 +118,39 @@ def print_stats(epoch, values, decimals=6):
     layout = "{!s:^10}" + " {!s:10}" * len(values)
     values = [epoch] + list(np.round(values, decimals))
     print(layout.format(*values))
-    
+
 def validate(stepper, dl, metrics):
-    loss,res = [],[]
+    batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
+        batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
-    return [np.mean(loss)] + list(np.mean(np.stack(res),0))
+    return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
 
 def get_prediction(x):
     if isinstance(x,(tuple,list)): x=x[0]
     return x.data
 
-def predict(m, dl): return predict_with_targs(m, dl)[0]
+def predict(m, dl):
+    preda,_ = predict_with_targs_(m, dl)
+    return to_np(torch.cat(preda))
 
-def predict_with_targs(m, dl):
+def predict_batch(m, x):
+    m.eval()
+    if hasattr(m, 'reset'): m.reset()
+    return m(VV(x))
+
+def predict_with_targs_(m, dl):
     m.eval()
     if hasattr(m, 'reset'): m.reset()
     res = []
     for *x,y in iter(dl): res.append([get_prediction(m(*VV(x))),y])
-    preda,targa = zip(*res)
+    return zip(*res)
+
+def predict_with_targs(m, dl):
+    preda,targa = predict_with_targs_(m, dl)
     return to_np(torch.cat(preda)), to_np(torch.cat(targa))
 
 # From https://github.com/ncullen93/torchsample
@@ -153,8 +164,11 @@ def model_summary(m, input_size):
             summary[m_key] = OrderedDict()
             summary[m_key]['input_shape'] = list(input[0].size())
             summary[m_key]['input_shape'][0] = -1
-            summary[m_key]['output_shape'] = list(output.size())
-            summary[m_key]['output_shape'][0] = -1
+            if isinstance(output,(list,tuple)):
+                summary[m_key]['output_shape'] = [[-1] + list(o.size())[1:] for o in output]
+            else:
+                summary[m_key]['output_shape'] = list(output.size())
+                summary[m_key]['output_shape'][0] = -1
 
             params = 0
             if hasattr(module, 'weight'):
@@ -174,8 +188,8 @@ def model_summary(m, input_size):
     m.apply(register_hook)
 
     if isinstance(input_size[0], (list, tuple)):
-        x = [to_gpu(Variable(torch.rand(1,*in_size))) for in_size in input_size]
-    else: x = [to_gpu(Variable(torch.rand(1,*input_size)))]
+        x = [to_gpu(Variable(torch.rand(3,*in_size))) for in_size in input_size]
+    else: x = [to_gpu(Variable(torch.rand(3,*input_size)))]
     m(*x)
 
     for h in hooks: h.remove()

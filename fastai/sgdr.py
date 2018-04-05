@@ -10,16 +10,45 @@ class Callback:
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
 
+# Useful for maintaining status of a long-running job.
+# 
+# Usage:
+# learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
+class LoggingCallback(Callback):
+    def __init__(self, save_path):
+        super().__init__()
+        self.save_path=save_path
+    def on_train_begin(self):
+        self.batch = 0
+        self.epoch = 0
+        self.f = open(self.save_path, "a", 1)
+        self.log("\ton_train_begin")
+    def on_batch_begin(self):
+        self.log(str(self.batch)+"\ton_batch_begin")
+    def on_epoch_end(self, metrics):
+        self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
+        self.epoch += 1
+    def on_batch_end(self, metrics):
+        self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
+        self.batch += 1
+    def on_train_end(self):
+        self.log("\ton_train_end")
+        self.f.close()
+    def log(self, string):
+        self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
 
 class LossRecorder(Callback):
-    def __init__(self, layer_opt, save_path=''):
+    def __init__(self, layer_opt, save_path='', record_mom=False):
         super().__init__()
         self.layer_opt=layer_opt
         self.init_lrs=np.array(layer_opt.lrs)
         self.save_path=save_path
+        self.record_mom = record_mom
 
     def on_train_begin(self):
         self.losses,self.lrs,self.iterations = [],[],[]
+        if self.record_mom:
+            self.momentums = []
         self.iteration = 0
         self.epoch = 0
 
@@ -31,10 +60,11 @@ class LossRecorder(Callback):
         self.lrs.append(self.layer_opt.lr)
         self.iterations.append(self.iteration)
         self.losses.append(loss)
+        if self.record_mom:
+            self.momentums.append(self.layer_opt.mom)
 
     def plot_loss(self):
-        if not in_ipynb():
-            plt.switch_backend('agg')
+        if not in_ipynb(): plt.switch_backend('agg')
         plt.plot(self.iterations[10:], self.losses[10:])
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'loss_plot.png'))
@@ -43,9 +73,17 @@ class LossRecorder(Callback):
     def plot_lr(self):
         if not in_ipynb():
             plt.switch_backend('agg')
-        plt.xlabel("iterations")
-        plt.ylabel("learning rate")
-        plt.plot(self.iterations, self.lrs)
+        if self.record_mom:
+            fig, axs = plt.subplots(1,2,figsize=(12,4))
+            for i in range(0,2): axs[i].set_xlabel('iterations')
+            axs[0].set_ylabel('learning rate')
+            axs[1].set_ylabel('momentum')
+            axs[0].plot(self.iterations,self.lrs)
+            axs[1].plot(self.iterations,self.momentums)   
+        else:
+            plt.xlabel("iterations")
+            plt.ylabel("learning rate")
+            plt.plot(self.iterations, self.lrs)
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
 
@@ -54,18 +92,29 @@ class LR_Updater(LossRecorder):
     def on_train_begin(self):
         super().on_train_begin()
         self.update_lr()
+        if self.record_mom:
+            self.update_mom()
 
     def on_batch_end(self, loss):
         res = super().on_batch_end(loss)
         self.update_lr()
+        if self.record_mom:
+            self.update_mom()
         return res
 
     def update_lr(self):
         new_lrs = self.calc_lr(self.init_lrs)
         self.layer_opt.set_lrs(new_lrs)
+    
+    def update_mom(self):
+        new_mom = self.calc_mom()
+        self.layer_opt.set_mom(new_mom)
 
     @abstractmethod
     def calc_lr(self, init_lrs): raise NotImplementedError
+    
+    @abstractmethod
+    def calc_mom(self): raise NotImplementedError
 
 
 class LR_Finder(LR_Updater):
@@ -89,10 +138,10 @@ class LR_Finder(LR_Updater):
         if (loss<self.best and self.iteration>10): self.best=loss
         return super().on_batch_end(loss)
 
-    def plot(self, n_skip=10):
+    def plot(self, n_skip=10, n_skip_end=5):
         plt.ylabel("loss")
         plt.xlabel("learning rate (log scale)")
-        plt.plot(self.lrs[n_skip:-5], self.losses[n_skip:-5])
+        plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         plt.xscale('log')
 
 
@@ -121,9 +170,11 @@ class CosAnneal(LR_Updater):
 
 
 class CircularLR(LR_Updater):
-    def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None):
+    def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None, momentums=None):
         self.nb,self.div,self.cut_div,self.on_cycle_end = nb,div,cut_div,on_cycle_end
-        super().__init__(layer_opt)
+        if momentums is not None:
+            self.moms = momentums
+        super().__init__(layer_opt, record_mom=(momentums is not None))
 
     def on_train_begin(self):
         self.cycle_iter,self.cycle_count=0,0
@@ -132,7 +183,7 @@ class CircularLR(LR_Updater):
     def calc_lr(self, init_lrs):
         cut_pt = self.nb//self.cut_div
         if self.cycle_iter>cut_pt:
-            pct = 1 - (self.cycle_iter - cut_pt)/(cut_pt*(self.cut_div-1))
+            pct = 1 - (self.cycle_iter - cut_pt)/(self.nb - cut_pt)
         else: pct = self.cycle_iter/cut_pt
         res = init_lrs * (1 + pct*(self.div-1)) / self.div
         self.cycle_iter += 1
@@ -141,6 +192,64 @@ class CircularLR(LR_Updater):
             if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
             self.cycle_count += 1
         return res
+    
+    def calc_mom(self):
+        cut_pt = self.nb//self.cut_div
+        if self.cycle_iter>cut_pt:
+            pct = (self.cycle_iter - cut_pt)/(self.nb - cut_pt)
+        else: pct = 1 - self.cycle_iter/cut_pt
+        res = self.moms[1] + pct * (self.moms[0] - self.moms[1])
+        return res
+
+
+class SaveBestModel(LossRecorder):
+    
+    """ Save weights of the best model based during training.
+        If metrics are provided, the first metric in the list is used to
+        find the best model. 
+        If no metrics are provided, the loss is used.
+        
+        Args:
+            model: the fastai model
+            lr: indicate to use test images; otherwise use validation images
+            name: the name of filename of the weights without '.h5'
+        
+        Usage:
+            Briefly, you have your model 'learn' variable and call fit.
+            >>> learn.fit(lr, 2, cycle_len=2, cycle_mult=1, best_save_name='mybestmodel')
+            ....
+            >>> learn.load('mybestmodel')
+            
+            For more details see http://forums.fast.ai/t/a-code-snippet-to-save-the-best-model-during-training/12066
+ 
+    """
+    def __init__(self, model, layer_opt, metrics, name='best_model'):
+        super().__init__(layer_opt)
+        self.name = name
+        self.model = model
+        self.best_loss = None
+        self.best_acc = None
+        self.save_method = self.save_when_only_loss if metrics==None else self.save_when_acc
+        
+    def save_when_only_loss(self, metrics):
+        loss = metrics[0]
+        if self.best_loss == None or loss < self.best_loss:
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+    
+    def save_when_acc(self, metrics):
+        loss, acc = metrics[0], metrics[1]
+        if self.best_acc == None or acc > self.best_acc:
+            self.best_acc = acc
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+        elif acc == self.best_acc and  loss < self.best_loss:
+            self.best_loss = loss
+            self.model.save(f'{self.name}')
+        
+    def on_epoch_end(self, metrics):
+        super().on_epoch_end(metrics)
+        self.save_method(metrics)
 
 
 class WeightDecaySchedule(Callback):

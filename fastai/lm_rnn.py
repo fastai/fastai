@@ -124,7 +124,7 @@ class MultiBatchRNN(RNN_Encoder):
             for h in l: h.data.zero_()
         raw_outputs, outputs = [],[]
         for i in range(0, sl, self.bptt):
-            r, o = super().forward(input[i : min(i+self.bptt, sl)])
+            r, o = super().forward(input[i: min(i+self.bptt, sl)])
             if i>(sl-self.max_seq):
                 raw_outputs.append(r)
                 outputs.append(o)

@@ -2,7 +2,7 @@ from IPython.lib.deepreload import reload as dreload
 import PIL, os, numpy as np, math, collections, threading, json, bcolz, random, scipy, cv2
 import random, pandas as pd, pickle, sys, itertools, string, sys, re, datetime, time, shutil
 import seaborn as sns, matplotlib
-import IPython, graphviz, sklearn_pandas, sklearn, warnings
+import IPython, graphviz, sklearn_pandas, sklearn, warnings, pdb
 from abc import abstractmethod
 from glob import glob, iglob
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
@@ -15,6 +15,7 @@ from IPython.lib.display import FileLink
 from PIL import Image, ImageEnhance, ImageOps
 from sklearn import metrics, ensemble, preprocessing
 from operator import itemgetter, attrgetter
+from pathlib import Path
 
 from matplotlib import pyplot as plt, rcParams, animation
 from ipywidgets import interact, interactive, fixed, widgets
@@ -26,11 +27,8 @@ def in_notebook(): return IPKernelApp.initialized()
 
 def in_ipynb():
     try:
-        cfg = get_ipython().config
-        if cfg['IPKernelApp']['parent_appname'] == 'ipython-notebook':
-            return True
-        else:
-            return False
+        cls = get_ipython().__class__.__name__
+        return cls == 'ZMQInteractiveShell'
     except NameError:
         return False
 
