@@ -24,6 +24,8 @@ class ConvnetBuilder():
         ps (float or array of float): dropout parameters
         xtra_fc (list of ints): list of hidden layers with # hidden neurons
         xtra_cut (int): # layers earlier than default to cut the model, default is 0
+        custom_head : add custom model classes that are inherited from nn.modules at the end of the model
+                      that is mentioned on Argument 'f' 
     """
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, pretrained=True):
