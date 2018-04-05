@@ -3,8 +3,9 @@ from .torch_imports import *
 
 def sum_geom(a,r,n): return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
 
-def listy(x): return isinstance(x, (list,tuple))
-def sapply_(x, f): return [f(o) for o in x] if listy(x) else f(x)
+def is_listy(x): return isinstance(x, (list,tuple))
+def is_iter(x): return isinstance(x, collections.Iterable)
+def map_over(x, f): return [f(o) for o in x] if is_iter(x) else f(x)
 
 conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
@@ -56,7 +57,7 @@ def trainable_params_(m):
     return [p for p in m.parameters() if p.requires_grad]
 
 def chain_params(p):
-    if listy(p):
+    if is_listy(p):
         return list(chain(*[trainable_params_(o) for o in p]))
     return trainable_params_(p)
 
