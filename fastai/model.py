@@ -130,7 +130,7 @@ def validate(stepper, dl, metrics):
     return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
 
 def get_prediction(x):
-    if isinstance(x,(tuple,list)): x=x[0]
+    if is_listy(x): x=x[0]
     return x.data
 
 def predict(m, dl):
@@ -164,7 +164,7 @@ def model_summary(m, input_size):
             summary[m_key] = OrderedDict()
             summary[m_key]['input_shape'] = list(input[0].size())
             summary[m_key]['input_shape'][0] = -1
-            if isinstance(output,(list,tuple)):
+            if is_listy(output):
                 summary[m_key]['output_shape'] = [[-1] + list(o.size())[1:] for o in output]
             else:
                 summary[m_key]['output_shape'] = list(output.size())
@@ -187,7 +187,7 @@ def model_summary(m, input_size):
     hooks = []
     m.apply(register_hook)
 
-    if isinstance(input_size[0], (list, tuple)):
+    if is_listy(input_size[0]):
         x = [to_gpu(Variable(torch.rand(3,*in_size))) for in_size in input_size]
     else: x = [to_gpu(Variable(torch.rand(3,*input_size)))]
     m(*x)
