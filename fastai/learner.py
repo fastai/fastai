@@ -9,6 +9,7 @@ from .layer_optimizer import *
 from .layers import *
 from .metrics import *
 from .losses import *
+from .fp16 import *
 import time
 
 
@@ -35,6 +36,7 @@ class Learner():
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn = None,None
+        self.fp16 = False
 
     @classmethod
     def from_model_data(cls, m, data, **kwargs):
@@ -87,6 +89,17 @@ class Learner():
 
     def save_cycle(self, name, cycle): self.save(f'{name}_cyc_{cycle}')
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
+        
+    def half(self):
+        if self.fp16: return
+        self.fp16 = True
+        if type(self.model) != FP16: self.models.model = FP16(self.model)
+        self.model.half()
+    def float(self):
+        if not self.fp16: return
+        self.fp16 = False
+        if type(self.model) == FP16: self.models.model = self.model.module
+        self.model.float()
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
                 use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):

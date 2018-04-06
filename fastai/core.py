@@ -39,6 +39,7 @@ def to_np(v):
     if isinstance(v, (np.ndarray, np.generic)): return v
     if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data
+    if isinstance(v, torch.cuda.HalfTensor): v=v.float()
     return v.cpu().numpy()
 
 USE_GPU=True
