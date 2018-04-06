@@ -40,7 +40,7 @@ class Stepper():
         else: self.m.eval()
         if hasattr(self.m, 'reset'): 
             self.m.reset()
-            if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
+            #if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
 
     def step(self, xs, y, epoch):
         if self.fp16: return self.step_fp16(xs, y, epoch)
