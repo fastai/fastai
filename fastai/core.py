@@ -5,7 +5,7 @@ def sum_geom(a,r,n): return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
 
 def is_listy(x): return isinstance(x, (list,tuple))
 def is_iter(x): return isinstance(x, collections.Iterable)
-def map_over(x, f): return [f(o) for o in x] if is_iter(x) else f(x)
+def map_over(x, f): return [f(o) for o in x] if is_listy(x) else f(x)
 
 conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
