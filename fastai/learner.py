@@ -172,7 +172,7 @@ class Learner():
                                                 norm_wds, wds_sched_mult)
             callbacks += [self.wd_sched]
 
-        elif use_clr is not None:
+        if use_clr is not None:
             clr_div,cut_div = use_clr[:2]
             moms = use_clr[2:] if len(use_clr) > 2 else None
             cycle_end = self.get_cycle_end(cycle_save_name)

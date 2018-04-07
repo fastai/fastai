@@ -29,9 +29,8 @@ def num_features(m):
 class Stepper():
     def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1):
         self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
-        self.reset(True)
-        
         self.fp16 = fp16
+        self.reset(True)
         self.loss_scale = loss_scale if fp16 else 1
         if self.fp16: self.fp32_params = copy_model_to_fp32(m, opt)
         
@@ -151,7 +150,8 @@ def validate(stepper, dl, metrics):
     stepper.reset(False)
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
-        batch_cnts.append(len(x))
+        if isinstance(x,list): batch_cnts.append(len(x[0]))
+        else: batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
     return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()

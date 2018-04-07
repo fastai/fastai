@@ -313,6 +313,8 @@ class ModelData():
     @property
     def is_reg(self): return self.trn_ds.is_reg
     @property
+    def is_multi(self): return self.trn_ds.is_multi
+    @property
     def trn_ds(self): return self.trn_dl.dataset
     @property
     def val_ds(self): return self.val_dl.dataset
@@ -381,9 +383,6 @@ class ImageData(ModelData):
 
 
 class ImageClassifierData(ImageData):
-    @property
-    def is_multi(self): return self.trn_dl.dataset.is_multi
-
     @classmethod
     def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
         """ Read in images and their labels given as numpy arrays
