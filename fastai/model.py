@@ -150,7 +150,8 @@ def validate(stepper, dl, metrics):
     stepper.reset(False)
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
-        batch_cnts.append(len(x))
+        if isinstance(x,list): batch_cnts.append(len(x[0]))
+        else: batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
     return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
