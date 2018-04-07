@@ -40,7 +40,7 @@ class Stepper():
         else: self.m.eval()
         if hasattr(self.m, 'reset'): 
             self.m.reset()
-            #if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
+            if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
 
     def step(self, xs, y, epoch):
         if self.fp16: return self.step_fp16(xs, y, epoch)
@@ -122,7 +122,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             for cb in callbacks: cb.on_batch_begin()
             loss = stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
-            debias_loss = avg_loss / (1 - avg_mom**batch_num)
+            debias_loss = float(avg_loss / (1 - avg_mom**batch_num))
             t.set_postfix(loss=debias_loss)
             stop=False
             for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
@@ -182,6 +182,12 @@ def predict_with_targs(m, dl):
 
 # From https://github.com/ncullen93/torchsample
 def model_summary(m, input_size):
+    """Returns model summary as OrderedDict
+
+    :param m: model
+    :param input_size: the size of input expected by Model without batch size ex. [CHANNELS, WEIGHT, HEIGHT]
+    :return: OrderdDict representing model summary
+    """
     def register_hook(module):
         def hook(module, input, output):
             class_name = str(module.__class__).split('.')[-1].split("'")[0]
@@ -209,7 +215,6 @@ def model_summary(m, input_size):
            not isinstance(module, nn.ModuleList) and
            not (module == m)):
             hooks.append(module.register_forward_hook(hook))
-
     summary = OrderedDict()
     hooks = []
     m.apply(register_hook)
@@ -217,8 +222,8 @@ def model_summary(m, input_size):
     if is_listy(input_size[0]):
         x = [to_gpu(Variable(torch.rand(3,*in_size))) for in_size in input_size]
     else: x = [to_gpu(Variable(torch.rand(3,*input_size)))]
-    m(*x)
-
+    to_gpu(m)(*x)
+    
     for h in hooks: h.remove()
     return summary
 

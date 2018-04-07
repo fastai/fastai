@@ -14,7 +14,7 @@ import time
 
 
 class Learner():
-    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None, work_dir=None):
         """
         Combines a ModelData object with a nn.Module object, such that you can train that
         module.
@@ -25,14 +25,16 @@ class Learner():
         models_name(str): output name of the directory containing the trained model
         metrics(list): array of functions for evaluating a desired metric. Eg. accuracy.
         clip(float): gradient clip chosen to limit the change in the gradient to prevent exploding gradients Eg. .3
+        work_dir(str): folder the models saves and temporary files are stored
         """
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
         self.wd_sched = None
         self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
-        self.tmp_path = os.path.join(self.data.path, tmp_name)
-        self.models_path = os.path.join(self.data.path, models_name)
+        self.work_dir = work_dir if work_dir is not None else self.data.path
+        self.tmp_path = os.path.join(self.work_dir, tmp_name)
+        self.models_path = os.path.join(self.work_dir, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn = None,None
