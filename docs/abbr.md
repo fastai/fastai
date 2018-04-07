@@ -21,7 +21,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | **Concept**                         | **Abbr.**      | **Combination Examples**                         |
 |------------------|-------------------------------------|----------------|--------------------------------------------------|
 | **Suffix**       |                                     |                |                                                  |
-|                  | multiple of something (plural)      | s              | xs, ys, tfms, args                               |
+|                  | multiple of something (plural)      | s              | xs, ys, tfms, args, ss                           |
 |                  | internal property or method         | _              | data_, V_()                                      |
 |                  | transform image using opencv        | _cv            | zoom_cv(), rotate_cv(), stretch_cv()             |
 | **Prefix**       |                                     |                |                                                  |
@@ -118,6 +118,12 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | augment                             | aug            |                                                  |
 |                  | padding                             | pad            |                                                  |
 |                  |                                     |                |                                                  |
+|                  | probability                         | pr             |                                                  |
+|                  | image                               | img            |                                                  |
+|                  | rectangle                           | rect           |                                                  |
+|                  | color                               | colr           |                                                  |
+|                  | anchor box                          | anc            |                                                  |
+|                  |                                     |                |                                                  |
 | **Modeling**     |                                     |                |                                                  |
 |                  | initialize                          | init           |                                                  |
 |                  | natural language processing         | nlp            |                                                  |
@@ -126,6 +132,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | convolutional neural network        | convnet        |                                                  |
 |                  |                                     |                |                                                  |
 |                  | model                               | m              | (not common)                                     |
+|                  | model data                          | md             |                                                  |
 |                  | linear                              | lin            |                                                  |
 |                  | embedding                           | emb            |                                                  |
 |                  | batch norm                          | bn             |                                                  |
@@ -134,10 +141,14 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | convolution                         | conv           |                                                  |
 |                  | hidden                              | hid            |                                                  |
 |                  |                                     |                |                                                  |
-|                  | optimizer                           | opt            |                                                  |
+|                  | optimizer (usually e.g. Adam)       | opt            |                                                  |
+|                  | layer group learning rate optimizer | layer_opt      |                                                  |
 |                  | criteria                            | crit           |                                                  |
 |                  | weight decay                        | wd             |                                                  |
 |                  | cross validation                    | cv             |                                                  |
 |                  | learning rate                       | lr             |                                                  |
 |                  | schedule                            | sched          |                                                  |
 |                  | multiplier                          | mult           |                                                  |
+|                  | activation                          | actn           |                                                  |
+|                  |                                     |                |                                                  |
+| **Text**         | string                              | s              |                                                  |

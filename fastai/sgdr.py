@@ -201,6 +201,46 @@ class CircularLR(LR_Updater):
         res = self.moms[1] + pct * (self.moms[0] - self.moms[1])
         return res
 
+class CircularLR_beta(LR_Updater):
+    def __init__(self, layer_opt, nb, div=10, pct=10, on_cycle_end=None, momentums=None):
+        self.nb,self.div,self.pct,self.on_cycle_end = nb,div,pct,on_cycle_end
+        self.cycle_nb = int(nb * (1-pct/100) / 2)
+        if momentums is not None:
+            self.moms = momentums
+        super().__init__(layer_opt, record_mom=(momentums is not None))
+
+    def on_train_begin(self):
+        self.cycle_iter,self.cycle_count=0,0
+        super().on_train_begin()
+
+    def calc_lr(self, init_lrs):
+        if self.cycle_iter>2 * self.cycle_nb:
+            pct = (self.cycle_iter - 2*self.cycle_nb)/(self.nb - 2*self.cycle_nb)
+            res = init_lrs * (1 + (pct * (1-100)/100)) / self.div 
+        elif self.cycle_iter>self.cycle_nb:
+            pct = 1 - (self.cycle_iter - self.cycle_nb)/self.cycle_nb
+            res = init_lrs * (1 + pct*(self.div-1)) / self.div
+        else: 
+            pct = self.cycle_iter/self.cycle_nb
+            res = init_lrs * (1 + pct*(self.div-1)) / self.div
+        self.cycle_iter += 1
+        if self.cycle_iter==self.nb:
+            self.cycle_iter = 0
+            if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
+            self.cycle_count += 1
+        return res
+    
+    def calc_mom(self):
+        if self.cycle_iter>2*self.cycle_nb:
+            res = self.moms[0]
+        elif self.cycle_iter>self.cycle_nb:
+            pct = 1 - (self.cycle_iter - self.cycle_nb)/self.cycle_nb
+            res = self.moms[0] + pct * (self.moms[1] - self.moms[0])
+        else: 
+            pct = self.cycle_iter/self.cycle_nb
+            res = self.moms[0] + pct * (self.moms[1] - self.moms[0])
+        return res
+
 
 class SaveBestModel(LossRecorder):
     
