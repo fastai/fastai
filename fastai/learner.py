@@ -9,6 +9,7 @@ from .layer_optimizer import *
 from .layers import *
 from .metrics import *
 from .losses import *
+from .fp16 import *
 import time
 
 
@@ -37,6 +38,7 @@ class Learner():
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn = None,None
+        self.fp16 = False
 
     @classmethod
     def from_model_data(cls, m, data, **kwargs):
@@ -70,6 +72,11 @@ class Learner():
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 
+    def freeze_all_but(self, n):
+        c=self.get_layer_groups()
+        for l in c: set_trainable(l, False)
+        set_trainable(c[n], True)
+
     def unfreeze(self): self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
@@ -84,9 +91,20 @@ class Learner():
 
     def save_cycle(self, name, cycle): self.save(f'{name}_cyc_{cycle}')
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
+        
+    def half(self):
+        if self.fp16: return
+        self.fp16 = True
+        if type(self.model) != FP16: self.models.model = FP16(self.model)
+        self.model.half()
+    def float(self):
+        if not self.fp16: return
+        self.fp16 = False
+        if type(self.model) == FP16: self.models.model = self.model.module
+        self.model.float()
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):
+                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -157,9 +175,17 @@ class Learner():
             callbacks += [self.wd_sched]
 
         elif use_clr is not None:
-            clr_div,cut_div = use_clr
+            clr_div,cut_div = use_clr[:2]
+            moms = use_clr[2:] if len(use_clr) > 2 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
-            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div)
+            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div, 
+                                    momentums=moms)
+        elif use_clr_beta is not None:
+            div,pct = use_clr_beta[:2]
+            moms = use_clr_beta[2:] if len(use_clr_beta) > 3 else None
+            cycle_end = self.get_cycle_end(cycle_save_name)
+            self.sched = CircularLR_beta(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=div, 
+                                    pct=pct, momentums=moms)
         elif cycle_len:
             cycle_end = self.get_cycle_end(cycle_save_name)
             cycle_batches = len(data.trn_dl)*cycle_len

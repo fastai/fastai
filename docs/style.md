@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a brief discussion of fastai's coding style, which is loosely informed by (a much diluted version of) the ideas developed over the last 60 continuous years of development in the [APL](https://en.wikipedia.org/wiki/APL_\(programming_language\)) / [J](https://en.wikipedia.org/wiki/J_\(programming_language\)) / [K](https://en.wikipedia.org/wiki/K_\(programming_language\)) programming communities, along with Jeremy's personal experience contributing to programming language design and library development over the last 25 years. The style is particuarly designed to be aligned with the needs of scientific programming and iterative, experimental development.
+This is a brief discussion of fastai's coding style, which is loosely informed by (a much diluted version of) the ideas developed over the last 60 continuous years of development in the [APL](https://en.wikipedia.org/wiki/APL_\(programming_language\)) / [J](https://en.wikipedia.org/wiki/J_\(programming_language\)) / [K](https://en.wikipedia.org/wiki/K_\(programming_language\)) programming communities, along with Jeremy's personal experience contributing to programming language design and library development over the last 25 years. The style is particularly designed to be aligned with the needs of scientific programming and iterative, experimental development.
 
 Everyone has strong opinions about coding style, except perhaps some very experienced coders, who have used many languages, who realize there's lots of different perfectly acceptable approaches. The python community has particularly strongly held views, on the whole. I suspect this is related to Python being a language targeted at beginners, and therefore there are a lot of users with limited experience in other languages; however this is just a guess. Anyway, I don't much mind what coding style you use when contributing to fastai, as long as:
 
@@ -41,7 +41,7 @@ Although Python will always be more verbose than many languages, by using these 
 - A fairly complete list of abbreviations is in [abbr.md](abbr.md); if you see anything missing, feel free to edit this file.
 - For example, that in computer vision code, where we say 'size' and 'image' all the time, we use shortened forms `sz` and `img`. Or in NLP code, we would say `lm` instead of 'language model'
 - Use `o` for an object in a comprehension, `i` for an index, and `k` and `v` for a key and value in a dictionary comprehension.
-- Use `x` for a tensor input to an algorithm (e.g. layer, transform, etc), unless interoperating with a libary where
+- Use `x` for a tensor input to an algorithm (e.g. layer, transform, etc), unless interoperating with a library where
   this isn't the expected behavior (e.g. if writing a pytorch loss function, use `input` and `target` as is standard
   for that library).
 - Take a look at the naming conventions in the part of code you're working on, and try to stick with them. E.g. in
@@ -103,7 +103,7 @@ import PIL, os, numpy as np, math, collections, threading
 - fastai is designed to show off the best of what's possible. So try to ensure that you're implementation of an
   algorithm is at least as fast, accurate, and concise as other versions that exist (if they do), and use a profiler to
   check for hotspots and optimize them as appropriate (if the code takes more than a second to run in practice).
-- Try to ensure that your algorithm scales nicely; specifically, it should work in 16GB RAM on arbitarily large
+- Try to ensure that your algorithm scales nicely; specifically, it should work in 16GB RAM on arbitrarily large
   datasets. That will generally mean using lazy data structures such as generators, and not pulling everything in to a
   list.
 - Add a comment that provides the equation number from the paper that you're implementing in the appropriate part of
@@ -137,7 +137,7 @@ import PIL, os, numpy as np, math, collections, threading
   bit of meta-data. Just change the bits of code you have to, and double-check the diff only contains those code
   changes before you push.
 
-### Documention
+### Documentation
 
 - We haven't figured out something we're happy with here yet. We're working on it...
 - My ideal would be to have a decorator with a single line of documentation that links to a more detailed markdown doc.

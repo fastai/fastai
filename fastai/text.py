@@ -125,8 +125,11 @@ class LanguageModelLoader():
     def __iter__(self):
         self.i,self.iter = 0,0
         while self.i < self.n-1 and self.iter<len(self):
-            bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
-            seq_len = max(5, int(np.random.normal(bptt, 5)))
+            if self.i == 0:
+                seq_len = self.bptt + 5 * 5
+            else:
+                bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
+                seq_len = max(5, int(np.random.normal(bptt, 5)))
             res = self.get_batch(self.i, seq_len)
             self.i += seq_len
             self.iter += 1

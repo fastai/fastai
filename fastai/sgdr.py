@@ -38,14 +38,17 @@ class LoggingCallback(Callback):
         self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
 
 class LossRecorder(Callback):
-    def __init__(self, layer_opt, save_path=''):
+    def __init__(self, layer_opt, save_path='', record_mom=False):
         super().__init__()
         self.layer_opt=layer_opt
         self.init_lrs=np.array(layer_opt.lrs)
         self.save_path=save_path
+        self.record_mom = record_mom
 
     def on_train_begin(self):
         self.losses,self.lrs,self.iterations = [],[],[]
+        if self.record_mom:
+            self.momentums = []
         self.iteration = 0
         self.epoch = 0
 
@@ -57,6 +60,8 @@ class LossRecorder(Callback):
         self.lrs.append(self.layer_opt.lr)
         self.iterations.append(self.iteration)
         self.losses.append(loss)
+        if self.record_mom:
+            self.momentums.append(self.layer_opt.mom)
 
     def plot_loss(self):
         if not in_ipynb(): plt.switch_backend('agg')
@@ -68,9 +73,17 @@ class LossRecorder(Callback):
     def plot_lr(self):
         if not in_ipynb():
             plt.switch_backend('agg')
-        plt.xlabel("iterations")
-        plt.ylabel("learning rate")
-        plt.plot(self.iterations, self.lrs)
+        if self.record_mom:
+            fig, axs = plt.subplots(1,2,figsize=(12,4))
+            for i in range(0,2): axs[i].set_xlabel('iterations')
+            axs[0].set_ylabel('learning rate')
+            axs[1].set_ylabel('momentum')
+            axs[0].plot(self.iterations,self.lrs)
+            axs[1].plot(self.iterations,self.momentums)   
+        else:
+            plt.xlabel("iterations")
+            plt.ylabel("learning rate")
+            plt.plot(self.iterations, self.lrs)
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
 
@@ -79,18 +92,29 @@ class LR_Updater(LossRecorder):
     def on_train_begin(self):
         super().on_train_begin()
         self.update_lr()
+        if self.record_mom:
+            self.update_mom()
 
     def on_batch_end(self, loss):
         res = super().on_batch_end(loss)
         self.update_lr()
+        if self.record_mom:
+            self.update_mom()
         return res
 
     def update_lr(self):
         new_lrs = self.calc_lr(self.init_lrs)
         self.layer_opt.set_lrs(new_lrs)
+    
+    def update_mom(self):
+        new_mom = self.calc_mom()
+        self.layer_opt.set_mom(new_mom)
 
     @abstractmethod
     def calc_lr(self, init_lrs): raise NotImplementedError
+    
+    @abstractmethod
+    def calc_mom(self): raise NotImplementedError
 
 
 class LR_Finder(LR_Updater):
@@ -146,9 +170,11 @@ class CosAnneal(LR_Updater):
 
 
 class CircularLR(LR_Updater):
-    def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None):
+    def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None, momentums=None):
         self.nb,self.div,self.cut_div,self.on_cycle_end = nb,div,cut_div,on_cycle_end
-        super().__init__(layer_opt)
+        if momentums is not None:
+            self.moms = momentums
+        super().__init__(layer_opt, record_mom=(momentums is not None))
 
     def on_train_begin(self):
         self.cycle_iter,self.cycle_count=0,0
@@ -157,7 +183,7 @@ class CircularLR(LR_Updater):
     def calc_lr(self, init_lrs):
         cut_pt = self.nb//self.cut_div
         if self.cycle_iter>cut_pt:
-            pct = 1 - (self.cycle_iter - cut_pt)/(cut_pt*(self.cut_div-1))
+            pct = 1 - (self.cycle_iter - cut_pt)/(self.nb - cut_pt)
         else: pct = self.cycle_iter/cut_pt
         res = init_lrs * (1 + pct*(self.div-1)) / self.div
         self.cycle_iter += 1
@@ -165,6 +191,54 @@ class CircularLR(LR_Updater):
             self.cycle_iter = 0
             if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
             self.cycle_count += 1
+        return res
+    
+    def calc_mom(self):
+        cut_pt = self.nb//self.cut_div
+        if self.cycle_iter>cut_pt:
+            pct = (self.cycle_iter - cut_pt)/(self.nb - cut_pt)
+        else: pct = 1 - self.cycle_iter/cut_pt
+        res = self.moms[1] + pct * (self.moms[0] - self.moms[1])
+        return res
+
+class CircularLR_beta(LR_Updater):
+    def __init__(self, layer_opt, nb, div=10, pct=10, on_cycle_end=None, momentums=None):
+        self.nb,self.div,self.pct,self.on_cycle_end = nb,div,pct,on_cycle_end
+        self.cycle_nb = int(nb * (1-pct/100) / 2)
+        if momentums is not None:
+            self.moms = momentums
+        super().__init__(layer_opt, record_mom=(momentums is not None))
+
+    def on_train_begin(self):
+        self.cycle_iter,self.cycle_count=0,0
+        super().on_train_begin()
+
+    def calc_lr(self, init_lrs):
+        if self.cycle_iter>2 * self.cycle_nb:
+            pct = (self.cycle_iter - 2*self.cycle_nb)/(self.nb - 2*self.cycle_nb)
+            res = init_lrs * (1 + (pct * (1-100)/100)) / self.div 
+        elif self.cycle_iter>self.cycle_nb:
+            pct = 1 - (self.cycle_iter - self.cycle_nb)/self.cycle_nb
+            res = init_lrs * (1 + pct*(self.div-1)) / self.div
+        else: 
+            pct = self.cycle_iter/self.cycle_nb
+            res = init_lrs * (1 + pct*(self.div-1)) / self.div
+        self.cycle_iter += 1
+        if self.cycle_iter==self.nb:
+            self.cycle_iter = 0
+            if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
+            self.cycle_count += 1
+        return res
+    
+    def calc_mom(self):
+        if self.cycle_iter>2*self.cycle_nb:
+            res = self.moms[0]
+        elif self.cycle_iter>self.cycle_nb:
+            pct = 1 - (self.cycle_iter - self.cycle_nb)/self.cycle_nb
+            res = self.moms[0] + pct * (self.moms[1] - self.moms[0])
+        else: 
+            pct = self.cycle_iter/self.cycle_nb
+            res = self.moms[0] + pct * (self.moms[1] - self.moms[0])
         return res
 
 

@@ -25,6 +25,9 @@ class LayerOptimizer():
     @property
     def lr(self): return self.lrs[-1]
 
+    @property
+    def mom(self): return self.opt.param_groups[0]['momentum']
+
     def set_lrs(self, lrs):
         self.lrs=lrs
         set_lrs(self.opt, lrs)
@@ -32,6 +35,9 @@ class LayerOptimizer():
     def set_wds(self, wds):
         self.wds=wds
         set_wds(self.opt, wds)
+    
+    def set_mom(self,momentum):
+        self.opt.param_groups[0]['momentum'] = momentum
 
 def set_lrs(opt, lrs):
     if not isinstance(lrs, Iterable): lrs=[lrs]
