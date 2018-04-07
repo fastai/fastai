@@ -61,6 +61,23 @@ def center_crop(im, min_sz=None):
     start_c = math.ceil((c-min_sz)/2)
     return crop(im, start_r, start_c, min_sz)
 
+def cutout(im, n_holes, length):
+    *_,h,w = im.shape
+    mask = np.ones((h, w), np.int32)
+    for n in range(n_holes):
+        y = np.random.randint(h)
+        x = np.random.randint(w)
+
+        y1 = int(np.clip(y - length / 2, 0, h))
+        y2 = int(np.clip(y + length / 2, 0, h))
+        x1 = int(np.clip(x - length / 2, 0, w))
+        x2 = int(np.clip(x + length / 2, 0, w))
+        mask[y1: y2, x1: x2] = 0.
+    
+    mask = mask[:,:,None]
+    im = im * mask
+    return im
+
 def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
 
 def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
@@ -493,6 +510,13 @@ class RandomBlur(Transform):
     def do_transform(self, x, is_y):
         return cv2.GaussianBlur(src=x, ksize=self.store.kernel, sigmaX=0) if self.apply_transform else x
 
+class Cutout(Transform):
+    def __init__(self, n_holes, length, tfm_y=TfmType.NO):
+        super().__init__(tfm_y)
+        self.n_holes,self.length = n_holes,length
+
+    def do_transform(self, img, is_y):
+        return cutout(img, self.n_holes, self.length)
 
 def compose(im, y, fns):
     """ apply a collection of transformation functions fns to images
