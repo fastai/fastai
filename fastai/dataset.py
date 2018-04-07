@@ -1,4 +1,5 @@
 import csv
+from functools import lru_cache
 
 from .imports import *
 from .torch_imports import *
@@ -266,6 +267,7 @@ class FilesArrayDataset(FilesDataset):
     def get_c(self):
         return self.y.shape[1] if len(self.y.shape)>1 else 0
 
+
 class FilesIndexArrayDataset(FilesArrayDataset):
     def get_c(self): return int(self.y.max())+1
 
@@ -277,6 +279,25 @@ class FilesNhotArrayDataset(FilesArrayDataset):
 
 class FilesIndexArrayRegressionDataset(FilesArrayDataset):
     def is_reg(self): return True
+
+
+class FilesIndexArraysDataset(FilesDataset):
+    """This is a custom dataset that can be used for detection problems.
+
+    To use this dataset, you need a model with a custom_head and a custom
+    cost function.
+    """
+    def __init__(self, fnames, ys, transform, path):
+        self.ys = ys
+        super().__init__(fnames, transform, path)
+    def get_y(self, i): return [y[i] for y in self.ys]
+    @lru_cache()
+    def get_c(self):
+        c = 0
+        for ary in self.ys[0]:
+            if ary.max() > c: c = ary.max()
+        return c + 1
+
 
 class ArraysDataset(BaseDataset):
     def __init__(self, x, y, transform):
@@ -380,6 +401,65 @@ class ImageData(ModelData):
             ]
         else: res += [None,None]
         return res
+
+
+from IPython.core.debugger import set_trace
+class ObjectDetectionData(ImageData):
+    @classmethod
+    def from_csv(cls, path, folder, csv_fname, bs=64, tfms=(None,None),
+               val_idxs=None, suffix='', test_name=None, skip_header=True, num_workers=8):
+        """ Read in images and associated bounding boxes with labels given as a CSV file.
+
+        The csv file needs to contain three columns - first one containing file names, second one classes and the third one
+        bounding box coordinates.
+
+        Example:
+            file_name,bbox_coords,category
+            000012.jpg,96 155 269 350,car
+            000017.jpg,61 184 198 278 77 89 335 402,car person
+
+
+        Arguments:
+            path: a root path of the data (used for storing trained models, precomputed values, etc)
+            folder: a name of the folder in which training images are contained.
+            csv_fname: a name of the CSV file which contains target labels.
+            suffix: suffix to add to image names in CSV file (sometimes CSV only contains the file name without file
+                    extension e.g. '.jpg' - in which case, you can set suffix as '.jpg')
+            bs: batch size
+            tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
+            val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`.
+                If None, default arguments to get_cv_idxs are used.
+            test_name: a name of the folder which contains test images.
+            skip_header: skip the first row of the CSV file.
+            num_workers: number of workers
+
+        Returns:
+            ObjectDetectionData
+        """
+        df = pd.read_csv(csv_fname, index_col=0, header=0 if skip_header else None, dtype=str)
+        for i in range(df.shape[1]): df.iloc[:,i] = df.iloc[:,i].str.split(' ')
+        labels = []
+        for row in df.iloc[:, 0]: labels += row
+        classes = sorted(list(set(labels)))
+        class2id = {l: i for i, l in enumerate(classes)}
+        df.iloc[:, 0] = df.iloc[:, 0].apply(lambda row: np.array(list(map(lambda i: class2id[i], row))))
+        for col in range(1, df.shape[1]):
+            df.iloc[:, col] = df.iloc[:, col].apply(lambda row: np.array(list(map(lambda i: int(i), row))))
+        fnames,y = df.index.values,[df.values[:, i] for i in range(df.shape[1])]
+        full_names = [os.path.join(folder,str(fn)+suffix) for fn in fnames]
+        return cls.from_names_and_arrays(path, full_names, y, classes, val_idxs, test_name,
+                num_workers=num_workers, tfms=tfms, bs=bs)
+
+    @classmethod
+    def from_names_and_arrays(cls, path, fnames, y, classes, val_idxs=None, test_name=None,
+            num_workers=8, tfms=(None,None), bs=64):
+        val_idxs = get_cv_idxs(len(fnames)) if val_idxs is None else val_idxs
+        (val_fnames, trn_fnames), *ys = split_by_idx(val_idxs, np.array(fnames), *y)
+
+        test_fnames = read_dir(path, test_name) if test_name else None
+        datasets = cls.get_ds(FilesIndexArraysDataset, (trn_fnames,[y[1] for y in ys]), (val_fnames,[y[0] for y in ys]), tfms,
+                               path=path, test=test_fnames)
+        return cls(path, datasets, bs, num_workers, classes=classes)
 
 
 class ImageClassifierData(ImageData):
