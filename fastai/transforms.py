@@ -61,7 +61,7 @@ def center_crop(im, min_sz=None):
     start_c = math.ceil((c-min_sz)/2)
     return crop(im, start_r, start_c, min_sz)
 
-def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio, flip):
+def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio, flip_p):
     h,w,*_ = im.shape
     area = h*w
     for _ in range(10):
@@ -69,7 +69,7 @@ def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio
         aspectR = random.uniform(min_aspect_ratio, max_aspect_ratio)
         ww = int(np.sqrt(targetArea * aspectR) + 0.5)
         hh = int(np.sqrt(targetArea / aspectR) + 0.5)
-        if flip:
+        if flip_p:
             ww, hh = hh, ww
         if hh <= h and ww <= w:
             x1 = 0 if w == ww else random.randint(0, w - ww)
@@ -516,13 +516,22 @@ class RandomBlur(Transform):
 
 class GoogleNetResize(CoordTransform):
     
-    def __init__(self, targ_sz, min_area_frac=0.08, min_aspect_ratio=0.75, max_aspect_ratio=1.333, p=0.5, tfm_y=TfmType.NO, sz_y=None, seed=None):
+    def _init(self, params=None):
+        if params:
+            for k, v in params.items():
+                if k != 'self':
+                    setattr(self, k, v)
+    
+    def __init__(self, targ_sz, 
+                 gnet_resize_params={'min_area_frac':0.08, 'min_aspect_ratio':0.75, 'max_aspect_ratio':1.333, 'flip_p':0.5, 'random_state':None},
+                 tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-        self.targ_sz, self.min_area_frac, self.min_aspect_ratio, self.max_aspect_ratio, self.p, self.sz_y, self.seed = targ_sz, min_area_frac, min_aspect_ratio, max_aspect_ratio, p, sz_y, seed
+        self.targ_sz, self.sz_y = targ_sz, sz_y
+        self._init(gnet_resize_params)
     
     def set_state(self):
-        if self.seed: random.seed(self.seed)
-        self.store.fp = random.random()<self.p
+        if self.random_state: random.seed(self.random_state)
+        self.store.fp = random.random()<self.flip_p
 
     def do_transform(self, x, is_y):
         sz = self.sz_y if is_y else self.targ_sz
@@ -549,16 +558,22 @@ class CropType(IntEnum):
 crop_fn_lu = {CropType.RANDOM: RandomCrop, CropType.CENTER: CenterCrop, CropType.NO: NoCrop, CropType.GOOGLENET: GoogleNetResize}
 
 class Transforms():
-    def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER, tfm_y=TfmType.NO, sz_y=None):
+    def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER,
+                 gnet_resize_params={'min_area_frac':0.08, 'min_aspect_ratio':0.75, 'max_aspect_ratio':1.333, 'flip_p':0.5, 'random_state':None},
+                 tfm_y=TfmType.NO, sz_y=None):
         if sz_y is None: sz_y = sz
         self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
-        crop_tfm = crop_fn_lu[crop_type](sz, tfm_y=tfm_y, sz_y=sz_y)
+        if crop_type==CropType.GOOGLENET:
+            crop_tfm = crop_fn_lu[crop_type](sz, gnet_resize_params, tfm_y, sz_y)
+        else:
+            crop_tfm = crop_fn_lu[crop_type](sz, tfm_y, sz_y)
         self.tfms = tfms + [crop_tfm, normalizer, ChannelOrder(tfm_y)]
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
     def __repr__(self): return str(self.tfms)
 
 
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None,
+              gnet_resize_params={'min_area_frac':0.08, 'min_aspect_ratio':0.75, 'max_aspect_ratio':1.333, 'flip_p':0.5, 'random_state':None},
               tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     """
     Generate a standard set of transformations
@@ -604,7 +619,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
     if pad: scale.append(AddPadding(pad, mode=pad_mode))
     if crop_type!=CropType.GOOGLENET: tfms=scale+tfms
     #if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
-    return Transforms(sz, tfms, normalizer, denorm, crop_type, tfm_y=tfm_y, sz_y=sz_y)
+    return Transforms(sz, tfms, normalizer, denorm, crop_type, gnet_resize_params=gnet_resize_params, tfm_y=tfm_y, sz_y=sz_y)
 
 def noop(x):
     """dummy function for do-nothing.
@@ -621,6 +636,7 @@ inception_stats = A([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
 
 def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
+                    gnet_resize_params={'min_area_frac':0.08, 'min_aspect_ratio':0.75, 'max_aspect_ratio':1.333, 'flip_p':0.5, 'random_state':None},
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     """ Given the statistics of the training image sets, returns separate training and validation transform functions
     """
@@ -629,12 +645,13 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
     tfm_denorm = Denormalize(*stats)
     val_crop = CropType.CENTER if crop_type in (CropType.RANDOM,CropType.GOOGLENET) else crop_type
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y, sz_y=sz_y)
-    trn_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, tfm_y=tfm_y, sz_y=sz_y,
+    trn_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, gnet_resize_params=gnet_resize_params, tfm_y=tfm_y, sz_y=sz_y,
                         tfms=aug_tfms, max_zoom=max_zoom, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
 def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
+                    gnet_resize_params={'min_area_frac':0.08, 'min_aspect_ratio':0.75, 'max_aspect_ratio':1.333, 'flip_p':0.5, 'random_state':None},
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     """ Returns separate transformers of images for training and validation.
     Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
@@ -643,6 +660,6 @@ def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=
         f_model: model, pretrained or not pretrained
     """
     stats = inception_stats if f_model in inception_models else imagenet_stats
-    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type,
+    return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type, gnet_resize_params=gnet_resize_params,
                        tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
 
