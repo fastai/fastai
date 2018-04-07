@@ -62,7 +62,7 @@ def center_crop(im, min_sz=None):
     return crop(im, start_r, start_c, min_sz)
 
 def cutout(im, n_holes, length):
-    h, w, _ = im.shape    
+    *_,h,w = im.shape
     mask = np.ones((h, w), np.int32)
     for n in range(n_holes):
         y = np.random.randint(h)
