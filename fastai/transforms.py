@@ -61,7 +61,6 @@ def center_crop(im, min_sz=None):
     start_c = math.ceil((c-min_sz)/2)
     return crop(im, start_r, start_c, min_sz)
 
-<<<<<<< HEAD
 def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio, flip_p):
     h,w,*_ = im.shape
     area = h*w
@@ -81,7 +80,7 @@ def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio
     out = scale_min(im, targ, interpolation=cv2.INTER_CUBIC)
     out = center_crop(out)
     return out
-=======
+
 def cutout(im, n_holes, length):
     *_,h,w = im.shape
     mask = np.ones((h, w), np.int32)
@@ -98,7 +97,6 @@ def cutout(im, n_holes, length):
     mask = mask[:,:,None]
     im = im * mask
     return im
->>>>>>> master
 
 def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
 
