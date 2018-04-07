@@ -335,7 +335,7 @@ class TextData(ModelData):
         text_fld = splits[0].fields[text_name]
         label_fld = splits[0].fields[label_name]
         if hasattr(label_fld, 'build_vocab'): label_fld.build_vocab(splits[0])
-        iters = torchtext.data.BucketIterator.splits(splits, batch_size=bs)
+        iters = torchtext.data.BucketIterator.splits(splits, batch_size=bs, device=None if torch.cuda.is_available() else -1)
         trn_iter,val_iter,test_iter = iters[0],iters[1],None
         test_dl = None
         if len(iters) == 3:
