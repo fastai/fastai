@@ -53,13 +53,10 @@ class TestLayerOptimizer(unittest.TestCase):
 
     def test_set_lrs_malformed(self):
         lo = LayerOptimizer(FakeOpt, params_('A', 'B', 'C'), 1e-2, 1e-4)
-        # This should probably error instead of quietly working.
-        lo.set_lrs([2e-2, 3e-2])
-        self.check_optimizer_(
-            lo.opt,
-            [('A', 2e-2, 1e-4), ('B', 3e-2, 1e-4), ('C', 1e-2, 1e-4)],
-        )
-
+        with self.assertRaises(AssertionError):
+            lo.set_lrs([2e-2, 3e-2])
+        self.check_optimizer_(lo.opt, [(nm, 1e-2, 1e-4) for nm in 'ABC'])
+        
     def test_set_wds_atomic(self):
         lo = LayerOptimizer(FakeOpt, params_('A', 'B', 'C'), 1e-2, 1e-4)
         lo.set_wds(1e-5)
@@ -75,12 +72,9 @@ class TestLayerOptimizer(unittest.TestCase):
 
     def test_set_wds_malformed(self):
         lo = LayerOptimizer(FakeOpt, params_('A', 'B', 'C'), 1e-2, 1e-4)
-        # This should probably error instead of quietly working.
-        lo.set_wds([9e-3, 8e-3])
-        self.check_optimizer_(
-            lo.opt,
-            [('A', 1e-2, 9e-3), ('B', 1e-2, 8e-3), ('C', 1e-2, 1e-4)],
-        )
+        with self.assertRaises(AssertionError):
+            lo.set_wds([9e-3, 8e-3])
+        self.check_optimizer_(lo.opt, [(nm, 1e-2, 1e-4) for nm in 'ABC'])
 
     def check_optimizer_(self, opt, expected):
         actual = opt.param_groups
