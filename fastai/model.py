@@ -32,9 +32,8 @@ class Stepper():
         self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
         self.fp16 = fp16
         self.reset(True)
-
-        self.loss_scale = loss_scale if fp16 else 1
         if self.fp16: self.fp32_params = copy_model_to_fp32(m, opt)
+        self.loss_scale = loss_scale
 
     def reset(self, train=True):
         if train: apply_leaf(self.m, set_train_mode)
@@ -50,17 +49,18 @@ class Stepper():
         if self.fp16: self.m.zero_grad()
         else: self.opt.zero_grad() 
         loss = raw_loss = self.crit(output, y)
-        if self.loss_scale != 1: loss = loss*self.loss_scale
+        if self.loss_scale != 1: assert(self.fp16); loss = loss*self.loss_scale
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
         loss.backward()
         if self.fp16: update_fp32_grads(self.fp32_params, self.m)
-        if self.loss_scale != 1: 
+        if self.loss_scale != 1:
             for param in self.fp32_params: param.grad.data.div_(self.loss_scale)
         if self.clip:   # Gradient clipping
             nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         self.opt.step()
-        if self.fp16: copy_fp32_to_model(self.m, self.fp32_params)
-        torch.cuda.synchronize()
+        if self.fp16: 
+            copy_fp32_to_model(self.m, self.fp32_params)
+            torch.cuda.synchronize()
         return torch_item(raw_loss.data)
 
     def evaluate(self, xs, y):
@@ -76,7 +76,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, sampler=None, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -88,6 +88,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
        crit: loss function to optimize. Example: F.cross_entropy
     """
     all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
+    sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
     stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
@@ -168,13 +169,14 @@ def validate_next(stepper, metrics, val_iter):
 def validate(stepper, dl, metrics):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
-    for (*x,y) in iter(dl):
-        y = VV(y)
-        preds,l = stepper.evaluate(VV(x), y)
-        if isinstance(x,list): batch_cnts.append(len(x[0]))
-        else: batch_cnts.append(len(x))
-        loss.append(to_np(l))
-        res.append([f(preds.data,y.data) for f in metrics])
+    with torch.no_grad():
+        for (*x,y) in iter(dl):
+            y = VV(y)
+            preds,l = stepper.evaluate(VV(x), y)
+            if isinstance(x,list): batch_cnts.append(len(x[0]))
+            else: batch_cnts.append(len(x))
+            loss.append(to_np(l))
+            res.append([f(preds.data,y) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
