@@ -20,16 +20,9 @@ install:
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-
-  # Replace dep1 dep2 ... with your dependencies
-  #- conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION dep1 dep2 ...
-  - ls
-  - pwd
-  - conda env
   - conda env update -f environment-cpu.yml
   - source activate fastai-cpu
-  #- conda activate fastai
-  #- python setup.py install
 
 script:
-  - python -m unittest
+  #- python -m unittest
+  -  python -m pytest tests
