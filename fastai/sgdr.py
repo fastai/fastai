@@ -38,15 +38,15 @@ class LoggingCallback(Callback):
         self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
 
 class LossRecorder(Callback):
-    def __init__(self, layer_opt, save_path='', record_mom=False):
+    def __init__(self, layer_opt, save_path='', record_mom=False, metrics=[]):
         super().__init__()
         self.layer_opt=layer_opt
         self.init_lrs=np.array(layer_opt.lrs)
-        self.save_path=save_path
-        self.record_mom = record_mom
+        self.save_path, self.record_mom, self.metrics = save_path, record_mom, metrics
 
     def on_train_begin(self):
         self.losses,self.lrs,self.iterations = [],[],[]
+        self.val_losses, self.rec_metrics = [], []
         if self.record_mom:
             self.momentums = []
         self.iteration = 0
@@ -59,9 +59,16 @@ class LossRecorder(Callback):
         self.iteration += 1
         self.lrs.append(self.layer_opt.lr)
         self.iterations.append(self.iteration)
-        self.losses.append(loss)
-        if self.record_mom:
-            self.momentums.append(self.layer_opt.mom)
+        if isinstance(loss, list):
+            self.losses.append(loss[0])
+            self.save_metrics(loss[1:])
+        else: self.losses.append(loss)
+        if self.record_mom: self.momentums.append(self.layer_opt.mom)
+
+    def save_metrics(self,vals):
+        self.val_losses.append(vals[0])
+        if len(vals) > 2: self.rec_metrics.append(vals[1:])
+        elif len(vals) == 2: self.rec_metrics.append(vals[1])
 
     def plot_loss(self):
         if not in_ipynb(): plt.switch_backend('agg')
@@ -118,11 +125,11 @@ class LR_Updater(LossRecorder):
 
 
 class LR_Finder(LR_Updater):
-    def __init__(self, layer_opt, nb, end_lr=10, linear=False):
-        self.linear = linear
+    def __init__(self, layer_opt, nb, end_lr=10, linear=False, metrics = []):
+        self.linear, self.stop_dv = linear, True
         ratio = end_lr/layer_opt.lr
         self.lr_mult = (ratio/nb) if linear else ratio**(1/nb)
-        super().__init__(layer_opt)
+        super().__init__(layer_opt,metrics=metrics)
 
     def on_train_begin(self):
         super().on_train_begin()
@@ -132,11 +139,12 @@ class LR_Finder(LR_Updater):
         mult = self.lr_mult*self.iteration if self.linear else self.lr_mult**self.iteration
         return init_lrs * mult
 
-    def on_batch_end(self, loss):
-        if math.isnan(loss) or loss>self.best*4:
+    def on_batch_end(self, metrics):
+        loss = metrics[0] if isinstance(metrics,list) else metrics
+        if self.stop_dv and (math.isnan(loss) or loss>self.best*4):
             return True
         if (loss<self.best and self.iteration>10): self.best=loss
-        return super().on_batch_end(loss)
+        return super().on_batch_end(metrics)
 
     def plot(self, n_skip=10, n_skip_end=5):
         plt.ylabel("loss")
@@ -144,6 +152,35 @@ class LR_Finder(LR_Updater):
         plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         plt.xscale('log')
 
+class LR_Finder2(LR_Finder):
+    def __init__(self, layer_opt, nb, end_lr=10, linear=False, metrics=[], stop_dv=True):
+        self.nb, self.metrics = nb, metrics
+        super().__init__(layer_opt, nb, end_lr, linear, metrics)
+        self.stop_dv = stop_dv
+
+    def on_batch_end(self, loss):
+        if self.iteration == self.nb:
+            return True
+        return super().on_batch_end(loss)
+
+    def plot(self, n_skip=10, n_skip_end=5, smoothed=True):
+        if self.metrics is None: self.metrics = []
+        n_plots = len(self.metrics)+2
+        fig, axs = plt.subplots(n_plots,figsize=(6,4*n_plots))
+        for i in range(0,n_plots): axs[i].set_xlabel('learning rate')
+        axs[0].set_ylabel('training loss')
+        axs[1].set_ylabel('validation loss')
+        for i,m in enumerate(self.metrics): 
+            axs[i+2].set_ylabel(m.__name__)
+            if len(self.metrics) == 1:
+                values = self.rec_metrics
+            else:
+                values = [rec[i] for rec in self.rec_metrics]
+            if smoothed: values = smooth_curve(values,0.98)
+            axs[i+2].plot(self.lrs[n_skip:-n_skip_end], values[n_skip:-n_skip_end])
+        plt_val_l = smooth_curve(self.val_losses, 0.98) if smoothed else self.val_losses
+        axs[0].plot(self.lrs[n_skip:-n_skip_end],self.losses[n_skip:-n_skip_end])
+        axs[1].plot(self.lrs[n_skip:-n_skip_end],plt_val_l[n_skip:-n_skip_end])
 
 class CosAnneal(LR_Updater):
     def __init__(self, layer_opt, nb, on_cycle_end=None, cycle_mult=1):
@@ -366,3 +403,11 @@ class WeightDecaySchedule(Callback):
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
+
+def smooth_curve(vals, beta):
+    avg_val = 0
+    smoothed = []
+    for (i,v) in enumerate(vals):
+        avg_val = beta * avg_val + (1-beta) * v
+        smoothed.append(avg_val/(1-beta**(i+1)))
+    return smoothed

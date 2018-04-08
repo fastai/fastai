@@ -87,7 +87,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, all_val=False, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -116,6 +116,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
         i = 0
+        if all_val: val_iter = iter_batch(data.val_dl)
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
@@ -124,16 +125,18 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
             stop=False
-            for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
+            los = debias_loss if not all_val else [debias_loss] + validate_next(stepper,metrics, val_iter)
+            for cb in callbacks: stop = stop or cb.on_batch_end(los)
             if stop: return
             if i>num_batch: break
             i += 1
 
-        vals = validate(stepper, data.val_dl, metrics)
-        if epoch == 0: print(layout.format(*names))
-        print_stats(epoch, [debias_loss] + vals)
-        stop=False
-        for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
+        if not all_val:
+            vals = validate(stepper, data.val_dl, metrics)
+            if epoch == 0: print(layout.format(*names))
+            print_stats(epoch, [debias_loss] + vals)
+            stop=False
+            for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
 
     for cb in callbacks: cb.on_train_end()
@@ -144,6 +147,29 @@ def print_stats(epoch, values, decimals=6):
     layout = "{!s:^10}" + " {!s:10}" * len(values)
     values = [epoch] + list(np.round(values, decimals))
     print(layout.format(*values))
+
+class iter_batch():
+    def __init__(self, dl):
+        self.idx = 0
+        self.dl = dl
+        self.iter = iter(dl)
+    
+    def get_next(self):
+        res = next(self.iter)
+        self.idx += 1
+        if self.idx == len(self.dl):
+            self.iter = iter(self.dl)
+            self.idx=0
+        return res 
+
+def validate_next(stepper, metrics, val_iter):
+    stepper.reset(False)
+    (*x,y) = val_iter.get_next()
+    preds,l = stepper.evaluate(VV(x), VV(y))
+    res = [to_np(l)[0]]
+    res += [f(preds.data,y) for f in metrics]
+    stepper.reset(True)
+    return res
 
 def validate(stepper, dl, metrics):
     batch_cnts,loss,res = [],[],[]
