@@ -152,3 +152,4 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | activation                          | actn           |                                                  |
 |                  |                                     |                |                                                  |
 | **Text**         | string                              | s              |                                                  |
+|                  | token                               | tok            |                                                  |
