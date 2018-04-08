@@ -30,8 +30,8 @@ class ConvnetBuilder():
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, pretrained=True):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
-        if ps is None: ps = [0.25,0.5]
         if xtra_fc is None: xtra_fc = [512]
+        if ps is None: ps = [0.25]*len(xtra_fc) + [0.5]
         self.ps,self.xtra_fc = ps,xtra_fc
 
         if f in model_meta: cut,self.lr_cut = model_meta[f]

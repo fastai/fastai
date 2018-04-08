@@ -63,9 +63,9 @@ class LossRecorder(Callback):
         if self.record_mom:
             self.momentums.append(self.layer_opt.mom)
 
-    def plot_loss(self):
+    def plot_loss(self, n_skip=10, n_skip_end=5):
         if not in_ipynb(): plt.switch_backend('agg')
-        plt.plot(self.iterations[10:], self.losses[10:])
+        plt.plot(self.iterations[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'loss_plot.png'))
             np.save(os.path.join(self.save_path, 'losses.npy'), self.losses[10:])

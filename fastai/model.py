@@ -25,6 +25,7 @@ def num_features(m):
         res = num_features(l)
         if res is not None: return res
 
+def torch_item(x): return x.item() if hasattr(x,'item') else x[0]
 
 class Stepper():
     def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1):
@@ -33,11 +34,11 @@ class Stepper():
         self.reset(True)
         self.loss_scale = loss_scale if fp16 else 1
         if self.fp16: self.fp32_params = copy_model_to_fp32(m, opt)
-        
+
     def reset(self, train=True):
         if train: apply_leaf(self.m, set_train_mode)
         else: self.m.eval()
-        if hasattr(self.m, 'reset'): 
+        if hasattr(self.m, 'reset'):
             self.m.reset()
             #if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
 
@@ -53,9 +54,9 @@ class Stepper():
         if self.clip:   # Gradient clipping
             nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         self.opt.step()
-        return raw_loss.data[0]
-    
-    
+        return torch_item(raw_loss.data)
+
+
     def step_fp16(self, xs, y, epoch):
         xtra = []
         output = self.m(*xs)
@@ -154,7 +155,7 @@ def validate(stepper, dl, metrics):
         else: batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
-    return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
+    return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
     if is_listy(x): x=x[0]

@@ -168,9 +168,15 @@ class BaseDataset(Dataset):
         self.c = self.get_c()
         self.sz = self.get_sz()
 
-    def __getitem__(self, idx):
+    def get1item(self, idx):
         x,y = self.get_x(idx),self.get_y(idx)
         return self.get(self.transform, x, y)
+
+    def __getitem__(self, idx):
+        if isinstance(idx,slice):
+            xs,ys = zip(*[self.get1item(i) for i in range(*idx.indices(self.n))])
+            return np.stack(xs),ys
+        return self.get1item(idx)
 
     def __len__(self): return self.n
 
