@@ -95,7 +95,7 @@ class SortSampler(Sampler):
     def __init__(self, data_source, key): self.data_source,self.key = data_source,key
     def __len__(self): return len(self.data_source)
     def __iter__(self):
-        return iter(sorted(range(len(self.data_source)), key=self.key))
+        return iter(sorted(range(len(self.data_source)), key=self.key, reverse=True))
 
 
 class SortishSampler(Sampler):
@@ -108,10 +108,11 @@ class SortishSampler(Sampler):
         idxs = np.random.permutation(len(self.data_source))
         sz = self.bs*50
         ck_idx = [idxs[i:i+sz] for i in range(0, len(idxs), sz)]
-        sort_idx = sum([sorted(s, key=self.key) for s in ck_idx], [])
+        sort_idx = sum([sorted(s, key=self.key, reverse=True) for s in ck_idx], [])
         sz = self.bs
         ck_idx = [sort_idx[i:i+sz] for i in range(0, len(sort_idx), sz)]
-        sort_idx = np.concatenate(np.random.permutation(ck_idx))
+        sort_idx = np.concatenate(np.random.permutation(ck_idx[1:]))
+        sort_idx = np.concatenate((ck_idx[0], sort_idx))
         return iter(sort_idx)
 
 
