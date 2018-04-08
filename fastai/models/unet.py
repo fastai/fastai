@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 import numpy as np
 
 def get_sfs_idxs(sfs, last=True):
@@ -78,6 +79,9 @@ class DynamicUnet(nn.Module):
         self.n_classes = n_classes
 
     def forward(self, x):
+        # get imsize
+        imsize = x.size()[-2:]
+
         # encoder output
         x = F.relu(self.encoder(x))
 
@@ -93,25 +97,23 @@ class DynamicUnet(nn.Module):
         # middle conv
         x = self.middle_conv(x)
 
-        # initialize upmodel and 1x1 final conv
+        # initialize upmodel, extra_block and 1x1 final conv
         if not hasattr(self, 'upmodel'):
-            x_copy = x
+            x_copy = Variable(x.data, requires_grad=False)
             upmodel = []
             for idx in self.sfs_idxs[::-1]:
-                features = self.sfs[idx].features
                 up_in_c, x_in_c = int(x_copy.size()[1]), int(self.sfs_szs[idx][1])
                 unet_block = UnetBlock(up_in_c, x_in_c)
                 upmodel.append(unet_block)
                 x_copy = unet_block(x_copy, self.sfs[idx].features)
                 self.upmodel = nn.Sequential(*upmodel)
 
-            if x.size()[-2:] != self.sfs_szs[0][-2:]:
+            if imsize != self.sfs_szs[0][-2:]:
                 extra_in_c = self.upmodel[-1].conv2.out_channels
                 self.extra_block = nn.ConvTranspose2d(extra_in_c, extra_in_c, 2, 2)
 
-        # final 1x1 conv
-        final_in_c = self.upmodel[-1].conv2.out_channels
-        self.final_conv = nn.Conv2d(final_in_c, self.n_classes, 1)
+            final_in_c = self.upmodel[-1].conv2.out_channels
+            self.final_conv = nn.Conv2d(final_in_c, self.n_classes, 1)
 
         # run upsample
         for block, idx in zip(self.upmodel, self.sfs_idxs[::-1]):
