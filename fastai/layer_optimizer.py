@@ -26,7 +26,11 @@ class LayerOptimizer():
     def lr(self): return self.lrs[-1]
 
     @property
-    def mom(self): return self.opt.param_groups[0]['momentum']
+    def mom(self):
+        if 'betas' in self.opt.param_groups[0]:
+            return self.opt.param_groups[0]['betas'][0]
+        else:
+            return self.opt.param_groups[0]['momentum']
 
     def set_lrs(self, lrs):
         set_lrs(self.opt, lrs)
@@ -37,7 +41,10 @@ class LayerOptimizer():
         self.wds=wds
     
     def set_mom(self,momentum):
-        self.opt.param_groups[0]['momentum'] = momentum
+        if 'betas' in self.opt.param_groups[0]:
+            for pg in self.opt.param_groups: pg['betas'] = (momentum, pg['betas'][1])
+        else:
+            for pg in self.opt.param_groups: pg['momentum'] = momentum
 
 def zip_strict_(l, r):
     assert(len(l) == len(r))
