@@ -144,6 +144,9 @@ class StructuredLearner(Learner):
         else:
             self.crit = F.nll_loss
 
+    def summary(self):
+        return model_summary(self.model, [(self.data.trn_ds.cats.shape[1], ), (self.data.trn_ds.conts.shape[1], )])
+
 
 class StructuredModel(BasicModel):
     def get_layer_groups(self):
