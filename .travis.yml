@@ -22,6 +22,7 @@ install:
   - conda info -a
   - conda env update -f environment-cpu.yml
   - source activate fastai-cpu
+  - pip install -U pytest
 
 script:
   #- python -m unittest
