@@ -102,7 +102,8 @@ class Learner():
         self.model.float()
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):
+                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,
+                wds_sched_mult=None, all_val=False, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -195,7 +196,7 @@ class Learner():
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, all_val=all_val, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 
@@ -255,7 +256,7 @@ class Learner():
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), lr, linear=True)
         return self.fit_gen(self.model, self.data, layer_opt, 1)
 
-    def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False):
+    def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False, **kwargs):
         """Helps you find an optimal learning rate for a model.
 
          It uses the technique developed in the 2015 paper
@@ -291,7 +292,14 @@ class Learner():
         self.save('tmp')
         layer_opt = self.get_layer_opt(start_lr, wds)
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), end_lr, linear=linear)
-        self.fit_gen(self.model, self.data, layer_opt, 1)
+        self.fit_gen(self.model, self.data, layer_opt, 1, **kwargs)
+        self.load('tmp')
+
+    def lr_find2(self, start_lr=1e-5, end_lr=10, num_it = 100, wds=None, linear=False, stop_dv=True, **kwargs):
+        self.save('tmp')
+        layer_opt = self.get_layer_opt(start_lr, wds)
+        self.sched = LR_Finder2(layer_opt, num_it, end_lr, linear=linear, metrics=self.metrics, stop_dv=stop_dv)
+        self.fit_gen(self.model, self.data, layer_opt, num_it//len(self.data.trn_dl) + 1, all_val=True, **kwargs)
         self.load('tmp')
 
     def predict(self, is_test=False):
