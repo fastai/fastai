@@ -12,7 +12,7 @@ More generally, aim to write tests that also explain the code they are testing. 
 
 == Testing patterns
 
-* Mocking or faking objects is fine for getting started, but real versions of the required objects are preferred when they can be used without prohibitive overhead.
+* Do not use mock or fake objects. The library is nice enough that real versions of required objects can be used without prohibitive overhead.
 * Keep test methods small and tidy, just like any other code.
 * Aim to add a regression test as part of any bug fix PR.
 * Add tests before refactoring, so they can help prove correctness.
