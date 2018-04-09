@@ -296,7 +296,6 @@ class Learner():
         self.load('tmp')
 
     def lr_find2(self, start_lr=1e-5, end_lr=10, num_it = 100, wds=None, linear=False, stop_dv=True, **kwargs):
-        def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False, **kwargs):
         """A variant of lr_find() that helps find the best learning rate. It doesn't do
         an epoch but a fixed num of iterations (which may be more or less than an epoch 
         depending on your data).

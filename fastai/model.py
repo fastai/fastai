@@ -98,6 +98,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
+    all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
     stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
@@ -106,7 +107,6 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
     layout = "{!s:10} " * len(names)
-    all_val = kwargs['all_val'] if 'all_val' in kwargs else False
     
     num_batch = len(data.trn_dl)
     if epochs<1:
