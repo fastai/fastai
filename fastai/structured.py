@@ -73,7 +73,7 @@ def get_sample(df,n):
     idxs = sorted(np.random.permutation(len(df))[:n])
     return df.iloc[idxs].copy()
 
-def add_datepart(df, fldname, drop=True):
+def add_datepart(df, fldname, drop=True, time=False):
     """add_datepart converts a column of df from a datetime64 to many columns containing
     the information from the date. This applies changes inplace.
 
@@ -83,6 +83,7 @@ def add_datepart(df, fldname, drop=True):
     fldname: A string that is the name of the date column you wish to expand.
         If it is not a datetime64 series, it will be converted to one with pd.to_datetime.
     drop: If true then the original date column will be removed.
+    time: If true time features: Hour, Minute, Second will be added.
 
     Examples:
     ---------
@@ -107,10 +108,11 @@ def add_datepart(df, fldname, drop=True):
     if not np.issubdtype(fld.dtype, np.datetime64):
         df[fldname] = fld = pd.to_datetime(fld, infer_datetime_format=True)
     targ_pre = re.sub('[Dd]ate$', '', fldname)
-    for n in ('Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
-            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
-        df[targ_pre+n] = getattr(fld.dt,n.lower())
-    df[targ_pre+'Elapsed'] = fld.astype(np.int64) // 10**9
+    attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
+            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+    if time: attr = attr + ['Hour', 'Minute', 'Second']
+    for n in attr: df[targ_pre + n] = getattr(fld.dt, n.lower())
+    df[targ_pre + 'Elapsed'] = fld.astype(np.int64) // 10 ** 9
     if drop: df.drop(fldname, axis=1, inplace=True)
 
 def is_date(x): return np.issubdtype(x.dtype, np.datetime64)
@@ -324,9 +326,8 @@ def scale_vars(df, mapper):
     df[mapper.transformed_names_] = mapper.transform(df)
     return mapper
 
-def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
+def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
-
     """ proc_df takes a data frame df and splits off the response variable, and
     changes the df into an entirely numeric dataframe.
 
@@ -338,7 +339,9 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
 
     skip_flds: A list of fields that dropped from df.
 
-    do_scale: Standardizes each column in df,Takes Boolean Values(True,False)
+    ignore_flds: A list of fields that are ignored during processing.
+
+    do_scale: Standardizes each column in df. Takes Boolean Values(True,False)
 
     na_dict: a dictionary of na columns to add. Na columns are also added if there
         are any missing values.
@@ -351,7 +354,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     subset: Takes a random subset of size subset from df.
 
     mapper: If do_scale is set as True, the mapper variable
-        calculates the values used for scaling of variables during training time(mean and standard deviation).
+        calculates the values used for scaling of variables during training time (mean and standard deviation).
 
     Returns:
     --------
@@ -364,7 +367,7 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
 
         nas: returns a dictionary of which nas it created, and the associated median.
 
-        mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continous
+        mapper: A DataFrameMapper which stores the mean and standard deviation of the corresponding continuous
         variables which is then used for scaling of during test-time.
 
     Examples:
@@ -415,13 +418,16 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     1.0  0.0  0.0   1.04
     0.0  0.0  1.0   0.21
     """
+    if not ignore_flds: ignore_flds=[]
     if not skip_flds: skip_flds=[]
     if subset: df = get_sample(df,subset)
+    ignored_flds = df.loc[:, ignore_flds]
+    df.drop(ignore_flds, axis=1, inplace=True)
     df = df.copy()
     if preproc_fn: preproc_fn(df)
     if y_fld is None: y = None
     else:
-        numericalize(df, df[y_fld], y_fld, None)
+        if not is_numeric_dtype(df[y_fld]): df[y_fld] = df[y_fld].cat.codes
         y = df[y_fld].values
         skip_flds += [y_fld]
     df.drop(skip_flds, axis=1, inplace=True)
@@ -430,7 +436,9 @@ def proc_df(df, y_fld=None, skip_flds=None, do_scale=False, na_dict=None,
     for n,c in df.items(): na_dict = fix_missing(df, c, n, na_dict)
     if do_scale: mapper = scale_vars(df, mapper)
     for n,c in df.items(): numericalize(df, c, n, max_n_cat)
-    res = [pd.get_dummies(df, dummy_na=True), y, na_dict]
+    df = pd.get_dummies(df, dummy_na=True)
+    df = pd.concat([ignored_flds, df], axis=1)
+    res = [df, y, na_dict]
     if do_scale: res = res + [mapper]
     return res
 

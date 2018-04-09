@@ -9,11 +9,23 @@ from .layer_optimizer import *
 from .layers import *
 from .metrics import *
 from .losses import *
+from .fp16 import *
 import time
 
 
 class Learner():
     def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+        """
+        Combines a ModelData object with a nn.Module object, such that you can train that
+        module.
+        data (ModelData): An instance of ModelData.
+        models(module): chosen neural architecture for solving a supported problem.
+        opt_fn(function): optimizer function, uses SGD with Momentum of .9 if none.
+        tmp_name(str): output name of the directory containing temporary files from training process
+        models_name(str): output name of the directory containing the trained model
+        metrics(list): array of functions for evaluating a desired metric. Eg. accuracy.
+        clip(float): gradient clip chosen to limit the change in the gradient to prevent exploding gradients Eg. .3
+        """
         self.data_,self.models,self.metrics = data,models,metrics
         self.sched=None
         self.wd_sched = None
@@ -24,6 +36,7 @@ class Learner():
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn = None,None
+        self.fp16 = False
 
     @classmethod
     def from_model_data(cls, m, data, **kwargs):
@@ -57,6 +70,11 @@ class Learner():
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 
+    def freeze_all_but(self, n):
+        c=self.get_layer_groups()
+        for l in c: set_trainable(l, False)
+        set_trainable(c[n], True)
+
     def unfreeze(self): self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
@@ -71,9 +89,21 @@ class Learner():
 
     def save_cycle(self, name, cycle): self.save(f'{name}_cyc_{cycle}')
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
+        
+    def half(self):
+        if self.fp16: return
+        self.fp16 = True
+        if type(self.model) != FP16: self.models.model = FP16(self.model)
+        self.model.half()
+    def float(self):
+        if not self.fp16: return
+        self.fp16 = False
+        if type(self.model) == FP16: self.models.model = self.model.module
+        self.model.float()
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None, **kwargs):
+                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,
+                wds_sched_mult=None, all_val=False, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -101,7 +131,7 @@ class Learner():
                 https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb
 
             cycle_save_name (str): use to save the weights at end of each cycle
-            
+
             best_save_name (str): use to save weights of best model during training.
 
             metrics (function): some function for evaluating a desired metric. Eg. accuracy.
@@ -143,23 +173,30 @@ class Learner():
                                                 norm_wds, wds_sched_mult)
             callbacks += [self.wd_sched]
 
-        elif use_clr is not None:
-            clr_div,cut_div = use_clr
+        if use_clr is not None:
+            clr_div,cut_div = use_clr[:2]
+            moms = use_clr[2:] if len(use_clr) > 2 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
-            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div)
+            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div, 
+                                    momentums=moms)
+        elif use_clr_beta is not None:
+            div,pct = use_clr_beta[:2]
+            moms = use_clr_beta[2:] if len(use_clr_beta) > 3 else None
+            cycle_end = self.get_cycle_end(cycle_save_name)
+            self.sched = CircularLR_beta(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=div, 
+                                    pct=pct, momentums=moms)
         elif cycle_len:
             cycle_end = self.get_cycle_end(cycle_save_name)
             cycle_batches = len(data.trn_dl)*cycle_len
             self.sched = CosAnneal(layer_opt, cycle_batches, on_cycle_end=cycle_end, cycle_mult=cycle_mult)
         elif not self.sched: self.sched=LossRecorder(layer_opt)
         callbacks+=[self.sched]
-        
+
         if best_save_name is not None:
-            callbacks+=[SaveBestModel(self, layer_opt, best_save_name)]
-            
+            callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, all_val=all_val, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 
@@ -219,7 +256,7 @@ class Learner():
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), lr, linear=True)
         return self.fit_gen(self.model, self.data, layer_opt, 1)
 
-    def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False):
+    def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False, **kwargs):
         """Helps you find an optimal learning rate for a model.
 
          It uses the technique developed in the 2015 paper
@@ -255,7 +292,14 @@ class Learner():
         self.save('tmp')
         layer_opt = self.get_layer_opt(start_lr, wds)
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), end_lr, linear=linear)
-        self.fit_gen(self.model, self.data, layer_opt, 1)
+        self.fit_gen(self.model, self.data, layer_opt, 1, **kwargs)
+        self.load('tmp')
+
+    def lr_find2(self, start_lr=1e-5, end_lr=10, num_it = 100, wds=None, linear=False, stop_dv=True, **kwargs):
+        self.save('tmp')
+        layer_opt = self.get_layer_opt(start_lr, wds)
+        self.sched = LR_Finder2(layer_opt, num_it, end_lr, linear=linear, metrics=self.metrics, stop_dv=stop_dv)
+        self.fit_gen(self.model, self.data, layer_opt, num_it//len(self.data.trn_dl) + 1, all_val=True, **kwargs)
         self.load('tmp')
 
     def predict(self, is_test=False):
@@ -267,7 +311,10 @@ class Learner():
         return predict_with_targs(self.model, dl)
 
     def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
-    def predict_array(self, arr): return to_np(self.model(V(T(arr).cuda())))
+
+    def predict_array(self, arr):
+        self.model.eval()
+        return to_np(self.model(to_gpu(V(T(arr)))))
 
     def TTA(self, n_aug=4, is_test=False):
         """ Predict with Test Time Augmentation (TTA)

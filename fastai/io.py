@@ -12,6 +12,11 @@ class TqdmUpTo(tqdm):
 
 def get_data(url, filename):
     if not os.path.exists(filename):
+
+        dirname = os.path.dirname(filename)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+
         with TqdmUpTo(unit='B', unit_scale=True, miniters=1, desc=url.split('/')[-1]) as t:
             urlretrieve(url, filename, reporthook=t.update_to)
 
