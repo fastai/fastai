@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 class ConvBN(nn.Module):
     #convolutional layer then Batchnorm
-    def __init__(self, ch_in, ch_out, kernel_size = 3, stride=1, padding=0):
+    def __init__(self, ch_in, ch_out, kernel_size = 3, stride=1):
         super().__init__()
         self.conv = nn.Conv2d(ch_in, ch_out, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn = nn.BatchNorm2d(ch_out)
@@ -17,8 +17,8 @@ class DarknetBlock(nn.Module):
     def __init__(self, ch_in):
         super().__init__()
         ch_hid = ch_in//2
-        self.conv1 = ConvBN(ch_in, ch_hid, kernel_size=1, stride=1, padding=0)
-        self.conv2 = ConvBN(ch_hid, ch_in, kernel_size=3, stride=1, padding=1)
+        self.conv1 = ConvBN(ch_in, ch_hid, kernel_size=1, stride=1)
+        self.conv2 = ConvBN(ch_hid, ch_in, kernel_size=3, stride=1)
         
     def forward(self, x):
         out = F.leaky_relu(self.conv1(x),0.1)
@@ -30,7 +30,7 @@ class Darknet(nn.Module):
     #Replicates the table 1 from the YOLOv3 paper
     def __init__(self, num_blocks, num_classes=1000):
         super().__init__()
-        self.conv = ConvBN(3, 32, kernel_size=3, stride=1, padding=1)
+        self.conv = ConvBN(3, 32, kernel_size=3, stride=1)
         self.layer1 = self.make_group_layer(32, num_blocks[0])
         self.layer2 = self.make_group_layer(64, num_blocks[1], stride=2)
         self.layer3 = self.make_group_layer(128, num_blocks[2], stride=2)
