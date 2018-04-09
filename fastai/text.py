@@ -167,12 +167,12 @@ class LanguageModel(BasicModel):
 
 
 class LanguageModelData():
-    def __init__(self, path, pad_idx, nt, trn_dl, val_dl, test_dl=None, bptt=70, backwards=False, **kwargs):
-        self.path,self.pad_idx,self.nt = path,pad_idx,nt
+    def __init__(self, path, pad_idx, n_tok, trn_dl, val_dl, test_dl=None, bptt=70, backwards=False, **kwargs):
+        self.path,self.pad_idx,self.n_tok = path,pad_idx,n_tok
         self.trn_dl,self.val_dl,self.test_dl = trn_dl,val_dl,test_dl
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
-        m = get_language_model(self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
+        m = get_language_model(self.n_tok, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
         model = LanguageModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
