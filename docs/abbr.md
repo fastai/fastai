@@ -23,14 +23,13 @@ Note that there are always exceptions, especially when we try to comply with the
 | **Suffix**       |                                     |                |                                                  |
 |                  | multiple of something (plural)      | s              | xs, ys, tfms, args, ss                           |
 |                  | internal property or method         | _              | data_, V_()                                      |
-|                  | transform image using opencv        | _cv            | zoom_cv(), rotate_cv(), stretch_cv()             |
 | **Prefix**       |                                     |                |                                                  |
 |                  | check if satisfied                  | is_            | is_reg, is_multi, is_single, is_test, is_correct |
 |                  | On/off a feature                    | use_           | use_bn                                           |
 |                  | Number of something (plural)        | n_             | n_embs, n_factors, n_users, n_items              |
 |                  | count something                     | num_           | num_features(), num_gpus()                       |
 |                  | convert to something                | to_            | to_gpu(), to_cpu(), to_np()                      |
-| **Inflix**       |                                     |                |                                                  |
+| **Infix**        |                                     |                |                                                  |
 |                  | Convert between concepts            | 2              | name2idx(), label2idx(), seq2seq                 |
 | **Aggressive**   |                                     |                |                                                  |
 |                  | function                            | f              |                                                  |
@@ -59,26 +58,13 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | directory                           | dir            |                                                  |
 |                  | percentage                          | p              |                                                  |
 |                  | ratio, proportion of something      | r              |                                                  |
+|                  | count                               | cnt            |                                                  |
 |                  |                                     |                |                                                  |
-|                  | figure                              | fig            |                                                  |
-|                  | image                               | im             |                                                  |
 |                  | configuration                       | cfg            |                                                  |
 |                  | random                              | rand           |                                                  |
-|                  | numpy                               | np             |                                                  |
-|                  | pandas                              | pd             |                                                  |
 |                  | utility                             | util           |                                                  |
 |                  |                                     |                |                                                  |
-|                  | temporary                           | tmp            | tmp_name, tmp_path                               |
-|                  | extra                               | xtra           |                                                  |
-|                  | tiny number                         | eps            |                                                  |
 |                  | threshold                           | thresh         |                                                  |
-|                  |                                     |                |                                                  |
-|                  | less than                           | lt             |                                                  |
-|                  | less or equal                       | le             |                                                  |
-|                  | equal                               | eq             |                                                  |
-|                  | not equal                           | ne             |                                                  |
-|                  | greater than                        | gt             |                                                  |
-|                  | greater or equal                    | ge             |                                                  |
 | **Data**         |                                     |                |                                                  |
 |                  | number of elements                  | n              |                                                  |
 |                  | length                              | len            |                                                  |
@@ -92,14 +78,14 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | dataframe                           | df             |                                                  |
 |                  | train                               | trn            | trn_ds                                           |
 |                  | validation                          | val            | val_ds                                           |
-|                  | test                                | test           | test_ds                                          |
 |                  | number of classes                   | c              |                                                  |
+|                  | batch                               | b              |                                                  |
 |                  | batch size                          | bs             |                                                  |
 |                  | multiple targets                    | multi          | is_multi                                         |
 |                  | regression                          | reg            | is_reg                                           |
 |                  | iterate, iterator                   | iter           | trn_iter, val_iter                               |
 |                  |                                     |                |                                                  |
-|                  | multiple inputs                     | xs             |                                                  |
+|                  | input                               | x              |                                                  |
 |                  | target                              | y              |                                                  |
 |                  | prediction                          | pred           |                                                  |
 |                  | output                              | out            |                                                  |
@@ -123,15 +109,14 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | rectangle                           | rect           |                                                  |
 |                  | color                               | colr           |                                                  |
 |                  | anchor box                          | anc            |                                                  |
+|                  | bounding box                        | bb             |                                                  |
 |                  |                                     |                |                                                  |
 | **Modeling**     |                                     |                |                                                  |
 |                  | initialize                          | init           |                                                  |
-|                  | natural language processing         | nlp            |                                                  |
 |                  | language model                      | lm             |                                                  |
 |                  | recurrent neural network            | rnn            |                                                  |
 |                  | convolutional neural network        | convnet        |                                                  |
 |                  |                                     |                |                                                  |
-|                  | model                               | m              | (not common)                                     |
 |                  | model data                          | md             |                                                  |
 |                  | linear                              | lin            |                                                  |
 |                  | embedding                           | emb            |                                                  |
@@ -141,14 +126,25 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | convolution                         | conv           |                                                  |
 |                  | hidden                              | hid            |                                                  |
 |                  |                                     |                |                                                  |
-|                  | optimizer (usually e.g. Adam)       | opt            |                                                  |
+|                  | optimizer (e.g. Adam)               | opt            |                                                  |
 |                  | layer group learning rate optimizer | layer_opt      |                                                  |
 |                  | criteria                            | crit           |                                                  |
 |                  | weight decay                        | wd             |                                                  |
+|                  | momentum                            | mom            |                                                  |
+|                  | back propagation through time       | bptt           |                                                  |
 |                  | cross validation                    | cv             |                                                  |
 |                  | learning rate                       | lr             |                                                  |
 |                  | schedule                            | sched          |                                                  |
+|                  | cycle length                        | cl             |                                                  |
 |                  | multiplier                          | mult           |                                                  |
 |                  | activation                          | actn           |                                                  |
 |                  |                                     |                |                                                  |
-| **Text**         | string                              | s              |                                                  |
+| **CV**           | computer vision                     |                |                                                  |
+|                  | figure                              | fig            |                                                  |
+|                  | image                               | im             |                                                  |
+|                  | transform image using opencv        | _cv            | zoom_cv(), rotate_cv(), stretch_cv()             |
+| **Text**         |                                     |                |                                                  |
+|                  | string                              | s              |                                                  |
+|                  | natural language processing         | nlp            |                                                  |
+|                  | token                               | tok            |                                                  |
+|                  | sequence length                     | sl             |                                                  |

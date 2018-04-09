@@ -27,9 +27,10 @@ def conv_bn_relu(in_c, out_c, kernel_size, stride, padding):
 
 
 class UnetBlock(nn.Module):
+    #TODO: ADAPT KERNEL SIZE, STRIDE AND PADDING SO THAT ANY SIZE DECAY WILL BE SUPPORTED
     def __init__(self, up_in_c, x_in_c):
         super().__init__()
-        self.upconv = nn.ConvTranspose2d(up_in_c, up_in_c // 2, 2, 2)
+        self.upconv = nn.ConvTranspose2d(up_in_c, up_in_c // 2, 2, 2) # H, W -> 2H, 2W
         self.conv1 = nn.Conv2d(x_in_c + up_in_c // 2, (x_in_c + up_in_c // 2) // 2, 3, 1, 1)
         self.conv2 = nn.Conv2d((x_in_c + up_in_c // 2) // 2, (x_in_c + up_in_c // 2) // 2, 3, 1, 1)
         self.bn = nn.BatchNorm2d((x_in_c + up_in_c // 2) // 2)
@@ -67,7 +68,9 @@ class DynamicUnet(nn.Module):
     Important Note: If architecture directly reduces the dimension of an image as soon as the
     first forward pass then output size will not be same as the input size, e.g. ResNet.
     In order to resolve this problem architecture will add an additional extra conv transpose
-    layer.
+    layer. Also, currently Dynamic Unet expects size change to be H,W -> H/2, W/2. This is
+    not a problem for state-of-the-art architectures as they follow this pattern but it should
+    be changed for custom encoders that might have a different size decay.
     """
 
     def __init__(self, encoder, last=True, n_classes=3):
