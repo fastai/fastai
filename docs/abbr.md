@@ -59,6 +59,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | directory                           | dir            |                                                  |
 |                  | percentage                          | p              |                                                  |
 |                  | ratio, proportion of something      | r              |                                                  |
+|                  | count                               | cnt            |                                                  |
 |                  |                                     |                |                                                  |
 |                  | figure                              | fig            |                                                  |
 |                  | image                               | im             |                                                  |
@@ -81,6 +82,8 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | greater or equal                    | ge             |                                                  |
 | **Data**         |                                     |                |                                                  |
 |                  | number of elements                  | n              |                                                  |
+|                  | number of rows                      | nr             |                                                  |
+|                  | number of columns                   | nc             |                                                  |
 |                  | length                              | len            |                                                  |
 |                  | size                                | sz             |                                                  |
 |                  | array                               | arr            | label_arr                                        |
@@ -94,6 +97,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | validation                          | val            | val_ds                                           |
 |                  | test                                | test           | test_ds                                          |
 |                  | number of classes                   | c              |                                                  |
+|                  | batch                               | b              |                                                  |
 |                  | batch size                          | bs             |                                                  |
 |                  | multiple targets                    | multi          | is_multi                                         |
 |                  | regression                          | reg            | is_reg                                           |
@@ -123,6 +127,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | rectangle                           | rect           |                                                  |
 |                  | color                               | colr           |                                                  |
 |                  | anchor box                          | anc            |                                                  |
+|                  | bounding box                        | bb             |                                                  |
 |                  |                                     |                |                                                  |
 | **Modeling**     |                                     |                |                                                  |
 |                  | initialize                          | init           |                                                  |
@@ -131,6 +136,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | recurrent neural network            | rnn            |                                                  |
 |                  | convolutional neural network        | convnet        |                                                  |
 |                  |                                     |                |                                                  |
+|                  | layer                               | l              |                                       |
 |                  | model                               | m              | (not common)                                     |
 |                  | model data                          | md             |                                                  |
 |                  | linear                              | lin            |                                                  |
@@ -139,16 +145,25 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | dropout                             | drop           |                                                  |
 |                  | fully connected                     | fc             |                                                  |
 |                  | convolution                         | conv           |                                                  |
+|                  | max pool                            | mp             |                                                  |
+|                  | average pool                        | ap             |                                                  |
 |                  | hidden                              | hid            |                                                  |
 |                  |                                     |                |                                                  |
 |                  | optimizer (usually e.g. Adam)       | opt            |                                                  |
 |                  | layer group learning rate optimizer | layer_opt      |                                                  |
 |                  | criteria                            | crit           |                                                  |
 |                  | weight decay                        | wd             |                                                  |
+|                  | momentum                            | mom            |                                                  |
+|                  | back propagation through time       | bptt           |                                                  |
+|                  | log soft max                        | lsm            |                                                  |
 |                  | cross validation                    | cv             |                                                  |
 |                  | learning rate                       | lr             |                                                  |
 |                  | schedule                            | sched          |                                                  |
+|                  | cycle length                        | cl             |                                                  |
 |                  | multiplier                          | mult           |                                                  |
 |                  | activation                          | actn           |                                                  |
 |                  |                                     |                |                                                  |
 | **Text**         | string                              | s              |                                                  |
+|                  | sentence length                     | sl             |                                                  |
+| **Visualization**|                                     |                |                                                  |
+|                  | subplot                             | sp             |                                                  |
