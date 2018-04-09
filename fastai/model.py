@@ -2,6 +2,7 @@ from .imports import *
 from .torch_imports import *
 from .core import *
 from .layer_optimizer import *
+from .fp16 import *
 
 def cut_model(m, cut):
     return list(m.children())[:cut] if cut else [m]
@@ -26,16 +27,22 @@ def num_features(m):
 
 
 class Stepper():
-    def __init__(self, m, opt, crit, clip=0, reg_fn=None):
+    def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1):
         self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
+        self.fp16 = fp16
         self.reset(True)
-
+        self.loss_scale = loss_scale if fp16 else 1
+        if self.fp16: self.fp32_params = copy_model_to_fp32(m, opt)
+        
     def reset(self, train=True):
         if train: apply_leaf(self.m, set_train_mode)
         else: self.m.eval()
-        if hasattr(self.m, 'reset'): self.m.reset()
+        if hasattr(self.m, 'reset'): 
+            self.m.reset()
+            #if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
 
     def step(self, xs, y, epoch):
+        if self.fp16: return self.step_fp16(xs, y, epoch)
         xtra = []
         output = self.m(*xs)
         if isinstance(output,tuple): output,*xtra = output
@@ -46,6 +53,25 @@ class Stepper():
         if self.clip:   # Gradient clipping
             nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         self.opt.step()
+        return raw_loss.data[0]
+    
+    
+    def step_fp16(self, xs, y, epoch):
+        xtra = []
+        output = self.m(*xs)
+        if isinstance(output,tuple): output,*xtra = output
+        self.m.zero_grad()
+        loss = raw_loss = self.crit(output, y)
+        if self.loss_scale != 1: loss = loss*self.loss_scale
+        if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
+        loss.backward()
+        update_fp32_grads(self.fp32_params, self.m)
+        if self.loss_scale != 1:
+            for param in self.fp32_params: param.grad.data.div_(self.loss_scale)
+        if self.clip:   # Gradient clipping
+            nn.utils.clip_grad_norm(trainable_params_(self.fp32_params), self.clip)
+        self.opt.step()
+        copy_fp32_to_model(self.m, self.fp32_params)
         return raw_loss.data[0]
 
     def evaluate(self, xs, y):
@@ -61,7 +87,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, all_val=False, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -90,6 +116,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
         i = 0
+        if all_val: val_iter = iter_batch(data.val_dl)
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
@@ -98,16 +125,18 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
             stop=False
-            for cb in callbacks: stop = stop or cb.on_batch_end(debias_loss)
+            los = debias_loss if not all_val else [debias_loss] + validate_next(stepper,metrics, val_iter)
+            for cb in callbacks: stop = stop or cb.on_batch_end(los)
             if stop: return
             if i>num_batch: break
             i += 1
 
-        vals = validate(stepper, data.val_dl, metrics)
-        if epoch == 0: print(layout.format(*names))
-        print_stats(epoch, [debias_loss] + vals)
-        stop=False
-        for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
+        if not all_val:
+            vals = validate(stepper, data.val_dl, metrics)
+            if epoch == 0: print(layout.format(*names))
+            print_stats(epoch, [debias_loss] + vals)
+            stop=False
+            for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
 
     for cb in callbacks: cb.on_train_end()
@@ -119,12 +148,36 @@ def print_stats(epoch, values, decimals=6):
     values = [epoch] + list(np.round(values, decimals))
     print(layout.format(*values))
 
+class iter_batch():
+    def __init__(self, dl):
+        self.idx = 0
+        self.dl = dl
+        self.iter = iter(dl)
+    
+    def get_next(self):
+        res = next(self.iter)
+        self.idx += 1
+        if self.idx == len(self.dl):
+            self.iter = iter(self.dl)
+            self.idx=0
+        return res 
+
+def validate_next(stepper, metrics, val_iter):
+    stepper.reset(False)
+    (*x,y) = val_iter.get_next()
+    preds,l = stepper.evaluate(VV(x), VV(y))
+    res = [to_np(l)[0]]
+    res += [f(preds.data,y) for f in metrics]
+    stepper.reset(True)
+    return res
+
 def validate(stepper, dl, metrics):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
         preds,l = stepper.evaluate(VV(x), VV(y))
-        batch_cnts.append(len(x))
+        if isinstance(x,list): batch_cnts.append(len(x[0]))
+        else: batch_cnts.append(len(x))
         loss.append(to_np(l))
         res.append([f(preds.data,y) for f in metrics])
     return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()

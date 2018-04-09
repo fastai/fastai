@@ -72,7 +72,7 @@ class RNN_Encoder(nn.Module):
     def forward(self, input):
         """ Invoked during the forward propagation of the RNN_Encoder module.
         Args:
-            input (Tensor): input of shape (batch_size x sentence length)
+            input (Tensor): input of shape (sentence length x batch_size)
 
         Returns:
             raw_outputs (tuple(list (Tensor), list(Tensor)): list of tensors evaluated from each RNN layer without using
