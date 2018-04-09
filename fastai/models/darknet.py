@@ -51,7 +51,7 @@ class Darknet(nn.Module):
         x = x.view(x.size(0), -1)
         return self.linear(x)
 
-def Darknet53(num_classes=1000):    return Darknet([1,2,8,8,4], num_classes)
-def DarknetSmall(num_classes=1000): return Darknet([1,2,4,4,2], num_classes)
-def DarknetMini(num_classes=1000): return Darknet([1,2,4,4,2], num_classes, start_nf=16)
+def darknet_53(num_classes=1000):    return Darknet([1,2,8,8,4], num_classes)
+def darknet_small(num_classes=1000): return Darknet([1,2,4,4,2], num_classes)
+def darknet_mini(num_classes=1000): return Darknet([1,2,4,4,2], num_classes, start_nf=16)
 
