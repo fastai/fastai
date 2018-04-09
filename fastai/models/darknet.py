@@ -10,8 +10,8 @@ class ConvBN(nn.Module):
         self.bn = nn.BatchNorm2d(ch_out, momentum=0.01)
 
     def forward(self, x):
-        return self.bn(self.conv(x))
-
+        return F.leaky_relu(self.bn(self.conv(x)), negative_slope=0.1)
+    
 class DarknetBlock(nn.Module):
     #The basic blocs.   
     def __init__(self, ch_in):
@@ -21,10 +21,9 @@ class DarknetBlock(nn.Module):
         self.conv2 = ConvBN(ch_hid, ch_in, kernel_size=3, stride=1, padding=1)
         
     def forward(self, x):
-        out = F.leaky_relu(self.conv1(x),0.1)
+        out = self.conv1(x)
         out = self.conv2(out)
-        out += x
-        return F.leaky_relu(out)
+        return out + x
     
 class Darknet(nn.Module):
     #Replicates the table 1 from the YOLOv3 paper
@@ -45,7 +44,7 @@ class Darknet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        out = F.leaky_relu(self.conv(x),0.1)
+        out = self.conv(x)
         out = self.layer1(out)
         out = self.layer2(out)
         out = self.layer3(out)
