@@ -7,7 +7,7 @@ class ConvBN(nn.Module):
     def __init__(self, ch_in, ch_out, kernel_size = 3, stride=1, padding=0):
         super().__init__()
         self.conv = nn.Conv2d(ch_in, ch_out, kernel_size=kernel_size, stride=stride, padding=padding, bias=False)
-        self.bn = nn.BatchNorm2d(ch_out)
+        self.bn = nn.BatchNorm2d(ch_out, momentum=0.01)
 
     def forward(self, x):
         return self.bn(self.conv(x))
