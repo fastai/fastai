@@ -27,7 +27,7 @@ def conv_bn_relu(in_c, out_c, kernel_size, stride, padding):
 
 
 class UnetBlock(nn.Module):
-    #TODO: ADOPT KERNEL SIZE, STRIDE AND PADDING SO THAT ANY SIZE DECAY WILL BE SUPPORTED
+    #TODO: ADAPT KERNEL SIZE, STRIDE AND PADDING SO THAT ANY SIZE DECAY WILL BE SUPPORTED
     def __init__(self, up_in_c, x_in_c):
         super().__init__()
         self.upconv = nn.ConvTranspose2d(up_in_c, up_in_c // 2, 2, 2) # H, W -> 2H, 2W
