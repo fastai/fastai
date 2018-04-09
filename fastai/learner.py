@@ -103,7 +103,7 @@ class Learner():
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
                 use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,
-                wds_sched_mult=None, all_val=False, **kwargs):
+                wds_sched_mult=None, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -196,7 +196,7 @@ class Learner():
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, all_val=all_val, **kwargs)
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 
@@ -296,6 +296,20 @@ class Learner():
         self.load('tmp')
 
     def lr_find2(self, start_lr=1e-5, end_lr=10, num_it = 100, wds=None, linear=False, stop_dv=True, **kwargs):
+        """A variant of lr_find() that helps find the best learning rate. It doesn't do
+        an epoch but a fixed num of iterations (which may be more or less than an epoch 
+        depending on your data).
+        At each step, it computes the validation loss and the metrics on the next
+        batch of the validation data, so it's slower than lr_find().
+
+        Args:
+            start_lr (float/numpy array) : Passing in a numpy array allows you
+                to specify learning rates for a learner's layer_groups
+            end_lr (float) : The maximum learning rate to try.
+            num_it : the number of iterations you want it to run
+            wds (iterable/float)
+            stop_dv : stops (or not) when the losses starts to explode. 
+        """
         self.save('tmp')
         layer_opt = self.get_layer_opt(start_lr, wds)
         self.sched = LR_Finder2(layer_opt, num_it, end_lr, linear=linear, metrics=self.metrics, stop_dv=stop_dv)

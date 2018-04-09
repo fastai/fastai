@@ -88,7 +88,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, all_val=False, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -99,6 +99,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
        epochs(int): number of epochs
        crit: loss function to optimize. Example: F.cross_entropy
     """
+    all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
     stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
@@ -107,7 +108,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
     layout = "{!s:10} " * len(names)
-
+    
     num_batch = len(data.trn_dl)
     if epochs<1:
         num_batch = int(num_batch*epochs)
@@ -117,7 +118,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
         i = 0
-        if all_val: val_iter = iter_batch(data.val_dl)
+        if all_val: val_iter = IterBatch(data.val_dl)
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
@@ -149,13 +150,16 @@ def print_stats(epoch, values, decimals=6):
     values = [epoch] + list(np.round(values, decimals))
     print(layout.format(*values))
 
-class iter_batch():
+class IterBatch():
     def __init__(self, dl):
         self.idx = 0
         self.dl = dl
         self.iter = iter(dl)
     
-    def get_next(self):
+    def __iter__(self):
+        return self
+
+    def next(self):
         res = next(self.iter)
         self.idx += 1
         if self.idx == len(self.dl):
@@ -164,8 +168,9 @@ class iter_batch():
         return res 
 
 def validate_next(stepper, metrics, val_iter):
+    """Computes the loss on the next minibatch of the validation set."""
     stepper.reset(False)
-    (*x,y) = val_iter.get_next()
+    (*x,y) = val_iter.next()
     preds,l = stepper.evaluate(VV(x), VV(y))
     res = [to_np(l)[0]]
     res += [f(preds.data,y) for f in metrics]
