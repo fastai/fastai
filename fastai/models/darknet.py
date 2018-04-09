@@ -53,5 +53,5 @@ class Darknet(nn.Module):
 
 def darknet_53(num_classes=1000):    return Darknet([1,2,8,8,4], num_classes)
 def darknet_small(num_classes=1000): return Darknet([1,2,4,4,2], num_classes)
-def darknet_mini(num_classes=1000): return Darknet([1,2,4,4,2], num_classes, start_nf=16)
+def darknet_mini(num_classes=1000): return Darknet([1,2,8,8,4], num_classes, start_nf=24)
 
