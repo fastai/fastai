@@ -23,6 +23,28 @@ install:
   - conda env update -f environment-cpu.yml
   - source activate fastai-cpu
   - pip install -U pytest
+  # for some reason  the pip section is not supported by conda env update for the time being i've paste it here:
+  - pip install opencv-python
+  - pip install graphviz
+  - pip install torchvision>=0.1.9
+  - pip install opencv-python
+  - pip install isoweek
+  - pip install pandas_summary
+  - pip install torchtext
+  - pip install graphviz
+  - pip install sklearn_pandas
+  - pip install feather-format
+  - pip install jupyter_contrib_nbextensions
+  - pip install plotnine
+  - pip install awscli
+  - pip install kaggle-cli
+  - pip install ipywidgets
+  - pip install jupyter_contrib_nbextensions
+  - pip install git+https://github.com/SauceCat/PDPbox.git
+
+  # this libs are required by opencv on ubuntu 16.04
+  - sudo apt install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx
+
 
 script:
   #- python -m unittest
