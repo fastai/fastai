@@ -466,6 +466,7 @@ class RandomLighting(Transform):
         self.store.c_rand = rand0(self.c)
 
     def do_transform(self, x, is_y):
+        if is_y and self.tfm_y != TfmType.PIXEL: return x
         b = self.store.b_rand
         c = self.store.c_rand
         c = -1/(c-1) if c<0 else c+1
