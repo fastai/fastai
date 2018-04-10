@@ -492,16 +492,15 @@ class RandomRotateZoom(CoordTransform):
         assert self.cum_ps[3]==1, 'probabilites do not sum to 1; they sum to %d' % self.cum_ps[3]
 
     def set_state(self):
+        self.store.trans = self.pass_t
         self.store.choice = self.cum_ps[3]*random.random()
         for i in range(len(self.transforms)):
             if self.store.choice < self.cum_ps[i]:
                 self.store.trans = self.transforms[i]
-                return
-        self.store.trans = self.pass_t
+                break
+        self.store.trans.set_state()
 
-    def __call__(self, x, y):
-        self.set_state()
-        return self.store.trans(x, y)
+    def do_transform(self, x, is_y): return self.store.trans.do_transform(x, is_y)
 
 class RandomZoom(CoordTransform):
     def __init__(self, zoom_max, zoom_min=0, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
