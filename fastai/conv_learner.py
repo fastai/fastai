@@ -24,12 +24,14 @@ class ConvnetBuilder():
         ps (float or array of float): dropout parameters
         xtra_fc (list of ints): list of hidden layers with # hidden neurons
         xtra_cut (int): # layers earlier than default to cut the model, default is 0
+        custom_head : add custom model classes that are inherited from nn.modules at the end of the model
+                      that is mentioned on Argument 'f' 
     """
 
     def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, pretrained=True):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
-        if ps is None: ps = [0.25,0.5]
         if xtra_fc is None: xtra_fc = [512]
+        if ps is None: ps = [0.25]*len(xtra_fc) + [0.5]
         self.ps,self.xtra_fc = ps,xtra_fc
 
         if f in model_meta: cut,self.lr_cut = model_meta[f]
@@ -103,9 +105,10 @@ class ConvLearner(Learner):
         self.precompute = precompute
 
     @classmethod
-    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False, **kwargs):
+    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,
+                   pretrained=True, **kwargs):
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
-            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head)
+            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=pretrained)
         return cls(data, models, precompute, **kwargs)
 
     @property

@@ -25,20 +25,38 @@ class LayerOptimizer():
     @property
     def lr(self): return self.lrs[-1]
 
+    @property
+    def mom(self):
+        if 'betas' in self.opt.param_groups[0]:
+            return self.opt.param_groups[0]['betas'][0]
+        else:
+            return self.opt.param_groups[0]['momentum']
+
     def set_lrs(self, lrs):
-        self.lrs=lrs
         set_lrs(self.opt, lrs)
+        self.lrs=lrs
 
     def set_wds(self, wds):
-        self.wds=wds
         set_wds(self.opt, wds)
+        self.wds=wds
+    
+    def set_mom(self,momentum):
+        if 'betas' in self.opt.param_groups[0]:
+            for pg in self.opt.param_groups: pg['betas'] = (momentum, pg['betas'][1])
+        else:
+            for pg in self.opt.param_groups: pg['momentum'] = momentum
+
+def zip_strict_(l, r):
+    assert(len(l) == len(r))
+    return zip(l, r)
 
 def set_lrs(opt, lrs):
     if not isinstance(lrs, Iterable): lrs=[lrs]
     if len(lrs)==1: lrs=lrs*len(opt.param_groups)
-    for pg,lr in zip(opt.param_groups,lrs): pg['lr'] = lr
+    for pg,lr in zip_strict_(opt.param_groups,lrs): pg['lr'] = lr
 
 def set_wds(opt, wds):
     if not isinstance(wds, Iterable): wds=[wds]
     if len(wds)==1: wds=wds*len(opt.param_groups)
-    for pg,wd in zip(opt.param_groups,wds): pg['weight_decay'] = wd
+    assert(len(opt.param_groups) == len(wds))
+    for pg,wd in zip_strict_(opt.param_groups,wds): pg['weight_decay'] = wd

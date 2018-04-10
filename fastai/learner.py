@@ -10,6 +10,7 @@ from .layers import *
 from .metrics import *
 from .losses import *
 from .swa import *
+from .fp16 import *
 import time
 
 
@@ -36,6 +37,7 @@ class Learner():
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
         self.crit,self.reg_fn = None,None
+        self.fp16 = False
 
     @classmethod
     def from_model_data(cls, m, data, **kwargs):
@@ -69,6 +71,11 @@ class Learner():
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 
+    def freeze_all_but(self, n):
+        c=self.get_layer_groups()
+        for l in c: set_trainable(l, False)
+        set_trainable(c[n], True)
+
     def unfreeze(self): self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
@@ -89,10 +96,21 @@ class Learner():
 
     def save_cycle(self, name, cycle): self.save(f'{name}_cyc_{cycle}')
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
+        
+    def half(self):
+        if self.fp16: return
+        self.fp16 = True
+        if type(self.model) != FP16: self.models.model = FP16(self.model)
+        self.model.half()
+    def float(self):
+        if not self.fp16: return
+        self.fp16 = False
+        if type(self.model) == FP16: self.models.model = self.model.module
+        self.model.float()
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False, wds_sched_mult=None,            
-                use_swa=False, swa_start=1, swa_eval_freq=5, **kwargs):
+                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,             
+                wds_sched_mult=None, use_swa=False, swa_start=1, swa_eval_freq=5, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -174,10 +192,18 @@ class Learner():
                                                 norm_wds, wds_sched_mult)
             callbacks += [self.wd_sched]
 
-        elif use_clr is not None:
-            clr_div,cut_div = use_clr
+        if use_clr is not None:
+            clr_div,cut_div = use_clr[:2]
+            moms = use_clr[2:] if len(use_clr) > 2 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
-            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div)
+            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div, 
+                                    momentums=moms)
+        elif use_clr_beta is not None:
+            div,pct = use_clr_beta[:2]
+            moms = use_clr_beta[2:] if len(use_clr_beta) > 3 else None
+            cycle_end = self.get_cycle_end(cycle_save_name)
+            self.sched = CircularLR_beta(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=div, 
+                                    pct=pct, momentums=moms)
         elif cycle_len:
             cycle_end = self.get_cycle_end(cycle_save_name)
             cycle_batches = len(data.trn_dl)*cycle_len
@@ -257,7 +283,7 @@ class Learner():
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), lr, linear=True)
         return self.fit_gen(self.model, self.data, layer_opt, 1)
 
-    def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False):
+    def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False, **kwargs):
         """Helps you find an optimal learning rate for a model.
 
          It uses the technique developed in the 2015 paper
@@ -293,7 +319,28 @@ class Learner():
         self.save('tmp')
         layer_opt = self.get_layer_opt(start_lr, wds)
         self.sched = LR_Finder(layer_opt, len(self.data.trn_dl), end_lr, linear=linear)
-        self.fit_gen(self.model, self.data, layer_opt, 1)
+        self.fit_gen(self.model, self.data, layer_opt, 1, **kwargs)
+        self.load('tmp')
+
+    def lr_find2(self, start_lr=1e-5, end_lr=10, num_it = 100, wds=None, linear=False, stop_dv=True, **kwargs):
+        """A variant of lr_find() that helps find the best learning rate. It doesn't do
+        an epoch but a fixed num of iterations (which may be more or less than an epoch 
+        depending on your data).
+        At each step, it computes the validation loss and the metrics on the next
+        batch of the validation data, so it's slower than lr_find().
+
+        Args:
+            start_lr (float/numpy array) : Passing in a numpy array allows you
+                to specify learning rates for a learner's layer_groups
+            end_lr (float) : The maximum learning rate to try.
+            num_it : the number of iterations you want it to run
+            wds (iterable/float)
+            stop_dv : stops (or not) when the losses starts to explode. 
+        """
+        self.save('tmp')
+        layer_opt = self.get_layer_opt(start_lr, wds)
+        self.sched = LR_Finder2(layer_opt, num_it, end_lr, linear=linear, metrics=self.metrics, stop_dv=stop_dv)
+        self.fit_gen(self.model, self.data, layer_opt, num_it//len(self.data.trn_dl) + 1, all_val=True, **kwargs)
         self.load('tmp')
 
     def predict(self, is_test=False, use_swa=False):
