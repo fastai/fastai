@@ -177,6 +177,7 @@ class PoolingLinearClassifier(nn.Module):
         for l in self.layers:
             l_x = l(x)
             x = F.relu(l_x)
+        l_x = F.log_softmax(l_x)
         return l_x, raw_outputs, outputs
 
 
