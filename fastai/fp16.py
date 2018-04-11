@@ -54,3 +54,4 @@ def update_fp32_grads(fp32_params, m):
         if fp32_param.grad is None:
             fp32_param.grad = nn.Parameter(fp32_param.data.new().resize_(*fp32_param.data.size()))
         fp32_param.grad.data.copy_(m_param.grad.data)
+

@@ -237,6 +237,9 @@ def open_image(fn):
             im = cv2.imread(str(fn), flags).astype(np.float32)/255
             if im is None: raise OSError(f'File not recognized by opencv: {fn}')
             return cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+            #res = np.array(Image.open(fn), dtype=np.float32)/255
+            #if len(res.shape)==2: res = np.repeat(res[...,None],3,2)
+            #return res
         except Exception as e:
             raise OSError('Error handling image at: {}'.format(fn)) from e
 

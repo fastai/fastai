@@ -73,7 +73,7 @@ class Stepper():
             nn.utils.clip_grad_norm(trainable_params_(self.fp32_params), self.clip)
         self.opt.step()
         copy_fp32_to_model(self.m, self.fp32_params)
-        return raw_loss.data[0]
+        return torch_item(raw_loss.data)
 
     def evaluate(self, xs, y):
         preds = self.m(*xs)
@@ -155,9 +155,8 @@ class IterBatch():
         self.idx = 0
         self.dl = dl
         self.iter = iter(dl)
-    
-    def __iter__(self):
-        return self
+
+    def __iter__(self): return self
 
     def next(self):
         res = next(self.iter)
@@ -165,7 +164,7 @@ class IterBatch():
         if self.idx == len(self.dl):
             self.iter = iter(self.dl)
             self.idx=0
-        return res 
+        return res
 
 def validate_next(stepper, metrics, val_iter):
     """Computes the loss on the next minibatch of the validation set."""
@@ -181,7 +180,8 @@ def validate(stepper, dl, metrics):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
-        preds,l = stepper.evaluate(VV(x), VV(y))
+        y = VV(y)
+        preds,l = stepper.evaluate(VV(x), y)
         if isinstance(x,list): batch_cnts.append(len(x[0]))
         else: batch_cnts.append(len(x))
         loss.append(to_np(l))
