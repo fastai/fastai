@@ -414,7 +414,8 @@ class ImageClassifierData(ImageData):
         return cls(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
-    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid', test_name=None, test_with_labels=False, num_workers=8):
+    def from_paths(cls, path, bs=64, tfms=(None,None), trn_name='train', val_name='valid',
+                    val_ratio=0.1, test_name=None, test_with_labels=False, num_workers=8):
         """ Read in images and their labels given as sub-folder names
 
         Arguments:
@@ -438,8 +439,8 @@ class ImageClassifierData(ImageData):
         return cls(path, datasets, bs, num_workers, classes=trn[2])
 
     @classmethod
-    def from_csv(cls, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
+    def from_csv(cls, path, folder, csv_fname, bs=64, tfms=(None,None), val_idxs=None, val_ratio=0.1,
+            suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
         """ Read in images and their labels given as a CSV file.
 
         This method should be used when training image labels are given in an CSV file as opposed to
@@ -465,12 +466,12 @@ class ImageClassifierData(ImageData):
         """
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
         return cls.from_names_and_array(path, fnames, y, classes, val_idxs, test_name,
-                num_workers=num_workers, suffix=suffix, tfms=tfms, bs=bs, continuous=continuous)
+                val_ratio=val_ratio, num_workers=num_workers, suffix=suffix, tfms=tfms, bs=bs, continuous=continuous)
 
     @classmethod
-    def from_names_and_array(cls, path, fnames,y,classes, val_idxs=None, test_name=None,
+    def from_names_and_array(cls, path, fnames,y,classes, val_idxs=None, test_name=None, val_ratio=0.1,
             num_workers=8, suffix='', tfms=(None,None), bs=64, continuous=False):
-        val_idxs = get_cv_idxs(len(fnames)) if val_idxs is None else val_idxs
+        val_idxs = get_cv_idxs(len(fnames), val_pct=val_ratio) if val_idxs is None else val_idxs
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
 
         test_fnames = read_dir(path, test_name) if test_name else None
