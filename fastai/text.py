@@ -27,7 +27,7 @@ def numericalize_tok(tokens, max_vocab=50000, min_freq=0, unk_tok="_unk_", pad_t
         pad_tok(str): Token to use when padding sequences.
     """
     if isinstance(tokens, str):
-        raise ValueError("Numericalize expects to receive a list of tokens. Received a string instead")
+        raise ValueError("Expected to receive a list of tokens. Received a string instead")
     if isinstance(tokens[0], list):
         tokens = [p for o in tokens for p in o]
     freq = Counter(tokens)
