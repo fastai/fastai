@@ -16,7 +16,7 @@ def texts_labels_from_folders(path, folders):
             labels.append(idx)
     return texts, np.array(labels).astype(np.int64)
 
-def numericalize_tok(tokens, max_vocab, min_freq=0, unk_tok="_unk_", pad_tok="_pad_", bos_tok="_bos_", eos_tok="_eos_"):
+def numericalize_tok(tokens, max_vocab=50000, min_freq=0, unk_tok="_unk_", pad_tok="_pad_", bos_tok="_bos_", eos_tok="_eos_"):
     """Takes in text tokens and returns int2tok and tok2int coverters
 
         Arguments:
