@@ -174,7 +174,7 @@ def validate(stepper, dl, metrics):
         if isinstance(x,list): batch_cnts.append(len(x[0]))
         else: batch_cnts.append(len(x))
         loss.append(to_np(l))
-        res.append([f(preds.data,y) for f in metrics])
+        res.append([f(preds.data,y.data) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
