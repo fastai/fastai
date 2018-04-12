@@ -14,18 +14,19 @@ conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTe
 def A(*a):
     return np.array(a[0]) if len(a)==1 else [np.array(o) for o in a]
 
-def T_(a):
-    if torch.is_tensor(a): return a
-    a = np.array(np.ascontiguousarray(a))
-    if a.dtype in (np.int8, np.int16, np.int32, np.int64):
-        return torch.LongTensor(a.astype(np.int64))
-    if a.dtype in (np.float32, np.float64):
-        return torch.FloatTensor(a.astype(np.float32))
-    raise NotImplementedError(a.dtype)
-def T(a): return to_gpu(T_(a), async=True)
+def T(a, half=False, cuda=True):
+    if not torch.is_tensor(a):
+        a = np.array(np.ascontiguousarray(a))
+        if a.dtype in (np.int8, np.int16, np.int32, np.int64):
+            a = torch.LongTensor(a.astype(np.int64))
+        elif a.dtype in (np.float32, np.float64):
+            a = torch.cuda.HalfTensor(a) if half else torch.FloatTensor(a)
+        else: raise NotImplementedError(a.dtype)
+    if cuda: a = to_gpu(a, async=True)
+    return a
 
 def create_variable(x, volatile, requires_grad=False):
-    if not isinstance(x, Variable):
+    if type (x) != Variable:
         x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
     return x
 

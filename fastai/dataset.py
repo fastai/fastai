@@ -168,9 +168,15 @@ class BaseDataset(Dataset):
         self.c = self.get_c()
         self.sz = self.get_sz()
 
-    def __getitem__(self, idx):
+    def get1item(self, idx):
         x,y = self.get_x(idx),self.get_y(idx)
         return self.get(self.transform, x, y)
+
+    def __getitem__(self, idx):
+        if isinstance(idx,slice):
+            xs,ys = zip(*[self.get1item(i) for i in range(*idx.indices(self.n))])
+            return np.stack(xs),ys
+        return self.get1item(idx)
 
     def __len__(self): return self.n
 
@@ -231,6 +237,9 @@ def open_image(fn):
             im = cv2.imread(str(fn), flags).astype(np.float32)/255
             if im is None: raise OSError(f'File not recognized by opencv: {fn}')
             return cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+            #res = np.array(Image.open(fn), dtype=np.float32)/255
+            #if len(res.shape)==2: res = np.repeat(res[...,None],3,2)
+            #return res
         except Exception as e:
             raise OSError('Error handling image at: {}'.format(fn)) from e
 

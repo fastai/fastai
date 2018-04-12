@@ -25,54 +25,43 @@ def num_features(m):
         res = num_features(l)
         if res is not None: return res
 
+def torch_item(x): return x.item() if hasattr(x,'item') else x[0]
 
 class Stepper():
     def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1):
         self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
         self.fp16 = fp16
         self.reset(True)
+
         self.loss_scale = loss_scale if fp16 else 1
         if self.fp16: self.fp32_params = copy_model_to_fp32(m, opt)
-        
+
     def reset(self, train=True):
         if train: apply_leaf(self.m, set_train_mode)
         else: self.m.eval()
-        if hasattr(self.m, 'reset'): 
+        if hasattr(self.m, 'reset'):
             self.m.reset()
-            #if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
+            if self.fp16: self.fp32_params = copy_model_to_fp32(self.m, self.opt)
 
     def step(self, xs, y, epoch):
-        if self.fp16: return self.step_fp16(xs, y, epoch)
         xtra = []
         output = self.m(*xs)
         if isinstance(output,tuple): output,*xtra = output
-        self.opt.zero_grad()
-        loss = raw_loss = self.crit(output, y)
-        if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
-        loss.backward()
-        if self.clip:   # Gradient clipping
-            nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
-        self.opt.step()
-        return raw_loss.data[0]
-    
-    
-    def step_fp16(self, xs, y, epoch):
-        xtra = []
-        output = self.m(*xs)
-        if isinstance(output,tuple): output,*xtra = output
-        self.m.zero_grad()
+        if self.fp16: self.m.zero_grad()
+        else: self.opt.zero_grad() 
         loss = raw_loss = self.crit(output, y)
         if self.loss_scale != 1: loss = loss*self.loss_scale
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
         loss.backward()
-        update_fp32_grads(self.fp32_params, self.m)
-        if self.loss_scale != 1:
+        if self.fp16: update_fp32_grads(self.fp32_params, self.m)
+        if self.loss_scale != 1: 
             for param in self.fp32_params: param.grad.data.div_(self.loss_scale)
         if self.clip:   # Gradient clipping
-            nn.utils.clip_grad_norm(trainable_params_(self.fp32_params), self.clip)
+            nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         self.opt.step()
-        copy_fp32_to_model(self.m, self.fp32_params)
-        return raw_loss.data[0]
+        if self.fp16: copy_fp32_to_model(self.m, self.fp32_params)
+        torch.cuda.synchronize()
+        return torch_item(raw_loss.data)
 
     def evaluate(self, xs, y):
         preds = self.m(*xs)
@@ -87,7 +76,7 @@ def set_train_mode(m):
     else: m.train()
 
 
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
+def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, sampler=None, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -107,13 +96,14 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
     layout = "{!s:10} " * len(names)
-    
+
     num_batch = len(data.trn_dl)
     if epochs<1:
         num_batch = int(num_batch*epochs)
         epochs = 1
 
     for epoch in tnrange(epochs, desc='Epoch'):
+        if sampler: sampler.set_epoch(epoch)
         stepper.reset(True)
         t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
         i = 0
@@ -154,9 +144,8 @@ class IterBatch():
         self.idx = 0
         self.dl = dl
         self.iter = iter(dl)
-    
-    def __iter__(self):
-        return self
+
+    def __iter__(self): return self
 
     def next(self):
         res = next(self.iter)
@@ -164,7 +153,7 @@ class IterBatch():
         if self.idx == len(self.dl):
             self.iter = iter(self.dl)
             self.idx=0
-        return res 
+        return res
 
 def validate_next(stepper, metrics, val_iter):
     """Computes the loss on the next minibatch of the validation set."""
@@ -180,12 +169,13 @@ def validate(stepper, dl, metrics):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     for (*x,y) in iter(dl):
-        preds,l = stepper.evaluate(VV(x), VV(y))
+        y = VV(y)
+        preds,l = stepper.evaluate(VV(x), y)
         if isinstance(x,list): batch_cnts.append(len(x[0]))
         else: batch_cnts.append(len(x))
         loss.append(to_np(l))
-        res.append([f(preds.data,y) for f in metrics])
-    return np.average(loss, 0, weights=batch_cnts).tolist() + np.average(np.stack(res), 0, weights=batch_cnts).tolist()
+        res.append([f(preds.data,y.data) for f in metrics])
+    return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
     if is_listy(x): x=x[0]

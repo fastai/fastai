@@ -94,7 +94,7 @@ class Learner():
         if self.fp16: return
         self.fp16 = True
         if type(self.model) != FP16: self.models.model = FP16(self.model)
-        self.model.half()
+
     def float(self):
         if not self.fp16: return
         self.fp16 = False

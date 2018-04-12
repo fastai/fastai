@@ -70,9 +70,9 @@ class LossRecorder(Callback):
         if len(vals) > 2: self.rec_metrics.append(vals[1:])
         elif len(vals) == 2: self.rec_metrics.append(vals[1])
 
-    def plot_loss(self):
+    def plot_loss(self, n_skip=10, n_skip_end=5):
         if not in_ipynb(): plt.switch_backend('agg')
-        plt.plot(self.iterations[10:], self.losses[10:])
+        plt.plot(self.iterations[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'loss_plot.png'))
             np.save(os.path.join(self.save_path, 'losses.npy'), self.losses[10:])
