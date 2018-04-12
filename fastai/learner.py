@@ -195,7 +195,7 @@ class Learner():
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
         n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, **kwargs)
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 

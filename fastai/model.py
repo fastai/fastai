@@ -169,14 +169,13 @@ def validate_next(stepper, metrics, val_iter):
 def validate(stepper, dl, metrics):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
-    with torch.no_grad():
-        for (*x,y) in iter(dl):
-            y = VV(y)
-            preds,l = stepper.evaluate(VV(x), y)
-            if isinstance(x,list): batch_cnts.append(len(x[0]))
-            else: batch_cnts.append(len(x))
-            loss.append(to_np(l))
-            res.append([f(preds.data,y) for f in metrics])
+    for (*x,y) in iter(dl):
+        y = VV(y)
+        preds,l = stepper.evaluate(VV(x), y)
+        if isinstance(x,list): batch_cnts.append(len(x[0]))
+        else: batch_cnts.append(len(x))
+        loss.append(to_np(l))
+        res.append([f(preds.data,y.data) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
