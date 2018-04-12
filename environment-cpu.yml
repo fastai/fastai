@@ -97,6 +97,7 @@ dependencies:
 - pytorch>=0.2.0
 - bcolz
 - prompt_toolkit
+- pytest
 - pip:
   - torchvision>=0.1.9
   - opencv-python
