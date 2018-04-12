@@ -190,9 +190,9 @@ class ConcatTextDatasetFromDataFrames(torchtext.data.Dataset):
     @classmethod
     def splits(cls, train_df=None, val_df=None, test_df=None, keep_nones=False, **kwargs):
         res = (
-            map_none(train_df, partial(cls, **kwargs)),
-            map_none(  val_df, partial(cls, **kwargs)),
-            map_none( test_df, partial(cls, **kwargs)))
+            cls(train_df, **kwargs),
+            cls(val_df, **kwargs),
+            map_none(test_df, partial(cls, **kwargs)))  # not required
         return res if keep_nones else tuple(d for d in res if d is not None)
 
 
@@ -251,9 +251,9 @@ class LanguageModelData():
         self.nt = len(field.vocab)
 
         factory = lambda ds: LanguageModelLoader(ds, bs, bptt, backwards=backwards)
-        self.trn_dl = map_none(self.trn_ds, factory)
-        self.val_dl = map_none(self.val_ds, factory)
-        self.test_dl = map_none(self.test_ds, factory)
+        self.trn_dl = factory(self.trn_ds)
+        self.val_dl = factory(self.val_ds)
+        self.test_dl = map_none(self.test_ds, factory)  # not required
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         """ Method returns a RNN_Learner object, that wraps an instance of the RNN_Encoder module.
