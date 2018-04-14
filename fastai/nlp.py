@@ -304,7 +304,7 @@ class LanguageModelData():
 
         """
         trn_ds, val_ds, test_ds = ConcatTextDataset.splits(
-            path, text_field=field, train=train, validation=validation, test=test, keep_nones=True)
+            path, text_field=field, train=train, validation=validation, test=test)
         return cls(path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
 
 
