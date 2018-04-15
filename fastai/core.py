@@ -43,9 +43,9 @@ def to_np(v):
     if isinstance(v, torch.cuda.HalfTensor): v=v.float()
     return v.cpu().numpy()
 
-USE_GPU=True
+USE_GPU = torch.cuda.is_available()
 def to_gpu(x, *args, **kwargs):
-    return x.cuda(*args, **kwargs) if torch.cuda.is_available() and USE_GPU else x
+    return x.cuda(*args, **kwargs) if USE_GPU else x
 
 def noop(*args, **kwargs): return
 
