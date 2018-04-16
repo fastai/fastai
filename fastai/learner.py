@@ -193,10 +193,7 @@ class Learner():
 
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
-        if type(self.sched).__name__ == 'OptimScheduler':
-            n_epoch = self.sched.get_total_epoch()
-        else:
-            n_epoch = int(sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle))
+        n_epoch = int(sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle))
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
 
