@@ -253,11 +253,11 @@ class CircularLR_beta(LR_Updater):
     def calc_lr(self, init_lrs):
         if self.cycle_iter>2 * self.cycle_nb:
             pct = (self.cycle_iter - 2*self.cycle_nb)/(self.nb - 2*self.cycle_nb)
-            res = init_lrs * (1 + (pct * (1-100)/100)) / self.div 
+            res = init_lrs * (1 + (pct * (1-100)/100)) / self.div
         elif self.cycle_iter>self.cycle_nb:
             pct = 1 - (self.cycle_iter - self.cycle_nb)/self.cycle_nb
             res = init_lrs * (1 + pct*(self.div-1)) / self.div
-        else: 
+        else:
             pct = self.cycle_iter/self.cycle_nb
             res = init_lrs * (1 + pct*(self.div-1)) / self.div
         self.cycle_iter += 1
@@ -266,14 +266,14 @@ class CircularLR_beta(LR_Updater):
             if self.on_cycle_end: self.on_cycle_end(self, self.cycle_count)
             self.cycle_count += 1
         return res
-    
+
     def calc_mom(self):
         if self.cycle_iter>2*self.cycle_nb:
             res = self.moms[0]
         elif self.cycle_iter>self.cycle_nb:
             pct = 1 - (self.cycle_iter - self.cycle_nb)/self.cycle_nb
             res = self.moms[0] + pct * (self.moms[1] - self.moms[0])
-        else: 
+        else:
             pct = self.cycle_iter/self.cycle_nb
             res = self.moms[0] + pct * (self.moms[1] - self.moms[0])
         return res
