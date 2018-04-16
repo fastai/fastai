@@ -193,7 +193,10 @@ class Learner():
 
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
-        n_epoch = int(sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle))
+        if type(self.sched).__name__ == 'OptimScheduler':
+            n_epoch = self.sched.get_total_epoch()
+        else:
+            n_epoch = int(sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle))
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
 
@@ -353,4 +356,36 @@ class Learner():
         preds1 = [preds1]*math.ceil(n_aug/4)
         preds2 = [predict_with_targs(self.model, dl2)[0] for i in tqdm(range(n_aug), leave=False)]
         return np.stack(preds1+preds2), targs
+
+    def fit_opt_sched(self, epoch_groups, cycle_save_name=None, best_save_name=None, use_wd_sched=False, norm_wds=False,
+                wds_sched_mult=None, stop_div=False, data_list=[], **kwargs):
+        """Method gets an instance of LayerOptimizer and delegates to model.fit(..)
+
+        This will split the training in several parts,e ach with their own learning rates/
+        wds/momentums/optimizer detailed in epoch_groups.
+
+        Additionaly we can add a list of different data objets in data_list to train
+        on different datasets (to change the size for instance) for each of these groups.
+
+        Args:
+            epoch_groups: a list of EpochGroup classes
+            stop_div: when True, stops the training if the loss goes too high
+            data_list: a list of different Data objects.
+            kwargs: other arguments
+
+        Returns:
+            None
+        """
+        #TODO: Will have to figure out how to insert the wd_scheduler.
+        layer_opt = LayerOptimizer(epoch_groups[0].opt_fn, self.get_layer_groups(), 1e-2, epoch_groups[0].wds)
+        self.sched = OptimScheduler(layer_opt, epoch_groups, len(self.data.trn_dl), stop_div)
+        callbacks, metrics = [self.sched], self.metrics
+        if best_save_name is not None:
+            callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
+        n_epochs = [group.epochs for group in epoch_groups]
+        if len(data_list)==0: data_list = [self.data]
+        return fit(self.model, data_list, n_epochs,layer_opt, self.crit,
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
+    
+
 

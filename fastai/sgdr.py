@@ -1,12 +1,15 @@
 from .imports import *
 from .layer_optimizer import *
+from enum import IntEnum
 import copy
 
 
 class Callback:
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
+    def on_group_epoch_begin(self): pass
     def on_epoch_end(self, metrics): pass
+    def on_group_epoch_end(self): pass
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
 
@@ -21,13 +24,19 @@ class LoggingCallback(Callback):
     def on_train_begin(self):
         self.batch = 0
         self.epoch = 0
+        self.group = 0
         self.f = open(self.save_path, "a", 1)
         self.log("\ton_train_begin")
     def on_batch_begin(self):
         self.log(str(self.batch)+"\ton_batch_begin")
+    def on_group_epoch_begin(self, metrics):
+        self.log(str(self.group)+"\ton_group_epoch_begin")
     def on_epoch_end(self, metrics):
         self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
         self.epoch += 1
+    def on_group_epoch_end(self, metrics):
+        self.log(str(self.group)+"\ton_group_epoch_end")
+        self.group+=1
     def on_batch_end(self, metrics):
         self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
         self.batch += 1
@@ -403,6 +412,134 @@ class WeightDecaySchedule(Callback):
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
+
+class DecayType(IntEnum):
+    NO = 1
+    LINEAR = 2
+    COSINE = 3
+
+class DecayScheduler():
+
+    def __init__(self, dec_type, num_it, start_val, end_val=None):
+        self.dec_type, self.start_val, self.end_val, self.nb = dec_type, start_val, end_val, num_it
+        self.it = 0
+    
+    def next_val(self):
+        self.it += 1
+        if self.dec_type == DecayType.NO:
+            return self.start_val
+        elif self.dec_type == DecayType.LINEAR:
+            pct = self.it/self.nb
+            return self.start_val + pct * (self.end_val-self.start_val)
+        elif self.dec_type == DecayType.COSINE:
+            cos_out = np.cos(np.pi*(self.it)/self.nb) + 1
+            return self.start_val / 2 * cos_out
+
+class EpochGroup():
+
+    def __init__(self, epochs=1, opt_fn=optim.SGD, lr=1e-2, lr_decay=DecayType.NO, momentum=0.9,
+                momentum_decay=DecayType.NO, beta=None, wds=None):
+        """
+        Creates an object containing all the relevant informations for one part of a model training.
+
+        Args
+        epochs: number of epochs to train like this
+        opt_fn: an optimizer (example optim.Adam)
+        lr: one learning rate or a tuple of the form (start_lr,end_lr)
+          each of those can be a list/numpy array for differential learning rates
+        lr_decay: a DecayType object specifying how the learning rate should change
+        momentum: one momentum (or beta1 in case of Adam), or a tuple of the form (start_mom,end_mom)
+        momentum_decay: a DecayType object specifying how the momentum should change
+        beta: beta2 parameter of Adam or alpha parameter of RMSProp
+        wds: weight decay (can be an array for differential wds)
+        """
+        self.epochs, self.opt_fn, self.lr, self.lr_decay = epochs, opt_fn, lr, lr_decay
+        self.momentum, self.momentum_decay, self.beta, self.wds = momentum, momentum_decay, beta, wds
+
+    def group_begin(self, layer_opt, nb_batches):
+        self.layer_opt = layer_opt
+        if isinstance(self.lr, tuple): start_lr,end_lr = self.lr
+        else: start_lr, end_lr = self.lr, None
+        self.lr_sched = DecayScheduler(self.lr_decay, nb_batches * self.epochs, start_lr, end_lr)
+        if isinstance(self.momentum, tuple): start_mom,end_mom = self.momentum
+        else: start_mom, end_mom = self.momentum, None
+        self.mom_sched = DecayScheduler(self.momentum_decay, nb_batches * self.epochs, start_mom, end_mom)
+        self.layer_opt.set_opt_fn(self.opt_fn)
+        self.layer_opt.set_lrs(start_lr)
+        self.layer_opt.set_mom(start_mom)
+        if self.beta is not None: self.layer_opt.set_beta(self.beta)
+        if self.wds is not None: self.layer_opt.set_wds(self.wds)
+    
+    def update(self):
+        new_lr, new_mom = self.lr_sched.next_val(), self.mom_sched.next_val()
+        self.layer_opt.set_lrs(new_lr)
+        self.layer_opt.set_mom(new_mom)
+    
+
+
+class OptimScheduler(LossRecorder):
+
+    def __init__(self, layer_opt, epoch_groups, nb_batches, stop_div = False):
+        self.epoch_groups, self.nb_batches, self.stop_div = epoch_groups, nb_batches, stop_div
+        super().__init__(layer_opt, record_mom=True)
+
+    def on_train_begin(self):
+        super().on_train_begin()
+        self.group,self.best=0,1e9
+
+    def on_batch_end(self, metrics):
+        loss = metrics[0] if isinstance(metrics,list) else metrics
+        if self.stop_div and (math.isnan(loss) or loss>self.best*4):
+            return True
+        if (loss<self.best and self.iteration>10): self.best=loss
+        super().on_batch_end(metrics)
+        self.epoch_groups[self.group].update()
+    
+    def on_group_epoch_begin(self):
+        self.epoch_groups[self.group].group_begin(self.layer_opt, self.nb_batches)
+
+    def on_group_epoch_end(self):
+        self.group += 1
+
+    def get_total_epoch(self):
+        res = 0
+        for epoch_group in self.epoch_groups:
+            res += epoch_group.epochs
+        return res
+
+    def plot_lr(self):
+        """
+        Plots the lr rate/momentum schedule
+        """
+        gp_limits = [0]
+        for gp in self.epoch_groups:
+            gp_limits.append(gp_limits[-1] + self.nb_batches * gp.epochs)
+        if not in_ipynb():
+            plt.switch_backend('agg')
+        fig, axs = plt.subplots(1,2,figsize=(12,4))
+        for i in range(2): axs[i].set_xlabel('iterations')
+        axs[0].set_ylabel('learning rate')
+        axs[1].set_ylabel('momentum')
+        axs[0].plot(self.iterations,self.lrs)
+        axs[1].plot(self.iterations,self.momentums)   
+        for i, gp in enumerate(self.epoch_groups):
+            text = gp.opt_fn.__name__
+            if gp.wds is not None: text+='\nwds='+str(gp.wds)
+            if gp.beta is not None: text+='\nbeta='+str(gp.beta)
+            for k in range(2):
+                if i < len(self.epoch_groups)-1:
+                    draw_line(axs[k], gp_limits[i+1])
+                draw_text(axs[k], (gp_limits[i]+gp_limits[i+1])/2, text) 
+        if not in_ipynb():
+            plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
+
+def draw_line(ax,x):
+    xmin, xmax, ymin, ymax = ax.axis()
+    ax.plot([x,x],[ymin,ymax], color='red', linestyle='dashed')
+
+def draw_text(ax,x, text):
+    xmin, xmax, ymin, ymax = ax.axis()
+    ax.text(x,(ymin+ymax)/2,text, horizontalalignment='center', verticalalignment='center', fontsize=14, alpha=0.5)
 
 def smooth_curve(vals, beta):
     avg_val = 0
