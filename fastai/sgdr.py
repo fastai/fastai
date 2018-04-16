@@ -7,15 +7,9 @@ import copy
 class Callback:
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
-<<<<<<< HEAD
     def on_phase_begin(self): pass
     def on_epoch_end(self, metrics): pass
     def on_phase_end(self): pass
-=======
-    def on_group_epoch_begin(self): pass
-    def on_epoch_end(self, metrics): pass
-    def on_group_epoch_end(self): pass
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
 
@@ -30,16 +24,11 @@ class LoggingCallback(Callback):
     def on_train_begin(self):
         self.batch = 0
         self.epoch = 0
-<<<<<<< HEAD
         self.phase = 0
-=======
-        self.group = 0
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         self.f = open(self.save_path, "a", 1)
         self.log("\ton_train_begin")
     def on_batch_begin(self):
         self.log(str(self.batch)+"\ton_batch_begin")
-<<<<<<< HEAD
     def on_phase_begin(self, metrics):
         self.log(str(self.phase)+"\ton_phase_begin")
     def on_epoch_end(self, metrics):
@@ -48,16 +37,6 @@ class LoggingCallback(Callback):
     def on_phase_end(self, metrics):
         self.log(str(self.phase)+"\ton_phase_end")
         self.phase+=1
-=======
-    def on_group_epoch_begin(self, metrics):
-        self.log(str(self.group)+"\ton_group_epoch_begin")
-    def on_epoch_end(self, metrics):
-        self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
-        self.epoch += 1
-    def on_group_epoch_end(self, metrics):
-        self.log(str(self.group)+"\ton_group_epoch_end")
-        self.group+=1
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
     def on_batch_end(self, metrics):
         self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
         self.batch += 1
@@ -438,10 +417,7 @@ class DecayType(IntEnum):
     NO = 1
     LINEAR = 2
     COSINE = 3
-<<<<<<< HEAD
     EXPONENTIAL = 4
-=======
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
 
 class DecayScheduler():
 
@@ -484,11 +460,7 @@ class TrainingPhase():
         self.epochs, self.opt_fn, self.lr, self.lr_decay = epochs, opt_fn, lr, lr_decay
         self.momentum, self.momentum_decay, self.beta, self.wds = momentum, momentum_decay, beta, wds
 
-<<<<<<< HEAD
     def phase_begin(self, layer_opt, nb_batches):
-=======
-    def group_begin(self, layer_opt, nb_batches):
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         self.layer_opt = layer_opt
         if isinstance(self.lr, tuple): start_lr,end_lr = self.lr
         else: start_lr, end_lr = self.lr, None
@@ -511,22 +483,13 @@ class TrainingPhase():
 
 class OptimScheduler(LossRecorder):
 
-<<<<<<< HEAD
     def __init__(self, layer_opt, phases, nb_batches, stop_div = False):
         self.phases, self.nb_batches, self.stop_div = phases, nb_batches, stop_div
-=======
-    def __init__(self, layer_opt, epoch_groups, nb_batches, stop_div = False):
-        self.epoch_groups, self.nb_batches, self.stop_div = epoch_groups, nb_batches, stop_div
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         super().__init__(layer_opt, record_mom=True)
 
     def on_train_begin(self):
         super().on_train_begin()
-<<<<<<< HEAD
         self.phase,self.best=0,1e9
-=======
-        self.group,self.best=0,1e9
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
 
     def on_batch_end(self, metrics):
         loss = metrics[0] if isinstance(metrics,list) else metrics
@@ -534,7 +497,6 @@ class OptimScheduler(LossRecorder):
             return True
         if (loss<self.best and self.iteration>10): self.best=loss
         super().on_batch_end(metrics)
-<<<<<<< HEAD
         self.phases[self.phase].update()
     
     def on_phase_begin(self):
@@ -542,35 +504,14 @@ class OptimScheduler(LossRecorder):
 
     def on_phase_end(self):
         self.phase += 1
-=======
-        self.epoch_groups[self.group].update()
-    
-    def on_group_epoch_begin(self):
-        self.epoch_groups[self.group].group_begin(self.layer_opt, self.nb_batches)
-
-    def on_group_epoch_end(self):
-        self.group += 1
-
-    def get_total_epoch(self):
-        res = 0
-        for epoch_group in self.epoch_groups:
-            res += epoch_group.epochs
-        return res
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
 
     def plot_lr(self):
         """
         Plots the lr rate/momentum schedule
         """
-<<<<<<< HEAD
         phase_limits = [0]
         for phase in self.phases:
             phase_limits.append(phase_limits[-1] + self.nb_batches * phase.epochs)
-=======
-        gp_limits = [0]
-        for gp in self.epoch_groups:
-            gp_limits.append(gp_limits[-1] + self.nb_batches * gp.epochs)
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         if not in_ipynb():
             plt.switch_backend('agg')
         fig, axs = plt.subplots(1,2,figsize=(12,4))
@@ -579,7 +520,6 @@ class OptimScheduler(LossRecorder):
         axs[1].set_ylabel('momentum')
         axs[0].plot(self.iterations,self.lrs)
         axs[1].plot(self.iterations,self.momentums)   
-<<<<<<< HEAD
         for i, phase in enumerate(self.phases):
             text = phase.opt_fn.__name__
             if phase.wds is not None: text+='\nwds='+str(phase.wds)
@@ -588,16 +528,6 @@ class OptimScheduler(LossRecorder):
                 if i < len(self.phases)-1:
                     draw_line(axs[k], phase_limits[i+1])
                 draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
-=======
-        for i, gp in enumerate(self.epoch_groups):
-            text = gp.opt_fn.__name__
-            if gp.wds is not None: text+='\nwds='+str(gp.wds)
-            if gp.beta is not None: text+='\nbeta='+str(gp.beta)
-            for k in range(2):
-                if i < len(self.epoch_groups)-1:
-                    draw_line(axs[k], gp_limits[i+1])
-                draw_text(axs[k], (gp_limits[i]+gp_limits[i+1])/2, text) 
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
 
