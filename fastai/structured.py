@@ -29,8 +29,8 @@ def get_average_tree_depth(m):
 
     """
 
-    tree_depths = [tree.tree_.max_depth for tree in m.estimators_]
-    return sum(tree_depths)/len(m.estimators_)
+    depths = [t.tree_.max_depth for t in m.estimators_]
+    return sum(depths)/len(m.estimators_)
 
 def draw_tree(t, df, size=10, ratio=0.6, precision=0):
     """ Draws a representation of a random forest in IPython.
