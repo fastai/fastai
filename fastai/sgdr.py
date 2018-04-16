@@ -459,16 +459,11 @@ class DecayScheduler():
         elif self.dec_type == DecayType.COSINE:
             cos_out = np.cos(np.pi*(self.it)/self.nb) + 1
             return self.start_val / 2 * cos_out
-<<<<<<< HEAD
         elif self.dec_type == DecayType.EXPONENTIAL:
             ratio = self.end_val / self.start_val
             return self.start_val * (ratio **  (self.it/self.nb))
 
 class TrainingPhase():
-=======
-
-class EpochGroup():
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
 
     def __init__(self, epochs=1, opt_fn=optim.SGD, lr=1e-2, lr_decay=DecayType.NO, momentum=0.9,
                 momentum_decay=DecayType.NO, beta=None, wds=None):
