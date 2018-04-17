@@ -23,7 +23,7 @@ def get_tensor(batch, pin, half=False):
 
 class DataLoader(object):
     def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None, pad_idx=0,
-                 num_workers=None, pin_memory=False, drop_last=False, pre_pad=True, half=False,
+                 num_workers=0, pin_memory=False, drop_last=False, pre_pad=True, half=False,
                  transpose=False, transpose_y=False):
         self.dataset,self.batch_size,self.num_workers = dataset,batch_size,num_workers
         self.pin_memory,self.drop_last,self.pre_pad = pin_memory,drop_last,pre_pad
