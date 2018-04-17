@@ -88,7 +88,7 @@ def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio
     return out
 
 def cutout(im, n_holes, length):
-    r,c,_* = im.shape
+    h,w,*_ = im.shape
     mask = np.ones((h, w), np.int32)
     for n in range(n_holes):
         y = np.random.randint(h)
