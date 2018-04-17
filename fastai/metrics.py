@@ -27,3 +27,12 @@ def precision(preds, targs, thresh=0.5):
     pred_pos = preds > thresh
     tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
     return tpos.sum()/pred_pos.sum()
+
+def mean_f_score(preds, targs, thresh=0.5):
+    """Micro-averaged F1-score as used by Kaggle
+
+    See https://www.kaggle.com/wiki/MeanFScore
+    """
+    rec = recall(preds, targs, thresh)
+    prec = precision(preds, targs, thresh)
+    return 2*prec*rec/(prec+rec)
