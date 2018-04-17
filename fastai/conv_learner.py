@@ -95,14 +95,19 @@ class ConvLearner(Learner):
     def __init__(self, data, models, precompute=False, **kwargs):
         self.precompute = False
         super().__init__(data, models, **kwargs)
-        if hasattr(data, 'is_multi'):
-            self.crit = F.binary_cross_entropy if data.is_multi else F.nll_loss
-            if data.is_reg: self.crit = F.l1_loss
-            elif self.metrics is None:
-                self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
+        if not data.is_reg and self.metrics is None:
+            self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
         if precompute: self.save_fc1()
         self.freeze()
         self.precompute = precompute
+
+    def _determine_loss_func(self, data):
+        if data.is_reg:
+            return F.l1_loss
+        elif data.is_multi:
+            return F.binary_cross_entropy
+        else:
+            return F.nll_loss
 
     @classmethod
     def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,

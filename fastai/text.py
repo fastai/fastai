@@ -204,7 +204,9 @@ class LanguageModelData():
 class RNN_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.cross_entropy
+
+    def _determine_loss_func(self, data):
+        return F.cross_entropy
 
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))

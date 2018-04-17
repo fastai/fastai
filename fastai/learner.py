@@ -14,7 +14,7 @@ import time
 
 
 class Learner():
-    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None, crit=None):
         """
         Combines a ModelData object with a nn.Module object, such that you can train that
         module.
@@ -35,7 +35,8 @@ class Learner():
         self.models_path = os.path.join(self.data.path, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
-        self.crit,self.reg_fn = None,None
+        self.crit = crit if crit else self._determine_loss_func(data)
+        self.reg_fn = None
         self.fp16 = False
 
     @classmethod
@@ -353,4 +354,7 @@ class Learner():
         preds1 = [preds1]*math.ceil(n_aug/4)
         preds2 = [predict_with_targs(self.model, dl2)[0] for i in tqdm(range(n_aug), leave=False)]
         return np.stack(preds1+preds2), targs
+
+    def _determine_loss_func(self, data):
+        raise NotImplementedError()
 
