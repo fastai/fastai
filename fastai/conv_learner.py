@@ -109,7 +109,7 @@ class ConvLearner(Learner):
                    pretrained=True, **kwargs):
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
             ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=pretrained)
-        return cls(data, models, precompute, **kwargs)    
+        return cls(data, models, precompute, **kwargs)
 
     @classmethod
     def lsuv_learner(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,
