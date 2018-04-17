@@ -100,44 +100,51 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
-    stepper = stepper(model, opt, crit, **kwargs)
-    for idx, epochs in enumerate(n_epochs):
-        for cb in callbacks: cb.on_phase_begin()
-        if isinstance(opt, LayerOptimizer): stepper.opt = opt.opt
-        num_batch = len(data[idx].trn_dl)
-        if epochs<1:
-            num_batch = int(num_batch*epochs)
-            epochs = 1
-        ep_vals = collections.OrderedDict()
-        for epoch in tnrange(epochs, desc='Epoch'):
-            if sampler: sampler.set_epoch(epoch)
-            stepper.reset(True)
-            t = tqdm(iter(data[idx].trn_dl), leave=False, total=num_batch)
-            i = 0
-            if all_val: val_iter = IterBatch(data[idx].val_dl)
-            for (*x,y) in t:
-                batch_num += 1
-                for cb in callbacks: cb.on_batch_begin()
-                loss = stepper.step(V(x),V(y), epoch)
-                avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
-                debias_loss = avg_loss / (1 - avg_mom**batch_num)
-                t.set_postfix(loss=debias_loss)
-                stop=False
-                los = debias_loss if not all_val else [debias_loss] + validate_next(stepper,metrics, val_iter)
-                for cb in callbacks: stop = stop or cb.on_batch_end(los)
-                if stop: return
-                if i>num_batch: break
-                i += 1
+    if isinstance(opt, LayerOptimizer): stepper = stepper(model, opt.opt, crit, **kwargs) 
+    else:  stepper = stepper(model, opt, crit, **kwargs)
+    ep_vals = collections.OrderedDict()
+    tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
+    cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
+    phase = 0
+    for cb in callbacks: cb.on_phase_begin()
+    for epoch in tnrange(tot_epochs, desc='Epoch'):
+        if sampler: sampler.set_epoch(epoch)
+        stepper.reset(True)
+        cur_data = data[phase]
+        num_batch = len(cur_data.trn_dl)
+        t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch)
+        if all_val: val_iter = IterBatch(cur_data.val_dl)
+        for (*x,y) in t:
+            batch_num += 1
+            for cb in callbacks: cb.on_batch_begin()
+            loss = stepper.step(V(x),V(y), epoch)
+            avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
+            debias_loss = avg_loss / (1 - avg_mom**batch_num)
+            t.set_postfix(loss=debias_loss)
+            stop=False
+            los = debias_loss if not all_val else [debias_loss] + validate_next(stepper,metrics, val_iter)
+            for cb in callbacks: stop = stop or cb.on_batch_end(los)
+            if stop: return
+            if batch_num >= cnt_phases[phase]:
+                for cb in callbacks: cb.on_phase_end()
+                phase += 1
+                if phase >= len(n_epochs):
+                    t.close()#Weird bug with the bar not disappearing
+                    break
+                for cb in callbacks: cb.on_phase_begin()
+                if isinstance(opt, LayerOptimizer): stepper.opt = opt.opt
+                if cur_data != data[phase]: 
+                    t.close()#Weird bug with the bar not disappearing
+                    break
 
-            if not all_val:
-                vals = validate(stepper, data[idx].val_dl, metrics)
-                if epoch == 0: print(layout.format(*names))
-                print_stats(epoch, [debias_loss] + vals)
-                ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
-                stop=False
-                for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
-            if stop: break
-        for cb in callbacks: cb.on_phase_end()
+        if not all_val:
+            vals = validate(stepper, cur_data.val_dl, metrics)
+            if epoch == 0: print(layout.format(*names))
+            print_stats(epoch, [debias_loss] + vals)
+            ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
+            stop=False
+            for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
+        if stop: break
     for cb in callbacks: cb.on_train_end()
     if get_ep_vals:
         return vals, ep_vals

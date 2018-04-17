@@ -505,7 +505,7 @@ class OptimScheduler(LossRecorder):
     def on_phase_end(self):
         self.phase += 1
 
-    def plot_lr(self):
+    def plot_lr(self, show_text=True):
         """
         Plots the lr rate/momentum schedule
         """
@@ -519,15 +519,16 @@ class OptimScheduler(LossRecorder):
         axs[0].set_ylabel('learning rate')
         axs[1].set_ylabel('momentum')
         axs[0].plot(self.iterations,self.lrs)
-        axs[1].plot(self.iterations,self.momentums)   
-        for i, phase in enumerate(self.phases):
-            text = phase.opt_fn.__name__
-            if phase.wds is not None: text+='\nwds='+str(phase.wds)
-            if phase.beta is not None: text+='\nbeta='+str(phase.beta)
-            for k in range(2):
-                if i < len(self.phases)-1:
-                    draw_line(axs[k], phase_limits[i+1])
-                draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
+        axs[1].plot(self.iterations,self.momentums)
+        if show_text:   
+            for i, phase in enumerate(self.phases):
+                text = phase.opt_fn.__name__
+                if phase.wds is not None: text+='\nwds='+str(phase.wds)
+                if phase.beta is not None: text+='\nbeta='+str(phase.beta)
+                for k in range(2):
+                    if i < len(self.phases)-1:
+                        draw_line(axs[k], phase_limits[i+1])
+                    draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
 
