@@ -418,12 +418,14 @@ class DecayType(IntEnum):
     LINEAR = 2
     COSINE = 3
     EXPONENTIAL = 4
+    POLYNOMIAL = 5
 
 class DecayScheduler():
 
-    def __init__(self, dec_type, num_it, start_val, end_val=None):
-        self.dec_type, self.start_val, self.end_val, self.nb = dec_type, start_val, end_val, num_it
+    def __init__(self, dec_type, num_it, start_val, end_val=None, extra=None):
+        self.dec_type, self.nb, self.start_val, self.end_val, self.extra = dec_type, num_it, start_val, end_val, extra
         self.it = 0
+        if self.end_val is None and not (self.dec_type in [1,4]): self.end_val = 0
     
     def next_val(self):
         self.it += 1
@@ -434,10 +436,13 @@ class DecayScheduler():
             return self.start_val + pct * (self.end_val-self.start_val)
         elif self.dec_type == DecayType.COSINE:
             cos_out = np.cos(np.pi*(self.it)/self.nb) + 1
-            return self.start_val / 2 * cos_out
+            return self.end_val + (self.start_val-self.end_val) / 2 * cos_out
         elif self.dec_type == DecayType.EXPONENTIAL:
             ratio = self.end_val / self.start_val
             return self.start_val * (ratio **  (self.it/self.nb))
+        elif self.dec_type == DecayType.POLYNOMIAL:
+            return self.end_val + (self.start_val-self.end_val) * (1 - self.it/self.nb)**self.extra
+        
 
 class TrainingPhase():
 
@@ -457,17 +462,20 @@ class TrainingPhase():
         beta: beta2 parameter of Adam or alpha parameter of RMSProp
         wds: weight decay (can be an array for differential wds)
         """
-        self.epochs, self.opt_fn, self.lr, self.lr_decay = epochs, opt_fn, lr, lr_decay
-        self.momentum, self.momentum_decay, self.beta, self.wds = momentum, momentum_decay, beta, wds
+        self.epochs, self.opt_fn, self.lr, self.momentum, self.beta, self.wds = epochs, opt_fn, lr, momentum, beta, wds
+        if isinstance(lr_decay,tuple): self.lr_decay, self.extra_lr = lr_decay
+        else: self.lr_decay, self.extra_lr = lr_decay, None
+        if isinstance(momentum_decay,tuple): self.mom_decay, self.extra_mom = momentum_decay
+        else: self.mom_decay, self.extra_mom = momentum_decay, None
 
     def phase_begin(self, layer_opt, nb_batches):
         self.layer_opt = layer_opt
         if isinstance(self.lr, tuple): start_lr,end_lr = self.lr
         else: start_lr, end_lr = self.lr, None
-        self.lr_sched = DecayScheduler(self.lr_decay, nb_batches * self.epochs, start_lr, end_lr)
+        self.lr_sched = DecayScheduler(self.lr_decay, nb_batches * self.epochs, start_lr, end_lr, extra=self.extra_lr)
         if isinstance(self.momentum, tuple): start_mom,end_mom = self.momentum
         else: start_mom, end_mom = self.momentum, None
-        self.mom_sched = DecayScheduler(self.momentum_decay, nb_batches * self.epochs, start_mom, end_mom)
+        self.mom_sched = DecayScheduler(self.mom_decay, nb_batches * self.epochs, start_mom, end_mom, extra=self.extra_mom)
         self.layer_opt.set_opt_fn(self.opt_fn)
         self.layer_opt.set_lrs(start_lr)
         self.layer_opt.set_mom(start_mom)
@@ -505,7 +513,7 @@ class OptimScheduler(LossRecorder):
     def on_phase_end(self):
         self.phase += 1
 
-    def plot_lr(self, show_text=True):
+    def plot_lr(self, show_text=True, show_moms=True):
         """
         Plots the lr rate/momentum schedule
         """
@@ -514,18 +522,21 @@ class OptimScheduler(LossRecorder):
             phase_limits.append(phase_limits[-1] + self.nb_batches * phase.epochs)
         if not in_ipynb():
             plt.switch_backend('agg')
-        fig, axs = plt.subplots(1,2,figsize=(12,4))
-        for i in range(2): axs[i].set_xlabel('iterations')
+        np_plts = 2 if show_moms else 1
+        fig, axs = plt.subplots(1,np_plts,figsize=(6*np_plts,4))
+        if not show_moms: axs = [axs]
+        for i in range(np_plts): axs[i].set_xlabel('iterations')
         axs[0].set_ylabel('learning rate')
-        axs[1].set_ylabel('momentum')
         axs[0].plot(self.iterations,self.lrs)
-        axs[1].plot(self.iterations,self.momentums)
+        if show_moms:
+            axs[1].set_ylabel('momentum')
+            axs[1].plot(self.iterations,self.momentums)
         if show_text:   
             for i, phase in enumerate(self.phases):
                 text = phase.opt_fn.__name__
                 if phase.wds is not None: text+='\nwds='+str(phase.wds)
                 if phase.beta is not None: text+='\nbeta='+str(phase.beta)
-                for k in range(2):
+                for k in range(np_plts):
                     if i < len(self.phases)-1:
                         draw_line(axs[k], phase_limits[i+1])
                     draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
