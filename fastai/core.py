@@ -20,7 +20,7 @@ def T(a, half=False, cuda=True):
         if a.dtype in (np.int8, np.int16, np.int32, np.int64):
             a = torch.LongTensor(a.astype(np.int64))
         elif a.dtype in (np.float32, np.float64):
-            a = torch.cuda.HalfTensor(a) if half else torch.FloatTensor(a)
+            a = torch.HalfTensor(a) if half else torch.FloatTensor(a)
         else: raise NotImplementedError(a.dtype)
     if cuda: a = to_gpu(a, async=True)
     return a
