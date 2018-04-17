@@ -102,11 +102,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     if len(data) == 1: data = data * len(n_epochs)
     stepper = stepper(model, opt, crit, **kwargs)
     for idx, epochs in enumerate(n_epochs):
-<<<<<<< HEAD
         for cb in callbacks: cb.on_phase_begin()
-=======
-        for cb in callbacks: cb.on_group_epoch_begin()
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         if isinstance(opt, LayerOptimizer): stepper.opt = opt.opt
         num_batch = len(data[idx].trn_dl)
         if epochs<1:
@@ -141,11 +137,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                 stop=False
                 for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
             if stop: break
-<<<<<<< HEAD
         for cb in callbacks: cb.on_phase_end()
-=======
-        for cb in callbacks: cb.on_group_epoch_end()
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
     for cb in callbacks: cb.on_train_end()
     if get_ep_vals:
         return vals, ep_vals

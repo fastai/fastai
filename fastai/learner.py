@@ -354,31 +354,18 @@ class Learner():
         preds2 = [predict_with_targs(self.model, dl2)[0] for i in tqdm(range(n_aug), leave=False)]
         return np.stack(preds1+preds2), targs
 
-<<<<<<< HEAD
     def fit_opt_sched(self, phases, cycle_save_name=None, best_save_name=None, use_wd_sched=False, norm_wds=False,
                 wds_sched_mult=None, stop_div=False, data_list=[], **kwargs):
         """Wraps us the content of phases to send them to model.fit(..)
 
         This will split the training in several parts, each with their own learning rates/
         wds/momentums/optimizer detailed in phases.
-=======
-    def fit_opt_sched(self, epoch_groups, cycle_save_name=None, best_save_name=None, use_wd_sched=False, norm_wds=False,
-                wds_sched_mult=None, stop_div=False, data_list=[], **kwargs):
-        """Method gets an instance of LayerOptimizer and delegates to model.fit(..)
-
-        This will split the training in several parts,e ach with their own learning rates/
-        wds/momentums/optimizer detailed in epoch_groups.
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
 
         Additionaly we can add a list of different data objets in data_list to train
         on different datasets (to change the size for instance) for each of these groups.
 
         Args:
-<<<<<<< HEAD
             phases: a list of TrainingPhase objects
-=======
-            epoch_groups: a list of EpochGroup classes
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
             stop_div: when True, stops the training if the loss goes too high
             data_list: a list of different Data objects.
             kwargs: other arguments
@@ -387,21 +374,12 @@ class Learner():
             None
         """
         #TODO: Will have to figure out how to insert the wd_scheduler.
-<<<<<<< HEAD
         layer_opt = LayerOptimizer(phases[0].opt_fn, self.get_layer_groups(), 1e-2, phases[0].wds)
         self.sched = OptimScheduler(layer_opt, phases, len(self.data.trn_dl), stop_div)
         callbacks, metrics = [self.sched], self.metrics
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
         n_epochs = [phase.epochs for phase in phases]
-=======
-        layer_opt = LayerOptimizer(epoch_groups[0].opt_fn, self.get_layer_groups(), 1e-2, epoch_groups[0].wds)
-        self.sched = OptimScheduler(layer_opt, epoch_groups, len(self.data.trn_dl), stop_div)
-        callbacks, metrics = [self.sched], self.metrics
-        if best_save_name is not None:
-            callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
-        n_epochs = [group.epochs for group in epoch_groups]
->>>>>>> 1394b90a69cffc21538ad310888aa85527e1b850
         if len(data_list)==0: data_list = [self.data]
         return fit(self.model, data_list, n_epochs,layer_opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
