@@ -138,16 +138,9 @@ class StructuredLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
 
-    def _determine_loss_func(self, data):
-        if data.is_reg:
-            return F.mse_loss
-        elif data.is_multi:
-            return F.binary_cross_entropy
-        else:
-            return F.nll_loss
+    def _get_crit(self, data): return F.mse_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
 
-    def summary(self):
-        return model_summary(self.model, [(self.data.trn_ds.cats.shape[1], ), (self.data.trn_ds.conts.shape[1], )])
+    def summary(self): return model_summary(self.model, [(self.data.trn_ds.cats.shape[1], ), (self.data.trn_ds.conts.shape[1], )])
 
 
 class StructuredModel(BasicModel):
@@ -218,8 +211,7 @@ class CollabFilterLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
 
-    def _determine_loss_func(self, data):
-        return F.mse_loss
+    def _get_crit(self, data): return F.mse_loss
 
 
 class CollabFilterModel(BasicModel):

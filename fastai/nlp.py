@@ -40,8 +40,7 @@ class BOW_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
 
-    def _determine_loss_func(self, data):
-        return F.l1_loss
+    def _get_crit(self, data): return F.l1_loss
 
 def calc_pr(y_i, x, y, b):
     idx = np.argwhere((y==y_i)==b)
@@ -159,8 +158,7 @@ class RNN_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
 
-    def _determine_loss_func(self, data):
-        return F.cross_entropy
+    def _get_crit(self, data): return F.cross_entropy
 
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
 
