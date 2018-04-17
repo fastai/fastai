@@ -43,7 +43,7 @@ class Learner():
     def from_model_data(cls, m, data, **kwargs):
         self = cls(data, BasicModel(to_gpu(m)), **kwargs)
         self.unfreeze()
-        return sel
+        return self
 
     def __getitem__(self,i): return self.children[i]
 
