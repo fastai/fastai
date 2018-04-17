@@ -188,9 +188,8 @@ def validate(stepper, dl, metrics):
             res.append([f(preds.data,y.data) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
-def no_grad_context():
-    return torch.no_grad() if LooseVersion(torch.__version__) >= LooseVersion('0.4') else contextlib.suppress()
-    
+def no_grad_context(): return torch.no_grad() if IS_TORCH_04 else contextlib.suppress()
+
 def get_prediction(x):
     if is_listy(x): x=x[0]
     return x.data
