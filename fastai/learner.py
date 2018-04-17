@@ -10,6 +10,7 @@ from .layers import *
 from .metrics import *
 from .losses import *
 from .fp16 import *
+from .lsuv_initializer import apply_lsuv_init
 import time
 
 
@@ -42,7 +43,7 @@ class Learner():
     def from_model_data(cls, m, data, **kwargs):
         self = cls(data, BasicModel(to_gpu(m)), **kwargs)
         self.unfreeze()
-        return self
+        return sel
 
     def __getitem__(self,i): return self.children[i]
 
@@ -58,6 +59,12 @@ class Learner():
     def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
 
     def __repr__(self): return self.model.__repr__()
+    
+    def lsuv_init(self, needed_std=1.0, std_tol=0.1, max_attempts=10, do_orthonorm=False):         
+        x = V(next(iter(self.data.trn_dl))[0])
+        self.models.model=apply_lsuv_init(self.model, x, needed_std=needed_std, std_tol=std_tol,
+                            max_attempts=max_attempts, do_orthonorm=do_orthonorm, 
+                            cuda=USE_GPU and torch.cuda.is_available())
 
     def set_bn_freeze(self, m, do_freeze):
         if hasattr(m, 'running_mean'): m.bn_freeze = do_freeze
