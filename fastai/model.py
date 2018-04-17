@@ -134,6 +134,7 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             i += 1
 
         if not all_val:
+            vals = validate(stepper, data.val_dl, metrics)
             stop=False
             for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
             if swa_model is not None:
