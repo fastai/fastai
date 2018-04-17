@@ -96,12 +96,11 @@ class Learner():
 
     def save_cycle(self, name, cycle): self.save(f'{name}_cyc_{cycle}')
     def load_cycle(self, name, cycle): self.load(f'{name}_cyc_{cycle}')
-        
+
     def half(self):
         if self.fp16: return
         self.fp16 = True
         if type(self.model) != FP16: self.models.model = FP16(self.model)
-
     def float(self):
         if not self.fp16: return
         self.fp16 = False
@@ -196,13 +195,13 @@ class Learner():
             clr_div,cut_div = use_clr[:2]
             moms = use_clr[2:] if len(use_clr) > 2 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
-            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div, 
+            self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div,
                                     momentums=moms)
         elif use_clr_beta is not None:
             div,pct = use_clr_beta[:2]
             moms = use_clr_beta[2:] if len(use_clr_beta) > 3 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
-            self.sched = CircularLR_beta(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=div, 
+            self.sched = CircularLR_beta(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=div,
                                     pct=pct, momentums=moms)
         elif cycle_len:
             cycle_end = self.get_cycle_end(cycle_save_name)
@@ -219,9 +218,9 @@ class Learner():
             self.swa_model = copy.deepcopy(model)
             callbacks+=[SWA(model, self.swa_model, swa_start)]
 
-        n_epoch = sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle)
+        n_epoch = int(sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle))
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip,
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16,
             swa_model=self.swa_model if use_swa else None, swa_start=swa_start, 
             swa_eval_freq=swa_eval_freq, **kwargs)
 
@@ -324,7 +323,7 @@ class Learner():
 
     def lr_find2(self, start_lr=1e-5, end_lr=10, num_it = 100, wds=None, linear=False, stop_dv=True, **kwargs):
         """A variant of lr_find() that helps find the best learning rate. It doesn't do
-        an epoch but a fixed num of iterations (which may be more or less than an epoch 
+        an epoch but a fixed num of iterations (which may be more or less than an epoch
         depending on your data).
         At each step, it computes the validation loss and the metrics on the next
         batch of the validation data, so it's slower than lr_find().
@@ -335,7 +334,7 @@ class Learner():
             end_lr (float) : The maximum learning rate to try.
             num_it : the number of iterations you want it to run
             wds (iterable/float)
-            stop_dv : stops (or not) when the losses starts to explode. 
+            stop_dv : stops (or not) when the losses starts to explode.
         """
         self.save('tmp')
         layer_opt = self.get_layer_opt(start_lr, wds)
