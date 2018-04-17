@@ -2,6 +2,7 @@ from .core import *
 from .layers import *
 from .learner import *
 from .initializers import *
+from .LSUV import LSUVinit
 
 model_meta = {
     resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], resnet152:[8,6],
@@ -111,6 +112,17 @@ class ConvLearner(Learner):
             ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=pretrained)
         return cls(data, models, precompute, **kwargs)
 
+    @classmethod
+    def lsuv_init(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,
+                  **kwargs):
+        models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
+            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=False)
+        conv_mod=cls(data, models, precompute, **kwargs)
+        x = V(next(iter(data.trn_dl))[0])
+        conv_mod.models.model=LSUVinit(conv_mod.models.model, x, needed_std = 1.0, std_tol = 0.1,
+                                       max_attempts = 10, do_orthonorm = False, cuda=True)
+        return conv_mod
+    
     @property
     def model(self): return self.models.fc_model if self.precompute else self.models.model
 
