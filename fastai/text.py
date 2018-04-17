@@ -114,6 +114,11 @@ class TextDataset(Dataset):
 
     def __len__(self): return len(self.x)
 
+class SimpleSampler(Sampler):
+    def __init__(self, data_source): self.data_source = data_source
+    def __len__(self): return len(self.data_source)
+    def __iter__(self):
+        return iter(range(len(self.data_source)))
 
 class SortSampler(Sampler):
     def __init__(self, data_source, key): self.data_source,self.key = data_source,key
