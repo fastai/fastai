@@ -111,6 +111,15 @@ class ConvLearner(Learner):
             ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=pretrained)
         return cls(data, models, precompute, **kwargs)
 
+    @classmethod
+    def lsuv_learner(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,
+                  needed_std=1.0, std_tol=0.1, max_attempts=10, do_orthonorm=False, **kwargs):
+        models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
+            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=False)
+        convlearn=cls(data, models, precompute, **kwargs)
+        convlearn.lsuv_init()
+        return convlearn
+    
     @property
     def model(self): return self.models.fc_model if self.precompute else self.models.model
 
