@@ -57,7 +57,8 @@ class LayerOptimizer():
             for pg in self.opt.param_groups: pg['alpha'] = beta
 
     def set_opt_fn(self, opt_fn):
-        self.opt = opt_fn(self.opt_params())
+        if type(self.opt) != type(opt_fn(self.opt_params())):
+            self.opt = opt_fn(self.opt_params())
 
 def zip_strict_(l, r):
     assert(len(l) == len(r))
