@@ -28,11 +28,18 @@ def precision(preds, targs, thresh=0.5):
     tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
     return tpos.sum()/pred_pos.sum()
 
-def mean_f_score(preds, targs, thresh=0.5):
-    """Micro-averaged F1-score as used by Kaggle
+def fbeta(preds, targs, beta, thresh=0.5):
+    """Calculates the F-beta score (the weighted harmonic mean of precision and recall).
+    This is the micro averaged version where the true positives, false negatives and
+    false positives are calculated globally (as opposed to on a per label basis).
 
-    See https://www.kaggle.com/wiki/MeanFScore
+    beta == 1 places equal weight on precision and recall, b < 1 emphasizes precision and
+    beta > 1 favors recall.
     """
+    assert beta > 0, 'beta needs to be greater than 0'
+    beta2 = beta ** 2
     rec = recall(preds, targs, thresh)
     prec = precision(preds, targs, thresh)
-    return 2*prec*rec/(prec+rec)
+    return (1 + beta2) * prec * rec / (beta2 * prec + rec)
+
+def f1(preds, targs, thresh=0.5): return fbeta(preds, targs, 1, thresh)
