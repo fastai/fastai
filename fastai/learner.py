@@ -11,11 +11,12 @@ from .metrics import *
 from .losses import *
 from .swa import *
 from .fp16 import *
+from .lsuv_initializer import apply_lsuv_init
 import time
 
 
 class Learner():
-    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None, crit=None):
         """
         Combines a ModelData object with a nn.Module object, such that you can train that
         module.
@@ -36,7 +37,8 @@ class Learner():
         self.models_path = os.path.join(self.data.path, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
-        self.crit,self.reg_fn = None,None
+        self.crit = crit if crit else self._get_crit(data)
+        self.reg_fn = None
         self.fp16 = False
 
     @classmethod
@@ -59,6 +61,12 @@ class Learner():
     def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
 
     def __repr__(self): return self.model.__repr__()
+    
+    def lsuv_init(self, needed_std=1.0, std_tol=0.1, max_attempts=10, do_orthonorm=False):         
+        x = V(next(iter(self.data.trn_dl))[0])
+        self.models.model=apply_lsuv_init(self.model, x, needed_std=needed_std, std_tol=std_tol,
+                            max_attempts=max_attempts, do_orthonorm=do_orthonorm, 
+                            cuda=USE_GPU and torch.cuda.is_available())
 
     def set_bn_freeze(self, m, do_freeze):
         if hasattr(m, 'running_mean'): m.bn_freeze = do_freeze
@@ -382,4 +390,36 @@ class Learner():
         preds1 = [preds1]*math.ceil(n_aug/4)
         preds2 = [predict_with_targs(self.model, dl2)[0] for i in tqdm(range(n_aug), leave=False)]
         return np.stack(preds1+preds2), targs
+
+    def fit_opt_sched(self, phases, cycle_save_name=None, best_save_name=None, use_wd_sched=False, norm_wds=False,
+                wds_sched_mult=None, stop_div=False, data_list=[], **kwargs):
+        """Wraps us the content of phases to send them to model.fit(..)
+
+        This will split the training in several parts, each with their own learning rates/
+        wds/momentums/optimizer detailed in phases.
+
+        Additionaly we can add a list of different data objets in data_list to train
+        on different datasets (to change the size for instance) for each of these groups.
+
+        Args:
+            phases: a list of TrainingPhase objects
+            stop_div: when True, stops the training if the loss goes too high
+            data_list: a list of different Data objects.
+            kwargs: other arguments
+
+        Returns:
+            None
+        """
+        #TODO: Will have to figure out how to insert the wd_scheduler.
+        layer_opt = LayerOptimizer(phases[0].opt_fn, self.get_layer_groups(), 1e-2, phases[0].wds)
+        self.sched = OptimScheduler(layer_opt, phases, len(self.data.trn_dl), stop_div)
+        callbacks, metrics = [self.sched], self.metrics
+        if best_save_name is not None:
+            callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
+        n_epochs = [phase.epochs for phase in phases]
+        if len(data_list)==0: data_list = [self.data]
+        return fit(self.model, data_list, n_epochs,layer_opt, self.crit,
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
+
+    def _get_crit(self, data): return F.mse_loss
 

@@ -1,12 +1,15 @@
 from .imports import *
 from .layer_optimizer import *
+from enum import IntEnum
 import copy
 
 
 class Callback:
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
+    def on_phase_begin(self): pass
     def on_epoch_end(self, metrics): pass
+    def on_phase_end(self): pass
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
 
@@ -21,13 +24,19 @@ class LoggingCallback(Callback):
     def on_train_begin(self):
         self.batch = 0
         self.epoch = 0
+        self.phase = 0
         self.f = open(self.save_path, "a", 1)
         self.log("\ton_train_begin")
     def on_batch_begin(self):
         self.log(str(self.batch)+"\ton_batch_begin")
+    def on_phase_begin(self, metrics):
+        self.log(str(self.phase)+"\ton_phase_begin")
     def on_epoch_end(self, metrics):
         self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
         self.epoch += 1
+    def on_phase_end(self, metrics):
+        self.log(str(self.phase)+"\ton_phase_end")
+        self.phase+=1
     def on_batch_end(self, metrics):
         self.log(str(self.batch)+"\ton_batch_end: "+str(metrics))
         self.batch += 1
@@ -403,6 +412,144 @@ class WeightDecaySchedule(Callback):
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
+
+class DecayType(IntEnum):
+    NO = 1
+    LINEAR = 2
+    COSINE = 3
+    EXPONENTIAL = 4
+    POLYNOMIAL = 5
+
+class DecayScheduler():
+
+    def __init__(self, dec_type, num_it, start_val, end_val=None, extra=None):
+        self.dec_type, self.nb, self.start_val, self.end_val, self.extra = dec_type, num_it, start_val, end_val, extra
+        self.it = 0
+        if self.end_val is None and not (self.dec_type in [1,4]): self.end_val = 0
+    
+    def next_val(self):
+        self.it += 1
+        if self.dec_type == DecayType.NO:
+            return self.start_val
+        elif self.dec_type == DecayType.LINEAR:
+            pct = self.it/self.nb
+            return self.start_val + pct * (self.end_val-self.start_val)
+        elif self.dec_type == DecayType.COSINE:
+            cos_out = np.cos(np.pi*(self.it)/self.nb) + 1
+            return self.end_val + (self.start_val-self.end_val) / 2 * cos_out
+        elif self.dec_type == DecayType.EXPONENTIAL:
+            ratio = self.end_val / self.start_val
+            return self.start_val * (ratio **  (self.it/self.nb))
+        elif self.dec_type == DecayType.POLYNOMIAL:
+            return self.end_val + (self.start_val-self.end_val) * (1 - self.it/self.nb)**self.extra
+        
+
+class TrainingPhase():
+
+    def __init__(self, epochs=1, opt_fn=optim.SGD, lr=1e-2, lr_decay=DecayType.NO, momentum=0.9,
+                momentum_decay=DecayType.NO, beta=None, wds=None):
+        """
+        Creates an object containing all the relevant informations for one part of a model training.
+
+        Args
+        epochs: number of epochs to train like this
+        opt_fn: an optimizer (example optim.Adam)
+        lr: one learning rate or a tuple of the form (start_lr,end_lr)
+          each of those can be a list/numpy array for differential learning rates
+        lr_decay: a DecayType object specifying how the learning rate should change
+        momentum: one momentum (or beta1 in case of Adam), or a tuple of the form (start_mom,end_mom)
+        momentum_decay: a DecayType object specifying how the momentum should change
+        beta: beta2 parameter of Adam or alpha parameter of RMSProp
+        wds: weight decay (can be an array for differential wds)
+        """
+        self.epochs, self.opt_fn, self.lr, self.momentum, self.beta, self.wds = epochs, opt_fn, lr, momentum, beta, wds
+        if isinstance(lr_decay,tuple): self.lr_decay, self.extra_lr = lr_decay
+        else: self.lr_decay, self.extra_lr = lr_decay, None
+        if isinstance(momentum_decay,tuple): self.mom_decay, self.extra_mom = momentum_decay
+        else: self.mom_decay, self.extra_mom = momentum_decay, None
+
+    def phase_begin(self, layer_opt, nb_batches):
+        self.layer_opt = layer_opt
+        if isinstance(self.lr, tuple): start_lr,end_lr = self.lr
+        else: start_lr, end_lr = self.lr, None
+        self.lr_sched = DecayScheduler(self.lr_decay, nb_batches * self.epochs, start_lr, end_lr, extra=self.extra_lr)
+        if isinstance(self.momentum, tuple): start_mom,end_mom = self.momentum
+        else: start_mom, end_mom = self.momentum, None
+        self.mom_sched = DecayScheduler(self.mom_decay, nb_batches * self.epochs, start_mom, end_mom, extra=self.extra_mom)
+        self.layer_opt.set_opt_fn(self.opt_fn)
+        self.layer_opt.set_lrs(start_lr)
+        self.layer_opt.set_mom(start_mom)
+        if self.beta is not None: self.layer_opt.set_beta(self.beta)
+        if self.wds is not None: self.layer_opt.set_wds(self.wds)
+    
+    def update(self):
+        new_lr, new_mom = self.lr_sched.next_val(), self.mom_sched.next_val()
+        self.layer_opt.set_lrs(new_lr)
+        self.layer_opt.set_mom(new_mom)
+    
+
+
+class OptimScheduler(LossRecorder):
+
+    def __init__(self, layer_opt, phases, nb_batches, stop_div = False):
+        self.phases, self.nb_batches, self.stop_div = phases, nb_batches, stop_div
+        super().__init__(layer_opt, record_mom=True)
+
+    def on_train_begin(self):
+        super().on_train_begin()
+        self.phase,self.best=0,1e9
+
+    def on_batch_end(self, metrics):
+        loss = metrics[0] if isinstance(metrics,list) else metrics
+        if self.stop_div and (math.isnan(loss) or loss>self.best*4):
+            return True
+        if (loss<self.best and self.iteration>10): self.best=loss
+        super().on_batch_end(metrics)
+        self.phases[self.phase].update()
+    
+    def on_phase_begin(self):
+        self.phases[self.phase].phase_begin(self.layer_opt, self.nb_batches)
+
+    def on_phase_end(self):
+        self.phase += 1
+
+    def plot_lr(self, show_text=True, show_moms=True):
+        """
+        Plots the lr rate/momentum schedule
+        """
+        phase_limits = [0]
+        for phase in self.phases:
+            phase_limits.append(phase_limits[-1] + self.nb_batches * phase.epochs)
+        if not in_ipynb():
+            plt.switch_backend('agg')
+        np_plts = 2 if show_moms else 1
+        fig, axs = plt.subplots(1,np_plts,figsize=(6*np_plts,4))
+        if not show_moms: axs = [axs]
+        for i in range(np_plts): axs[i].set_xlabel('iterations')
+        axs[0].set_ylabel('learning rate')
+        axs[0].plot(self.iterations,self.lrs)
+        if show_moms:
+            axs[1].set_ylabel('momentum')
+            axs[1].plot(self.iterations,self.momentums)
+        if show_text:   
+            for i, phase in enumerate(self.phases):
+                text = phase.opt_fn.__name__
+                if phase.wds is not None: text+='\nwds='+str(phase.wds)
+                if phase.beta is not None: text+='\nbeta='+str(phase.beta)
+                for k in range(np_plts):
+                    if i < len(self.phases)-1:
+                        draw_line(axs[k], phase_limits[i+1])
+                    draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
+        if not in_ipynb():
+            plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
+
+def draw_line(ax,x):
+    xmin, xmax, ymin, ymax = ax.axis()
+    ax.plot([x,x],[ymin,ymax], color='red', linestyle='dashed')
+
+def draw_text(ax,x, text):
+    xmin, xmax, ymin, ymax = ax.axis()
+    ax.text(x,(ymin+ymax)/2,text, horizontalalignment='center', verticalalignment='center', fontsize=14, alpha=0.5)
 
 def smooth_curve(vals, beta):
     avg_val = 0

@@ -76,23 +76,22 @@ def set_train_mode(m):
           and ('drop' in type(m).__name__.lower())): m.eval()
     else: m.train()
 
-
-def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
+def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
         swa_model=None, swa_start=None, swa_eval_freq=None, **kwargs):
     """ Fits a model
 
     Arguments:
        model (model): any pytorch module
            net = to_gpu(net)
-       data (ModelData): see ModelData class and subclasses
-       opt: optimizer. Example: opt=optim.Adam(net.parameters())
-       epochs(int): number of epochs
+       data (ModelData): see ModelData class and subclasses (can be a list)
+       opts: an optimizer. Example: optim.Adam. 
+       If n_epochs is a list, it needs to be the layer_optimizer to get the optimizer as it changes.
+       n_epochs(int or list): number of epochs (or list of number of epochs)
        crit: loss function to optimize. Example: F.cross_entropy
     """
     all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
     sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
     get_ep_vals = kwargs.pop('get_ep_vals') if 'get_ep_vals' in kwargs else False
-    model_stepper = stepper(model, opt, crit, **kwargs)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
@@ -106,19 +105,23 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
         swa_stepper = stepper(swa_model, None, crit, **kwargs)
         
     layout = "{!s:10} " * len(names)
-
-    num_batch = len(data.trn_dl)
-    if epochs<1:
-        num_batch = int(num_batch*epochs)
-        epochs = 1
-
+    if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
+    if not isinstance(data, Iterable): data = [data]
+    if len(data) == 1: data = data * len(n_epochs)
+    if isinstance(opt, LayerOptimizer): model_stepper = stepper(model, opt.opt, crit, **kwargs) 
+    else:  model_stepper = stepper(model, opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
-    for epoch in tnrange(epochs, desc='Epoch'):
+    tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
+    cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
+    phase = 0
+    for cb in callbacks: cb.on_phase_begin()
+    for epoch in tnrange(tot_epochs, desc='Epoch'):
         if sampler: sampler.set_epoch(epoch)
         model_stepper.reset(True)
-        t = tqdm(iter(data.trn_dl), leave=False, total=num_batch)
-        i = 0
-        if all_val: val_iter = IterBatch(data.val_dl)
+        cur_data = data[phase]
+        num_batch = len(cur_data.trn_dl)
+        t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch)
+        if all_val: val_iter = IterBatch(cur_data.val_dl)
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
@@ -127,14 +130,23 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
             stop=False
-            los = debias_loss if not all_val else [debias_loss] + validate_next(stepper,metrics, val_iter)
+            los = debias_loss if not all_val else [debias_loss] + validate_next(model_stepper,metrics, val_iter)
             for cb in callbacks: stop = stop or cb.on_batch_end(los)
             if stop: return
-            if i>num_batch: break
-            i += 1
+            if batch_num >= cnt_phases[phase]:
+                for cb in callbacks: cb.on_phase_end()
+                phase += 1
+                if phase >= len(n_epochs):
+                    t.close()#Weird bug with the bar not disappearing
+                    break
+                for cb in callbacks: cb.on_phase_begin()
+                if isinstance(opt, LayerOptimizer): model_stepper.opt = opt.opt
+                if cur_data != data[phase]: 
+                    t.close()#Weird bug with the bar not disappearing
+                    break
 
         if not all_val:
-            vals = validate(stepper, data.val_dl, metrics)
+            vals = validate(model_stepper, cur_data.val_dl, metrics)
             stop=False
             for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
             if swa_model is not None:
@@ -147,7 +159,6 @@ def fit(model, data, epochs, opt, crit, metrics=None, callbacks=None, stepper=St
             print_stats(epoch, [debias_loss] + vals)
             ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
         if stop: break
-
     for cb in callbacks: cb.on_train_end()
     if get_ep_vals:
         return vals, ep_vals

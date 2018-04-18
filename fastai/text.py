@@ -17,7 +17,7 @@ def texts_labels_from_folders(path, folders):
     return texts, np.array(labels).astype(np.int64)
 
 def numericalize_tok(tokens, max_vocab=50000, min_freq=0, unk_tok="_unk_", pad_tok="_pad_", bos_tok="_bos_", eos_tok="_eos_"):
-    """Takes in text tokens and returns int2tok and tok2int coverters
+    """Takes in text tokens and returns int2tok and tok2int converters
 
         Arguments:
         tokens(list): List of tokens. Can be a list of strings, or a list of lists of strings.
@@ -204,7 +204,8 @@ class LanguageModelData():
 class RNN_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.cross_entropy
+
+    def _get_crit(self, data): return F.cross_entropy
 
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))
