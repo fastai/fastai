@@ -15,7 +15,7 @@ import time
 
 
 class Learner():
-    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None, crit=None):
         """
         Combines a ModelData object with a nn.Module object, such that you can train that
         module.
@@ -36,7 +36,8 @@ class Learner():
         self.models_path = os.path.join(self.data.path, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
-        self.crit,self.reg_fn = None,None
+        self.crit = crit if crit else self._get_crit(data)
+        self.reg_fn = None
         self.fp16 = False
 
     @classmethod
@@ -390,6 +391,6 @@ class Learner():
         if len(data_list)==0: data_list = [self.data]
         return fit(self.model, data_list, n_epochs,layer_opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
-    
 
+    def _get_crit(self, data): return F.mse_loss
 
