@@ -169,7 +169,8 @@ class Learner():
             use_swa (bool, optional): when this is set to True, it will enable the use of
                 Stochastic Weight Averaging (https://arxiv.org/abs/1803.05407). The learner will
                 include an additional model (in the swa_model attribute) for keeping track of the 
-                average weights as described in the paper.
+                average weights as described in the paper. All testing of this technique so far has
+                been in image classification, so use in other contexts is not guaranteed to work.
                 
             swa_start (int, optional): if use_swa is set to True, then this determines the epoch
                 to start keeping track of the average weights. It is 1-indexed per the paper's
