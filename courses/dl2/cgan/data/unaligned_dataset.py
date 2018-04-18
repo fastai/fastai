@@ -48,11 +48,9 @@ class UnalignedDataset(BaseDataset):
         if output_nc == 1:  # RGB to gray
             tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
             B = tmp.unsqueeze(0)
-        return {'A': A, 'B': B,
-                'A_paths': A_path, 'B_paths': B_path}
 
-    def __len__(self):
-        return max(self.A_size, self.B_size)
+        return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
 
-    def name(self):
-        return 'UnalignedDataset'
+    def __len__(self): return max(self.A_size, self.B_size)
+
+    def name(self): return 'UnalignedDataset'
