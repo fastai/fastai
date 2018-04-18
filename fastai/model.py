@@ -101,8 +101,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
     for cb in callbacks: cb.on_phase_begin()
-    if isinstance(opt, LayerOptimizer): stepper = stepper(model, opt.opt, crit, **kwargs) 
-    else:  stepper = stepper(model, opt, crit, **kwargs)
+    if hasattr(opt,'state_dict'): stepper = stepper(model, opt, crit, **kwargs) 
+    else:  stepper = stepper(model, opt.opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
