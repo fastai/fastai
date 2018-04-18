@@ -42,6 +42,9 @@ class DataLoader(object):
                 sampler = RandomSampler(dataset) if shuffle else SequentialSampler(dataset)
             batch_sampler = BatchSampler(sampler, batch_size, drop_last)
 
+        if num_workers is None:
+            self.num_workers = num_cpus()
+
         self.sampler = sampler
         self.batch_sampler = batch_sampler
 
