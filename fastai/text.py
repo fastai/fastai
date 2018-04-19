@@ -191,7 +191,7 @@ class LanguageModel(BasicModel):
 
 
 class LanguageModelData():
-    def __init__(self, path, pad_idx, n_tok, trn_dl, val_dl, test_dl=None, bptt=70, backwards=False, **kwargs):
+    def __init__(self, path, pad_idx, n_tok, trn_dl, val_dl, test_dl=None, **kwargs):
         self.path,self.pad_idx,self.n_tok = path,pad_idx,n_tok
         self.trn_dl,self.val_dl,self.test_dl = trn_dl,val_dl,test_dl
 
