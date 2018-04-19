@@ -100,7 +100,7 @@ import PIL, os, numpy as np, math, collections, threading
 
 ### Algorithms
 
-- fastai is designed to show off the best of what's possible. So try to ensure that you're implementation of an
+- fastai is designed to show off the best of what's possible. So try to ensure that your implementation of an
   algorithm is at least as fast, accurate, and concise as other versions that exist (if they do), and use a profiler to
   check for hotspots and optimize them as appropriate (if the code takes more than a second to run in practice).
 - Try to ensure that your algorithm scales nicely; specifically, it should work in 16GB RAM on arbitrarily large

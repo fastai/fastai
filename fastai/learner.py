@@ -9,12 +9,14 @@ from .layer_optimizer import *
 from .layers import *
 from .metrics import *
 from .losses import *
+from .swa import *
 from .fp16 import *
+from .lsuv_initializer import apply_lsuv_init
 import time
 
 
 class Learner():
-    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None):
+    def __init__(self, data, models, opt_fn=None, tmp_name='tmp', models_name='models', metrics=None, clip=None, crit=None):
         """
         Combines a ModelData object with a nn.Module object, such that you can train that
         module.
@@ -35,7 +37,8 @@ class Learner():
         self.models_path = os.path.join(self.data.path, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
-        self.crit,self.reg_fn = None,None
+        self.crit = crit if crit else self._get_crit(data)
+        self.reg_fn = None
         self.fp16 = False
 
     @classmethod
@@ -58,6 +61,12 @@ class Learner():
     def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
 
     def __repr__(self): return self.model.__repr__()
+    
+    def lsuv_init(self, needed_std=1.0, std_tol=0.1, max_attempts=10, do_orthonorm=False):         
+        x = V(next(iter(self.data.trn_dl))[0])
+        self.models.model=apply_lsuv_init(self.model, x, needed_std=needed_std, std_tol=std_tol,
+                            max_attempts=max_attempts, do_orthonorm=do_orthonorm, 
+                            cuda=USE_GPU and torch.cuda.is_available())
 
     def set_bn_freeze(self, m, do_freeze):
         if hasattr(m, 'running_mean'): m.bn_freeze = do_freeze
@@ -78,8 +87,14 @@ class Learner():
     def unfreeze(self): self.freeze_to(0)
 
     def get_model_path(self, name): return os.path.join(self.models_path,name)+'.h5'
-    def save(self, name): save_model(self.model, self.get_model_path(name))
-    def load(self, name): load_model(self.model, self.get_model_path(name))
+    
+    def save(self, name): 
+        save_model(self.model, self.get_model_path(name))
+        if hasattr(self, 'swa_model'): save_model(self.swa_model, self.get_model_path(name)[:-3]+'-swa.h5')
+                       
+    def load(self, name): 
+        load_model(self.model, self.get_model_path(name))
+        if hasattr(self, 'swa_model'): load_model(self.swa_model, self.get_model_path(name)[:-3]+'-swa.h5')
 
     def set_data(self, data): self.data_ = data
 
@@ -101,8 +116,8 @@ class Learner():
         self.model.float()
 
     def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,
-                wds_sched_mult=None, **kwargs):
+                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,             
+                wds_sched_mult=None, use_swa=False, swa_start=1, swa_eval_freq=5, **kwargs):
 
         """Method does some preparation before finally delegating to the 'fit' method for
         fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
@@ -150,8 +165,21 @@ class Learner():
                 strength. This function is passed the WeightDecaySchedule object. And example
                 function that can be passed is:
                             f = lambda x: np.array(x.layer_opt.lrs) / x.init_lrs
-
-            kwargs: other optional arguments
+                            
+            use_swa (bool, optional): when this is set to True, it will enable the use of
+                Stochastic Weight Averaging (https://arxiv.org/abs/1803.05407). The learner will
+                include an additional model (in the swa_model attribute) for keeping track of the 
+                average weights as described in the paper. All testing of this technique so far has
+                been in image classification, so use in other contexts is not guaranteed to work.
+                
+            swa_start (int, optional): if use_swa is set to True, then this determines the epoch
+                to start keeping track of the average weights. It is 1-indexed per the paper's
+                conventions.
+                
+            swa_eval_freq (int, optional): if use_swa is set to True, this determines the frequency
+                at which to evaluate the performance of the swa_model. This evaluation can be costly
+                for models using BatchNorm (requiring a full pass through the data), which is why the
+                default is not to evaluate after each epoch.
 
         Returns:
             None
@@ -193,9 +221,17 @@ class Learner():
 
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
+            
+        if use_swa:
+            # make a copy of the model to track average weights
+            self.swa_model = copy.deepcopy(model)
+            callbacks+=[SWA(model, self.swa_model, swa_start)]
+
         n_epoch = int(sum_geom(cycle_len if cycle_len else 1, cycle_mult, n_cycle))
         return fit(model, data, n_epoch, layer_opt.opt, self.crit,
-            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
+            metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16,
+            swa_model=self.swa_model if use_swa else None, swa_start=swa_start, 
+            swa_eval_freq=swa_eval_freq, **kwargs)
 
     def get_layer_groups(self): return self.models.get_layer_groups()
 
@@ -315,13 +351,15 @@ class Learner():
         self.fit_gen(self.model, self.data, layer_opt, num_it//len(self.data.trn_dl) + 1, all_val=True, **kwargs)
         self.load('tmp')
 
-    def predict(self, is_test=False):
+    def predict(self, is_test=False, use_swa=False):
         dl = self.data.test_dl if is_test else self.data.val_dl
-        return predict(self.model, dl)
+        m = self.swa_model if use_swa else self.model
+        return predict(m, dl)
 
-    def predict_with_targs(self, is_test=False):
+    def predict_with_targs(self, is_test=False, use_swa=False):
         dl = self.data.test_dl if is_test else self.data.val_dl
-        return predict_with_targs(self.model, dl)
+        m = self.swa_model if use_swa else self.model
+        return predict_with_targs(m, dl)
 
     def predict_dl(self, dl): return predict_with_targs(self.model, dl)[0]
 
@@ -383,6 +421,6 @@ class Learner():
         if len(data_list)==0: data_list = [self.data]
         return fit(self.model, data_list, n_epochs,layer_opt, self.crit,
             metrics=metrics, callbacks=callbacks, reg_fn=self.reg_fn, clip=self.clip, fp16=self.fp16, **kwargs)
-    
 
+    def _get_crit(self, data): return F.mse_loss
 
