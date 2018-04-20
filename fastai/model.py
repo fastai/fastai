@@ -77,7 +77,7 @@ def set_train_mode(m):
     else: m.train()
 
 def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
-        swa_model=None, swa_start=None, swa_eval_freq=None, **kwargs):
+        swa_model=None, swa_start=None, swa_eval_freq=None, sampler=None, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -90,7 +90,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
        crit: loss function to optimize. Example: F.cross_entropy
     """
     all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
-    sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
+    #sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
+    if sampler and not is_listy(sampler): sampler=[sampler]
     get_ep_vals = kwargs.pop('get_ep_vals') if 'get_ep_vals' in kwargs else False
     metrics = metrics or []
     callbacks = callbacks or []
@@ -103,20 +104,20 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
         names += swa_names
         # will use this to call evaluate later
         swa_stepper = stepper(swa_model, None, crit, **kwargs)
-        
+
     layout = "{!s:10} " * len(names)
     if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
     for cb in callbacks: cb.on_phase_begin()
-    if hasattr(opt,'state_dict'): model_stepper = stepper(model, opt, crit, **kwargs) 
-    else:  model_stepper = stepper(model, opt.opt, crit, **kwargs)
+    model_stepper = stepper(model, opt.opt if hasattr(opt,'opt') else opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
     phase = 0
     for epoch in tnrange(tot_epochs, desc='Epoch'):
-        if sampler: sampler.set_epoch(epoch)
+        if sampler:
+            for s in sampler: s.set_epoch(epoch)
         model_stepper.reset(True)
         cur_data = data[phase]
         num_batch = len(cur_data.trn_dl)
