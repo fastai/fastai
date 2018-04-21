@@ -29,12 +29,12 @@ class LoggingCallback(Callback):
         self.log("\ton_train_begin")
     def on_batch_begin(self):
         self.log(str(self.batch)+"\ton_batch_begin")
-    def on_phase_begin(self, metrics):
+    def on_phase_begin(self):
         self.log(str(self.phase)+"\ton_phase_begin")
     def on_epoch_end(self, metrics):
         self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
         self.epoch += 1
-    def on_phase_end(self, metrics):
+    def on_phase_end(self):
         self.log(str(self.phase)+"\ton_phase_end")
         self.phase+=1
     def on_batch_end(self, metrics):
