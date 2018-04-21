@@ -77,7 +77,7 @@ def set_train_mode(m):
     else: m.train()
 
 def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
-        swa_model=None, swa_start=None, swa_eval_freq=None, sampler=None, **kwargs):
+        swa_model=None, swa_start=None, swa_eval_freq=None, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -89,9 +89,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
        n_epochs(int or list): number of epochs (or list of number of epochs)
        crit: loss function to optimize. Example: F.cross_entropy
     """
+
     all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
-    #sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
-    if sampler and not is_listy(sampler): sampler=[sampler]
     get_ep_vals = kwargs.pop('get_ep_vals') if 'get_ep_vals' in kwargs else False
     metrics = metrics or []
     callbacks = callbacks or []
@@ -116,13 +115,14 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
     phase = 0
     for epoch in tnrange(tot_epochs, desc='Epoch'):
-        if sampler:
-            for s in sampler: s.set_epoch(epoch)
         model_stepper.reset(True)
         cur_data = data[phase]
+        if hasattr(cur_data, 'trn_sampler'): cur_data.trn_sampler.set_epoch(epoch)
+        if hasattr(cur_data, 'val_sampler'): cur_data.val_sampler.set_epoch(epoch)
         num_batch = len(cur_data.trn_dl)
         t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch)
         if all_val: val_iter = IterBatch(cur_data.val_dl)
+
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
