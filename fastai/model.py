@@ -142,7 +142,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                     break
                 for cb in callbacks: cb.on_phase_begin()
                 if isinstance(opt, LayerOptimizer): model_stepper.opt = opt.opt
-                if cur_data != data[phase]: 
+                if cur_data != data[phase]:
                     t.close()#Weird bug with the bar not disappearing
                     break
 
