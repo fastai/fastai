@@ -12,7 +12,7 @@ def texts_labels_from_folders(path, folders):
     texts,labels = [],[]
     for idx,label in enumerate(folders):
         for fname in glob(os.path.join(path, label, '*.*')):
-            texts.append(open(fname, 'r').read())
+            texts.append(open(fname, 'r', encoding="utf-8").read())
             labels.append(idx)
     return texts, np.array(labels).astype(np.int64)
 
