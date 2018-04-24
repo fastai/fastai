@@ -39,7 +39,7 @@ def resize_img(fname, targ, path, new_path):
     im.resize(sz, Image.LINEAR).save(dest)
 
 def resize_imgs(fnames, targ, path, new_path):
-        """
+    """
     Enlarge or shrink a set of images in the same directory to scale, such that the smaller of the height or width dimension is equal to targ.
     Note: 
     -- This function is multithreaded for efficiency. 

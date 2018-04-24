@@ -15,12 +15,14 @@ def scale_min(im, targ, interpolation=cv2.INTER_AREA):
     return cv2.resize(im, sz, interpolation=interpolation)
 
 def zoom_cv(x,z):
+    '''zooms the center of image x, by a factor of z+1 while retaining the origal image size and proportion. '''
     if z==0: return x
     r,c,*_ = x.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
 def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
+    '''stretches image x horizontally by sr+1, and vertically by sc+1 while retaining the origal image size and proportion.'''
     if sr==0 and sc==0: return x
     r,c,*_ = x.shape
     x = cv2.resize(x, None, fx=sr+1, fy=sc+1, interpolation=interpolation)
@@ -29,10 +31,13 @@ def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
     return x[cr:r+cr, cc:c+cc]
 
 def dihedral(x, dih):
+    '''performs any of 8 90 rotations or flips for image x.
+    '''
     x = np.rot90(x, dih%4)
     return x if dih<4 else np.fliplr(x)
 
 def lighting(im, b, c):
+    ''' adjusts image's balance and contrast'''
     if b==0 and c==1: return im
     mu = np.average(im)
     return np.clip((im-mu)*c+mu+b,0.,1.).astype(np.float32)
@@ -88,6 +93,7 @@ def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio
     return out
 
 def cutout(im, n_holes, length):
+    ''' cuts out n_holes number of square holes of size length in image at random locations. holes may be overlapping. '''
     r,c,*_ = im.shape
     mask = np.ones((r, c), np.int32)
     for n in range(n_holes):
@@ -104,9 +110,17 @@ def cutout(im, n_holes, length):
     im = im * mask
     return im
 
-def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
+def scale_to(x, ratio, targ): 
+    '''
+    no clue, does not work.
+    '''
+    return max(math.floor(x*ratio), targ)
 
-def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
+def crop(im, r, c, sz): 
+    '''
+    crop image into a square of size sz, 
+    '''
+    return im[r:r+sz, c:c+sz]
 
 def det_dihedral(dih): return lambda x: dihedral(x, dih)
 def det_stretch(sr, sc): return lambda x: stretch_cv(x, sr, sc)
