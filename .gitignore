@@ -2,7 +2,7 @@
 .pypirc
 ~*
 tmp*
-sample
+sample_data/
 tags
 data
 
