@@ -100,7 +100,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
-    if isinstance(opt, LayerOptimizer): stepper = stepper(model, opt.opt, crit, **kwargs) 
+    if isinstance(opt, LayerOptimizer): stepper = stepper(model, opt.opt, crit, **kwargs)
     else:  stepper = stepper(model, opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
@@ -129,12 +129,12 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                 for cb in callbacks: cb.on_phase_end()
                 phase += 1
                 if phase >= len(n_epochs):
-                    t.close()#Weird bug with the bar not disappearing
+                    t.close()
                     break
                 for cb in callbacks: cb.on_phase_begin()
                 if isinstance(opt, LayerOptimizer): stepper.opt = opt.opt
-                if cur_data != data[phase]: 
-                    t.close()#Weird bug with the bar not disappearing
+                if cur_data != data[phase]:
+                    t.close()
                     break
 
         if not all_val:
@@ -146,10 +146,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
             for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
     for cb in callbacks: cb.on_train_end()
-    if get_ep_vals:
-        return vals, ep_vals
-    else:
-        return vals
+    if get_ep_vals: return vals, ep_vals
+    else: return vals
 
 def append_stats(ep_vals, epoch, values, decimals=6):
     ep_vals[epoch]=list(np.round(values, decimals))
