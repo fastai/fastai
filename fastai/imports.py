@@ -40,7 +40,10 @@ from tqdm import tqdm_notebook, tnrange
 def clear_tqdm():
     inst = getattr(tq.tqdm, '_instances', None)
     if not inst: return
-    for i in range(len(inst)): inst.pop().close()
+    try:
+        for i in range(len(inst)): inst.pop().close()
+    except Exception:
+        pass
 
 if in_notebook():
     def tqdm(*args, **kwargs):
