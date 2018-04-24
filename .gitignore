@@ -117,3 +117,6 @@ ENV/
 ehthumbs.db
 Thumbs.db
 .idea
+
+# pytest
+.pytest_cache
