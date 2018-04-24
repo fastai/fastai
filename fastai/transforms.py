@@ -157,7 +157,7 @@ class Denormalize():
 
 
 class Normalize():
-    """ Normalizes an image.  """
+    """ Normalizes an image to zero mean and unit standard deviation, given the mean m and std s of the original image """
     def __init__(self, m, s, tfm_y=TfmType.NO):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
@@ -169,6 +169,10 @@ class Normalize():
         return x,y
 
 class ChannelOrder():
+    '''
+    changes image array shape from (h, w, 3) to (3, h, w). 
+    tfm_y decides the transformation done to the y element. 
+    '''
     def __init__(self, tfm_y=TfmType.NO): self.tfm_y=tfm_y
 
     def __call__(self, x, y):
