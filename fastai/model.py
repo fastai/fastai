@@ -138,12 +138,12 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                 for cb in callbacks: cb.on_phase_end()
                 phase += 1
                 if phase >= len(n_epochs):
-                    t.close()#Weird bug with the bar not disappearing
+                    t.close()
                     break
                 for cb in callbacks: cb.on_phase_begin()
                 if isinstance(opt, LayerOptimizer): model_stepper.opt = opt.opt
                 if cur_data != data[phase]:
-                    t.close()#Weird bug with the bar not disappearing
+                    t.close()
                     break
 
         if not all_val:
@@ -161,10 +161,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
             ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
         if stop: break
     for cb in callbacks: cb.on_train_end()
-    if get_ep_vals:
-        return vals, ep_vals
-    else:
-        return vals
+    if get_ep_vals: return vals, ep_vals
+    else: return vals
 
 def append_stats(ep_vals, epoch, values, decimals=6):
     ep_vals[epoch]=list(np.round(values, decimals))

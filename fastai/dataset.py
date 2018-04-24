@@ -26,6 +26,9 @@ def get_cv_idxs(n, cv_idx=0, val_pct=0.2, seed=42):
     return idxs[idx_start:idx_start+n_val]
 
 def resize_img(fname, targ, path, new_path):
+    """
+    Enlarge or shrink a single image to scale, such that the smaller of the height or width dimension is equal to targ.
+    """
     dest = os.path.join(path,new_path,str(targ),fname)
     if os.path.exists(dest): return
     im = Image.open(os.path.join(path, fname)).convert('RGB')
@@ -36,6 +39,12 @@ def resize_img(fname, targ, path, new_path):
     im.resize(sz, Image.LINEAR).save(dest)
 
 def resize_imgs(fnames, targ, path, new_path):
+    """
+    Enlarge or shrink a set of images in the same directory to scale, such that the smaller of the height or width dimension is equal to targ.
+    Note: 
+    -- This function is multithreaded for efficiency. 
+    -- When destination file or folder already exist, function exists without raising an error. 
+    """
     if not os.path.exists(os.path.join(path,new_path,str(targ),fnames[0])):
         with ThreadPoolExecutor(8) as e:
             ims = e.map(lambda x: resize_img(x, targ, path, new_path), fnames)
@@ -51,6 +60,9 @@ def read_dir(path, folder):
         raise FileNotFoundError("{} folder doesn't exist or is empty".format(folder))
 
 def read_dirs(path, folder):
+    '''
+    Fetches name of all files in path in long form, and labels associated by extrapolation of directory names. 
+    '''
     labels, filenames, all_labels = [], [], []
     full_path = os.path.join(path, folder)
     for label in sorted(os.listdir(full_path)):
@@ -61,44 +73,10 @@ def read_dirs(path, folder):
                 labels.append(label)
     return filenames, labels, all_labels
 
-def create_sample(path, r):
-    """ Takes a path to a dataset and creates a sample of specified size at <path>_sample
-
-    Parameters:
-    -----------
-    path: dataset path
-    r (float): proportion of examples to use as sample, in the range from 0 to 1
-    """
-    sample_path = path + '_sample'
-    shutil.rmtree(sample_path, ignore_errors=True)
-    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    copy_or_move_with_subdirs(subdirs, path, sample_path, r, move=False)
-
-def create_val(path, r):
-    """ Takes a path to a dataset and creates a validation set of specified size
-
-    Note - this changes the dataset at <path> by moving files to the val set
-
-    Parameters:
-    -----------
-    path: dataset path
-    r (float): proportion of examples to use for validation, in the range from 0 to 1
-
-    """
-    val_path = os.path.join(os.path.split(path)[0], 'valid')
-    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    copy_or_move_with_subdirs(subdirs, path, val_path, r, move=True)
-
-def copy_or_move_with_subdirs(subdir_lst, src, dst, r, move=False):
-    do = shutil.move if move else shutil.copy
-    for subdir in subdir_lst:
-        os.makedirs(os.path.join(dst, subdir))
-        files = glob(os.path.join(src, subdir, '*'))
-        np.random.shuffle(files)
-        for f in files[:int(len(files) * r)]:
-            do(f, os.path.join(dst, subdir, os.path.split(f)[1]))
-
 def n_hot(ids, c):
+    '''
+    one hot encoding by index. Returns array of length c, where all entries are 0, except for the indecies in ids
+    '''
     res = np.zeros((c,), dtype=np.float32)
     res[ids] = 1
     return res
@@ -139,6 +117,7 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     return sorted(fnames), list(df.to_dict().values())[0]
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
+    
     all_idx = {k: n_hot([label2idx[o] for o in v], c)
                for k,v in csv_labels.items()}
     return np.stack([all_idx[o] for o in fnames])
