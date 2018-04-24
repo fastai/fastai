@@ -14,8 +14,8 @@ import torchvision.models as models
 @pytest.fixture
 def image_data():
     images_to_process = []
-    for img_fname in os.listdir('tests/lsuv_imgs'):
-        img = cv2.imread(os.path.join('tests/lsuv_imgs', img_fname))
+    for img_fname in os.listdir('fastai/images'):
+        img = cv2.imread(os.path.join('fastai/images', img_fname))
         images_to_process.append(np.transpose(cv2.resize(img, (224,224)), (2,0,1)))
     data = np.array(images_to_process).astype(np.float32)
     return VV(torch.from_numpy(data))
