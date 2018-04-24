@@ -2,6 +2,7 @@ from .imports import *
 from .torch_imports import *
 from .core import *
 from .layer_optimizer import *
+from .swa import *
 from .fp16 import *
 
 def cut_model(m, cut):
@@ -75,7 +76,8 @@ def set_train_mode(m):
           and ('drop' in type(m).__name__.lower())): m.eval()
     else: m.train()
 
-def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper, **kwargs):
+def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
+        swa_model=None, swa_start=None, swa_eval_freq=None, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -87,8 +89,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
        n_epochs(int or list): number of epochs (or list of number of epochs)
        crit: loss function to optimize. Example: F.cross_entropy
     """
+
     all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
-    sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
     get_ep_vals = kwargs.pop('get_ep_vals') if 'get_ep_vals' in kwargs else False
     metrics = metrics or []
     callbacks = callbacks or []
@@ -96,33 +98,40 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     batch_num,avg_loss=0,0.
     for cb in callbacks: cb.on_train_begin()
     names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
+    if swa_model is not None:
+        swa_names = ['swa_loss'] + [f'swa_{f.__name__}' for f in metrics]
+        names += swa_names
+        # will use this to call evaluate later
+        swa_stepper = stepper(swa_model, None, crit, **kwargs)
+
     layout = "{!s:10} " * len(names)
     if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
-    if isinstance(opt, LayerOptimizer): stepper = stepper(model, opt.opt, crit, **kwargs)
-    else:  stepper = stepper(model, opt, crit, **kwargs)
+    for cb in callbacks: cb.on_phase_begin()
+    model_stepper = stepper(model, opt.opt if hasattr(opt,'opt') else opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
     phase = 0
-    for cb in callbacks: cb.on_phase_begin()
     for epoch in tnrange(tot_epochs, desc='Epoch'):
-        if sampler: sampler.set_epoch(epoch)
-        stepper.reset(True)
+        model_stepper.reset(True)
         cur_data = data[phase]
+        if hasattr(cur_data, 'trn_sampler'): cur_data.trn_sampler.set_epoch(epoch)
+        if hasattr(cur_data, 'val_sampler'): cur_data.val_sampler.set_epoch(epoch)
         num_batch = len(cur_data.trn_dl)
         t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch)
         if all_val: val_iter = IterBatch(cur_data.val_dl)
+
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
-            loss = stepper.step(V(x),V(y), epoch)
+            loss = model_stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss)
             stop=False
-            los = debias_loss if not all_val else [debias_loss] + validate_next(stepper,metrics, val_iter)
+            los = debias_loss if not all_val else [debias_loss] + validate_next(model_stepper,metrics, val_iter)
             for cb in callbacks: stop = stop or cb.on_batch_end(los)
             if stop: return
             if batch_num >= cnt_phases[phase]:
@@ -132,18 +141,24 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                     t.close()
                     break
                 for cb in callbacks: cb.on_phase_begin()
-                if isinstance(opt, LayerOptimizer): stepper.opt = opt.opt
+                if isinstance(opt, LayerOptimizer): model_stepper.opt = opt.opt
                 if cur_data != data[phase]:
                     t.close()
                     break
 
         if not all_val:
-            vals = validate(stepper, cur_data.val_dl, metrics)
+            vals = validate(model_stepper, cur_data.val_dl, metrics)
+            stop=False
+            for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
+            if swa_model is not None:
+                if (epoch + 1) >= swa_start and ((epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == tot_epochs - 1):
+                    fix_batchnorm(swa_model, cur_data.trn_dl)
+                    swa_vals = validate(swa_stepper, cur_data.val_dl, metrics)
+                    vals += swa_vals
+
             if epoch == 0: print(layout.format(*names))
             print_stats(epoch, [debias_loss] + vals)
             ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
-            stop=False
-            for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
         if stop: break
     for cb in callbacks: cb.on_train_end()
     if get_ep_vals: return vals, ep_vals
