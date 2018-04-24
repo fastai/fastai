@@ -6,7 +6,7 @@ This is a brief discussion of fastai's coding style, which is loosely informed b
 
 Everyone has strong opinions about coding style, except perhaps some very experienced coders, who have used many languages, who realize there's lots of different perfectly acceptable approaches. The python community has particularly strongly held views, on the whole. I suspect this is related to Python being a language targeted at beginners, and therefore there are a lot of users with limited experience in other languages; however this is just a guess. Anyway, I don't much mind what coding style you use when contributing to fastai, as long as:
 
-- You don't change existing code to reduce its compliance with this style guide (especially: don't use an automatic linter!)
+- You don't change existing code to reduce its compliance with this style guide (especially: don't use an automatic linter / formatter!)
 - You make some basic attempt to make your code not wildly different from the code that surrounds it.
 
 Having said that, I do hope that you find the ideas in this style guide at least a little thought provoking, and that you consider adopting them to some extent when contributing to this library.
@@ -38,6 +38,7 @@ Although Python will always be more verbose than many languages, by using these 
 
 > In metaphorical honor of Huffman's compression code that assigns smaller numbers of bits to more common bytes. In terms of syntax, it simply means that commonly used things should be shorter, but you shouldn't waste short sequences on less common constructs.
 
+- A fairly complete list of abbreviations is in [abbr.md](abbr.md); if you see anything missing, feel free to edit this file.
 - For example, that in computer vision code, where we say 'size' and 'image' all the time, we use shortened forms `sz` and `img`. Or in NLP code, we would say `lm` instead of 'language model'
 - Use `o` for an object in a comprehension, `i` for an index, and `k` and `v` for a key and value in a dictionary comprehension.
 - Use `x` for a tensor input to an algorithm (e.g. layer, transform, etc), unless interoperating with a libary where
@@ -45,8 +46,6 @@ Although Python will always be more verbose than many languages, by using these 
   for that library).
 - Take a look at the naming conventions in the part of code you're working on, and try to stick with them. E.g. in
   `fastai.transforms` you'll see 'det' for 'deterministic', 'tfm' for 'transform', and 'coord' for coordinate.
-- If you find the abbreviations in a module non-obvious, feel free to add a list of them to the module's markdown file
-  in this docs folder (create one if needed) to help you (and the next coder) get oriented.
 - Assume the coder has knowledge of the domain in which you're working
   - For instance, use `kl_divergence` not `kullback_leibler_divergence`; or (like pytorch) use `nll` not `negative_log_liklihood`. If the coder doesn't know these terms, they will need to look them up in the docs anyway and learn the concepts; if they do know the terms, the abbreviations will be well understood
   - When implementing a paper, aim to follow the paper's nomenclature, unless it's inconsistent with other widely-used conventions. E.g. `conv1` not `first_convolutional_layer`
@@ -131,8 +130,7 @@ import PIL, os, numpy as np, math, collections, threading
   classes, they can use code folding - they don't need to rely on having two lines between classes. If they want to see
   the definition of a symbol they can jump to the reference/tag, then don't need a list of imports at the top of the
   file. And so forth...
-- Don't use an automatic linter. No automatic tool can lay out your code with the care and domain understanding that
-  your can. And it'll break all the care and domain understanding that previous contributors have used in that file!
+- Don't use an automatic linter like autopep8 or formatter like yapf. No automatic tool can lay out your code with the care and domain understanding that you can. And it'll break all the care and domain understanding that previous contributors have used in that file!
 - Keep your PRs small, and for anything controversial or tricky discuss it on [the forums](http://forums.fast.ai)
   first.
 - When submitting a PR on a notebook, don't re-run the whole thing such that the diff ends up with changes for every
