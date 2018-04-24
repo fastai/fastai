@@ -1,4 +1,4 @@
-import cv2
+import pytest
 
 from fastai.core import VV
 from fastai.lsuv_initializer import apply_lsuv_init
@@ -6,7 +6,6 @@ from fastai.lsuv_initializer import apply_lsuv_init
 import cv2
 import numpy as np
 import os
-import pytest
 import torch
 import torch.nn as nn
 import torchvision.models as models
