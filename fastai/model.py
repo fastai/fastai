@@ -89,8 +89,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
        n_epochs(int or list): number of epochs (or list of number of epochs)
        crit: loss function to optimize. Example: F.cross_entropy
     """
+
     all_val = kwargs.pop('all_val') if 'all_val' in kwargs else False
-    sampler = kwargs.pop('sampler') if 'sampler' in kwargs else None
     get_ep_vals = kwargs.pop('get_ep_vals') if 'get_ep_vals' in kwargs else False
     metrics = metrics or []
     callbacks = callbacks or []
@@ -103,25 +103,26 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
         names += swa_names
         # will use this to call evaluate later
         swa_stepper = stepper(swa_model, None, crit, **kwargs)
-        
+
     layout = "{!s:10} " * len(names)
     if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
     for cb in callbacks: cb.on_phase_begin()
-    if hasattr(opt,'state_dict'): model_stepper = stepper(model, opt, crit, **kwargs) 
-    else:  model_stepper = stepper(model, opt.opt, crit, **kwargs)
+    model_stepper = stepper(model, opt.opt if hasattr(opt,'opt') else opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
     phase = 0
     for epoch in tnrange(tot_epochs, desc='Epoch'):
-        if sampler: sampler.set_epoch(epoch)
         model_stepper.reset(True)
         cur_data = data[phase]
+        if hasattr(cur_data, 'trn_sampler'): cur_data.trn_sampler.set_epoch(epoch)
+        if hasattr(cur_data, 'val_sampler'): cur_data.val_sampler.set_epoch(epoch)
         num_batch = len(cur_data.trn_dl)
         t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch)
         if all_val: val_iter = IterBatch(cur_data.val_dl)
+
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
@@ -137,12 +138,12 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                 for cb in callbacks: cb.on_phase_end()
                 phase += 1
                 if phase >= len(n_epochs):
-                    t.close()#Weird bug with the bar not disappearing
+                    t.close()
                     break
                 for cb in callbacks: cb.on_phase_begin()
                 if isinstance(opt, LayerOptimizer): model_stepper.opt = opt.opt
-                if cur_data != data[phase]: 
-                    t.close()#Weird bug with the bar not disappearing
+                if cur_data != data[phase]:
+                    t.close()
                     break
 
         if not all_val:
@@ -160,10 +161,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
             ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
         if stop: break
     for cb in callbacks: cb.on_train_end()
-    if get_ep_vals:
-        return vals, ep_vals
-    else:
-        return vals
+    if get_ep_vals: return vals, ep_vals
+    else: return vals
 
 def append_stats(ep_vals, epoch, values, decimals=6):
     ep_vals[epoch]=list(np.round(values, decimals))

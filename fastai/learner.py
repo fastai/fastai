@@ -393,7 +393,7 @@ class Learner():
         return np.stack(preds1+preds2), targs
 
     def fit_opt_sched(self, phases, cycle_save_name=None, best_save_name=None, use_wd_sched=False, norm_wds=False,
-                wds_sched_mult=None, stop_div=False, data_list=[], **kwargs):
+                wds_sched_mult=None, stop_div=False, data_list=None, callbacks=None, **kwargs):
         """Wraps us the content of phases to send them to model.fit(..)
 
         This will split the training in several parts, each with their own learning rates/
@@ -412,9 +412,12 @@ class Learner():
             None
         """
         #TODO: Will have to figure out how to insert the wd_scheduler.
+        if data_list is None: data_list=[]
+        if callbacks is None: callbacks=[]
         layer_opt = LayerOptimizer(phases[0].opt_fn, self.get_layer_groups(), 1e-2, phases[0].wds)
         self.sched = OptimScheduler(layer_opt, phases, len(self.data.trn_dl), stop_div)
-        callbacks, metrics = [self.sched], self.metrics
+        callbacks.append(self.sched)
+        metrics = self.metrics
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
         n_epochs = [phase.epochs for phase in phases]

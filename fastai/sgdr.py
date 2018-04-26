@@ -29,12 +29,12 @@ class LoggingCallback(Callback):
         self.log("\ton_train_begin")
     def on_batch_begin(self):
         self.log(str(self.batch)+"\ton_batch_begin")
-    def on_phase_begin(self, metrics):
+    def on_phase_begin(self):
         self.log(str(self.phase)+"\ton_phase_begin")
     def on_epoch_end(self, metrics):
         self.log(str(self.epoch)+"\ton_epoch_end: "+str(metrics))
         self.epoch += 1
-    def on_phase_end(self, metrics):
+    def on_phase_end(self):
         self.log(str(self.phase)+"\ton_phase_end")
         self.phase+=1
     def on_batch_end(self, metrics):
@@ -542,6 +542,15 @@ class OptimScheduler(LossRecorder):
                     draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
+    
+    def plot(self, n_skip=10, n_skip_end=5, linear=None):
+        if linear is None: linear = self.phases[-1].lr_decay == DecayType.LINEAR
+        plt.ylabel("loss")
+        plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
+        if linear: plt.xlabel("learning rate")
+        else:
+            plt.xlabel("learning rate (log scale)")
+            plt.xscale('log')
 
 def draw_line(ax,x):
     xmin, xmax, ymin, ymax = ax.axis()

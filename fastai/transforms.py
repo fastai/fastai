@@ -15,12 +15,14 @@ def scale_min(im, targ, interpolation=cv2.INTER_AREA):
     return cv2.resize(im, sz, interpolation=interpolation)
 
 def zoom_cv(x,z):
+    '''zooms the center of image x, by a factor of z+1 while retaining the origal image size and proportion. '''
     if z==0: return x
     r,c,*_ = x.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
 def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
+    '''stretches image x horizontally by sr+1, and vertically by sc+1 while retaining the origal image size and proportion.'''
     if sr==0 and sc==0: return x
     r,c,*_ = x.shape
     x = cv2.resize(x, None, fx=sr+1, fy=sc+1, interpolation=interpolation)
@@ -29,10 +31,13 @@ def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
     return x[cr:r+cr, cc:c+cc]
 
 def dihedral(x, dih):
+    '''performs any of 8 90 rotations or flips for image x.
+    '''
     x = np.rot90(x, dih%4)
     return x if dih<4 else np.fliplr(x)
 
 def lighting(im, b, c):
+    ''' adjusts image's balance and contrast'''
     if b==0 and c==1: return im
     mu = np.average(im)
     return np.clip((im-mu)*c+mu+b,0.,1.).astype(np.float32)
@@ -88,6 +93,7 @@ def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio
     return out
 
 def cutout(im, n_holes, length):
+    ''' cuts out n_holes number of square holes of size length in image at random locations. holes may be overlapping. '''
     r,c,*_ = im.shape
     mask = np.ones((r, c), np.int32)
     for n in range(n_holes):
@@ -104,9 +110,17 @@ def cutout(im, n_holes, length):
     im = im * mask
     return im
 
-def scale_to(x, ratio, targ): return max(math.floor(x*ratio), targ)
+def scale_to(x, ratio, targ): 
+    '''
+    no clue, does not work.
+    '''
+    return max(math.floor(x*ratio), targ)
 
-def crop(im, r, c, sz): return im[r:r+sz, c:c+sz]
+def crop(im, r, c, sz): 
+    '''
+    crop image into a square of size sz, 
+    '''
+    return im[r:r+sz, c:c+sz]
 
 def det_dihedral(dih): return lambda x: dihedral(x, dih)
 def det_stretch(sr, sc): return lambda x: stretch_cv(x, sr, sc)
@@ -143,7 +157,7 @@ class Denormalize():
 
 
 class Normalize():
-    """ Normalizes an image.  """
+    """ Normalizes an image to zero mean and unit standard deviation, given the mean m and std s of the original image """
     def __init__(self, m, s, tfm_y=TfmType.NO):
         self.m=np.array(m, dtype=np.float32)
         self.s=np.array(s, dtype=np.float32)
@@ -155,6 +169,10 @@ class Normalize():
         return x,y
 
 class ChannelOrder():
+    '''
+    changes image array shape from (h, w, 3) to (3, h, w). 
+    tfm_y decides the transformation done to the y element. 
+    '''
     def __init__(self, tfm_y=TfmType.NO): self.tfm_y=tfm_y
 
     def __call__(self, x, y):
@@ -603,21 +621,16 @@ crop_fn_lu = {CropType.RANDOM: RandomCrop, CropType.CENTER: CenterCrop, CropType
 
 class Transforms():
     def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER,
-                 min_area_frac=0.08, min_aspect_ratio=0.75, max_aspect_ratio=1.333, flip_hw_p=0.5,
                  tfm_y=TfmType.NO, sz_y=None):
         if sz_y is None: sz_y = sz
         self.sz,self.denorm,self.norm,self.sz_y = sz,denorm,normalizer,sz_y
-        if crop_type==CropType.GOOGLENET:
-            crop_tfm = crop_fn_lu[crop_type](sz, min_area_frac=min_area_frac, min_aspect_ratio=min_aspect_ratio, max_aspect_ratio=max_aspect_ratio, flip_hw_p=flip_hw_p, tfm_y=tfm_y, sz_y=sz_y)
-        else:
-            crop_tfm = crop_fn_lu[crop_type](sz, tfm_y, sz_y)
+        crop_tfm = crop_fn_lu[crop_type](sz, tfm_y, sz_y)
         self.tfms = tfms + [crop_tfm, normalizer, ChannelOrder(tfm_y)]
     def __call__(self, im, y=None): return compose(im, y, self.tfms)
     def __repr__(self): return str(self.tfms)
 
 
 def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type=None,
-              min_area_frac=0.08, min_aspect_ratio=0.75, max_aspect_ratio=1.333, flip_hw_p=0.5,
               tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
     """
     Generate a standard set of transformations
@@ -662,9 +675,7 @@ def image_gen(normalizer, denorm, sz, tfms=None, max_zoom=None, pad=0, crop_type
              else Scale(sz, tfm_y, sz_y=sz_y)]
     if pad: scale.append(AddPadding(pad, mode=pad_mode))
     if crop_type!=CropType.GOOGLENET: tfms=scale+tfms
-    #if (max_zoom is not None or pad!=0) and crop_type is None: crop_type = CropType.RANDOM
-    return Transforms(sz, tfms, normalizer, denorm, crop_type, 
-                      min_area_frac=min_area_frac, min_aspect_ratio=min_aspect_ratio, max_aspect_ratio=max_aspect_ratio, flip_hw_p=flip_hw_p,
+    return Transforms(sz, tfms, normalizer, denorm, crop_type,
                       tfm_y=tfm_y, sz_y=sz_y)
 
 def noop(x):
@@ -682,24 +693,21 @@ inception_stats = A([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 inception_models = (inception_4, inceptionresnet_2)
 
 def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
-                    min_area_frac=0.08, min_aspect_ratio=0.75, max_aspect_ratio=1.333, flip_hw_p=0.5,
-                    tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
+                    tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT, norm_y=True):
     """ Given the statistics of the training image sets, returns separate training and validation transform functions
     """
     if aug_tfms is None: aug_tfms=[]
-    tfm_norm = Normalize(*stats, tfm_y=tfm_y)
+    tfm_norm = Normalize(*stats, tfm_y=tfm_y if norm_y else TfmType.NO)
     tfm_denorm = Denormalize(*stats)
     val_crop = CropType.CENTER if crop_type in (CropType.RANDOM,CropType.GOOGLENET) else crop_type
     val_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=val_crop, tfm_y=tfm_y, sz_y=sz_y)
-    trn_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type, 
-                        min_area_frac=min_area_frac, min_aspect_ratio=min_aspect_ratio, max_aspect_ratio=max_aspect_ratio, flip_hw_p=flip_hw_p,
+    trn_tfm = image_gen(tfm_norm, tfm_denorm, sz, pad=pad, crop_type=crop_type,
                         tfm_y=tfm_y, sz_y=sz_y, tfms=aug_tfms, max_zoom=max_zoom, pad_mode=pad_mode)
     return trn_tfm, val_tfm
 
 
 def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
-                    min_area_frac=0.08, min_aspect_ratio=0.75, max_aspect_ratio=1.333, flip_hw_p=0.5,
-                    tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT):
+                    tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT, norm_y=True):
     """ Returns separate transformers of images for training and validation.
     Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
 
@@ -708,6 +716,5 @@ def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=
     """
     stats = inception_stats if f_model in inception_models else imagenet_stats
     return tfms_from_stats(stats, sz, aug_tfms, max_zoom=max_zoom, pad=pad, crop_type=crop_type,
-                           min_area_frac=min_area_frac, min_aspect_ratio=min_aspect_ratio, max_aspect_ratio=max_aspect_ratio, flip_hw_p=flip_hw_p,
-                           tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode)
+                           tfm_y=tfm_y, sz_y=sz_y, pad_mode=pad_mode, norm_y=norm_y)
 
