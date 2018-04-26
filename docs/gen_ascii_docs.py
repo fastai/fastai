@@ -27,7 +27,7 @@ def get_sub_arg(ps):
 
 def get_xref_str(ps):
     xref_id, xref_cap = ps if len(ps) == 2 else ps*2
-    return "xref:{}[{}]".format(xref_id, xref_cap)
+    return f"xref:{xref_id}[{xref_cap}]"
 
 def get_method_str(ps):
     method_name, doc_string = ''.join(ps).split(',', 1)
