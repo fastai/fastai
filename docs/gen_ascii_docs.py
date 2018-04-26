@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
 import os
 import ast
 import re
 import contextlib
 from pathlib import Path
 import subprocess
-import argparse
-from templates import *
+from .templates import *
+import fire
 
 
 def get_cls_str(ps):
@@ -100,13 +99,19 @@ def working_directory(path):
     try:
         yield
     finally:
-        os.chdir(prev_cwd)
+        os.chdir(str(prev_cwd))
 
-def gen_ascii_docs():
+def gen_ascii_docs(src='fastai'):
+    """Generate documentation for fastai library in HTML (asciidoctor required)
+    :param str src: The absolute/relative path of source file/dir
+    """
     os.chdir(Path(__file__).absolute().parent)
     with working_directory('..'):
-        path = Path('fastai')
-        file_paths = list(path.glob('**/*.py'))
+        path = Path(src)
+        if path.is_dir():
+            file_paths = list(path.glob('**/*.py'))
+        else:
+            file_paths = [path]
 
     pat = re.compile('^(?!__init__).*.py\Z')
     for file_path in file_paths:
@@ -117,8 +122,10 @@ def gen_ascii_docs():
 
             (file_path.parent/(file_path.name.rsplit('.',1)[0] + '.adoc.tmpl')).write_text(tmpl_str)
             (file_path.parent/(file_path.name.rsplit('.',1)[0] + '.adoc')).write_text(re.sub(r"{{(.*?)}}", parse_tmpl, tmpl_str, flags=re.DOTALL))
-
-    subprocess.call(['asciidoctor', str(path) + '/**/*.adoc'])
+    if path.is_dir():
+        subprocess.call(['asciidoctor', str(path) + '/**/*.adoc'])
+    else:
+        subprocess.call(['asciidoctor', str(path).rsplit('.',1)[0] + '.adoc'])
 
 
 _fn_lu = {
@@ -141,9 +148,5 @@ _parser_dict = {
     list: lambda x: list(map(parse, x))
 }
 
-if __name__ == '__main__' and __package__ is None:
-    parser = argparse.ArgumentParser(
-        description='Generate documentation for fastai library in HTML (asciidoctor required)',
-    )
-    parser.parse_args()
-    sys.exit(gen_ascii_docs())
+if __name__ == '__main__':
+    fire.Fire(gen_ascii_docs)
