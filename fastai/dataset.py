@@ -63,14 +63,15 @@ def read_dirs(path, folder):
     '''
     Fetches name of all files in path in long form, and labels associated by extrapolation of directory names. 
     '''
-    fnames, lbls = [], []
+    lbls, fnames, all_lbls = [], [], []
     full_path = os.path.join(path, folder)
     for lbl in sorted(os.listdir(full_path)):
         if lbl not in ('.ipynb_checkpoints','.DS_Store'):
-            lbls.append(lbl)
+            all_lbls.append(lbl)
             for fname in os.listdir(os.path.join(full_path, lbl)):
                 fnames.append(os.path.join(folder, lbl, fname))
-    return fnames, lbls
+                lbls.append(lbl)
+    return fnames, lbls, all_lbls
 
 def n_hot(ids, c):
     '''
@@ -81,11 +82,11 @@ def n_hot(ids, c):
     return res
 
 def folder_source(path, folder):
-    fnames, lbls = read_dirs(path, folder)
-    lbl2idx = {v:k for k,v in enumerate(lbls)}
+    fnames, lbls, all_lbls = read_dirs(path, folder)
+    lbl2idx = {v:k for k,v in enumerate(all_lbls)}
     idxs = [lbl2idx[lbl] for lbl in lbls]
     lbl_arr = np.array(idxs, dtype=int)
-    return fnames, lbl_arr, lbls
+    return fnames, lbl_arr, all_lbls
 
 def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     """Parse filenames and label sets from a CSV file.
