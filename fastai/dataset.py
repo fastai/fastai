@@ -81,12 +81,11 @@ def n_hot(ids, c):
     return res
 
 def folder_source(path, folder):
-    fnames, lbls, all_labels = read_dirs(path, folder)
-    label2idx = {v:k for k,v in enumerate(all_labels)}
-    idxs = [label2idx[lbl] for lbl in lbls]
-    c = len(all_labels)
-    label_arr = np.array(idxs, dtype=int)
-    return fnames, label_arr, all_labels
+    fnames, lbls = read_dirs(path, folder)
+    lbl2idx = {v:k for k,v in enumerate(lbls)}
+    idxs = [lbl2idx[lbl] for lbl in lbls]
+    lbl_arr = np.array(idxs, dtype=int)
+    return fnames, lbl_arr, lbls
 
 def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     """Parse filenames and label sets from a CSV file.
