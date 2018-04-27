@@ -63,15 +63,14 @@ def read_dirs(path, folder):
     '''
     Fetches name of all files in path in long form, and labels associated by extrapolation of directory names. 
     '''
-    labels, filenames, all_labels = [], [], []
+    fnames, lbls = [], []
     full_path = os.path.join(path, folder)
-    for label in sorted(os.listdir(full_path)):
-        if label not in ('.ipynb_checkpoints','.DS_Store'):
-            all_labels.append(label)
-            for fname in os.listdir(os.path.join(full_path, label)):
-                filenames.append(os.path.join(folder, label, fname))
-                labels.append(label)
-    return filenames, labels, all_labels
+    for lbl in sorted(os.listdir(full_path)):
+        if lbl not in ('.ipynb_checkpoints','.DS_Store'):
+            lbls.append(lbl)
+            for fname in os.listdir(os.path.join(full_path, lbl)):
+                fnames.append(os.path.join(folder, lbl, fname))
+    return fnames, lbls
 
 def n_hot(ids, c):
     '''
