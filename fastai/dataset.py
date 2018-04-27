@@ -63,56 +63,15 @@ def read_dirs(path, folder):
     '''
     Fetches name of all files in path in long form, and labels associated by extrapolation of directory names. 
     '''
-    labels, filenames, all_labels = [], [], []
+    lbls, fnames, all_lbls = [], [], []
     full_path = os.path.join(path, folder)
-    for label in sorted(os.listdir(full_path)):
-        if label not in ('.ipynb_checkpoints','.DS_Store'):
-            all_labels.append(label)
-            for fname in os.listdir(os.path.join(full_path, label)):
-                filenames.append(os.path.join(folder, label, fname))
-                labels.append(label)
-    return filenames, labels, all_labels
-
-def create_sample(path, r):
-    """ Takes a path to a dataset and creates a sample of specified size at <path>_sample
-
-    Parameters:
-    -----------
-    path: dataset path
-    r (float): proportion of examples to use as sample, in the range from 0 to 1
-    """
-    sample_path = path + '_sample'
-    shutil.rmtree(sample_path, ignore_errors=True)
-    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    copy_or_move_with_subdirs(subdirs, path, sample_path, r, move=False)
-
-def create_val(path, r):
-    """ Takes a path to a dataset and creates a validation set of specified size
-
-    Note - this changes the dataset at <path> by moving files to the val set
-
-    Parameters:
-    -----------
-    path: dataset path
-    r (float): proportion of examples to use for validation, in the range from 0 to 1
-
-    """
-    val_path = os.path.join(os.path.split(path)[0], 'valid')
-    subdirs = [os.path.split(p)[1] for p in glob(os.path.join(path, '*'))]
-    copy_or_move_with_subdirs(subdirs, path, val_path, r, move=True)
-
-def copy_or_move_with_subdirs(subdir_lst, src, dst, r, move=False):
-    '''
-    Copy or move subdirectory of folders from source to destination.
-    r: no fucking clue
-    '''
-    do = shutil.move if move else shutil.copy
-    for subdir in subdir_lst:
-        os.makedirs(os.path.join(dst, subdir))
-        files = glob(os.path.join(src, subdir, '*'))
-        np.random.shuffle(files)
-        for f in files[:int(len(files) * r)]:
-            do(f, os.path.join(dst, subdir, os.path.split(f)[1]))
+    for lbl in sorted(os.listdir(full_path)):
+        if lbl not in ('.ipynb_checkpoints','.DS_Store'):
+            all_lbls.append(lbl)
+            for fname in os.listdir(os.path.join(full_path, lbl)):
+                fnames.append(os.path.join(folder, lbl, fname))
+                lbls.append(lbl)
+    return fnames, lbls, all_lbls
 
 def n_hot(ids, c):
     '''
@@ -123,12 +82,11 @@ def n_hot(ids, c):
     return res
 
 def folder_source(path, folder):
-    fnames, lbls, all_labels = read_dirs(path, folder)
-    label2idx = {v:k for k,v in enumerate(all_labels)}
-    idxs = [label2idx[lbl] for lbl in lbls]
-    c = len(all_labels)
-    label_arr = np.array(idxs, dtype=int)
-    return fnames, label_arr, all_labels
+    fnames, lbls, all_lbls = read_dirs(path, folder)
+    lbl2idx = {v:k for k,v in enumerate(all_lbls)}
+    idxs = [lbl2idx[lbl] for lbl in lbls]
+    lbl_arr = np.array(idxs, dtype=int)
+    return fnames, lbl_arr, all_lbls
 
 def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     """Parse filenames and label sets from a CSV file.

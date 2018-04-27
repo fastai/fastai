@@ -17,6 +17,7 @@ from .models.wrn_50_2f import wrn_50_2f
 from .models.inceptionresnetv2 import InceptionResnetV2
 from .models.inceptionv4 import InceptionV4
 from .models.nasnet import nasnetalarge
+from .models.fa_resnet import *
 
 import warnings
 warnings.filterwarnings('ignore', message='Implicit dimension choice', category=UserWarning)
@@ -89,3 +90,4 @@ def vgg16(pre): return children(vgg16_bn(pre))[0]
 @_fastai_model('Vgg-19 with batch norm added', 'Very Deep Convolutional Networks for Large-Scale Image Recognition',
                'https://arxiv.org/pdf/1409.1556.pdf')
 def vgg19(pre): return children(vgg19_bn(pre))[0]
+
