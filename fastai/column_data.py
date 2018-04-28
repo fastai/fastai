@@ -16,7 +16,6 @@ class PassthruDataset(Dataset):
 
     @classmethod
     def from_data_frame(cls, df, cols_x, col_y, is_reg=True, is_multi=False):
-      """ An alternative constructor that creates an instance of PassthruDataset from a DataFrame """
         cols = [df[o] for o in cols_x+[col_y]]
         return cls(*cols, is_reg=is_reg, is_multi=is_multi)
 
