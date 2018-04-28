@@ -1,0 +1,322 @@
+
+= fastai.sgdr
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class Callback
+
+=== Methods
+
+*on_train_begin*
+
+*on_batch_begin*
+
+*on_phase_begin*
+
+*on_epoch_end*
+
+*on_phase_end*
+
+*on_batch_end*
+
+*on_train_end*
+
+== Class LoggingCallback:Callback
+
+=== Arguments
+*save_path*
+
+=== Methods
+
+*on_train_begin*
+
+*on_batch_begin*
+
+*on_phase_begin*
+
+*on_epoch_end*
+
+*on_phase_end*
+
+*on_batch_end*
+
+*on_train_end*
+
+*log*
+
+== Class LossRecorder:Callback
+
+=== Arguments
+*layer_opt*
+
+*save_path*
+
+*record_mom* (default False)
+
+*metrics* (default [])
+
+=== Methods
+
+*on_train_begin*
+
+*on_epoch_end*
+
+*on_batch_end*
+
+*save_metrics*
+
+*plot_loss*
+
+*plot_lr*
+
+== Class LR_Updater:LossRecorder
+
+=== Methods
+
+*on_train_begin*
+
+*on_batch_end*
+
+*update_lr*
+
+*update_mom*
+
+*calc_lr*
+
+*calc_mom*
+
+== Class LR_Finder:LR_Updater
+
+=== Arguments
+*layer_opt*
+
+*nb*
+
+*end_lr* (default 10)
+
+*linear* (default False)
+
+*metrics* (default [])
+
+=== Methods
+
+*on_train_begin*
+
+*calc_lr*
+
+*on_batch_end*
+
+*plot*
+
+== Class LR_Finder2:LR_Finder
+
+=== Arguments
+*layer_opt*
+
+*nb*
+
+*end_lr* (default 10)
+
+*linear* (default False)
+
+*metrics* (default [])
+
+*stop_dv* (default True)
+
+=== Methods
+
+*on_batch_end*
+
+*plot*
+
+== Class CosAnneal:LR_Updater
+
+=== Arguments
+*layer_opt*
+
+*nb*
+
+*on_cycle_end* (default None)
+
+*cycle_mult* (default 1)
+
+=== Methods
+
+*on_train_begin*
+
+*calc_lr*
+
+== Class CircularLR:LR_Updater
+
+=== Arguments
+*layer_opt*
+
+*nb*
+
+*div* (default 4)
+
+*cut_div* (default 8)
+
+*on_cycle_end* (default None)
+
+*momentums* (default None)
+
+=== Methods
+
+*on_train_begin*
+
+*calc_lr*
+
+*calc_mom*
+
+== Class CircularLR_beta:LR_Updater
+
+=== Arguments
+*layer_opt*
+
+*nb*
+
+*div* (default 10)
+
+*pct* (default 10)
+
+*on_cycle_end* (default None)
+
+*momentums* (default None)
+
+=== Methods
+
+*on_train_begin*
+
+*calc_lr*
+
+*calc_mom*
+
+== Class SaveBestModel:LossRecorder
+
+=== Arguments
+*model*
+
+*layer_opt*
+
+*metrics*
+
+*name* (default best_model)
+
+=== Methods
+
+*save_when_only_loss*
+
+*save_when_acc*
+
+*on_epoch_end*
+
+== Class WeightDecaySchedule:Callback
+
+=== Arguments
+*layer_opt*
+
+*batch_per_epoch*
+
+*cycle_len*
+
+*cycle_mult*
+
+*n_cycles*
+
+*norm_wds* (default False)
+
+*wds_sched_mult* (default None)
+
+=== Methods
+
+*on_train_begin*
+
+*on_batch_begin*
+
+*on_batch_end*
+
+*on_epoch_end*
+
+== Class DecayType:IntEnum
+
+== Class DecayScheduler
+
+=== Arguments
+*dec_type*
+
+*num_it*
+
+*start_val*
+
+*end_val* (default None)
+
+*extra* (default None)
+
+=== Methods
+
+*next_val*
+
+== Class TrainingPhase
+
+=== Arguments
+*epochs* (default 1)
+
+*opt_fn* (default SGD)
+
+*lr* (default 0.01)
+
+*lr_decay* (default NO)
+
+*momentum* (default 0.9)
+
+*momentum_decay* (default NO)
+
+*beta* (default None)
+
+*wds* (default None)
+
+=== Methods
+
+*phase_begin*
+
+*update*
+
+== Class OptimScheduler:LossRecorder
+
+=== Arguments
+*layer_opt*
+
+*phases*
+
+*nb_batches*
+
+*stop_div* (default False)
+
+=== Methods
+
+*on_train_begin*
+
+*on_batch_end*
+
+*on_phase_begin*
+
+*on_phase_end*
+
+*plot_lr*:: Plots the lr rate/momentum schedule
+
+*plot*
+
+== Module Functions
+
+*draw_line*
+
+*draw_text*
+
+*smooth_curve*
+

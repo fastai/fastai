@@ -1,0 +1,38 @@
+
+= fastai.adaptive_softmax
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class AdaptiveSoftmax:Module
+
+=== Arguments
+*input_size*
+
+*cutoff*
+
+=== Methods
+
+*reset*
+
+*set_target*
+
+*forward*
+
+*log_prob*
+
+== Class AdaptiveLoss:Module
+
+=== Arguments
+*cutoff*
+
+=== Methods
+
+*remap_target*
+
+*forward*
+

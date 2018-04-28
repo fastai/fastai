@@ -1,0 +1,20 @@
+
+= fastai.utils_kuangliu
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Module Functions
+
+*get_mean_and_std*:: Compute the mean and std value of dataset.
+
+*init_params*:: Init layer parameters.
+
+*progress_bar*
+
+*format_time*
+

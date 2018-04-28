@@ -1,0 +1,46 @@
+
+= fastai.torch_imports
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Module Functions
+
+*children*
+
+*save_model*
+
+*load_model*
+
+*load_pre*
+
+*_fastai_model*
+
+*inception_4*
+
+*inceptionresnet_2*
+
+*resnext50*
+
+*resnext101*
+
+*resnext101_64*
+
+*wrn*
+
+*dn121*
+
+*dn161*
+
+*dn169*
+
+*dn201*
+
+*vgg16*
+
+*vgg19*
+

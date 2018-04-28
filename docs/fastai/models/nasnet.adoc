@@ -1,0 +1,206 @@
+
+= fastai.nasnet
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class MaxPoolPad:Module
+
+=== Arguments
+
+
+=== Methods
+
+*forward*
+
+== Class AvgPoolPad:Module
+
+=== Arguments
+*stride* (default 2)
+
+*padding* (default 1)
+
+=== Methods
+
+*forward*
+
+== Class SeparableConv2d:Module
+
+=== Arguments
+*in_channels*
+
+*out_channels*
+
+*dw_kernel*
+
+*dw_stride*
+
+*dw_padding*
+
+*bias* (default False)
+
+=== Methods
+
+*forward*
+
+== Class BranchSeparables:Module
+
+=== Arguments
+*in_channels*
+
+*out_channels*
+
+*kernel_size*
+
+*stride*
+
+*padding*
+
+*bias* (default False)
+
+=== Methods
+
+*forward*
+
+== Class BranchSeparablesStem:Module
+
+=== Arguments
+*in_channels*
+
+*out_channels*
+
+*kernel_size*
+
+*stride*
+
+*padding*
+
+*bias* (default False)
+
+=== Methods
+
+*forward*
+
+== Class BranchSeparablesReduction:BranchSeparables
+
+=== Arguments
+*in_channels*
+
+*out_channels*
+
+*kernel_size*
+
+*stride*
+
+*padding*
+
+*z_padding* (default 1)
+
+*bias* (default False)
+
+=== Methods
+
+*forward*
+
+== Class CellStem0:Module
+
+=== Arguments
+
+
+=== Methods
+
+*forward*
+
+== Class CellStem1:Module
+
+=== Arguments
+
+
+=== Methods
+
+*forward*
+
+== Class FirstCell:Module
+
+=== Arguments
+*in_channels_left*
+
+*out_channels_left*
+
+*in_channels_right*
+
+*out_channels_right*
+
+=== Methods
+
+*forward*
+
+== Class NormalCell:Module
+
+=== Arguments
+*in_channels_left*
+
+*out_channels_left*
+
+*in_channels_right*
+
+*out_channels_right*
+
+=== Methods
+
+*forward*
+
+== Class ReductionCell0:Module
+
+=== Arguments
+*in_channels_left*
+
+*out_channels_left*
+
+*in_channels_right*
+
+*out_channels_right*
+
+=== Methods
+
+*forward*
+
+== Class ReductionCell1:Module
+
+=== Arguments
+*in_channels_left*
+
+*out_channels_left*
+
+*in_channels_right*
+
+*out_channels_right*
+
+=== Methods
+
+*forward*
+
+== Class NASNetALarge:Module
+
+=== Arguments
+*use_classifer* (default False)
+
+*num_classes* (default 1001)
+
+=== Methods
+
+*features*
+
+*classifier*
+
+*forward*
+
+== Module Functions
+
+*nasnetalarge*:: NASNetALarge model architecture from the
+`"NASNet" <https://arxiv.org/abs/1707.07012>`_ paper.
+

@@ -1,0 +1,162 @@
+
+= fastai.text
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== {{class Tokenizer}}
+
+=== Arguments
+{{arg lang,,en}}
+
+=== Methods
+
+{{method sub_br,}}
+
+{{method spacy_tok,}}
+
+{{method replace_rep,}}
+
+{{method replace_wrep,}}
+
+{{method do_caps,}}
+
+{{method proc_text,}}
+
+{{method proc_all,}}
+
+{{method proc_all_mp,}}
+
+== {{class TextDataset:Dataset}}
+
+=== Arguments
+{{arg x,,}}
+
+{{arg y,,}}
+
+{{arg backwards,,False}}
+
+{{arg sos,,None}}
+
+{{arg eos,,None}}
+
+=== Methods
+
+{{method __getitem__,}}
+
+{{method __len__,}}
+
+== {{class SortSampler:Sampler}}
+
+=== Arguments
+{{arg data_source,,}}
+
+{{arg key,,}}
+
+=== Methods
+
+{{method __len__,}}
+
+{{method __iter__,}}
+
+== {{class SortishSampler:Sampler}}
+
+=== Arguments
+{{arg data_source,,}}
+
+{{arg key,,}}
+
+{{arg bs,,}}
+
+=== Methods
+
+{{method __len__,}}
+
+{{method __iter__,}}
+
+== {{class LanguageModelLoader}}
+
+=== Arguments
+{{arg nums,,}}
+
+{{arg bs,,}}
+
+{{arg bptt,,}}
+
+{{arg backwards,,False}}
+
+=== Methods
+
+{{method __iter__,}}
+
+{{method __len__,}}
+
+{{method batchify,}}
+
+{{method get_batch,}}
+
+== {{class LanguageModel:BasicModel}}
+
+=== Methods
+
+{{method get_layer_groups,}}
+
+== {{class LanguageModelData}}
+
+=== Arguments
+{{arg path,,}}
+
+{{arg pad_idx,,}}
+
+{{arg n_tok,,}}
+
+{{arg trn_dl,,}}
+
+{{arg val_dl,,}}
+
+{{arg test_dl,,None}}
+
+=== Methods
+
+{{method get_model,}}
+
+== {{class RNN_Learner:Learner}}
+
+=== Arguments
+{{arg data,,}}
+
+{{arg models,,}}
+
+=== Methods
+
+{{method _get_crit,}}
+
+{{method save_encoder,}}
+
+{{method load_encoder,}}
+
+== {{class TextModel:BasicModel}}
+
+=== Methods
+
+{{method get_layer_groups,}}
+
+== Module Functions
+
+{{method tokenize,}}
+
+{{method texts_labels_from_folders,}}
+
+{{method numericalize_tok,Takes in text tokens and returns int2tok and tok2int converters
+
+Arguments:
+tokens(list): List of tokens. Can be a list of strings, or a list of lists of strings.
+max_vocab(int): Number of tokens to return in the vocab (sorted by frequency)
+min_freq(int): Minimum number of instances a token must be present in order to be preserved.
+unk_tok(str): Token to use when unknown tokens are encountered in the source text.
+pad_tok(str): Token to use when padding sequences.}}
+

@@ -1,0 +1,162 @@
+
+= fastai.text
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class Tokenizer
+
+=== Arguments
+*lang* (default en)
+
+=== Methods
+
+*sub_br*
+
+*spacy_tok*
+
+*replace_rep*
+
+*replace_wrep*
+
+*do_caps*
+
+*proc_text*
+
+*proc_all*
+
+*proc_all_mp*
+
+== Class TextDataset:Dataset
+
+=== Arguments
+*x*
+
+*y*
+
+*backwards* (default False)
+
+*sos* (default None)
+
+*eos* (default None)
+
+=== Methods
+
+*__getitem__*
+
+*__len__*
+
+== Class SortSampler:Sampler
+
+=== Arguments
+*data_source*
+
+*key*
+
+=== Methods
+
+*__len__*
+
+*__iter__*
+
+== Class SortishSampler:Sampler
+
+=== Arguments
+*data_source*
+
+*key*
+
+*bs*
+
+=== Methods
+
+*__len__*
+
+*__iter__*
+
+== Class LanguageModelLoader
+
+=== Arguments
+*nums*
+
+*bs*
+
+*bptt*
+
+*backwards* (default False)
+
+=== Methods
+
+*__iter__*
+
+*__len__*
+
+*batchify*
+
+*get_batch*
+
+== Class LanguageModel:BasicModel
+
+=== Methods
+
+*get_layer_groups*
+
+== Class LanguageModelData
+
+=== Arguments
+*path*
+
+*pad_idx*
+
+*n_tok*
+
+*trn_dl*
+
+*val_dl*
+
+*test_dl* (default None)
+
+=== Methods
+
+*get_model*
+
+== Class RNN_Learner:Learner
+
+=== Arguments
+*data*
+
+*models*
+
+=== Methods
+
+*_get_crit*
+
+*save_encoder*
+
+*load_encoder*
+
+== Class TextModel:BasicModel
+
+=== Methods
+
+*get_layer_groups*
+
+== Module Functions
+
+*tokenize*
+
+*texts_labels_from_folders*
+
+*numericalize_tok*:: Takes in text tokens and returns int2tok and tok2int converters
+
+Arguments:
+tokens(list): List of tokens. Can be a list of strings, or a list of lists of strings.
+max_vocab(int): Number of tokens to return in the vocab (sorted by frequency)
+min_freq(int): Minimum number of instances a token must be present in order to be preserved.
+unk_tok(str): Token to use when unknown tokens are encountered in the source text.
+pad_tok(str): Token to use when padding sequences.
+

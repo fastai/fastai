@@ -1,0 +1,457 @@
+
+= fastai.transforms
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class TfmType:IntEnum
+
+== Class Denormalize
+
+=== Arguments
+*m*
+
+*s*
+
+=== Methods
+
+*__call__*
+
+== Class Normalize
+
+=== Arguments
+*m*
+
+*s*
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*__call__*
+
+== Class ChannelOrder
+
+=== Arguments
+*tfm_y* (default NO)
+
+=== Methods
+
+*__call__*
+
+== Class Transform
+
+=== Arguments
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*__call__*
+
+*transform_coord*
+
+*transform*
+
+*do_transform*
+
+== Class CoordTransform:Transform
+
+=== Methods
+
+*make_square*
+
+*map_y*
+
+*transform_coord*
+
+== Class AddPadding:CoordTransform
+
+=== Arguments
+*pad*
+
+*mode* (default BORDER_REFLECT)
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*do_transform*
+
+== Class CenterCrop:CoordTransform
+
+=== Arguments
+*sz*
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*do_transform*
+
+== Class RandomCrop:CoordTransform
+
+=== Arguments
+*targ_sz*
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class NoCrop:CoordTransform
+
+=== Arguments
+*sz*
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*do_transform*
+
+== Class Scale:CoordTransform
+
+=== Arguments
+*sz*
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*do_transform*
+
+== Class RandomScale:CoordTransform
+
+=== Arguments
+*sz*
+
+*max_zoom*
+
+*p* (default 0.75)
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class RandomRotate:CoordTransform
+
+=== Arguments
+*deg*
+
+*p* (default 0.75)
+
+*mode* (default BORDER_REFLECT)
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class RandomDihedral:CoordTransform
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class RandomFlip:CoordTransform
+
+=== Arguments
+*tfm_y* (default NO)
+
+*p* (default 0.5)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class RandomLighting:Transform
+
+=== Arguments
+*b*
+
+*c*
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class RandomRotateZoom:CoordTransform
+
+=== Arguments
+*deg*
+
+*zoom*
+
+*stretch*
+
+*ps* (default None)
+
+*mode* (default BORDER_REFLECT)
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*__call__*
+
+== Class RandomZoom:CoordTransform
+
+=== Arguments
+*zoom_max*
+
+*zoom_min* (default 0)
+
+*mode* (default BORDER_REFLECT)
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class RandomStretch:CoordTransform
+
+=== Arguments
+*max_stretch*
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class PassThru:CoordTransform
+
+=== Methods
+
+*do_transform*
+
+== Class RandomBlur:Transform
+
+=== Arguments
+*blur_strengths* (default 5)
+
+*probability* (default 0.5)
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class Cutout:Transform
+
+=== Arguments
+*n_holes*
+
+*length*
+
+*tfm_y* (default NO)
+
+=== Methods
+
+*do_transform*
+
+== Class GoogleNetResize:CoordTransform
+
+=== Arguments
+*targ_sz*
+
+*min_area_frac* (default 0.08)
+
+*min_aspect_ratio* (default 0.75)
+
+*max_aspect_ratio* (default 1.333)
+
+*flip_hw_p* (default 0.5)
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*set_state*
+
+*do_transform*
+
+== Class CropType:IntEnum
+
+== Class Transforms
+
+=== Arguments
+*sz*
+
+*tfms*
+
+*normalizer*
+
+*denorm*
+
+*crop_type* (default CENTER)
+
+*tfm_y* (default NO)
+
+*sz_y* (default None)
+
+=== Methods
+
+*__call__*
+
+*__repr__*
+
+== Module Functions
+
+*scale_min*:: Scales the image so that the smallest axis is of size targ.
+
+Arguments:
+    im (array): image
+    targ (int): target size
+
+*zoom_cv*:: zooms the center of image x, by a factor of z+1 while retaining the origal image size and proportion. 
+
+*stretch_cv*:: stretches image x horizontally by sr+1, and vertically by sc+1 while retaining the origal image size and proportion.
+
+*dihedral*:: performs any of 8 90 rotations or flips for image x.
+    
+
+*lighting*:: adjusts image's balance and contrast
+
+*rotate_cv*:: Rotates an image by deg degrees
+
+Arguments:
+    deg (float): degree to rotate.
+
+*no_crop*:: Returns a squared resized image 
+
+*center_crop*:: Returns a center crop of an image
+
+*googlenet_resize*:: Randomly crops an image with an aspect ratio and returns a squared resized image of size targ
+
+References:
+1. https://arxiv.org/pdf/1409.4842.pdf
+2. https://arxiv.org/pdf/1802.07888.pdf
+
+*cutout*:: cuts out n_holes number of square holes of size length in image at random locations. holes may be overlapping. 
+
+*scale_to*:: no clue, does not work.
+
+*crop*:: crop image into a square of size sz, 
+
+*det_dihedral*
+
+*det_stretch*
+
+*det_lighting*
+
+*det_rotate*
+
+*det_zoom*
+
+*rand0*
+
+*to_bb*
+
+*coords2px*:: Transforming coordinates to pixels.
+
+Arguments:
+    y : np array
+        vector in which (y[0], y[1]) and (y[2], y[3]) are the
+        the corners of a bounding box.
+    x : image
+        an image
+Returns:
+    Y : image
+        of shape x.shape
+
+*compose*:: apply a collection of transformation functions fns to images
+    
+
+*image_gen*:: Generate a standard set of transformations
+
+Arguments
+---------
+ normalizer :
+     image normalizing function
+ denorm :
+     image denormalizing function
+ sz :
+     size, sz_y = sz if not specified.
+ tfms :
+     iterable collection of transformation functions
+ max_zoom : float,
+     maximum zoom
+ pad : int,
+     padding on top, left, right and bottom
+ crop_type :
+     crop type
+ tfm_y :
+     y axis specific transformations
+ sz_y :
+     y size, height
+ pad_mode :
+     cv2 padding style: repeat, reflect, etc.
+
+Returns
+-------
+ type : ``Transforms``
+     transformer for specified image operations.
+
+See Also
+--------
+ Transforms: the transformer object returned by this function
+
+*noop*:: dummy function for do-nothing.
+equivalent to: lambda x: x
+
+*tfms_from_stats*:: Given the statistics of the training image sets, returns separate training and validation transform functions
+    
+
+*tfms_from_model*:: Returns separate transformers of images for training and validation.
+Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
+
+Arguments:
+    f_model: model, pretrained or not pretrained
+

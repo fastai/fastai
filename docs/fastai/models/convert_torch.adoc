@@ -1,0 +1,51 @@
+
+= fastai.convert_torch
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class LambdaBase:Sequential
+
+=== Arguments
+*fn*
+
+=== Methods
+
+*forward_prepare*
+
+== Class Lambda:LambdaBase
+
+=== Methods
+
+*forward*
+
+== Class LambdaMap:LambdaBase
+
+=== Methods
+
+*forward*
+
+== Class LambdaReduce:LambdaBase
+
+=== Methods
+
+*forward*
+
+== Module Functions
+
+*copy_param*
+
+*add_submodule*
+
+*lua_recursive_model*
+
+*lua_recursive_source*
+
+*simplify_source*
+
+*torch_to_pytorch*
+

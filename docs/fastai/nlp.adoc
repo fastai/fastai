@@ -1,0 +1,239 @@
+
+= fastai.nlp
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class DotProdNB:Module
+
+=== Arguments
+*nf*
+
+*ny*
+
+*w_adj* (default 0.4)
+
+*r_adj* (default 10)
+
+=== Methods
+
+*forward*
+
+== Class SimpleNB:Module
+
+=== Arguments
+*nf*
+
+*ny*
+
+=== Methods
+
+*forward*
+
+== Class BOW_Learner:Learner
+
+=== Arguments
+*data*
+
+*models*
+
+=== Methods
+
+*_get_crit*
+
+== Class BOW_Dataset:Dataset
+
+=== Arguments
+*bow*
+
+*y*
+
+*max_len*
+
+=== Methods
+
+*__getitem__*
+
+*__len__*
+
+== Class TextClassifierData:ModelData
+
+=== Methods
+
+*c*
+
+*r*
+
+*get_model*
+
+*dotprod_nb_learner*
+
+*nb_learner*
+
+*from_bow*
+
+== Class LanguageModelLoader
+
+=== Arguments
+*ds*
+
+*bs*
+
+*bptt*
+
+*backwards* (default False)
+
+=== Methods
+
+*__iter__*
+
+*__len__*
+
+*__next__*
+
+*batchify*
+
+*get_batch*
+
+== Class RNN_Learner:Learner
+
+=== Arguments
+*data*
+
+*models*
+
+=== Methods
+
+*_get_crit*
+
+*save_encoder*
+
+*load_encoder*
+
+== Class ConcatTextDataset:Dataset
+
+=== Arguments
+*path*
+
+*text_field*
+
+*newline_eos* (default True)
+
+*encoding* (default utf-8)
+
+== Class ConcatTextDatasetFromDataFrames:Dataset
+
+=== Arguments
+*df*
+
+*text_field*
+
+*col*
+
+*newline_eos* (default True)
+
+=== Methods
+
+*splits*
+
+== Class LanguageModelData
+
+=== Arguments
+*path*
+
+*field*
+
+*trn_ds*
+
+*val_ds*
+
+*test_ds*
+
+*bs*
+
+*bptt*
+
+*backwards* (default False)
+
+=== Methods
+
+*get_model*:: Method returns a RNN_Learner object, that wraps an instance of the RNN_Encoder module.
+
+Args:
+    opt_fn (Optimizer): the torch optimizer function to use
+    emb_sz (int): embedding size
+    n_hid (int): number of hidden inputs
+    n_layers (int): number of hidden layers
+    kwargs: other arguments
+
+Returns:
+    An instance of the RNN_Learner class.
+
+*from_dataframes*
+
+*from_text_files*:: Method used to instantiate a LanguageModelData object that can be used for a
+    supported nlp task.
+
+Args:
+    path (str): the absolute path in which temporary model data will be saved
+    field (Field): torchtext field
+    train (str): file location of the training data
+    validation (str): file location of the validation data
+    test (str): file location of the testing data
+    bs (int): batch size to use
+    bptt (int): back propagation through time hyper-parameter
+    kwargs: other arguments
+
+Returns:
+    a LanguageModelData instance, which most importantly, provides us the datasets for training,
+        validation, and testing
+
+Note:
+    The train, validation, and test path can be pointed to any file (or folder) that contains a valid
+        text corpus.
+
+== Class TextDataLoader
+
+=== Arguments
+*src*
+
+*x_fld*
+
+*y_fld*
+
+=== Methods
+
+*__len__*
+
+*__iter__*
+
+== Class TextModel:BasicModel
+
+=== Methods
+
+*get_layer_groups*
+
+== Class TextData:ModelData
+
+=== Methods
+
+*create_td*
+
+*from_splits*
+
+*to_model*
+
+*get_model*
+
+== Module Functions
+
+*calc_pr*
+
+*calc_r*
+
+*flip_tensor*
+

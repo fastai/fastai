@@ -1,0 +1,41 @@
+
+= fastai.resnext_101_64x4d
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class LambdaBase:Sequential
+
+=== Arguments
+*fn*
+
+=== Methods
+
+*forward_prepare*
+
+== Class Lambda:LambdaBase
+
+=== Methods
+
+*forward*
+
+== Class LambdaMap:LambdaBase
+
+=== Methods
+
+*forward*
+
+== Class LambdaReduce:LambdaBase
+
+=== Methods
+
+*forward*
+
+== Module Functions
+
+*resnext_101_64x4d*
+

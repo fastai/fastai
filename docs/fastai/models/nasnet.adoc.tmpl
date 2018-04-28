@@ -1,0 +1,206 @@
+
+= fastai.nasnet
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== {{class MaxPoolPad:Module}}
+
+=== Arguments
+
+
+=== Methods
+
+{{method forward,}}
+
+== {{class AvgPoolPad:Module}}
+
+=== Arguments
+{{arg stride,,2}}
+
+{{arg padding,,1}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class SeparableConv2d:Module}}
+
+=== Arguments
+{{arg in_channels,,}}
+
+{{arg out_channels,,}}
+
+{{arg dw_kernel,,}}
+
+{{arg dw_stride,,}}
+
+{{arg dw_padding,,}}
+
+{{arg bias,,False}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class BranchSeparables:Module}}
+
+=== Arguments
+{{arg in_channels,,}}
+
+{{arg out_channels,,}}
+
+{{arg kernel_size,,}}
+
+{{arg stride,,}}
+
+{{arg padding,,}}
+
+{{arg bias,,False}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class BranchSeparablesStem:Module}}
+
+=== Arguments
+{{arg in_channels,,}}
+
+{{arg out_channels,,}}
+
+{{arg kernel_size,,}}
+
+{{arg stride,,}}
+
+{{arg padding,,}}
+
+{{arg bias,,False}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class BranchSeparablesReduction:BranchSeparables}}
+
+=== Arguments
+{{arg in_channels,,}}
+
+{{arg out_channels,,}}
+
+{{arg kernel_size,,}}
+
+{{arg stride,,}}
+
+{{arg padding,,}}
+
+{{arg z_padding,,1}}
+
+{{arg bias,,False}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class CellStem0:Module}}
+
+=== Arguments
+
+
+=== Methods
+
+{{method forward,}}
+
+== {{class CellStem1:Module}}
+
+=== Arguments
+
+
+=== Methods
+
+{{method forward,}}
+
+== {{class FirstCell:Module}}
+
+=== Arguments
+{{arg in_channels_left,,}}
+
+{{arg out_channels_left,,}}
+
+{{arg in_channels_right,,}}
+
+{{arg out_channels_right,,}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class NormalCell:Module}}
+
+=== Arguments
+{{arg in_channels_left,,}}
+
+{{arg out_channels_left,,}}
+
+{{arg in_channels_right,,}}
+
+{{arg out_channels_right,,}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class ReductionCell0:Module}}
+
+=== Arguments
+{{arg in_channels_left,,}}
+
+{{arg out_channels_left,,}}
+
+{{arg in_channels_right,,}}
+
+{{arg out_channels_right,,}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class ReductionCell1:Module}}
+
+=== Arguments
+{{arg in_channels_left,,}}
+
+{{arg out_channels_left,,}}
+
+{{arg in_channels_right,,}}
+
+{{arg out_channels_right,,}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class NASNetALarge:Module}}
+
+=== Arguments
+{{arg use_classifer,,False}}
+
+{{arg num_classes,,1001}}
+
+=== Methods
+
+{{method features,}}
+
+{{method classifier,}}
+
+{{method forward,}}
+
+== Module Functions
+
+{{method nasnetalarge,NASNetALarge model architecture from the
+`"NASNet" <https://arxiv.org/abs/1707.07012>`_ paper.}}
+

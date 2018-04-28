@@ -1,0 +1,322 @@
+
+= fastai.sgdr
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== {{class Callback}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method on_batch_begin,}}
+
+{{method on_phase_begin,}}
+
+{{method on_epoch_end,}}
+
+{{method on_phase_end,}}
+
+{{method on_batch_end,}}
+
+{{method on_train_end,}}
+
+== {{class LoggingCallback:Callback}}
+
+=== Arguments
+{{arg save_path,,}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method on_batch_begin,}}
+
+{{method on_phase_begin,}}
+
+{{method on_epoch_end,}}
+
+{{method on_phase_end,}}
+
+{{method on_batch_end,}}
+
+{{method on_train_end,}}
+
+{{method log,}}
+
+== {{class LossRecorder:Callback}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg save_path,,}}
+
+{{arg record_mom,,False}}
+
+{{arg metrics,,[]}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method on_epoch_end,}}
+
+{{method on_batch_end,}}
+
+{{method save_metrics,}}
+
+{{method plot_loss,}}
+
+{{method plot_lr,}}
+
+== {{class LR_Updater:LossRecorder}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method on_batch_end,}}
+
+{{method update_lr,}}
+
+{{method update_mom,}}
+
+{{method calc_lr,}}
+
+{{method calc_mom,}}
+
+== {{class LR_Finder:LR_Updater}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg nb,,}}
+
+{{arg end_lr,,10}}
+
+{{arg linear,,False}}
+
+{{arg metrics,,[]}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method calc_lr,}}
+
+{{method on_batch_end,}}
+
+{{method plot,}}
+
+== {{class LR_Finder2:LR_Finder}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg nb,,}}
+
+{{arg end_lr,,10}}
+
+{{arg linear,,False}}
+
+{{arg metrics,,[]}}
+
+{{arg stop_dv,,True}}
+
+=== Methods
+
+{{method on_batch_end,}}
+
+{{method plot,}}
+
+== {{class CosAnneal:LR_Updater}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg nb,,}}
+
+{{arg on_cycle_end,,None}}
+
+{{arg cycle_mult,,1}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method calc_lr,}}
+
+== {{class CircularLR:LR_Updater}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg nb,,}}
+
+{{arg div,,4}}
+
+{{arg cut_div,,8}}
+
+{{arg on_cycle_end,,None}}
+
+{{arg momentums,,None}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method calc_lr,}}
+
+{{method calc_mom,}}
+
+== {{class CircularLR_beta:LR_Updater}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg nb,,}}
+
+{{arg div,,10}}
+
+{{arg pct,,10}}
+
+{{arg on_cycle_end,,None}}
+
+{{arg momentums,,None}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method calc_lr,}}
+
+{{method calc_mom,}}
+
+== {{class SaveBestModel:LossRecorder}}
+
+=== Arguments
+{{arg model,,}}
+
+{{arg layer_opt,,}}
+
+{{arg metrics,,}}
+
+{{arg name,,best_model}}
+
+=== Methods
+
+{{method save_when_only_loss,}}
+
+{{method save_when_acc,}}
+
+{{method on_epoch_end,}}
+
+== {{class WeightDecaySchedule:Callback}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg batch_per_epoch,,}}
+
+{{arg cycle_len,,}}
+
+{{arg cycle_mult,,}}
+
+{{arg n_cycles,,}}
+
+{{arg norm_wds,,False}}
+
+{{arg wds_sched_mult,,None}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method on_batch_begin,}}
+
+{{method on_batch_end,}}
+
+{{method on_epoch_end,}}
+
+== {{class DecayType:IntEnum}}
+
+== {{class DecayScheduler}}
+
+=== Arguments
+{{arg dec_type,,}}
+
+{{arg num_it,,}}
+
+{{arg start_val,,}}
+
+{{arg end_val,,None}}
+
+{{arg extra,,None}}
+
+=== Methods
+
+{{method next_val,}}
+
+== {{class TrainingPhase}}
+
+=== Arguments
+{{arg epochs,,1}}
+
+{{arg opt_fn,,SGD}}
+
+{{arg lr,,0.01}}
+
+{{arg lr_decay,,NO}}
+
+{{arg momentum,,0.9}}
+
+{{arg momentum_decay,,NO}}
+
+{{arg beta,,None}}
+
+{{arg wds,,None}}
+
+=== Methods
+
+{{method phase_begin,}}
+
+{{method update,}}
+
+== {{class OptimScheduler:LossRecorder}}
+
+=== Arguments
+{{arg layer_opt,,}}
+
+{{arg phases,,}}
+
+{{arg nb_batches,,}}
+
+{{arg stop_div,,False}}
+
+=== Methods
+
+{{method on_train_begin,}}
+
+{{method on_batch_end,}}
+
+{{method on_phase_begin,}}
+
+{{method on_phase_end,}}
+
+{{method plot_lr,Plots the lr rate/momentum schedule}}
+
+{{method plot,}}
+
+== Module Functions
+
+{{method draw_line,}}
+
+{{method draw_text,}}
+
+{{method smooth_curve,}}
+

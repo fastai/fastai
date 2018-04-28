@@ -1,0 +1,38 @@
+
+= fastai.fp16
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class FP16:Module
+
+=== Arguments
+*module*
+
+=== Methods
+
+*forward*
+
+*load_state_dict*
+
+*state_dict*
+
+== Module Functions
+
+*batchnorm_to_fp32*:: BatchNorm layers to have parameters in single precision.
+Find all layers and convert them back to float. This can't
+be done with built in .apply as that function will apply
+fn to all modules, parameters, and buffers. Thus we wouldn't
+be able to guard the float conversion based on the module type.
+
+*copy_model_to_fp32*:: Creates a fp32 copy of model parameters and sets optimizer parameters
+    
+
+*copy_fp32_to_model*
+
+*update_fp32_grads*
+

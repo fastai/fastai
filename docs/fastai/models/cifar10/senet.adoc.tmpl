@@ -1,0 +1,57 @@
+
+= fastai.senet
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== {{class BasicBlock:Module}}
+
+=== Arguments
+{{arg in_planes,,}}
+
+{{arg planes,,}}
+
+{{arg stride,,1}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class PreActBlock:Module}}
+
+=== Arguments
+{{arg in_planes,,}}
+
+{{arg planes,,}}
+
+{{arg stride,,1}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class SENet:Module}}
+
+=== Arguments
+{{arg block,,}}
+
+{{arg num_blocks,,}}
+
+{{arg num_classes,,10}}
+
+=== Methods
+
+{{method _make_layer,}}
+
+{{method forward,}}
+
+== Module Functions
+
+{{method SENet18,}}
+
+{{method SENet34,}}
+

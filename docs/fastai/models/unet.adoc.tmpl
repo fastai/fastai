@@ -1,0 +1,54 @@
+
+= fastai.unet
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== {{class UnetBlock:Module}}
+
+=== Arguments
+{{arg up_in_c,,}}
+
+{{arg x_in_c,,}}
+
+=== Methods
+
+{{method forward,}}
+
+== {{class SaveFeatures}}
+
+=== Arguments
+{{arg m,,}}
+
+=== Methods
+
+{{method hook_fn,}}
+
+{{method remove,}}
+
+== {{class DynamicUnet:Module}}
+
+=== Arguments
+{{arg encoder,,}}
+
+{{arg last,,True}}
+
+{{arg n_classes,,3}}
+
+=== Methods
+
+{{method forward,}}
+
+== Module Functions
+
+{{method get_sfs_idxs,Return the saved feature indexes that will be concatenated
+Inputs:
+    sfs (list): saved features by hook function, in other words intermediate activations
+    last (bool): whether to concatenate only last different activation, or all from the encoder model}}
+
+{{method conv_bn_relu,}}
+
