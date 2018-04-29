@@ -89,7 +89,7 @@ def folder_source(path, folder):
   -------
   fnames: a list of the filenames within `folder`
   all_lbls: a list of all of the labels in `folder`, where the # of labels is determined by the # of directories within `folder`
-  lbl_arr: a numpy array of the label indexes in `all_lbls`
+  lbl_arr: a numpy array of the label indices in `all_lbls`
   
   """
     fnames, lbls, all_lbls = read_dirs(path, folder)
