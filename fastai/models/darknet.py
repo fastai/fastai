@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from .layers import *
+from fastai.layers import *
 
 class ConvBN(nn.Module):
     "convolutional layer then batchnorm"
@@ -39,6 +39,7 @@ class Darknet(nn.Module):
             layers += self.make_group_layer(nf, nb, stride=(1 if i==1 else 2))
             nf *= 2
         layers += [nn.AdaptiveAvgPool2d(1), Flatten(), nn.Linear(nf, num_classes)]
+        layers += [nn.LogSoftmax()]
         self.layers = nn.Sequential(*layers)
 
     def forward(self, x): return self.layers(x)
