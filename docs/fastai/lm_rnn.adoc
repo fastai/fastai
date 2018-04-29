@@ -1,0 +1,142 @@
+
+= fastai.lm_rnn
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class RNN_Encoder:Module
+
+=== Arguments
+*ntoken*
+
+*emb_sz*
+
+*nhid*
+
+*nlayers*
+
+*pad_token*
+
+*bidir* (default False)
+
+*dropouth* (default 0.3)
+
+*dropouti* (default 0.65)
+
+*dropoute* (default 0.1)
+
+*wdrop* (default 0.5)
+
+=== Methods
+
+*forward*:: Invoked during the forward propagation of the RNN_Encoder module.
+Args:
+    input (Tensor): input of shape (sentence length x batch_size)
+
+Returns:
+    raw_outputs (tuple(list (Tensor), list(Tensor)): list of tensors evaluated from each RNN layer without using
+    dropouth, list of tensors evaluated from each RNN layer using dropouth,
+
+*one_hidden*
+
+*reset*
+
+== Class MultiBatchRNN:RNN_Encoder
+
+=== Arguments
+*bptt*
+
+*max_seq*
+
+=== Methods
+
+*concat*
+
+*forward*
+
+== Class LinearDecoder:Module
+
+=== Arguments
+*n_out*
+
+*nhid*
+
+*dropout*
+
+*tie_encoder* (default None)
+
+=== Methods
+
+*forward*
+
+== Class LinearBlock:Module
+
+=== Arguments
+*ni*
+
+*nf*
+
+*drop*
+
+=== Methods
+
+*forward*
+
+== Class PoolingLinearClassifier:Module
+
+=== Arguments
+*layers*
+
+*drops*
+
+=== Methods
+
+*pool*
+
+*forward*
+
+== Class SequentialRNN:Sequential
+
+=== Methods
+
+*reset*
+
+== Module Functions
+
+*seq2seq_reg*
+
+*repackage_var*:: Wraps h in new Variables, to detach them from their history.
+
+*get_language_model*:: Returns a SequentialRNN model.
+
+A RNN_Encoder layer is instantiated using the parameters provided.
+
+This is followed by the creation of a LinearDecoder layer.
+
+Also by default (i.e. tie_weights = True), the embedding matrix used in the RNN_Encoder
+is used to  instantiate the weights for the LinearDecoder layer.
+
+The SequentialRNN layer is the native torch's Sequential wrapper that puts the RNN_Encoder and
+LinearDecoder layers sequentially in the model.
+
+Args:
+    n_tok (int): number of unique vocabulary words (or tokens) in the source dataset
+    emb_sz (int): the embedding size to use to encode each token
+    nhid (int): number of hidden activation per LSTM layer
+    nlayers (int): number of LSTM layers to use in the architecture
+    pad_token (int): the int value used for padding text.
+    dropouth (float): dropout to apply to the activations going from one LSTM layer to another
+    dropouti (float): dropout to apply to the input layer.
+    dropoute (float): dropout to apply to the embedding layer.
+    wdrop (float): dropout used for a LSTM's internal (or hidden) recurrent weights.
+    tie_weights (bool): decide if the weights of the embedding matrix in the RNN encoder should be tied to the
+        weights of the LinearDecoder layer.
+Returns:
+    A SequentialRNN model
+
+*get_rnn_classifer*
+

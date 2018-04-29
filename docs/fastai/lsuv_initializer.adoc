@@ -1,0 +1,28 @@
+
+= fastai.lsuv_initializer
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Module Functions
+
+*svd_orthonormal*
+
+*store_activations*
+
+*add_current_hook*
+
+*count_conv_fc_layers*
+
+*remove_hooks*
+
+*orthogonal_weights_init*
+
+*apply_weights_correction*
+
+*apply_lsuv_init*
+

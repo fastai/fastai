@@ -1,0 +1,63 @@
+
+= fastai.darknet
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class ConvBN:Module
+
+=== Arguments
+*ch_in*
+
+*ch_out*
+
+*kernel_size* (default 3)
+
+*stride* (default 1)
+
+*padding* (default 0)
+
+=== Methods
+
+*forward*
+
+== Class DarknetBlock:Module
+
+=== Arguments
+*ch_in*
+
+=== Methods
+
+*forward*
+
+== Class Darknet:Module
+
+=== Arguments
+*num_blocks*
+
+*num_classes* (default 1000)
+
+*start_nf* (default 32)
+
+=== Methods
+
+*make_group_layer*
+
+*forward*
+
+== Module Functions
+
+*darknet_53*
+
+*darknet_small*
+
+*darknet_mini*
+
+*darknet_mini2*
+
+*darknet_mini3*
+

@@ -1,0 +1,16 @@
+
+= fastai.initializers
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Module Functions
+
+*cond_init*
+
+*apply_init*
+

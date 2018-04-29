@@ -1,0 +1,24 @@
+
+= fastai.transforms_pil
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class Cutout:object
+
+=== Arguments
+*n_holes*
+
+*length*
+
+=== Methods
+
+*__call__*:: Args:
+    img (Tensor): Tensor image of size (C, H, W).
+Returns:
+    Tensor: Image with n_holes of dimension length x length cut out of it.
+

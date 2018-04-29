@@ -1,0 +1,61 @@
+
+= fastai.wideresnet
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class BasicBlock:Module
+
+=== Arguments
+*in_planes*
+
+*out_planes*
+
+*stride*
+
+*dropRate* (default 0.0)
+
+=== Methods
+
+*forward*
+
+== Class NetworkBlock:Module
+
+=== Arguments
+*nb_layers*
+
+*in_planes*
+
+*out_planes*
+
+*block*
+
+*stride*
+
+*dropRate* (default 0.0)
+
+=== Methods
+
+*_make_layer*
+
+*forward*
+
+== Class WideResNet:Module
+
+=== Arguments
+*depth*
+
+*num_classes*
+
+*widen_factor* (default 1)
+
+*dropRate* (default 0.0)
+
+=== Methods
+
+*forward*
+

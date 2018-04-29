@@ -1,0 +1,37 @@
+
+= fastai.layers
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class AdaptiveConcatPool2d:Module
+
+=== Arguments
+*sz* (default None)
+
+=== Methods
+
+*forward*
+
+== Class Lambda:Module
+
+=== Arguments
+*f*
+
+=== Methods
+
+*forward*
+
+== Class Flatten:Module
+
+=== Arguments
+
+
+=== Methods
+
+*forward*
+

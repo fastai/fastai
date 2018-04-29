@@ -1,0 +1,91 @@
+
+= fastai.model
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== {{class Stepper}}
+
+=== Arguments
+{{arg m,,}}
+
+{{arg opt,,}}
+
+{{arg crit,,}}
+
+{{arg clip,,0}}
+
+{{arg reg_fn,,None}}
+
+{{arg fp16,,False}}
+
+{{arg loss_scale,,1}}
+
+=== Methods
+
+{{method reset,}}
+
+{{method step,}}
+
+{{method evaluate,}}
+
+== {{class IterBatch}}
+
+=== Arguments
+{{arg dl,,}}
+
+=== Methods
+
+{{method __iter__,}}
+
+{{method next,}}
+
+== Module Functions
+
+{{method cut_model,}}
+
+{{method predict_to_bcolz,}}
+
+{{method num_features,}}
+
+{{method torch_item,}}
+
+{{method set_train_mode,}}
+
+{{method fit,Fits a model
+
+Arguments:
+   model (model): any pytorch module
+       net = to_gpu(net)
+   data (ModelData): see ModelData class and subclasses (can be a list)
+   opts: an optimizer. Example: optim.Adam. 
+   If n_epochs is a list, it needs to be the layer_optimizer to get the optimizer as it changes.
+   n_epochs(int or list): number of epochs (or list of number of epochs)
+   crit: loss function to optimize. Example: F.cross_entropy}}
+
+{{method append_stats,}}
+
+{{method print_stats,}}
+
+{{method validate_next,Computes the loss on the next minibatch of the validation set.}}
+
+{{method validate,}}
+
+{{method no_grad_context,}}
+
+{{method get_prediction,}}
+
+{{method predict,}}
+
+{{method predict_batch,}}
+
+{{method predict_with_targs_,}}
+
+{{method predict_with_targs,}}
+
+{{method model_summary,}}
+

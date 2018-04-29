@@ -1,0 +1,89 @@
+
+= fastai.conv_learner
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Class ConvnetBuilder
+
+=== Arguments
+*f*
+
+*c*
+
+*is_multi*
+
+*is_reg*
+
+*ps* (default None)
+
+*xtra_fc* (default None)
+
+*xtra_cut* (default 0)
+
+*custom_head* (default None)
+
+*pretrained* (default True)
+
+=== Methods
+
+*name*
+
+*create_fc_layer*
+
+*get_fc_layers*
+
+*get_layer_groups*
+
+== Class ConvLearner:Learner
+
+=== Arguments
+*data*
+
+*models*
+
+*precompute* (default False)
+
+=== Methods
+
+*_get_crit*
+
+*pretrained*
+
+*lsuv_learner*
+
+*model*
+
+*data*
+
+*create_empty_bcolz*
+
+*set_data*
+
+*get_layer_groups*
+
+*summary*
+
+*get_activations*
+
+*save_fc1*
+
+*freeze*:: Freeze all but the very last layer.
+
+Make all layers untrainable (i.e. frozen) except for the last layer.
+
+Returns:
+    None
+
+*unfreeze*:: Unfreeze all layers.
+
+Make all layers trainable by unfreezing. This will also set the `precompute` to `False` since we can
+no longer pre-calculate the activation of frozen layers.
+
+Returns:
+    None
+

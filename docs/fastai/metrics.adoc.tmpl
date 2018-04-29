@@ -1,0 +1,35 @@
+
+= fastai.metrics
+
+== Introduction and overview
+
+```
+...example...
+```
+
+
+== Module Functions
+
+{{method accuracy_np,}}
+
+{{method accuracy,}}
+
+{{method accuracy_thresh,}}
+
+{{method accuracy_multi,}}
+
+{{method accuracy_multi_np,}}
+
+{{method recall,}}
+
+{{method precision,}}
+
+{{method fbeta,Calculates the F-beta score (the weighted harmonic mean of precision and recall).
+This is the micro averaged version where the true positives, false negatives and
+false positives are calculated globally (as opposed to on a per label basis).
+
+beta == 1 places equal weight on precision and recall, b < 1 emphasizes precision and
+beta > 1 favors recall.}}
+
+{{method f1,}}
+
