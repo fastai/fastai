@@ -28,5 +28,4 @@ def test_sortish_sampler_sorts_each_batch_descending():
         s1 > s2 or (i+1) % bs == 0  # don't check batch boundaries
         for i, (s1, s2) in enumerate(zip(samp, samp[1:]))
     )
-    # Not always true, though the class comment implies it should be.
-    # assert samp[0] == max(samp)
+    assert samp[0] == max(samp)

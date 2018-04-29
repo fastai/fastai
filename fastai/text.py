@@ -140,6 +140,8 @@ class SortishSampler(Sampler):
         sort_idx = sum([sorted(s, key=self.key, reverse=True) for s in ck_idx], [])
         sz = self.bs
         ck_idx = [sort_idx[i:i+sz] for i in range(0, len(sort_idx), sz)]
+        max_ck = np.argmax([ck[0] for ck in ck_idx])
+        ck_idx[0],ck_idx[max_ck] = ck_idx[max_ck],ck_idx[0]
         sort_idx = np.concatenate(np.random.permutation(ck_idx[1:]))
         sort_idx = np.concatenate((ck_idx[0], sort_idx))
         return iter(sort_idx)
