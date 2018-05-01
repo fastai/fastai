@@ -73,8 +73,8 @@ class DataLoader(object):
 
     def get_batch(self, indices):
         res = self.np_collate([self.dataset[i] for i in indices])
-        if self.transpose:   res[0] = res[0].T
-        if self.transpose_y: res[1] = res[1].T
+        if self.transpose:   res[:-1] = [r.T for r in res[:-1]]
+        if self.transpose_y: res[-1] = res[-1].T
         return res
 
     def __iter__(self):
