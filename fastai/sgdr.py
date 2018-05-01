@@ -5,6 +5,10 @@ import copy
 
 
 class Callback:
+    '''
+    An abstract class that all callback(e.g., LossRecorder) classes extends from. 
+    Must be extended before usage.
+    '''
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
     def on_phase_begin(self): pass
@@ -13,11 +17,11 @@ class Callback:
     def on_batch_end(self, metrics): pass
     def on_train_end(self): pass
 
-# Useful for maintaining status of a long-running job.
-# 
-# Usage:
-# learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
 class LoggingCallback(Callback):
+    '''
+    A class useful for maintaining status of a long-running job.
+    e.g.: learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
+    '''
     def __init__(self, save_path):
         super().__init__()
         self.save_path=save_path
@@ -47,6 +51,10 @@ class LoggingCallback(Callback):
         self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
 
 class LossRecorder(Callback):
+    '''
+    Saves and displays loss functions and other metrics. 
+    Default sched when none is specified in a learner. 
+    '''
     def __init__(self, layer_opt, save_path='', record_mom=False, metrics=[]):
         super().__init__()
         self.layer_opt=layer_opt
@@ -80,6 +88,10 @@ class LossRecorder(Callback):
         elif len(vals) == 2: self.rec_metrics.append(vals[1])
 
     def plot_loss(self, n_skip=10, n_skip_end=5):
+    '''
+    plots loss function as function of iterations. 
+    When used in Jupyternotebook, plot will be displayed in notebook. Else, plot will be displayed in console and both plot and loss are saved in save_path. 
+    '''
         if not in_ipynb(): plt.switch_backend('agg')
         plt.plot(self.iterations[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         if not in_ipynb():
@@ -87,6 +99,9 @@ class LossRecorder(Callback):
             np.save(os.path.join(self.save_path, 'losses.npy'), self.losses[10:])
 
     def plot_lr(self):
+    '''
+    Plots learning rate in jupyter notebook or console, depending on the enviroment of the learner.
+    '''
         if not in_ipynb():
             plt.switch_backend('agg')
         if self.record_mom:
@@ -134,6 +149,9 @@ class LR_Updater(LossRecorder):
 
 
 class LR_Finder(LR_Updater):
+    '''
+    Helps you find an optimal learning rate for a model, as per suggetion of 2015 CLR paper. 
+    '''
     def __init__(self, layer_opt, nb, end_lr=10, linear=False, metrics = []):
         self.linear, self.stop_dv = linear, True
         ratio = end_lr/layer_opt.lr
@@ -162,6 +180,10 @@ class LR_Finder(LR_Updater):
         plt.xscale('log')
 
 class LR_Finder2(LR_Finder):
+    """A variant of lr_find() that helps find the best learning rate. It doesn't do
+        an epoch but a fixed num of iterations (which may be more or less than an epoch
+        depending on your data).
+    """
     def __init__(self, layer_opt, nb, end_lr=10, linear=False, metrics=[], stop_dv=True):
         self.nb, self.metrics = nb, metrics
         super().__init__(layer_opt, nb, end_lr, linear, metrics)
@@ -192,6 +214,9 @@ class LR_Finder2(LR_Finder):
         axs[1].plot(self.lrs[n_skip:-n_skip_end],plt_val_l[n_skip:-n_skip_end])
 
 class CosAnneal(LR_Updater):
+    ''' 
+    Learning rate scheduler that inpelements a cosine annealation schedule. 
+    '''
     def __init__(self, layer_opt, nb, on_cycle_end=None, cycle_mult=1):
         self.nb,self.on_cycle_end,self.cycle_mult = nb,on_cycle_end,cycle_mult
         super().__init__(layer_opt)
@@ -542,15 +567,6 @@ class OptimScheduler(LossRecorder):
                     draw_text(axs[k], (phase_limits[i]+phase_limits[i+1])/2, text) 
         if not in_ipynb():
             plt.savefig(os.path.join(self.save_path, 'lr_plot.png'))
-    
-    def plot(self, n_skip=10, n_skip_end=5, linear=None):
-        if linear is None: linear = self.phases[-1].lr_decay == DecayType.LINEAR
-        plt.ylabel("loss")
-        plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
-        if linear: plt.xlabel("learning rate")
-        else:
-            plt.xlabel("learning rate (log scale)")
-            plt.xscale('log')
 
 def draw_line(ax,x):
     xmin, xmax, ymin, ymax = ax.axis()
