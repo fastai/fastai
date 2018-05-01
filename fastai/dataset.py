@@ -52,6 +52,7 @@ def resize_imgs(fnames, targ, path, new_path):
     return os.path.join(path,new_path,str(targ))
 
 def read_dir(path, folder):
+    """ Returns a list of relative file paths to `path` for all files within `folder` """
     full_path = os.path.join(path, folder)
     fnames = glob(f"{full_path}/*.*")
     if any(fnames):
@@ -82,8 +83,17 @@ def n_hot(ids, c):
     return res
 
 def folder_source(path, folder):
+    """
+    Returns the filenames and labels for a folder within a path
+    
+    Returns:
+    -------
+    fnames: a list of the filenames within `folder`
+    all_lbls: a list of all of the labels in `folder`, where the # of labels is determined by the # of directories within `folder`
+    lbl_arr: a numpy array of the label indices in `all_lbls`
+    """
     fnames, lbls, all_lbls = read_dirs(path, folder)
-    lbl2idx = {v:k for k,v in enumerate(all_lbls)}
+    lbl2idx = {lbl:idx for idx,lbl in enumerate(all_lbls)}
     idxs = [lbl2idx[lbl] for lbl in lbls]
     lbl_arr = np.array(idxs, dtype=int)
     return fnames, lbl_arr, all_lbls
