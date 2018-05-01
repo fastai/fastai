@@ -183,7 +183,8 @@ class ChannelOrder():
         return x,y
 
 
-def to_bb(YY, y):
+def to_bb(YY, y="deprecated"):
+    """Convert mask YY to a bounding box, assumes 0 as background nonzero object"""
     cols,rows = np.nonzero(YY)
     if len(cols)==0: return np.zeros(4, dtype=np.float32)
     top_row = np.min(rows)
@@ -261,7 +262,7 @@ class CoordTransform(Transform):
     def map_y(self, y0, x):
         y = CoordTransform.make_square(y0, x)
         y_tr = self.do_transform(y, True)
-        return to_bb(y_tr, y)
+        return to_bb(y_tr)
 
     def transform_coord(self, x, ys):
         yp = partition(ys, 4)
