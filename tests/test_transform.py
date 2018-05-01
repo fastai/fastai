@@ -260,18 +260,43 @@ def test_to_bb():
     np.testing.assert_array_equal(to_bb(im, "not used"), expect)
 
 ### tests for transformation objects
-def test_random_crop():
-    rndCrop = RandomCrop(23)
+def test_RandomCrop():
+    tfm = RandomCrop(23)
     x = t_rand_img128x128x1
-    x2, cls = rndCrop(x, None)
+    x2, cls = tfm(x, None)
     assert x2.shape == (23,23,1)
 
-    #TODO find y2 in y using rolling window or convolution
+def test_AddPadding():
+    tfm = AddPadding(1)
+    x = t_rand_img128x128x3
+    x2, cls = tfm(x, None)
+    assert x2.shape == (130,130,3)
+
+def test_CenterCrop():
+    tfm = CenterCrop(10)
+    x = t_rand_img128x128x3
+    x2, cls = tfm(x, None)
+    assert x2.shape == (10,10,3)
+
+def test_NoCrop():
+    tfm = NoCrop(10)
+    x = t_rand_img128x128x3
+    x2, cls = tfm(x, None)
+    assert x2.shape == (10,10,3)
+
+def test_applying_tranfrom_multiple_times_reset_the_state():
+    tfm = RandomScale(10, 1000, p=1)
+    x1,_ = tfm(t_rand_img128x128x3, None)
+    x2,_ = tfm(t_rand_img128x128x3, None)
+    x3,_ = tfm(t_rand_img128x128x3, None)
+    assert x1.shape[0] != x2.shape[0] or x1.shape[0] != x3.shape[0], "Each transfromation should give a bit different shape"
+    assert x1.shape[0] < 1000
+    assert x2.shape[0] < 1000
+    assert x3.shape[0] < 1000
 
 stats = inception_stats
 tfm_norm = Normalize(*stats, tfm_y=TfmType.COORD)
 tfm_denorm = Denormalize(*stats)
-
 buggy_offset = 2  # This is a bug in the current transform_coord, I will fix it in the next commit
 
 def test_transforms_works_with_coords(): # test of backward compatible behavior
