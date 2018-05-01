@@ -111,9 +111,7 @@ def cutout(im, n_holes, length):
     return im
 
 def scale_to(x, ratio, targ): 
-    '''
-    no clue, does not work.
-    '''
+    '''Calculate dimension of an image during scaling with aspect ratio'''
     return max(math.floor(x*ratio), targ)
 
 def crop(im, r, c, sz): 
