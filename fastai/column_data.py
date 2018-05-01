@@ -15,9 +15,9 @@ class PassthruDataset(Dataset):
     def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.y[idx]]
 
     @classmethod
-    def from_data_frame(self, df, cols_x, col_y, is_reg=True, is_multi=False):
+    def from_data_frame(cls, df, cols_x, col_y, is_reg=True, is_multi=False):
         cols = [df[o] for o in cols_x+[col_y]]
-        return self(*cols, is_reg=is_reg, is_multi=is_multi)
+        return cls(*cols, is_reg=is_reg, is_multi=is_multi)
 
 
 class ColumnarDataset(Dataset):
