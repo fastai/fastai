@@ -221,7 +221,7 @@ class Learner():
 
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
-            
+
         if use_swa:
             # make a copy of the model to track average weights
             self.swa_model = copy.deepcopy(model)
