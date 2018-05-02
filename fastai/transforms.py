@@ -111,9 +111,7 @@ def cutout(im, n_holes, length):
     return im
 
 def scale_to(x, ratio, targ): 
-    '''
-    no clue, does not work.
-    '''
+    '''Calculate dimension of an image during scaling with aspect ratio'''
     return max(math.floor(x*ratio), targ)
 
 def crop(im, r, c, sz): 
@@ -183,7 +181,8 @@ class ChannelOrder():
         return x,y
 
 
-def to_bb(YY, y):
+def to_bb(YY, y="deprecated"):
+    """Convert mask YY to a bounding box, assumes 0 as background nonzero object"""
     cols,rows = np.nonzero(YY)
     if len(cols)==0: return np.zeros(4, dtype=np.float32)
     top_row = np.min(rows)
@@ -261,7 +260,7 @@ class CoordTransform(Transform):
     def map_y(self, y0, x):
         y = CoordTransform.make_square(y0, x)
         y_tr = self.do_transform(y, True)
-        return to_bb(y_tr, y)
+        return to_bb(y_tr)
 
     def transform_coord(self, x, ys):
         yp = partition(ys, 4)
@@ -466,6 +465,7 @@ class RandomLighting(Transform):
         self.store.c_rand = rand0(self.c)
 
     def do_transform(self, x, is_y):
+        if is_y and self.tfm_y != TfmType.PIXEL: return x
         b = self.store.b_rand
         c = self.store.c_rand
         c = -1/(c-1) if c<0 else c+1
@@ -491,16 +491,15 @@ class RandomRotateZoom(CoordTransform):
         assert self.cum_ps[3]==1, 'probabilites do not sum to 1; they sum to %d' % self.cum_ps[3]
 
     def set_state(self):
+        self.store.trans = self.pass_t
         self.store.choice = self.cum_ps[3]*random.random()
         for i in range(len(self.transforms)):
             if self.store.choice < self.cum_ps[i]:
                 self.store.trans = self.transforms[i]
-                return
-        self.store.trans = self.pass_t
+                break
+        self.store.trans.set_state()
 
-    def __call__(self, x, y):
-        self.set_state()
-        return self.store.trans(x, y)
+    def do_transform(self, x, is_y): return self.store.trans.do_transform(x, is_y)
 
 class RandomZoom(CoordTransform):
     def __init__(self, zoom_max, zoom_min=0, mode=cv2.BORDER_REFLECT, tfm_y=TfmType.NO):
