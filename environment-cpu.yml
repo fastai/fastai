@@ -94,7 +94,7 @@ dependencies:
 - widgetsnbextension
 - xz
 - zeromq
-- pytorch>=0.2.0
+- pytorch<0.4
 - bcolz
 - prompt_toolkit
 - pytest
