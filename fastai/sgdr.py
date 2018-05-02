@@ -158,7 +158,7 @@ class LR_Finder(LR_Updater):
     def plot(self, n_skip=10, n_skip_end=5):
         plt.ylabel("loss")
         plt.xlabel("learning rate (log scale)")
-        plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
+        plt.plot(self.lrs[n_skip:-(n_skip_end+1)], self.losses[n_skip:-(n_skip_end+1)])
         plt.xscale('log')
 
 class LR_Finder2(LR_Finder):
