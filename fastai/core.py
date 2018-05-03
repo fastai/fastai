@@ -3,6 +3,11 @@ from .torch_imports import *
 
 def sum_geom(a,r,n): return a*n if r==1 else math.ceil(a*(1-r**n)/(1-r))
 
+def is_listy(x): return isinstance(x, (list,tuple))
+def is_iter(x): return isinstance(x, collections.Iterable)
+def map_over(x, f): return [f(o) for o in x] if is_listy(x) else f(x)
+def map_none(x, f): return None if x is None else f(x)
+
 conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
@@ -13,30 +18,24 @@ def A(*a):
     """
     return np.array(a[0]) if len(a)==1 else [np.array(o) for o in a]
 
-def T(a):
-    """Convert numpy array into a pytorch tensor. 
+def T(a, half=False, cuda=True):
+"""Convert numpy array into a pytorch tensor. 
     if Cuda is available and USE_GPU=ture, store resulting tensor in GPU.
     """
-    if torch.is_tensor(a): res = a
-    else:
+    if not torch.is_tensor(a):
         a = np.array(np.ascontiguousarray(a))
         if a.dtype in (np.int8, np.int16, np.int32, np.int64):
-            res = torch.LongTensor(a.astype(np.int64))
+            a = torch.LongTensor(a.astype(np.int64))
         elif a.dtype in (np.float32, np.float64):
-            res = torch.FloatTensor(a.astype(np.float32))
+            a = torch.cuda.HalfTensor(a) if half else torch.FloatTensor(a)
         else: raise NotImplementedError(a.dtype)
-    return to_gpu(res, async=True)
+    if cuda: a = to_gpu(a, async=True)
+    return a
 
 def create_variable(x, volatile, requires_grad=False):
-    """
-    Wrapper function for creating pytorch tensors
-    Arguments: 
-        x: numpy array or tensor to be converted
-        volatile: True if x does not require gradients
-        requires_grad: fine grain exclusion of x from gradient computation
-    """
-    if not isinstance(x, Variable):
-        x = Variable(T(x), volatile=volatile, requires_grad=requires_grad)
+    if type (x) != Variable:
+        if IS_TORCH_04: x = Variable(T(x), requires_grad=requires_grad)
+        else:           x = Variable(T(x), requires_grad=requires_grad, volatile=volatile)
     return x
 
 def V_(x, requires_grad=False, volatile=False):
@@ -48,7 +47,7 @@ def V(x, requires_grad=False, volatile=False):
     '''
     creates a single or a list of pytorch tensors, depending on input x. 
     '''
-    return [V_(o, requires_grad=requires_grad, volatile=volatile) for o in x] if isinstance(x,(list,tuple)) else V_(x, requires_grad=requires_grad, volatile=volatile)
+    return return map_over(x, lambda o: V_(o, requires_grad, volatile))
 
 def VV_(x): 
     '''
@@ -60,21 +59,22 @@ def VV(x):
     '''
     creates a single or a list of pytorch tensors, depending on input x. 
     '''
-    return [VV_(o) for o in x] if isinstance(x,list) else VV_(x)
+    return map_over(x, VV_)
 
 def to_np(v):
-    ''' utility function that converts list, tuple, or pytorch Variable to an numpy array. 
-    '''
+    if isinstance(v, (np.ndarray, np.generic)): return v
     if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data
+    if isinstance(v, torch.cuda.HalfTensor): v=v.float()
     return v.cpu().numpy()
 
-USE_GPU=True
+IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
+USE_GPU = torch.cuda.is_available()
 def to_gpu(x, *args, **kwargs):
     '''
     puts pytorch variable to gpu, if cuda is avaialble and USE_GPU is set to true. 
     '''
-    return x.cuda(*args, **kwargs) if torch.cuda.is_available() and USE_GPU else x
+    return x.cuda(*args, **kwargs) if USE_GPU else x
 
 def noop(*args, **kwargs): return
 
@@ -95,7 +95,7 @@ def trainable_params_(m):
     return [p for p in m.parameters() if p.requires_grad]
 
 def chain_params(p):
-    if isinstance(p, (list,tuple)):
+    if is_listy(p):
         return list(chain(*[trainable_params_(o) for o in p]))
     return trainable_params_(p)
 
