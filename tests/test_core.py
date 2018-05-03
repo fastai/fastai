@@ -2,20 +2,35 @@ from fastai.core import partition
 import pytest
 
 def test_partition_functionality():
-  szs = [1,2,3,4,5,6]
-  a = [1,2,3,4]
-  for sz in szs:
-    result = partition(a, sz)
-    for i, e in enumerate(result):
-      assert isinstance(e, list)
-      if sz == 1:
-        assert len(e) == sz
-      elif sz > len(a):
-        assert len(e) == len(a)
-      elif i == len(result) - 1 and len(a) % sz !=0:
-        assert len(e) == len(a) % sz
-      else:
-        assert len(e) == sz
+  sz = 2
+  a = [1,2,3,4,5]
+  ex = [[1,2],[3,4],[5]]
+  result = partition(a, sz)
+  assert len(result) == len(ex)
+  assert all([a == b for a, b in zip(result, ex)])
+
+  sz = 3
+  ex = [[1,2,3],[4,5]]
+  result = partition(a, sz)
+  assert len(result) == len(ex)
+  assert all([a == b for a,b in zip(result, ex)])
+
+  sz = 1
+  ex = [[1],[2],[3],[4],[5]]
+  result = partition(a, sz)
+  assert len(result) == len(ex)
+  assert all([a == b for a,b in zip(result, ex)])
+
+  sz = 6
+  ex = [[1,2,3,4,5]]
+  result = partition(a, sz)
+  assert len(result) == len(ex)
+  assert all([a == b for a,b in zip(result, ex)])
+
+  sz = 3
+  a = []
+  result = partition(a, sz)
+  assert len(result) == 0
 
 def test_partition_error_handling():
   sz = 0
