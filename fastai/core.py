@@ -50,11 +50,45 @@ def to_gpu(x, *args, **kwargs):
 
 def noop(*args, **kwargs): return
 
+# seq = [1,2,3,4]
+# idxs = [0,1]
+
+# iteration 1:
+  # idx = 0, last = 0: seq[0:0] --> []
+
+# iteration 2:
+  # idx = 1, last = 0: seq[0:1] --> [1]
+
+# iteration 3: 
+  # set last = idx --> last = 1
+  # break out of for loop
+  # return seq[1:] --> return [2,3,4]?
+
+# given an array of indexes, this function splits up an array --> [0,1] ~= split this array between elements 0 and 1
+
+
+# seq = [1,2,3,4]
+# idxs = [1,2] --> [1,2], [3,4] (X) --> [1], [2], [3,4]
+
+# actually belay that. it seems like idxs is a list of indexes to *split off* the sequence array. --> the above example says: split the elements at 1 and 2 off of the array
+
+# belay that again. I think it's: split this array into pieces at the given indices --> 
+
+# it seems like similar to a return statement, a yield statement stops execution --> how about here is not printed until next is run the second time
+# invocation 1: generator is initialized. returns generator
+# invocation 2: generator runs code up until a yield statement, at which point it stops
+# invocation 3: generator runs any code between yield statements. executes up until the next yield statement, stops. etc.
 def split_by_idxs(seq, idxs):
     last = 0
     for idx in idxs:
+        if idx >= len(seq) or idx < len(seq) * -1:
+          print('raising error ---')
+          raise KeyError(f'Idx {idx} is out-of-bounds of sequence')
+        print('idx ---', seq[last:idx], 'idx ---', idx, 'last ---', last)
         yield seq[last:idx]
+        print('how about here?')
         last = idx
+    print('we are here ---', seq[last:])
     yield seq[last:]
 
 def trainable_params_(m):
