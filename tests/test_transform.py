@@ -290,9 +290,9 @@ def test_applying_tranfrom_multiple_times_reset_the_state():
     x2,_ = tfm(t_rand_img128x128x3, None)
     x3,_ = tfm(t_rand_img128x128x3, None)
     assert x1.shape[0] != x2.shape[0] or x1.shape[0] != x3.shape[0], "Each transfromation should give a bit different shape"
-    assert x1.shape[0] < 1000
-    assert x2.shape[0] < 1000
-    assert x3.shape[0] < 1000
+    assert x1.shape[0] < 10000
+    assert x2.shape[0] < 10000
+    assert x3.shape[0] < 10000
 
 stats = inception_stats
 tfm_norm = Normalize(*stats, tfm_y=TfmType.COORD)
