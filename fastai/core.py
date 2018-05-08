@@ -32,9 +32,9 @@ def create_variable(x, volatile, requires_grad=False):
     return x
 
 def V_(x, requires_grad=False, volatile=False): return create_variable(x, volatile, requires_grad)
-def V (x, requires_grad=False, volatile=False): return map_over(x, lambda o: V_(o, requires_grad, volatile))
+def V (x, requires_grad=False, volatile=False): return map_over(x, lambda y: map_over(y, lambda o: V_(o, requires_grad, volatile)))
 def VV_(x): return create_variable(x, True)
-def VV (x): return map_over(x, VV_)
+def VV (x): return map_over(x, lambda y: map_over(y, VV_))
 
 def to_np(v):
     if isinstance(v, (np.ndarray, np.generic)): return v
