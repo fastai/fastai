@@ -45,17 +45,6 @@ class LoggingCallback(Callback):
         self.f.close()
     def log(self, string):
         self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
-
-def compt(opt_params, magn_orders):
-    result = np.zeros(len(magn_orders)+1)
-    for pg in opt_params:
-        for param in pg['params']:
-            gd = param.grad.abs()
-            result[0] += (gd <= magn_orders[0]).long().sum() 
-            for i in range(1,len(magn_orders)):
-                result[i] += ((gd > magn_orders[i-1]) * (gd <= magn_orders[i])).long().sum() 
-            result[-1] += (gd > magn_orders[-1]).long().sum()
-    return result
         
 class LossRecorder(Callback):
     def __init__(self, layer_opt, save_path='', record_mom=False, metrics=[]):
@@ -67,7 +56,6 @@ class LossRecorder(Callback):
     def on_train_begin(self):
         self.losses,self.lrs,self.iterations = [],[],[]
         self.val_losses, self.rec_metrics = [], []
-        #self.grads = []
         if self.record_mom:
             self.momentums = []
         self.iteration = 0
@@ -81,7 +69,6 @@ class LossRecorder(Callback):
         self.iteration += 1
         self.lrs.append(self.layer_opt.lr)
         self.iterations.append(self.iteration)
-        #self.grads.append(compt(self.layer_opt.opt_params(), [1e-4,1e-3,1e-2,1e-1]))
         if isinstance(loss, list):
             self.losses.append(loss[0])
             self.save_metrics(loss[1:])
