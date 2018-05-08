@@ -204,7 +204,7 @@ class LanguageModelData():
     """
     This class provides the entry point for dealing with supported NLP tasks.
     Usage:
-    1.  Use one of the factory constructors (from_dataframes, from_text-files) to
+    1.  Use one of the factory constructors (from_dataframes, from_text_files) to
         obtain an instance of the class.
     2.  Use the get_model method to return a RNN_Learner instance (a network suited
         for NLP tasks), then proceed with training.
@@ -232,7 +232,7 @@ class LanguageModelData():
             that the field's "build_vocab" method is invoked, which builds the vocabulary
             for this NLP model.
 
-            Also, three instances of the LanguageModelLoader is constructed; one each
+            Also, three instances of the LanguageModelLoader are constructed; one each
             for training data (self.trn_dl), validation data (self.val_dl), and the
             testing data (self.test_dl)
 
