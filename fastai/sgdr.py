@@ -45,7 +45,7 @@ class LoggingCallback(Callback):
         self.f.close()
     def log(self, string):
         self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
-
+        
 class LossRecorder(Callback):
     def __init__(self, layer_opt, save_path='', record_mom=False, metrics=[]):
         super().__init__()
@@ -63,6 +63,7 @@ class LossRecorder(Callback):
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
+        self.save_metrics(metrics)
 
     def on_batch_end(self, loss):
         self.iteration += 1
@@ -75,7 +76,7 @@ class LossRecorder(Callback):
         if self.record_mom: self.momentums.append(self.layer_opt.mom)
 
     def save_metrics(self,vals):
-        self.val_losses.append(vals[0])
+        self.val_losses.append(vals[0][0])
         if len(vals) > 2: self.rec_metrics.append(vals[1:])
         elif len(vals) == 2: self.rec_metrics.append(vals[1])
 
@@ -447,7 +448,7 @@ class DecayScheduler():
 class TrainingPhase():
 
     def __init__(self, epochs=1, opt_fn=optim.SGD, lr=1e-2, lr_decay=DecayType.NO, momentum=0.9,
-                momentum_decay=DecayType.NO, beta=None, wds=None):
+                momentum_decay=DecayType.NO, beta=None, wds=None, wd_loss=True):
         """
         Creates an object containing all the relevant informations for one part of a model training.
 
@@ -467,6 +468,7 @@ class TrainingPhase():
         else: self.lr_decay, self.extra_lr = lr_decay, None
         if isinstance(momentum_decay,tuple): self.mom_decay, self.extra_mom = momentum_decay
         else: self.mom_decay, self.extra_mom = momentum_decay, None
+        self.wd_loss = wd_loss
 
     def phase_begin(self, layer_opt, nb_batches):
         self.layer_opt = layer_opt
@@ -480,14 +482,27 @@ class TrainingPhase():
         self.layer_opt.set_lrs(start_lr)
         self.layer_opt.set_mom(start_mom)
         if self.beta is not None: self.layer_opt.set_beta(self.beta)
-        if self.wds is not None: self.layer_opt.set_wds(self.wds)
+        if self.wds is not None:
+            if not isinstance(self.wds, Iterable): self.wds=[self.wds]
+            if len(self.wds)==1: self.wds=self.wds*len(self.layer_opt.layer_groups) 
+            if self.wd_loss: self.layer_opt.set_wds(self.wds)
+            else: self.layer_opt.set_wds([0] * len(self.wds))
     
+    def on_batch_begin(self):
+        if not self.wd_loss: self.param_groups_old = copy.deepcopy(self.layer_opt.opt.param_groups)
+
     def update(self):
         new_lr, new_mom = self.lr_sched.next_val(), self.mom_sched.next_val()
         self.layer_opt.set_lrs(new_lr)
         self.layer_opt.set_mom(new_mom)
+        if not self.wd_loss: # Decay the weights outside of the loss
+            if not isinstance(new_lr, Iterable): new_lr=[new_lr]
+            if len(new_lr)==1: new_lr=new_lr*len(self.layer_opt.layer_groups)
+            for group, group_old, wds, lr in zip(self.layer_opt.opt.param_groups, self.param_groups_old, self.wds, new_lr):
+                for p, p_old in zip(group['params'], group_old['params']):
+                    if p.grad is None: continue
+                    p.data = p.data.add(-wds*lr, p_old.data)
     
-
 
 class OptimScheduler(LossRecorder):
 
@@ -498,6 +513,10 @@ class OptimScheduler(LossRecorder):
     def on_train_begin(self):
         super().on_train_begin()
         self.phase,self.best=0,1e9
+    
+    def on_batch_begin(self):
+        self.phases[self.phase].on_batch_begin()
+        super().on_batch_begin()
 
     def on_batch_end(self, metrics):
         loss = metrics[0] if isinstance(metrics,list) else metrics
