@@ -136,8 +136,5 @@ class Pix2PixModel(BaseModel):
         self.save_network(self.netD, 'D', label, self.gpu_ids)
 
     def load(self, label):
-        self.load_network(self.netG_A, 'G_A', label)
-        self.load_network(self.netD_A, 'D_A', label)
-        self.load_network(self.netG_B, 'G_B', label)
-        self.load_network(self.netD_B, 'D_B', label)
-
+        self.load_network(self.netG, 'G', label)
+        self.load_network(self.netD, 'D', label)
