@@ -75,7 +75,7 @@ class LossRecorder(Callback):
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
-        self.save_metrics(metrics)
+        self.save_metrics([metrics])
 
     def on_batch_end(self, loss):
         self.iteration += 1
