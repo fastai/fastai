@@ -1,11 +1,10 @@
 import torch
 from collections import OrderedDict
 from torch.autograd import Variable
-import util.util as util
-from util.image_pool import ImagePool
+from ..util import * 
+from ..util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
-
 
 class Pix2PixModel(BaseModel):
     def name(self):
@@ -135,3 +134,7 @@ class Pix2PixModel(BaseModel):
     def save(self, label):
         self.save_network(self.netG, 'G', label, self.gpu_ids)
         self.save_network(self.netD, 'D', label, self.gpu_ids)
+
+    def load(self, label):
+        self.load_network(self.netG, 'G', label)
+        self.load_network(self.netD, 'D', label)

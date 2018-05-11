@@ -15,7 +15,7 @@ from .models.resnext_101_32x4d import resnext_101_32x4d
 from .models.resnext_101_64x4d import resnext_101_64x4d
 from .models.wrn_50_2f import wrn_50_2f
 from .models.inceptionresnetv2 import InceptionResnetV2
-from .models.inceptionv4 import InceptionV4
+from .models.inceptionv4 import inceptionv4
 from .models.nasnet import nasnetalarge
 from .models.fa_resnet import *
 

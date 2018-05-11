@@ -36,6 +36,7 @@ dependencies:
 - jupyter_client
 - jupyter_console
 - jupyter_core
+- conda-forge::jupyter_contrib_nbextensions  
   #- libffi
   #- libgcc
   #- libgfortran
@@ -94,7 +95,7 @@ dependencies:
 - widgetsnbextension
 - xz
 - zeromq
-- pytorch>=0.2.0
+- pytorch<0.4
 - bcolz
 - prompt_toolkit
 - pytest
@@ -107,11 +108,7 @@ dependencies:
   - graphviz
   - sklearn_pandas
   - feather-format
-  - jupyter_contrib_nbextensions
   - plotnine
-  - awscli
   - kaggle-cli
   - ipywidgets
-  - jupyter_contrib_nbextensions
-  - git+https://github.com/SauceCat/PDPbox.git
-
+    # - git+https://github.com/SauceCat/PDPbox.git

@@ -1,0 +1,59 @@
+= fastai.dataloader
+
+== Introduction and overview
+
+*Note:* the fastai DataLoader has a similar API to the PyTorch DataLoader. Please see http://pytorch.org/docs/master/data.html#torch.utils.data.DataLoader[the PyTorch documentation] for usage and details. The documentation presented here focuses on the differences between the two classes.
+
+== {{class DataLoader,dataset,batch_size=1,shuffle=False,sampler=None,batch_sampler=None,pad_idx=0,num_workers=None,pin_memory=False,drop_last=False,pre_pad=True,half=False,transpose=False,transpose_y=False}}
+
+.Used to iterate through a dataset to pass data into a model for training.
+
+=== {{arguments}}
+
+For information on arguments with no descriptions, please see http://pytorch.org/docs/master/data.html#torch.utils.data.DataLoader[the PyTorch documentation]
+
+{{arg dataset,Dataset}}
+
+{{arg batch_size,int,1}}
+
+{{arg shuffle,bool,False}}
+
+{{arg sampler,Sampler,None}}
+
+{{arg batch_sampler,BatchSampler,None}}
+
+{{arg pad_idx,int,0}}
+A padding index representing how many zeros to add to each batch. See: `pre_pad`
+
+{{arg num_workers,int,None}}
+Allows the user to manually set the number of workers. If left as `None`, it will default to the number of CPU cores the system has. If > 0, the dataloader will create `num_workers` number of jobs using `concurrent.futures.ThreadPoolExecutor`.
+
+{{arg pin_memory,bool,False}}
+
+{{arg drop_last,bool,False}}
+
+{{arg pre_pad,bool,True}}
+If `pad_idx` is non-zero, this determines if the zeros should go at the beginning of the batch, or at the end. By default, the zeros are added at the beginning of the batch.
+
+{{arg half,bool,False}}
+If `True`, `torch.cuda.HalfTensor()` will be used instead of `torch.FloatTensor()`.
+
+{{arg transpose,bool,False}}
+If `True`, each batch will have its inputs transposed.
+
+{{arg transpose_y,bool,False}}
+If `True`, each batch will have its outputs (labels) transposed.
+
+=== {{methods}}
+
+{{method jag_stack,b}}
+
+Helper method for `np_collate()`. Returns a np.array of the batch passed in, with zeros added for any shorter rows inside the batch, plus extra zeros if `self.pad_idx > 0`. If all items inside the batch are the same length, no zero padding is added.
+
+{{method np_collate,batch}}
+
+Helper method for `get_batch()`. Based on the input data type, it creates an appropriate np.array, list, or dict. If the method is passed a string or list of strings, it simply returns the parameter without modification. Batches must contain numbers, strings, dicts, or lists, and this method also ensures this is the case.
+
+{{method get_batch,indices}}
+
+Helper method for `__iter__()`. When an iterator of the dataloader object is created, `get_batch()` is used to retrieve items from the dataset and apply transposes if needed based on `self.transpose` and `self.transpose_y`.

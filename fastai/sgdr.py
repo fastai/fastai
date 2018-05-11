@@ -5,6 +5,10 @@ import copy
 
 
 class Callback:
+    '''
+    An abstract class that all callback(e.g., LossRecorder) classes extends from. 
+    Must be extended before usage.
+    '''
     def on_train_begin(self): pass
     def on_batch_begin(self): pass
     def on_phase_begin(self): pass
@@ -18,6 +22,10 @@ class Callback:
 # Usage:
 # learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
 class LoggingCallback(Callback):
+    '''
+    A class useful for maintaining status of a long-running job.
+    e.g.: learn.fit(0.01, 1, callbacks = [LoggingCallback(save_path="/tmp/log")])
+    '''
     def __init__(self, save_path):
         super().__init__()
         self.save_path=save_path
@@ -47,6 +55,10 @@ class LoggingCallback(Callback):
         self.f.write(time.strftime("%Y-%m-%dT%H:%M:%S")+"\t"+string+"\n")
         
 class LossRecorder(Callback):
+    '''
+    Saves and displays loss functions and other metrics. 
+    Default sched when none is specified in a learner. 
+    '''
     def __init__(self, layer_opt, save_path='', record_mom=False, metrics=[]):
         super().__init__()
         self.layer_opt=layer_opt
@@ -81,6 +93,10 @@ class LossRecorder(Callback):
         elif len(vals) == 2: self.rec_metrics.append(vals[1])
 
     def plot_loss(self, n_skip=10, n_skip_end=5):
+        '''
+        plots loss function as function of iterations. 
+        When used in Jupyternotebook, plot will be displayed in notebook. Else, plot will be displayed in console and both plot and loss are saved in save_path. 
+        '''
         if not in_ipynb(): plt.switch_backend('agg')
         plt.plot(self.iterations[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
         if not in_ipynb():
@@ -88,6 +104,7 @@ class LossRecorder(Callback):
             np.save(os.path.join(self.save_path, 'losses.npy'), self.losses[10:])
 
     def plot_lr(self):
+        '''Plots learning rate in jupyter notebook or console, depending on the enviroment of the learner.'''
         if not in_ipynb():
             plt.switch_backend('agg')
         if self.record_mom:
@@ -106,6 +123,11 @@ class LossRecorder(Callback):
 
 
 class LR_Updater(LossRecorder):
+    '''
+    Abstract class where all Learning Rate updaters inherit from. (e.g., CirularLR)
+    Calculates and updates new learning rate and momentum at the end of each batch. 
+    Have to be extended. 
+    '''
     def on_train_begin(self):
         super().on_train_begin()
         self.update_lr()
@@ -135,6 +157,10 @@ class LR_Updater(LossRecorder):
 
 
 class LR_Finder(LR_Updater):
+    '''
+    Helps you find an optimal learning rate for a model, as per suggetion of 2015 CLR paper. 
+    Learning rate is increased in linear or log scale, depending on user input, and the result of the loss funciton is retained and can be plotted later. 
+    '''
     def __init__(self, layer_opt, nb, end_lr=10, linear=False, metrics = []):
         self.linear, self.stop_dv = linear, True
         ratio = end_lr/layer_opt.lr
@@ -157,12 +183,20 @@ class LR_Finder(LR_Updater):
         return super().on_batch_end(metrics)
 
     def plot(self, n_skip=10, n_skip_end=5):
+        '''
+        Plots the loss function with respect to learning rate, in log scale. 
+        '''
         plt.ylabel("loss")
         plt.xlabel("learning rate (log scale)")
-        plt.plot(self.lrs[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
+        plt.plot(self.lrs[n_skip:-(n_skip_end+1)], self.losses[n_skip:-(n_skip_end+1)])
         plt.xscale('log')
 
 class LR_Finder2(LR_Finder):
+    """
+        A variant of lr_find() that helps find the best learning rate. It doesn't do
+        an epoch but a fixed num of iterations (which may be more or less than an epoch
+        depending on your data).
+    """
     def __init__(self, layer_opt, nb, end_lr=10, linear=False, metrics=[], stop_dv=True):
         self.nb, self.metrics = nb, metrics
         super().__init__(layer_opt, nb, end_lr, linear, metrics)
@@ -193,6 +227,7 @@ class LR_Finder2(LR_Finder):
         axs[1].plot(self.lrs[n_skip:-n_skip_end],plt_val_l[n_skip:-n_skip_end])
 
 class CosAnneal(LR_Updater):
+    ''' Learning rate scheduler that inpelements a cosine annealation schedule. '''
     def __init__(self, layer_opt, nb, on_cycle_end=None, cycle_mult=1):
         self.nb,self.on_cycle_end,self.cycle_mult = nb,on_cycle_end,cycle_mult
         super().__init__(layer_opt)
@@ -217,6 +252,10 @@ class CosAnneal(LR_Updater):
 
 
 class CircularLR(LR_Updater):
+    '''
+    An learning rate updater that implements the CirularLearningRate (CLR) scheme. 
+    Learning rate is increased then decreased linearly. 
+    '''
     def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None, momentums=None):
         self.nb,self.div,self.cut_div,self.on_cycle_end = nb,div,cut_div,on_cycle_end
         if momentums is not None:
@@ -415,6 +454,7 @@ class WeightDecaySchedule(Callback):
         self.epoch += 1
 
 class DecayType(IntEnum):
+    ''' Data class, each decay type is assigned a number. '''
     NO = 1
     LINEAR = 2
     COSINE = 3
@@ -422,6 +462,7 @@ class DecayType(IntEnum):
     POLYNOMIAL = 5
 
 class DecayScheduler():
+    '''Given initial and endvalue, this class generates the next value depending on decay type and number of iterations. (by calling next_val().) '''
 
     def __init__(self, dec_type, num_it, start_val, end_val=None, extra=None):
         self.dec_type, self.nb, self.start_val, self.end_val, self.extra = dec_type, num_it, start_val, end_val, extra
@@ -446,7 +487,10 @@ class DecayScheduler():
         
 
 class TrainingPhase():
-
+    '''
+    Object with training information for each phase, when multiple phases are involved during training.  
+    Used in fit_opt_sched in learner.py
+    '''
     def __init__(self, epochs=1, opt_fn=optim.SGD, lr=1e-2, lr_decay=DecayType.NO, momentum=0.9,
                 momentum_decay=DecayType.NO, beta=None, wds=None, wd_loss=True):
         """
@@ -505,6 +549,7 @@ class TrainingPhase():
     
 
 class OptimScheduler(LossRecorder):
+    '''Learning rate Scheduler for training involving multiple phases.'''
 
     def __init__(self, layer_opt, phases, nb_batches, stop_div = False):
         self.phases, self.nb_batches, self.stop_div = phases, nb_batches, stop_div
@@ -533,9 +578,7 @@ class OptimScheduler(LossRecorder):
         self.phase += 1
 
     def plot_lr(self, show_text=True, show_moms=True):
-        """
-        Plots the lr rate/momentum schedule
-        """
+        """Plots the lr rate/momentum schedule"""
         phase_limits = [0]
         for phase in self.phases:
             phase_limits.append(phase_limits[-1] + self.nb_batches * phase.epochs)

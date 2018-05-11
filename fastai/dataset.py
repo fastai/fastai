@@ -52,6 +52,7 @@ def resize_imgs(fnames, targ, path, new_path):
     return os.path.join(path,new_path,str(targ))
 
 def read_dir(path, folder):
+    """ Returns a list of relative file paths to `path` for all files within `folder` """
     full_path = os.path.join(path, folder)
     fnames = glob(f"{full_path}/*.*")
     if any(fnames):
@@ -63,15 +64,15 @@ def read_dirs(path, folder):
     '''
     Fetches name of all files in path in long form, and labels associated by extrapolation of directory names. 
     '''
-    labels, filenames, all_labels = [], [], []
+    lbls, fnames, all_lbls = [], [], []
     full_path = os.path.join(path, folder)
-    for label in sorted(os.listdir(full_path)):
-        if label not in ('.ipynb_checkpoints','.DS_Store'):
-            all_labels.append(label)
-            for fname in os.listdir(os.path.join(full_path, label)):
-                filenames.append(os.path.join(folder, label, fname))
-                labels.append(label)
-    return filenames, labels, all_labels
+    for lbl in sorted(os.listdir(full_path)):
+        if lbl not in ('.ipynb_checkpoints','.DS_Store'):
+            all_lbls.append(lbl)
+            for fname in os.listdir(os.path.join(full_path, lbl)):
+                fnames.append(os.path.join(folder, lbl, fname))
+                lbls.append(lbl)
+    return fnames, lbls, all_lbls
 
 def n_hot(ids, c):
     '''
@@ -82,12 +83,20 @@ def n_hot(ids, c):
     return res
 
 def folder_source(path, folder):
-    fnames, lbls, all_labels = read_dirs(path, folder)
-    label2idx = {v:k for k,v in enumerate(all_labels)}
-    idxs = [label2idx[lbl] for lbl in lbls]
-    c = len(all_labels)
-    label_arr = np.array(idxs, dtype=int)
-    return fnames, label_arr, all_labels
+    """
+    Returns the filenames and labels for a folder within a path
+    
+    Returns:
+    -------
+    fnames: a list of the filenames within `folder`
+    all_lbls: a list of all of the labels in `folder`, where the # of labels is determined by the # of directories within `folder`
+    lbl_arr: a numpy array of the label indices in `all_lbls`
+    """
+    fnames, lbls, all_lbls = read_dirs(path, folder)
+    lbl2idx = {lbl:idx for idx,lbl in enumerate(all_lbls)}
+    idxs = [lbl2idx[lbl] for lbl in lbls]
+    lbl_arr = np.array(idxs, dtype=int)
+    return fnames, lbl_arr, all_lbls
 
 def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     """Parse filenames and label sets from a CSV file.
@@ -442,6 +451,8 @@ class ImageClassifierData(ImageData):
         Returns:
             ImageClassifierData
         """
+        assert not (tfms[0] is None or tfms[1] is None), "please provide transformations for your train and validation sets"
+        assert not (os.path.isabs(folder)), "folder needs to be a relative path"
         fnames,y,classes = csv_source(folder, csv_fname, skip_header, suffix, continuous=continuous)
         return cls.from_names_and_array(path, fnames, y, classes, val_idxs, test_name,
                 num_workers=num_workers, suffix=suffix, tfms=tfms, bs=bs, continuous=continuous)

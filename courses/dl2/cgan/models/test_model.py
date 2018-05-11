@@ -1,6 +1,6 @@
 from torch.autograd import Variable
 from collections import OrderedDict
-import util.util as util
+from ..util import *
 from .base_model import BaseModel
 from . import networks
 

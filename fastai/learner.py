@@ -33,8 +33,8 @@ class Learner():
         self.wd_sched = None
         self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
-        self.tmp_path = os.path.join(self.data.path, tmp_name)
-        self.models_path = os.path.join(self.data.path, models_name)
+        self.tmp_path = tmp_name if os.path.isabs(tmp_name) else os.path.join(self.data.path, tmp_name)
+        self.models_path = models_name if os.path.isabs(models_name) else os.path.join(self.data.path, models_name)
         os.makedirs(self.tmp_path, exist_ok=True)
         os.makedirs(self.models_path, exist_ok=True)
         self.crit = crit if crit else self._get_crit(data)
@@ -221,7 +221,7 @@ class Learner():
 
         if best_save_name is not None:
             callbacks+=[SaveBestModel(self, layer_opt, metrics, best_save_name)]
-            
+
         if use_swa:
             # make a copy of the model to track average weights
             self.swa_model = copy.deepcopy(model)
