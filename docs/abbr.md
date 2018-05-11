@@ -68,6 +68,7 @@ Note that there are always exceptions, especially when we try to comply with the
 |                  | threshold                           | thresh         |                                                  |
 | **Data**         |                                     |                |                                                  |
 |                  | number of elements                  | n              |                                                  |
+|                  | number of batches                   | nb             |                                                  |
 |                  | length                              | len            |                                                  |
 |                  | size                                | sz             |                                                  |
 |                  | array                               | arr            | label_arr                                        |
