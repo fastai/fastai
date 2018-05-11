@@ -42,7 +42,7 @@ def V_(x, requires_grad=False, volatile=False):
     return create_variable(x, volatile=volatile, requires_grad=requires_grad)
 def V(x, requires_grad=False, volatile=False):
     '''creates a single or a list of pytorch tensors, depending on input x. '''
-    return return map_over(x, lambda o: V_(o, requires_grad, volatile))
+    return map_over(x, lambda o: V_(o, requires_grad, volatile))
 
 def VV_(x): 
     '''creates a volatile tensor, which does not require gradients. '''
