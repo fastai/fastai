@@ -93,8 +93,8 @@ class LossRecorder(Callback):
 
     def plot_loss(self, n_skip=10, n_skip_end=5):
         '''
-            plots loss function as function of iterations. 
-            When used in Jupyternotebook, plot will be displayed in notebook. Else, plot will be displayed in console and both plot and loss are saved in save_path. 
+        plots loss function as function of iterations. 
+        When used in Jupyternotebook, plot will be displayed in notebook. Else, plot will be displayed in console and both plot and loss are saved in save_path. 
         '''
         if not in_ipynb(): plt.switch_backend('agg')
         plt.plot(self.iterations[n_skip:-n_skip_end], self.losses[n_skip:-n_skip_end])
@@ -103,9 +103,7 @@ class LossRecorder(Callback):
             np.save(os.path.join(self.save_path, 'losses.npy'), self.losses[10:])
 
     def plot_lr(self):
-        '''
-        Plots learning rate in jupyter notebook or console, depending on the enviroment of the learner.
-        '''
+        '''Plots learning rate in jupyter notebook or console, depending on the enviroment of the learner.'''
         if not in_ipynb():
             plt.switch_backend('agg')
         if self.record_mom:
@@ -228,9 +226,7 @@ class LR_Finder2(LR_Finder):
         axs[1].plot(self.lrs[n_skip:-n_skip_end],plt_val_l[n_skip:-n_skip_end])
 
 class CosAnneal(LR_Updater):
-    ''' 
-    Learning rate scheduler that inpelements a cosine annealation schedule. 
-    '''
+    ''' Learning rate scheduler that inpelements a cosine annealation schedule. '''
     def __init__(self, layer_opt, nb, on_cycle_end=None, cycle_mult=1):
         self.nb,self.on_cycle_end,self.cycle_mult = nb,on_cycle_end,cycle_mult
         super().__init__(layer_opt)
@@ -291,10 +287,6 @@ class CircularLR(LR_Updater):
         return res
 
 class CircularLR_beta(LR_Updater):
-    '''
-    ??? highly unsure ???
-    CLR learning rate updater, but not using pct percentage of data. 
-    '''
     def __init__(self, layer_opt, nb, div=10, pct=10, on_cycle_end=None, momentums=None):
         self.nb,self.div,self.pct,self.on_cycle_end = nb,div,pct,on_cycle_end
         self.cycle_nb = int(nb * (1-pct/100) / 2)
@@ -542,9 +534,7 @@ class TrainingPhase():
 
 
 class OptimScheduler(LossRecorder):
-    '''
-    Learning rate Scheduler for training involving multiple phases.
-    '''
+    '''Learning rate Scheduler for training involving multiple phases.'''
 
     def __init__(self, layer_opt, phases, nb_batches, stop_div = False):
         self.phases, self.nb_batches, self.stop_div = phases, nb_batches, stop_div
@@ -569,9 +559,7 @@ class OptimScheduler(LossRecorder):
         self.phase += 1
 
     def plot_lr(self, show_text=True, show_moms=True):
-        """
-        Plots the lr rate/momentum schedule
-        """
+        """Plots the lr rate/momentum schedule"""
         phase_limits = [0]
         for phase in self.phases:
             phase_limits.append(phase_limits[-1] + self.nb_batches * phase.epochs)

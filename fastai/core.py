@@ -13,13 +13,12 @@ conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTe
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}
 
 def A(*a):
-    """
-    convert iterable object into numpy array
-    """
+    """convert iterable object into numpy array"""
     return np.array(a[0]) if len(a)==1 else [np.array(o) for o in a]
 
 def T(a, half=False, cuda=True):
-"""Convert numpy array into a pytorch tensor. 
+    """
+    Convert numpy array into a pytorch tensor. 
     if Cuda is available and USE_GPU=ture, store resulting tensor in GPU.
     """
     if not torch.is_tensor(a):
@@ -39,29 +38,22 @@ def create_variable(x, volatile, requires_grad=False):
     return x
 
 def V_(x, requires_grad=False, volatile=False):
-    '''
-    equivalent to create_variable, which creates a pytorch tensor
-    '''
+    '''equivalent to create_variable, which creates a pytorch tensor'''
     return create_variable(x, volatile=volatile, requires_grad=requires_grad)
 def V(x, requires_grad=False, volatile=False):
-    '''
-    creates a single or a list of pytorch tensors, depending on input x. 
-    '''
+    '''creates a single or a list of pytorch tensors, depending on input x. '''
     return return map_over(x, lambda o: V_(o, requires_grad, volatile))
 
 def VV_(x): 
-    '''
-    creates a volatile tensor, which does not require gradients. 
-    '''
+    '''creates a volatile tensor, which does not require gradients. '''
     return create_variable(x, True)
 
 def VV(x):
-    '''
-    creates a single or a list of pytorch tensors, depending on input x. 
-    '''
+    '''creates a single or a list of pytorch tensors, depending on input x. '''
     return map_over(x, VV_)
 
 def to_np(v):
+    '''returns an np.array object given an input of np.array, list, tuple, torch variable or tensor.'''
     if isinstance(v, (np.ndarray, np.generic)): return v
     if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data
@@ -71,17 +63,13 @@ def to_np(v):
 IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
 USE_GPU = torch.cuda.is_available()
 def to_gpu(x, *args, **kwargs):
-    '''
-    puts pytorch variable to gpu, if cuda is avaialble and USE_GPU is set to true. 
-    '''
+    '''puts pytorch variable to gpu, if cuda is avaialble and USE_GPU is set to true. '''
     return x.cuda(*args, **kwargs) if USE_GPU else x
 
 def noop(*args, **kwargs): return
 
 def split_by_idxs(seq, idxs):
-    '''
-    A generator that returns sequence pieces, seperated by indexes specified in idxs. 
-    '''
+    '''A generator that returns sequence pieces, seperated by indexes specified in idxs. '''
     last = 0
     for idx in idxs:
         yield seq[last:idx]
@@ -89,9 +77,7 @@ def split_by_idxs(seq, idxs):
     yield seq[last:]
 
 def trainable_params_(m):
-    '''
-    Returns a list of trainable parameters in the model m. (i.e., those that require gradients.)
-    '''
+    '''Returns a list of trainable parameters in the model m. (i.e., those that require gradients.)'''
     return [p for p in m.parameters() if p.requires_grad]
 
 def chain_params(p):
@@ -118,8 +104,7 @@ def SGD_Momentum(momentum):
 def one_hot(a,c): return np.eye(c)[a]
 
 def partition(a, sz): 
-    """splits iterables a in equal parts of size sz
-    """
+    """splits iterables a in equal parts of size sz"""
     return [a[i:i+sz] for i in range(0, len(a), sz)]
 
 def partition_by_cores(a):
@@ -154,19 +139,13 @@ class SimpleNet(nn.Module):
 
 
 def save(fn, a): 
-    """
-    Utility function that savess model, function, etc as pickle
-    """    
+    """Utility function that savess model, function, etc as pickle"""    
     pickle.dump(a, open(fn,'wb'))
 def load(fn): 
-    """
-    Utility function that loads model, function, etc as pickle
-    """
+    """Utility function that loads model, function, etc as pickle"""
     return pickle.load(open(fn,'rb'))
 def load2(fn):
-    """
-    Utility funciton allowing model piclking across Python2 and Python3
-    """
+    """Utility funciton allowing model piclking across Python2 and Python3"""
     return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
 
 def load_array(fname): 
@@ -178,9 +157,7 @@ def load_array(fname):
 
 
 def chunk_iter(iterable, chunk_size):
-    '''
-    A generator that yields chunks of iterable, chunk_size at a time. 
-    '''
+    '''A generator that yields chunks of iterable, chunk_size at a time. '''
     while True:
         chunk = []
         try:
