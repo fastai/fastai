@@ -49,7 +49,7 @@ def rotate_cv(im, deg, mode=cv2.BORDER_CONSTANT, interpolation=cv2.INTER_AREA):
         deg (float): degree to rotate.
     """
     r,c,*_ = im.shape
-    M = cv2.getRotationMatrix2D((c/2,r/2),deg,1)
+    M = cv2.getRotationMatrix2D((c//2,r//2),deg,1)
     return cv2.warpAffine(im,M,(c,r), borderMode=mode, flags=cv2.WARP_FILL_OUTLIERS+interpolation)
 
 def no_crop(im, min_sz=None, interpolation=cv2.INTER_AREA):
