@@ -40,7 +40,9 @@ tok2id.py --prefix PREFIX [--max-vocab MAX_VOCAB] [--min-freq MIN_FREQ]
 
 ### 3. Fine-tune the LM
 
-Run `train_lm.py` to fine-tune a language model pretrained on WikiText-103 data on the target task data.
+First run `train_tri_wt.py` to create a pre-trained language model using WikiText-103 (or whatever base corpus you prefer).
+
+Then run `train_lm.py` to fine-tune a language model pretrained on WikiText-103 data on the target task data.
 
 Example command: `python train_lm.py imdb 0 5`
 
