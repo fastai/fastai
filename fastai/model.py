@@ -195,10 +195,11 @@ class IterBatch():
 def validate_next(stepper, metrics, val_iter):
     """Computes the loss on the next minibatch of the validation set."""
     stepper.reset(False)
-    (*x,y) = val_iter.next()
-    preds,l = stepper.evaluate(VV(x), VV(y))
-    res = [to_np(l)[0]]
-    res += [f(preds.data,y) for f in metrics]
+    with no_grad_context():
+        (*x,y) = val_iter.next()
+        preds,l = stepper.evaluate(VV(x), VV(y))
+        res = [to_np(l)[0]]
+        res += [f(preds.data,y) for f in metrics]
     stepper.reset(True)
     return res
 
