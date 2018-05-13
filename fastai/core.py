@@ -167,3 +167,27 @@ def chunk_iter(iterable, chunk_size):
             if chunk: yield chunk
             break
 
+class set_grad_enabled(object):
+    """Context-manager that sets gradient calculation to on or off.
+
+    ``set_grad_enabled`` will enable or disable grads based on its argument :attr:`mode`.
+    It can be used as a context-manager or as a function.
+
+    Arguments:
+        mode (bool): Flag whether to enable grad (``True``), or disable
+                     (``False``). This can be used to conditionally enable
+                     gradients.
+
+    """
+
+    def __init__(self, mode):
+        if IS_TORCH_04:
+            self.prev = torch.is_grad_enabled()
+            torch._C.set_grad_enabled(mode)
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, *args):
+        if IS_TORCH_04: torch.set_grad_enabled(self.prev)
+        return False

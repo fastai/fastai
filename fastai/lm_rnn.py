@@ -3,7 +3,9 @@ from .imports import *
 from .torch_imports import *
 from .rnn_reg import LockedDropout,WeightDrop,EmbeddingDropout
 from .model import Stepper
+from .core import set_grad_enabled
 
+IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
 
 def seq2seq_reg(output, xtra, loss, alpha=0, beta=0):
     hs,dropped_hs = xtra
@@ -17,7 +19,8 @@ def seq2seq_reg(output, xtra, loss, alpha=0, beta=0):
 
 def repackage_var(h):
     """Wraps h in new Variables, to detach them from their history."""
-    return Variable(h.data) if type(h) == Variable else tuple(repackage_var(v) for v in h)
+    if IS_TORCH_04: return h.detach() if type(h) == torch.Tensor else tuple(repackage_var(v) for v in h)
+    else: return Variable(h.data) if type(h) == Variable else tuple(repackage_var(v) for v in h)
 
 
 class RNN_Encoder(nn.Module):
@@ -60,7 +63,7 @@ class RNN_Encoder(nn.Module):
         self.encoder = nn.Embedding(ntoken, emb_sz, padding_idx=pad_token)
         self.encoder_with_dropout = EmbeddingDropout(self.encoder)
         self.rnns = [nn.LSTM(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
-             1, bidirectional=bidir, dropout=dropouth) for l in range(nlayers)]
+             1, bidirectional=bidir) for l in range(nlayers)]
         if wdrop: self.rnns = [WeightDrop(rnn, wdrop) for rnn in self.rnns]
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
@@ -82,28 +85,28 @@ class RNN_Encoder(nn.Module):
         if bs!=self.bs:
             self.bs=bs
             self.reset()
+        with set_grad_enabled(self.training):
+            emb = self.encoder_with_dropout(input, dropout=self.dropoute if self.training else 0)
+            emb = self.dropouti(emb)
+            raw_output = emb
+            new_hidden,raw_outputs,outputs = [],[],[]
+            for l, (rnn,drop) in enumerate(zip(self.rnns, self.dropouths)):
+                current_input = raw_output
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    raw_output, new_h = rnn(raw_output, self.hidden[l])
+                new_hidden.append(new_h)
+                raw_outputs.append(raw_output)
+                if l != self.nlayers - 1: raw_output = drop(raw_output)
+                outputs.append(raw_output)
 
-        emb = self.encoder_with_dropout(input, dropout=self.dropoute if self.training else 0)
-        emb = self.dropouti(emb)
-
-        raw_output = emb
-        new_hidden,raw_outputs,outputs = [],[],[]
-        for l, (rnn,drop) in enumerate(zip(self.rnns, self.dropouths)):
-            current_input = raw_output
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                raw_output, new_h = rnn(raw_output, self.hidden[l])
-            new_hidden.append(new_h)
-            raw_outputs.append(raw_output)
-            if l != self.nlayers - 1: raw_output = drop(raw_output)
-            outputs.append(raw_output)
-
-        self.hidden = repackage_var(new_hidden)
+            self.hidden = repackage_var(new_hidden)
         return raw_outputs, outputs
 
     def one_hidden(self, l):
         nh = (self.nhid if l != self.nlayers - 1 else self.emb_sz)//self.ndir
-        return Variable(self.weights.new(self.ndir, self.bs, nh).zero_(), volatile=not self.training)
+        if IS_TORCH_04: return Variable(self.weights.new(self.ndir, self.bs, nh).zero_())
+        else: return Variable(self.weights.new(self.ndir, self.bs, nh).zero_(), volatile=not self.training)
 
     def reset(self):
         self.weights = next(self.parameters()).data
