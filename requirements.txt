@@ -50,7 +50,7 @@ six>=1.11.0
 sklearn_pandas>=1.6.0
 terminado>=0.6
 testpath>=0.3.1
-torch>= 0.3.1
+torch<0.4
 torchtext>=0.2.3
 torchvision>=0.2.0
 tornado>=4.5.2,<5
