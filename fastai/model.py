@@ -195,10 +195,11 @@ class IterBatch():
 def validate_next(stepper, metrics, val_iter):
     """Computes the loss on the next minibatch of the validation set."""
     stepper.reset(False)
-    (*x,y) = val_iter.next()
-    preds,l = stepper.evaluate(VV(x), VV(y))
-    res = [to_np(l)[0]]
-    res += [f(preds.data,y) for f in metrics]
+    with no_grad_context():
+        (*x,y) = val_iter.next()
+        preds,l = stepper.evaluate(VV(x), VV(y))
+        res = [to_np(l)[0]]
+        res += [f(preds.data,y) for f in metrics]
     stepper.reset(True)
     return res
 
@@ -213,8 +214,6 @@ def validate(stepper, dl, metrics):
             loss.append(to_np(l))
             res.append([f(preds.data, y) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
-
-def no_grad_context(): return torch.no_grad() if IS_TORCH_04 else contextlib.suppress()
 
 def get_prediction(x):
     if is_listy(x): x=x[0]
