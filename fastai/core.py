@@ -53,7 +53,7 @@ def noop(*args, **kwargs): return
 def split_by_idxs(seq, idxs):
     last = 0
     for idx in idxs:
-        if idx >= len(seq) or idx < len(seq) * -1:
+        if not (-len(seq) <= idx < len(seq)):
           raise KeyError(f'Idx {idx} is out-of-bounds')
         yield seq[last:idx]
         last = idx
