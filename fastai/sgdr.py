@@ -396,7 +396,6 @@ class WeightDecaySchedule(Callback):
         self.init_wds = np.array(layer_opt.wds)  # Weights as set by user
         self.init_lrs = np.array(layer_opt.lrs)  # Learning rates as set by user
         self.new_wds = None                      # Holds the new weight decay factors, calculated in on_batch_begin()
-        self.param_groups_old = None             # Caches the old parameter values in on_batch_begin()
         self.iteration = 0
         self.epoch = 0
         self.wds_sched_mult = wds_sched_mult
@@ -433,22 +432,10 @@ class WeightDecaySchedule(Callback):
         # Final wds
         self.new_wds = wdm * wdn
 
-        # Record the wds
-        self.wds_history.append(self.new_wds)
-
         # Set weight_decay with zeros so that it is not applied in Adam, we will apply it outside in on_batch_end()
-        self.layer_opt.set_wds(torch.zeros(self.new_wds.size))
+        self.layer_opt.set_wds_out(self.new_wds)
         # We have to save the existing weights before the optimizer changes the values
-        self.param_groups_old = copy.deepcopy(self.layer_opt.opt.param_groups)
         self.iteration += 1
-
-    def on_batch_end(self, loss):
-        # Decay the weights
-        for group, group_old, wds in zip(self.layer_opt.opt.param_groups, self.param_groups_old, self.new_wds):
-            for p, p_old in zip(group['params'], group_old['params']):
-                if p.grad is None:
-                    continue
-                p.data = p.data.add(-wds, p_old.data)
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
@@ -530,22 +517,12 @@ class TrainingPhase():
             if not isinstance(self.wds, Iterable): self.wds=[self.wds]
             if len(self.wds)==1: self.wds=self.wds*len(self.layer_opt.layer_groups) 
             if self.wd_loss: self.layer_opt.set_wds(self.wds)
-            else: self.layer_opt.set_wds([0] * len(self.wds))
+            else: self.layer_opt.set_wds_out(self.wds)
     
-    def on_batch_begin(self):
-        if not self.wd_loss: self.param_groups_old = copy.deepcopy(self.layer_opt.opt.param_groups)
-
     def update(self):
         new_lr, new_mom = self.lr_sched.next_val(), self.mom_sched.next_val()
         self.layer_opt.set_lrs(new_lr)
         self.layer_opt.set_mom(new_mom)
-        if not self.wd_loss: # Decay the weights outside of the loss
-            if not isinstance(new_lr, Iterable): new_lr=[new_lr]
-            if len(new_lr)==1: new_lr=new_lr*len(self.layer_opt.layer_groups)
-            for group, group_old, wds, lr in zip(self.layer_opt.opt.param_groups, self.param_groups_old, self.wds, new_lr):
-                for p, p_old in zip(group['params'], group_old['params']):
-                    if p.grad is None: continue
-                    p.data = p.data.add(-wds*lr, p_old.data)
     
 
 class OptimScheduler(LossRecorder):
@@ -558,10 +535,6 @@ class OptimScheduler(LossRecorder):
     def on_train_begin(self):
         super().on_train_begin()
         self.phase,self.best=0,1e9
-    
-    def on_batch_begin(self):
-        self.phases[self.phase].on_batch_begin()
-        super().on_batch_begin()
 
     def on_batch_end(self, metrics):
         loss = metrics[0] if isinstance(metrics,list) else metrics
@@ -572,7 +545,7 @@ class OptimScheduler(LossRecorder):
         self.phases[self.phase].update()
     
     def on_phase_begin(self):
-        self.phases[self.phase].phase_begin(self.layer_opt, self.nb_batches)
+        self.phases[self.phase].phase_begin(self.layer_opt, self.nb_batches[self.phase])
 
     def on_phase_end(self):
         self.phase += 1
@@ -580,8 +553,8 @@ class OptimScheduler(LossRecorder):
     def plot_lr(self, show_text=True, show_moms=True):
         """Plots the lr rate/momentum schedule"""
         phase_limits = [0]
-        for phase in self.phases:
-            phase_limits.append(phase_limits[-1] + self.nb_batches * phase.epochs)
+        for nb_batch, phase in zip(self.nb_batches, self.phases):
+            phase_limits.append(phase_limits[-1] + nb_batch * phase.epochs)
         if not in_ipynb():
             plt.switch_backend('agg')
         np_plts = 2 if show_moms else 1

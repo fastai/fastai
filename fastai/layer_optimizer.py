@@ -38,10 +38,18 @@ class LayerOptimizer():
         set_lrs(self.opt, lrs)
         self.lrs=lrs
 
+    def set_wds_out(self, wds):
+        if not isinstance(wds, Iterable): wds=[wds]
+        if len(wds)==1: wds=wds*len(self.layer_groups)
+        set_wds_out(self.opt, wds)
+        set_wds(self.opt, [0] * len(self.layer_groups))
+        self.wds=wds
+
     def set_wds(self, wds):
         if not isinstance(wds, Iterable): wds=[wds]
         if len(wds)==1: wds=wds*len(self.layer_groups)
         set_wds(self.opt, wds)
+        set_wds_out(self.opt, [0] * len(self.layer_groups))
         self.wds=wds
     
     def set_mom(self,momentum):
@@ -68,6 +76,12 @@ def set_lrs(opt, lrs):
     if not isinstance(lrs, Iterable): lrs=[lrs]
     if len(lrs)==1: lrs=lrs*len(opt.param_groups)
     for pg,lr in zip_strict_(opt.param_groups,lrs): pg['lr'] = lr
+
+def set_wds_out(opt, wds):
+    if not isinstance(wds, Iterable): wds=[wds]
+    if len(wds)==1: wds=wds*len(opt.param_groups)
+    assert(len(opt.param_groups) == len(wds))
+    for pg,wd in zip_strict_(opt.param_groups,wds): pg['wd'] = wd
 
 def set_wds(opt, wds):
     if not isinstance(wds, Iterable): wds=[wds]

@@ -425,7 +425,9 @@ class Learner():
         if data_list is None: data_list=[]
         if callbacks is None: callbacks=[]
         layer_opt = LayerOptimizer(phases[0].opt_fn, self.get_layer_groups(), 1e-2, phases[0].wds)
-        self.sched = OptimScheduler(layer_opt, phases, len(self.data.trn_dl), stop_div)
+        if len(data_list) == 0: nb_batches = [len(self.data.trn_dl)] * len(phases)
+        else: nb_batches = [len(data.trn_dl) for data in data_list] 
+        self.sched = OptimScheduler(layer_opt, phases, nb_batches, stop_div)
         callbacks.append(self.sched)
         metrics = self.metrics
         if best_save_name is not None:
