@@ -22,15 +22,12 @@ dependencies:
 - decorator
 - entrypoints
 - expat
-  #- fontconfig
-  #- glib
 - html5lib
 - icu
 - ipykernel
 - ipython
 - ipython_genutils
 - ipywidgets
-  #- jbig
 - jedi
 - jinja2
 - jsonschema
@@ -39,9 +36,6 @@ dependencies:
 - jupyter_console
 - jupyter_core
 - conda-forge::jupyter_contrib_nbextensions  
-  #- libffi
-  #- libgcc
-  #- libgfortran
 - libiconv
 - libpng
 - libsodium
@@ -66,7 +60,6 @@ dependencies:
 - pillow
 - pip
 - prompt_toolkit
-  #- ptyprocess
 - pycparser
 - pygments
 - pyparsing
@@ -77,7 +70,6 @@ dependencies:
 - pyzmq
 - qt
 - qtconsole
-  #- readline
 - scipy
 - seaborn
 - setuptools
@@ -86,7 +78,6 @@ dependencies:
 - six
 - sqlite
 - statsmodels
-  #- terminado
 - testpath
 - tk
 - tornado<5
@@ -113,4 +104,3 @@ dependencies:
   - plotnine
   - kaggle-cli
   - ipywidgets
-    #- git+https://github.com/SauceCat/PDPbox.git
