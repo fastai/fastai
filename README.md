@@ -34,9 +34,9 @@ Use this if you do not have an NVidia GPU. Note you are encouraged to use Papers
 
 `conda env update -f environment-cpu.yml`
 
-## To update
-To update everything at any time:
+Anytime the instructions say to activate the Python environment, run `conda activate fastai-cpu` or `source activate fastai-cpu`.
 
+## To update
 1. Update code: `git pull`
 1. Update dependencies: `conda env update`
 
@@ -45,9 +45,20 @@ Before submitting a pull request, run the unit tests:
 
 1. Activate Python environment: `conda activate fastai`
     - If this fails, use instead: `source activate fastai`
-1. Run tests: `python -m pytest tests`
+1. Run tests: `pytest tests`
 
 ### To run specific test file
 1. Activate Python environment: `conda activate fastai`
     - If this fails, use instead: `source activate fastai`
-1. `python -m pytest tests/[file_name.py]`
+1. `pytest tests/[file_name.py]`
+
+### If tests fail
+The `master` build should always be clean and pass. If `master` isn't passing, try the following:
+
+* make sure the virtual environment is activated with `conda activate fastai` or `source activate fastai`
+* update the project (see above section)
+* consider using the cpu environment if testing on a computer without a GPU (see above section)
+
+If the tests are still failing on `master`, please [file an issue on GitHub](https://github.com/fastai/fastai/issues) explaining the issue and steps to reproduce the problem.
+
+If the tests are failing on your new branch, but they pass on `master`, this means your code changes broke one of the tests. Investigate what might be causing this and play around until you get the test passing. Feel free to ask for help!
