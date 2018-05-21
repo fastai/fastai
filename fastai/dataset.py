@@ -70,8 +70,9 @@ def read_dirs(path, folder):
         if lbl not in ('.ipynb_checkpoints','.DS_Store'):
             all_lbls.append(lbl)
             for fname in os.listdir(os.path.join(full_path, lbl)):
-                fnames.append(os.path.join(folder, lbl, fname))
-                lbls.append(lbl)
+                if fname not in ('.DS_Store'):
+                    fnames.append(os.path.join(folder, lbl, fname))
+                    lbls.append(lbl)
     return fnames, lbls, all_lbls
 
 def n_hot(ids, c):
