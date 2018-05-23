@@ -715,7 +715,7 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
 def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT, norm_y=True, scale=None):
     """ Returns separate transformers of images for training and validation.
-    Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
+    Transformers are constructed according to the image statistics given by the model. (See tfms_from_stats)
 
     Arguments:
         f_model: model, pretrained or not pretrained
