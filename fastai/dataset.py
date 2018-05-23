@@ -371,7 +371,7 @@ class ImageData(ModelData):
                 test_lbls = test[1]
                 test = test[0]
             else:
-                test_lbls = np.zeros((len(test),1))
+                test_lbls = np.zeros((len(test),trn[1].shape[1]))
             res += [
                 fn(test, test_lbls, tfms[1], **kwargs), # test
                 fn(test, test_lbls, tfms[0], **kwargs)  # test_aug
