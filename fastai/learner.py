@@ -63,6 +63,9 @@ class Learner():
     def __repr__(self): return self.model.__repr__()
     
     def lsuv_init(self, needed_std=1.0, std_tol=0.1, max_attempts=10, do_orthonorm=False):         
+        """Apply LSUV (Layer-sequential unit-variance) initialization on all weights.
+            See https://arxiv.org/pdf/1511.06422.pdf
+        """
         x = V(next(iter(self.data.trn_dl))[0])
         self.models.model=apply_lsuv_init(self.model, x, needed_std=needed_std, std_tol=std_tol,
                             max_attempts=max_attempts, do_orthonorm=do_orthonorm, 
@@ -115,12 +118,13 @@ class Learner():
         if type(self.model) == FP16: self.models.model = self.model.module
         self.model.float()
 
-    def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None, cycle_mult=1, cycle_save_name=None, best_save_name=None,
-                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None, use_wd_sched=False, norm_wds=False,             
-                wds_sched_mult=None, use_swa=False, swa_start=1, swa_eval_freq=5, **kwargs):
-
-        """Method does some preparation before finally delegating to the 'fit' method for
-        fitting the model. Namely, if cycle_len is defined, it adds a 'Cosine Annealing'
+    def fit_gen(self, model, data, layer_opt, n_cycle, cycle_len=None,
+                cycle_mult=1, cycle_save_name=None, best_save_name=None,
+                use_clr=None, use_clr_beta=None, metrics=None, callbacks=None,
+                use_wd_sched=False, norm_wds=False, wds_sched_mult=None,
+                use_swa=False, swa_start=1, swa_eval_freq=5, **kwargs):
+        """Do some preparation before finally delegating to the 'fit' method for
+        fitting the model. Namely, if cycle_len is defined, Add a 'Cosine Annealing'
         scheduler for varying the learning rate across iterations.
 
         Method also computes the total number of epochs to fit based on provided 'cycle_len',
@@ -237,7 +241,7 @@ class Learner():
 
     def get_layer_opt(self, lrs, wds):
 
-        """Method returns an instance of the LayerOptimizer class, which
+        """Return an instance of the LayerOptimizer class, which
         allows for setting differential learning rates for different
         parts of the model.
 
@@ -258,8 +262,7 @@ class Learner():
         return LayerOptimizer(self.opt_fn, self.get_layer_groups(), lrs, wds)
 
     def fit(self, lrs, n_cycle, wds=None, **kwargs):
-
-        """Method gets an instance of LayerOptimizer and delegates to self.fit_gen(..)
+        """Get an instance of LayerOptimizer and delegates to self.fit_gen(..)
 
         Note that one can specify a list of learning rates which, when appropriately
         defined, will be applied to different segments of an architecture. This seems
@@ -294,7 +297,7 @@ class Learner():
     def lr_find(self, start_lr=1e-5, end_lr=10, wds=None, linear=False, **kwargs):
         """Helps you find an optimal learning rate for a model.
 
-         It uses the technique developed in the 2015 paper
+         Uses the technique developed in the 2015 paper
          `Cyclical Learning Rates for Training Neural Networks`, where
          we simply keep increasing the learning rate from a very small value,
          until the loss starts decreasing.
@@ -394,7 +397,7 @@ class Learner():
 
     def fit_opt_sched(self, phases, cycle_save_name=None, best_save_name=None, stop_div=False, data_list=None, callbacks=None, 
                       cut = None, use_swa=False, swa_start=1, swa_eval_freq=5, **kwargs):
-        """Wraps us the content of phases to send them to model.fit(..)
+        """Wraps the content of phases to send them to model.fit(..)
 
         This will split the training in several parts, each with their own learning rates/
         wds/momentums/optimizer detailed in phases.
