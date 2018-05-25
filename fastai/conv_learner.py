@@ -3,6 +3,8 @@ from .layers import *
 from .learner import *
 from .initializers import *
 
+# Metadata for common pretrained models. Specifies which layers to cut, e.g.
+# to replace the final FC for a different set of classes.
 model_meta = {
     resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], resnet152:[8,6],
     vgg16:[0,22], vgg19:[0,22],
@@ -23,12 +25,12 @@ class ConvnetBuilder():
         is_reg (bool): is a regression?
         ps (float or array of float): dropout parameters
         xtra_fc (list of ints): list of hidden layers with # hidden neurons
-        xtra_cut (int): # layers earlier than default to cut the model, default is 0
+        xtra_cut (int): number of layers earlier than default to cut the model, default is 0
         custom_head : add custom model classes that are inherited from nn.modules at the end of the model
                       that is mentioned on Argument 'f' 
     """
-
-    def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, pretrained=True):
+    def __init__(self, f, c, is_multi, is_reg, ps=None, xtra_fc=None,
+                 xtra_cut=0, custom_head=None, pretrained=True):
         self.f,self.c,self.is_multi,self.is_reg,self.xtra_cut = f,c,is_multi,is_reg,xtra_cut
         if xtra_fc is None: xtra_fc = [512]
         if ps is None: ps = [0.25]*len(xtra_fc) + [0.5]
@@ -63,6 +65,12 @@ class ConvnetBuilder():
         return res
 
     def get_fc_layers(self):
+        """Create the fully-connected layer(s), activations, etc.
+            BatchNorm1d and Dropout may automatically be inserted before Linear
+            layers. ReLU activations separate Linear layers, and the final 
+            Linear's activation is either LogSoftmax, or None (if regression),
+            or Sigmoid (if multi-class).
+        """
         res=[]
         ni=self.nf
         for i,nf in enumerate(self.xtra_fc):
@@ -84,8 +92,8 @@ class ConvnetBuilder():
 
 
 class ConvLearner(Learner):
-    """
-    Class used to train a chosen supported covnet model. Eg. ResNet-34, etc.
+    """ Class used to train a chosen supported convnet model. Eg. ResNet-34, etc.
+    
     Arguments:
         data: training data for model
         models: model architectures to base learner
@@ -107,17 +115,33 @@ class ConvLearner(Learner):
         return F.l1_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
 
     @classmethod
-    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,
+    def pretrained(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, 
+                   custom_head=None, precompute=False,
                    pretrained=True, **kwargs):
+        """Instantiate the specified type of pre-trained convolutional network.
+
+        Arguments:
+            f: a model creation function (e.g. resnet34, vgg16, etc)
+            ps (float or array of float): dropout parameters
+            xtra_fc (list of ints): list of hidden layers with # hidden neurons
+            xtra_cut (int): # layers earlier than default to cut in the model,
+                default is 0
+            custom_head : add custom model classes that are inherited from
+                nn.modules at the end of the specified model f
+        """
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
-            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=pretrained)
+            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head,
+            pretrained=pretrained)
         return cls(data, models, precompute, **kwargs)
 
     @classmethod
-    def lsuv_learner(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, custom_head=None, precompute=False,
-                  needed_std=1.0, std_tol=0.1, max_attempts=10, do_orthonorm=False, **kwargs):
+    def lsuv_learner(cls, f, data, ps=None, xtra_fc=None, xtra_cut=0, 
+                     custom_head=None, precompute=False, needed_std=1.0, 
+                     std_tol=0.1, max_attempts=10, do_orthonorm=False, 
+                     **kwargs):
         models = ConvnetBuilder(f, data.c, data.is_multi, data.is_reg,
-            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head, pretrained=False)
+            ps=ps, xtra_fc=xtra_fc, xtra_cut=xtra_cut, custom_head=custom_head,
+            pretrained=False)
         convlearn=cls(data, models, precompute, **kwargs)
         convlearn.lsuv_init()
         return convlearn
@@ -161,6 +185,10 @@ class ConvLearner(Learner):
             self.activations = [self.create_empty_bcolz(self.models.nf,n) for n in names]
 
     def save_fc1(self):
+        """Calculate and save activations until the last fully-connected layer. ?
+
+        Called automatically if precompute is set to True.
+        """
         self.get_activations()
         act, val_act, test_act = self.activations
         m=self.models.top_model
@@ -172,11 +200,12 @@ class ConvLearner(Learner):
             if self.data.test_dl: predict_to_bcolz(m, self.data.test_dl, test_act)
 
         self.fc_data = ImageClassifierData.from_arrays(self.data.path,
-                (act, self.data.trn_y), (val_act, self.data.val_y), self.data.bs, classes=self.data.classes,
+                (act, self.data.trn_y), (val_act, self.data.val_y), 
+                self.data.bs, classes=self.data.classes,
                 test = test_act if self.data.test_dl else None, num_workers=8)
 
     def freeze(self):
-        """ Freeze all but the very last layer.
+        """Freeze all but the very last layer.
 
         Make all layers untrainable (i.e. frozen) except for the last layer.
 
@@ -186,7 +215,7 @@ class ConvLearner(Learner):
         self.freeze_to(-1)
 
     def unfreeze(self):
-        """ Unfreeze all layers.
+        """Unfreeze all layers.
 
         Make all layers trainable by unfreezing. This will also set the `precompute` to `False` since we can
         no longer pre-calculate the activation of frozen layers.
