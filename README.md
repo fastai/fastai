@@ -34,7 +34,10 @@ Use this if you do not have an NVidia GPU. Note you are encouraged to use Papers
 
 `conda env update -f environment-cpu.yml`
 
-Anytime the instructions say to activate the Python environment, run `conda activate fastai-cpu` or `source activate fastai-cpu`.
+* Anytime the instructions say to activate the Python environment, run `conda activate fastai-cpu` or `source activate fastai-cpu`.
+* If the fastai library fails to import and reports this error: "ImportError: DLL load failed: The specified module could not be found", run this commond in conda:
+
+`conda install -c peterjc123 pytorch-cpu`
 
 ## To update
 1. Update code: `git pull`
