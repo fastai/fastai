@@ -4,6 +4,7 @@ import pytest
 from PIL import Image
 import pandas as pd
 import numpy as np
+import os
 
 from fastai.dataset import ImageClassifierData
 from fastai.model import resnet34
@@ -45,5 +46,5 @@ def test_image_classifier_data_from_csv_unsorted(root_folder, csv_file, data_fol
     data = ImageClassifierData.from_csv(path=Path(
         path), folder=folder, csv_fname=csv_fname, val_idxs=val_idxs, suffix='.png', tfms=tfms)
     val_fnames = ['8.png', '7.png']
-    assert [o.split("\\")[-1]
+    assert [os.path.split(o)[-1]
             for o in data.val_ds.fnames.tolist()] == val_fnames
