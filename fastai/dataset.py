@@ -114,12 +114,9 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
         skip_header: A boolean flag indicating whether to skip the header.
 
     Returns:
-        a four-tuple of (
+        a two-tuple of (
             sorted image filenames,
-            a dictionary of filenames and corresponding labels,
-            a sorted set of unique labels,
-            a dictionary of labels to their corresponding index, which will
-            be one-hot encoded.
+            a dictionary of filenames and corresponding labels
         )
     .
     :param cat_separator: the separator for the categories column
