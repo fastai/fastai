@@ -1,3 +1,5 @@
+"""dataset.py
+"""
 import csv
 
 from .imports import *
@@ -27,7 +29,8 @@ def get_cv_idxs(n, cv_idx=0, val_pct=0.2, seed=42):
 
 def resize_img(fname, targ, path, new_path):
     """
-    Enlarge or shrink a single image to scale, such that the smaller of the height or width dimension is equal to targ.
+    Enlarge or shrink a single image to scale, such that the smaller of the
+    height or width dimension is equal to targ.
     """
     dest = os.path.join(path,new_path,str(targ),fname)
     if os.path.exists(dest): return
@@ -133,6 +136,8 @@ def nhot_labels(label2idx, csv_labels, fnames, c):
     return np.stack([all_idx[o] for o in fnames])
 
 def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
+    """
+    """
     fnames,csv_labels = parse_csv_labels(csv_file, skip_header)
     return dict_source(folder, fnames, csv_labels, suffix, continuous)
 
@@ -150,7 +155,7 @@ def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
     return full_names, label_arr, all_labels
 
 class BaseDataset(Dataset):
-    """An abstract class representing a fastai dataset, it extends torch.utils.data.Dataset."""
+    """An abstract class representing a fastai dataset. Extends torch.utils.data.Dataset."""
     def __init__(self, transform=None):
         self.transform = transform
         self.n = self.get_n()
@@ -299,6 +304,9 @@ class ArraysNhotDataset(ArraysDataset):
 
 
 class ModelData():
+    """Encapsulates DataLoaders and Datasets for training, validation, test
+        Base class for fastai *Data classes.
+    """
     def __init__(self, path, trn_dl, val_dl, test_dl=None):
         self.path,self.trn_dl,self.val_dl,self.test_dl = path,trn_dl,val_dl,test_dl
 
@@ -325,7 +333,7 @@ class ModelData():
 
 
 class ImageData(ModelData):
-    def __init__(self, path, datasets, bs, num_workers, classes):
+    def __init__(self, path, datasets, bs, num_workers, classes): 
         trn_ds,val_ds,fix_ds,aug_ds,test_ds,test_aug_ds = datasets
         self.path,self.bs,self.num_workers,self.classes = path,bs,num_workers,classes
         self.trn_dl,self.val_dl,self.fix_dl,self.aug_dl,self.test_dl,self.test_aug_dl = [
@@ -381,12 +389,16 @@ class ImageData(ModelData):
 
 
 class ImageClassifierData(ImageData):
+    """
+    """
     @classmethod
-    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
+    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None,
+                    num_workers=4, test=None):
         """ Read in images and their labels given as numpy arrays
 
         Arguments:
-            path: a root path of the data (used for storing trained models, precomputed values, etc)
+            path: a root path of the data (used for storing trained models, 
+                  precomputed values, etc)
             trn: a tuple of training data matrix and target label/classification array (e.g. `trn=(x,y)` where `x` has the
                 shape of `(5000, 784)` and `y` has the shape of `(5000,)`)
             val: a tuple of validation data matrix and target label/classification array.
@@ -428,26 +440,27 @@ class ImageClassifierData(ImageData):
 
     @classmethod
     def from_csv(cls, path, folder, csv_fname, bs=64, tfms=(None,None),
-               val_idxs=None, suffix='', test_name=None, continuous=False, skip_header=True, num_workers=8):
-        """ Read in images and their labels given as a CSV file.
+                 val_idxs=None, suffix='', test_name=None, continuous=False, 
+                 skip_header=True, num_workers=8):
+        """Read in images and their labels given as a CSV file.
 
-        This method should be used when training image labels are given in an CSV file as opposed to
-        sub-directories with label names.
+        This method should be used when training image labels are provided in a CSV file as opposed
+        to sub-directories with label names.
 
-        Arguments:
-            path: a root path of the data (used for storing trained models, precomputed values, etc)
-            folder: a name of the folder in which training images are contained.
-            csv_fname: a name of the CSV file which contains target labels.
-            bs: batch size
+        Args:
+            path (str): a root path of the data (used for storing trained models, precomputed values, etc)
+            folder (str): a name of the folder in which training images are contained.
+            csv_fname (str): a name of the CSV file which contains target labels.
+            bs (int): batch size
             tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
             val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`.
                 If None, default arguments to get_cv_idxs are used.
-            suffix: suffix to add to image names in CSV file (sometimes CSV only contains the file name without file
+            suffix (str): suffix to add to image names in CSV file (sometimes CSV only contains the file name without file
                     extension e.g. '.jpg' - in which case, you can set suffix as '.jpg')
             test_name: a name of the folder which contains test images.
             continuous: TODO
-            skip_header: skip the first row of the CSV file.
-            num_workers: number of workers
+            skip_header (bool): whether or not to skip the first row of the CSV file.
+            num_workers (int): number of workers
 
         Returns:
             ImageClassifierData
