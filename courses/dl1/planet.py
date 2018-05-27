@@ -2,6 +2,7 @@ from fastai.imports import *
 from fastai.transforms import *
 from fastai.dataset import *
 from sklearn.metrics import fbeta_score
+from sklearn.metrics import f1_score
 import warnings
 
 def f2(preds, targs, start=0.17, end=0.24, step=0.01):
@@ -29,3 +30,9 @@ def get_data_pad(f_model, path, sz, bs, n, cv_idx):
     transforms_pt = [RandomRotateZoom(9, 0.18, 0.1), RandomLighting(0.05, 0.1), RandomDihedral()]
     tfms = tfms_from_model(f_model, sz, aug_tfms=transforms_pt, pad=sz//12)
     return get_data(path, tfms, bs, n, cv_idx)
+
+def f1(preds, targs, start=0.17, end=0.24, step=0.01):
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        return max([f1_score(targs, (preds>th), average='micro')
+                    for th in np.arange(start,end,step)])
