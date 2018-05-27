@@ -514,8 +514,6 @@ class TrainingPhase():
         self.layer_opt.set_mom(start_mom)
         if self.beta is not None: self.layer_opt.set_beta(self.beta)
         if self.wds is not None:
-            if not isinstance(self.wds, Iterable): self.wds=[self.wds]
-            if len(self.wds)==1: self.wds=self.wds*len(self.layer_opt.layer_groups) 
             if self.wd_loss: self.layer_opt.set_wds(self.wds)
             else: self.layer_opt.set_wds_out(self.wds)
     
