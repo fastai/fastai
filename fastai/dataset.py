@@ -115,7 +115,7 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
 
     Returns:
         a two-tuple of (
-            sorted image filenames,
+            image filenames,
             a dictionary of filenames and corresponding labels
         )
     .
@@ -124,7 +124,7 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     df = pd.read_csv(fn, index_col=0, header=0 if skip_header else None, dtype=str)
     fnames = df.index.values
     df.iloc[:,0] = df.iloc[:,0].str.split(cat_separator)
-    return sorted(fnames), list(df.to_dict().values())[0]
+    return fnames, list(df.to_dict().values())[0]
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
     
