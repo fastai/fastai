@@ -55,10 +55,13 @@ def read_dir(path, folder):
     """ Returns a list of relative file paths to `path` for all files within `folder` """
     full_path = os.path.join(path, folder)
     fnames = glob(f"{full_path}/*.*")
+    directories = glob(f"{full_path}/*/")
     if any(fnames):
         return [os.path.relpath(f,path) for f in fnames]
+    elif any(directories):
+        raise FileNotFoundError("{} has subdirectories but contains no files. Is your directory structure is correct?".format(full_path))
     else:
-        raise FileNotFoundError("{} folder doesn't exist or is empty".format(folder))
+        raise FileNotFoundError("{} folder doesn't exist or is empty".format(full_path))
 
 def read_dirs(path, folder):
     '''
@@ -111,12 +114,9 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
         skip_header: A boolean flag indicating whether to skip the header.
 
     Returns:
-        a four-tuple of (
+        a two-tuple of (
             image filenames,
-            a dictionary of filenames and corresponding labels,
-            a sorted set of unique labels,
-            a dictionary of labels to their corresponding index, which will
-            be one-hot encoded.
+            a dictionary of filenames and corresponding labels
         )
     .
     :param cat_separator: the separator for the categories column
@@ -371,7 +371,7 @@ class ImageData(ModelData):
                 test_lbls = test[1]
                 test = test[0]
             else:
-                test_lbls = np.zeros((len(test),1))
+                test_lbls = np.zeros((len(test),trn[1].shape[1]))
             res += [
                 fn(test, test_lbls, tfms[1], **kwargs), # test
                 fn(test, test_lbls, tfms[0], **kwargs)  # test_aug

@@ -42,14 +42,14 @@ tok2id.py --prefix PREFIX [--max-vocab MAX_VOCAB] [--min-freq MIN_FREQ]
 
 First run `train_tri_wt.py` to create a pre-trained language model using WikiText-103 (or whatever base corpus you prefer).
 
-Then run `train_lm.py` to fine-tune a language model pretrained on WikiText-103 data on the target task data.
+Then run `train_tri_lm.py` to fine-tune a language model pretrained on WikiText-103 data on the target task data.
 
-Example command: `python train_lm.py imdb 0 5`
+Example command: `python train_tri_lm.py imdb 0 5`
 
 Usage:
 ```
-train_lm.py PREFIX CUDA_ID [NC] [BS] [BACKWARDS] [STARTAT]
-train_lm.py --prefix PREFIX --cuda-id CUDA_ID [--nc NC] [--bs BS] [--backwards BACKWARDS] [--startat STARTAT]
+train_tri_lm.py PREFIX CUDA_ID [NC] [BS] [BACKWARDS] [STARTAT]
+train_tri_lm.py --prefix PREFIX --cuda-id CUDA_ID [--nc NC] [--bs BS] [--backwards BACKWARDS] [--startat STARTAT]
 ```
 - `PREFIX`: the file path prefix in `data/nlp_clas/{prefix}`
 - `CUDA_ID`: the id of the GPU used for training the model; `-1` if no GPU is used

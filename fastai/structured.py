@@ -433,7 +433,11 @@ def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na
     df.drop(skip_flds, axis=1, inplace=True)
 
     if na_dict is None: na_dict = {}
+    else: na_dict = na_dict.copy()
+    na_dict_initial = na_dict.copy()
     for n,c in df.items(): na_dict = fix_missing(df, c, n, na_dict)
+    if len(na_dict_initial.keys()) > 0:
+        df.drop([a + '_na' for a in list(set(na_dict.keys()) - set(na_dict_initial.keys()))], axis=1, inplace=True)
     if do_scale: mapper = scale_vars(df, mapper)
     for n,c in df.items(): numericalize(df, c, n, max_n_cat)
     df = pd.get_dummies(df, dummy_na=True)

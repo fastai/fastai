@@ -95,8 +95,8 @@ class Tokenizer():
         return [tok.proc_text(s) for s in ss]
 
     @staticmethod
-    def proc_all_mp(ss, lang='en'):
-        ncpus = num_cpus()//2
+    def proc_all_mp(ss, lang='en', ncpus = None):
+        ncpus = ncpus or num_cpus()//2
         with ProcessPoolExecutor(ncpus) as e:
             return sum(e.map(Tokenizer.proc_all, ss, [lang]*len(ss)), [])
 
