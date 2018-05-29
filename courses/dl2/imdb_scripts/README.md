@@ -55,7 +55,23 @@ tok2id.py --prefix PREFIX [--max-vocab MAX_VOCAB] [--min-freq MIN_FREQ]
 
 ### 3. Fine-tune the LM
 
-First run `train_tri_wt.py` to create a pre-trained language model using WikiText-103 (or whatever base corpus you prefer).
+First run `train_tri_wt.py` to create a pre-trained language model using WikiText-103 (or whatever base corpus you prefer)
+or use one of the pre-trained models.
+
+Example command: `python train_tri_wt.py data/wiki/de/ 0 --lr 1e-3 --cl 12`
+
+Usage:
+```
+train_tri_wt.py DIR_PATH CUDA_ID [CL] [BS] [BACKWARDS] [LR] [SAMPLED]
+train_tri_wt.py --dir-path DIR_PATH --cuda-id CUDA_ID [--cl CL] [--bs BS] [--backwards BACKWARDS] [--lr LR] [--sampled SAMPLED]
+```
+- `DIR_PATH`: the directory that contains the Wikipedia files
+- `CUDA_ID`: the id of the GPU that should be used; `-1` if no GPU should be used
+- `CL`: the # of epochs to train
+- `BS`: the batch size
+- `BACKWARDS`: whether a backwards LM should be trained
+- `LR`: the learning rate
+- `SAMPLED`: whether a sampled softmax should be used (default: `True`)
 
 Then run `train_lm.py` to fine-tune a language model pretrained on WikiText-103 data on the target task data.
 
