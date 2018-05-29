@@ -16,7 +16,7 @@ def fixup(x):
     return re1.sub(' ', html.unescape(x))
 
 
-def get_texts(df, n_lbls):
+def get_texts(df, n_lbls, lang='en'):
     if len(df.columns) == 1:
         labels = []
         texts = f'\n{BOS} {FLD} 1 ' + df[0].astype(str)
@@ -27,21 +27,29 @@ def get_texts(df, n_lbls):
         for i in range(n_lbls+1, len(df.columns)): texts += f' {FLD} {i-n_lbls} ' + df[i].astype(str)
         texts = texts.apply(fixup).values.astype(str)
 
-    tok = Tokenizer().proc_all_mp(partition_by_cores(texts))
+    tok = Tokenizer(lang=lang).proc_all_mp(partition_by_cores(texts))
     return tok, list(labels)
 
 
-def get_all(df, n_lbls):
+def get_all(df, n_lbls, lang='en'):
     tok, labels = [], []
     for i, r in enumerate(df):
         print(i)
-        tok_, labels_ = get_texts(r, n_lbls)
+        tok_, labels_ = get_texts(r, n_lbls, lang=lang)
         tok += tok_
         labels += labels_
     return tok, labels
 
 
-def create_toks(dir_path, chunksize=24000, n_lbls=1):
+def create_toks(dir_path, chunksize=24000, n_lbls=1, lang='en'):
+    try:
+        spacy.load(lang)
+    except OSError:
+        # TODO handle tokenization of Chinese, Japanese, Korean
+        print(f'spacy tokenization model is not installed for {lang}.')
+        lang = lang if lang in ['en', 'de', 'es', 'pt', 'fr', 'it', 'nl'] else 'xx'
+        print(f'Command: python -m spacy download {lang}')
+        sys.exit(1)
     dir_path = Path(dir_path)
     assert dir_path.exists(), f'Error: {dir_path} does not exist.'
     df_trn = pd.read_csv(dir_path.joinpath('train.csv'), header=None, chunksize=chunksize)
@@ -49,8 +57,8 @@ def create_toks(dir_path, chunksize=24000, n_lbls=1):
 
     tmp_path = dir_path.joinpath('tmp')
     tmp_path.mkdir(exist_ok=True)
-    tok_trn, trn_labels = get_all(df_trn, n_lbls)
-    tok_val, val_labels = get_all(df_val, n_lbls)
+    tok_trn, trn_labels = get_all(df_trn, n_lbls, lang='en')
+    tok_val, val_labels = get_all(df_val, n_lbls, lang='en')
 
     np.save(tmp_path.joinpath('tok_trn.npy'), tok_trn)
     np.save(tmp_path.joinpath('tok_val.npy'), tok_val)
