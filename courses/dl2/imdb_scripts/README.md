@@ -4,24 +4,24 @@
 
 Run `create_toks.py` to tokenize the input texts.
 
-Example command: `python create_toks.py imdb imdb`
+Example command: `python create_toks.py imdb`
 
 Usage:
 
 ```
-create_toks.py PREFIX PR_ABBR [CHUNKSIZE]
-create_toks.py --prefix PREFIX --pr-abbr PR_ABBR [--chunksize CHUNKSIZE]
+create_toks.py DIR_PATH [CHUNKSIZE] [N_LBLS] [LANG]
+create_toks.py --dir-path DIR_PATH [--chunksize CHUNKSIZE] [--n-lbls N_LBLS] [--lang LANG]
 ```
 
-- `PREFIX`: the file path prefix in `data/nlp_clas/{prefix}`
-- `PR_ABBR`: the file path abbreviation used for designating the joined corpus
+- `DIR_PATH`: the directory where your data is located
 - `CHUNKSIZE`: the size of the chunks when reading the files with pandas; use smaller sizes with less RAM
+- `LANG`: the language of your corpus. 
 
-`train.csv` and `test.csv` files should be in `data/nlp_clas/{prefix}`. The script will then save the
+`train.csv` and `val.csv` files should be in `DIR_PATH`. The script will then save the
 training and test tokens and labels as arrays to binary files in NumPy format in a `tmp`
 in the above path in the following files:
 `tok_trn.npy`, `tok_val.npy`, `lbl_trn.npy`, and `lbl_val.npy`.
-In addition, a joined corpus containing white space-separated tokens is produced in `tmp/{pr_abbr}_joined.txt`.
+In addition, a joined corpus containing white space-separated tokens is produced in `tmp/joined.txt`.
 
 ### 2. Mapping tokens to ids
 
