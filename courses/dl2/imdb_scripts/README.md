@@ -79,8 +79,8 @@ Example command: `python train_lm.py imdb 0 5`
 
 Usage:
 ```
-train_lm.py PREFIX CUDA_ID [NC] [BS] [BACKWARDS] [STARTAT]
-train_lm.py --prefix PREFIX --cuda-id CUDA_ID [--nc NC] [--bs BS] [--backwards BACKWARDS] [--startat STARTAT]
+train_tri_lm.py PREFIX CUDA_ID [NC] [BS] [BACKWARDS] [STARTAT]
+train_tri_lm.py --prefix PREFIX --cuda-id CUDA_ID [--nc NC] [--bs BS] [--backwards BACKWARDS] [--startat STARTAT]
 ```
 - `PREFIX`: the file path prefix in `data/nlp_clas/{prefix}`
 - `CUDA_ID`: the id of the GPU used for training the model; `-1` if no GPU is used
@@ -89,7 +89,8 @@ train_lm.py --prefix PREFIX --cuda-id CUDA_ID [--nc NC] [--bs BS] [--backwards B
 - `BACKWARDS`: whether to fine-tune a backwards language model (default is `False`)
 - `STARTAT`: the id of the layer at which to start the gradual unfreezing (`1` is last hidden layer, etc.)
 
-The language model is fine-tuned using warm-up reverse annealing and gradual unfreezing.
+The language model is fine-tuned using warm-up reverse annealing and gradual unfreezing. For IMDb,
+we set `--cl`, the number of epochs to `50` and used a learning rate `--lr` of `4e-3`.
 
 ### 4. Train the classifier
 
@@ -111,6 +112,8 @@ train_clas.py --prefix PREFIX --cuda-id CUDA_ID [--bs BS] [--nc NC] [--backwards
               classifier layer (default is `True`)
 - `PRETRAIN`: whether we use a pretrained model
 - `BPE`: whether we use BPE
+
+For fine-tuning the classifier on IMDb, we set `--cl`, the number of epochs to `50`. 
 
 ### 5. Evaluate the classifier
 
