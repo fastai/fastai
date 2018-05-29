@@ -53,21 +53,21 @@ def create_toks(dir_path, chunksize=24000, n_lbls=1, lang='en'):
         sys.exit(1)
     dir_path = Path(dir_path)
     assert dir_path.exists(), f'Error: {dir_path} does not exist.'
-    df_trn = pd.read_csv(dir_path.joinpath('train.csv'), header=None, chunksize=chunksize)
-    df_val = pd.read_csv(dir_path.joinpath('val.csv'), header=None, chunksize=chunksize)
+    df_trn = pd.read_csv(dir_path / 'train.csv', header=None, chunksize=chunksize)
+    df_val = pd.read_csv(dir_path / 'val.csv', header=None, chunksize=chunksize)
 
     tmp_path = dir_path.joinpath('tmp')
     tmp_path.mkdir(exist_ok=True)
     tok_trn, trn_labels = get_all(df_trn, n_lbls, lang='en')
     tok_val, val_labels = get_all(df_val, n_lbls, lang='en')
 
-    np.save(tmp_path.joinpath('tok_trn.npy'), tok_trn)
-    np.save(tmp_path.joinpath('tok_val.npy'), tok_val)
-    np.save(tmp_path.joinpath('lbl_trn.npy'), trn_labels)
-    np.save(tmp_path.joinpath('lbl_val.npy'), val_labels)
+    np.save(tmp_path / 'tok_trn.npy', tok_trn)
+    np.save(tmp_path / 'tok_val.npy', tok_val)
+    np.save(tmp_path / 'lbl_trn.npy', trn_labels)
+    np.save(tmp_path / 'lbl_val.npy', val_labels)
 
     trn_joined = [' '.join(o) for o in tok_trn]
-    open(tmp_path.joinpath('joined.txt'), 'w', encoding='utf-8').writelines(trn_joined)
+    open(tmp_path / 'joined.txt', 'w', encoding='utf-8').writelines(trn_joined)
 
 
 if __name__ == '__main__': fire.Fire(create_toks)
