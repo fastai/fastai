@@ -42,6 +42,7 @@ def get_all(df, n_lbls, lang='en'):
 
 
 def create_toks(dir_path, chunksize=24000, n_lbls=1, lang='en'):
+    print(f'dir_path {dir_path} chunksize {chunksize} n_lbls {n_lbls} lang {lang}')
     try:
         spacy.load(lang)
     except OSError:
