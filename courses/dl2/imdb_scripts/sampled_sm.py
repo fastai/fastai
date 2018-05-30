@@ -83,7 +83,7 @@ class CrossEntDecoder(nn.Module):
         return F.cross_entropy(input, target)
 
 def get_learner(drops, n_neg, sampled, md, em_sz, nh, nl, opt_fn, prs):
-    m = to_gpu(get_language_model(md.nt, em_sz, nh, nl, md.pad_idx, decode_train=False, dropouts=drops))
+    m = to_gpu(get_language_model(md.n_tok, em_sz, nh, nl, md.pad_idx, decode_train=False, dropouts=drops))
     crit = CrossEntDecoder(prs, m[1].decoder, n_neg=n_neg, sampled=sampled).cuda()
     learner = RNN_Learner(md, LanguageModel(m), opt_fn=opt_fn)
     crit.dw = learner.model[0].encoder.weight
