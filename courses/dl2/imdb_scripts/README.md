@@ -70,10 +70,10 @@ Example command: `python train_clas.py imdb 0 --nc 4 --bs 48`
 Usage:
 ```
 train_clas.py PREFIX CUDA_ID [BS] [NC] [BACKWARDS] [STARTAT] [UNFREEZE] [PRETRAIN] [BPE]
-train_clas.py --prefix PREFIX --cuda-id CUDA_ID [--bs BS] [--nc NC] [--backwards BACKWARDS] [--startat STARTAT] [--unfreeze UNFREEZE] [--pretrain PRETRAIN] [--bpe BPE]
+train_clas.py --prefix PREFIX --cuda-id CUDA_ID [--bs BS] [--cl CL] [--backwards BACKWARDS] [--startat STARTAT] [--unfreeze UNFREEZE] [--pretrain PRETRAIN] [--bpe BPE]
 ```
 - `BS`: the batch size used for training the model
-- `NC`: the number of cycles with all layers unfrozen
+- `CL`: the number of cycles with all layers unfrozen
 - `BACKWARDS`: whether to fine-tune a backwards language model
 - `STARTAT`: whether to use gradual unfreezing (`0`) or load the pretrained model (`1`)
 - `UNFREEZE`: whether to unfreeze the whole network (after optional gradual unfreezing) or train only the final
