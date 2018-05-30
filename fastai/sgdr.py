@@ -1,6 +1,7 @@
 from .imports import *
 from .layer_optimizer import *
 from enum import IntEnum
+from timeit import default_timer as timer
 import copy
 
 
@@ -66,7 +67,8 @@ class LossRecorder(Callback):
         self.save_path, self.record_mom, self.metrics = save_path, record_mom, metrics
 
     def on_train_begin(self):
-        self.losses,self.lrs,self.iterations = [],[],[]
+        self.losses,self.lrs,self.iterations,self.epochs,self.times = [],[],[],[],[]
+        self.start_at = timer()
         self.val_losses, self.rec_metrics = [], []
         if self.record_mom:
             self.momentums = []
@@ -75,6 +77,8 @@ class LossRecorder(Callback):
 
     def on_epoch_end(self, metrics):
         self.epoch += 1
+        self.epochs.append(self.iteration)
+        self.times.append(timer() - self.start_at)
         self.save_metrics(metrics)
 
     def on_batch_end(self, loss):
