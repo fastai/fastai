@@ -10,10 +10,10 @@ IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
 def seq2seq_reg(output, xtra, loss, alpha=0, beta=0):
     hs,dropped_hs = xtra
     if alpha:  # Activation Regularization
-        loss = loss + sum(alpha * dropped_hs[-1].pow(2).mean())
+        loss = loss + (alpha * dropped_hs[-1].pow(2).mean()).sum()
     if beta:   # Temporal Activation Regularization (slowness)
         h = hs[-1]
-        if len(h)>1: loss = loss + sum(beta * (h[1:] - h[:-1]).pow(2).mean())
+        if len(h)>1: loss = loss + (beta * (h[1:] - h[:-1]).pow(2).mean()).sum()
     return loss
 
 
