@@ -28,7 +28,6 @@ def load_model(m, p):
     sd = torch.load(p, map_location=lambda storage, loc: storage)
     names = set(m.state_dict().keys())
     for n in list(sd.keys()): # list "detatches" the iterator
-        for n in list(sd.keys()): # list "detaches" the iterator
         if n not in names and n+'_raw' in names and n+'_raw' not in sd:
             sd[n+'_raw'] = sd[n]
             del sd[n]
