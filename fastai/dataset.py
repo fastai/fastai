@@ -150,7 +150,7 @@ def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
     return full_names, label_arr, all_labels
 
 class BaseDataset(Dataset):
-    """An abstract class representing a fastai dataset, it extends torch.utils.data.Dataset."""
+    """An abstract class representing a fastai dataset. Extends torch.utils.data.Dataset."""
     def __init__(self, transform=None):
         self.transform = transform
         self.n = self.get_n()
@@ -299,6 +299,7 @@ class ArraysNhotDataset(ArraysDataset):
 
 
 class ModelData():
+    """Encapsulates DataLoaders and Datasets for training, validation, test. Base class for fastai *Data classes."""
     def __init__(self, path, trn_dl, val_dl, test_dl=None):
         self.path,self.trn_dl,self.val_dl,self.test_dl = path,trn_dl,val_dl,test_dl
 
