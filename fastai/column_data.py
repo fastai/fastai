@@ -23,9 +23,9 @@ class PassthruDataset(Dataset):
 class ColumnarDataset(Dataset):
     def __init__(self, cats, conts, y, is_reg, is_multi):
         n = len(cats[0]) if cats else len(conts[0])
-        self.cats = np.stack(cats, 1).astype(np.int64) if cats else np.zeros((n,1))
+        self.cats  = np.stack(cats,  1).astype(np.int64)   if cats  else np.zeros((n,1))
         self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((n,1))
-        self.y = np.zeros((n,1)) if y is None else y
+        self.y     = np.zeros((n,1))                       if y is None else y
         if is_reg:
             self.y =  self.y[:,None]
         self.is_reg = is_reg
@@ -63,9 +63,10 @@ class ColumnarModelData(ModelData):
 
     @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=None):
-        test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds, None, is_reg, is_multi) if test_df is not None else None
-        return cls(path, ColumnarDataset.from_data_frame(trn_df, cat_flds, trn_y, is_reg, is_multi),
-                    ColumnarDataset.from_data_frame(val_df, cat_flds, val_y, is_reg, is_multi), bs, test_ds=test_ds)
+        trn_ds  = ColumnarDataset.from_data_frame(trn_df,  cat_flds, trn_y, is_reg, is_multi)
+        val_ds  = ColumnarDataset.from_data_frame(val_df,  cat_flds, val_y, is_reg, is_multi)
+        test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds, None,  is_reg, is_multi) if test_df is not None else None
+        return cls(path, trn_ds, val_ds, bs, test_ds=test_ds)
 
     @classmethod
     def from_data_frame(cls, path, val_idxs, df, y, cat_flds, bs, is_reg=True, is_multi=False, test_df=None):

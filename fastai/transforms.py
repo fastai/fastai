@@ -3,7 +3,7 @@ from .layer_optimizer import *
 from enum import IntEnum
 
 def scale_min(im, targ, interpolation=cv2.INTER_AREA):
-    """ Scales the image so that the smallest axis is of size targ.
+    """ Scale the image so that the smallest axis is of size targ.
 
     Arguments:
         im (array): image
@@ -15,14 +15,14 @@ def scale_min(im, targ, interpolation=cv2.INTER_AREA):
     return cv2.resize(im, sz, interpolation=interpolation)
 
 def zoom_cv(x,z):
-    '''zooms the center of image x, by a factor of z+1 while retaining the origal image size and proportion. '''
+    """ Zoom the center of image x by a factor of z+1 while retaining the original image size and proportion. """
     if z==0: return x
     r,c,*_ = x.shape
     M = cv2.getRotationMatrix2D((c/2,r/2),0,z+1.)
     return cv2.warpAffine(x,M,(c,r))
 
 def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
-    '''stretches image x horizontally by sr+1, and vertically by sc+1 while retaining the origal image size and proportion.'''
+    """ Stretches image x horizontally by sr+1, and vertically by sc+1 while retaining the original image size and proportion. """
     if sr==0 and sc==0: return x
     r,c,*_ = x.shape
     x = cv2.resize(x, None, fx=sr+1, fy=sc+1, interpolation=interpolation)
@@ -31,19 +31,18 @@ def stretch_cv(x,sr,sc,interpolation=cv2.INTER_AREA):
     return x[cr:r+cr, cc:c+cc]
 
 def dihedral(x, dih):
-    '''performs any of 8 90 rotations or flips for image x.
-    '''
+    """ Perform any of 8 permutations of 90-degrees rotations or flips for image x. """
     x = np.rot90(x, dih%4)
     return x if dih<4 else np.fliplr(x)
 
 def lighting(im, b, c):
-    ''' adjusts image's balance and contrast'''
+    """ Adjust image balance and contrast """
     if b==0 and c==1: return im
     mu = np.average(im)
     return np.clip((im-mu)*c+mu+b,0.,1.).astype(np.float32)
 
 def rotate_cv(im, deg, mode=cv2.BORDER_CONSTANT, interpolation=cv2.INTER_AREA):
-    """ Rotates an image by deg degrees
+    """ Rotate an image by deg degrees
 
     Arguments:
         deg (float): degree to rotate.
@@ -53,13 +52,13 @@ def rotate_cv(im, deg, mode=cv2.BORDER_CONSTANT, interpolation=cv2.INTER_AREA):
     return cv2.warpAffine(im,M,(c,r), borderMode=mode, flags=cv2.WARP_FILL_OUTLIERS+interpolation)
 
 def no_crop(im, min_sz=None, interpolation=cv2.INTER_AREA):
-    """ Returns a squared resized image """
+    """ Return a squared resized image """
     r,c,*_ = im.shape
     if min_sz is None: min_sz = min(r,c)
     return cv2.resize(im, (min_sz, min_sz), interpolation=interpolation)
 
 def center_crop(im, min_sz=None):
-    """ Returns a center crop of an image"""
+    """ Return a center crop of an image """
     r,c,*_ = im.shape
     if min_sz is None: min_sz = min(r,c)
     start_r = math.ceil((r-min_sz)/2)
@@ -67,7 +66,7 @@ def center_crop(im, min_sz=None):
     return crop(im, start_r, start_c, min_sz)
 
 def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio, flip_hw_p, interpolation=cv2.INTER_AREA):
-    """ Randomly crops an image with an aspect ratio and returns a squared resized image of size targ
+    """ Randomly crop an image with an aspect ratio and returns a squared resized image of size targ
     
     References:
     1. https://arxiv.org/pdf/1409.4842.pdf
@@ -93,7 +92,7 @@ def googlenet_resize(im, targ, min_area_frac, min_aspect_ratio, max_aspect_ratio
     return out
 
 def cutout(im, n_holes, length):
-    ''' cuts out n_holes number of square holes of size length in image at random locations. holes may be overlapping. '''
+    """ Cut out n_holes number of square holes of size length in image at random locations. Holes may overlap. """
     r,c,*_ = im.shape
     mask = np.ones((r, c), np.int32)
     for n in range(n_holes):
@@ -600,8 +599,7 @@ class GoogleNetResize(CoordTransform):
 
 
 def compose(im, y, fns):
-    """ apply a collection of transformation functions fns to images
-    """
+    """ Apply a collection of transformation functions :fns: to images """
     for fn in fns:
         #pdb.set_trace()
         im, y =fn(im, y)
@@ -609,8 +607,7 @@ def compose(im, y, fns):
 
 
 class CropType(IntEnum):
-    """ Type of image cropping.
-    """
+    """ Type of image cropping. """
     RANDOM = 1
     CENTER = 2
     NO = 3
@@ -715,7 +712,7 @@ def tfms_from_stats(stats, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=Cr
 def tfms_from_model(f_model, sz, aug_tfms=None, max_zoom=None, pad=0, crop_type=CropType.RANDOM,
                     tfm_y=None, sz_y=None, pad_mode=cv2.BORDER_REFLECT, norm_y=True, scale=None):
     """ Returns separate transformers of images for training and validation.
-    Transformers are constructed according to the image statistics given b y the model. (See tfms_from_stats)
+    Transformers are constructed according to the image statistics given by the model. (See tfms_from_stats)
 
     Arguments:
         f_model: model, pretrained or not pretrained

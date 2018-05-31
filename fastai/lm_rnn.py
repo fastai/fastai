@@ -10,10 +10,10 @@ IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
 def seq2seq_reg(output, xtra, loss, alpha=0, beta=0):
     hs,dropped_hs = xtra
     if alpha:  # Activation Regularization
-        loss = loss + sum(alpha * dropped_hs[-1].pow(2).mean())
+        loss = loss + (alpha * dropped_hs[-1].pow(2).mean()).sum()
     if beta:   # Temporal Activation Regularization (slowness)
         h = hs[-1]
-        if len(h)>1: loss = loss + sum(beta * (h[1:] - h[:-1]).pow(2).mean())
+        if len(h)>1: loss = loss + (beta * (h[1:] - h[:-1]).pow(2).mean()).sum()
     return loss
 
 
@@ -27,8 +27,8 @@ class RNN_Encoder(nn.Module):
 
     """A custom RNN encoder network that uses
         - an embedding matrix to encode input,
-        - a stack of LSTM layers to drive the network, and
-        - variational dropouts in the embedding and LSTM layers
+        - a stack of LSTM or QRNN layers to drive the network, and
+        - variational dropouts in the embedding and LSTM/QRNN layers
 
         The architecture for this network was inspired by the work done in
         "Regularizing and Optimizing LSTM Language Models".
@@ -38,7 +38,7 @@ class RNN_Encoder(nn.Module):
     initrange=0.1
 
     def __init__(self, ntoken, emb_sz, nhid, nlayers, pad_token, bidir=False,
-                 dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5):
+                 dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5, qrnn=False):
         """ Default constructor for the RNN_Encoder class
 
             Args:
@@ -59,12 +59,21 @@ class RNN_Encoder(nn.Module):
 
         super().__init__()
         self.ndir = 2 if bidir else 1
-        self.bs = 1
+        self.bs, self.qrnn = 1, qrnn
         self.encoder = nn.Embedding(ntoken, emb_sz, padding_idx=pad_token)
         self.encoder_with_dropout = EmbeddingDropout(self.encoder)
-        self.rnns = [nn.LSTM(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
-             1, bidirectional=bidir) for l in range(nlayers)]
-        if wdrop: self.rnns = [WeightDrop(rnn, wdrop) for rnn in self.rnns]
+        if self.qrnn:
+            #Using QRNN requires cupy: https://github.com/cupy/cupy
+            from .torchqrnn.qrnn import QRNNLayer
+            self.rnns = [QRNNLayer(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
+                save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
+            if wdrop:
+                for rnn in self.rnns:
+                    rnn.linear = WeightDrop(rnn.linear, wdrop, weights=['weight'])
+        else:
+            self.rnns = [nn.LSTM(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
+                1, bidirectional=bidir) for l in range(nlayers)]
+            if wdrop: self.rnns = [WeightDrop(rnn, wdrop) for rnn in self.rnns]
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
 
@@ -109,8 +118,10 @@ class RNN_Encoder(nn.Module):
         else: return Variable(self.weights.new(self.ndir, self.bs, nh).zero_(), volatile=not self.training)
 
     def reset(self):
+        if self.qrnn: [r.reset() for r in self.rnns]
         self.weights = next(self.parameters()).data
-        self.hidden = [(self.one_hidden(l), self.one_hidden(l)) for l in range(self.nlayers)]
+        if self.qrnn: self.hidden = [self.one_hidden(l) for l in range(self.nlayers)]
+        else: self.hidden = [(self.one_hidden(l), self.one_hidden(l)) for l in range(self.nlayers)]
 
 
 class MultiBatchRNN(RNN_Encoder):
@@ -190,7 +201,7 @@ class SequentialRNN(nn.Sequential):
 
 
 def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
-                 dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True):
+                 dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True, qrnn=False):
     """Returns a SequentialRNN model.
 
     A RNN_Encoder layer is instantiated using the parameters provided.
@@ -220,14 +231,14 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
     """
 
     rnn_enc = RNN_Encoder(n_tok, emb_sz, nhid=nhid, nlayers=nlayers, pad_token=pad_token,
-                 dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop)
+                 dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn)
     enc = rnn_enc.encoder if tie_weights else None
     return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc))
 
 
 def get_rnn_classifer(bptt, max_seq, n_class, n_tok, emb_sz, n_hid, n_layers, pad_token, layers, drops, bidir=False,
-                      dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5):
+                      dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, qrnn=False):
     rnn_enc = MultiBatchRNN(bptt, max_seq, n_tok, emb_sz, n_hid, n_layers, pad_token=pad_token, bidir=bidir,
-                      dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop)
+                      dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn)
     return SequentialRNN(rnn_enc, PoolingLinearClassifier(layers, drops))
 

@@ -106,6 +106,8 @@ class WeightDrop(torch.nn.Module):
         for name_w in self.weights:
             raw_w = getattr(self.module, name_w + '_raw')
             w = torch.nn.functional.dropout(raw_w, p=self.dropout, training=self.training)
+            if hasattr(self.module, name_w):
+                delattr(self.module, name_w)
             setattr(self.module, name_w, w)
 
     def forward(self, *args):
