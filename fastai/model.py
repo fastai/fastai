@@ -124,6 +124,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
     phase = 0
     for epoch in tnrange(tot_epochs, desc='Epoch'):
+        if phase >= len(n_epochs): break #Sometimes cumulated errors make this append.
         model_stepper.reset(True)
         cur_data = data[phase]
         if hasattr(cur_data, 'trn_sampler'): cur_data.trn_sampler.set_epoch(epoch)
@@ -204,7 +205,7 @@ def validate_next(stepper, metrics, val_iter):
     with no_grad_context():
         (*x,y) = val_iter.next()
         preds,l = stepper.evaluate(VV(x), VV(y))
-        res = [to_np(l)[0]]
+        res = [delistify(to_np(l))]
         res += [f(preds.data,y) for f in metrics]
     stepper.reset(True)
     return res

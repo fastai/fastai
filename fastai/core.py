@@ -7,6 +7,7 @@ def is_listy(x): return isinstance(x, (list,tuple))
 def is_iter(x): return isinstance(x, collections.Iterable)
 def map_over(x, f): return [f(o) for o in x] if is_listy(x) else f(x)
 def map_none(x, f): return None if x is None else f(x)
+def delistify(x): return x[0] if is_listy(x) else x
 def listify(x, y):
     if not is_iter(x): x=[x]
     n = y if type(y)==int else len(y)

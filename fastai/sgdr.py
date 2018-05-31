@@ -88,7 +88,7 @@ class LossRecorder(Callback):
         if self.record_mom: self.momentums.append(self.layer_opt.mom)
 
     def save_metrics(self,vals):
-        self.val_losses.append(vals[0][0] if isinstance(vals[0], Iterable) else vals[0])
+        self.val_losses.append(delistify(vals[0]))
         if len(vals) > 2: self.rec_metrics.append(vals[1:])
         elif len(vals) == 2: self.rec_metrics.append(vals[1])
 
