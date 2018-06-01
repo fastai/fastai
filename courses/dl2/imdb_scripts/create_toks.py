@@ -27,7 +27,7 @@ def get_texts(df, n_lbls, lang='en'):
         for i in range(n_lbls+1, len(df.columns)): texts += f' {FLD} {i-n_lbls} ' + df[i].astype(str)
         texts = texts.apply(fixup).values.astype(str)
 
-    tok = Tokenizer(lang=lang).proc_all_mp(partition_by_cores(texts))
+    tok = Tokenizer(lang=lang).proc_all_mp(partition_by_cores(texts), lang=lang)
     return tok, list(labels)
 
 
@@ -58,8 +58,8 @@ def create_toks(dir_path, chunksize=24000, n_lbls=1, lang='en'):
 
     tmp_path = dir_path.joinpath('tmp')
     tmp_path.mkdir(exist_ok=True)
-    tok_trn, trn_labels = get_all(df_trn, n_lbls, lang='en')
-    tok_val, val_labels = get_all(df_val, n_lbls, lang='en')
+    tok_trn, trn_labels = get_all(df_trn, n_lbls, lang=lang)
+    tok_val, val_labels = get_all(df_val, n_lbls, lang=lang)
 
     np.save(tmp_path / 'tok_trn.npy', tok_trn)
     np.save(tmp_path / 'tok_val.npy', tok_val)
