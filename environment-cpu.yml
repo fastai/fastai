@@ -22,6 +22,7 @@ dependencies:
 - expat
 - html5lib
 - icu
+- defaults::intel-openmp
 - ipykernel
 - ipython
 - ipython_genutils
