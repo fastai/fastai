@@ -34,8 +34,7 @@ Use this if you do not have an NVidia GPU. Note you are encouraged to use Papers
 
 `conda env update -f environment-cpu.yml`
 
-* Anytime the instructions say to activate the Python environment, run `conda activate fastai-cpu` or `source activate fastai-cpu`.
-
+- Anytime the instructions say to activate the Python environment, run `conda activate fastai-cpu` or `source activate fastai-cpu`.
 
 ## To update
 1. Update code: `git pull`
