@@ -58,7 +58,7 @@ class Learner():
     @property
     def data(self): return self.data_
 
-    def summary(self): return model_summary(self.model, [3,self.data.sz,self.data.sz])
+    def summary(self): return model_summary(self.model, [torch.rand(3, 3, self.data.sz,self.data.sz)])
 
     def __repr__(self): return self.model.__repr__()
     

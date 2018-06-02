@@ -141,7 +141,9 @@ class StructuredLearner(Learner):
 
     def _get_crit(self, data): return F.mse_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
 
-    def summary(self): return model_summary(self.model, [(self.data.trn_ds.cats.shape[1], ), (self.data.trn_ds.conts.shape[1], )])
+    def summary(self):
+        x = [torch.ones(3, self.data.trn_ds.cats.shape[1], dtype=torch.int64), torch.rand(3, self.data.trn_ds.conts.shape[1])]
+        return model_summary(self.model, x)
 
 
 class StructuredModel(BasicModel):
@@ -213,6 +215,8 @@ class CollabFilterLearner(Learner):
         super().__init__(data, models, **kwargs)
 
     def _get_crit(self, data): return F.mse_loss
+
+    def summary(self): return model_summary(self.model, [torch.ones(3, dtype=torch.int64), torch.ones(3, dtype=torch.int64)])
 
 
 class CollabFilterModel(BasicModel):
