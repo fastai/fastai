@@ -146,9 +146,9 @@ class MultiBatchRNN(RNN_Encoder):
 
 class LinearDecoder(nn.Module):
     initrange=0.1
-    def __init__(self, n_out, nhid, dropout, tie_encoder=None):
+    def __init__(self, n_out, nhid, dropout, tie_encoder=None, bias=False):
         super().__init__()
-        self.decoder = nn.Linear(nhid, n_out, bias=False)
+        self.decoder = nn.Linear(nhid, n_out, bias=bias)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.dropout = LockedDropout(dropout)
         if tie_encoder: self.decoder.weight = tie_encoder.weight
@@ -201,7 +201,7 @@ class SequentialRNN(nn.Sequential):
 
 
 def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
-                 dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True, qrnn=False):
+                 dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True, qrnn=False, bias=False):
     """Returns a SequentialRNN model.
 
     A RNN_Encoder layer is instantiated using the parameters provided.
@@ -231,7 +231,7 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
     """
 
     rnn_enc = RNN_Encoder(n_tok, emb_sz, nhid=nhid, nlayers=nlayers, pad_token=pad_token,
-                 dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn)
+                 dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn, bias=bias)
     enc = rnn_enc.encoder if tie_weights else None
     return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc))
 
