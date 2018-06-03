@@ -226,6 +226,8 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
         wdrop (float): dropout used for a LSTM's internal (or hidden) recurrent weights.
         tie_weights (bool): decide if the weights of the embedding matrix in the RNN encoder should be tied to the
             weights of the LinearDecoder layer.
+        qrnn (bool): decide if the model is composed of LSTMS (False) or QRNNs (True).
+        bias (bool): decide if the decoder should have a bias layer or not.
     Returns:
         A SequentialRNN model
     """
