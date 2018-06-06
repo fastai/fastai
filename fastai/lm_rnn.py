@@ -52,6 +52,7 @@ class RNN_Encoder(nn.Module):
                 dropouti (float): dropout to apply to the input layer.
                 dropoute (float): dropout to apply to the embedding layer.
                 wdrop (float): dropout used for a LSTM's internal (or hidden) recurrent weights.
+                bias (bool): ** To be added ** 
 
             Returns:
                 None
