@@ -38,7 +38,7 @@ class RNN_Encoder(nn.Module):
     initrange=0.1
 
     def __init__(self, ntoken, emb_sz, nhid, nlayers, pad_token, bidir=False,
-                 dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5, qrnn=False, bias=False):
+                 dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5, qrnn=False):
         """ Default constructor for the RNN_Encoder class
 
             Args:
@@ -52,7 +52,6 @@ class RNN_Encoder(nn.Module):
                 dropouti (float): dropout to apply to the input layer.
                 dropoute (float): dropout to apply to the embedding layer.
                 wdrop (float): dropout used for a LSTM's internal (or hidden) recurrent weights.
-                bias (bool): ** To be added ** 
 
             Returns:
                 None
@@ -234,9 +233,9 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
     """
 
     rnn_enc = RNN_Encoder(n_tok, emb_sz, nhid=nhid, nlayers=nlayers, pad_token=pad_token,
-                 dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn, bias=bias)
+                 dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn)
     enc = rnn_enc.encoder if tie_weights else None
-    return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc))
+    return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc, bias=bias))
 
 
 def get_rnn_classifer(bptt, max_seq, n_class, n_tok, emb_sz, n_hid, n_layers, pad_token, layers, drops, bidir=False,
