@@ -38,7 +38,7 @@ class RNN_Encoder(nn.Module):
     initrange=0.1
 
     def __init__(self, ntoken, emb_sz, nhid, nlayers, pad_token, bidir=False,
-                 dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5, qrnn=False):
+                 dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5, qrnn=False, bias=False):
         """ Default constructor for the RNN_Encoder class
 
             Args:
