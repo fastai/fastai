@@ -251,7 +251,7 @@ def predict_with_targs(m, dl):
     return np.concatenate(preda), np.concatenate(targa)
 
 # From https://github.com/ncullen93/torchsample
-def model_summary(m, input_size):
+def model_summary(m, inputs):
     def register_hook(module):
         def hook(module, input, output):
             class_name = str(module.__class__).split('.')[-1].split("'")[0]
@@ -283,11 +283,8 @@ def model_summary(m, input_size):
     summary = OrderedDict()
     hooks = []
     m.apply(register_hook)
-
-    if is_listy(input_size[0]):
-        x = [to_gpu(Variable(torch.rand(3,*in_size))) for in_size in input_size]
-    else: x = [to_gpu(Variable(torch.rand(3,*input_size)))]
-    m(*x)
+    xs = [to_gpu(Variable(x)) for x in inputs]
+    m(*xs)
 
     for h in hooks: h.remove()
     return summary
