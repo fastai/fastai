@@ -226,7 +226,12 @@ def open_image(fn):
         #if len(res.shape)==2: res = np.repeat(res[...,None],3,2)
         #return res
         try:
-            im = cv2.imread(str(fn), flags).astype(np.float32)/255
+            if str(fn).startswith("http"):
+                req = urllib.urlopen(str(fn))
+                image = np.asarray(bytearray(resp.read()), dtype="uint8")
+                im = cv2.imdecode(image, flags).astype(np.float32)/255
+            else:
+                im = cv2.imread(str(fn), flags).astype(np.float32)/255
             if im is None: raise OSError(f'File not recognized by opencv: {fn}')
             return cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         except Exception as e:
