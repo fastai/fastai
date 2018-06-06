@@ -5,7 +5,7 @@ import os
 import sys
 
 model_urls = {
-    'imagenet': 'http://data.lip6.fr/cadene/pretrainedmodels/inceptionresnetv2-520b38e4.pth',
+    'imagenet': 'http://data.lip6.fr/cadene/pretrainedmodels/inceptionresnetv2-520b38e4.pth'
 }
 
 
