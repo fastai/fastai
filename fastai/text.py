@@ -208,6 +208,7 @@ class RNN_Learner(Learner):
         super().__init__(data, models, **kwargs)
 
     def _get_crit(self, data): return F.cross_entropy
+    def fit(self, *args, **kwargs): return super().fit(*args, **kwargs, seq_first=True)
 
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))
