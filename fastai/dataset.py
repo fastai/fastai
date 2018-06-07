@@ -127,8 +127,8 @@ def parse_csv_labels(fn, skip_header=True, cat_separator = ' '):
     return fnames, list(df.to_dict().values())[0]
 
 def nhot_labels(label2idx, csv_labels, fnames, c):
-    
-    all_idx = {k: n_hot([label2idx[o] for o in v], c)
+			    
+    all_idx = {k: n_hot([label2idx[o] for o in ([] if type(v) == float else v)], c)
                for k,v in csv_labels.items()}
     return np.stack([all_idx[o] for o in fnames])
 
@@ -137,7 +137,7 @@ def csv_source(folder, csv_file, skip_header=True, suffix='', continuous=False):
     return dict_source(folder, fnames, csv_labels, suffix, continuous)
 
 def dict_source(folder, fnames, csv_labels, suffix='', continuous=False):
-    all_labels = sorted(list(set(p for o in csv_labels.values() for p in o)))
+    all_labels = sorted(list(set(p for o in csv_labels.values() for p in ([] if type(o) == float else o))))
     full_names = [os.path.join(folder,str(fn)+suffix) for fn in fnames]
     if continuous:
         label_arr = np.array([np.array(csv_labels[i]).astype(np.float32)
