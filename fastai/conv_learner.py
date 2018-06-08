@@ -124,6 +124,17 @@ class ConvLearner(Learner):
     
     @property
     def model(self): return self.models.fc_model if self.precompute else self.models.model
+    
+    def half(self):
+        if self.fp16: return
+        self.fp16 = True
+        if type(self.model) != FP16: self.models.model = FP16(self.model)
+        if not isinstance(self.models.fc_model, FP16): self.models.fc_model = FP16(self.models.fc_model)
+    def float(self):
+        if not self.fp16: return
+        self.fp16 = False
+        if type(self.models.model) == FP16: self.models.model = self.model.module.float()
+        if type(self.models.fc_model) == FP16: self.models.fc_model = self.models.fc_model.module.float()
 
     @property
     def data(self): return self.fc_data if self.precompute else self.data_
