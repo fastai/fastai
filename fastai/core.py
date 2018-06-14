@@ -25,7 +25,7 @@ def A(*a):
 def T(a, half=False, cuda=True):
     """
     Convert numpy array into a pytorch tensor. 
-    if Cuda is available and USE_GPU=ture, store resulting tensor in GPU.
+    if Cuda is available and USE_GPU=True, store resulting tensor in GPU.
     """
     if not torch.is_tensor(a):
         a = np.array(np.ascontiguousarray(a))
@@ -69,7 +69,7 @@ def to_np(v):
 IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
 USE_GPU = torch.cuda.is_available()
 def to_gpu(x, *args, **kwargs):
-    '''puts pytorch variable to gpu, if cuda is avaialble and USE_GPU is set to true. '''
+    '''puts pytorch variable to gpu, if cuda is available and USE_GPU is set to true. '''
     return x.cuda(*args, **kwargs) if USE_GPU else x
 
 def noop(*args, **kwargs): return
