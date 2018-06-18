@@ -1,6 +1,6 @@
 ## Instructions
 
-### 0. Preparing Wikipedia
+### 0. Preparing Wikipedia
 
 If you want to train your own language model on a Wikipedia in your chosen language,
 run `prepare_wiki.sh`. The script will ask for a language and will then
