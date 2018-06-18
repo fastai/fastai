@@ -56,7 +56,7 @@ def create_toks(dir_path, chunksize=24000, n_lbls=1, lang='en'):
     df_trn = pd.read_csv(dir_path / 'train.csv', header=None, chunksize=chunksize)
     df_val = pd.read_csv(dir_path / 'val.csv', header=None, chunksize=chunksize)
 
-    tmp_path = dir_path.joinpath('tmp')
+    tmp_path = dir_path / 'tmp'
     tmp_path.mkdir(exist_ok=True)
     tok_trn, trn_labels = get_all(df_trn, n_lbls, lang=lang)
     tok_val, val_labels = get_all(df_val, n_lbls, lang=lang)
