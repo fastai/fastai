@@ -10,11 +10,11 @@ def freeze_all_but(learner, n):
 
 
 def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards=False, startat=0, unfreeze=True,
-               lr=0.01, dropmult=1.0, pretrain=True, bpe=False, use_clr=True,
+               lr=0.01, dropmult=1.0, bpe=False, use_clr=True,
                use_regular_schedule=False, use_discriminative=True, last=False, chain_thaw=False,
                from_scratch=False, train_file_id=''):
     print(f'dir_path {dir_path}; cuda_id {cuda_id}; lm_id {lm_id}; clas_id {clas_id}; bs {bs}; cl {cl}; backwards {backwards}; '
-        f'dropmult {dropmult} unfreeze {unfreeze} startat {startat}; pretrain {pretrain}; bpe {bpe}; use_clr {use_clr};'
+        f'dropmult {dropmult} unfreeze {unfreeze} startat {startat}; bpe {bpe}; use_clr {use_clr};'
         f'use_regular_schedule {use_regular_schedule}; use_discriminative {use_discriminative}; last {last};'
         f'chain_thaw {chain_thaw}; from_scratch {from_scratch}; train_file_id {train_file_id}')
     if not hasattr(torch._C, '_cuda_setDevice'):
@@ -91,7 +91,7 @@ def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards
         print('Training classifier from scratch. LM encoder is not loaded.')
         use_regular_schedule = True
 
-    if (startat<1) and pretrain and not last and not chain_thaw and not from_scratch:
+    if (startat<1) and not last and not chain_thaw and not from_scratch:
         learn.freeze_to(-1)
         learn.fit(lrs, 1, wds=wd, cycle_len=None if use_regular_schedule else 1,
                   use_clr=None if use_regular_schedule or not use_clr else (8,3))
