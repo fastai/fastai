@@ -62,8 +62,8 @@ Example command: `python train_tri_wt.py data/wiki/de/ 0 --lr 1e-3 --cl 12`
 
 Usage:
 ```
-pretrain_lm.py DIR_PATH CUDA_ID [CL] [BS] [BACKWARDS] [LR] [SAMPLED]
-pretrain_lm.py --dir-path DIR_PATH --cuda-id CUDA_ID [--cl CL] [--bs BS] [--backwards BACKWARDS] [--lr LR] [--sampled SAMPLED]
+pretrain_lm.py DIR_PATH CUDA_ID [CL] [BS] [BACKWARDS] [LR] [SAMPLED] [PRETRAIN_ID]
+pretrain_lm.py --dir-path DIR_PATH --cuda-id CUDA_ID [--cl CL] [--bs BS] [--backwards BACKWARDS] [--lr LR] [--sampled SAMPLED] [--pretrain-id PRETRAIN_ID]
 ```
 - `DIR_PATH`: the directory that contains the Wikipedia files
 - `CUDA_ID`: the id of the GPU that should be used;
@@ -72,6 +72,7 @@ pretrain_lm.py --dir-path DIR_PATH --cuda-id CUDA_ID [--cl CL] [--bs BS] [--back
 - `BACKWARDS`: whether a backwards LM should be trained
 - `LR`: the learning rate
 - `SAMPLED`: whether a sampled softmax should be used (default: `True`)
+- `PRETRAIN_ID`: the id used for saving the trained LM
 
 You might have to adapt the learning rate and the # of epochs to maximize performance.
 
