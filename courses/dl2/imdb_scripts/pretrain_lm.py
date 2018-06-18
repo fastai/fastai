@@ -45,7 +45,7 @@ def train_lm(dir_path, cuda_id, cl=1, bs=64, backwards=False, lr=3e-4, sampled=T
     #lrs=lr
 
     learner.fit(lrs, 1, wds=wd, use_clr=(32,10), cycle_len=cl)
-    learner.save(f'{PRE}lm_4')
-    learner.save_encoder(f'{PRE}lm_4_enc')
+    learner.save(f'{PRE}lm_3')
+    learner.save_encoder(f'{PRE}lm_3_enc')
 
 if __name__ == '__main__': fire.Fire(train_lm)

@@ -47,7 +47,7 @@ def train_lm(dir_path, pretrain_path, cuda_id=0, cl=25, pretrain_id='wt103', lm_
     torch.cuda.set_device(cuda_id)
 
     PRE  = 'bwd_' if backwards else 'fwd_'
-    if bpe: PRE = 'bpe_' + PRE
+    PRE = 'bpe_' + PRE if bpe else PRE
     IDS = 'bpe' if bpe else 'ids'
     train_file_id = train_file_id if train_file_id == '' else f'_{train_file_id}'
     joined_id = 'lm_' if joined else ''
