@@ -98,9 +98,10 @@ def train_lm(dir_path, pretrain_path, cuda_id=0, cl=25, pretrain_id='wt103', lm_
     wd=1e-7
 
     lrs = np.array([lr/6,lr/3,lr,lr/2]) if use_discriminative else lr
-    if preload and (startat==0):
+    if preload and startat == 0:
         wgts = torch.load(pre_lm_path, map_location=lambda storage, loc: storage)
-        if bpe: learner.model.load_state_dict(wgts)
+        if bpe:
+            learner.model.load_state_dict(wgts)
         else:
             print(f'Loading pretrained weights...')
             ew = to_np(wgts['0.encoder.weight'])
