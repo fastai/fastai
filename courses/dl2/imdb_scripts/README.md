@@ -58,7 +58,7 @@ tok2id.py --prefix PREFIX [--max-vocab MAX_VOCAB] [--min-freq MIN_FREQ]
 Before fine-tuning the language model, you can run `pretrain_lm.py` to create a 
 pre-trained language model using WikiText-103 (or whatever base corpus you prefer).
 
-Example command: `python train_tri_wt.py data/wiki/de/ 0 --lr 1e-3 --cl 12`
+Example command: `python pretrain_lm.py data/wiki/de/ 0 --lr 1e-3 --cl 12`
 
 Usage:
 ```
