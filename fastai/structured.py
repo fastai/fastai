@@ -105,7 +105,11 @@ def add_datepart(df, fldname, drop=True, time=False):
     2   2000  3      11    13   0          73         False         False           False           False             False        False          952905600
     """
     fld = df[fldname]
-    if not np.issubdtype(fld.dtype, np.datetime64):
+    fld_dtype = fld.dtype
+    if isinstance(fld_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
+        fld_dtype = np.datetime64
+
+    if not np.issubdtype(fld_dtype, np.datetime64):
         df[fldname] = fld = pd.to_datetime(fld, infer_datetime_format=True)
     targ_pre = re.sub('[Dd]ate$', '', fldname)
     attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
