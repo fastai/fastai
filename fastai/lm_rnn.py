@@ -37,7 +37,7 @@ class RNN_Encoder(nn.Module):
 
     initrange=0.1
 
-    def __init__(self, ntoken, emb_sz, nhid, nlayers, pad_token, bidir=False,
+    def __init__(self, ntoken, emb_sz, n_hid, n_layers, pad_token, bidir=False,
                  dropouth=0.3, dropouti=0.65, dropoute=0.1, wdrop=0.5, qrnn=False):
         """ Default constructor for the RNN_Encoder class
 
@@ -45,8 +45,8 @@ class RNN_Encoder(nn.Module):
                 bs (int): batch size of input data
                 ntoken (int): number of vocabulary (or tokens) in the source dataset
                 emb_sz (int): the embedding size to use to encode each token
-                nhid (int): number of hidden activation per LSTM layer
-                nlayers (int): number of LSTM layers to use in the architecture
+                n_hid (int): number of hidden activation per LSTM layer
+                n_layers (int): number of LSTM layers to use in the architecture
                 pad_token (int): the int value used for padding text.
                 dropouth (float): dropout to apply to the activations going from one LSTM layer to another
                 dropouti (float): dropout to apply to the input layer.
@@ -65,21 +65,21 @@ class RNN_Encoder(nn.Module):
         if self.qrnn:
             #Using QRNN requires cupy: https://github.com/cupy/cupy
             from .torchqrnn.qrnn import QRNNLayer
-            self.rnns = [QRNNLayer(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
-                save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
+            self.rnns = [QRNNLayer(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
+                save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(n_layers)]
             if wdrop:
                 for rnn in self.rnns:
                     rnn.linear = WeightDrop(rnn.linear, wdrop, weights=['weight'])
         else:
-            self.rnns = [nn.LSTM(emb_sz if l == 0 else nhid, (nhid if l != nlayers - 1 else emb_sz)//self.ndir,
-                1, bidirectional=bidir) for l in range(nlayers)]
+            self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
+                1, bidirectional=bidir) for l in range(n_layers)]
             if wdrop: self.rnns = [WeightDrop(rnn, wdrop) for rnn in self.rnns]
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
 
-        self.emb_sz,self.nhid,self.nlayers,self.dropoute = emb_sz,nhid,nlayers,dropoute
+        self.emb_sz,self.n_hid,self.n_layers,self.dropoute = emb_sz,n_hid,n_layers,dropoute
         self.dropouti = LockedDropout(dropouti)
-        self.dropouths = nn.ModuleList([LockedDropout(dropouth) for l in range(nlayers)])
+        self.dropouths = nn.ModuleList([LockedDropout(dropouth) for l in range(n_layers)])
 
     def forward(self, input):
         """ Invoked during the forward propagation of the RNN_Encoder module.
@@ -106,22 +106,22 @@ class RNN_Encoder(nn.Module):
                     raw_output, new_h = rnn(raw_output, self.hidden[l])
                 new_hidden.append(new_h)
                 raw_outputs.append(raw_output)
-                if l != self.nlayers - 1: raw_output = drop(raw_output)
+                if l != self.n_layers - 1: raw_output = drop(raw_output)
                 outputs.append(raw_output)
 
             self.hidden = repackage_var(new_hidden)
         return raw_outputs, outputs
 
     def one_hidden(self, l):
-        nh = (self.nhid if l != self.nlayers - 1 else self.emb_sz)//self.ndir
+        nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz)//self.ndir
         if IS_TORCH_04: return Variable(self.weights.new(self.ndir, self.bs, nh).zero_())
         else: return Variable(self.weights.new(self.ndir, self.bs, nh).zero_(), volatile=not self.training)
 
     def reset(self):
         if self.qrnn: [r.reset() for r in self.rnns]
         self.weights = next(self.parameters()).data
-        if self.qrnn: self.hidden = [self.one_hidden(l) for l in range(self.nlayers)]
-        else: self.hidden = [(self.one_hidden(l), self.one_hidden(l)) for l in range(self.nlayers)]
+        if self.qrnn: self.hidden = [self.one_hidden(l) for l in range(self.n_layers)]
+        else: self.hidden = [(self.one_hidden(l), self.one_hidden(l)) for l in range(self.n_layers)]
 
 
 class MultiBatchRNN(RNN_Encoder):
@@ -146,9 +146,9 @@ class MultiBatchRNN(RNN_Encoder):
 
 class LinearDecoder(nn.Module):
     initrange=0.1
-    def __init__(self, n_out, nhid, dropout, tie_encoder=None, bias=False):
+    def __init__(self, n_out, n_hid, dropout, tie_encoder=None, bias=False):
         super().__init__()
-        self.decoder = nn.Linear(nhid, n_out, bias=bias)
+        self.decoder = nn.Linear(n_hid, n_out, bias=bias)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.dropout = LockedDropout(dropout)
         if tie_encoder: self.decoder.weight = tie_encoder.weight
@@ -200,7 +200,7 @@ class SequentialRNN(nn.Sequential):
             if hasattr(c, 'reset'): c.reset()
 
 
-def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
+def get_language_model(n_tok, emb_sz, n_hid, n_layers, pad_token,
                  dropout=0.4, dropouth=0.3, dropouti=0.5, dropoute=0.1, wdrop=0.5, tie_weights=True, qrnn=False, bias=False):
     """Returns a SequentialRNN model.
 
@@ -217,8 +217,8 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
     Args:
         n_tok (int): number of unique vocabulary words (or tokens) in the source dataset
         emb_sz (int): the embedding size to use to encode each token
-        nhid (int): number of hidden activation per LSTM layer
-        nlayers (int): number of LSTM layers to use in the architecture
+        n_hid (int): number of hidden activation per LSTM layer
+        n_layers (int): number of LSTM layers to use in the architecture
         pad_token (int): the int value used for padding text.
         dropouth (float): dropout to apply to the activations going from one LSTM layer to another
         dropouti (float): dropout to apply to the input layer.
@@ -231,8 +231,7 @@ def get_language_model(n_tok, emb_sz, nhid, nlayers, pad_token,
     Returns:
         A SequentialRNN model
     """
-
-    rnn_enc = RNN_Encoder(n_tok, emb_sz, nhid=nhid, nlayers=nlayers, pad_token=pad_token,
+    rnn_enc = RNN_Encoder(n_tok, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token,
                  dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn)
     enc = rnn_enc.encoder if tie_weights else None
     return SequentialRNN(rnn_enc, LinearDecoder(n_tok, emb_sz, dropout, tie_encoder=enc, bias=bias))
