@@ -243,3 +243,4 @@ def get_rnn_classifier(bptt, max_seq, n_class, n_tok, emb_sz, n_hid, n_layers, p
                       dropouth=dropouth, dropouti=dropouti, dropoute=dropoute, wdrop=wdrop, qrnn=qrnn)
     return SequentialRNN(rnn_enc, PoolingLinearClassifier(layers, drops))
 
+get_rnn_classifer=get_rnn_classifier
