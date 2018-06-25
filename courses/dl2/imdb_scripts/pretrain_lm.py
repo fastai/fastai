@@ -4,9 +4,11 @@ from fastai.text import *
 from sampled_sm import *
 
 
-def train_lm(dir_path, cuda_id, cl=1, bs=64, backwards=False, lr=3e-4, sampled=True):
+def train_lm(dir_path, cuda_id, cl=1, bs=64, backwards=False, lr=3e-4, sampled=True,
+             pretrain_id=''):
     print(f'dir_path {dir_path}; cuda_id {cuda_id}; cl {cl}; bs {bs}; '
-          f'backwards {backwards}; lr {lr}; sampled {sampled}')
+          f'backwards {backwards}; lr {lr}; sampled {sampled}; '
+          f'pretrain_id {pretrain_id}')
     if not hasattr(torch._C, '_cuda_setDevice'):
         print('CUDA not available. Setting device=-1.')
         cuda_id = -1
@@ -45,7 +47,7 @@ def train_lm(dir_path, cuda_id, cl=1, bs=64, backwards=False, lr=3e-4, sampled=T
     #lrs=lr
 
     learner.fit(lrs, 1, wds=wd, use_clr=(32,10), cycle_len=cl)
-    learner.save(f'{PRE}lm_4')
-    learner.save_encoder(f'{PRE}lm_4_enc')
+    learner.save(f'{PRE}{pretrain_id}')
+    learner.save_encoder(f'{PRE}{pretrain_id}_enc')
 
 if __name__ == '__main__': fire.Fire(train_lm)

@@ -31,63 +31,62 @@ class EarlyStopping(Callback):
         self.learner.load(self.save_path)
 
 
-def train_lm(prefix, cuda_id=0, cl=1, pretrain='wikitext-103-nopl', lm_id='', bs=64,
-             dropmult=1.0, backwards=False, lr=0.4e-3, preload=True, bpe=False, startat=0,
+def train_lm(dir_path, pretrain_path, cuda_id=0, cl=25, pretrain_id='wt103', lm_id='', bs=64,
+             dropmult=1.0, backwards=False, lr=4e-3, preload=True, bpe=False, startat=0,
              use_clr=True, use_regular_schedule=False, use_discriminative=True, notrain=False, joined=False,
-             train_file_id='', early_stopping=False, figshare=False):
-    print(f'prefix {prefix}; cuda_id {cuda_id}; cl {cl}; bs {bs}; backwards {backwards} '
-          f'dropmult {dropmult}; lr {lr}; preload {preload}; bpe {bpe}; startat {startat} '
-          f'pretrain {pretrain}; use_clr {use_clr}; notrain {notrain}; joined {joined} '
-          f'early stopping {early_stopping}, figshare {figshare}')
+             train_file_id='', early_stopping=False):
+    print(f'dir_path {dir_path}; pretrain_path {pretrain_path}; cuda_id {cuda_id}; '
+          f'pretrain_id {pretrain_id}; cl {cl}; bs {bs}; backwards {backwards} '
+          f'dropmult {dropmult}; lr {lr}; preload {preload}; bpe {bpe};'
+          f'startat {startat}; use_clr {use_clr}; notrain {notrain}; joined {joined} '
+          f'early stopping {early_stopping}')
 
-    assert not (figshare and joined), 'Use either figshare or joined.'
+    if not hasattr(torch._C, '_cuda_setDevice'):
+        print('CUDA not available. Setting device=-1.')
+        cuda_id = -1
     torch.cuda.set_device(cuda_id)
-    PRE  = 'bwd_' if backwards else 'fwd_'
-    if bpe: PRE = 'bpe_' + PRE
-    IDS = 'bpe' if bpe else 'ids'
-    if train_file_id != '': train_file_id = f'_{train_file_id}'
 
-    def get_joined_id(): return 'lm_' if joined else ''
-    joined_id = 'fig_' if figshare else get_joined_id()
-    PATH=f'data/nlp_clas/{prefix}/'
-    PRETRAIN_PATH=f'data/nlp_clas/{pretrain}'
-    assert os.path.exists(PRETRAIN_PATH), 'Error: %s does not exist.' % PRETRAIN_PATH
-    PRE_LM_PATH=f'{PRETRAIN_PATH}/models/{PRE}lm_3.h5'
-    assert os.path.exists(PRE_LM_PATH), 'Error: %s does not exist.' % PRE_LM_PATH
-    if lm_id != '': lm_id += '_'
+    PRE  = 'bwd_' if backwards else 'fwd_'
+    PRE = 'bpe_' + PRE if bpe else PRE
+    IDS = 'bpe' if bpe else 'ids'
+    train_file_id = train_file_id if train_file_id == '' else f'_{train_file_id}'
+    joined_id = 'lm_' if joined else ''
+    lm_id = lm_id if lm_id == '' else f'{lm_id}_'
     lm_path=f'{PRE}{lm_id}lm'
     enc_path=f'{PRE}{lm_id}lm_enc'
+
+    dir_path = Path(dir_path)
+    pretrain_path = Path(pretrain_path)
+    pre_lm_path = pretrain_path / 'models' / f'{PRE}{pretrain_id}.h5'
+    for p in [dir_path, pretrain_path, pre_lm_path]:
+        assert p.exists(), f'Error: {p} does not exist.'
+
     bptt=70
     em_sz,nh,nl = 400,1150,3
     opt_fn = partial(optim.Adam, betas=(0.8, 0.99))
 
     if backwards:
-        trn_lm_path = f'{PATH}tmp/trn_{joined_id}{IDS}{train_file_id}_bwd.npy'
-        val_lm_path = f'{PATH}tmp/val_{joined_id}{IDS}_bwd.npy'
+        trn_lm_path = dir_path / 'tmp' / f'trn_{joined_id}{IDS}{train_file_id}_bwd.npy'
+        val_lm_path = dir_path / 'tmp' / f'val_{joined_id}{IDS}_bwd.npy'
     else:
-        trn_lm_path = f'{PATH}tmp/trn_{joined_id}{IDS}{train_file_id}.npy'
-        val_lm_path = f'{PATH}tmp/val_{joined_id}{IDS}.npy'
+        trn_lm_path = dir_path / 'tmp' / f'trn_{joined_id}{IDS}{train_file_id}.npy'
+        val_lm_path = dir_path / 'tmp' / f'val_{joined_id}{IDS}.npy'
 
     print(f'Loading {trn_lm_path} and {val_lm_path}')
     trn_lm = np.load(trn_lm_path)
-    print('Train data shape before concatentation:', trn_lm.shape)
-    if figshare:
-        print('Restricting train data to 15M documents...')
-        trn_lm = trn_lm[:15000000]
-
     trn_lm = np.concatenate(trn_lm)
-    print('Train data shape after concatentation:', trn_lm.shape)
     val_lm = np.load(val_lm_path)
     val_lm = np.concatenate(val_lm)
 
-    if bpe: vs=30002
+    if bpe:
+        vs=30002
     else:
-        itos = pickle.load(open(f'{PATH}tmp/itos.pkl', 'rb'))
+        itos = pickle.load(open(dir_path / 'tmp' / 'itos.pkl', 'rb'))
         vs = len(itos)
 
     trn_dl = LanguageModelLoader(trn_lm, bs, bptt)
     val_dl = LanguageModelLoader(val_lm, bs, bptt)
-    md = LanguageModelData(PATH, 1, vs, trn_dl, val_dl, bs=bs, bptt=bptt)
+    md = LanguageModelData(dir_path, 1, vs, trn_dl, val_dl, bs=bs, bptt=bptt)
 
     drops = np.array([0.25, 0.1, 0.2, 0.02, 0.15])*dropmult
 
@@ -99,22 +98,25 @@ def train_lm(prefix, cuda_id=0, cl=1, pretrain='wikitext-103-nopl', lm_id='', bs
     wd=1e-7
 
     lrs = np.array([lr/6,lr/3,lr,lr/2]) if use_discriminative else lr
-    if preload and (startat==0):
-        wgts = torch.load(PRE_LM_PATH, map_location=lambda storage, loc: storage)
-        if bpe: learner.model.load_state_dict(wgts)
+    if preload and startat == 0:
+        wgts = torch.load(pre_lm_path, map_location=lambda storage, loc: storage)
+        if bpe:
+            learner.model.load_state_dict(wgts)
         else:
-            print(f'Using {pretrain} weights...')
+            print(f'Loading pretrained weights...')
             ew = to_np(wgts['0.encoder.weight'])
             row_m = ew.mean(0)
 
-            itos2 = pickle.load(open(f'{PRETRAIN_PATH}/tmp/itos.pkl', 'rb'))
+            itos2 = pickle.load(open(pretrain_path / 'tmp' / f'itos_{pretrain_id}.pkl', 'rb'))
             stoi2 = collections.defaultdict(lambda:-1, {v:k for k,v in enumerate(itos2)})
             nw = np.zeros((vs, em_sz), dtype=np.float32)
             nb = np.zeros((vs,), dtype=np.float32)
             for i,w in enumerate(itos):
                 r = stoi2[w]
-                if r>=0: nw[i] = ew[r]
-                else:    nw[i] = row_m
+                if r>=0:
+                    nw[i] = ew[r]
+                else:
+                    nw[i] = row_m
 
             wgts['0.encoder.weight'] = T(nw)
             wgts['0.encoder_with_dropout.embed.weight'] = T(np.copy(nw))
@@ -149,4 +151,3 @@ def train_lm(prefix, cuda_id=0, cl=1, pretrain='wikitext-103-nopl', lm_id='', bs
         learner.save_encoder(enc_path)
 
 if __name__ == '__main__': fire.Fire(train_lm)
-
