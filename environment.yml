@@ -96,7 +96,7 @@ dependencies:
   - torchvision>=0.1.9
   - opencv-python
   - isoweek
-  - pandas_summary
+  - pandas_summary==0.0.5
   - torchtext
   - graphviz
   - sklearn_pandas
