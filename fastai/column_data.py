@@ -62,16 +62,16 @@ class ColumnarModelData(ModelData):
                    bs=bs, shuffle=shuffle, test_ds=test_ds)
 
     @classmethod
-    def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=None):
+    def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=None, shuffle=True):
         trn_ds  = ColumnarDataset.from_data_frame(trn_df,  cat_flds, trn_y, is_reg, is_multi)
         val_ds  = ColumnarDataset.from_data_frame(val_df,  cat_flds, val_y, is_reg, is_multi)
         test_ds = ColumnarDataset.from_data_frame(test_df, cat_flds, None,  is_reg, is_multi) if test_df is not None else None
-        return cls(path, trn_ds, val_ds, bs, test_ds=test_ds)
+        return cls(path, trn_ds, val_ds, bs, test_ds=test_ds, shuffle=shuffle)
 
     @classmethod
-    def from_data_frame(cls, path, val_idxs, df, y, cat_flds, bs, is_reg=True, is_multi=False, test_df=None):
+    def from_data_frame(cls, path, val_idxs, df, y, cat_flds, bs, is_reg=True, is_multi=False, test_df=None, shuffle=True):
         ((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, df, y)
-        return cls.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=test_df)
+        return cls.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=test_df, shuffle=shuffle)
 
     def get_learner(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
                     y_range=None, use_bn=False, **kwargs):
