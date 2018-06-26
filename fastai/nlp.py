@@ -44,8 +44,9 @@ class BOW_Learner(Learner):
 
 def calc_pr(y_i, x, y, b):
     idx = np.argwhere((y==y_i)==b)
-    p = x[idx[:,0]].sum(0)+1
-    return p/((y==y_i)==b).sum()
+    ct = x[idx[:,0]].sum(0)+1
+    tot = ((y==y_i)==b).sum()+1
+    return ct/tot
 
 def calc_r(y_i, x, y):
     return np.log(calc_pr(y_i, x, y, True) / calc_pr(y_i, x, y, False))
