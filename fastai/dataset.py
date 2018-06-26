@@ -468,7 +468,32 @@ class ImageClassifierData(ImageData):
                 num_workers=num_workers, suffix=suffix, tfms=tfms, bs=bs, continuous=continuous)
 
     @classmethod
-    def from_names_and_array(cls, path, fnames,y,classes, val_idxs=None, test_name=None,
+    def from_path_and_array(cls, path, folder, y, classes=None, val_idxs=None, test_name=None,
+            num_workers=8, tfms=(None,None), bs=64):
+        """ Read in images given a sub-folder and their labels given a numpy array
+
+        Arguments:
+            path: a root path of the data (used for storing trained models, precomputed values, etc)
+            folder: a name of the folder in which training images are contained.
+            y: numpy array which contains target labels ordered by filenames.
+            bs: batch size
+            tfms: transformations (for data augmentations). e.g. output of `tfms_from_model`
+            val_idxs: index of images to be used for validation. e.g. output of `get_cv_idxs`.
+                If None, default arguments to get_cv_idxs are used.
+            test_name: a name of the folder which contains test images.
+            num_workers: number of workers
+
+        Returns:
+            ImageClassifierData
+        """
+        assert not (tfms[0] is None or tfms[1] is None), "please provide transformations for your train and validation sets"
+        assert not (os.path.isabs(folder)), "folder needs to be a relative path"
+        fnames = np.core.defchararray.add(f'{folder}/', sorted(os.listdir(f'{path}{folder}')))
+        return cls.from_names_and_array(path, fnames, y, classes, val_idxs, test_name,
+                num_workers=num_workers, tfms=tfms, bs=bs)
+
+    @classmethod
+    def from_names_and_array(cls, path, fnames, y, classes, val_idxs=None, test_name=None,
             num_workers=8, suffix='', tfms=(None,None), bs=64, continuous=False):
         val_idxs = get_cv_idxs(len(fnames)) if val_idxs is None else val_idxs
         ((val_fnames,trn_fnames),(val_y,trn_y)) = split_by_idx(val_idxs, np.array(fnames), y)
