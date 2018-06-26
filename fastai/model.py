@@ -131,7 +131,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
         if hasattr(cur_data, 'trn_sampler'): cur_data.trn_sampler.set_epoch(epoch)
         if hasattr(cur_data, 'val_sampler'): cur_data.val_sampler.set_epoch(epoch)
         num_batch = len(cur_data.trn_dl)
-        t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch)
+        t = tqdm(iter(cur_data.trn_dl), leave=False, total=num_batch, miniters=0)
         if all_val: val_iter = IterBatch(cur_data.val_dl)
 
         for (*x,y) in t:
@@ -140,7 +140,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
             loss = model_stepper.step(V(x),V(y), epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
-            t.set_postfix(loss=debias_loss)
+            t.set_postfix(loss=debias_loss, refresh=False)
             stop=False
             los = debias_loss if not all_val else [debias_loss] + validate_next(model_stepper,metrics, val_iter)
             for cb in callbacks: stop = stop or cb.on_batch_end(los)
