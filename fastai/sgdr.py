@@ -190,7 +190,7 @@ class LR_Finder(LR_Updater):
         '''
         Plots the loss function with respect to learning rate, in log scale. 
         '''
-        plt.ylabel("loss")
+        plt.ylabel("validation loss")
         plt.xlabel("learning rate (log scale)")
         plt.plot(self.lrs[n_skip:-(n_skip_end+1)], self.losses[n_skip:-(n_skip_end+1)])
         plt.xscale('log')
