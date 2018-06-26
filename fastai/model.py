@@ -220,10 +220,11 @@ def validate(stepper, dl, metrics, seq_first=False):
     stepper.reset(False)
     with no_grad_context():
         for (*x,y) in iter(dl):
-            preds, l = stepper.evaluate(VV(x), VV(y))
+            y = VV(y)
+            preds, l = stepper.evaluate(VV(x), y)
             batch_cnts.append(batch_sz(x, seq_first=seq_first))
             loss.append(to_np(l))
-            res.append([f(preds.data, y) for f in metrics])
+            res.append([f(preds.data, y.data) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
