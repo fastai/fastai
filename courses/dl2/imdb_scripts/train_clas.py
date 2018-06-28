@@ -46,8 +46,8 @@ def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards
         trn_sent = np.load(dir_path / 'tmp' / f'trn_{IDS}{train_file_id}.npy')
         val_sent = np.load(dir_path / 'tmp' / f'val_{IDS}.npy')
 
-    trn_lbls = np.load(dir_path / 'tmp' / f'lbl_trn{train_file_id}.npy')
-    val_lbls = np.load(dir_path / 'tmp' / f'lbl_val.npy')
+    trn_lbls = np.squeeze(np.load(dir_path / 'tmp' / f'lbl_trn{train_file_id}.npy'))
+    val_lbls = np.squeeze(np.load(dir_path / 'tmp' / f'lbl_val.npy'))
     trn_lbls -= trn_lbls.min()
     val_lbls -= val_lbls.min()
     c=int(trn_lbls.max())+1
