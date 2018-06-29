@@ -132,7 +132,7 @@ train_clas.py --dir-path DIR_PATH --cuda-id CUDA_ID [--lm-id LM_ID] [--clas-id C
 - `BS`: the batch size used for training the model
 - `CL`: the number of epochs to train the model with all layers unfrozen
 - `BACKWARDS`: whether a backwards LM is trained
-- `STARTAT`: whether to use gradual unfreezing (`0`) or load the pretrained model (`1`)
+- `STARTAT`: whether to use gradual unfreezing (`0`) or not (`1`), or load the pretrained model (`2`)
 - `UNFREEZE`: whether to unfreeze the whole network (after optional gradual unfreezing) or train only the final classifier layer (default is `True`)
 - `LR`: the learning rate
 - `DROPMULT`: the factor used to multiply the dropout parameters
