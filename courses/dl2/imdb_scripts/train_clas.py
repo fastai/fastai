@@ -103,8 +103,6 @@ def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards
                   use_clr=None if use_regular_schedule or not use_clr else (8, 3))
         learn.save(intermediate_clas_file)
     elif (startat==1) and not last and not chain_thaw and not from_scratch: # no gradual unfreezing
-        learn.fit(lrs, 1, wds=wd, cycle_len=None if use_regular_schedule else 1,
-                  use_clr=None if use_regular_schedule or not use_clr else (8, 3))
         learn.save(intermediate_clas_file)
     elif startat==2: # load the pretrained model
         learn.load(intermediate_clas_file)
