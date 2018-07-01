@@ -425,9 +425,9 @@ def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na
     if not ignore_flds: ignore_flds=[]
     if not skip_flds: skip_flds=[]
     if subset: df = get_sample(df,subset)
+    else: df = df.copy()
     ignored_flds = df.loc[:, ignore_flds]
     df.drop(ignore_flds, axis=1, inplace=True)
-    df = df.copy()
     if preproc_fn: preproc_fn(df)
     if y_fld is None: y = None
     else:
