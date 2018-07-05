@@ -83,6 +83,17 @@ class Learner():
         c=self.get_layer_groups()
         for l in c: set_trainable(l, False)
         set_trainable(c[n], True)
+        
+    def freeze_groups(self, groups):
+        c = self.get_layer_groups()
+        self.unfreeze()
+        for g in groups:
+            set_trainable(c[g], False)
+            
+    def unfreeze_groups(self, groups):
+        c = self.get_layer_groups()
+        for g in groups:
+            set_trainable(c[g], True)
 
     def unfreeze(self): self.freeze_to(0)
 
