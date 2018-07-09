@@ -553,12 +553,24 @@ class RandomBlur(Transform):
         return cv2.GaussianBlur(src=x, ksize=self.store.kernel, sigmaX=0) if self.apply_transform else x
 
 class Cutout(Transform):
-    def __init__(self, n_holes, length, tfm_y=TfmType.NO):
+    """ Randomly masks squares of size length on the image.
+    https://arxiv.org/pdf/1708.04552.pdf
+    
+    Arguments:
+    n_holes: number of squares
+    length: size of the square
+    p: probability to apply cutout
+    tfm_y: type of y transform
+    """
+    def __init__(self, n_holes, length, p=0.5, tfm_y=TfmType.NO):
         super().__init__(tfm_y)
-        self.n_holes,self.length = n_holes,length
+        self.n_holes, self.length, self.p = n_holes, length, p
+
+    def set_state(self):
+        self.apply_transform = random.random() < self.p
 
     def do_transform(self, img, is_y):
-        return cutout(img, self.n_holes, self.length)
+        return cutout(img, self.n_holes, self.length) if self.apply_transform else img
 
 class GoogleNetResize(CoordTransform):
     """ Randomly crops an image with an aspect ratio and returns a squared resized image of size targ 
