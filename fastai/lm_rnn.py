@@ -151,6 +151,7 @@ class LinearDecoder(nn.Module):
         self.decoder = nn.Linear(n_hid, n_out, bias=bias)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.dropout = LockedDropout(dropout)
+        if bias: self.decoder.bias.data.zero_()
         if tie_encoder: self.decoder.weight = tie_encoder.weight
 
     def forward(self, input):
