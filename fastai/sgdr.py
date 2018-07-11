@@ -257,7 +257,7 @@ class CosAnneal(LR_Updater):
 
 class CircularLR(LR_Updater):
     '''
-    A learning rate updater that implements the CirularLearningRate (CLR) scheme. 
+    A learning rate updater that implements the CircularLearningRate (CLR) scheme. 
     Learning rate is increased then decreased linearly. 
     '''
     def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None, momentums=None):
