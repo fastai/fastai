@@ -231,7 +231,7 @@ class LR_Finder2(LR_Finder):
         axs[1].plot(self.lrs[n_skip:-n_skip_end],plt_val_l[n_skip:-n_skip_end])
 
 class CosAnneal(LR_Updater):
-    ''' Learning rate scheduler that inpelements a cosine annealation schedule. '''
+    ''' Learning rate scheduler that implements a cosine annealation schedule. '''
     def __init__(self, layer_opt, nb, on_cycle_end=None, cycle_mult=1):
         self.nb,self.on_cycle_end,self.cycle_mult = nb,on_cycle_end,cycle_mult
         super().__init__(layer_opt)
@@ -257,7 +257,7 @@ class CosAnneal(LR_Updater):
 
 class CircularLR(LR_Updater):
     '''
-    An learning rate updater that implements the CirularLearningRate (CLR) scheme. 
+    A learning rate updater that implements the CircularLearningRate (CLR) scheme. 
     Learning rate is increased then decreased linearly. 
     '''
     def __init__(self, layer_opt, nb, div=4, cut_div=8, on_cycle_end=None, momentums=None):
