@@ -188,16 +188,11 @@ def print_stats(epoch, values, visualize, prev_val=[], decimals=6):
     values = [epoch] + list(np.round(values, decimals))
     sym = ""
     if visualize:
-        if epoch == 0:
-            pass        
-        elif values[1] > prev_val[0] and values[2] > prev_val[1]:
-            sym = " △ △"
-        elif values[1] > prev_val[0] and values[2] < prev_val[1]:
-            sym = " △ ▼"            
-        elif values[1] < prev_val[0] and values[2] > prev_val[1]:
-            sym = " ▼ △"            
-        elif values[1] < prev_val[0] and values[2] < prev_val[1]:            
-            sym = " ▼ ▼"
+        if epoch == 0:                                             pass        
+        elif values[1] > prev_val[0] and values[2] > prev_val[1]:  sym = " △ △"
+        elif values[1] > prev_val[0] and values[2] < prev_val[1]:  sym = " △ ▼"            
+        elif values[1] < prev_val[0] and values[2] > prev_val[1]:  sym = " ▼ △"            
+        elif values[1] < prev_val[0] and values[2] < prev_val[1]:  sym = " ▼ ▼"
     print(layout.format(*values) + sym)
 
 class IterBatch():
