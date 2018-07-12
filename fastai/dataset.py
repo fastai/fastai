@@ -217,9 +217,9 @@ def open_image(fn):
         The image in RGB format as numpy array of floats normalized to range between 0.0 - 1.0
     """
     flags = cv2.IMREAD_UNCHANGED+cv2.IMREAD_ANYDEPTH+cv2.IMREAD_ANYCOLOR
-    if not os.path.exists(fn):
+    if not os.path.exists(fn) and not str(fn).startswith("http"):
         raise OSError('No such file or directory: {}'.format(fn))
-    elif os.path.isdir(fn):
+    elif os.path.isdir(fn) and not str(fn).startswith("http"):
         raise OSError('Is a directory: {}'.format(fn))
     else:
         #res = np.array(Image.open(fn), dtype=np.float32)/255
