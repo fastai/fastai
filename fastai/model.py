@@ -102,12 +102,14 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     seq_first = kwargs.pop('seq_first', False)
     all_val = kwargs.pop('all_val', False)
     get_ep_vals = kwargs.pop('get_ep_vals', False)
+    test_metrics = kwargs.pop('test_metrics', [])
+    test_period = kwargs.pop('test_period', 1)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
     batch_num,avg_loss=0,0.
     for cb in callbacks: cb.on_train_begin()
-    names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics]
+    names = ["epoch", "trn_loss", "val_loss"] + [f.__name__ for f in metrics] + [f.__name__ for f in test_metrics]
     if swa_model is not None:
         swa_names = ['swa_loss'] + [f'swa_{f.__name__}' for f in metrics]
         names += swa_names
@@ -159,6 +161,8 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
 
         if not all_val:
             vals = validate(model_stepper, cur_data.val_dl, metrics, seq_first=seq_first)
+            test_vals = test(model_stepper, cur_data.test_dl, test_metrics, epoch, test_period)
+            vals += test_vals
             stop=False
             for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
             if swa_model is not None:
@@ -237,6 +241,14 @@ def validate(stepper, dl, metrics, seq_first=False):
             loss.append(to_np(l))
             res.append([f(preds.data, y.data) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
+
+def test(stepper, dl, metrics, epoch, test_period):
+    if (epoch + 1) % test_period != 0: return [float('nan')] * len(metrics)
+    if dl == None or len(metrics) == 0: return [float('nan')] * len(metrics)
+    stepper.reset(False)
+    with no_grad_context():
+        preda, targa = predict_with_targs(stepper.m, dl)
+        return [f(preda, targa) for f in metrics]
 
 def get_prediction(x):
     if is_listy(x): x=x[0]
