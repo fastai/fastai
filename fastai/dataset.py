@@ -228,7 +228,7 @@ def open_image(fn):
         try:
             if str(fn).startswith("http"):
                 req = urllib.urlopen(str(fn))
-                image = np.asarray(bytearray(resp.read()), dtype="uint8")
+                image = np.asarray(bytearray(req.read()), dtype="uint8")
                 im = cv2.imdecode(image, flags).astype(np.float32)/255
             else:
                 im = cv2.imread(str(fn), flags).astype(np.float32)/255
