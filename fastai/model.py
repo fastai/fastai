@@ -86,7 +86,7 @@ def set_train_mode(m):
     else: m.train()
 
 def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
-        swa_model=None, swa_start=None, swa_eval_freq=None, **kwargs):
+        swa_model=None, swa_start=None, swa_eval_freq=None, visualize=False, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -167,8 +167,12 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                     swa_vals = validate(swa_stepper, cur_data.val_dl, metrics)
                     vals += swa_vals
 
-            if epoch == 0: print(layout.format(*names))
-            print_stats(epoch, [debias_loss] + vals)
+            if epoch > 0: 
+                print_stats(epoch, [debias_loss] + vals, visualize, prev_val)
+            else:
+                print(layout.format(*names))
+                print_stats(epoch, [debias_loss] + vals, visualize)
+            prev_val = [debias_loss] + vals
             ep_vals = append_stats(ep_vals, epoch, [debias_loss] + vals)
         if stop: break
     for cb in callbacks: cb.on_train_end()
@@ -179,10 +183,17 @@ def append_stats(ep_vals, epoch, values, decimals=6):
     ep_vals[epoch]=list(np.round(values, decimals))
     return ep_vals
 
-def print_stats(epoch, values, decimals=6):
+def print_stats(epoch, values, visualize, prev_val=[], decimals=6):
     layout = "{!s:^10}" + " {!s:10}" * len(values)
     values = [epoch] + list(np.round(values, decimals))
-    print(layout.format(*values))
+    sym = ""
+    if visualize:
+        if epoch == 0:                                             pass        
+        elif values[1] > prev_val[0] and values[2] > prev_val[1]:  sym = " △ △"
+        elif values[1] > prev_val[0] and values[2] < prev_val[1]:  sym = " △ ▼"            
+        elif values[1] < prev_val[0] and values[2] > prev_val[1]:  sym = " ▼ △"            
+        elif values[1] < prev_val[0] and values[2] < prev_val[1]:  sym = " ▼ ▼"
+    print(layout.format(*values) + sym)
 
 class IterBatch():
     def __init__(self, dl):
