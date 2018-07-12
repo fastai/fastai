@@ -364,7 +364,7 @@ class Scale(CoordTransform):
         self.sz,self.sz_y = sz,sz_y
 
     def do_transform(self, x, is_y):
-        h,w,_* = x.shape
+        h,w,*_ = x.shape
         intpr = cv2.INTER_AREA
         if(is_y < min(h, w)) : intpr = cv2.INTER_LINEAR 
         if is_y: return scale_min(x, self.sz_y, intpr if self.tfm_y == TfmType.PIXEL else cv2.INTER_NEAREST)
