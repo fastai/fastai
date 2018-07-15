@@ -78,6 +78,44 @@ class Stepper():
         if isinstance(preds,tuple): preds=preds[0]
         return preds, self.crit(preds, y)
 
+class Stepper_wgts(Stepper):
+    def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1):
+        super().__init__(m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1)
+    def step(self, xs, y, epoch):
+        w = xs.pop()
+        xtra = []
+        output = self.m(*xs)
+        if isinstance(output,tuple): output,*xtra = output
+        if self.fp16: self.m.zero_grad()
+        else: self.opt.zero_grad() 
+        loss = raw_loss = self.crit(output, y, w)
+        if self.loss_scale != 1: assert(self.fp16); loss = loss*self.loss_scale
+        if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
+        loss.backward()
+        if self.fp16: update_fp32_grads(self.fp32_params, self.m)
+        if self.loss_scale != 1:
+            for param in self.fp32_params: param.grad.data.div_(self.loss_scale)
+        if self.clip:   # Gradient clipping
+            if IS_TORCH_04: nn.utils.clip_grad_norm_(trainable_params_(self.m), self.clip)
+            else: nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
+        if 'wd' in self.opt.param_groups[0] and self.opt.param_groups[0]['wd'] != 0: 
+            #Weight decay out of the loss. After the gradient computation but before the step.
+            for group in self.opt.param_groups:
+                lr, wd = group['lr'], group['wd']
+                for p in group['params']:
+                    if p.grad is not None: p.data = p.data.add(-wd * lr, p.data)
+        self.opt.step()
+        if self.fp16: 
+            copy_fp32_to_model(self.m, self.fp32_params)
+            torch.cuda.synchronize()
+        return torch_item(raw_loss.data)
+    
+    def evaluate(self, xs, y):
+        w = xs.pop()
+        preds = self.m(*xs)
+        if isinstance(preds,tuple): preds=preds[0]
+        return preds, self.crit(preds, y, w)
+
 def set_train_mode(m):
     if (hasattr(m, 'running_mean') and (getattr(m,'bn_freeze',False)
               or not getattr(m,'trainable',False))): m.eval()
@@ -117,8 +155,10 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     layout = "{!s:10} " * len(names)
     if not isinstance(n_epochs, Iterable): n_epochs=[n_epochs]
     if not isinstance(data, Iterable): data = [data]
+    has_wgts = hasattr(data[0].trn_ds, 'w')
     if len(data) == 1: data = data * len(n_epochs)
     for cb in callbacks: cb.on_phase_begin()
+    if has_wgts: stepper =  Stepper_wgts
     model_stepper = stepper(model, opt.opt if hasattr(opt,'opt') else opt, crit, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
@@ -137,7 +177,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
         for (*x,y) in t:
             batch_num += 1
             for cb in callbacks: cb.on_batch_begin()
-            loss = model_stepper.step(V(x),V(y), epoch)
+            loss = model_stepper.step(V(x),V(y),epoch)
             avg_loss = avg_loss * avg_mom + loss * (1-avg_mom)
             debias_loss = avg_loss / (1 - avg_mom**batch_num)
             t.set_postfix(loss=debias_loss, refresh=False)
@@ -158,13 +198,15 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                     break
 
         if not all_val:
-            vals = validate(model_stepper, cur_data.val_dl, metrics, seq_first=seq_first)
+            vals = validate_wgts(model_stepper, cur_data.val_dl, metrics, seq_first=seq_first) if has_wgts else \
+            validate(model_stepper, cur_data.val_dl, metrics, seq_first=seq_first)
             stop=False
             for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
             if swa_model is not None:
                 if (epoch + 1) >= swa_start and ((epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == tot_epochs - 1):
                     fix_batchnorm(swa_model, cur_data.trn_dl)
-                    swa_vals = validate(swa_stepper, cur_data.val_dl, metrics)
+                    swa_vals = validate_wgts(model_stepper, cur_data.val_dl, metrics, seq_first=seq_first) if has_wgts else \
+                    validate(swa_stepper, cur_data.val_dl, metrics)
                     vals += swa_vals
 
             if epoch > 0: 
@@ -237,6 +279,19 @@ def validate(stepper, dl, metrics, seq_first=False):
             loss.append(to_np(l))
             res.append([f(preds.data, y.data) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
+
+def validate_wgts(stepper, dl, metrics, seq_first=False):
+    wgt_cnts,loss,res = [],[],[]
+    stepper.reset(False)
+    with no_grad_context():
+        for (*x,y) in iter(dl):
+            w = VV(x[-1])
+            y = VV(y)
+            preds, l = stepper.evaluate(VV(x), y)
+            wgt_cnts.append(w.data.sum())
+            loss.append(to_np(l))
+            res.append([f(preds.data, y.data, w.data) for f in metrics])
+    return [np.average(loss, 0, weights=wgt_cnts)] + list(np.average(np.stack(res), 0, weights=wgt_cnts))
 
 def get_prediction(x):
     if is_listy(x): x=x[0]

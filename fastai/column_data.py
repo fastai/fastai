@@ -19,9 +19,24 @@ class PassthruDataset(Dataset):
         cols = [df[o] for o in cols_x+[col_y]]
         return cls(*cols, is_reg=is_reg, is_multi=is_multi)
 
+class PassthruDataset_wgts(Dataset):
+    def __init__(self,*args, is_reg=True, is_multi=False):
+        *xs,y,w=args
+        self.xs,self.y,self.w = xs,y,w
+        self.is_reg = is_reg
+        self.is_multi = is_multi
+
+    def __len__(self): return len(self.y)
+    def __getitem__(self, idx): return [o[idx] for o in self.xs] + [self.w[idx]] + [self.y[idx]]
+
+    @classmethod
+    def from_data_frame(cls, df, cols_x, col_y, col_w, is_reg=True, is_multi=False):
+        cols = [df[o] for o in cols_x+[col_y]+[col_w]]
+        return cls(*cols, is_reg=is_reg, is_multi=is_multi)
+
 
 class ColumnarDataset(Dataset):
-    def __init__(self, cats, conts, y, is_reg, is_multi):
+    def __init__(self, cats, conts, y, w, is_reg, is_multi):
         n = len(cats[0]) if cats else len(conts[0])
         self.cats  = np.stack(cats,  1).astype(np.int64)   if cats  else np.zeros((n,1))
         self.conts = np.stack(conts, 1).astype(np.float32) if conts else np.zeros((n,1))
@@ -37,14 +52,22 @@ class ColumnarDataset(Dataset):
         return [self.cats[idx], self.conts[idx], self.y[idx]]
 
     @classmethod
-    def from_data_frames(cls, df_cat, df_cont, y=None, is_reg=True, is_multi=False):
+    def from_data_frames(cls, df_cat, df_cont, y=None, is_reg=True, is_multi=False, w=None):
         cat_cols = [c.values for n,c in df_cat.items()]
         cont_cols = [c.values for n,c in df_cont.items()]
-        return cls(cat_cols, cont_cols, y, is_reg, is_multi)
+        return cls(cat_cols, cont_cols, y, w, is_reg, is_multi)
 
     @classmethod
-    def from_data_frame(cls, df, cat_flds, y=None, is_reg=True, is_multi=False):
-        return cls.from_data_frames(df[cat_flds], df.drop(cat_flds, axis=1), y, is_reg, is_multi)
+    def from_data_frame(cls, df, cat_flds, y=None, is_reg=True, is_multi=False, w=None):
+        return cls.from_data_frames(df[cat_flds], df.drop(cat_flds, axis=1), y, is_reg, is_multi, w)
+
+class ColumnarDataset_wgts(ColumnarDataset):
+    def __init__(self, cats, conts, y, w, is_reg, is_multi):
+        super().__init__(cats, conts, y, w, is_reg, is_multi)
+        self.w = np.zeros((n,1)) if w is None else w
+        if is_reg: self.w = self.w[:,None]
+    def __getitem__(self, idx):
+        return [self.cats[idx], self.conts[idx], self.w[idx], self.y[idx]]
 
 
 class ColumnarModelData(ModelData):
@@ -62,6 +85,14 @@ class ColumnarModelData(ModelData):
                    bs=bs, shuffle=shuffle, test_ds=test_ds)
 
     @classmethod
+    def from_arrays_wgts(cls, path, val_idxs, xs, y, w, is_reg=True, is_multi=False, bs=64, test_xs=None, shuffle=True):
+        ((val_xs, trn_xs), (val_y, trn_y), (val_w, trn_w)) = split_by_idx(val_idxs, xs, y, w)
+        test_ds = PassthruDataset_wgts(*(test_xs.T), [0] * len(test_xs), [0] * len(test_xs), is_reg=is_reg, is_multi=is_multi) if test_xs is not None else None
+        return cls(path, PassthruDataset_wgts(*(trn_xs.T), trn_y, trn_w, is_reg=is_reg, is_multi=is_multi),
+                   PassthruDataset_wgts(*(val_xs.T), val_y, val_w, is_reg=is_reg, is_multi=is_multi),
+                   bs=bs, shuffle=shuffle, test_ds=test_ds)
+
+    @classmethod
     def from_data_frames(cls, path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=None, shuffle=True):
         trn_ds  = ColumnarDataset.from_data_frame(trn_df,  cat_flds, trn_y, is_reg, is_multi)
         val_ds  = ColumnarDataset.from_data_frame(val_df,  cat_flds, val_y, is_reg, is_multi)
@@ -69,9 +100,21 @@ class ColumnarModelData(ModelData):
         return cls(path, trn_ds, val_ds, bs, test_ds=test_ds, shuffle=shuffle)
 
     @classmethod
+    def from_data_frames_wgts(cls, path, trn_df, val_df, trn_y, val_y, trn_w, val_w, cat_flds, bs, is_reg, is_multi, test_df=None, shuffle=True):
+        trn_ds  = ColumnarDataset_wgts.from_data_frame(trn_df,  cat_flds, trn_y, is_reg, is_multi, trn_w)
+        val_ds  = ColumnarDataset_wgts.from_data_frame(val_df,  cat_flds, val_y, is_reg, is_multi, val_w)
+        test_ds = ColumnarDataset_wgts.from_data_frame(test_df, cat_flds, None, is_reg, is_multi, None) if test_df is not None else None
+        return cls(path, trn_ds, val_ds, bs, test_ds=test_ds, shuffle=shuffle)
+
+    @classmethod
     def from_data_frame(cls, path, val_idxs, df, y, cat_flds, bs, is_reg=True, is_multi=False, test_df=None, shuffle=True):
         ((val_df, trn_df), (val_y, trn_y)) = split_by_idx(val_idxs, df, y)
         return cls.from_data_frames(path, trn_df, val_df, trn_y, val_y, cat_flds, bs, is_reg, is_multi, test_df=test_df, shuffle=shuffle)
+
+    @classmethod
+    def from_data_frame_wgts(cls, path, val_idxs, df, y, w, cat_flds, bs, is_reg=True, is_multi=False, test_df=None, shuffle=True):
+        ((val_df, trn_df), (val_y, trn_y), (val_w, trn_w)) = split_by_idx(val_idxs, df, y, w)
+        return cls.from_data_frames_wgts(path, trn_df, val_df, trn_y, val_y, trn_w, val_w, cat_flds, bs, is_reg, is_multi, test_df=test_df, shuffle=shuffle)
 
     def get_learner(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
                     y_range=None, use_bn=False, **kwargs):
@@ -139,7 +182,8 @@ class StructuredLearner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
 
-    def _get_crit(self, data): return F.mse_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
+    def _get_crit(self, data): 
+        return crit if crit is not None else F.mse_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
 
     def summary(self):
         x = [torch.ones(3, self.data.trn_ds.cats.shape[1], dtype=torch.int64), torch.rand(3, self.data.trn_ds.conts.shape[1])]
