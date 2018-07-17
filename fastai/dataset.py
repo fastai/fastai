@@ -297,6 +297,10 @@ class ArraysIndexDataset(ArraysDataset):
     def get_y(self, i): return self.y[i]
 
 
+class ArraysIndexRegressionDataset(ArraysIndexDataset):
+    def is_reg(self): return True
+    
+    
 class ArraysNhotDataset(ArraysDataset):
     def get_c(self): return self.y.shape[1]
     @property
@@ -391,7 +395,7 @@ class ImageData(ModelData):
 
 class ImageClassifierData(ImageData):
     @classmethod
-    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None):
+    def from_arrays(cls, path, trn, val, bs=64, tfms=(None,None), classes=None, num_workers=4, test=None, continuous=False):
         """ Read in images and their labels given as numpy arrays
 
         Arguments:
@@ -408,7 +412,8 @@ class ImageClassifierData(ImageData):
         Returns:
             ImageClassifierData
         """
-        datasets = cls.get_ds(ArraysIndexDataset, trn, val, tfms, test=test)
+        f = ArraysIndexRegressionDataset if continuous else ArraysIndexDataset
+        datasets = cls.get_ds(f, trn, val, tfms, test=test)
         return cls(path, datasets, bs, num_workers, classes=classes)
 
     @classmethod
