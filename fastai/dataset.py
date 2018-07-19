@@ -332,6 +332,10 @@ class ModelData():
     def trn_y(self): return self.trn_ds.y
     @property
     def val_y(self): return self.val_ds.y
+    @property
+    def trn_w(self): return self.trn_ds.w
+    @property
+    def val_w(self): return self.val_ds.w
 
 
 class ImageData(ModelData):
