@@ -96,8 +96,8 @@ def cutout(im, n_holes, length):
     r,c,*_ = im.shape
     mask = np.ones((r, c), np.int32)
     for n in range(n_holes):
-        y = np.random.randint(length / 2, r - length / 2)
-        x = np.random.randint(length / 2, c - length / 2)
+        y = np.random.randint(0, r)
+        x = np.random.randint(0, c)
 
         y1 = int(np.clip(y - length / 2, 0, r))
         y2 = int(np.clip(y + length / 2, 0, r))
