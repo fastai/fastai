@@ -29,6 +29,10 @@ You can also install this library in the local environment using `pip`
 
 However this is not currently the recommended approach, since the library is being updated much more frequently than the pip release, fewer people are using and testing the pip version, and pip needs to compile many libraries from scratch (which can be slow). 
 
+An alternative is to use the latest Github version with `pip`
+
+`pip install git+https://github.com/fastai/fastai.git`
+
 ### CPU only environment
 Use this if you do not have an NVidia GPU. Note you are encouraged to use Paperspace to access a GPU in the cloud by following this [guide](https://github.com/reshamas/fastai_deeplearn_part1/blob/master/tools/paperspace.md).
 
