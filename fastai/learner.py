@@ -155,7 +155,8 @@ class Learner():
                 the cycles. For an intuitive explanation, please see
                 https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb
 
-            cycle_save_name (str): use to save the weights at end of each cycle
+            cycle_save_name (str): use to save the weights at end of each cycle (requires
+                use_clr, use_clr_beta or cycle_len arg)
 
             best_save_name (str): use to save weights of best model during training.
 
@@ -195,6 +196,9 @@ class Learner():
         Returns:
             None
         """
+
+        if cycle_save_name:
+            assert use_clr or use_clr_beta or cycle_len, "cycle_save_name argument requires either of the following arguments use_clr, use_clr_beta, cycle_len"
 
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
