@@ -155,7 +155,8 @@ class Learner():
                 the cycles. For an intuitive explanation, please see
                 https://github.com/fastai/fastai/blob/master/courses/dl1/lesson1.ipynb
 
-            cycle_save_name (str): use to save the weights at end of each cycle
+            cycle_save_name (str): use to save the weights at end of each cycle (requires
+                use_clr, use_clr_beta or cycle_len arg)
 
             best_save_name (str): use to save weights of best model during training.
 
@@ -196,6 +197,9 @@ class Learner():
             None
         """
 
+        if cycle_save_name:
+            assert use_clr or use_clr_beta or cycle_len, "cycle_save_name argument requires either of the following arguments use_clr, use_clr_beta, cycle_len"
+
         if callbacks is None: callbacks=[]
         if metrics is None: metrics=self.metrics
 
@@ -215,12 +219,14 @@ class Learner():
             clr_div,cut_div = use_clr[:2]
             moms = use_clr[2:] if len(use_clr) > 2 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
+            assert cycle_len, "use_clr requires cycle_len arg"
             self.sched = CircularLR(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=clr_div, cut_div=cut_div,
                                     momentums=moms)
         elif use_clr_beta is not None:
             div,pct = use_clr_beta[:2]
             moms = use_clr_beta[2:] if len(use_clr_beta) > 3 else None
             cycle_end = self.get_cycle_end(cycle_save_name)
+            assert cycle_len, "use_clr_beta requires cycle_len arg"
             self.sched = CircularLR_beta(layer_opt, len(data.trn_dl)*cycle_len, on_cycle_end=cycle_end, div=div,
                                     pct=pct, momentums=moms)
         elif cycle_len:
