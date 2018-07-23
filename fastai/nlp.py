@@ -39,12 +39,14 @@ class SimpleNB(nn.Module):
 class BOW_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.l1_loss
+
+    def _get_crit(self, data): return F.l1_loss
 
 def calc_pr(y_i, x, y, b):
     idx = np.argwhere((y==y_i)==b)
-    p = x[idx[:,0]].sum(0)+1
-    return p/((y==y_i)==b).sum()
+    ct = x[idx[:,0]].sum(0)+1
+    tot = ((y==y_i)==b).sum()+1
+    return ct/tot
 
 def calc_r(y_i, x, y):
     return np.log(calc_pr(y_i, x, y, True) / calc_pr(y_i, x, y, False))
@@ -152,12 +154,15 @@ class LanguageModelLoader():
         seq_len = min(seq_len, len(source) - 1 - i)
         return source[i:i+seq_len], source[i+1:i+1+seq_len].view(-1)
 
+
 class RNN_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.cross_entropy
+
+    def _get_crit(self, data): return F.cross_entropy
 
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
+
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))
 
 
@@ -188,19 +193,19 @@ class ConcatTextDatasetFromDataFrames(torchtext.data.Dataset):
         super().__init__(examples, fields, **kwargs)
 
     @classmethod
-    def splits(cls, train_df=None, val_df=None, test_df=None, **kwargs):
-        train_data = None if train_df is None else cls(train_df, **kwargs)
-        val_data = None if val_df is None else cls(val_df, **kwargs)
-        test_data = None if test_df is None else cls(test_df, **kwargs)
-
-        return tuple(d for d in (train_data, val_data, test_data) if d is not None)
+    def splits(cls, train_df=None, val_df=None, test_df=None, keep_nones=False, **kwargs):
+        res = (
+            cls(train_df, **kwargs),
+            cls(val_df, **kwargs),
+            map_none(test_df, partial(cls, **kwargs)))  # not required
+        return res if keep_nones else tuple(d for d in res if d is not None)
 
 
 class LanguageModelData():
     """
     This class provides the entry point for dealing with supported NLP tasks.
     Usage:
-    1.  Use one of the factory constructors (from_dataframes, from_text-files) to
+    1.  Use one of the factory constructors (from_dataframes, from_text_files) to
         obtain an instance of the class.
     2.  Use the get_model method to return a RNN_Learner instance (a network suited
         for NLP tasks), then proceed with training.
@@ -228,7 +233,7 @@ class LanguageModelData():
             that the field's "build_vocab" method is invoked, which builds the vocabulary
             for this NLP model.
 
-            Also, three instances of the LanguageModelLoader is constructed; one each
+            Also, three instances of the LanguageModelLoader are constructed; one each
             for training data (self.trn_dl), validation data (self.val_dl), and the
             testing data (self.test_dl)
 
@@ -240,7 +245,7 @@ class LanguageModelData():
                 test_ds (Dataset): testing dataset
                 bs (int): batch size
                 bptt (int): back propagation through time
-                kwargs: other argumetns
+                kwargs: other arguments
         """
         self.bs = bs
         self.path = path
@@ -250,8 +255,10 @@ class LanguageModelData():
         self.pad_idx = field.vocab.stoi[field.pad_token]
         self.nt = len(field.vocab)
 
-        self.trn_dl, self.val_dl, self.test_dl = [LanguageModelLoader(ds, bs, bptt, backwards=backwards)
-                                                  for ds in (self.trn_ds, self.val_ds, self.test_ds) ]
+        factory = lambda ds: LanguageModelLoader(ds, bs, bptt, backwards=backwards)
+        self.trn_dl = factory(self.trn_ds)
+        self.val_dl = factory(self.val_ds)
+        self.test_dl = map_none(self.test_ds, factory)  # not required
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
         """ Method returns a RNN_Learner object, that wraps an instance of the RNN_Encoder module.
@@ -273,9 +280,8 @@ class LanguageModelData():
 
     @classmethod
     def from_dataframes(cls, path, field, col, train_df, val_df, test_df=None, bs=64, bptt=70, **kwargs):
-        trn_ds, val_ds, test_ds = ConcatTextDatasetFromDataFrames.splits(text_field=field, col=col,
-                                    train_df=train_df, val_df=val_df, test_df=test_df)
-
+        trn_ds, val_ds, test_ds = ConcatTextDatasetFromDataFrames.splits(
+            text_field=field, col=col, train_df=train_df, val_df=val_df, test_df=test_df, keep_nones=True)
         return cls(path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
 
     @classmethod
@@ -303,8 +309,7 @@ class LanguageModelData():
 
         """
         trn_ds, val_ds, test_ds = ConcatTextDataset.splits(
-                                    path, text_field=field, train=train, validation=validation, test=test)
-
+            path, text_field=field, train=train, validation=validation, test=test)
         return cls(path, field, trn_ds, val_ds, test_ds, bs, bptt, **kwargs)
 
 
@@ -356,7 +361,7 @@ class TextData(ModelData):
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
     def get_model(self, opt_fn, max_sl, bptt, emb_sz, n_hid, n_layers, dropout, **kwargs):
-        m = get_rnn_classifer(bptt, max_sl, self.c, self.nt,
+        m = get_rnn_classifier(bptt, max_sl, self.c, self.nt,
               layers=[emb_sz*3, self.c], drops=[dropout],
               emb_sz=emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=self.pad_idx, **kwargs)
         return self.to_model(m, opt_fn)

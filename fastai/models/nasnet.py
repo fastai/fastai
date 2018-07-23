@@ -486,9 +486,9 @@ class ReductionCell1(nn.Module):
 
 class NASNetALarge(nn.Module):
 
-    def __init__(self, use_classifer=False, num_classes=1001):
+    def __init__(self, use_classifier=False, num_classes=1001):
         super(NASNetALarge, self).__init__()
-        self.use_classifer,self.num_classes = use_classifer,num_classes
+        self.use_classifier,self.num_classes = use_classifier,num_classes
 
         self.conv0 = nn.Sequential()
         self.conv0.add_module('conv', nn.Conv2d(in_channels=3, out_channels=96, kernel_size=3, padding=0, stride=2,
@@ -586,7 +586,7 @@ class NASNetALarge(nn.Module):
 
     def forward(self, x):
         x = self.features(x)
-        if self.use_classifer: x = self.classifier(x)
+        if self.use_classifier: x = self.classifier(x)
         return x
 
 

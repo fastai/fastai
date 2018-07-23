@@ -1,5 +1,5 @@
-from .imports import *
-from .torch_imports import *
+import torch
+from torch import nn
 
 class AdaptiveConcatPool2d(nn.Module):
     def __init__(self, sz=None):

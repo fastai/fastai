@@ -16,6 +16,30 @@ def texts_labels_from_folders(path, folders):
             labels.append(idx)
     return texts, np.array(labels).astype(np.int64)
 
+def numericalize_tok(tokens, max_vocab=50000, min_freq=0, unk_tok="_unk_", pad_tok="_pad_", bos_tok="_bos_", eos_tok="_eos_"):
+    """Takes in text tokens and returns int2tok and tok2int converters
+
+        Arguments:
+        tokens(list): List of tokens. Can be a list of strings, or a list of lists of strings.
+        max_vocab(int): Number of tokens to return in the vocab (sorted by frequency)
+        min_freq(int): Minimum number of instances a token must be present in order to be preserved.
+        unk_tok(str): Token to use when unknown tokens are encountered in the source text.
+        pad_tok(str): Token to use when padding sequences.
+    """
+    if isinstance(tokens, str):
+        raise ValueError("Expected to receive a list of tokens. Received a string instead")
+    if isinstance(tokens[0], list):
+        tokens = [p for o in tokens for p in o]
+    freq = Counter(tokens)
+    int2tok = [o for o,c in freq.most_common(max_vocab) if c>min_freq]
+    unk_id = 3
+    int2tok.insert(0, bos_tok)
+    int2tok.insert(1, pad_tok)
+    int2tok.insert(2, eos_tok)
+    int2tok.insert(unk_id, unk_tok)
+    tok2int = collections.defaultdict(lambda:unk_id, {v:k for k,v in enumerate(int2tok)})
+    return int2tok, tok2int
+
 class Tokenizer():
     def __init__(self, lang='en'):
         self.re_br = re.compile(r'<\s*br\s*/?>', re.IGNORECASE)
@@ -71,8 +95,8 @@ class Tokenizer():
         return [tok.proc_text(s) for s in ss]
 
     @staticmethod
-    def proc_all_mp(ss, lang='en'):
-        ncpus = num_cpus()//2
+    def proc_all_mp(ss, lang='en', ncpus = None):
+        ncpus = ncpus or num_cpus()//2
         with ProcessPoolExecutor(ncpus) as e:
             return sum(e.map(Tokenizer.proc_all, ss, [lang]*len(ss)), [])
 
@@ -95,10 +119,15 @@ class SortSampler(Sampler):
     def __init__(self, data_source, key): self.data_source,self.key = data_source,key
     def __len__(self): return len(self.data_source)
     def __iter__(self):
-        return iter(sorted(range(len(self.data_source)), key=self.key))
+        return iter(sorted(range(len(self.data_source)), key=self.key, reverse=True))
 
 
 class SortishSampler(Sampler):
+    """Returns an iterator that traverses the the data in randomly ordered batches that are approximately the same size.
+    The max key size batch is always returned in the first call because of pytorch cuda memory allocation sequencing.
+    Without that max key returned first multiple buffers may be allocated when the first created isn't large enough
+    to hold the next in the sequence.
+    """
     def __init__(self, data_source, key, bs):
         self.data_source,self.key,self.bs = data_source,key,bs
 
@@ -108,14 +137,21 @@ class SortishSampler(Sampler):
         idxs = np.random.permutation(len(self.data_source))
         sz = self.bs*50
         ck_idx = [idxs[i:i+sz] for i in range(0, len(idxs), sz)]
-        sort_idx = sum([sorted(s, key=self.key) for s in ck_idx], [])
+        sort_idx = np.concatenate([sorted(s, key=self.key, reverse=True) for s in ck_idx])
         sz = self.bs
         ck_idx = [sort_idx[i:i+sz] for i in range(0, len(sort_idx), sz)]
-        sort_idx = np.concatenate(np.random.permutation(ck_idx))
+        max_ck = np.argmax([self.key(ck[0]) for ck in ck_idx])  # find the chunk with the largest key,
+        ck_idx[0],ck_idx[max_ck] = ck_idx[max_ck],ck_idx[0]     # then make sure it goes first.
+        sort_idx = np.concatenate(np.random.permutation(ck_idx[1:]))
+        sort_idx = np.concatenate((ck_idx[0], sort_idx))
         return iter(sort_idx)
 
 
 class LanguageModelLoader():
+    """ Returns a language model iterator that iterates through batches that are of length N(bptt,5)
+    The first batch returned is always bptt+25; the max possible width.  This is done because of they way that pytorch
+    allocates cuda memory in order to prevent multiple buffers from being created as the batch width grows.
+    """
     def __init__(self, nums, bs, bptt, backwards=False):
         self.bs,self.bptt,self.backwards = bs,bptt,backwards
         self.data = self.batchify(nums)
@@ -125,8 +161,11 @@ class LanguageModelLoader():
     def __iter__(self):
         self.i,self.iter = 0,0
         while self.i < self.n-1 and self.iter<len(self):
-            bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
-            seq_len = max(5, int(np.random.normal(bptt, 5)))
+            if self.i == 0:
+                seq_len = self.bptt + 5 * 5
+            else:
+                bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
+                seq_len = max(5, int(np.random.normal(bptt, 5)))
             res = self.get_batch(self.i, seq_len)
             self.i += seq_len
             self.iter += 1
@@ -154,12 +193,12 @@ class LanguageModel(BasicModel):
 
 
 class LanguageModelData():
-    def __init__(self, path, pad_idx, nt, trn_dl, val_dl, test_dl=None, bptt=70, backwards=False, **kwargs):
-        self.path,self.pad_idx,self.nt = path,pad_idx,nt
+    def __init__(self, path, pad_idx, n_tok, trn_dl, val_dl, test_dl=None, **kwargs):
+        self.path,self.pad_idx,self.n_tok = path,pad_idx,n_tok
         self.trn_dl,self.val_dl,self.test_dl = trn_dl,val_dl,test_dl
 
     def get_model(self, opt_fn, emb_sz, n_hid, n_layers, **kwargs):
-        m = get_language_model(self.nt, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
+        m = get_language_model(self.n_tok, emb_sz, n_hid, n_layers, self.pad_idx, **kwargs)
         model = LanguageModel(to_gpu(m))
         return RNN_Learner(self, model, opt_fn=opt_fn)
 
@@ -167,7 +206,9 @@ class LanguageModelData():
 class RNN_Learner(Learner):
     def __init__(self, data, models, **kwargs):
         super().__init__(data, models, **kwargs)
-        self.crit = F.cross_entropy
+
+    def _get_crit(self, data): return F.cross_entropy
+    def fit(self, *args, **kwargs): return super().fit(*args, **kwargs, seq_first=True)
 
     def save_encoder(self, name): save_model(self.model[0], self.get_model_path(name))
     def load_encoder(self, name): load_model(self.model[0], self.get_model_path(name))

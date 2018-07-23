@@ -1,5 +1,4 @@
 from .lm_rnn import *
-from math import sqrt
 
 class AdaptiveSoftmax(nn.Module):
     def __init__(self, input_size, cutoff):

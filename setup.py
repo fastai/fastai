@@ -1,42 +1,33 @@
 
 # coding: utf-8
 
-"""
-Setup script for installing fastai
-"""
-
-##########################################################################
-## Imports
-##########################################################################
+""" Setup script for installing fastai """
 
 #from distutils.core import setup
 from setuptools import setup
 
-
-##########################################################################
-## Setup
-##########################################################################
-
 setup(
     name = "fastai",
     packages = ['fastai', 'fastai/models', 'fastai/models/cifar10'],
-    version = 0.6 ,
-    description = "The fast.ai deep learning and machine learning library. Git pull fastai, for all fast.ai sessions and tutorials also",
+    version = '0.7.0',
+    description = "The fastai deep learning and machine learning library.",
     author = "Jeremy Howard and contributors",
     author_email = "info@fast.ai",
     license = "Apache License 2.0",
     url = "https://github.com/fastai/fastai",
-    download_url =  'https://github.com/fastai/fastai/archive/0.6.tar.gz',
+    download_url =  'https://github.com/fastai/fastai/archive/0.7.0.tar.gz',
     install_requires =
-     ['awscli', 'bcolz', 'bleach', 'certifi', 'cycler', 'decorator', 'entrypoints', 'feather-format', 'graphviz', 'html5lib',
+     ['bcolz', 'bleach', 'certifi', 'cycler', 'decorator', 'entrypoints', 'feather-format', 'graphviz', 'html5lib',
       'ipykernel', 'ipython', 'ipython-genutils', 'ipywidgets', 'isoweek', 'jedi', 'Jinja2', 'jsonschema', 'jupyter',
-      'jupyter-client', 'jupyter-console', 'jupyter_contrib_nbextensions', 'jupyter-core', 'kaggle-cli', 'MarkupSafe',
-      'matplotlib', 'mistune', 'nbconvert', 'nbformat', 'notebook', 'numpy', 'olefile', 'opencv-python', 'pandas',
-      'pandas_summary', 'pandocfilters', 'pexpect', 'pickleshare', 'Pillow', 'plotnine', 'prompt-toolkit',
-      'ptyprocess', 'Pygments', 'pyparsing', 'python-dateutil', 'pytz', 'PyYAML', 'pyzmq', 'qtconsole', 'scipy',
-      'seaborn', 'simplegeneric', 'six', 'sklearn_pandas', 'terminado', 'testpath', 'torchtext', 'tornado', 'tqdm',
+      'MarkupSafe', 'matplotlib', 'numpy', 'opencv-python', 'pandas',
+      'pandas_summary', 'pickleshare', 'Pillow', 'plotnine',
+      'ptyprocess', 'Pygments', 'pyparsing', 'python-dateutil', 'pytz', 'PyYAML', 'pyzmq', 'scipy',
+      'seaborn', 'simplegeneric', 'sklearn_pandas', 'testpath', 'torch<0.4', 'torchtext', 'torchvision', 'tornado', 'tqdm',
       'traitlets', 'wcwidth', 'webencodings', 'widgetsnbextension'],
     keywords = ['deeplearning', 'pytorch', 'machinelearning'],
-    classifiers = ['Development Status :: 3 - Alpha', 'Programming Language :: Python', 'Programming Language :: Python :: 3.6']
+    classifiers = ['Development Status :: 3 - Alpha',
+                   'Programming Language :: Python',
+                   'Programming Language :: Python :: 3.6',
+                   'Topic :: Scientific/Engineering :: Artificial Intelligence']
 )
 

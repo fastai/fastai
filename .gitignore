@@ -2,6 +2,7 @@
 .pypirc
 ~*
 tmp*
+sample_data/
 tags
 data
 
@@ -71,6 +72,9 @@ instance/
 # Sphinx documentation
 docs/_build/
 
+# AsciiDoc documentation
+docs/fastai/
+
 # PyBuilder
 target/
 
@@ -117,3 +121,6 @@ ENV/
 ehthumbs.db
 Thumbs.db
 .idea
+
+# pytest
+.pytest_cache
