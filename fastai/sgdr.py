@@ -3,6 +3,7 @@ from .layer_optimizer import *
 from enum import IntEnum
 from timeit import default_timer as timer
 import copy
+import math
 
 
 class Callback:
@@ -363,12 +364,14 @@ class SaveBestModel(LossRecorder):
         
     def save_when_only_loss(self, metrics):
         loss = metrics[0]
+        if math.isnan(loss): return
         if self.best_loss == None or loss < self.best_loss:
             self.best_loss = loss
             self.model.save(f'{self.name}')
     
     def save_when_acc(self, metrics):
         loss, acc = metrics[0], metrics[1]
+        if math.isnan(acc) or math.isnan(loss): return
         if self.best_acc == None or acc > self.best_acc:
             self.best_acc = acc
             self.best_loss = loss
