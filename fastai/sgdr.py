@@ -80,7 +80,7 @@ class LossRecorder(Callback):
         self.epoch += 1
         self.epochs.append(self.iteration)
         self.times.append(timer() - self.start_at)
-        if not math.isnan(metrics[0]): self.save_metrics(metrics)
+        self.save_metrics(metrics)
 
     def on_batch_end(self, loss):
         self.iteration += 1
