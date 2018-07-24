@@ -80,7 +80,7 @@ class LossRecorder(Callback):
         self.epoch += 1
         self.epochs.append(self.iteration)
         self.times.append(timer() - self.start_at)
-        self.save_metrics(metrics)
+        if not math.isnan(metrics[0]): self.save_metrics(metrics)
 
     def on_batch_end(self, loss):
         self.iteration += 1
@@ -364,14 +364,12 @@ class SaveBestModel(LossRecorder):
         
     def save_when_only_loss(self, metrics):
         loss = metrics[0]
-        if math.isnan(loss): return
         if self.best_loss == None or loss < self.best_loss:
             self.best_loss = loss
             self.model.save(f'{self.name}')
     
     def save_when_acc(self, metrics):
         loss, acc = metrics[0], metrics[1]
-        if math.isnan(acc) or math.isnan(loss): return
         if self.best_acc == None or acc > self.best_acc:
             self.best_acc = acc
             self.best_loss = loss
@@ -382,6 +380,7 @@ class SaveBestModel(LossRecorder):
         
     def on_epoch_end(self, metrics):
         super().on_epoch_end(metrics)
+        if math.isnan(metrics[0]): return
         self.save_method(metrics)
 
 
