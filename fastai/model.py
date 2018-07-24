@@ -102,6 +102,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     seq_first = kwargs.pop('seq_first', False)
     all_val = kwargs.pop('all_val', False)
     get_ep_vals = kwargs.pop('get_ep_vals', False)
+    validate_skip = kwargs.pop('validate_skip', 0)
     metrics = metrics or []
     callbacks = callbacks or []
     avg_mom=0.98
@@ -158,13 +159,13 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
                     break
 
         if not all_val:
-            vals = validate(model_stepper, cur_data.val_dl, metrics, seq_first=seq_first)
+            vals = validate(model_stepper, cur_data.val_dl, metrics, epoch, seq_first=seq_first, validate_skip = validate_skip)
             stop=False
             for cb in callbacks: stop = stop or cb.on_epoch_end(vals)
             if swa_model is not None:
                 if (epoch + 1) >= swa_start and ((epoch + 1 - swa_start) % swa_eval_freq == 0 or epoch == tot_epochs - 1):
                     fix_batchnorm(swa_model, cur_data.trn_dl)
-                    swa_vals = validate(swa_stepper, cur_data.val_dl, metrics)
+                    swa_vals = validate(swa_stepper, cur_data.val_dl, metrics, epoch, validate_skip = validate_skip)
                     vals += swa_vals
 
             if epoch > 0: 
@@ -226,7 +227,8 @@ def batch_sz(x, seq_first=False):
     if is_listy(x): x = x[0]
     return x.shape[1 if seq_first else 0]
 
-def validate(stepper, dl, metrics, seq_first=False):
+def validate(stepper, dl, metrics, epoch, seq_first=False, validate_skip = 0):
+    if epoch < validate_skip: return [float('nan')] + [float('nan')] * len(metrics)
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     with no_grad_context():

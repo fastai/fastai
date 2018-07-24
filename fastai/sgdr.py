@@ -3,6 +3,7 @@ from .layer_optimizer import *
 from enum import IntEnum
 from timeit import default_timer as timer
 import copy
+import math
 
 
 class Callback:
@@ -379,6 +380,7 @@ class SaveBestModel(LossRecorder):
         
     def on_epoch_end(self, metrics):
         super().on_epoch_end(metrics)
+        if math.isnan(metrics[0]): return
         self.save_method(metrics)
 
 
