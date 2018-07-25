@@ -89,6 +89,7 @@ class MixedInputModel(nn.Module):
     def __init__(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
                  y_range=None, use_bn=False, is_reg=True, is_multi=False):
         super().__init__()
+        for i,(c,s) in enumerate(emb_szs): assert c > 1, f"cardinality must be >=2, got emb_szs[{i}]: ({c},{s})"
         self.embs = nn.ModuleList([nn.Embedding(c, s) for c,s in emb_szs])
         for emb in self.embs: emb_init(emb)
         n_emb = sum(e.embedding_dim for e in self.embs)
@@ -142,7 +143,7 @@ class StructuredLearner(Learner):
     def _get_crit(self, data): return F.mse_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
 
     def summary(self):
-        x = [torch.ones(3, self.data.trn_ds.cats.shape[1], dtype=torch.int64), torch.rand(3, self.data.trn_ds.conts.shape[1])]
+        x = [torch.ones(3, self.data.trn_ds.cats.shape[1]).long(), torch.rand(3, self.data.trn_ds.conts.shape[1])]
         return model_summary(self.model, x)
 
 
@@ -216,7 +217,7 @@ class CollabFilterLearner(Learner):
 
     def _get_crit(self, data): return F.mse_loss
 
-    def summary(self): return model_summary(self.model, [torch.ones(3, dtype=torch.int64), torch.ones(3, dtype=torch.int64)])
+    def summary(self): return model_summary(self.model, [torch.ones(3).long(), torch.ones(3).long()])
 
 
 class CollabFilterModel(BasicModel):
