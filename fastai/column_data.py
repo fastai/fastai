@@ -90,6 +90,7 @@ class MixedInputModel(nn.Module):
                  y_range=None, use_bn=False, is_reg=True, is_multi=False):
         super().__init__()
         for i,(c,s) in enumerate(emb_szs): assert c > 1, f"cardinality must be >=2, got emb_szs[{i}]: ({c},{s})"
+        if is_reg==False: assert out_sz >= 2, "arg is_reg==False (classification) requires out_sz>=2"
         self.embs = nn.ModuleList([nn.Embedding(c, s) for c,s in emb_szs])
         for emb in self.embs: emb_init(emb)
         n_emb = sum(e.embedding_dim for e in self.embs)
