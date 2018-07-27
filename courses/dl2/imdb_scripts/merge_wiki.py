@@ -21,9 +21,11 @@ def get_texts(root):
 def write_file(file_path, text_iter, num_tokens):
     total_num_tokens = 0
     print(f'Writing to {file_path}...')
+    j = 0
     with open(file_path, 'w', encoding='utf-8') as f_out:
         writer = csv.writer(f_out)
         for i, text in enumerate(text_iter):
+            j += 1
             writer.writerow([text])
             # f_out.write(text)
 
@@ -34,7 +36,7 @@ def write_file(file_path, text_iter, num_tokens):
             if i % 10000 == 0:
                 print('Processed {:,} documents. Total # tokens: {:,}.'.format(i, total_num_tokens))
     print('{}. # documents: {:,}. # tokens: {:,}.'.format(
-        file_path, i, total_num_tokens))
+        file_path, j, total_num_tokens))
 
 
 def main(args):
