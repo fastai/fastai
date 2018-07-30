@@ -219,7 +219,7 @@ def validate_next(stepper, metrics, val_iter):
         (*x,y) = val_iter.next()
         preds,l = stepper.evaluate(VV(x), VV(y))
         res = [delistify(to_np(l))]
-        res += [f(preds.data,y) for f in metrics]
+        res += [f(datafy(preds), datafy(y)) for f in metrics]
     stepper.reset(True)
     return res
 
