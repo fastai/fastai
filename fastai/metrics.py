@@ -40,7 +40,7 @@ def precision(log_preds, targs, thresh=0.5, epsilon=1e-8):
     tpos = torch.mul((targs.byte() == pred_pos.byte()), targs.byte())
     return tpos.sum()/(pred_pos.sum() + epsilon)
 
-def precision_np(preds, targs, thresh=0.5,epsilon=1e-8):
+def precision_np(preds, targs, thresh=0.5, epsilon=1e-8):
     pred_pos = preds > thresh
     tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
     return tpos.sum()/(pred_pos.sum() + epsilon)
