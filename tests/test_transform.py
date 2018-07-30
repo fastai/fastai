@@ -232,10 +232,12 @@ def test_googlenet_resize():
     # TODO: figure out how to test this in a way it make sense
     pass
 
-def test_cutout():
-    im = np.ones([128,128,3], np.float32)
-    with_holes = cutout(im, 1, 10)
-    assert (with_holes == 0).sum() == 300, "There is one cut out hole 10px x 10px in size (over 3 channels)"
+#This test will fail because the hole cut out can be near the edage of the picture.
+#TODO: figure out how to test this better.
+#def test_cutout():
+#    im = np.ones([128,128,3], np.float32)
+#    with_holes = cutout(im, 1, 10)
+#    assert (with_holes == 0).sum() == 300, "There is one cut out hole 10px x 10px in size (over 3 channels)"
 
 def test_scale_to():
     h=10
