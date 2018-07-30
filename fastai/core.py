@@ -14,6 +14,10 @@ def listify(x, y):
     if len(x)==1: x = x * n
     return x
 
+def datafy(x):
+    if is_listy(x): return [o.data for o in x]
+    else:           return x.data
+
 conv_dict = {np.dtype('int8'): torch.LongTensor, np.dtype('int16'): torch.LongTensor,
     np.dtype('int32'): torch.LongTensor, np.dtype('int64'): torch.LongTensor,
     np.dtype('float32'): torch.FloatTensor, np.dtype('float64'): torch.FloatTensor}

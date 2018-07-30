@@ -219,7 +219,7 @@ def validate_next(stepper, metrics, val_iter):
         (*x,y) = val_iter.next()
         preds,l = stepper.evaluate(VV(x), VV(y))
         res = [delistify(to_np(l))]
-        res += [f(preds.data,y) for f in metrics]
+        res += [f(datafy(preds), datafy(y)) for f in metrics]
     stepper.reset(True)
     return res
 
@@ -237,8 +237,7 @@ def validate(stepper, dl, metrics, epoch, seq_first=False, validate_skip = 0):
             preds, l = stepper.evaluate(VV(x), y)
             batch_cnts.append(batch_sz(x, seq_first=seq_first))
             loss.append(to_np(l))
-            if is_listy(y): res.append([f(preds.data, y) for f in metrics])
-            else:           res.append([f(preds.data, y.data) for f in metrics])
+            res.append([f(datafy(preds), datafy(y)) for f in metrics])
     return [np.average(loss, 0, weights=batch_cnts)] + list(np.average(np.stack(res), 0, weights=batch_cnts))
 
 def get_prediction(x):
