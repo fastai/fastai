@@ -23,27 +23,27 @@ def accuracy_multi(preds, targs, thresh):
 def accuracy_multi_np(preds, targs, thresh):
     return ((preds>thresh)==targs).mean()
 
-def recall(log_preds, targs, thresh=0.5):
+def recall(log_preds, targs, thresh=0.5, epsilon=1e-8):
     preds = torch.exp(log_preds)
     pred_pos = torch.max(preds > thresh, dim=1)[1]
     tpos = torch.mul((targs.byte() == pred_pos.byte()), targs.byte())
-    return tpos.sum()/targs.sum()
+    return tpos.sum()/(targs.sum() + epsilon)
 
-def recall_np(preds, targs, thresh=0.5):
+def recall_np(preds, targs, thresh=0.5, epsilon=1e-8):
     pred_pos = preds > thresh
     tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
-    return tpos.sum()/targs.sum()
+    return tpos.sum()/(targs.sum() + epsilon)
 
-def precision(log_preds, targs, thresh=0.5):
+def precision(log_preds, targs, thresh=0.5, epsilon=1e-8):
     preds = torch.exp(log_preds)
     pred_pos = torch.max(preds > thresh, dim=1)[1]
     tpos = torch.mul((targs.byte() == pred_pos.byte()), targs.byte())
-    return tpos.sum()/pred_pos.sum()
+    return tpos.sum()/(pred_pos.sum() + epsilon)
 
-def precision_np(preds, targs, thresh=0.5):
+def precision_np(preds, targs, thresh=0.5, epsilon=1e-8):
     pred_pos = preds > thresh
     tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
-    return tpos.sum()/pred_pos.sum()
+    return tpos.sum()/(pred_pos.sum() + epsilon)
 
 def fbeta(log_preds, targs, beta, thresh=0.5):
     """Calculates the F-beta score (the weighted harmonic mean of precision and recall).
