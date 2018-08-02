@@ -17,7 +17,9 @@ The most likely customizations you might need to do are ...
 
 You can create custom transform pipelines using an approach like: ...
 
-If you want to create a custom transform, you will need to : ...
+If you want to create a custom transform, you will need to : 
+- subclass the class Transform
+- override do_transform
 
 [[Transform]]
 == Class Transform [.small]#(tfm_y=TfmType.NO)#
