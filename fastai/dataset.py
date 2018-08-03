@@ -1,3 +1,5 @@
+from typing import Optional, Callable
+
 from .dataloader import DataLoader
 from .transforms import *
 
@@ -281,6 +283,7 @@ class FilesDataset(BaseDataset):
         :param new_path:
         :param resume: If true (default), allow resuming a partial resize operation by checking for the existence
         of individual images rather than the existence of the directory
+        :param fn: Custom resizing function Img -> Img
         :return:
         """
         dest = resize_imgs(self.fnames, targ, self.path, new_path, resume, fn)
@@ -392,7 +395,18 @@ class ImageData(ModelData):
     @property
     def c(self): return self.trn_ds.c
 
-    def resized(self, dl: DataLoader, targ: int, new_path: str, resume: bool = True, fn=None):
+    def resized(self, dl: DataLoader, targ: int, new_path: str, resume: bool = True,
+                fn: Optional[Callable[[Image], Image]]=None):
+        """
+        Return a copy of this dataset resized
+        :param dl:
+        :param targ:
+        :param new_path:
+        :param resume: Check for images in the DataSet that haven't been resized yet (useful if a previous resize
+        operation was aborted)
+        :param fn: Optional custom resizing function
+        :return:
+        """
         return dl.dataset.resize_imgs(targ, new_path, resume=resume, fn=fn) if dl else None
 
     def resize(self, targ_sz: int, new_path: str = 'tmp', resume: bool =True, fn=None):
