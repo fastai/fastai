@@ -1,4 +1,5 @@
 from typing import Optional, Callable
+from PIL.ImageFile import ImageFile
 
 from .dataloader import DataLoader
 from .transforms import *
@@ -396,7 +397,7 @@ class ImageData(ModelData):
     def c(self): return self.trn_ds.c
 
     def resized(self, dl: DataLoader, targ: int, new_path: str, resume: bool = True,
-                fn: Optional[Callable[[Image], Image]]=None):
+                fn: Optional[Callable[[ImageFile], ImageFile]]=None):
         """
         Return a copy of this dataset resized
         :param dl:
