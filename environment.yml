@@ -64,7 +64,7 @@ dependencies:
 - pygments
 - pyparsing
 - pyqt
-- python>=3.6.0
+- python=3.6.*
 - python-dateutil
 - pytz
 - pyzmq
