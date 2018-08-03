@@ -277,7 +277,7 @@ class FilesDataset(BaseDataset):
     def get_x(self, i): return open_image(os.path.join(self.path, self.fnames[i]))
     def get_n(self): return len(self.fnames)
 
-    def resize_imgs(self, targ: int, new_path: str, resume: bool=True, fn=None):
+    def resize_imgs(self, targ, new_path, resume=True, fn=None):
         """
         resize all images in the dataset and save them to `new_path`
         :param targ: The target size
@@ -396,7 +396,7 @@ class ImageData(ModelData):
     @property
     def c(self): return self.trn_ds.c
 
-    def resized(self, dl: DataLoader, targ: int, new_path: str, resume: bool = True,
+    def resized(self, dl, targ, new_path, resume = True,
                 fn: Optional[Callable[[ImageFile], ImageFile]]=None):
         """
         Return a copy of this dataset resized
@@ -410,7 +410,7 @@ class ImageData(ModelData):
         """
         return dl.dataset.resize_imgs(targ, new_path, resume=resume, fn=fn) if dl else None
 
-    def resize(self, targ_sz: int, new_path: str = 'tmp', resume: bool =True, fn=None):
+    def resize(self, targ_sz, new_path='tmp', resume=True, fn=None):
         new_ds = []
         dls = [self.trn_dl,self.val_dl,self.fix_dl,self.aug_dl]
         if self.test_dl: dls += [self.test_dl, self.test_aug_dl]
