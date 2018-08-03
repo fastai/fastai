@@ -1,0 +1,55 @@
+Delete this later: 
+* This is a draft, to start mostly based on http://www.fast.ai/2018/04/29/categorical-embeddings/
+* deep dive code missing yet
+* potentially, we splt this file into two one for column_data and one for structured
+
+= Deep Learning for tabular data
+
+Deep Learning can be used for tabular, relational or structured data, find a short intro here: http://www.fast.ai/2018/04/29/categorical-embeddings/
+
+== The Basis Idea: 
+
+For instance, a 4-dimensional version of an embedding for day of week could look like:
+
+Sunday	[.8, .2, .1, .1]
+Monday	[.1, .2, .9, .9]
+Tuesday	[.2, .1, .9, .8]
+
+Here, Monday and Tuesday are fairly similar, yet they are both quite different from Sunday. 
+Some points to note:
+
+* a neural network would learn the best representations for each category while it is training. 
+* this is the same idea as is used with word embeddings, such as Word2Vec.
+* embeddings capture richer relationships and complexities than the raw categories. 
+* you can re-use pre-trained embeddings for a category (e.g. product) in different contexts
+
+== fastai.structured: 
+* module works with Pandas DataFrames, is not dependent on PyTorch, 
+* can be used separately from the rest of the fastai library to process and work with tabular data
+* improves the performance of machine learning models by pre-processing and creating the right types of variables
+* A typical usage would be: ...
+* To customise the class you would: ...
+
+Other useful methods:
+* Time structured data
+** typically we treat month, year, day of week a.o. as categorical 
+** fastai.structured.add_datepart converts dates (e.g. 2000-03-11) into a number of variables (year, month, week, day of week, day of month, and booleans for whether it’s the start/end of a month/quarter/year.)
+* Fill in missing values with the median whilst adding a boolean indicator variable (fix_missing)
+* Change any columns of strings in a Pandas DataFrame to a column of categorical values (train_cats)
+
+== fastai.column_data: 
+* methods to convert Panda DataFrames (with both continuous and categorical variables) into ModelData objects to train 
+* implementation for creating embeddings of categorical variables
+=== fastai.column_data.ColumnarModelData 
+* takes a Pandas DataFrame as input and creates a type of ModelData object
+* works with Pytorch’s nn.Embedding module
+* A typical usage would be: ...
+* To customise the class you would: ...
+
+== References
+
+* http://www.fast.ai/2018/04/29/categorical-embeddings/
+* Deep Learning Part I 2018 Lesson 3 video (check the respective Notebook) starting around 1:59:45 - Lesson 4  
+* https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e
+* https://twimlai.com/twiml-talk-124-systems-software-machine-learning-scale-jeff-dean/
+* https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc
