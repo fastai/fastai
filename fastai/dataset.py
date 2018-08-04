@@ -55,24 +55,24 @@ def resize_imgs(fnames, targ, path, new_path, resume=True, fn=None):
     -- When destination file or folder already exist, function exists without raising an error. 
     """
     target_path = path_for(path, new_path, targ)
-    if os.path.exists(target_path):
-        if resume:
-            subdirs = {os.path.dirname(p) for p in fnames}
-            already_resized_fnames = set()
-            for subdir in subdirs:
-                files = [os.path.join(subdir, file) for file in os.listdir(os.path.join(target_path, subdir))]
-                already_resized_fnames.update(set(files))
-            original_fnames = set(fnames)
-            fnames = list(original_fnames - already_resized_fnames)
-        else:
-            fnames = []
+    if resume:
+        subdirs = {os.path.dirname(p) for p in fnames}
+        subdirs = {s for s in subdirs if os.path.exists(os.path.join(target_path, s))}
+        already_resized_fnames = set()
+        for subdir in subdirs:
+            files = [os.path.join(subdir, file) for file in os.listdir(os.path.join(target_path, subdir))]
+            already_resized_fnames.update(set(files))
+        original_fnames = set(fnames)
+        fnames = list(original_fnames - already_resized_fnames)
+    else:
+        fnames = []
 
     errors = {}
     def safely_process(fname):
         try:
             resize_img(fname, targ, path, new_path, fn=fn)
         except Exception as ex:
-            errors[fname] = ex
+            errors[fname] = str(ex)
 
     if len(fnames) > 0:
         with ThreadPoolExecutor(num_cpus()) as e:
@@ -80,7 +80,7 @@ def resize_imgs(fnames, targ, path, new_path, resume=True, fn=None):
             for _ in tqdm(ims, total=len(fnames), leave=False): pass
     if errors:
         print('Some images failed to process:')
-        print(json.dump(errors, indent=2))
+        print(json.dumps(errors, indent=2))
     return os.path.join(path,new_path,str(targ))
 
 def read_dir(path, folder):
