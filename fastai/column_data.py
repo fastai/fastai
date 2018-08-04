@@ -143,6 +143,10 @@ class StructuredLearner(Learner):
 
     def _get_crit(self, data): return F.mse_loss if data.is_reg else F.binary_cross_entropy if data.is_multi else F.nll_loss
 
+    def predict_array(self,x_cat,x_cont):
+        self.model.eval()
+        return to_np(self.model(to_gpu(V(T(x_cat))),to_gpu(V(T(x_cont)))))
+
     def summary(self):
         x = [torch.ones(3, self.data.trn_ds.cats.shape[1]).long(), torch.rand(3, self.data.trn_ds.conts.shape[1])]
         return model_summary(self.model, x)
