@@ -1,6 +1,4 @@
-from typing import Optional, Callable
 from PIL.ImageFile import ImageFile
-
 from .dataloader import DataLoader
 from .transforms import *
 
@@ -64,9 +62,7 @@ def resize_imgs(fnames, targ, path, new_path, resume=True, fn=None):
             already_resized_fnames.update(set(files))
         original_fnames = set(fnames)
         fnames = list(original_fnames - already_resized_fnames)
-    else:
-        fnames = []
-
+    
     errors = {}
     def safely_process(fname):
         try:
@@ -280,12 +276,13 @@ class FilesDataset(BaseDataset):
     def resize_imgs(self, targ, new_path, resume=True, fn=None):
         """
         resize all images in the dataset and save them to `new_path`
-        :param targ: The target size
-        :param new_path:
-        :param resume: If true (default), allow resuming a partial resize operation by checking for the existence
+        
+        Arguments:
+        targ (int): the target size
+        new_path (string): the new folder to save the images
+        resume (bool): if true (default), allow resuming a partial resize operation by checking for the existence
         of individual images rather than the existence of the directory
-        :param fn: Custom resizing function Img -> Img
-        :return:
+        fn (function): custom resizing function Img -> Img
         """
         dest = resize_imgs(self.fnames, targ, self.path, new_path, resume, fn)
         return self.__class__(self.fnames, self.y, self.transform, dest)
@@ -396,21 +393,23 @@ class ImageData(ModelData):
     @property
     def c(self): return self.trn_ds.c
 
-    def resized(self, dl, targ, new_path, resume = True,
-                fn: Optional[Callable[[ImageFile], ImageFile]]=None):
+    def resized(self, dl, targ, new_path, resume = True, fn=None):
         """
         Return a copy of this dataset resized
-        :param dl:
-        :param targ:
-        :param new_path:
-        :param resume: Check for images in the DataSet that haven't been resized yet (useful if a previous resize
-        operation was aborted)
-        :param fn: Optional custom resizing function
-        :return:
         """
         return dl.dataset.resize_imgs(targ, new_path, resume=resume, fn=fn) if dl else None
 
     def resize(self, targ_sz, new_path='tmp', resume=True, fn=None):
+        """
+        Resizes all the images in the train, valid, test folders to a given size.
+
+        Arguments:
+        targ_sz (int): the target size
+        new_path (str): the path to save the resized images (default tmp)
+        resume (bool): if True, check for images in the DataSet that haven't been resized yet (useful if a previous resize
+        operation was aborted)
+        fn (function): optional custom resizing function
+        """
         new_ds = []
         dls = [self.trn_dl,self.val_dl,self.fix_dl,self.aug_dl]
         if self.test_dl: dls += [self.test_dl, self.test_aug_dl]
