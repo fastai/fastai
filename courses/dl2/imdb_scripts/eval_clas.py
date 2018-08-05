@@ -3,11 +3,10 @@ from fastai.text import *
 from fastai.lm_rnn import *
 from sklearn.metrics import confusion_matrix
 
-
 def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
-              bpe=False, train_file_id=''):
-    print(f'dir_path {dir_path}; cuda_id {cuda_id}; lm_id {lm_id}; clas_id {clas_id}; bs {bs}; backwards {backwards}; '
-        f'bpe {bpe}; train_file_id {train_file_id}')
+              bpe=False):
+    print(f'dir_path {dir_path}; cuda_id {cuda_id}; lm_id {lm_id}; '
+         f'clas_id {clas_id}; bs {bs}; backwards {backwards}; bpe {bpe}')
     if not hasattr(torch._C, '_cuda_setDevice'):
         print('CUDA not available. Setting device=-1.')
         cuda_id = -1
@@ -16,7 +15,6 @@ def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
     PRE = 'bwd_' if backwards else 'fwd_'
     PRE = 'bpe_' + PRE if bpe else PRE
     IDS = 'bpe' if bpe else 'ids'
-    train_file_id = train_file_id if train_file_id == '' else f'_{train_file_id}'
     dir_path = Path(dir_path)
     lm_id = lm_id if lm_id == '' else f'{lm_id}_'
     clas_id = lm_id if clas_id is None else clas_id
@@ -54,7 +52,7 @@ def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
     learn.load('fwd_pretrain_wt103_clas_1')
     predictions = np.argmax(learn.predict(), axis=1)
     acc = (val_lbls_sampled == predictions).mean()
-    print('Accuracy=', acc)
+    print('Accuracy =', acc, 'Confusion Matrix =')
     print(confusion_matrix(val_lbls_sampled, predictions))
 
 if __name__ == '__main__': fire.Fire(eval_clas)

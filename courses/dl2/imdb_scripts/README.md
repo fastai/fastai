@@ -149,7 +149,24 @@ For fine-tuning the classifier on IMDb, we set `--cl`, the number of epochs to `
 
 ### 5. Evaluate the classifier
 
+Run `eval_clas.py` to get the classifier accuracy and confusion matrix.
 
+This requires the files produced during the training process: itos.pkl and the classifier (named clas_1.h5 by default), as well as the `npy` files containing the evaluation samples and labels. 
+
+Example command: `python eval_clas.py data/imdb 0 --lm-id pretrain_wt103 --clas-id pretrain_wt103`
+
+Usage:
+```
+eval_clas.py DIR_PATH CUDA_ID [LM_ID] [CLAS_ID] [BS] [BACKWARDS] [BPE]
+eval_clas.py --dir-path DIR_PATH --cuda-id CUDA_ID [--lm-id LM_ID] [--clas-id CLAS_ID] [--bs BS] [--bpe BPE]
+```
+- `DIR_PATH`: the directory where the `tmp` and `models` folder are located
+- `CUDA_ID`: the id of the GPU used for training the model
+- `LM_ID`: the id of the fine-tuned language model that should be loaded
+- `CLAS_ID`: the id used for saving the classifier
+- `BS`: the batch size used for training the model
+- `BACKWARDS`: whether a backwards LM is trained
+- `BPE`: whether we use byte-pair encoding (BPE)
 
 ### 6. Try the classifier on text
 
