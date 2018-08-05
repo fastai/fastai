@@ -4,10 +4,10 @@ from fastai.lm_rnn import *
 from sklearn.metrics import confusion_matrix
 
 
-def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards=False,
-               bpe=False, train_file_id=''):
-    print(f'dir_path {dir_path}; cuda_id {cuda_id}; lm_id {lm_id}; clas_id {clas_id}; bs {bs}; cl {cl}; backwards {backwards}; '
-        f'bpe {bpe}; use_clr {use_clr}; train_file_id {train_file_id}')
+def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
+              bpe=False, train_file_id=''):
+    print(f'dir_path {dir_path}; cuda_id {cuda_id}; lm_id {lm_id}; clas_id {clas_id}; bs {bs}; backwards {backwards}; '
+        f'bpe {bpe}; train_file_id {train_file_id}')
     if not hasattr(torch._C, '_cuda_setDevice'):
         print('CUDA not available. Setting device=-1.')
         cuda_id = -1
