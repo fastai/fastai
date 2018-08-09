@@ -45,7 +45,7 @@ def precision_np(preds, targs, thresh=0.5, epsilon=1e-8):
     tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
     return tpos.sum()/(pred_pos.sum() + epsilon)
 
-def fbeta(log_preds, targs, beta, thresh=0.5):
+def fbeta(log_preds, targs, beta, thresh=0.5, epsilon=1e-8):
     """Calculates the F-beta score (the weighted harmonic mean of precision and recall).
     This is the micro averaged version where the true positives, false negatives and
     false positives are calculated globally (as opposed to on a per label basis).
@@ -57,15 +57,15 @@ def fbeta(log_preds, targs, beta, thresh=0.5):
     beta2 = beta ** 2
     rec = recall(log_preds, targs, thresh)
     prec = precision(log_preds, targs, thresh)
-    return (1 + beta2) * prec * rec / (beta2 * prec + rec)
+    return (1 + beta2) * prec * rec / (beta2 * prec + rec + epsilon)
 
-def fbeta_np(preds, targs, beta, thresh=0.5):
+def fbeta_np(preds, targs, beta, thresh=0.5, epsilon=1e-8):
     """ see fbeta """
     assert beta > 0, 'beta needs to be greater than 0'
     beta2 = beta ** 2
     rec = recall_np(preds, targs, thresh)
     prec = precision_np(preds, targs, thresh)
-    return (1 + beta2) * prec * rec / (beta2 * prec + rec)
+    return (1 + beta2) * prec * rec / (beta2 * prec + rec + epsilon)
 
 def f1(log_preds, targs, thresh=0.5): return fbeta(log_preds, targs, 1, thresh)
 def f1_np(preds, targs, thresh=0.5): return fbeta_np(preds, targs, 1, thresh)
