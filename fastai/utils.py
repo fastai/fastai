@@ -19,27 +19,9 @@ from sklearn.manifold import TSNE
 import bcolz
 
 from IPython.lib.display import FileLink
+from keras.layers import deserialize as layer_from_config 
 
-import keras
-from keras import backend as K
-from keras.utils.data_utils import get_file
-from keras.utils import np_utils
-from keras.utils.np_utils import to_categorical
-from keras.models import Sequential, Model
-from keras.layers import Input, Embedding, Reshape, merge, LSTM, Bidirectional
-from keras.layers import TimeDistributed, Activation, SimpleRNN, GRU
-from keras.layers import Flatten, Dense, Dropout, Lambda
-from keras.regularizers import l2, l1
-from keras.layers.normalization import BatchNormalization
-from keras.optimizers import SGD, RMSprop, Adam
-from keras.layers import deserialize as layer_from_config
-from keras.metrics import categorical_crossentropy, categorical_accuracy
-from keras.layers.convolutional import *
-from keras.preprocessing import image, sequence
-from keras.preprocessing.text import Tokenizer
-from vgg16 import Vgg16
 np.set_printoptions(precision=4, linewidth=100)
-
 
 to_bw = np.array([0.299, 0.587, 0.114])
 
@@ -92,11 +74,6 @@ def get_classes(path):
     return (val_batches.classes, batches.classes, onehot(val_batches.classes), onehot(batches.classes),
         val_batches.filenames, batches.filenames, test_batches.filenames)
 
-def limit_mem():
-    K.get_session().close()
-    cfg = K.tf.ConfigProto()
-    cfg.gpu_options.allow_growth = True
-    K.set_session(K.tf.Session(config=cfg))
 
 class MixIterator(object):
     def __init__(self, iters):
