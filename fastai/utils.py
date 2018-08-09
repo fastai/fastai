@@ -19,13 +19,9 @@ from sklearn.manifold import TSNE
 import bcolz
 
 from IPython.lib.display import FileLink
-
-
-np.set_printoptions(precision=4, linewidth=100)
-
-
 from keras.layers import deserialize as layer_from_config 
 
+np.set_printoptions(precision=4, linewidth=100)
 
 to_bw = np.array([0.299, 0.587, 0.114])
 
