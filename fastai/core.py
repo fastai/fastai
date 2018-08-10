@@ -67,7 +67,9 @@ def to_np(v):
     if isinstance(v, (np.ndarray, np.generic)): return v
     if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data
-    if isinstance(v, torch.cuda.HalfTensor): v=v.float()
+    if torch.cuda.is_available():
+        if isinstance(v, torch.cuda.HalfTensor): v=v.float()
+    if isinstance(v, torch.FloatTensor): v=v.float()
     return v.cpu().numpy()
 
 IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
