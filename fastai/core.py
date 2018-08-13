@@ -159,7 +159,7 @@ def load(fn):
     """Utility function that loads model, function, etc as pickle"""
     return pickle.load(open(fn,'rb'))
 def load2(fn):
-    """Utility funciton allowing model piclking across Python2 and Python3"""
+    """Utility function allowing model piclking across Python2 and Python3"""
     return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
 
 def load_array(fname): 
