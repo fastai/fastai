@@ -47,5 +47,4 @@ install:
 
 
 script:
-  #- python -m unittest
-  -  python -m pytest tests
+  -  python -m pytest --cov fastai --cov-branch tests

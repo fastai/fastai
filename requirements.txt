@@ -38,6 +38,7 @@ ptyprocess>=0.5.2
 Pygments>=2.2.0
 pyparsing>=2.2.0
 pytest>=3.5.0
+pytest-cov>=2.5.1
 python-dateutil>=2.6.1
 pytz>=2017.2
 PyYAML>=3.12
