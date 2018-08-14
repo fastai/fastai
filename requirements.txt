@@ -61,3 +61,4 @@ wcwidth>=0.1.7
 webencodings>=0.5.1
 widgetsnbextension>=3.0.3
 spacy>=2.0.11
+testfixtures>=6.2.0
