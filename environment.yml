@@ -78,6 +78,7 @@ dependencies:
 - six
 - sqlite
 - statsmodels
+- testfixtures
 - testpath
 - tk
 - tornado<5
