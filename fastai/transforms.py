@@ -545,7 +545,7 @@ class RandomBlur(Transform):
         self.apply_transform = False
 
     def set_state(self):
-        self.store.apply_transform = random.random() < self.probability
+        self.apply_transform = random.random() < self.probability
         kernel_size = np.random.choice(self.blur_strengths)
         self.store.kernel = (kernel_size, kernel_size)
 
