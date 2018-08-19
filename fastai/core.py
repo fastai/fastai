@@ -36,10 +36,16 @@ def T(a, half=False, cuda=True):
         if a.dtype in (np.int8, np.int16, np.int32, np.int64):
             a = torch.LongTensor(a.astype(np.int64))
         elif a.dtype in (np.float32, np.float64):
-            a = torch.cuda.HalfTensor(a) if half else torch.FloatTensor(a)
+            a = to_half(a) if half else torch.FloatTensor(a)
         else: raise NotImplementedError(a.dtype)
     if cuda: a = to_gpu(a, async=True)
     return a
+
+def to_half(tensor):
+    if torch.cuda.is_available():
+        return torch.cuda.HalfTensor(tensor)
+    else:
+        return torch.FloatTensor(tensor)
 
 def create_variable(x, volatile, requires_grad=False):
     if type (x) != Variable:
@@ -68,9 +74,13 @@ def to_np(v):
     if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data
     if torch.cuda.is_available():
-        if isinstance(v, torch.cuda.HalfTensor): v=v.float()
+        if is_half_tensor(v): v=v.float()
     if isinstance(v, torch.FloatTensor): v=v.float()
     return v.cpu().numpy()
+
+def is_half_tensor(v):
+    return isinstance(v, torch.cuda.HalfTensor)
+
 
 IS_TORCH_04 = LooseVersion(torch.__version__) >= LooseVersion('0.4')
 USE_GPU = torch.cuda.is_available()

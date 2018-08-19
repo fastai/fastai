@@ -33,17 +33,18 @@ def test_datafy():
   assert core.datafy([x]) == [{}]
   assert core.datafy([x, x]) == [{}, {}]
 
-@mock.patch("fastai.core.torch.cuda.HalfTensor")
-def test_T(HalfTensorMock):
+@mock.patch("fastai.core.to_gpu", lambda x, *args, **kwargs: x)
+def test_T():
   tensor = torch.ones([1, 2])
-  assert core.T(tensor) is tensor
+  np.testing.assert_equal(core.to_np(core.T(tensor)), [[1, 1]])
 
   array = np.arange(0, 5)
   assert core.T(array.astype(np.int)).type() == "torch.LongTensor"
   assert core.T(array.astype(np.float)).type() == "torch.FloatTensor"
 
-  core.T(array.astype(np.float), half=True)
-  HalfTensorMock.assert_called_once()
+  with mock.patch("fastai.core.to_half") as to_half_mock:
+    core.T(array.astype(np.float), half=True)
+    to_half_mock.assert_called_once()
 
   with pytest.raises(NotImplementedError):
     assert core.T(array.astype(np.object))
@@ -89,14 +90,16 @@ def test_to_np():
   variable = core.V(array)
   np.testing.assert_equal(core.to_np(variable), array)
 
-  with mock.patch("torch.cuda") as cuda_mock:
-    tensor_long = core.T(array.astype(np.int))
-    cuda_mock.is_available(return_value=True)
-    cuda_mock.HalfTensor = torch.LongTensor
+  with mock.patch("torch.cuda.is_available") as is_available_mock:
+    with mock.patch("fastai.core.is_half_tensor") as is_half_tensor_mock:
+      is_available_mock.return_value=True
+      is_half_tensor_mock.return_value=True
 
-    array = core.to_np(tensor_long)
-    np.testing.assert_equal(array, [0., 1., 2.])
-    assert array.dtype in (np.float32, np.float64)
+      tensor = core.T(array.astype(np.int))
+
+      array = core.to_np(tensor)
+      np.testing.assert_equal(array, [0., 1., 2.])
+      assert array.dtype in (np.float32, np.float64)
 
 
 def test_noop():
@@ -320,6 +323,7 @@ class TestSimpleNet(unittest.TestCase):
     assert self.simple_net.layers[1].in_features == 3
     assert self.simple_net.layers[1].out_features == 2
 
+  @mock.patch("fastai.core.to_gpu", lambda x, *args, **kwargs: x)
   def test_forward(self):
     x = core.V(np.array([[1., 2.]]), requires_grad=False)
     output = core.to_np(self.simple_net.forward(x))
