@@ -542,7 +542,7 @@ class RandomBlur(Transform):
         if np.any(self.blur_strengths < 0):
             raise ValueError("all blur_strengths must be > 0")
         self.probability = probability
-        self.apply_transform = False
+        self.store.apply_transform = False
 
     def set_state(self):
         self.store.apply_transform = random.random() < self.probability
@@ -550,7 +550,7 @@ class RandomBlur(Transform):
         self.store.kernel = (kernel_size, kernel_size)
 
     def do_transform(self, x, is_y):
-        return cv2.GaussianBlur(src=x, ksize=self.store.kernel, sigmaX=0) if self.apply_transform else x
+        return cv2.GaussianBlur(src=x, ksize=self.store.kernel, sigmaX=0) if self.store.apply_transform else x
 
 class Cutout(Transform):
     """ Randomly masks squares of size length on the image.
