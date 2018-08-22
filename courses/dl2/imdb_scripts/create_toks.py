@@ -23,7 +23,7 @@ def get_texts(df, n_lbls, lang='en'):
     else:
         labels = df.iloc[:,range(n_lbls)].values.astype(np.int64)
         texts = f'\n{BOS} {FLD} 1 ' + df[n_lbls].astype(str)
-        for i in range(n_lbls+1, len(df.columns)): texts += f' {FLD} {i-n_lbls} ' + df[i].astype(str)
+        for i in range(n_lbls+1, len(df.columns)): texts += f' {FLD} {i-n_lbls+1} ' + df[i].astype(str)
     texts = list(texts.apply(fixup).values)
 
     tok = Tokenizer(lang=lang).proc_all_mp(partition_by_cores(texts), lang=lang)
