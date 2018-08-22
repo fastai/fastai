@@ -28,10 +28,9 @@ class Learner():
         metrics(list): array of functions for evaluating a desired metric. Eg. accuracy.
         clip(float): gradient clip chosen to limit the change in the gradient to prevent exploding gradients Eg. .3
         """
-        self.data_,self.models,self.metrics = data,models,metrics
+        self.data_,self.models,self.metrics,self.clip = data,models,metrics,clip
         self.sched=None
         self.wd_sched = None
-        self.clip = None
         self.opt_fn = opt_fn or SGD_Momentum(0.9)
         self.tmp_path = tmp_name if os.path.isabs(tmp_name) else os.path.join(self.data.path, tmp_name)
         self.models_path = models_name if os.path.isabs(models_name) else os.path.join(self.data.path, models_name)
