@@ -8,7 +8,6 @@ from .sgdr import *
 from .layer_optimizer import *
 from .layers import *
 from .metrics import *
-from .losses import *
 from .swa import *
 from .fp16 import *
 from .lsuv_initializer import apply_lsuv_init
