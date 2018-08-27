@@ -51,7 +51,9 @@ def test_T():
 
 def test_create_variable_passing_Variable_object():
   v = torch.autograd.Variable(core.T(np.arange(0, 3)))
-  assert core.create_variable(v, volatile=True) is v
+  cv = core.create_variable(v, volatile=True)
+  if core.IS_TORCH_04: assert (cv == v).all()
+  else: assert cv is v
 
 @mock.patch("fastai.core.Variable")
 def test_create_variable(VariableMock):
