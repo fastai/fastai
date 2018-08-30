@@ -232,8 +232,7 @@ def validate(stepper, dl, metrics, epoch, seq_first=False, validate_skip = 0):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     with no_grad_context():
-        num_batch = len(dl)
-        t = tqdm(iter(dl), leave=False, total=num_batch, miniters=0, desc='Validation')
+        t = tqdm(iter(dl), leave=False, total=len(dl), miniters=0, desc='Validation')
         for (*x,y) in t:
             y = VV(y)
             preds, l = stepper.evaluate(VV(x), y)
