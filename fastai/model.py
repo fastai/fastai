@@ -232,7 +232,8 @@ def validate(stepper, dl, metrics, epoch, seq_first=False, validate_skip = 0):
     batch_cnts,loss,res = [],[],[]
     stepper.reset(False)
     with no_grad_context():
-        for (*x,y) in iter(dl):
+        t = tqdm(iter(dl), leave=False, total=len(dl), miniters=0, desc='Validation')
+        for (*x,y) in t:
             y = VV(y)
             preds, l = stepper.evaluate(VV(x), y)
             batch_cnts.append(batch_sz(x, seq_first=seq_first))
@@ -302,4 +303,3 @@ def model_summary(m, inputs):
 
     for h in hooks: h.remove()
     return summary
-
