@@ -207,3 +207,19 @@ class ConvLearner(Learner):
         """
         self.freeze_to(0)
         self.precompute = False
+
+    def predict_array(self, arr):
+        """
+        This over-ride is necessary because otherwise the learner method accesses the wrong model when it is called
+        with precompute set to true
+
+        Args:
+            arr: a numpy array to be used as input to the model for prediction purposes
+        Returns:
+            a numpy array containing the predictions from the model
+        """
+        precompute = self.precompute
+        self.precompute = False
+        pred = super().predict_array(arr)
+        self.precompute = precompute
+        return pred
