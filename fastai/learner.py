@@ -386,8 +386,7 @@ class Learner():
         Returns:
             a numpy array containing the predictions from the model
         """
-        if not isinstance(arr, np.ndarray):
-                raise OSError(f'Not valid numpy array')
+        if not isinstance(arr, np.ndarray): raise OSError(f'Not valid numpy array')
         self.model.eval()
         return to_np(self.model(to_gpu(V(T(arr)))))
 
