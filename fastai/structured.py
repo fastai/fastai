@@ -123,7 +123,7 @@ def is_date(x): return np.issubdtype(x.dtype, np.datetime64)
 
 def train_cats(df):
     """Change any columns of strings in a panda's dataframe to a column of
-    catagorical values. This applies the changes inplace.
+    categorical values. This applies the changes inplace.
 
     Parameters:
     -----------
