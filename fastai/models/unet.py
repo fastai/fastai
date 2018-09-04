@@ -82,6 +82,8 @@ class DynamicUnet(nn.Module):
         self.n_classes = n_classes
 
     def forward(self, x):
+        dtype = x.data.type()
+
         # get imsize
         imsize = x.size()[-2:]
 
@@ -95,7 +97,7 @@ class DynamicUnet(nn.Module):
             middle_in_c = self.sfs_szs[-1][1]
             middle_conv = nn.Sequential(*conv_bn_relu(middle_in_c, middle_in_c * 2, 3, 1, 1),
                                         *conv_bn_relu(middle_in_c * 2, middle_in_c, 3, 1, 1))
-            self.middle_conv = middle_conv
+            self.middle_conv = middle_conv.type(dtype)
 
         # middle conv
         x = self.middle_conv(x)
@@ -106,17 +108,17 @@ class DynamicUnet(nn.Module):
             upmodel = []
             for idx in self.sfs_idxs[::-1]:
                 up_in_c, x_in_c = int(x_copy.size()[1]), int(self.sfs_szs[idx][1])
-                unet_block = UnetBlock(up_in_c, x_in_c)
+                unet_block = UnetBlock(up_in_c, x_in_c).type(dtype)
                 upmodel.append(unet_block)
                 x_copy = unet_block(x_copy, self.sfs[idx].features)
                 self.upmodel = nn.Sequential(*upmodel)
 
             if imsize != self.sfs_szs[0][-2:]:
                 extra_in_c = self.upmodel[-1].conv2.out_channels
-                self.extra_block = nn.ConvTranspose2d(extra_in_c, extra_in_c, 2, 2)
+                self.extra_block = nn.ConvTranspose2d(extra_in_c, extra_in_c, 2, 2).type(dtype)
 
             final_in_c = self.upmodel[-1].conv2.out_channels
-            self.final_conv = nn.Conv2d(final_in_c, self.n_classes, 1)
+            self.final_conv = nn.Conv2d(final_in_c, self.n_classes, 1).type(dtype)
 
         # run upsample
         for block, idx in zip(self.upmodel, self.sfs_idxs[::-1]):
