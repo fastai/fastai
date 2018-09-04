@@ -64,7 +64,7 @@ class LayerOptimizer():
             self.opt = opt_fn(self.opt_params())
 
 def zip_strict_(l, r):
-    assert len(l) == len(r), f'size mismatch, expected {len(l)} r, but got {len(r)} r'
+    assert len(l) == len(r), f'size mismatch, expected lengths {len(l)}, but got {len(l)} and {len(r)} instead.'
     return zip(l, r)
 
 def set_lrs(opt, lrs):
@@ -73,11 +73,9 @@ def set_lrs(opt, lrs):
 
 def set_wds_out(opt, wds):
     wds = listify(wds, opt.param_groups)
-    assert len(opt.param_groups) == len(wds), f'size mismatch, expected {len(opt.param_groups)} wds, but got {len(wds)}'
     for pg,wd in zip_strict_(opt.param_groups,wds): pg['wd'] = wd
 
 def set_wds(opt, wds):
     wds = listify(wds, opt.param_groups)
-    assert len(opt.param_groups) == len(wds), f'size mismatch, expected {len(opt.param_groups)} wds, but got {len(wds)}'
     for pg,wd in zip_strict_(opt.param_groups,wds): pg['weight_decay'] = wd
 
