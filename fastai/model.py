@@ -92,7 +92,7 @@ def set_train_mode(m):
     else: m.train()
 
 def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
-        swa_model=None, swa_start=None, swa_eval_freq=None, visualize=False, random_gradient=False, ,**kwargs):
+        swa_model=None, swa_start=None, swa_eval_freq=None, visualize=False, random_gradient=False, **kwargs):
     """ Fits a model
 
     Arguments:
