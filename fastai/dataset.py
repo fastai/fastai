@@ -247,9 +247,9 @@ def isdicom(fn):
     if fn.endswith('.dcm'):
         return True
     # Dicom signature from the dicom spec.
-    with open(fn) as fh:
+    with open(fn,'rb') as fh:
         fh.seek(0x80)
-        return fh.read(4)=='DICM'
+        return fh.read(4)==b'DICM'
 
 def open_image(fn):
     """ Opens an image using OpenCV given the file path.
