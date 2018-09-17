@@ -19,7 +19,6 @@ def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
     lm_id = lm_id if lm_id == '' else f'{lm_id}_'
     clas_id = lm_id if clas_id is None else clas_id
     clas_id = clas_id if clas_id == '' else f'{clas_id}_'
-    intermediate_clas_file = f'{PRE}{clas_id}clas_0'
     final_clas_file = f'{PRE}{clas_id}clas_1'
     lm_file = f'{PRE}{lm_id}lm_enc'
     lm_path = dir_path / 'models' / f'{lm_file}.h5'
@@ -48,8 +47,8 @@ def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
     m = get_rnn_classifier(bptt, 20*70, c, vs, emb_sz=em_sz, n_hid=nh, n_layers=nl, pad_token=1,
                 layers=[em_sz*3, 50, c], drops=[0., 0.])
     learn = RNN_Learner(md, TextModel(to_gpu(m)))
-    learn.load_encoder('fwd_pretrain_lm_enc')
-    learn.load('fwd_pretrain_wt103_clas_1')
+    learn.load_encoder(lm_file)
+    learn.load(final_clas_file)
     predictions = np.argmax(learn.predict(), axis=1)
     acc = (val_lbls_sampled == predictions).mean()
     print('Accuracy =', acc, 'Confusion Matrix =')
