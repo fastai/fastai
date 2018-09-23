@@ -244,6 +244,7 @@ class BaseDataset(Dataset):
 
 def isdicom(fn):
     '''True if the fn points to a DICOM image'''
+    fn = str(fn)
     if fn.endswith('.dcm'):
         return True
     # Dicom signature from the dicom spec.
