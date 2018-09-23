@@ -537,7 +537,8 @@ class ImageClassifierData(ImageData):
             suffix: suffix to add to image names in CSV file (sometimes CSV only contains the file name without file
                     extension e.g. '.jpg' - in which case, you can set suffix as '.jpg')
             test_name: a name of the folder which contains test images.
-            continuous: TODO
+            continuous: if True, the data set is used to train regression models. If False, it is used 
+                to train classification models.
             skip_header: skip the first row of the CSV file.
             num_workers: number of workers
             cat_separator: Labels category separator
