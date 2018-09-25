@@ -209,7 +209,7 @@ class ResNet(nn.Module):
 
     def forward(self, x): return self.features(x)
 
-def load(model, pre, name):
+def load(model, pretrained, name):
     if pretrained: model.load_state_dict(model_zoo.load_url(model_urls[name]))
     return model
 
