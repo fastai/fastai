@@ -42,16 +42,17 @@ class RNN_Encoder(nn.Module):
         """ Default constructor for the RNN_Encoder class
 
             Args:
-                bs (int): batch size of input data
                 ntoken (int): number of vocabulary (or tokens) in the source dataset
                 emb_sz (int): the embedding size to use to encode each token
                 n_hid (int): number of hidden activation per LSTM layer
                 n_layers (int): number of LSTM layers to use in the architecture
                 pad_token (int): the int value used for padding text.
+                bidir (bool): Make the encoder bi-directional or not.
                 dropouth (float): dropout to apply to the activations going from one LSTM layer to another
                 dropouti (float): dropout to apply to the input layer.
                 dropoute (float): dropout to apply to the embedding layer.
                 wdrop (float): dropout used for a LSTM's internal (or hidden) recurrent weights.
+                qrnn (bool): Use QRNN as RNN layer or not. If use QRNN, cupy has to be installed.
 
             Returns:
                 None
@@ -100,7 +101,6 @@ class RNN_Encoder(nn.Module):
             raw_output = emb
             new_hidden,raw_outputs,outputs = [],[],[]
             for l, (rnn,drop) in enumerate(zip(self.rnns, self.dropouths)):
-                current_input = raw_output
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     raw_output, new_h = rnn(raw_output, self.hidden[l])
@@ -133,7 +133,7 @@ class MultiBatchRNN(RNN_Encoder):
         return [torch.cat([l[si] for l in arrs]) for si in range(len(arrs[0]))]
 
     def forward(self, input):
-        sl,bs = input.size()
+        sl = input.size(0)
         for l in self.hidden:
             for h in l: h.data.zero_()
         raw_outputs, outputs = [],[]
@@ -185,7 +185,7 @@ class PoolingLinearClassifier(nn.Module):
     def forward(self, input):
         raw_outputs, outputs = input
         output = outputs[-1]
-        sl,bs,_ = output.size()
+        bs = output.size(1)
         avgpool = self.pool(output, bs, False)
         mxpool = self.pool(output, bs, True)
         x = torch.cat([output[-1], mxpool, avgpool], 1)
@@ -210,7 +210,7 @@ def get_language_model(n_tok, emb_sz, n_hid, n_layers, pad_token,
     This is followed by the creation of a LinearDecoder layer.
 
     Also by default (i.e. tie_weights = True), the embedding matrix used in the RNN_Encoder
-    is used to  instantiate the weights for the LinearDecoder layer.
+    is used to instantiate the weights for the LinearDecoder layer.
 
     The SequentialRNN layer is the native torch's Sequential wrapper that puts the RNN_Encoder and
     LinearDecoder layers sequentially in the model.
@@ -221,6 +221,7 @@ def get_language_model(n_tok, emb_sz, n_hid, n_layers, pad_token,
         n_hid (int): number of hidden activation per LSTM layer
         n_layers (int): number of LSTM layers to use in the architecture
         pad_token (int): the int value used for padding text.
+        dropout (float): dropout to apply to LinearDecoder
         dropouth (float): dropout to apply to the activations going from one LSTM layer to another
         dropouti (float): dropout to apply to the input layer.
         dropoute (float): dropout to apply to the embedding layer.
