@@ -54,6 +54,7 @@ def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards
     trn_lbls -= trn_lbls.min()
     val_lbls -= val_lbls.min()
     c=int(trn_lbls.max())+1
+    print('Number of labels:', c)
 
     if bpe: vs=30002
     else:
@@ -73,7 +74,7 @@ def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards
     #dps = np.array([0.65,0.48,0.039,0.335,0.34])*dropmult
     #dps = np.array([0.6,0.5,0.04,0.3,0.4])*dropmult
 
-    m = get_rnn_classifier(bptt, 20*70, c, vs, emb_sz=em_sz, n_hid=nh, n_layers=nl, pad_token=1,
+    m = get_rnn_classifier(bptt, 20*bptt, c, vs, emb_sz=em_sz, n_hid=nh, n_layers=nl, pad_token=1,
               layers=[em_sz*3, 50, c], drops=[dps[4], 0.1],
               dropouti=dps[0], wdrop=dps[1], dropoute=dps[2], dropouth=dps[3])
 
