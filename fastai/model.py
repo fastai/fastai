@@ -31,12 +31,13 @@ def num_features(m):
 def torch_item(x): return x.item() if hasattr(x,'item') else x[0]
 
 class Stepper():
-    def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, loss_scale=1):
+    def __init__(self, m, opt, crit, clip=0, reg_fn=None, fp16=False, random_gradient=False, loss_scale=1):
         self.m,self.opt,self.crit,self.clip,self.reg_fn = m,opt,crit,clip,reg_fn
         self.fp16 = fp16
         self.reset(True)
         if self.fp16: self.fp32_params = copy_model_to_fp32(m, opt)
         self.loss_scale = loss_scale
+        self.random_gradient = random_gradient
 
     def reset(self, train=True):
         if train: apply_leaf(self.m, set_train_mode)
@@ -54,7 +55,12 @@ class Stepper():
         loss = raw_loss = self.crit(output, y)
         if self.loss_scale != 1: assert(self.fp16); loss = loss*self.loss_scale
         if self.reg_fn: loss = self.reg_fn(output, xtra, raw_loss)
+
+        if self.random_gradient:
+            loss = loss * torch.rand(1)[0]
+
         loss.backward()
+
         if self.fp16: update_fp32_grads(self.fp32_params, self.m)
         if self.loss_scale != 1:
             for param in self.fp32_params: param.grad.data.div_(self.loss_scale)
@@ -86,7 +92,7 @@ def set_train_mode(m):
     else: m.train()
 
 def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=Stepper,
-        swa_model=None, swa_start=None, swa_eval_freq=None, visualize=False, **kwargs):
+        swa_model=None, swa_start=None, swa_eval_freq=None, visualize=False, random_gradient=False, **kwargs):
     """ Fits a model
 
     Arguments:
@@ -97,6 +103,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
        If n_epochs is a list, it needs to be the layer_optimizer to get the optimizer as it changes.
        n_epochs(int or list): number of epochs (or list of number of epochs)
        crit: loss function to optimize. Example: F.cross_entropy
+       random_gradient: use random gradient optimization technique (https://arxiv.org/pdf/1808.04293v1.pdf)
     """
 
     seq_first = kwargs.pop('seq_first', False)
@@ -120,7 +127,7 @@ def fit(model, data, n_epochs, opt, crit, metrics=None, callbacks=None, stepper=
     if not isinstance(data, Iterable): data = [data]
     if len(data) == 1: data = data * len(n_epochs)
     for cb in callbacks: cb.on_phase_begin()
-    model_stepper = stepper(model, opt.opt if hasattr(opt,'opt') else opt, crit, **kwargs)
+    model_stepper = stepper(model, opt.opt if hasattr(opt,'opt') else opt, crit, random_gradient=random_gradient, **kwargs)
     ep_vals = collections.OrderedDict()
     tot_epochs = int(np.ceil(np.array(n_epochs).sum()))
     cnt_phases = np.array([ep * len(dat.trn_dl) for (ep,dat) in zip(n_epochs,data)]).cumsum()
