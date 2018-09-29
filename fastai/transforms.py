@@ -332,6 +332,14 @@ class RandomCrop(CoordTransform):
         return crop(x, start_r, start_c, sz)
 
 
+class CropNoop(CoordTransform):
+    """ Does not resize and does not scale """
+    def __init__(self, sz, tfm_y=TfmType.NO, sz_y=None):
+        super().__init__(tfm_y)
+
+    def do_transform(self, x, is_y):
+        return x
+
 class NoCrop(CoordTransform):
     """  A transformation that resize to a square image without cropping.
 
@@ -624,8 +632,9 @@ class CropType(IntEnum):
     CENTER = 2
     NO = 3
     GOOGLENET = 4
+    NOOP = 5
 
-crop_fn_lu = {CropType.RANDOM: RandomCrop, CropType.CENTER: CenterCrop, CropType.NO: NoCrop, CropType.GOOGLENET: GoogleNetResize}
+crop_fn_lu = {CropType.RANDOM: RandomCrop, CropType.CENTER: CenterCrop, CropType.NO: NoCrop, CropType.GOOGLENET: GoogleNetResize, CropType.NOOP: CropNoop}
 
 class Transforms():
     def __init__(self, sz, tfms, normalizer, denorm, crop_type=CropType.CENTER,
