@@ -25,7 +25,7 @@ If you have a different CUDA version find the right build [here](https://pytorch
 
 Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai_pytorch/issues/):
 
-    pip install fastai
+    pip install fastai==1.0.0b7
 
  Sometimes, the last `pip` command still tries to get `torch-0.4.1`. If that happens to you, do:
 
