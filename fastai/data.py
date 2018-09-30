@@ -75,7 +75,7 @@ class DataBunch():
         if test_ds is not None: datasets.append(test_ds)
         dls = [DataLoader(*o, num_workers=num_workers) for o in
                zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
-        return cls(*dls, path=path, device=device, tfms=tfms, collare_fn=collate_fn)
+        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_ds, k)
     def holdout(self, is_test:bool=False)->DeviceDataLoader:
