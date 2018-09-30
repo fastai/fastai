@@ -4,10 +4,10 @@ from .basic_train import *
 from .data import *
 from .layers import *
 
-__all__ = ['ColabFilteringDataset', 'EmbeddingDotBias', 'get_collab_learner']
+__all__ = ['CollabFilteringDataset', 'EmbeddingDotBias', 'get_collab_learner']
 
 @dataclass
-class ColabFilteringDataset(DatasetBase):
+class CollabFilteringDataset(DatasetBase):
     "Base dataset for collaborative filtering"
     user:Series
     item:Series
