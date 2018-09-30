@@ -11,7 +11,7 @@ class CollabFilteringDataset(DatasetBase):
     "Base dataset for collaborative filtering"
     user:Series
     item:Series
-    ratings:DataFrame
+    ratings:np.ndarray
     def __post_init__(self):
         self.user_ids = np.array(self.user.cat.codes, dtype=np.int64)
         self.item_ids = np.array(self.item.cat.codes, dtype=np.int64)
