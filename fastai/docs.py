@@ -7,7 +7,7 @@ DATA_PATH = Path('..')/'data'
 MNIST_PATH = DATA_PATH / 'mnist_sample'
 IMDB_PATH = DATA_PATH / 'imdb_sample'
 ADULT_PATH = DATA_PATH / 'adult_sample'
-ML_PATH = DATA_PATH / 'movie_lens'
+ML_PATH = DATA_PATH / 'movie_lens_sample'
 
 def untar_mnist():
     if not MNIST_PATH.exists(): tarfile.open(MNIST_PATH.with_suffix('.tgz'), 'r:gz').extractall(DATA_PATH)
