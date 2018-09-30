@@ -65,7 +65,6 @@ coverage: ## check code coverage quickly with the default Python
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
-# XXX: remove --repository testpypi for release
 release: dist ## package and upload a release
 	twine upload dist/*
 
