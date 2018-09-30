@@ -7,7 +7,7 @@ DATA_PATH = Path('..')/'data'
 MNIST_PATH = DATA_PATH / 'mnist_sample'
 IMDB_PATH = DATA_PATH / 'imdb_sample'
 ADULT_PATH = DATA_PATH / 'adult_sample'
-ML_PATH = DATA_PATH / 'movie_lens'
+ML_PATH = DATA_PATH / 'movie_lens_sample'
 
 def untar_mnist():
     if not MNIST_PATH.exists(): tarfile.open(MNIST_PATH.with_suffix('.tgz'), 'r:gz').extractall(DATA_PATH)
@@ -29,6 +29,11 @@ def get_imdb(classifier=False):
     if not IMDB_PATH.exists(): untar_imdb()
     data_func = classifier_data if classifier else lm_data
     return text_data_from_csv(IMDB_PATH, tokenizer=Tokenizer(), data_func=data_func)
+
+def get_movie_lens():
+    if not ML_PATH.exists(): untar_movie_lens()
+    ratings = pd.read_csv(ML_PATH/'ratings.csv')
+    return ratings
 
 def download_wt103_model():
     model_path = IMDB_PATH/'models'
