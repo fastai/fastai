@@ -35,7 +35,7 @@ dependencies:
 - jupyter_client
 - jupyter_console
 - jupyter_core
-- conda-forge::jupyter_contrib_nbextensions  
+#- conda-forge::jupyter_contrib_nbextensions  
 - libiconv
 - libpng
 - libsodium
