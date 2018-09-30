@@ -1,0 +1,182 @@
+#!/usr/bin/env python
+
+# Copy specified notebooks to dev_nb/snapshot if they have been executed completely:
+# tools/take-snapshot -v dev_nb/001b_fit.ipynb
+#
+# same for all notebooks under dev_nb/
+# tools/take-snapshot -v
+#
+# execute one or more notebooks and copy to dev_nb/snapshot on success:
+# tools/take-snapshot -v -e dev_nb/001a_nn_basics.ipynb dev_nb/001b_fit.ipynb
+#
+# drop -v if you want non-verbose run
+
+# Since we don't store outputs for code notebooks to make the
+# development process easier, we would like to store a copy of such
+# notebooks with their outputs under dev_nb/snapshot/, which would be updated
+# occasionally.
+#
+# This script checks whether the notebook is suitable to be shown to
+# users, by making sure it has been executed fully. i.e. the notebook
+# needs to be run from the beginning to the end to fit the bill.
+
+# list of notebooks to never copy over
+blacklist = ["099_skip_me.ipynb"]
+
+import sys, io, os, os.path, argparse, json, datetime, subprocess, time
+from pathlib import Path
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-e', '--execute', action="store_true", help="execute notebooks and copy on success")
+parser.add_argument('-v', '--verbose', action="store_true", help="enable verbose trace")
+parser.add_argument('files', nargs='*', help='Specific files to process')
+args = parser.parse_args()
+
+def trace(msg):
+    if not args.verbose: return
+    print(msg)
+
+def nb_add_disclaimer(s, fname):
+    date = datetime.datetime.today().strftime('%Y-%m-%d')
+    text = f"""<span style='color:green'>**note**: This is a snapshot of the notebook with its outputs preserved. It doesn't always match the original notebook. Please do not modify or submit PRs for this version of the notebook</span>
+
+<span style='color:green'>To modify and submit PRs always work with the original [dev_nb/{fname}](https://github.com/fastai/fastai_pytorch/tree/master/dev_nb/{fname}) notebook.</span>
+
+<span style='color:green'>Generated on {date}.</span>
+"""
+    cell = { "cell_type": "markdown", "metadata": {}, "source": [text]}
+
+    # add the disclaimer on both ends
+    s['cells'].insert(0, cell)
+    s['cells'].append(cell)
+
+def nb_read(file_in):
+    with io.open(file_in, 'r', encoding='utf-8') as f: return json.load(f)
+
+def nb_write(s, file_out):
+    out = json.dumps(s, sort_keys=True, indent=1, ensure_ascii=False)
+    with io.open(file_out, 'w', encoding='utf-8') as f:
+      f.write(out)
+      f.write("\n")
+
+def nb_check_n_copy(file_in, file_out, fname):
+    """ if nb appears to be executed fully push a disclaimer cell, write the nb to the snapshot/ directory and return 1, return 0 otherwise """
+    s = nb_read(file_in)
+
+    # 1. check that all execution_count values are in a sequence, to
+    # ensure that the developer didn't go back to re-run something
+    # earlier in the notebook, making it inconsistent.
+    #
+    # 2. check that all code cell with code have been executed
+    last_exec_cnt = 0
+    for c in s['cells']:
+        if c["cell_type"] == "code":
+
+            # skip over unexecuted code cells with no code in them
+            if not c["execution_count"] and not len(c["source"]): continue
+
+            cur_exec_cnt = c["execution_count"]
+            #print(cur_exec_cnt)
+            if cur_exec_cnt == None:
+                trace("  - found a code cell that wasn't executed")
+                return 0
+
+            if last_exec_cnt and last_exec_cnt+1 != cur_exec_cnt:
+                trace("  - non-contiguous execution_count")
+                return 0
+            last_exec_cnt = cur_exec_cnt
+
+    trace("  + execution_count appears to be contiguous, all cells were executed")
+
+    nb_add_disclaimer(s, fname)
+    nb_write(s, file_out)
+
+    return 1
+
+def nb_execute_n_copy(file_in, file_out, fname):
+    """ execute a notebook and on success push a disclaimer cell, write the nb to the snapshot/ directory and return 1, return 0 otherwise """
+
+    # do not execute nbs in place, as it makes them show up as
+    # modified in git status, when in fact they are not (after the
+    # stripout filter)
+    tmp_file_out= Path('.')/f"tmp_{fname}"
+
+    cmd = f"jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook --output={tmp_file_out} {file_in}"
+    print(f"Executing: {cmd}")
+    start = time.time()
+    result = subprocess.run(cmd.split(), shell=False, check=False, stderr=subprocess.PIPE)
+    end = time.time()
+    if result.returncode != 0:
+        print(f"  - failed to execute {fname}, skipping")
+        # uncomment to see the execution error (with -v option)
+        # normally not reporting it, since as expected many notebooks
+        # with no data setup will fail
+        # trace(f"Error: {result.stderr.decode('utf-8')}")
+        return 0
+
+    print(f"  + successfully executed in {round(end-start, 2)} seconds")
+
+    # we know it was successfully executed, so no need to validate it
+    s = nb_read(tmp_file_out)
+    nb_add_disclaimer(s, fname)
+    nb_write(s, file_out)
+
+    # cleanup (comment out if you want to save the temporary executed notebook)
+    tmp_file_out.unlink()
+
+    return 1
+
+if Path.cwd().name != 'dev_nb': os.chdir('dev_nb')
+
+path_in  = Path('.')
+path_out = path_in/"snapshot"
+
+# since it can take really long to run all notebooks, ask the user to
+# tell which notebooks are to be executed explicitly.
+if args.execute and not args.files:
+    print("When using -e/--execute, pass the *.ipynb files to execute explicitly", file=sys.stderr)
+    sys.exit(1)
+
+# handle optional dev_nb/ prefix in explicit filenames
+if args.files: args.files = [ Path(Path(f).name) for f in args.files ]
+
+files = args.files if args.files else sorted(path_in.glob('0*ipynb'))
+
+copied_nbs = []
+
+if args.execute:
+    # CLI execute and copy on success
+
+    print(f"Executing notebook(s). It may take a long time!")
+    for file_in in files:
+        fname = file_in.name
+        file_out = path_out.joinpath(fname)
+        if nb_execute_n_copy(file_in, file_out, fname):
+            copied_nbs.append(fname)
+
+else:
+    # check executed in browser and copy on success
+
+    for file_in in files:
+        fname = file_in.name
+        trace(f"Checking {fname}:")
+        file_out = path_out.joinpath(fname)
+
+        # skip blacklisted notebooks
+        if fname in blacklist: trace("  - blacklisted"); continue
+
+        # skip unmodified notebooks
+        if file_out.exists():
+            in_mod  = os.path.getmtime(file_in)
+            out_mod = os.path.getmtime(file_out)
+            if in_mod < out_mod: trace("  - is not modified"); continue
+
+        if nb_check_n_copy(file_in, file_out, fname):
+            copied_nbs.append(fname)
+
+if copied_nbs:
+    print(f"Copied to dev_nb/snapshot/ {len(copied_nbs)} notebook(s):")
+    print(*map(lambda s: f"  {s}", copied_nbs), sep="\n")
+else:
+    print("No notebooks were copied to dev_nb/snapshot/.")
+    if not args.verbose: print("Re-run with -v for diagnostics.")

@@ -1,0 +1,3 @@
+*.ipynb filter=fastai-nbstripout-code
+
+*.ipynb diff=ipynb-code
