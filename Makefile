@@ -67,7 +67,7 @@ coverage: ## check code coverage quickly with the default Python
 
 # XXX: remove --repository testpypi for release
 release: dist ## package and upload a release
-	twine upload  --repository testpypi dist/*
+	twine upload dist/*
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist
