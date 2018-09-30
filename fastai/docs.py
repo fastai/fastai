@@ -7,6 +7,7 @@ DATA_PATH = Path('..')/'data'
 MNIST_PATH = DATA_PATH / 'mnist_sample'
 IMDB_PATH = DATA_PATH / 'imdb_sample'
 ADULT_PATH = DATA_PATH / 'adult_sample'
+ML_PATH = DATA_PATH / 'movie_lens'
 
 def untar_mnist():
     if not MNIST_PATH.exists(): tarfile.open(MNIST_PATH.with_suffix('.tgz'), 'r:gz').extractall(DATA_PATH)
@@ -17,6 +18,9 @@ def untar_imdb():
 def untar_adult():
     if not ADULT_PATH.exists(): tarfile.open(ADULT_PATH.with_suffix('.tgz'), 'r:gz').extractall(DATA_PATH)
 
+def untar_movie_lens():
+    if not ML_PATH.exists(): tarfile.open(ML_PATH.with_suffix('.tgz'), 'r:gz').extractall(DATA_PATH)
+        
 def get_mnist():
     if not MNIST_PATH.exists(): untar_mnist()
     return image_data_from_folder(MNIST_PATH)
