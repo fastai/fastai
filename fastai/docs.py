@@ -30,6 +30,11 @@ def get_imdb(classifier=False):
     data_func = classifier_data if classifier else lm_data
     return text_data_from_csv(IMDB_PATH, tokenizer=Tokenizer(), data_func=data_func)
 
+def get_movie_lens():
+    if not ML_PATH.exists(): untar_movie_lens()
+    ratings = pd.read_csv(ML_PATH/'ratings.csv')
+    return ratings
+
 def download_wt103_model():
     model_path = IMDB_PATH/'models'
     os.makedirs(model_path, exist_ok=True)
