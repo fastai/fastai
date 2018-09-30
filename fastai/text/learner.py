@@ -82,17 +82,17 @@ class RNNLearner(Learner):
 
     @classmethod
     def classifier(cls, data:DataBunch, bptt:int=70, max_len:int=70*20, emb_sz:int=400, nh:int=1150, nl:int=3,
-                   lin_ftrs:Collection[int]=None, drops:Collection[float]=None, pad_token:int=1,
+                   lin_ftrs:Collection[int]=None, ps:Collection[float]=None, pad_token:int=1,
                    drop_mult:float=1., qrnn:bool=False, **kwargs) -> 'RNNLearner':
         "Create a RNN classifier."
         dps = np.array([0.4,0.5,0.05,0.3,0.4]) * drop_mult
-        if layers is None: layers = [50]
-        if drops is None:  drops = [0.1]
+        if lin_ftrs is None: lin_ftrs = [50]
+        if ps is None:  ps = [0.1]
         vocab_size = len(data.train_ds.vocab.itos)
         n_class = len(data.train_ds.classes)
         layers = [emb_sz*3] + lin_ftrs + [n_class]
-        drops = [dps[4]] + drops
+        ps = [dps[4]] + ps
         model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
-                    layers, drops, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
+                    layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
         learn = cls(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
         return learn
