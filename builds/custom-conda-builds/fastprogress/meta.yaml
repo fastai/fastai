@@ -1,17 +1,15 @@
 {% set name = "fastprogress" %}
-{% set version = "0.1.5" %}
-{% set file_ext = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash_value = "a90644fb5a2a73f245d58e7e9bb60f252e2a578f2389cbc446661f26e920971a" %}
+{% set version = "0.1.7" %}
+{% set git_rev = "v" + version %}
+
 
 package:
   name: '{{ name|lower }}'
   version: '{{ version }}'
 
 source:
-  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
-  '{{ hash_type }}': '{{ hash_value }}'
+  git_rev: {{ git_rev }}
+  git_url: https://github.com/fastai/fastprogress
 
 build:
   number: 0
