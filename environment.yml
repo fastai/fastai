@@ -44,7 +44,6 @@ dependencies:
 - matplotlib
 - mistune
 - mkl
-- nbconvert
 - nbformat
 - notebook
 - numpy
@@ -93,6 +92,7 @@ dependencies:
 - bcolz
 - prompt_toolkit
 - pytest
+- cython
 - pip:
   - torchvision>=0.1.9
   - opencv-python
@@ -105,3 +105,5 @@ dependencies:
   - plotnine
   - kaggle-cli
   - ipywidgets
+  - nbconvert
+  - PyHamcrest
