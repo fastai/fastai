@@ -10,7 +10,7 @@ __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'create_anchor', 'import_mod', 'get_source_link', 'is_enum']
 
 MODULE_NAME = 'fastai'
-SOURCE_URL = 'https://github.com/fastai/fastai_pytorch/blob/master/'
+SOURCE_URL = 'https://github.com/fastai/fastai/blob/master/'
 PYTORCH_DOCS = 'https://pytorch.org/docs/stable/'
 _typing_names = {t:n for t,n in fastai_types.items() if t.__module__=='typing'}
 
