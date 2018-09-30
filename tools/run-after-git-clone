@@ -2,8 +2,8 @@
 
 # if you're a fastai developer please make sure you do this:
 #
-#    git clone https://github.com/fastai/fastai_pytorch
-#    cd fastai_pytorch
+#    git clone https://github.com/fastai/fastai
+#    cd fastai
 #    tools/run-after-git-clone
 #
 
@@ -30,5 +30,3 @@ path = Path("tools")
 # facilitate trusting of the repo-wide .gitconfig
 run_script(path/"trust-origin-git-config")
 
-# facilitate trusting notebooks under docs_src
-run_script(path/"trust-doc-nbs-install-hook")
