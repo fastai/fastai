@@ -24,13 +24,7 @@ then need to ask users to install torchvision=0.2.1=pyhe7f20fa_0
 
 
 
-## fastprogress
-
-    conda build fastprogress
-
-
-
 # to test installs cleanup first
 
-    conda uninstall fastai pytorch-nightly pytorch torchvision dataclasses fastprogress
-    pip   uninstall fastai pytorch-nightly pytorch torchvision dataclasses fastprogress
+    conda uninstall fastai pytorch-nightly pytorch torchvision dataclasses
+    pip   uninstall fastai pytorch-nightly pytorch torchvision dataclasses

@@ -6,7 +6,7 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
 
 To install fastai with CUDA 9.2 simply run:
 
-    conda install -c pytorch -c fastai/label/test fastai cuda92
+    conda install -c pytorch -c fastai fastai cuda92
 
 If your setup doesn't have CUDA support remove the `cuda92` above (in which case you'll only be able to train on CPU, not GPU, which will be much slower). For different versions of the CUDA toolkit, you'll need to install the appropriate CUDA conda package based on what you've got installed on your system (i.e. instead of `cuda92` in the above, pick the appropriate option for whichever toolkit version you have installed; to see a list of options type: `conda search "cuda*" -c pytorch`).
 
@@ -22,13 +22,13 @@ If you have a different CUDA version find the right build [here](https://pytorch
 
 Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai_pytorch/issues/):
 
-    pip install --index-url https://test.pypi.org/simple/ --extra-index-url  https://pypi.org/simple/ fastai==1.0.0b6
+    pip install fastai==1.0.0b7
 
  Sometimes, the last `pip` command still tries to get `torch-0.4.1`. If that happens to you, do:
 
     pip uninstall torchvision fastai
     pip install --no-deps torchvision
-    pip install --index-url https://test.pypi.org/simple/ --extra-index-url  https://pypi.org/simple/ fastai==1.0.0b6
+    pip install fastai==1.0.0b7
 
 ### Developer Install
 
