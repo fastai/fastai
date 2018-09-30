@@ -4,7 +4,7 @@ from nbconvert import HTMLExporter
 from traitlets.config import Config
 from pathlib import Path
 
-__all__ = ['HandleLinksPreprocessor', 'read_nb', 'convert_nb', 'convert_all']
+__all__ = ['read_nb', 'convert_nb', 'convert_all']
 
 class HandleLinksPreprocessor(Preprocessor):
     "A preprocesser that replaces all the .ipynb by .html in links. "
@@ -23,8 +23,6 @@ path = Path(__file__).parent
 exporter.template_path.append(str(path))
 #Preprocesser that converts the .ipynb links in .html
 exporter.register_preprocessor(HandleLinksPreprocessor, enabled=True)
-
-__all__ = ['convert_nb', 'convert_all']
 
 def read_nb(fname):
     with open(fname,'r') as f: return nbformat.reads(f.read(), as_version=4)
