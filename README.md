@@ -26,13 +26,13 @@ Next, install a custom `torchvision` build, that is built against `torch_nightly
 
 Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai/issues/):
 
-    pip install fastai==1.0.0b8
+    pip install fastai==1.0.0
 
  Sometimes, the last `pip` command still tries to get `torch-0.4.1`. If that happens to you, do:
 
     pip uninstall torchvision fastai
     pip install --no-deps torchvision
-    pip install fastai==1.0.0b8
+    pip install fastai==1.0.0
 
 ### Developer Install
 

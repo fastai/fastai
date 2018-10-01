@@ -84,7 +84,8 @@ about:
   license_family: APACHE
   license_file: LICENSE
   summary: {{ data['description'] }}
-  description: "{{ data['long_description']|replace('"', "'") }}"
+  # description needs to have double new lines for paragraphs:
+  description: "{{ data['long_description']|replace('"', '\\"')|replace("#", "=")|replace("\n\n", "\n\n\n") }}"
   doc_url: {{ data.get('url') }}
   dev_url: {{ data.get('url') }}
 
