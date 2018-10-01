@@ -115,7 +115,7 @@ def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     return [zoom_fn(scale=scale, p=p), crop_fn()]
 
 def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
-    "Find 8 coeff mentioned [here](https://web.archive.org/web/20150222120106/xenia.media.mit.edu/~cwren/interpolator/)"
+    "Find 8 coeff mentioned [here](https://web.archive.org/web/20150222120106/xenia.media.mit.edu/~cwren/interpolator/)."
     matrix = []
     #The equations we'll need to solve.
     for p1, p2 in zip(targ_pts, orig_pts):
@@ -147,7 +147,6 @@ def _perspective_warp(c:FlowField, targ_pts:Points):
 @TfmCoord
 def perspective_warp(c, img_size, magnitude:partial(uniform,size=8)=0):
     "Apply warp of `magnitude` to `c`."
-
     magnitude = magnitude.view(4,2)
     targ_pts = [[x+m for x,m in zip(xs, ms)] for xs, ms in zip(_orig_pts, magnitude)]
     return _perspective_warp(c, targ_pts)

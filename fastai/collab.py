@@ -8,7 +8,7 @@ __all__ = ['CollabFilteringDataset', 'EmbeddingDotBias', 'get_collab_learner']
 
 @dataclass
 class CollabFilteringDataset(DatasetBase):
-    "Base dataset for collaborative filtering"
+    "Base dataset for collaborative filtering."
     user:Series
     item:Series
     ratings:np.ndarray
@@ -33,7 +33,7 @@ class CollabFilteringDataset(DatasetBase):
     @classmethod
     def from_df(cls, rating_df:DataFrame, pct_val:float=0.2, user_name:Optional[str]=None, item_name:Optional[str]=None,
                 rating_name:Optional[str]=None) -> Tuple['ColabFilteringDataset','ColabFilteringDataset']:
-        "Splits a given dataframe in a training and validation set"
+        "Split a given dataframe in a training and validation set."
         if user_name is None:   user_name = rating_df.columns[0]
         if item_name is None:   item_name = rating_df.columns[1]
         if rating_name is None: rating_name = rating_df.columns[2]
@@ -48,12 +48,12 @@ class CollabFilteringDataset(DatasetBase):
 
     @classmethod
     def from_csv(cls, csv_name:str, **kwargs) -> Tuple['ColabFilteringDataset','ColabFilteringDataset']:
-        "Splits a given table in a csv in a training and validation set"
+        "Split a given table in a csv in a training and validation set."
         df = pd.read_csv(csv_name)
         return cls.from_df(df, **kwargs)
 
 class EmbeddingDotBias(nn.Module):
-    "Base model for callaborative filtering"
+    "Base model for callaborative filtering."
     def __init__(self, n_factors:int, n_users:int, n_items:int, min_score:float=None, max_score:float=None):
         super().__init__()
         self.min_score,self.max_score = min_score,max_score
@@ -70,7 +70,7 @@ class EmbeddingDotBias(nn.Module):
 def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user_name:Optional[str]=None,
           item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None, metrics=None,
           min_score:float=None, max_score:float=None, loss_fn:LossFunction=F.mse_loss, **kwargs) -> Learner:
-    "Creates a Learner for collaborative filtering"
+    "Create a Learner for collaborative filtering."
     datasets = list(CollabFilteringDataset.from_df(ratings, pct_val, user_name, item_name, rating_name))
     if test is not None:
         datasets.append(CollabFilteringDataset.from_df(test, None, user_name, item_name, rating_name))

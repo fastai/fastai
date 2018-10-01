@@ -8,7 +8,7 @@ __all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'h
            'model_sizes']
 
 class Hook():
-    "Creates a hook"
+    "Create a hook."
     def __init__(self, m:Model, hook_func:HookFunc, is_forward:bool=True):
         self.hook_func,self.stored = hook_func,None
         f = m.register_forward_hook if is_forward else m.register_backward_hook
@@ -26,7 +26,7 @@ class Hook():
             self.removed=True
 
 class Hooks():
-    "Creates several hooks"
+    "Create several hooks."
     def __init__(self, ms:Collection[Model], hook_func:HookFunc, is_forward:bool=True):
         self.hooks = [Hook(m, hook_func, is_forward) for m in ms]
 
@@ -43,7 +43,7 @@ def hook_output (module:Model) -> Hook:  return Hook (module,  lambda m,i,o: o)
 def hook_outputs(modules:Collection[Model]) -> Hooks: return Hooks(modules, lambda m,i,o: o)
 
 class HookCallback(LearnerCallback):
-    "Callback that registers given hooks"
+    "Callback that registers given hooks."
     def __init__(self, learn:Learner, modules:Sequence[Model]=None, do_remove:bool=True):
         super().__init__(learn)
         self.modules,self.do_remove = modules,do_remove
@@ -61,7 +61,7 @@ class HookCallback(LearnerCallback):
     def __del__(self): self.remove()
 
 class ActivationStats(HookCallback):
-    "Callback that record the activations"
+    "Callback that record the activations."
     def on_train_begin(self, **kwargs):
         super().on_train_begin(**kwargs)
         self.stats = []
@@ -72,7 +72,7 @@ class ActivationStats(HookCallback):
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
 
 def model_sizes(m:Model, size:tuple=(256,256), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:
-    "Passes a dummy input through the model to get the various sizes"
+    "Pass a dummy input through the model to get the various sizes."
     hooks = hook_outputs(m)
     ch_in = in_channels(m)
     x = torch.zeros(1,ch_in,*size)

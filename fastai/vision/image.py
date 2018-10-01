@@ -13,21 +13,21 @@ def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
 def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
 
 def uniform(low:Number, high:Number=None, size:Optional[List[int]]=None)->FloatOrTensor:
-    "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`"
+    "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`."
     if high is None: high=low
     return random.uniform(low,high) if size is None else torch.FloatTensor(*listify(size)).uniform_(low,high)
 
 def log_uniform(low, high, size:Optional[List[int]]=None)->FloatOrTensor:
-    "Draw 1 or shape=`size` random floats from uniform dist: min=log(`low`), max=log(`high`)"
+    "Draw 1 or shape=`size` random floats from uniform dist: min=log(`low`), max=log(`high`)."
     res = uniform(log(low), log(high), size)
     return exp(res) if size is None else res.exp_()
 
 def rand_bool(p:float, size:Optional[List[int]]=None)->BoolOrTensor:
-    "Draw 1 or shape=`size` random booleans (True occuring probability `p`)"
+    "Draw 1 or shape=`size` random booleans (True occuring probability `p`)."
     return uniform(0,1,size)<p
 
 def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
-    "Generate int or tensor `size` of ints between `low` and `high` (included)"
+    "Generate int or tensor `size` of ints between `low` and `high` (included)."
     return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
 
 def pil2tensor(image:NPImage)->TensorImage:
@@ -200,7 +200,7 @@ class ImageMask(Image):
 
     @property
     def data(self)->TensorImage:
-        "Return this images pixels as a `LongTensor`."
+        "Return this image pixels as a `LongTensor`."
         return self.px.long()
 
 class ImageBBox(ImageMask):
@@ -391,7 +391,7 @@ def _get_crop_target(target_px:Union[int,Tuple[int,int]], mult:int=32)->Tuple[in
     return _round_multiple(target_r,mult),_round_multiple(target_c,mult)
 
 def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
-    "Calc size of `img` to fit in `crop_target` - adjust based on `do_crop`"
+    "Calc size of `img` to fit in `crop_target` - adjust based on `do_crop`."
     if crop_target is None: return None
     ch,r,c = img.shape
     target_r,target_c = crop_target

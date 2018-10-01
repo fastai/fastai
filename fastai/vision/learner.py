@@ -59,7 +59,7 @@ class ConvLearner(Learner):
         apply_init(model[1], nn.init.kaiming_normal_)
 
 class ClassificationInterpretation():
-    "Interpretation methods for classification models"
+    "Interpretation methods for classification models."
     def __init__(self, data:DataBunch, y_pred:Tensor, y_true:Tensor,
                  loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=True):
         self.data,self.y_pred,self.y_true,self.loss_class = data,y_pred,y_true,loss_class
@@ -69,15 +69,15 @@ class ClassificationInterpretation():
 
     @classmethod
     def from_learner(cls, learn:Learner, loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=True):
-        "Factory method to create from a Learner"
+        "Factory method to create from a Learner."
         return cls(learn.data, *learn.get_preds(), loss_class=loss_class, sigmoid=sigmoid)
 
     def top_losses(self, k, largest=True):
-        "`k` largest(/smallest) losses"
+        "`k` largest(/smallest) losses."
         return self.losses.topk(k, largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
-        "Show images in `top_losses` along with their loss, label, and prediction"
+        "Show images in `top_losses` along with their loss, label, and prediction."
         tl = self.top_losses(k,largest)
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
@@ -88,13 +88,13 @@ class ClassificationInterpretation():
                 f'{classes[self.pred_class[idx]]}/{classes[t[1]]} / {self.losses[idx]:.2f} / {self.probs[idx][t[1]]:.2f}')
 
     def confusion_matrix(self):
-        "Confusion matrix as an `np.ndarray`"
+        "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
         cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
         return to_np(cm)
 
     def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", figsize:tuple=None):
-        "Plot the confusion matrix"
+        "Plot the confusion matrix."
         # This function is copied from the scikit docs
         cm = self.confusion_matrix()
         plt.figure(figsize=figsize)

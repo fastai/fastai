@@ -5,14 +5,14 @@ from ...callbacks.hooks import *
 __all__ = ['DynamicUnet', 'UnetBlock']
 
 def _get_sfs_idxs(sizes:Sizes) -> List[int]:
-    "Get the indexes of the layers where the size of the activation changes"
+    "Get the indexes of the layers where the size of the activation changes."
     feature_szs = [size[-1] for size in sizes]
     sfs_idxs = list(np.where(np.array(feature_szs[:-1]) != np.array(feature_szs[1:]))[0])
     if feature_szs[0] != feature_szs[1]: sfs_idxs = [0] + sfs_idxs
     return sfs_idxs
 
 class UnetBlock(nn.Module):
-    "An basic unet block"
+    "A basic U-Net block."
     def __init__(self, up_in_c:int, x_in_c:int, hook:Hook):
         super().__init__()
         self.hook = hook
@@ -32,7 +32,7 @@ class UnetBlock(nn.Module):
         return self.bn(x)
 
 class DynamicUnet(nn.Sequential):
-    "Unet created from a given architecture"
+    "Create a U-Net from a given architecture."
     def __init__(self, encoder:Model, n_classes:int):
         imsize = (256,256)
         sfs_szs,x,self.sfs = model_sizes(encoder, size=imsize)

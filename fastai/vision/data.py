@@ -141,14 +141,14 @@ class DatasetTfm(Dataset):
     def __len__(self)->int: return len(self.ds)
 
     def __getitem__(self,idx:int)->Tuple[ItemBase,Any]:
-        "returns tfms(x),y"
+        "Return tfms(x),y."
         x,y = self.ds[idx]
         x = apply_tfms(self.tfms, x, **self.kwargs)
         if self.tfm_y: y = apply_tfms(self.tfms, y, **self.y_kwargs)
         return x, y
 
     def __getattr__(self,k):
-        "passthrough access to wrapped dataset attributes"
+        "Passthrough access to wrapped dataset attributes."
         return getattr(self.ds, k)
 
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
@@ -184,16 +184,16 @@ cifar_norm,cifar_denorm = normalize_funcs(*cifar_stats)
 imagenet_stats = tensor([0.485, 0.456, 0.406]), tensor([0.229, 0.224, 0.225])
 imagenet_norm,imagenet_denorm = normalize_funcs(*imagenet_stats)
 
-def _create_with_tfm(train_ds, valid_ds, test_ds=None,
-               path='.', bs=64, ds_tfms=None, num_workers=default_cpus,
-               tfms=None, device=None, size=None, **kwargs)->'DataBunch':
+def _create_with_tfm(train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Tfms=None, 
+                     num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None, 
+                     collate_fn:Callable=data_collate, size:int=None, **kwargs)->'DataBunch':
         "`DataBunch` factory. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
         if ds_tfms: datasets = transform_datasets(*datasets, tfms=ds_tfms, size=size, **kwargs)
         dls = [DataLoader(*o, num_workers=num_workers) for o in
                zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
-        return DataBunch(*dls, path=path, device=device, tfms=tfms)
+        return DataBunch(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
 DataBunch.create = _create_with_tfm
 
@@ -225,10 +225,9 @@ def _labels_to_csv(self, dest:str):
 
 DataBunch.labels_to_csv = _labels_to_csv
 
-def uniqueify(x:Series) -> List[Any]: return list(OrderedDict.fromkeys(x).keys())
-
 def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
                       label_delim:str=' ', header:Optional[Union[int,str]]='infer', suffix:Optional[str]=None):
+    "Read the csv in `csv_path` and return the labels."
     df = pd.read_csv(csv_path, header=header)
     df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
     labels = df.iloc[:,label_col]
@@ -238,6 +237,7 @@ def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
 
 def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
                         test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any) -> DataBunch:
+    "Create a `DataBunch` from a csv file."
     fnames, labels = csv_to_fns_labels(csv_labels, suffix=suffix)
     path=Path(path)
     datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct)

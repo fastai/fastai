@@ -5,7 +5,7 @@ from ..basic_train import Learner
 
 @dataclass
 class MixUpCallback(Callback):
-    "Callback that creates the mixed-up input and target"
+    "Callback that creates the mixed-up input and target."
     learner:Learner
     alpha:float=0.4
     stack_x:bool=False
@@ -28,7 +28,7 @@ class MixUpCallback(Callback):
         return (new_input, new_target)  
 
 class MixUpLoss(nn.Module):
-    "Adapts the loss function to go with mixup."
+    "Adapt the loss function to go with mixup."
     
     def __init__(self, crit):
         super().__init__()

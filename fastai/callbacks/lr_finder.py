@@ -7,7 +7,7 @@ from ..basic_train import Learner, LearnerCallback
 __all__ = ['LRFinder']
 
 class LRFinder(LearnerCallback):
-    "Explore lr vs loss relationship for a learner"
+    "Explore lr vs loss relationship for a learner."
     def __init__(self, learn:Learner, start_lr:float=1e-5, end_lr:float=10, num_it:int=100):
         "Initialize schedule of learning rates"
         super().__init__(learn)
@@ -19,14 +19,14 @@ class LRFinder(LearnerCallback):
         self.data.valid_dl = None
 
     def on_train_begin(self, **kwargs:Any)->None:
-        "init optimizer and learn params"
+        "Initialize optimizer and learner hyperparameters."
         self.learn.save('tmp')
         self.opt = self.learn.opt
         self.opt.lr = self.sched.start
         self.stop,self.best_loss = False,0.
 
     def on_batch_end(self, iteration:int, smooth_loss:TensorOrNumber, **kwargs:Any)->None:
-        "Determine if loss has runaway and we should stop"
+        "Determine if loss has runaway and we should stop."
         if iteration==0 or smooth_loss < self.best_loss: self.best_loss = smooth_loss
         self.opt.lr = self.sched.step()
         if self.sched.is_done or smooth_loss > 4*self.best_loss:
@@ -35,11 +35,11 @@ class LRFinder(LearnerCallback):
             return True
 
     def on_epoch_end(self, **kwargs:Any)->None:
-        "Tell Learner if we need to stop"
+        "Tell Learner if we need to stop."
         return self.stop
 
     def on_train_end(self, **kwargs:Any)->None:
-        "Cleanup learn model weights disturbed during LRFind exploration"
+        "Cleanup learn model weights disturbed during LRFind exploration."
         # restore the valid_dl we turned of on `__init__`
         self.data.valid_dl = self.valid_dl
         self.learn.load('tmp')

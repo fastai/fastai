@@ -7,7 +7,7 @@ __all__ = ['RNNTrainer']
 
 @dataclass
 class RNNTrainer(Callback):
-    "`Callback` that regroups lr adjustment to seq_len, AR and TAR"
+    "`Callback` that regroups lr adjustment to seq_len, AR and TAR."
     learn:Learner
     bptt:int
     alpha:float=0.

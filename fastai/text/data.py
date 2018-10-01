@@ -164,7 +164,7 @@ class TextDataset():
     @classmethod
     def from_folder(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', classes:Classes=None,
                     shuffle:bool=True, **kwargs) -> 'TextDataset':
-        "Create a dataset from a folder"
+        "Create a dataset from a folder."
         tokenizer = ifnone(tokenizer, Tokenizer())
         path = Path(folder)/'tmp'
         os.makedirs(path, exist_ok=True)

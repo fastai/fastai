@@ -7,7 +7,7 @@ __all__ = ['OneCycleScheduler']
 
 @dataclass
 class OneCycleScheduler(Callback):
-    "Manages 1-Cycle style training as outlined in Leslie Smith's [paper](https://arxiv.org/pdf/1803.09820.pdf)"
+    "Manage 1-Cycle style training as outlined in Leslie Smith's [paper](https://arxiv.org/pdf/1803.09820.pdf)."
     learn:Learner
     lr_max:float
     moms:Floats=(0.95,0.85)
@@ -19,12 +19,12 @@ class OneCycleScheduler(Callback):
         if is_listy(self.lr_max): self.lr_max = np.array(self.lr_max)
 
     def steps(self, *steps_cfg:StartOptEnd):
-        "Build anneal schedule for all of the parameters"
+        "Build anneal schedule for all of the parameters."
         return [Stepper(step, n_iter, func=func)
                 for (step,(n_iter,func)) in zip(steps_cfg, self.phases)]
 
     def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
-        "Initialize our optimization params based on our annealing schedule"
+        "Initialize our optimization params based on our annealing schedule."
         n = len(self.learn.data.train_dl) * n_epochs
         a1 = int(n * self.pct_start)
         a2 = n-a1
@@ -37,7 +37,7 @@ class OneCycleScheduler(Callback):
         self.idx_s = 0
 
     def on_batch_end(self, **kwargs:Any)->None:
-        "Take one step forward on the annealing schedule for the optim params"
+        "Take one step forward on the annealing schedule for the optim params."
         if self.idx_s >= len(self.lr_scheds): return True
         self.opt.lr = self.lr_scheds[self.idx_s].step()
         self.opt.mom = self.mom_scheds[self.idx_s].step()
