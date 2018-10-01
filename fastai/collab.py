@@ -67,8 +67,8 @@ class EmbeddingDotBias(nn.Module):
         if self.min_score is None: return res
         return torch.sigmoid(res) * (self.max_score-self.min_score) + self.min_score
 
-def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user_name:Optional[str]=None, 
-          item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None, 
+def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user_name:Optional[str]=None,
+          item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None, metrics=None,
           min_score:float=None, max_score:float=None, loss_fn:LossFunction=F.mse_loss, **kwargs) -> Learner:
     "Creates a Learner for collaborative filtering"
     datasets = list(CollabFilteringDataset.from_df(ratings, pct_val, user_name, item_name, rating_name))
@@ -76,4 +76,4 @@ def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user
         datasets.append(CollabFilteringDataset.from_df(test, None, user_name, item_name, rating_name))
     data = DataBunch.create(*datasets, **kwargs)
     model = EmbeddingDotBias(n_factors, datasets[0].n_user, datasets[0].n_item, min_score, max_score)
-    return Learner(data, model, loss_fn=loss_fn)
+    return Learner(data, model, loss_fn=loss_fn, metrics=metrics)
