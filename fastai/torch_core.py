@@ -79,9 +79,9 @@ def data_collate(batch:ItemsList)->Tensor:
     "Convert `batch` items to tensor data."
     return torch.utils.data.dataloader.default_collate(to_data(batch))
 
-def requires_grad(l:nn.Module, b:Optional[bool]=None)->Optional[bool]:
-    "If `b` is not set `requires_grad` on all params in `l`, else return `requires_grad` of first param."
-    ps = list(l.parameters())
+def requires_grad(m:nn.Module, b:Optional[bool]=None)->Optional[bool]:
+    "If `b` is not set `requires_grad` on all params in `m`, else return `requires_grad` of first param."
+    ps = list(m.parameters())
     if not ps: return None
     if b is None: return ps[0].requires_grad
     for p in ps: p.requires_grad=b
@@ -103,7 +103,7 @@ def range_children(m:nn.Module)->Iterator[int]:
     "Return iterator of len of children of `m`."
     return range(num_children(m))
 
-flatten_model=lambda l: sum(map(flatten_model,l.children()),[]) if num_children(l) else [l]
+flatten_model=lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
 def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
