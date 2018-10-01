@@ -8,7 +8,7 @@ __all__ = ['LRFinder']
 
 class LRFinder(LearnerCallback):
     "Explore lr vs loss relationship for a learner"
-    def __init__(self, learn:Learner, start_lr:float=1e-5, end_lr:float=10, num_it:int=200):
+    def __init__(self, learn:Learner, start_lr:float=1e-5, end_lr:float=10, num_it:int=100):
         "Initialize schedule of learning rates"
         super().__init__(learn)
         self.data = learn.data

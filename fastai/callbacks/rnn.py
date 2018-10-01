@@ -19,7 +19,7 @@ class RNNTrainer(Callback):
         self.raw_out,self.out = last_output[1],last_output[2]
         return last_output[0]
 
-    def on_backward_begin(self, last_loss:Rank0Tensor, last_input:Tensor, last_output:Tensor, **kwargs):
+    def on_backward_begin(self, last_loss:Rank0Tensor, last_input:Tensor, **kwargs):
         #Adjusts the lr to the bptt selected
         if self.adjust: self.learn.opt.lr *= last_input.size(0) / self.bptt
         #AR and TAR
