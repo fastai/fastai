@@ -235,10 +235,10 @@ def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
     if suffix: fnames = fnames + suffix
     return fnames, labels
 
-def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
+def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
                         test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any) -> DataBunch:
     "Create a `DataBunch` from a csv file."
-    fnames, labels = csv_to_fns_labels(csv_labels, suffix=suffix)
+    if sep: fnames, labels = csv_to_fns_labels(csv_labels, suffix=suffix, label_delim=' ')
     path=Path(path)
     datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct)
     if test: datasets.append(ImageMultiDataset.from_single_folder(path/test, classes=datasets[0].classes))

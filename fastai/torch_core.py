@@ -172,7 +172,7 @@ def apply_leaf(m:nn.Module, f:LayerFunc):
 
 def apply_init(m, init_func:LayerFunc):
     "Initialize all non-batchnorm layers of `m` with `init_func`."
-    apply_leaf(m, partial(cond_init, init_fn=init_fn))
+    apply_leaf(m, partial(cond_init, init_func=init_func))
 
 def in_channels(m:Model) -> List[int]:
     "Return the shape of the first weight layer in `m`."
