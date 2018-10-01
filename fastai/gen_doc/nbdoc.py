@@ -10,7 +10,7 @@ __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'create_anchor', 'import_mod', 'get_source_link', 'is_enum']
 
 MODULE_NAME = 'fastai'
-SOURCE_URL = 'https://github.com/fastai/fastai_pytorch/blob/master/'
+SOURCE_URL = 'https://github.com/fastai/fastai/blob/master/'
 PYTORCH_DOCS = 'https://pytorch.org/docs/stable/'
 _typing_names = {t:n for t,n in fastai_types.items() if t.__module__=='typing'}
 
@@ -189,12 +189,13 @@ def get_ft_names(mod, include_inner=False)->List[str]:
     return fn_names
 
 def get_inner_fts(elt) -> List[str]:
-    "return methods belonging to class"
+    "List the inner functions of a class"
     fts = []
     for ft_name in elt.__dict__.keys():
         if ft_name.startswith('_'): continue
         ft = getattr(elt, ft_name)
         if inspect.isfunction(ft): fts.append(f'{elt.__name__}.{ft_name}')
+        if inspect.ismethod(ft): fts.append(f'{elt.__name__}.{ft_name}')
         if inspect.isclass(ft): fts += [f'{elt.__name__}.{n}' for n in get_inner_fts(ft)]
     return fts
 

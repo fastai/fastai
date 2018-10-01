@@ -7,7 +7,7 @@ from pathlib import Path
 from .core import *
 from .nbdoc import *
 
-__all__ = ['create_module_page', 'generate_all', 'update_module_page', 'update_all', 'link_all', 'import_mod',
+__all__ = ['create_module_page', 'generate_all', 'update_module_page', 'update_all', 'import_mod',
            'link_nb', 'update_notebooks']
 
 def get_empty_notebook():
@@ -49,17 +49,6 @@ def get_doc_cell(ft_name):
     code = f"show_doc({ft_name})"
     return get_code_cell(code, True)
 
-def get_inner_fts(elt):
-    "List the inner functions of a class"
-    fts = []
-    for ft_name in elt.__dict__.keys():
-        if ft_name[:2] == '__': continue
-        ft = getattr(elt, ft_name)
-        if inspect.isfunction(ft): fts.append(f'{elt.__name__}.{ft_name}')
-        if inspect.ismethod(ft): fts.append(f'{elt.__name__}.{ft_name}')
-        if inspect.isclass(ft): fts += [f'{elt.__name__}.{n}' for n in get_inner_fts(ft)]
-    return fts
-
 def get_global_vars(mod):
     "Returns globally assigned variables"
     # https://stackoverflow.com/questions/8820276/docstring-for-variable/31764368#31764368
@@ -76,13 +65,13 @@ def get_global_vars(mod):
                 d[key] = f'`{codestr}` {get_source_link(mod, lineno)}'
     return d
 
-def execute_nb(fname):
+def execute_nb(fname, metadata=None):
     "Execute notebook `fname`"
     # Any module used in the notebook that isn't inside must be in the same directory as this script
-
     with open(fname) as f: nb = nbformat.read(f, as_version=4)
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
-    ep.preprocess(nb, {})
+    metadata = metadata or {}
+    ep.preprocess(nb, metadata)
     with open(fname, 'wt') as f: nbformat.write(nb, f)
     NotebookNotary().sign(nb)
 
@@ -297,7 +286,6 @@ def update_module_page(mod, dest_path='.'):
 
     json.dump(nb, open(doc_path,'w'))
     return doc_path
-    #execute_nb(doc_path)
 
 def link_nb(nb_path):
     nb = read_nb(nb_path)
@@ -306,11 +294,6 @@ def link_nb(nb_path):
     add_nb_metadata(nb, nb_path)
     json.dump(nb, open(nb_path,'w'))
     NotebookNotary().sign(read_nb(nb_path))
-
-def link_all(path_dir):
-    "Links documentation to all the notebooks in `pkg_name`"
-    files = Path(path_dir).glob('*.ipynb')
-    for f in files: link_nb(f)
 
 def update_all(pkg_name, dest_path='.', exclude=None, create_missing=False):
     "Updates all the notebooks in `pkg_name`"
@@ -325,45 +308,43 @@ def update_all(pkg_name, dest_path='.', exclude=None, create_missing=False):
             print(f'Creating module page of {f}')
             create_module_page(mod, dest_path)
 
-def resolve_path(path):
-    "Creates absolute path if relative is provided"
-    p = Path(path)
-    if p.is_absolute(): return p
-    return Path.cwd()/path
-
-def get_module_from_path(source_path):
+def get_module_from_notebook(doc_path):
     "Finds module given a source path. Assumes it belongs to fastai directory"
-    fpath = Path(source_path).resolve()
-    if 'fastai' not in fpath.parts: 
-        print(f'Could not resolve file {fpath}. source_path must be inside `fastai` directory', fpath)
-        return []
-    fastai_idx = list(reversed(fpath.parts)).index('fastai')
-    dirpath = fpath.parents[fastai_idx]
-    relpath = fpath.relative_to(dirpath)
-    return '.'.join(relpath.with_suffix('').parts)
+    return f'fastai.{Path(doc_path).stem}'
 
-def update_notebooks(source_path, dest_path=None, do_all=False, update_html=True, update_nb=False,
-                     update_nb_links=True, html_path=None, create_missing_docs=False):
+def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=False,
+                     update_nb_links=True, do_execute=False, html_path=None):
     "`source_path` can be a directory or a file. Assumes all modules reside in the fastai directory."
-    from .convert2html import convert_all, convert_nb
+    from .convert2html import convert_nb
     source_path = Path(source_path)
-    if dest_path is None: dest_path = source_path.parent
-    if html_path is None: html_path = dest_path/'..'/'docs'
 
     if source_path.is_file():
+        dest_path = source_path.parent if dest_path is None else Path(dest_path)
+        html_path = dest_path/'..'/'docs' if html_path is None else Path(html_path)
         doc_path = source_path
-        if update_nb and (source_path.suffix == '.py'):
-            mod = import_mod(get_module_from_path(source_path))
+        assert source_path.suffix == '.ipynb', 'Must update from notebook or module'
+        if update_nb:
+            mod = import_mod(get_module_from_notebook(source_path))
             if not mod: return print('Could not find module for path:', source_path)
-            try: doc_path = update_module_page(mod, dest_path)
-            except FileNotFoundError:
-                if create_missing_docs: doc_path = create_module_page(mod, dest_path)
-                else: print(f'Could not update file {source_path}. Please set create_missing_docs=True')
-        if update_nb_links: link_nb(doc_path)
+            update_module_page(mod, dest_path)
+        if update_nb_links: 
+            link_nb(doc_path)
+        if do_execute: 
+            print(f'Executing notebook {doc_path}. Please wait...')
+            execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
         if update_html: convert_nb(doc_path, html_path)
+    elif (source_path.name.startswith('fastai.')):
+        # Do module update
+        assert dest_path is not None, 'To update a module, you must specify a destination folder for where notebook resides'
+        mod = import_mod(source_path.name)
+        if not mod: return print('Could not find module for:', source_path)
+        doc_path = Path(dest_path)/(strip_fastai(mod.__name__)+'.ipynb')
+        if not doc_path.exists():
+            print('Notebook does not exist. Creating:', doc_path)
+            create_module_page(mod, dest_path)
+        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=False, update_nb_links=update_nb_links, do_execute=do_execute, html_path=html_path)
     elif source_path.is_dir():
-        if update_nb: update_all(source_path, dest_path, create_missing=create_missing_docs)
-        if update_nb_links: link_all(dest_path)
-        if update_html: convert_all(dest_path, html_path)
+        for f in Path(source_path).glob('*.ipynb'):
+            update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb, update_nb_links=update_nb_links, do_execute=do_execute, html_path=html_path)
     else: print('Could not resolve source file:', source_path)
 
