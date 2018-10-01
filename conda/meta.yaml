@@ -23,7 +23,7 @@ source:
 
   # Source from git
   # git_rev: v0.13.1
-  # git_url: https://github.com/fastai/fastai_pytorch.git
+  # git_url: https://github.com/fastai/fastai.git
 
 build:
   number: 1

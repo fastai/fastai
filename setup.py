@@ -56,6 +56,8 @@ pytest-runner
 
 test_requirements = to_list("""
 pytest
+torch>=0.4.9
+torchvision>=0.2.1
 numpy>=1.12
 """)
 
@@ -84,7 +86,7 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     python_requires='>=3.6',
-    url='https://github.com/fastai/fastai_pytorch',
+    url='https://github.com/fastai/fastai',
     version=version,
     zip_safe=False,
 )
