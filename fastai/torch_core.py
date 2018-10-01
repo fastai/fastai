@@ -186,3 +186,4 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_class:type=nn.CrossEntropyLoss,
     with torch.no_grad():
         return torch.cat([loss_class(reduction='none')(*b) for b in loss_dl])
 
+def to_np(x): return x.cpu().numpy()

@@ -90,7 +90,7 @@ class ClassificationInterpretation():
         "Confusion matrix as an `np.ndarray`"
         x=torch.arange(0,self.data.c)
         cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-        return cm.cpu().numpy()
+        return to_np(cm)
 
     def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", figsize:tuple=None):
         "Plot the confusion matrix"
