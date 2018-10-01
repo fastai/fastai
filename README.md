@@ -34,12 +34,12 @@ Now you can install `fastai`. Note, that this is a beta test version at the mome
 
 First, follow the instructions above for either `PyPi` or `Conda`. Then remove the fastai package (`pip uninstall fastai` or `conda uninstall fastai`) and replace it with a [pip editable install](http://codumentary.blogspot.com/2014/11/python-tip-of-year-pip-install-editable.html):
 
-    git clone https://github.com/fastai/fastai_pytorch
-    cd fastai_pytorch
+    git clone https://github.com/fastai/fastai
+    cd fastai
     pip install -e .
     tools/run-after-git-clone
 
-Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai_pytorch/blob/master/CONTRIBUTING.md) and [the developers guide](http://docs.fast.ai/developers.html) for more details.
+Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [the developers guide](http://docs.fast.ai/developers.html) for more details.
 
 ### Copyright
 
