@@ -1,4 +1,4 @@
-"Module helps with formatting NLP data. Tokenizes text and creates vocab indexes"
+"NLP data processing; tokenizes text and creates vocab indexes"
 from ..torch_core import *
 
 __all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'deal_caps', 'fix_html', 'replace_rep', 'replace_wrep', 

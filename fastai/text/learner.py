@@ -1,4 +1,4 @@
-'`Learner` support for NLP'
+'Model training for NLP'
 from ..torch_core import *
 from ..basic_train import *
 from ..callbacks import *

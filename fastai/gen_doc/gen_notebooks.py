@@ -65,6 +65,9 @@ def get_global_vars(mod):
                 d[key] = f'`{codestr}` {get_source_link(mod, lineno)}'
     return d
 
+def write_nb(nb, nb_path, mode='w'): 
+    json.dump(nb, open(nb_path, mode), indent=1)
+
 def execute_nb(fname, metadata=None):
     "Execute notebook `fname`"
     # Any module used in the notebook that isn't inside must be in the same directory as this script
@@ -100,7 +103,7 @@ def create_module_page(mod, dest_path, force=False):
     nb['cells'] = init_cell + cells + [get_md_cell(UNDOC_HEADER)]
 
     doc_path = get_doc_path(mod, dest_path)
-    json.dump(nb, open(doc_path, 'w' if force else 'x'))
+    write_nb(nb, doc_path, 'w' if force else 'x')
     execute_nb(doc_path)
     return doc_path
 
@@ -202,7 +205,7 @@ def update_nb_metadata(nb_path=None, title=None, summary=None, keywords=None, ov
     nb = read_nb(nb_path)
     jm = {'title': title, 'summary': summary, 'keywords': keywords}
     update_metadata(nb, jm, overwrite)
-    json.dump(nb, open(nb_path, 'w'))
+    write_nb(nb, nb_path)
 
 METADATA_RE = re.compile(r"update_\w+_metadata")
 def has_metadata_cell(cells):
@@ -284,7 +287,7 @@ def update_module_page(mod, dest_path='.'):
     for ft_name in new_fts: new_cells.extend([get_doc_cell(ft_name), get_empty_cell()])
     if len(new_cells) > 1: nb['cells'] = existing + undoc_cells + new_cells
 
-    json.dump(nb, open(doc_path,'w'))
+    write_nb(nb, doc_path)
     return doc_path
 
 def link_nb(nb_path):
@@ -292,7 +295,7 @@ def link_nb(nb_path):
     cells = nb['cells']
     link_markdown_cells(cells, get_imported_modules(cells))
     add_nb_metadata(nb, nb_path)
-    json.dump(nb, open(nb_path,'w'))
+    write_nb(nb, nb_path)
     NotebookNotary().sign(read_nb(nb_path))
 
 def update_all(pkg_name, dest_path='.', exclude=None, create_missing=False):
@@ -325,9 +328,9 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         assert source_path.suffix == '.ipynb', 'Must update from notebook or module'
         if update_nb:
             mod = import_mod(get_module_from_notebook(source_path))
-            if not mod: return print('Could not find module for path:', source_path)
-            if not mod.__file__.endswith('__init__.py'): 
-                update_module_page(mod, dest_path)
+            if not mod: print('Could not find module for path:', source_path)
+            elif mod.__file__.endswith('__init__.py'): pass
+            else: update_module_page(mod, dest_path)
         if update_nb_links: 
             link_nb(doc_path)
         if do_execute: 

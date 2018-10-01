@@ -1,4 +1,4 @@
-"Data loading pipeline for structured data support. Loads from pandas `DataFrame`"
+"Data loading pipeline for structured data support. Loads from pandas DataFrame"
 from ..torch_core import *
 from .transform import *
 from ..data import *
