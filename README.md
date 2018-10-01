@@ -8,7 +8,9 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
   - mac: CPU-only
   - windows: not supported
 
-This will change once `pytorch` 1.0.0 is released. Please watch for updates [here](https://pytorch.org/get-started/locally/).
+This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
+
+If your system is currently not supported, please consider installing and using a very solid "v0" version of `fastai`. Please see the [instructions][https://github.com/fastai/fastai/tree/master/old).
 
 ### Conda Install
 
