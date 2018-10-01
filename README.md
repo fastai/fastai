@@ -20,6 +20,10 @@ First install the nightly `pytorch` build, e.g. for CUDA 9.2:
 
 If you have a different CUDA version find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Linux/Pip/python3.6|python3.7 and your CUDA version and it will give you the correct install instruction.
 
+Next, install a custom `torchvision` build, that is built against `torch_nightly`.
+
+    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post1
+
 Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai_pytorch/issues/):
 
     pip install fastai==1.0.0b7
@@ -44,4 +48,3 @@ Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai_pytorch/blob/
 ### Copyright
 
 Copyright 2017 onwards, fast.ai, Inc. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. A copy of the License is provided in the LICENSE file in this repository.
-
