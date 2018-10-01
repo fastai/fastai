@@ -1,9 +1,10 @@
 {%- extends 'hide.tpl' -%}{% block body %}---
-title: {{resources.title}}
+{% if resources.toc != "" and resources.toc != nil %}toc: {{resources.toc}}{% endif %}
+{% if resources.title != "" and resources.title != nil %}title: {{resources.title}}{% endif %}
 keywords: {{resources.keywords}}
 sidebar: home_sidebar
-tags: {{resources.tags}}
-summary: {% if resources.summary != "" and resources.summary != nil %}"{{resources.summary}}"{% endif %}
+{% if resources.tags != "" and resources.tags != nil %}tags: {{resources.tags}}{% endif %}
+{% if resources.summary != "" and resources.summary != nil %}summary: "{{resources.summary}}"{% endif %}
 ---
 
 <div class="container" id="notebook-container">

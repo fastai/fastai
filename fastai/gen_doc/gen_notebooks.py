@@ -65,7 +65,7 @@ def get_global_vars(mod):
                 d[key] = f'`{codestr}` {get_source_link(mod, lineno)}'
     return d
 
-def write_nb(nb, nb_path, mode='w'): 
+def write_nb(nb, nb_path, mode='w'):
     json.dump(nb, open(nb_path, mode), indent=1)
 
 def execute_nb(fname, metadata=None):
@@ -200,16 +200,17 @@ def update_module_metadata(mod, dest_path='.', title=None, summary=None, keyword
     summary = summary or inspect.getdoc(mod)
     update_nb_metadata(get_doc_path(mod, dest_path), title, summary, keywords, overwrite)
 
-def update_nb_metadata(nb_path=None, title=None, summary=None, keywords=None, overwrite=True):
+def update_nb_metadata(nb_path=None, title=None, summary=None, keywords='fastai', overwrite=True, **kwargs):
     "Creates jekyll metadata for given notebook path."
     nb = read_nb(nb_path)
-    jm = {'title': title, 'summary': summary, 'keywords': keywords}
+    jm = {'title': title, 'summary': summary, 'keywords': keywords, **kwargs}
     update_metadata(nb, jm, overwrite)
     write_nb(nb, nb_path)
+    NotebookNotary().sign(nb)
 
 METADATA_RE = re.compile(r"update_\w+_metadata")
 def has_metadata_cell(cells):
-    for c in cells: 
+    for c in cells:
         if c['cell_type'] == 'code' and METADATA_RE.search(c['source']): return c
 
 def add_nb_metadata(nb, nb_path):
@@ -267,7 +268,7 @@ def update_module_page(mod, dest_path='.'):
     strip_name = strip_fastai(mod.__name__)
     nb = read_nb(doc_path)
     cells = nb['cells']
-    
+
     add_module_metadata(mod, cells)
     link_markdown_cells(cells, get_imported_modules(cells))
 
