@@ -2,6 +2,14 @@
 
 The fastai deep learning library. See the [fastai website](http://docs.fast.ai) to get started.
 
+**Important**: as of this moment pytorch.org's pre-1.0.0 version (torch-nightly) supports:
+
+  - linux: fully
+  - mac: CPU-only
+  - windows: not supported
+
+This will change once `pytorch` 1.0.0 is released. Please watch for updates [here](https://pytorch.org/get-started/locally/).
+
 ### Conda Install
 
 To install fastai with pytorch-nightly + CUDA 9.2 simply run:
