@@ -3,9 +3,9 @@ from fastai import *
 from fastai.vision import *
 from fastai.text import *
 
-__all__ = ['DATA_PATH', 'MNIST_NAME', 'IMDB_NAME', 'ADULT_NAME', 'ML_NAME',
-           'MNIST_PATH', 'IMDB_PATH', 'ADULT_PATH', 'ML_PATH',
-           'untar_mnist', 'untar_imdb', 'untar_adult', 'untar_movie_lens',
+__all__ = ['DATA_PATH', 'MNIST_NAME', 'IMDB_NAME', 'ADULT_NAME', 'ML_NAME', 'CIFAR_PATH',
+           'MNIST_PATH', 'IMDB_PATH', 'ADULT_PATH', 'ML_PATH', 'CIFAR_NAME',
+           'untar_data', 'untar_mnist', 'untar_imdb', 'untar_adult', 'untar_movie_lens',
            'get_adult', 'get_mnist', 'get_imdb', 'get_movie_lens', 'download_wt103_model']
 
 URL = 'http://files.fast.ai/data/examples/'
@@ -14,10 +14,12 @@ MNIST_NAME = 'mnist_sample'
 IMDB_NAME = 'imdb_sample'
 ADULT_NAME = 'adult_sample'
 ML_NAME = 'movie_lens_sample'
+CIFAR_NAME = 'cifar10'
 MNIST_PATH = DATA_PATH/MNIST_NAME
 IMDB_PATH = DATA_PATH/IMDB_NAME
 ADULT_PATH = DATA_PATH/ADULT_NAME
 ML_PATH = DATA_PATH/ML_NAME
+CIFAR_PATH = DATA_PATH/CIFAR_NAME
 
 def f_name(name): return f'{name}.tgz'
 
