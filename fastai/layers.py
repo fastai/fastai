@@ -48,13 +48,13 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
 
 def conv2d_relu(ni:int, nf:int, ks:int=3, stride:int=1,
                 padding:int=None, bn:bool=False) -> nn.Sequential:
-    "Create a `conv2d` layer with `nn.ReLU` activation and optional(`bn`) `nn.BatchNorm2d`"
+    "Create a `conv2d` layer with `nn.ReLU` activation and optional(`bn`) `nn.BatchNorm2d`: `ni` input, `nf` out filters, `ks` kernel, `stride`:stride, `padding`:padding, `bn`: batch normalization"
     layers = [conv2d(ni, nf, ks=ks, stride=stride, padding=padding), nn.ReLU()]
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
 
 def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0) -> nn.ConvTranspose2d:
-    "Create `nn.nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size. `padding` defaults to 0"
+    "Create `nn.nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0"
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding)
 
 class AdaptiveConcatPool2d(nn.Module):
@@ -73,7 +73,7 @@ class Debugger(nn.Module):
         return x
 
 class StdUpsample(nn.Module):
-    "Standard upsample module"
+    "Increases the dimensionality of our data by applying a transposed convolution layer to the input and with batchnorm and a RELU activation"
     def __init__(self, n_in:int, n_out:int):
         super().__init__()
         self.conv = conv2d_trans(n_in, n_out)
