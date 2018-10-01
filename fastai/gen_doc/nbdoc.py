@@ -7,7 +7,8 @@ from .docstrings import *
 from .core import *
 from ..torch_core import *
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
-           'get_exports', 'show_video', 'show_video_from_youtube', 'create_anchor', 'import_mod', 'get_source_link', 'is_enum']
+           'get_exports', 'show_video', 'show_video_from_youtube', 'create_anchor', 'import_mod', 'get_source_link',
+           'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important']
 
 MODULE_NAME = 'fastai'
 SOURCE_URL = 'https://github.com/fastai/fastai/blob/master/'
@@ -299,3 +300,11 @@ def create_anchor(text, title_level=0, name=None):
     if name is None: name=str2id(text)
     display(title_md(f'<a id={name}></a>{text}'))
 
+def jekyll_div(s,c,h,icon=None):
+    icon = ifnone(icon,c)
+    res = f'<div markdown="span" class="alert alert-{c}" role="alert"><i class="fa fa-{c}-circle"></i> <b>{h}: </b>{s}</div>'
+    display(Markdown(res))
+
+def jekyll_note(s): return jekyll_div(s,'info','Note')
+def jekyll_warn(s): return jekyll_div(s,'danger','Warning', 'exclamation')
+def jekyll_important(s): return jekyll_div(s,'warning','Important')
