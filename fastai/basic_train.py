@@ -76,7 +76,7 @@ def fit(epochs:int, model:Model, loss_fn:LossFunction, opt:optim.Optimizer,
                 *val_metrics,nums = validate(model, data.valid_dl, loss_fn=loss_fn,
                                              cb_handler=cb_handler, metrics=metrics,pbar=pbar)
                 nums = np.array(nums, dtype=np.float32)
-                val_metrics = [(torch.stack(val).cpu().numpy() * nums).sum() / nums.sum()
+                val_metrics = [(to_np(torch.stack(val)) * nums).sum() / nums.sum()
                                for val in val_metrics]
 
             else: val_metrics=None
