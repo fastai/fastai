@@ -20,7 +20,7 @@ class Darknet(nn.Module):
         return [conv_layer(ch_in, ch_in*2,stride=stride)
                ] + [(ResLayer(ch_in*2)) for i in range(num_blocks)]
 
-    def __init__(self, num_blocks:int, num_classes:int, nf=32):
+    def __init__(self, num_blocks:Collection[int], num_classes:int, nf=32):
         "create darknet with `nf` and `num_blocks` layers"
         super().__init__()
         layers = [conv_layer(3, nf, ks=3, stride=1)]

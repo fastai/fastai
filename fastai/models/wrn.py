@@ -35,7 +35,7 @@ def _make_group(N, ni, nf, block, stride, drop_p):
     return [block(ni if i == 0 else nf, nf, stride if i == 0 else 1, drop_p) for i in range(N)]
 
 class WideResNet(nn.Module):
-    def __init__(self, num_groups, N, num_classes, k=1, drop_p=0.0, start_nf=16):
+    def __init__(self, num_groups:int, N:int, num_classes:int, k:int=1, drop_p:float=0.0, start_nf:int=16):
         super().__init__()
         n_channels = [start_nf]
         for i in range(num_groups): n_channels.append(start_nf*(2**i)*k)
