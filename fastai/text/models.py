@@ -68,7 +68,7 @@ class EmbeddingDropout(nn.Module):
 
 def _repackage_var(h:Tensors) -> Tensors:
     "Detaches h from its history."
-    return h.detach() if type(h) == torch.Tensor else tuple(repackage_var(v) for v in h)
+    return h.detach() if type(h) == torch.Tensor else tuple(_repackage_var(v) for v in h)
 
 class RNNCore(nn.Module):
     "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182"

@@ -57,6 +57,7 @@ class RNNLearner(Learner):
     def load_encoder(self, name:str):
         "Load the encoder `name` from the model directory."
         self.model[0].load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+        self.freeze()
 
     def load_pretrained(self, wgts_fname:str, itos_fname:str):
         "Load a pretrained model and adapts it to the data vocabulary."
@@ -76,7 +77,7 @@ class RNNLearner(Learner):
         model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                     weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
         learn = cls(data, model, bptt, split_func=lm_split, **kwargs)
-        if pretrained_fnames is not None: 
+        if pretrained_fnames is not None:
             learn.load_pretrained(*pretrained_fnames)
             learn.freeze()
         return learn
