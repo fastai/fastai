@@ -117,20 +117,21 @@ def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_wa
     if return_comment: parsed += f'\n\n*return*: {return_comment}'
     return parsed
 
+_modvars = {}
+
+def replace_link(m):
+    keyword = m.group(1) or m.group(2)
+    elt = find_elt(_modvars, keyword)
+    if elt is None: return m.group()
+    return link_type(elt, arg_name=keyword)
+
 # Finds all places with a backtick but only if it hasn't already been linked
 BT_REGEX = re.compile("\[`([^`]*)`\](?:\([^)]*\))|`([^`]*)`") # matches [`key`](link) or `key`
 def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
     "Search `docstring` for backticks and attempt to link those functions to respective documentation."
     mods = listify(modules)
-    modvars = {}
-    for mod in mods: modvars.update(mod.__dict__) # concat all module definitions
-    for m in BT_REGEX.finditer(docstring):
-        keyword = m.group(1) or m.group(2)
-        elt = find_elt(modvars, keyword)
-        if elt is None: continue
-        link = link_type(elt, arg_name=keyword)
-        docstring = docstring.replace(m.group(0), link) # group(0) = replace whole link with new one
-    return docstring
+    for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
+    return re.sub(BT_REGEX, replace_link, docstring)
 
 def find_elt(modvars, keyword, match_last=True):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."

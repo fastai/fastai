@@ -331,9 +331,8 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             if not mod: print('Could not find module for path:', source_path)
             elif mod.__file__.endswith('__init__.py'): pass
             else: update_module_page(mod, dest_path)
-        if update_nb_links: 
-            link_nb(doc_path)
-        if do_execute: 
+        if update_nb_links: link_nb(doc_path)
+        if do_execute:
             print(f'Executing notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
         if update_html: convert_nb(doc_path, html_path)
