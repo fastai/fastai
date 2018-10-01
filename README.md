@@ -4,9 +4,9 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
 
 ### Conda Install
 
-To install fastai with CUDA 9.2 simply run:
+To install fastai with pytorch-nightly + CUDA 9.2 simply run:
 
-    conda install -c pytorch -c fastai fastai cuda92
+    conda install -c pytorch -c fastai fastai pytorch-nightly cuda92
 
 If your setup doesn't have CUDA support remove the `cuda92` above (in which case you'll only be able to train on CPU, not GPU, which will be much slower). For different versions of the CUDA toolkit, you'll need to install the appropriate CUDA conda package based on what you've got installed on your system (i.e. instead of `cuda92` in the above, pick the appropriate option for whichever toolkit version you have installed; to see a list of options type: `conda search "cuda*" -c pytorch`).
 
