@@ -56,6 +56,8 @@ pytest-runner
 
 test_requirements = to_list("""
 pytest
+torch>=0.4.9
+torchvision>=0.2.1
 numpy>=1.12
 """)
 
