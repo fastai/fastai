@@ -49,31 +49,31 @@ def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
 
 def ifnone(a:Any,b:Any)->Any:
-    "`a` if `a` is not None, otherwise `b`"
+    "`a` if `a` is not None, otherwise `b`."
     return b if a is None else a
 
 def uniqueify(x:Series) -> List[Any]: return list(OrderedDict.fromkeys(x).keys())
 def idx_dict(a): return {v:k for k,v in enumerate(a)}
 
 def find_classes(folder:Path)->FilePathList:
-    "List of label subdirectories in imagenet-style `folder`"
+    "List of label subdirectories in imagenet-style `folder`."
     classes = [d for d in folder.iterdir()
                if d.is_dir() and not d.name.startswith('.')]
     assert(len(classes)>0)
     return sorted(classes, key=lambda d: d.name)
 
 def arrays_split(mask:NPArrayMask, *arrs:NPArrayableList)->SplitArrayList:
-    "Given `arrs` is [a,b,...] and `mask`index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...]"
+    "Given `arrs` is [a,b,...] and `mask`index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...]."
     mask = array(mask)
     return list(zip(*[(a[mask],a[~mask]) for a in map(np.array, arrs)]))
 
 def random_split(valid_pct:float, *arrs:NPArrayableList)->SplitArrayList:
-    "Randomly `array_split` with `valid_pct` ratio. good for creating validation set."
+    "Randomly split `arrs` with `valid_pct` ratio. good for creating validation set."
     is_train = np.random.uniform(size=(len(arrs[0]),)) > valid_pct
     return arrays_split(is_train, *arrs)
 
 def listify(p:OptListOrItem=None, q:OptListOrItem=None):
-    "Makes `p` same length as `q`"
+    "Make `p` same length as `q`"
     if p is None: p=[]
     elif not isinstance(p, Iterable): p=[p]
     n = q if type(q)==int else len(p) if q is None else len(q)
@@ -88,13 +88,13 @@ def camel2snake(name:str)->str:
     return re.sub(_camel_re2, r'\1_\2', s1).lower()
 
 def even_mults(start:float, stop:float, n:int)->np.ndarray:
-    "Build evenly stepped schedule from start to stop in n steps"
+    "Build evenly stepped schedule from `start` to `stop` in `n` steps."
     mult = stop/start
     step = mult**(1/(n-1))
     return np.array([start*(step**i) for i in range(n)])
 
 def extract_kwargs(names:Collection[str], kwargs:KWArgs):
-    "Extracts the keys in names from the kwargs."
+    "Extracs the keys in `names` from the `kwargs`."
     new_kwargs = {}
     for arg_name in names:
         if arg_name in kwargs:
@@ -103,40 +103,40 @@ def extract_kwargs(names:Collection[str], kwargs:KWArgs):
     return new_kwargs, kwargs
 
 def partition(a:Collection, sz:int) -> List[Collection]:
-    "Splits iterables a in equal parts of size sz"
+    "Split iterables `a` in equal parts of size `sz`"
     return [a[i:i+sz] for i in range(0, len(a), sz)]
 
 def partition_by_cores(a:Collection, n_cpus:int) -> List[Collection]:
-    "Split data equally among CPU cores"
+    "Split data in `a` equally among `n_cpus` cores"
     return partition(a, len(a)//n_cpus + 1)
 
 def get_chunk_length(csv_name:PathOrStr, chunksize:int) -> int:
-    "Reads the number of chunks in a pandas `DataFrame`"
+    "Read the number of chunks in a pandas `DataFrame`."
     dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
     l = 0
     for _ in dfs: l+=1
     return l
 
 def get_total_length(csv_name:PathOrStr, chunksize:int) -> int:
-    "Reads the the total length of a pandas `DataFrame`"
+    "Read the the total length of a pandas `DataFrame`."
     dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
     l = 0
     for df in dfs: l+=len(df)
     return l
 
 def maybe_copy(old_fnames:Collection[PathOrStr], new_fnames:Collection[PathOrStr]):
-    "Copies the `old_fnames` to `new_fnames` location if new_fnames don't exist or are less recent."
+    "Copy the `old_fnames` to `new_fnames` location if `new_fnames` don't exist or are less recent."
     os.makedirs(os.path.dirname(new_fnames[0]), exist_ok=True)
     for old_fname,new_fname in zip(old_fnames, new_fnames):
         if not os.path.isfile(new_fname) or os.path.getmtime(new_fname) < os.path.getmtime(old_fname):
             shutil.copyfile(old_fname, new_fname)
 
 def series2cat(df:DataFrame, *col_names):
-    "Categorifies the columns in `df`."
+    "Categorifies the columns `col_names` in `df`."
     for c in listify(col_names): df[c] = df[c].astype('category').cat.as_ordered()
 
 class ItemBase():
-    "All transformable dataset items use this type"
+    "All transformable dataset items use this type."
     @property
     @abstractmethod
     def device(self): pass
@@ -145,7 +145,7 @@ class ItemBase():
     def data(self): pass
 
 def download_url(url:str, dest:str, overwrite:bool=False)->None:
-    # Download `url` to `dest` unless is exists and not `overwrite`
+    "Download `url` to `dest` unless is exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
     u = requests.get(url, stream=True)
     file_size = int(u.headers["Content-Length"])
