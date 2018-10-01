@@ -326,7 +326,8 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         if update_nb:
             mod = import_mod(get_module_from_notebook(source_path))
             if not mod: return print('Could not find module for path:', source_path)
-            update_module_page(mod, dest_path)
+            if not mod.__file__.endswith('__init__.py'): 
+                update_module_page(mod, dest_path)
         if update_nb_links: 
             link_nb(doc_path)
         if do_execute: 
