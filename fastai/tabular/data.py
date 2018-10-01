@@ -2,6 +2,7 @@
 from ..torch_core import *
 from .transform import *
 from ..data import *
+from ..basic_train import *
 from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
 
@@ -80,7 +81,8 @@ def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:s
                                                       train_ds.cont_names, train_ds.stats, log_output))
     return DataBunch.create(*datasets, path=path, **kwargs)
 
-def get_tabular_learner(data, layers:Collection[int], emb_szs:dict=None, **kwargs):
+def get_tabular_learner(data, layers:Collection[int], emb_szs:dict=None, metrics=None, **kwargs):
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
-    return TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers, **kwargs)
+    model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers, **kwargs)
+    return Learner(data, model, metrics=metrics)
 
