@@ -20,8 +20,8 @@ def link_type(arg_type, arg_name=None, include_bt:bool=True):
     "creates link to documentation"
     arg_name = arg_name or fn_name(arg_type)
     if include_bt: arg_name = code_esc(arg_name)
-    if is_fastai_class(arg_type): return f'[{arg_name}]({get_fn_link(arg_type)})'
     if belongs_to_module(arg_type, 'torch') and ('Tensor' not in arg_name): return f'[{arg_name}]({get_pytorch_link(arg_type)})'
+    if is_fastai_class(arg_type): return f'[{arg_name}]({get_fn_link(arg_type)})'
     return arg_name
 
 def is_fastai_class(t): return belongs_to_module(t, MODULE_NAME)
@@ -137,10 +137,11 @@ def find_elt(modvars, keyword, match_last=True):
     if keyword in modvars: return modvars[keyword]
     if '.' not in keyword: return None
     comps = keyword.split('.')
+    if (comps[0] == 'torch' or comps[0] == 'torchvision'): match_last = False
     if match_last: return modvars.get(comps[-1])
     comp_elt = modvars.get(comps[0])
     if hasattr(comp_elt, '__dict__'):
-        return find_elt(comp_elt.__dict__, '.'.join(comps[1:]))
+        return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
 
 def import_mod(mod_name:str):
     "returns module from `mod_name`"
@@ -260,6 +261,9 @@ def get_module_name(ft) -> str: return ft.__name__ if inspect.ismodule(ft) else 
 def get_pytorch_link(ft) -> str:
     "returns link to pytorch docs"
     name = ft.__name__
+    if name.startswith('torchvision'):
+        doc_path = get_module_name(ft).replace('.', '/')
+        return f'{PYTORCH_DOCS}{doc_path}.html#{ft.__name__}'
     if name.startswith('torch.nn') and inspect.ismodule(ft): # nn.functional is special case
         nn_link = name.replace('.', '-')
         return f'{PYTORCH_DOCS}nn.html#{nn_link}'
