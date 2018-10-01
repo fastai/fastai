@@ -84,7 +84,7 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     python_requires='>=3.6',
-    url='https://github.com/fastai/fastai_pytorch',
+    url='https://github.com/fastai/fastai',
     version=version,
     zip_safe=False,
 )
