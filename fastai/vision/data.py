@@ -177,7 +177,7 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     if do_y: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y=False, device=None)->[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y=False, device=None)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
     if device is None: device=default_device
     return (partial(_normalize_batch, mean=mean.to(device),std=std.to(device)),

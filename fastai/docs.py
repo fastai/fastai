@@ -4,7 +4,7 @@ from fastai.vision import *
 from fastai.text import *
 
 __all__ = ['DATA_PATH', 'MNIST_PATH', 'IMDB_PATH', 'ADULT_PATH', 'ML_PATH', 'DOGS_PATH', 'PLANET_PATH',
-           'untar_data', 'get_adult', 'get_mnist', 'get_imdb', 'get_movie_lens', 'download_wt103_model']
+           'CIFAR_PATH', 'untar_data', 'get_adult', 'get_mnist', 'get_imdb', 'get_movie_lens', 'download_wt103_model']
 
 URL = 'http://files.fast.ai/data/examples/'
 DATA_PATH = Path('..')/'data'

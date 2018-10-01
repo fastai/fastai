@@ -55,7 +55,7 @@ def conv2d_relu(ni:int, nf:int, ks:int=3, stride:int=1,
     return nn.Sequential(*layers)
 
 def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0) -> nn.ConvTranspose2d:
-    "Create `nn.nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
+    "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding)
 
 class AdaptiveConcatPool2d(nn.Module):
@@ -74,8 +74,7 @@ class Debugger(nn.Module):
         return x
 
 class StdUpsample(nn.Module):
-    """Increases the dimensionality of our data by applying a transposed convolution layer to the input 
-    and with batchnorm and a RELU activation."""
+    "Increases the dimensionality of our data by applying a transposed convolution layer."
     def __init__(self, n_in:int, n_out:int):
         super().__init__()
         self.conv = conv2d_trans(n_in, n_out)
