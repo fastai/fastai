@@ -207,7 +207,7 @@ def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_to
                        embed_p:float=0.1, weight_p:float=0.5) -> Model:
     "To create a full AWD-LSTM"
     rnn_enc = RNNCore(vocab_sz, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token, qrnn=qrnn, bidir=bidir,
-                 tie_weights=tie_weights, hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
+                 hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
     enc = rnn_enc.encoder if tie_weights else None
     return SequentialRNN(rnn_enc, LinearDecoder(vocab_sz, emb_sz, output_p, tie_encoder=enc, bias=bias))
 

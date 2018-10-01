@@ -1,5 +1,5 @@
-from ..layers import *
-from ..torch_core import *
+from ...layers import *
+from ...torch_core import *
 
 __all__ = ['BasicBlock', 'WideResNet', 'wrn_22']
 
