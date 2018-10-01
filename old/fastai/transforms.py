@@ -335,7 +335,7 @@ class CropNoop(CoordTransform):
     """ Does not resize and does not scale """
     def __init__(self, sz, tfm_y=TfmType.NO, sz_y=None):
         super().__init__(tfm_y)
-     def do_transform(self, x, is_y):
+    def do_transform(self, x, is_y):
         return x
     
 class NoCrop(CoordTransform):

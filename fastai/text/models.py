@@ -2,7 +2,7 @@ from ..torch_core import *
 from ..layers import *
 
 __all__ = ['EmbeddingDropout', 'LinearDecoder', 'MultiBatchRNNCore', 'PoolingLinearClassifier', 'RNNCore', 'RNNDropout', 
-           'SequentialRNN', 'WeightDropout', 'dropout_mask', 'get_language_model', 'get_rnn_classifier', 'repackage_var']
+           'SequentialRNN', 'WeightDropout', 'dropout_mask', 'get_language_model', 'get_rnn_classifier']
 
 def dropout_mask(x:Tensor, sz:Collection[int], p:float):
     "Returns a dropout mask of the same type as x, size sz, with probability p to cancel an element."
@@ -66,7 +66,7 @@ class EmbeddingDropout(nn.Module):
         return F.embedding(words, masked_embed, self.pad_idx, self.emb.max_norm,
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
-def repackage_var(h:Tensors) -> Tensors:
+def _repackage_var(h:Tensors) -> Tensors:
     "Detaches h from its history."
     return h.detach() if type(h) == torch.Tensor else tuple(repackage_var(v) for v in h)
 
@@ -114,7 +114,7 @@ class RNNCore(nn.Module):
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
-        self.hidden = repackage_var(new_hidden)
+        self.hidden = _repackage_var(new_hidden)
         return raw_outputs, outputs
 
     def one_hidden(self, l:int) -> Tensor:
@@ -203,10 +203,10 @@ class PoolingLinearClassifier(nn.Module):
         return x, raw_outputs, outputs
 
 def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int, tie_weights:bool=True,
-                       qrnn:bool=False, bias:bool=True, output_p:float=0.4, hidden_p:float=0.2, input_p:float=0.6,
+                       qrnn:bool=False, bias:bool=True, bidir:bool=False, output_p:float=0.4, hidden_p:float=0.2, input_p:float=0.6,
                        embed_p:float=0.1, weight_p:float=0.5) -> Model:
     "To create a full AWD-LSTM"
-    rnn_enc = RNNCore(vocab_sz, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token, qrnn=qrnn,
+    rnn_enc = RNNCore(vocab_sz, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token, qrnn=qrnn, bidir=bidir,
                  hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
     enc = rnn_enc.encoder if tie_weights else None
     return SequentialRNN(rnn_enc, LinearDecoder(vocab_sz, emb_sz, output_p, tie_encoder=enc, bias=bias))

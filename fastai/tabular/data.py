@@ -2,7 +2,7 @@
 from ..torch_core import *
 from .transform import *
 from ..data import *
-from ..models.tabular import *
+from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
 
 __all__ = ['TabularDataset', 'tabular_data_from_df', 'get_tabular_learner']

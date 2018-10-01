@@ -3,6 +3,7 @@ from ..torch_core import *
 from ..basic_train import *
 from ..data import *
 from ..layers import *
+import torchvision.models as tvm
 
 __all__ = ['ConvLearner', 'create_body', 'create_head', 'num_features', 'ClassificationInterpretation']
 
