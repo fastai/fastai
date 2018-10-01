@@ -4,15 +4,27 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
 
 ## Is My System Supported?
 
-**Important**: as of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
+1. Python: You need to have python 3.6+
 
-  - linux: fully
-  - mac: CPU-only
-  - windows: not supported
+2. Operating System
 
-This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
+   Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
 
-If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
+   As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
+
+     - linux: fully
+     - mac: CPU-only
+     - windows: not supported
+
+   This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
+
+   If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
+
+
+### Python version
+
+
+
 
 ## Conda Install
 
