@@ -33,7 +33,9 @@ def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str], fig
     fig, axs = plt.subplots(rows,rows,figsize=figsize)
     for i, ax in enumerate(axs.flatten()):
         show_image(x[i], ax=ax)
-        ax.set_title(classes[y[i]])
+        if len(y.size()) == 1: title = classes[y[i]]
+        else:  title = '; '.join([classes[a] for a,t in enumerate(y[i]) if t==1])
+        ax.set_title(title)
     plt.tight_layout()
 
 def show_xy_images(x:Tensor,y:Tensor,rows:int,figsize:tuple=(9,9)):
@@ -106,7 +108,9 @@ class ImageMultiDataset(LabelDataset):
     @classmethod
     def from_folder(cls, path:PathOrStr, folder:PathOrStr, fns:pd.Series, labels:ImgLabels, valid_pct:float=0.2,
         classes:Optional[Classes]=None):
-        train,valid = random_split(valid_pct, f'{path}/{folder}/' + fns, labels)
+        path = Path(path)
+        folder_path = (path/folder).absolute()
+        train,valid = random_split(valid_pct, f'{folder_path}/' + fns, labels)
         train_ds = cls(*train, classes=classes)
         return [train_ds,cls(*valid, classes=train_ds.classes)]
 
@@ -226,10 +230,11 @@ def _labels_to_csv(self, dest:str):
 DataBunch.labels_to_csv = _labels_to_csv
 
 def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
-                      label_delim:str=' ', header:Optional[Union[int,str]]='infer', suffix:Optional[str]=None):
+                      label_delim:str=None, header:Optional[Union[int,str]]='infer', suffix:Optional[str]=None):
     "Read the csv in `csv_path` and return the labels."
     df = pd.read_csv(csv_path, header=header)
-    df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
+    if label_delim:
+        df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
     labels = df.iloc[:,label_col]
     fnames = df.iloc[:,fn_col]
     if suffix: fnames = fnames + suffix
@@ -238,9 +243,16 @@ def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
 def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
                         test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any) -> DataBunch:
     "Create a `DataBunch` from a csv file."
-    if sep: fnames, labels = csv_to_fns_labels(csv_labels, suffix=suffix, label_delim=' ')
-    path=Path(path)
-    datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct)
-    if test: datasets.append(ImageMultiDataset.from_single_folder(path/test, classes=datasets[0].classes))
+    fnames, labels = csv_to_fns_labels(path/csv_labels, suffix=suffix, label_delim=sep)
+    classes = uniqueify(np.concatenate(labels)) if sep else uniqueify(labels)
+    if sep:
+        datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct, classes=classes)
+        if test: datasets.append(ImageMultiDataset.from_single_folder(path/test, classes=datasets[0].classes))
+    else:
+        folder_path = (path/folder).absolute()
+        (train_fns,train_lbls), (valid_fns,valid_lbls) = random_split(valid_pct, f'{folder_path}/' + fnames, labels)
+        datasets = [ImageDataset(train_fns, train_lbls, classes)]
+        datasets.append(ImageDataset(valid_fns, valid_lbls, classes))
+        if test: datasets.append(ImageDataset.from_single_folder(Path(path)/test, classes=classes))
     return DataBunch.create(*datasets, path=path, **kwargs)
 
