@@ -20,7 +20,7 @@ def _learn_get_preds(learn:Learner, is_test:bool=False) -> List[Tensor]:
     return get_preds(learn.model, learn.data.holdout(is_test))
 Learner.get_preds = _learn_get_preds
 
-def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.25) -> Iterator[List[Tensor]]:
+def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[List[Tensor]]:
     "Computes the outputs for several augmented inputs for TTA"
     dl = learn.data.holdout(is_test)
     ds = dl.dataset
