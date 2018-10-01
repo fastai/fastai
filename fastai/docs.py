@@ -3,7 +3,7 @@ from fastai import *
 from fastai.vision import *
 from fastai.text import *
 
-__all__ = ['DATA_PATH', 'MNIST_PATH', 'IMDB_PATH', 'ADULT_PATH', 'ML_PATH', 'DOGS_PATH',
+__all__ = ['DATA_PATH', 'MNIST_PATH', 'IMDB_PATH', 'ADULT_PATH', 'ML_PATH', 'DOGS_PATH', 'PLANET_PATH',
            'untar_data', 'get_adult', 'get_mnist', 'get_imdb', 'get_movie_lens', 'download_wt103_model']
 
 URL = 'http://files.fast.ai/data/examples/'
@@ -13,6 +13,7 @@ IMDB_PATH = DATA_PATH/'imdb_sample'
 ADULT_PATH = DATA_PATH/'adult_sample'
 ML_PATH = DATA_PATH/'movie_lens_sample'
 CIFAR_PATH = DATA_PATH/'cifar10'
+PLANET_PATH = DATA_PATH/'planet_sample'
 # kaggle competitions download dogs-vs-cats -p {DOGS_PATH.absolute()}
 DOGS_PATH = DATA_PATH/'dogscats'
 
