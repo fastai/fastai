@@ -20,7 +20,11 @@ def untar_adult():
 
 def untar_movie_lens():
     if not ML_PATH.exists(): tarfile.open(ML_PATH.with_suffix('.tgz'), 'r:gz').extractall(DATA_PATH)
-        
+
+def get_adult():
+    if not ADULT_PATH.exists(): untar_adult()
+    return pd.read_csv(ADULT_PATH/'adult.csv')
+
 def get_mnist():
     if not MNIST_PATH.exists(): untar_mnist()
     return image_data_from_folder(MNIST_PATH)
