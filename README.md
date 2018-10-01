@@ -2,6 +2,8 @@
 
 The fastai deep learning library. See the [fastai website](http://docs.fast.ai) to get started.
 
+## Is My System Supported?
+
 **Important**: as of this moment pytorch.org's pre-1.0.0 version (torch-nightly) supports:
 
   - linux: fully
@@ -12,7 +14,7 @@ This will change once `pytorch` 1.0.0 is released and installable packages made 
 
 If your system is currently not supported, please consider installing and using a very solid "v0" version of `fastai`. Please see the [instructions][https://github.com/fastai/fastai/tree/master/old).
 
-### Conda Install
+## Conda Install
 
 To install fastai with pytorch-nightly + CUDA 9.2 simply run:
 
@@ -24,7 +26,7 @@ If your setup doesn't have CUDA support remove the `cuda92` above (in which case
 
 NB: We are currently using a re-packaged torchvision in order to support pytorch-nightly, which is required for using fastai.
 
-### PyPI Install
+## PyPI Install
 
 First install the nightly `pytorch` build, e.g. for CUDA 9.2:
 
@@ -54,7 +56,7 @@ pip install --no-deps torchvision
 pip install fastai
 ```
 
-### Developer Install
+## Developer Install
 
 First, follow the instructions above for either `PyPi` or `Conda`. Then remove the fastai package (`pip uninstall fastai` or `conda uninstall fastai`) and replace it with a [pip editable install](http://codumentary.blogspot.com/2014/11/python-tip-of-year-pip-install-editable.html):
 
@@ -67,6 +69,6 @@ tools/run-after-git-clone
 
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [the developers guide](http://docs.fast.ai/developers.html) for more details.
 
-### Copyright
+## Copyright
 
 Copyright 2017 onwards, fast.ai, Inc. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. A copy of the License is provided in the LICENSE file in this repository.
