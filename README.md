@@ -4,9 +4,9 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
 
 ## Is My System Supported?
 
-1. Python: You need to have python 3.6+
+1. Python: You need to have python 3.6 or higher
 
-2. Operating System
+2. Operating System:
 
    Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
 
@@ -37,6 +37,13 @@ conda install -c pytorch -c fastai fastai pytorch-nightly cuda92
 If your setup doesn't have CUDA support remove the `cuda92` above (in which case you'll only be able to train on CPU, not GPU, which will be much slower). For different versions of the CUDA toolkit, you'll need to install the appropriate CUDA conda package based on what you've got installed on your system (i.e. instead of `cuda92` in the above, pick the appropriate option for whichever toolkit version you have installed; to see a list of options type: `conda search "cuda*" -c pytorch`).
 
 NB: We are currently using a re-packaged torchvision in order to support pytorch-nightly, which is required for using fastai.
+
+If your system doesn't have CUDA, you can install the CPU-only torch build:
+
+```
+conda install -c pytorch -c fastai fastai pytorch-nightly==1.0.0.dev20180928=py3.6_cpu_0
+```
+
 
 ## PyPI Install
 
