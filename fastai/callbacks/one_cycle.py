@@ -12,7 +12,7 @@ class OneCycleScheduler(Callback):
     lr_max:float
     moms:Floats=(0.95,0.85)
     div_factor:float=25.
-    pct_start:float=0.5
+    pct_start:float=0.3
 
     def __post_init__(self):
         self.moms=tuple(listify(self.moms,2))
