@@ -17,7 +17,7 @@ _typing_names = {t:n for t,n in fastai_types.items() if t.__module__=='typing'}
 def is_enum(cls): return cls == enum.Enum or cls == enum.EnumMeta
 
 def link_type(arg_type, arg_name=None, include_bt:bool=True):
-    "creates link to documentation"
+    "Create link to documentation."
     arg_name = arg_name or fn_name(arg_type)
     if include_bt: arg_name = code_esc(arg_name)
     if belongs_to_module(arg_type, 'torch') and ('Tensor' not in arg_name): return f'[{arg_name}]({get_pytorch_link(arg_type)})'
@@ -27,7 +27,7 @@ def link_type(arg_type, arg_name=None, include_bt:bool=True):
 def is_fastai_class(t): return belongs_to_module(t, MODULE_NAME)
 
 def belongs_to_module(t, module_name):
-    "checks if belongs to module_name"
+    "Check if `t` belongs to `module_name`."
     if not inspect.getmodule(t): return False
     return inspect.getmodule(t).__name__.startswith(module_name)
 
@@ -56,7 +56,7 @@ def format_param(p):
     return res
 
 def format_ft_def(func, full_name:str=None)->str:
-    "Formats and links function definition to show in documentation"
+    "Format and link `func` definition to show in documentation"
     sig = inspect.signature(func)
     name = f'`{ifnone(full_name, func.__name__)}`'
     fmt_params = [format_param(param) for name,param
@@ -68,13 +68,13 @@ def format_ft_def(func, full_name:str=None)->str:
     return f'{f_name}\n> {name}{arg_str}'
 
 def get_enum_doc(elt, full_name:str) -> str:
-    "Formatted enum documentation"
+    "Formatted enum documentation."
     vals = ', '.join(elt.__members__.keys())
     doc = f'{code_esc(full_name)}\n`Enum` = [{vals}]'
     return doc
 
 def get_cls_doc(elt, full_name:str) -> str:
-    "Class definition"
+    "Class definition."
     parent_class = inspect.getclasstree([elt])[-1][0][1][0]
     doc = format_ft_def(elt, full_name)
     if parent_class != object: doc += f' :: {link_type(parent_class, include_bt=True)}'
@@ -82,7 +82,7 @@ def get_cls_doc(elt, full_name:str) -> str:
 
 def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=None, title_level=None, alt_doc_string:str='',
              ignore_warn:bool=False, markdown=True):
-    "Show documentation for element `elt`. Supported types: class, Callable, and enum"
+    "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
     if full_name is None and hasattr(elt, '__name__'): full_name = elt.__name__
     if inspect.isclass(elt):
@@ -100,7 +100,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     display(title_md(link+doc, title_level, markdown=markdown))
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False) -> str:
-    "merges and formats the docstring definition with arg_comments and alt_doc_string"
+    "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
     parsed = ""
     doc = parse_docstring(inspect.getdoc(elt))
     description = alt_doc_string or doc['long_description'] or doc['short_description']
@@ -120,7 +120,7 @@ def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_wa
 # Finds all places with a backtick but only if it hasn't already been linked
 BT_REGEX = re.compile("\[`([^`]*)`\](?:\([^)]*\))|`([^`]*)`") # matches [`key`](link) or `key`
 def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
-    "searches `docstring` for backticks and attempts to link those functions to respective documentation"
+    "Search `docstring` for backticks and attempt to link those functions to respective documentation."
     mods = listify(modules)
     modvars = {}
     for mod in mods: modvars.update(mod.__dict__) # concat all module definitions
@@ -133,7 +133,7 @@ def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
     return docstring
 
 def find_elt(modvars, keyword, match_last=True):
-    "Attempts to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
+    "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
     if keyword in modvars: return modvars[keyword]
     if '.' not in keyword: return None
     comps = keyword.split('.')
@@ -144,7 +144,7 @@ def find_elt(modvars, keyword, match_last=True):
         return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
 
 def import_mod(mod_name:str):
-    "returns module from `mod_name`"
+    "Return module from `mod_name`."
     splits = str.split(mod_name, '.')
     try:
         if len(splits) > 1 : mod = importlib.import_module('.' + '.'.join(splits[1:]), splits[0])
@@ -153,7 +153,7 @@ def import_mod(mod_name:str):
     except: print(f"Module {mod_name} doesn't exist.")
 
 def show_doc_from_name(mod_name, ft_name:str, doc_string:bool=True, arg_comments:dict={}, alt_doc_string:str=''):
-    "shows documentation for `ft_name`. see `show_doc`"
+    "Show documentation for `ft_name`, see `show_doc`."
     mod = import_mod(mod_name)
     splits = str.split(ft_name, '.')
     assert hasattr(mod, splits[0]), print(f"Module {mod_name} doesn't have a function named {splits[0]}.")
@@ -169,7 +169,7 @@ def get_exports(mod):
     return [o for o in public_names if not o.startswith('_')]
 
 def get_ft_names(mod, include_inner=False)->List[str]:
-    "Returns all the functions of module `mod`"
+    "Return all the functions of module `mod`."
     # If the module has an attribute __all__, it picks those.
     # Otherwise, it returns all the functions defined inside a module.
     fn_names = []
@@ -190,7 +190,7 @@ def get_ft_names(mod, include_inner=False)->List[str]:
     return fn_names
 
 def get_inner_fts(elt) -> List[str]:
-    "List the inner functions of a class"
+    "List the inner functions of a class."
     fts = []
     for ft_name in elt.__dict__.keys():
         if ft_name.startswith('_'): continue
@@ -201,7 +201,7 @@ def get_inner_fts(elt) -> List[str]:
     return fts
 
 def get_module_toc(mod_name):
-    "displays table of contents for given `mod_name`"
+    "Display table of contents for given `mod_name`."
     mod = import_mod(mod_name)
     ft_names = mod.__all__ if hasattr(mod,'__all__') else get_ft_names(mod)
     ft_names.sort(key = str.lower)
@@ -216,7 +216,7 @@ def get_module_toc(mod_name):
     display(Markdown(tabmat))
 
 def get_class_toc(mod_name:str, cls_name:str):
-    "displays table of contents for `cls_name`"
+    "Display table of contents for `cls_name`."
     splits = str.split(mod_name, '.')
     try: mod = importlib.import_module('.' + '.'.join(splits[1:]), splits[0])
     except:
@@ -235,10 +235,12 @@ def get_class_toc(mod_name:str, cls_name:str):
     display(Markdown(tabmat))
 
 def show_video(url):
+    "Display video in `url`."
     data = f'<iframe width="560" height="315" src="{url}" frameborder="0" allowfullscreen></iframe>'
     return display(HTML(data))
 
 def show_video_from_youtube(code, start=0):
+    "Display video from Youtube with a `code` and a `start` time." 
     url = f'https://www.youtube.com/embed/{code}?start={start}&amp;rel=0&amp;controls=0&amp;showinfo=0'
     return show_video(url)
 
@@ -251,7 +253,7 @@ def fn_name(ft)->str:
     else:                         return str(ft).split('.')[-1]
 
 def get_fn_link(ft) -> str:
-    "returns function link to notebook documentation"
+    "Return function link to notebook documentation of `ft`."
     strip_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
     return f'/{strip_name}.html#{func_name}'
@@ -259,7 +261,7 @@ def get_fn_link(ft) -> str:
 def get_module_name(ft) -> str: return ft.__name__ if inspect.ismodule(ft) else ft.__module__
 
 def get_pytorch_link(ft) -> str:
-    "returns link to pytorch docs"
+    "Returns link to pytorch docs of `ft`."
     name = ft.__name__
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
@@ -277,13 +279,13 @@ def get_pytorch_link(ft) -> str:
 
 
 def get_source_link(mod, lineno) -> str:
-    "returns link to  line in source code"
+    "Returns link to `lineno` in source code of `mod`."
     github_path = mod.__name__.replace('.', '/')
     link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
     return f'<a href="{link}">[source]</a>'
 
 def get_function_source(ft) -> str:
-    "returns link to  line in source code"
+    "Returns link to `ft` in source code."
     lineno = inspect.getsourcelines(ft)[1]
     return get_source_link(inspect.getmodule(ft), lineno)
 

@@ -11,7 +11,7 @@ __all__ = ['create_module_page', 'generate_all', 'update_module_page', 'update_a
            'link_nb', 'update_notebooks']
 
 def get_empty_notebook():
-    "a default notbook with the minimum metadata"
+    "Default notbook with the minimum metadata."
     #TODO: check python version and nbformat
     return {'metadata': {'kernelspec': {'display_name': 'Python 3',
                                         'language': 'python',
@@ -27,30 +27,30 @@ def get_empty_notebook():
             'nbformat_minor': 2}
 
 def get_md_cell(source, metadata=None):
-    "a markdown cell containing the source text"
+    "Markdown cell containing `source` with `metadata`."
     return {'cell_type': 'markdown',
             'metadata': {} if metadata is None else metadata,
             'source': source}
 
 def get_empty_cell(ctype='markdown'):
-    "an empty cell of type ctype"
+    "Empty cell of type `ctype`."
     return {'cell_type': ctype, 'metadata': {}, 'source': []}
 
 def get_code_cell(code, hidden=False):
-    "a code cell containing the code"
+    "Code cell containing `code` that may be `hidden`."
     return {'cell_type' : 'code',
             'execution_count': 0,
             'metadata' : {'hide_input': hidden, 'trusted':True},
             'source' : code,
             'outputs': []}
 
-def get_doc_cell(ft_name):
-    "a code cell with the command to show the doc of a given function"
-    code = f"show_doc({ft_name})"
+def get_doc_cell(func_name):
+    "Code cell with the command to show the doc of `func_name`."
+    code = f"show_doc({func_name})"
     return get_code_cell(code, True)
 
 def get_global_vars(mod):
-    "Returns globally assigned variables"
+    "Return globally assigned variables."
     # https://stackoverflow.com/questions/8820276/docstring-for-variable/31764368#31764368
     import ast,re
     with open(mod.__file__, 'r') as f: fstr = f.read()
@@ -69,7 +69,7 @@ def write_nb(nb, nb_path, mode='w'):
     json.dump(nb, open(nb_path, mode), indent=1)
 
 def execute_nb(fname, metadata=None):
-    "Execute notebook `fname`"
+    "Execute notebook `fname` with `metadata` for preprocessing."
     # Any module used in the notebook that isn't inside must be in the same directory as this script
     with open(fname) as f: nb = nbformat.read(f, as_version=4)
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
@@ -81,7 +81,7 @@ def execute_nb(fname, metadata=None):
 def _symbol_skeleton(name): return [get_doc_cell(name), get_md_cell(f"`{name}`")]
 
 def create_module_page(mod, dest_path, force=False):
-    "Creates the documentation notebook for module `mod_name` in path `dest_path`"
+    "Create the documentation notebook for module `mod_name` in path `dest_path`"
     nb = get_empty_notebook()
     mod_name = mod.__name__
     strip_name = strip_fastai(mod_name)
@@ -111,7 +111,7 @@ _default_exclude = ['.ipynb_checkpoints', '__pycache__', '__init__.py', 'imports
 
 def get_module_names(path_dir, exclude=None):
     if exclude is None: exclude = _default_exclude
-    "Searches a given directory and returns all the modules contained inside"
+    "Search a given `path_dir` and return all the modules contained inside except those in `exclude`"
     files = path_dir.glob('*')
     res = []
     for f in files:
@@ -123,7 +123,7 @@ def get_module_names(path_dir, exclude=None):
     return res
 
 def generate_all(pkg_name, dest_path, exclude=None):
-    "Generate the documentation for all the modules in `pkg_name`"
+    "Generate the documentation for all the modules in `pkg_name` at `dest_path`."
     if exclude is None: exclude = _default_exclude
     mod_files = get_module_names(Path(pkg_name), exclude)
     for mod_name in mod_files:
@@ -132,11 +132,11 @@ def generate_all(pkg_name, dest_path, exclude=None):
         create_module_page(mod, dest_path)
 
 def read_nb(fname):
-    "Read a notebook and returns its corresponding json"
+    "Read a notebook in `fname` and return its corresponding json"
     with open(fname,'r') as f: return nbformat.reads(f.read(), as_version=4)
 
 def read_nb_content(cells, mod_name):
-    "Builds a dictionary containing the position of the cells giving the document for functions in a notebook"
+    "Build a dictionary containing the position of the `cells`."
     doc_fns = {}
     for i, cell in enumerate(cells):
         if cell['cell_type'] == 'code':
@@ -153,26 +153,26 @@ def read_nb_types(cells):
     return doc_fns
 
 def link_markdown_cells(cells, modules):
-    "Creates documentation links for all cells in markdown with backticks"
+    "Create documentation links for all cells in markdown with backticks."
     for i, cell in enumerate(cells):
         if cell['cell_type'] == 'markdown':
             cell['source'] = link_docstring(modules, cell['source'])
 
 def get_insert_idx(pos_dict, name):
-    "Return the position to insert a given function doc in a notebook"
+    "Return the position to insert a given function doc in a notebook."
     keys,i = list(pos_dict.keys()),0
     while i < len(keys) and str.lower(keys[i]) < str.lower(name): i+=1
     if i == len(keys): return -1
     else:              return pos_dict[keys[i]]
 
 def update_pos(pos_dict, start_key, nbr=2):
-    "Updates the position dictionary by moving all positions after start_ket by nbr"
+    "Update the `pos_dict` by moving all positions after `start_key` by `nbr`."
     for key,idx in pos_dict.items():
         if str.lower(key) >= str.lower(start_key): pos_dict[key] += nbr
     return pos_dict
 
 def insert_cells(cells, pos_dict, ft_name, append=False):
-    "Insert the function doc cells of a function in the list of cells at their correct position and updates the position dictionary"
+    "Insert the function doc `cells` at their correct position and updates `pos_dict`."
     idx = get_insert_idx(pos_dict, ft_name)
     if append or idx == -1: cells += [get_doc_cell(ft_name), get_empty_cell()]
     else:
@@ -195,13 +195,13 @@ def add_module_metadata(mod, cells):
     cells.insert(0, get_code_cell(mcode, hidden=True))
 
 def update_module_metadata(mod, dest_path='.', title=None, summary=None, keywords=None, overwrite=True):
-    "Creates jekyll metadata for given module. Title and summary are autopoulated (if None) from module.__name__ and module.__doc__."
+    "Create jekyll metadata for given module. Title and summary are autopoulated (if None) from module.__name__ and module.__doc__."
     title = title or strip_fastai(mod.__name__)
     summary = summary or inspect.getdoc(mod)
     update_nb_metadata(get_doc_path(mod, dest_path), title, summary, keywords, overwrite)
 
 def update_nb_metadata(nb_path=None, title=None, summary=None, keywords=None, overwrite=True):
-    "Creates jekyll metadata for given notebook path"
+    "Creates jekyll metadata for given notebook path."
     nb = read_nb(nb_path)
     jm = {'title': title, 'summary': summary, 'keywords': keywords}
     update_metadata(nb, jm, overwrite)
@@ -226,7 +226,7 @@ def add_nb_metadata(nb, nb_path):
 def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
 
 def update_metadata(nb, data, overwrite=True):
-    "Creates jekyll metadata. Always overwrites existing"
+    "Create jekyll metadata. Always overwrite existing."
     data = {k:v for (k,v) in data.items() if v is not None} # remove none values
     if not data: return
     if 'metadata' not in nb: nb['metadata'] = {}
@@ -262,7 +262,7 @@ def remove_undoc_cells(cells):
     return old
 
 def update_module_page(mod, dest_path='.'):
-    "Updates the documentation notebook of a given module"
+    "Update the documentation notebook of a given module."
     doc_path = get_doc_path(mod, dest_path)
     strip_name = strip_fastai(mod.__name__)
     nb = read_nb(doc_path)
@@ -299,7 +299,7 @@ def link_nb(nb_path):
     NotebookNotary().sign(read_nb(nb_path))
 
 def update_all(pkg_name, dest_path='.', exclude=None, create_missing=False):
-    "Updates all the notebooks in `pkg_name`"
+    "Update all the notebooks in `pkg_name`."
     if exclude is None: exclude = _default_exclude
     mod_files = get_module_names(Path(pkg_name), exclude)
     for f in mod_files:
@@ -312,12 +312,12 @@ def update_all(pkg_name, dest_path='.', exclude=None, create_missing=False):
             create_module_page(mod, dest_path)
 
 def get_module_from_notebook(doc_path):
-    "Finds module given a source path. Assumes it belongs to fastai directory"
+    "Find module given a source path. Assume it belongs to fastai directory"
     return f'fastai.{Path(doc_path).stem}'
 
 def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=False,
                      update_nb_links=True, do_execute=False, html_path=None):
-    "`source_path` can be a directory or a file. Assumes all modules reside in the fastai directory."
+    "`source_path` can be a directory or a file. Assume all modules reside in the fastai directory."
     from .convert2html import convert_nb
     source_path = Path(source_path)
 

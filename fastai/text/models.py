@@ -5,11 +5,11 @@ __all__ = ['EmbeddingDropout', 'LinearDecoder', 'MultiBatchRNNCore', 'PoolingLin
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'get_language_model', 'get_rnn_classifier']
 
 def dropout_mask(x:Tensor, sz:Collection[int], p:float):
-    "Returns a dropout mask of the same type as x, size sz, with probability p to cancel an element."
+    "Return a dropout mask of the same type as x, size sz, with probability p to cancel an element."
     return x.new(*sz).bernoulli_(1-p).div_(1-p)
 
 class RNNDropout(nn.Module):
-    "Dropout that is consistent on the seq_len dimension"
+    "Dropout that is consistent on the seq_len dimension."
 
     def __init__(self, p:float=0.5):
         super().__init__()
@@ -32,7 +32,7 @@ class WeightDropout(nn.Module):
             self.register_parameter(f'{layer}_raw', nn.Parameter(w.data))
 
     def _setweights(self):
-        "Applies dropout to the raw weights"
+        "Apply dropout to the raw weights."
         for layer in self.layer_names:
             raw_w = getattr(self, f'{layer}_raw')
             self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=self.training)
@@ -48,7 +48,7 @@ class WeightDropout(nn.Module):
         if hasattr(self.module, 'reset'): self.module.reset()
 
 class EmbeddingDropout(nn.Module):
-    "Applies dropout in the embedding layer by zeroing out some elements of the embedding vector."
+    "Apply dropout in the embedding layer by zeroing out some elements of the embedding vector."
 
     def __init__(self, emb:Model, embed_p:float):
         super().__init__()
@@ -67,11 +67,11 @@ class EmbeddingDropout(nn.Module):
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
 def _repackage_var(h:Tensors) -> Tensors:
-    "Detaches h from its history."
+    "Detach h from its history."
     return h.detach() if type(h) == torch.Tensor else tuple(_repackage_var(v) for v in h)
 
 class RNNCore(nn.Module):
-    "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182"
+    "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182."
 
     initrange=0.1
 
@@ -117,20 +117,20 @@ class RNNCore(nn.Module):
         self.hidden = _repackage_var(new_hidden)
         return raw_outputs, outputs
 
-    def one_hidden(self, l:int) -> Tensor:
-        "Returns one hidden state"
+    def _one_hidden(self, l:int) -> Tensor:
+        "Return one hidden state."
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz)//self.ndir
         return self.weights.new(self.ndir, self.bs, nh).zero_()
 
     def reset(self):
-        "Resets the hidden states"
+        "Reset the hidden states."
         [r.reset() for r in self.rnns if hasattr(r, 'reset')]
         self.weights = next(self.parameters()).data
-        if self.qrnn: self.hidden = [self.one_hidden(l) for l in range(self.n_layers)]
-        else: self.hidden = [(self.one_hidden(l), self.one_hidden(l)) for l in range(self.n_layers)]
+        if self.qrnn: self.hidden = [self._one_hidden(l) for l in range(self.n_layers)]
+        else: self.hidden = [(self._one_hidden(l), self._one_hidden(l)) for l in range(self.n_layers)]
 
 class LinearDecoder(nn.Module):
-    "To go on top of a RNN_Core module"
+    "To go on top of a RNNCore module and create a Language Model."
 
     initrange=0.1
 
@@ -155,14 +155,14 @@ class SequentialRNN(nn.Sequential):
             if hasattr(c, 'reset'): c.reset()
 
 class MultiBatchRNNCore(RNNCore):
-    "Creates a RNNCore module that can process a full sentence."
+    "Create a RNNCore module that can process a full sentence."
 
     def __init__(self, bptt:int, max_seq:int, *args, **kwargs):
         self.max_seq,self.bptt = max_seq,bptt
         super().__init__(*args, **kwargs)
 
     def concat(self, arrs:Collection[Tensor]) -> Tensor:
-        "Concatenates the arrays along the batch dimension."
+        "Concatenate the `arrs` along the batch dimension."
         return [torch.cat([l[si] for l in arrs]) for si in range(len(arrs[0]))]
 
     def forward(self, input:LongTensor) -> Tuple[Tensor,Tensor]:
@@ -177,7 +177,7 @@ class MultiBatchRNNCore(RNNCore):
         return self.concat(raw_outputs), self.concat(outputs)
 
 class PoolingLinearClassifier(nn.Module):
-    "Creates a linear classifier with pooling."
+    "Create a linear classifier with pooling."
 
     def __init__(self, layers:Collection[int], drops:Collection[float]):
         super().__init__()
@@ -188,7 +188,7 @@ class PoolingLinearClassifier(nn.Module):
         self.layers = nn.Sequential(*mod_layers)
 
     def pool(self, x:Tensor, bs:int, is_max:bool):
-        "Pools the tensor along the seq_len dimension."
+        "Pool the tensor along the seq_len dimension."
         f = F.adaptive_max_pool1d if is_max else F.adaptive_avg_pool1d
         return f(x.permute(1,2,0), (1,)).view(bs,-1)
 
@@ -205,7 +205,7 @@ class PoolingLinearClassifier(nn.Module):
 def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int, tie_weights:bool=True,
                        qrnn:bool=False, bias:bool=True, bidir:bool=False, output_p:float=0.4, hidden_p:float=0.2, input_p:float=0.6,
                        embed_p:float=0.1, weight_p:float=0.5) -> Model:
-    "To create a full AWD-LSTM"
+    "Create a full AWD-LSTM."
     rnn_enc = RNNCore(vocab_sz, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token, qrnn=qrnn, bidir=bidir,
                  hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
     enc = rnn_enc.encoder if tie_weights else None
@@ -214,7 +214,7 @@ def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_to
 def get_rnn_classifier(bptt:int, max_seq:int, n_class:int, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int,
                        pad_token:int, layers:Collection[int], drops:Collection[float], bidir:bool=False, qrnn:bool=False,
                        hidden_p:float=0.2, input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5) -> Model:
-    "Creates a RNN classifier model"
+    "Create a RNN classifier model."
     rnn_enc = MultiBatchRNNCore(bptt, max_seq, vocab_sz, emb_sz, n_hid, n_layers, pad_token=pad_token, bidir=bidir,
                       qrnn=qrnn, hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
     return SequentialRNN(rnn_enc, PoolingLinearClassifier(layers, drops))

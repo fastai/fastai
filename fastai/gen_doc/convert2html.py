@@ -25,10 +25,11 @@ exporter.template_path.append(str(path))
 exporter.register_preprocessor(HandleLinksPreprocessor, enabled=True)
 
 def read_nb(fname):
+    "Read the notebook in `fname`."
     with open(fname,'r') as f: return nbformat.reads(f.read(), as_version=4)
 
 def convert_nb(fname, dest_path='.'):
-    "Converts a notebook `fname` to html file in `dest_path` "
+    "Convert a notebook `fname` to html file in `dest_path`."
     from .gen_notebooks import remove_undoc_cells
     nb = read_nb(fname)
     nb['cells'] = remove_undoc_cells(nb['cells'])
@@ -40,7 +41,7 @@ def convert_nb(fname, dest_path='.'):
         f.write(exporter.from_notebook_node(nb, resources=meta_jekyll)[0])
 
 def convert_all(folder, dest_path='.'):
-    "Converts all notebooks `folder` to html pages in `dest_path`. "
+    "Convert all notebooks in `folder` to html pages in `dest_path`."
     path = Path(folder)
     nb_files = path.glob('*.ipynb')
     for file in nb_files: convert_nb(file, dest_path=dest_path)
