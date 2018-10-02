@@ -82,7 +82,6 @@ git clone https://github.com/fastai/fastai
 cd fastai
 tools/run-after-git-clone
 pip install -e .
-pip install jupyter_contrib_nbextensions ipywidgets
 ```
 
 You can test that the build works:
