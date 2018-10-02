@@ -28,7 +28,7 @@ def to_list(buffer): return list(filter(None, buffer.splitlines()))
 
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
 requirements = to_list("""
-fastprogress
+fastprogress>=0.1.8
 ipython
 matplotlib
 numpy>=1.12
