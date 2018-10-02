@@ -1,1 +1,1 @@
-from . import gen_notebooks, nbdoc, core, convert2html
+from . import gen_notebooks, nbdoc, core

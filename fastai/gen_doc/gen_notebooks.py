@@ -269,7 +269,7 @@ def update_module_page(mod, dest_path='.'):
     nb = read_nb(doc_path)
     cells = nb['cells']
 
-    add_module_metadata(mod, cells)
+    #add_module_metadata(mod, cells)
     link_markdown_cells(cells, get_imported_modules(cells))
 
     type_dict = read_nb_types(cells)
