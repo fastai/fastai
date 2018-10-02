@@ -11,6 +11,7 @@ def create_version_file(version):
     print('-- Building version ' + version)
     version_path = Path.cwd() / 'fastai' / 'version.py'
     with open(version_path, 'w') as f:
+        f.write("__all__ = [__version__]\n")
         f.write("__version__ = '{}'\n".format(version))
 
 # version
