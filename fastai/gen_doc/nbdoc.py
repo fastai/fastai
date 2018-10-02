@@ -2,18 +2,24 @@
 
 import inspect,importlib,enum,os,re
 from IPython.core.display import display, Markdown, HTML
+from nbconvert import HTMLExporter
+from IPython.core import page
 from typing import Dict, Any, AnyStr, List, Sequence, TypeVar, Tuple, Optional, Union
 from .docstrings import *
 from .core import *
 from ..torch_core import *
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'create_anchor', 'import_mod', 'get_source_link',
-           'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important']
+           'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'nbshow']
 
 MODULE_NAME = 'fastai'
 SOURCE_URL = 'https://github.com/fastai/fastai/blob/master/'
 PYTORCH_DOCS = 'https://pytorch.org/docs/stable/'
+FASTAI_DOCS = 'https://docs.fast.ai'
+use_relative_links = True
+
 _typing_names = {t:n for t,n in fastai_types.items() if t.__module__=='typing'}
+
 
 def is_enum(cls): return cls == enum.Enum or cls == enum.EnumMeta
 
@@ -98,7 +104,19 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
     if is_fastai_class(elt): doc += get_function_source(elt)
     # return link+doc
-    display(title_md(link+doc, title_level, markdown=markdown))
+    md = title_md(link+doc, title_level, markdown=markdown)
+    if markdown: display(md)
+    return md
+
+def nbshow(elt):
+    global use_relative_links
+    use_relative_links = False
+    md = show_doc(elt, markdown=False)
+    if is_fastai_class(elt): md += f'\n\n<br>\n[Show in docs]({get_fn_link(elt)})'
+    output = HTMLExporter().markdown2html(md)
+    use_relative_links = True
+    page.page({'text/html': output})
+
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False) -> str:
     "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
@@ -258,7 +276,8 @@ def get_fn_link(ft) -> str:
     "Return function link to notebook documentation of `ft`."
     strip_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
-    return f'/{strip_name}.html#{func_name}'
+    base = '' if use_relative_links else FASTAI_DOCS
+    return f'{base}/{strip_name}.html#{func_name}'
 
 def get_module_name(ft) -> str: return ft.__name__ if inspect.ismodule(ft) else ft.__module__
 
