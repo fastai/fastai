@@ -21,9 +21,6 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
    If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
 
 
-### Python version
-
-
 
 
 ## Conda Install
