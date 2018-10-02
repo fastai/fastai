@@ -4,7 +4,7 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
 
 ## Note for [course.fast.ai](http://course.fast.ai) students
 
-If you are using fastai for any course.fast.ai course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply `conda env update`, and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory).
+If you are using fastai for any course.fast.ai course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply follow the instructions in the course (i.e. clone this repo, cd to it, and `conda env update`), and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory).
 
 ## Is My System Supported?
 
