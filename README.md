@@ -2,6 +2,10 @@
 
 The fastai deep learning library. See the [fastai website](http://docs.fast.ai) to get started.
 
+## Note for [course.fast.ai](http://course.fast.ai) students
+
+If you are using fastai for any course.fast.ai course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply `conda env update`, and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory).
+
 ## Is My System Supported?
 
 1. Python: You need to have python 3.6 or higher
@@ -19,9 +23,6 @@ The fastai deep learning library. See the [fastai website](http://docs.fast.ai) 
    This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
 
    If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
-
-
-
 
 ## Conda Install
 
