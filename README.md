@@ -88,7 +88,7 @@ pip install jupyter_contrib_nbextensions ipywidgets
 You can test that the build works:
 
 ```
-jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook --output=out.ipynb examples/tabular.ipynb
+jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
 ```
 
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [the developers guide](http://docs.fast.ai/developers.html) for more details.
