@@ -2,8 +2,8 @@
 
 import inspect,importlib,enum,os,re
 from IPython.core.display import display, Markdown, HTML
-from nbconvert import HTMLExporter
-from IPython.core import page
+#from nbconvert import HTMLExporter
+#from IPython.core import page
 from typing import Dict, Any, AnyStr, List, Sequence, TypeVar, Tuple, Optional, Union
 from .docstrings import *
 from .core import *
@@ -112,10 +112,11 @@ def nbshow(elt):
     global use_relative_links
     use_relative_links = False
     md = show_doc(elt, markdown=False)
-    if is_fastai_class(elt): md += f'\n\n<br>\n[Show in docs]({get_fn_link(elt)})'
-    output = HTMLExporter().markdown2html(md)
-    use_relative_links = True
-    page.page({'text/html': output})
+    if is_fastai_class(elt): md += f'\n\n[Show in docs]({get_fn_link(elt)})'
+    #output = HTMLExporter().markdown2html(md)
+    #use_relative_links = True
+    #page.page({'text/html': output})
+    display(Markdown(md))
 
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False) -> str:
