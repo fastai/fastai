@@ -3,6 +3,7 @@ from .callback import *
 from .callbacks import *
 from .core import *
 from .data import *
+from .gen_doc.nbdoc import nbshow
 from .layers import *
 from .metrics import *
 from .torch_core import *
