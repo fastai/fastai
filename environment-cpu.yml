@@ -40,7 +40,7 @@ dependencies:
 - libsodium
 - libxml2
 - markupsafe
-- matplotlib
+- matplotlib <= 2.2.3
 - mistune
 - mkl
 - nbconvert
@@ -104,3 +104,5 @@ dependencies:
   - plotnine
   - kaggle-cli
   - ipywidgets
+  - pdpbox<=0.1.0
+  - treeinterpreter
