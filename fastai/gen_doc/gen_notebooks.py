@@ -8,7 +8,7 @@ from .core import *
 from .nbdoc import *
 
 __all__ = ['create_module_page', 'generate_all', 'update_module_page', 'update_all', 'import_mod',
-           'link_nb', 'update_notebooks']
+           'link_nb', 'update_notebooks', 'generate_missing_metadata', 'update_nb_metadata']
 
 def get_empty_notebook():
     "Default notbook with the minimum metadata."
@@ -86,7 +86,6 @@ def create_module_page(mod, dest_path, force=False):
     mod_name = mod.__name__
     strip_name = strip_fastai(mod_name)
     init_cell = [get_md_cell(f'# {strip_name}'), get_md_cell('Type an introduction of the package here.')]
-    add_module_metadata(mod, init_cell)
     cells = [get_code_cell(f'from fastai.gen_doc.nbdoc import *\nfrom {mod_name} import * ', True)]
 
     gvar_map = get_global_vars(mod)
@@ -185,54 +184,36 @@ def get_doc_path(mod, dest_path):
     strip_name = strip_fastai(mod.__name__)
     return os.path.join(dest_path,f'{strip_name}.ipynb')
 
-def add_module_metadata(mod, cells):
-    if has_metadata_cell(cells): return
-    mcode = (f'from fastai.gen_doc.gen_notebooks import update_module_metadata\n'
-             f'import {mod.__name__}\n'
-             f'# For updating jekyll metadata. You MUST reload notebook immediately after executing this cell for changes to save\n'
-             f'# Leave blank to autopopulate from mod.__doc__\n'
-             f'update_module_metadata({mod.__name__})')
-    cells.insert(0, get_code_cell(mcode, hidden=True))
+def generate_missing_metadata(dest_file):
+    fn = Path(dest_file)
+    meta_fn = fn.parent/'jekyll_metadata.ipynb'
+    if not fn.exists() or not meta_fn.exists(): return print('Could not find notebooks:', fn, meta_fn)
+    metadata_nb = read_nb(meta_fn)
 
-def update_module_metadata(mod, dest_path='.', title=None, summary=None, keywords=None, overwrite=True):
-    "Create jekyll metadata for given module. Title and summary are autopoulated (if None) from module.__name__ and module.__doc__."
-    title = title or strip_fastai(mod.__name__)
-    summary = summary or inspect.getdoc(mod)
-    update_nb_metadata(get_doc_path(mod, dest_path), title, summary, keywords, overwrite)
+    if has_metadata_cell(metadata_nb['cells'], fn.name): return
+    nb = read_nb(fn)
+    jmd = nb['metadata'].get('jekyll', {})
+    fmt_params = ''
+    for k,v in jmd.items(): fmt_params += f',\n    {k}={stringify(v)}'
+    metadata_cell = get_code_cell(f"update_nb_metadata('{Path(fn).name}'{fmt_params})", hidden=False)
+    metadata_nb['cells'].append(metadata_cell)
+    write_nb(metadata_nb, meta_fn)
 
 def update_nb_metadata(nb_path=None, title=None, summary=None, keywords='fastai', overwrite=True, **kwargs):
     "Creates jekyll metadata for given notebook path."
     nb = read_nb(nb_path)
-    jm = {'title': title, 'summary': summary, 'keywords': keywords, **kwargs}
-    update_metadata(nb, jm, overwrite)
+    data = {'title': title, 'summary': summary, 'keywords': keywords, **kwargs}
+    data = {k:v for (k,v) in data.items() if v is not None} # remove none values
+    if not data: return
+    nb['metadata']['jekyll'] = data
     write_nb(nb, nb_path)
     NotebookNotary().sign(nb)
 
-METADATA_RE = re.compile(r"update_\w+_metadata")
-def has_metadata_cell(cells):
-    for c in cells:
-        if c['cell_type'] == 'code' and METADATA_RE.search(c['source']): return c
-
-def add_nb_metadata(nb, nb_path):
-    cells = nb['cells']
-    if has_metadata_cell(cells): return
-    jmb = nb['metadata'].get('jekyll', {})
-    title, summary = stringify(jmb.get('title')), stringify(jmb.get('summary'))
-    mcode = (f"from fastai.gen_doc.gen_notebooks import update_nb_metadata\n"
-             f"# For updating jekyll metadata. You MUST reload notebook immediately after executing this cell for changes to save\n"
-             f"update_nb_metadata('{Path(nb_path).name}', title={title}, summary={summary})")
-    metadata_cell = get_code_cell(mcode, hidden=True)
-    cells.insert(0, metadata_cell)
+def has_metadata_cell(cells, fn):
+    for c in cells: 
+        if re.search(f"update_nb_metadata\('{fn}'", c['source']): return c
 
 def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
-
-def update_metadata(nb, data, overwrite=True):
-    "Create jekyll metadata. Always overwrite existing."
-    data = {k:v for (k,v) in data.items() if v is not None} # remove none values
-    if not data: return
-    if 'metadata' not in nb: nb['metadata'] = {}
-    if overwrite: nb['metadata']['jekyll'] = data
-    else: nb['metadata']['jekyll'] = nb['metadata'].get('jekyll', {}).update(data)
 
 IMPORT_RE = re.compile(r"from (fastai[\.\w_]*)")
 def get_imported_modules(cells):
@@ -269,7 +250,6 @@ def update_module_page(mod, dest_path='.'):
     nb = read_nb(doc_path)
     cells = nb['cells']
 
-    #add_module_metadata(mod, cells)
     link_markdown_cells(cells, get_imported_modules(cells))
 
     type_dict = read_nb_types(cells)
@@ -295,7 +275,6 @@ def link_nb(nb_path):
     nb = read_nb(nb_path)
     cells = nb['cells']
     link_markdown_cells(cells, get_imported_modules(cells))
-    add_nb_metadata(nb, nb_path)
     write_nb(nb, nb_path)
     NotebookNotary().sign(read_nb(nb_path))
 
@@ -333,6 +312,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             elif mod.__file__.endswith('__init__.py'): pass
             else: update_module_page(mod, dest_path)
         if update_nb_links: link_nb(doc_path)
+        generate_missing_metadata(doc_path)
         if do_execute:
             print(f'Executing notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
