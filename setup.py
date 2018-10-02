@@ -15,7 +15,7 @@ def create_version_file(version):
         f.write("__version__ = '{}'\n".format(version))
 
 # version
-version = '1.0.2'
+version = '1.0.3'
 create_version_file(version)
 
 with open('README.md') as readme_file:
@@ -28,8 +28,9 @@ def to_list(buffer): return list(filter(None, buffer.splitlines()))
 
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
 requirements = to_list("""
-fastprogress>=0.1.8
+fastprogress>=0.1.9
 ipython
+jupyter
 matplotlib
 numpy>=1.12
 pandas
