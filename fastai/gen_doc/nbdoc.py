@@ -106,7 +106,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     # return link+doc
     md = title_md(link+doc, title_level, markdown=markdown)
     if markdown: display(md)
-    return md
+    else: return md
 
 def nbshow(elt):
     global use_relative_links
