@@ -79,8 +79,15 @@ First, follow the instructions above for either `PyPi` or `Conda`. Then remove t
 ```
 git clone https://github.com/fastai/fastai
 cd fastai
-pip install -e .
 tools/run-after-git-clone
+pip install -e .
+pip install jupyter_contrib_nbextensions ipywidgets
+```
+
+You can test that the build works:
+
+```
+jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook --output=out.ipynb examples/tabular.ipynb
 ```
 
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [the developers guide](http://docs.fast.ai/developers.html) for more details.
