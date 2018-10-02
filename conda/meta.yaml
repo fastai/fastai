@@ -12,6 +12,7 @@
 package:
   name: {{ data.name }}
   version: "{{ data.version }}"
+#  version: "{{ data.version }}{{"post1"}}"
 
 source:
   # Source from a local path
@@ -82,11 +83,19 @@ about:
   home: {{ data.get('url') }}
   license: {{ data['license'] }}
   license_family: APACHE
+  license_url: https://github.com/fastai/fastai/blob/master/LICENSE
   license_file: LICENSE
   summary: {{ data['description'] }}
-  # description needs to have double new lines for paragraphs:
-  description: "{{ data['long_description']|replace('"', '\\"')|replace("#", "=")|replace("\n\n", "\n\n\n") }}"
-  doc_url: {{ data.get('url') }}
+  # description needs to have:
+  # - yaml multi-line format, so need to indent the text 4 spaces: replace("\n", "\n    ")
+  # - can't have #, as it thinks it is a comment: replace("#", '\#')
+  #   it won't render headers anyway, it expects underlined header syntax instead:
+  #   HEADER
+  #   ------
+  # - _ is special outside of block code, need to escape otherwise, but can't do that w/o jinja2 regex support since it'll break code blocks - so doing nothing at the moment.
+  description: |
+    {{ data['long_description'] | replace("\n", "\n    ") | replace("#", '\#')}}
+  doc_url: http://docs.fast.ai/
   dev_url: {{ data.get('url') }}
 
 extra:
