@@ -13,24 +13,6 @@ learn.fit(1)
 
 If you are using fastai for any course.fast.ai course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply follow the instructions in the course (i.e. clone this repo, cd to it, and `conda env update`), and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory).
 
-## Is My System Supported?
-
-1. Python: You need to have python 3.6 or higher
-
-2. Operating System:
-
-   Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
-
-   As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
-
-     - linux: fully
-     - mac: CPU-only
-     - windows: not supported
-
-   This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
-
-   If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
-
 ## Conda Install
 
 To install fastai with pytorch-nightly + CUDA 9.2 simply run:
@@ -79,6 +61,25 @@ pip uninstall torchvision fastai
 pip install --no-deps torchvision
 pip install fastai
 ```
+
+## Is My System Supported?
+
+1. Python: You need to have python 3.6 or higher
+
+2. Operating System:
+
+   Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
+
+   As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
+
+     - linux: fully
+     - mac: CPU-only
+     - windows: not supported
+
+   This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
+
+   If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
+
 
 ## Developer Install
 
