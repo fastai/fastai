@@ -72,9 +72,13 @@ pip install fastai
 
    As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
 
-     - linux: fully
-     - mac: CPU-only
-     - windows: not supported
+    | Platform | GPU    | CPU    |
+    | ---      | ---    | ---    |
+    | linux    | binary | binary |
+    | mac      | source | binary |
+    | windows  | source | source |
+
+   Legend: `binary` = can be installed directly, `source` = needs to be built from source.
 
    This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
 
