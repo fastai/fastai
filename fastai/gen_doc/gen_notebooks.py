@@ -112,12 +112,12 @@ def get_module_names(path_dir, exclude=None):
     if exclude is None: exclude = _default_exclude
     "Search a given `path_dir` and return all the modules contained inside except those in `exclude`"
     files = path_dir.glob('*')
-    res = []
+    res = [f'{path_dir.name}']
     for f in files:
         if f.is_dir() and f.name in exclude: continue # exclude directories
         if any([f.name.endswith(ex) for ex in exclude]): continue # exclude extensions
 
-        if f.name[-3:] == '.py': res.append(f'{path_dir.name}.{f.name[:-3]}')
+        if f.suffix == '.py': res.append(f'{path_dir.name}.{f.stem}')
         elif f.is_dir(): res += [f'{path_dir.name}.{name}' for name in get_module_names(f)]
     return res
 
@@ -207,20 +207,21 @@ def has_metadata_cell(cells, fn):
 def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
 
 IMPORT_RE = re.compile(r"from (fastai[\.\w_]*)")
-def get_imported_modules(cells):
-    "Finds all submodules of fastai. Then finds all import modules in notebook and appends to end. This gives notebook imports priority"
-    mod_dir = Path(import_mod('fastai').__file__).parent
-    module_names = ['fastai'] + get_module_names(mod_dir)
-    for cell in cells:
-        if cell['cell_type'] == 'code':
-            for m in IMPORT_RE.finditer(cell['source']):
-                mod_name = m.group(1)
-                if mod_name not in module_names: module_names.append(mod_name)
-                else: 
-                    module_names.remove(mod_name)
-                    module_names.append(mod_name)
-    mods = [import_mod(m, ignore_errors=True) for m in module_names]
+def get_imported_modules(cells, nb_module_name):
+    "Finds all submodules of notebook - sorted by submodules > top level modules > manual imports. This gives notebook imports priority"
+    module_names = get_top_level_modules()
+    print('Base mods:', module_names)
+    nb_imports = [match.group(1) for cell in cells for match in IMPORT_RE.finditer(cell['source']) if cell['cell_type'] == 'code']
+    all_modules = module_names + nb_imports + [nb_module_name]
+    print('All mods:', all_modules)
+
+    mods = [import_mod(m, ignore_errors=True) for m in all_modules]
     return [m for m in mods if m is not None]
+
+def get_top_level_modules():
+    mod_dir = Path(import_mod('fastai').__file__).parent
+    filtered_n = filter(lambda x: x.count('.')<2, get_module_names(mod_dir))
+    return sorted(filtered_n, key=lambda s: str(sorted(s))) # Submodules first (sorted by periods)
 
 NEW_FT_HEADER = '## New Methods - Please document or move to the undocumented section'
 UNDOC_HEADER = '## Undocumented Methods - Methods moved below this line will intentionally be hidden'
@@ -247,7 +248,7 @@ def update_module_page(mod, dest_path='.'):
     nb = read_nb(doc_path)
     cells = nb['cells']
 
-    link_markdown_cells(cells, get_imported_modules(cells))
+    link_markdown_cells(cells, get_imported_modules(cells, mode.__name__))
 
     type_dict = read_nb_types(cells)
     gvar_map = get_global_vars(mod)
@@ -271,7 +272,7 @@ def update_module_page(mod, dest_path='.'):
 def link_nb(nb_path):
     nb = read_nb(nb_path)
     cells = nb['cells']
-    link_markdown_cells(cells, get_imported_modules(cells))
+    link_markdown_cells(cells, get_imported_modules(cells, Path(nb_path).stem))
     write_nb(nb, nb_path)
     NotebookNotary().sign(read_nb(nb_path))
 
