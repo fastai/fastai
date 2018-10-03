@@ -1,6 +1,6 @@
 # fastai Abbreviation Guide
 
-As mentioned in the [fastai style](https://github.com/fastai/fastai/blob/master/docs/style.md),
+As mentioned in the [fastai style](style.md),
 we name symbols following the *Huffman Coding* principle, which basically means
 
 > Commonly used and generic concepts should be named shorter. You shouldn't waste short sequences on less common concepts.
