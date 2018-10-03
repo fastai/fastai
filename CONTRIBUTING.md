@@ -19,7 +19,7 @@ First, thanks a lot for wanting to help! Make sure you have read the [doc on cod
 ## Do you intend to add a new feature or change an existing one?
 
 * You can suggest your change on the [fastai forum](http://forums.fast.ai/) to see if others are interested or want to help. [This topic](http://forums.fast.ai/t/fastai-v1-adding-features/23041/8) lists the features that will be added to fastai in the foreseeable future. Be sure to read it too!
-* PRs are welcome with a complete description of the new feature and an example of how it's use. Be sure to document your code and read the [doc on code style](https://github.com/fastai/fastai/blob/master/docs/style.md) and [the one on abbreviations](https://github.com/fastai/fastai/blob/master/docs/abbr.md).
+* PRs are welcome with a complete description of the new feature and an example of how it's use. Be sure to document your code and read the [doc on code style](https://github.com/fastai/fastai_docs/blob/master/docs/abbr.md) and [the one on abbreviations](https://github.com/fastai/fastai_docs/blob/master/docs/style.md).
 
 ## Do you have questions about the source code?
 
