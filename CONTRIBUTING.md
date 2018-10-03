@@ -1,6 +1,6 @@
 # How to contribute to fastai
 
-First, thanks a lot for wanting to help! Make sure you have read the [doc on code style](http://docs.fast.ai/style.html) first. (Note that we don't follow PEP8, but instead follow a coding style designed specifically for numerical and interactive programming.) For help running and building the code, see the [developers guide](http://docs.fast.ai/developers.html).
+First, thanks a lot for wanting to help! Make sure you have read the [doc on code style](http://docs.fast.ai/style.html) first. (Note that we don't follow PEP8, but instead follow a coding style designed specifically for numerical and interactive programming.) For help running and building the code, see the [developers guide](https://github.com/fastai/fastai/blob/master/docs-dev/develop.md).
 
 ## Did you find a bug?
 
@@ -28,4 +28,3 @@ First, thanks a lot for wanting to help! Make sure you have read the [doc on cod
 ## Do you want to contribute to the documentation?
 
 * Head over to the [fastai_docs](https://github.com/fastai/fastai_docs) repo
-
