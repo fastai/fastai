@@ -9,7 +9,7 @@ from .docstrings import *
 from .core import *
 from ..torch_core import *
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
-           'get_exports', 'show_video', 'show_video_from_youtube', 'create_anchor', 'import_mod', 'get_source_link',
+           'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
            'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'nbshow']
 
 MODULE_NAME = 'fastai'
@@ -164,14 +164,15 @@ def find_elt(modvars, keyword, match_last=True):
     if hasattr(comp_elt, '__dict__'):
         return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
 
-def import_mod(mod_name:str):
+def import_mod(mod_name:str, ignore_errors=False):
     "Return module from `mod_name`."
     splits = str.split(mod_name, '.')
     try:
         if len(splits) > 1 : mod = importlib.import_module('.' + '.'.join(splits[1:]), splits[0])
         else: mod = importlib.import_module(mod_name)
         return mod
-    except: print(f"Module {mod_name} doesn't exist.")
+    except: 
+        if not ignore_errors: print(f"Module {mod_name} doesn't exist.")
 
 def show_doc_from_name(mod_name, ft_name:str, doc_string:bool=True, arg_comments:dict={}, alt_doc_string:str=''):
     "Show documentation for `ft_name`, see `show_doc`."
@@ -238,11 +239,8 @@ def get_module_toc(mod_name):
 
 def get_class_toc(mod_name:str, cls_name:str):
     "Display table of contents for `cls_name`."
-    splits = str.split(mod_name, '.')
-    try: mod = importlib.import_module('.' + '.'.join(splits[1:]), splits[0])
-    except:
-        print(f"Module {mod_name} doesn't exist.")
-        return
+    mod = import_mod(mod_name)
+    if mod is None: return
     splits = str.split(cls_name, '.')
     assert hasattr(mod, splits[0]), print(f"Module {mod_name} doesn't have a function named {splits[0]}.")
     elt = getattr(mod, splits[0])
@@ -314,10 +312,6 @@ def title_md(s:str, title_level:int, markdown=True):
     res = '#' * title_level
     if title_level: res += ' '
     return Markdown(res+s) if markdown else (res+s)
-
-def create_anchor(text, title_level=0, name=None):
-    if name is None: name=str2id(text)
-    display(title_md(f'<a id={name}></a>{text}'))
 
 def jekyll_div(s,c,h,icon=None):
     icon = ifnone(icon,c)
