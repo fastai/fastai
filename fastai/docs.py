@@ -20,6 +20,7 @@ DOGS_PATH = DATA_PATH/'dogscats'
 def f_name(name): return f'{name}.tgz'
 
 def download_data(name):
+    os.makedirs(DATA_PATH, exist_ok=True)
     dest = DATA_PATH/f_name(name)
     if not dest.exists(): download_url(f'{URL}{f_name(name)}', dest)
 
