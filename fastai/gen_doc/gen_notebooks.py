@@ -7,7 +7,7 @@ from pathlib import Path
 from .core import *
 from .nbdoc import *
 
-__all__ = ['create_module_page', 'generate_all', 'update_module_page', 'update_all', 'import_mod',
+__all__ = ['create_module_page', 'update_module_page', 'import_mod',
            'link_nb', 'update_notebooks', 'generate_missing_metadata', 'update_nb_metadata']
 
 def get_empty_notebook():
@@ -121,15 +121,6 @@ def get_module_names(path_dir, exclude=None):
         elif f.is_dir(): res += [f'{path_dir.name}.{name}' for name in get_module_names(f)]
     return res
 
-def generate_all(pkg_name, dest_path, exclude=None):
-    "Generate the documentation for all the modules in `pkg_name` at `dest_path`."
-    if exclude is None: exclude = _default_exclude
-    mod_files = get_module_names(Path(pkg_name), exclude)
-    for mod_name in mod_files:
-        mod = import_mod(mod_name)
-        if mod is None: continue
-        create_module_page(mod, dest_path)
-
 def read_nb(fname):
     "Read a notebook in `fname` and return its corresponding json"
     with open(fname,'r') as f: return nbformat.reads(f.read(), as_version=4)
@@ -217,12 +208,18 @@ def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
 
 IMPORT_RE = re.compile(r"from (fastai[\.\w_]*)")
 def get_imported_modules(cells):
-    module_names = ['fastai']
+    "Finds all submodules of fastai. Then finds all import modules in notebook and appends to end. This gives notebook imports priority"
+    mod_dir = Path(import_mod('fastai').__file__).parent
+    module_names = ['fastai'] + get_module_names(mod_dir)
     for cell in cells:
         if cell['cell_type'] == 'code':
             for m in IMPORT_RE.finditer(cell['source']):
-                if m.group(1) not in module_names: module_names.append(m.group(1))
-    mods = [import_mod(m) for m in module_names]
+                mod_name = m.group(1)
+                if mod_name not in module_names: module_names.append(mod_name)
+                else: 
+                    module_names.remove(mod_name)
+                    module_names.append(mod_name)
+    mods = [import_mod(m, ignore_errors=True) for m in module_names]
     return [m for m in mods if m is not None]
 
 NEW_FT_HEADER = '## New Methods - Please document or move to the undocumented section'
@@ -277,19 +274,6 @@ def link_nb(nb_path):
     link_markdown_cells(cells, get_imported_modules(cells))
     write_nb(nb, nb_path)
     NotebookNotary().sign(read_nb(nb_path))
-
-def update_all(pkg_name, dest_path='.', exclude=None, create_missing=False):
-    "Update all the notebooks in `pkg_name`."
-    if exclude is None: exclude = _default_exclude
-    mod_files = get_module_names(Path(pkg_name), exclude)
-    for f in mod_files:
-        mod = import_mod(f)
-        if mod is None: continue
-        if os.path.exists(get_doc_path(mod, dest_path)):
-            update_module_page(mod, dest_path)
-        elif create_missing:
-            print(f'Creating module page of {f}')
-            create_module_page(mod, dest_path)
 
 def get_module_from_notebook(doc_path):
     "Find module given a source path. Assume it belongs to fastai directory"
