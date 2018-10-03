@@ -50,10 +50,13 @@ def _draw_outline(o:Patch, lw:int):
     o.set_path_effects([patheffects.Stroke(
         linewidth=lw, foreground='black'), patheffects.Normal()])
 
-def _draw_rect(ax:plt.Axes, b:Collection[int], color:str='white'):
+def _draw_rect(ax:plt.Axes, b:Collection[int], color:str='white', text=None, text_size=14):
     "Draw bounding box on `ax`."
     patch = ax.add_patch(patches.Rectangle(b[:2], *b[-2:], fill=False, edgecolor=color, lw=2))
     _draw_outline(patch, 4)
+    if text is not None:
+        patch = ax.text(*b[:2], text, verticalalignment='top', color=color, fontsize=text_size, weight='bold')
+        _draw_outline(patch,1)
 
 def _get_default_args(func:Callable):
     return {k: v.default
@@ -246,7 +249,7 @@ def show_image(x:Image, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), alp
     if y is not None: _show_image(y, ax=ax, alpha=alpha, hide_axis=hide_axis, cmap=cmap)
     if title: ax.set_title(title)
 
-def _show(self:Image, ax:plt.Axes=None, y:Image=None, **kwargs):
+def _show(self:Image, ax:plt.Axes=None, y:Image=None, texts=None, **kwargs):
     if y is not None:
         is_bb = isinstance(y, ImageBBox)
         y=y.data
@@ -254,9 +257,9 @@ def _show(self:Image, ax:plt.Axes=None, y:Image=None, **kwargs):
     title=kwargs.pop('title') if 'title' in kwargs else None
     ax = _show_image(self.data, ax=ax, **kwargs)
     if title: ax.set_title(title)
-    if len(y.size()) == 1: _draw_rect(ax, bb2hw(y))
+    if len(y.size()) == 1: _draw_rect(ax, bb2hw(y), text=texts)
     else:
-        for i in range(y.size(0)): _draw_rect(ax, bb2hw(y[i]))
+        for i in range(y.size(0)): _draw_rect(ax, bb2hw(y[i]), text=None if texts is None else texts[i])
 
 Image.show = _show
 
