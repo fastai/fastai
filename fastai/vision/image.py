@@ -209,22 +209,32 @@ class ImageMask(Image):
 class ImageBBox(ImageMask):
     "Image class for bbox-style annotations."
 
+    def clone(self):
+        bbox = self.__class__(self.px.clone())
+        bbox.labels,bbox.pad_idx = self.labels.clone(),self.pad_idx
+        return bbox
+    
     @classmethod
-    def create(cls, bboxes:Collection[Collection[int]], h:int, w:int)->'ImageBBox':
+    def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels=None, pad_idx=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         pxls = torch.zeros(len(bboxes),h, w).long()
         for i,bbox in enumerate(bboxes):
             pxls[i,bbox[0]:bbox[2]+1,bbox[1]:bbox[3]+1] = 1
-        return cls(pxls.float())
+        bbox = cls(pxls.float())
+        bbox.labels,bbox.pad_idx = labels,pad_idx
+        return bbox
 
     @property
     def data(self)->LongTensor:
-        bboxes = []
+        bboxes,lbls = [],[]
         for i in range(self.px.size(0)):
             idxs = torch.nonzero(self.px[i])
             if len(idxs) != 0:
                 bboxes.append(torch.tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
-        return torch.cat(bboxes, 0).squeeze()
+                if self.labels is not None: lbls.append(self.labels[i])
+        if len(bboxes) == 0: return torch.tensor([self.pad_idx] * 4), torch.tensor([self.pad_idx])
+        if self.labels is not None: return torch.cat(bboxes, 0).squeeze(), LongTensor(lbls)
+        else: return torch.cat(bboxes, 0).squeeze()
 
 def open_image(fn:PathOrStr)->Image:
     "Return `Image` object created from image in file `fn`."
@@ -249,7 +259,7 @@ def show_image(x:Image, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), alp
     if y is not None: _show_image(y, ax=ax, alpha=alpha, hide_axis=hide_axis, cmap=cmap)
     if title: ax.set_title(title)
 
-def _show(self:Image, ax:plt.Axes=None, y:Image=None, texts=None, **kwargs):
+def _show(self:Image, ax:plt.Axes=None, y:Image=None, classes=None, **kwargs):
     if y is not None:
         is_bb = isinstance(y, ImageBBox)
         y=y.data
@@ -257,9 +267,18 @@ def _show(self:Image, ax:plt.Axes=None, y:Image=None, texts=None, **kwargs):
     title=kwargs.pop('title') if 'title' in kwargs else None
     ax = _show_image(self.data, ax=ax, **kwargs)
     if title: ax.set_title(title)
-    if len(y.size()) == 1: _draw_rect(ax, bb2hw(y), text=texts)
+    y,lbls = y if is_tuple(y) else (y, None)
+    if len(y.size()) == 1:
+        if lbls is not None:
+            text = classes[lbls[0]] if classes is not None else lbls.item()
+        else: text=None
+        _draw_rect(ax, bb2hw(y), text=text)
     else:
-        for i in range(y.size(0)): _draw_rect(ax, bb2hw(y[i]), text=None if texts is None else texts[i])
+        for i in range(y.size(0)): 
+            if lbls is not None:
+                text = classes[lbls[i]] if classes is not None else lbls[i].item()
+            else: text=None
+            _draw_rect(ax, bb2hw(y[i]), text=text)
 
 Image.show = _show
 

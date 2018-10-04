@@ -128,12 +128,29 @@ class ObjectDetectDataset(Dataset):
     "A dataset with annotated images."
     x_fns:Collection[Path]
     bbs:Collection[Collection[int]]
-    def __post_init__(self): assert len(self.x_fns)==len(self.bbs)
+    labels:Collection[str]
+    def __post_init__(self): 
+        assert len(self.x_fns)==len(self.bbs)
+        assert len(self.x_fns)==len(self.labels)
+        self.classes = set()
+        for x in self.labels: self.classes = self.classes.union(set(x)) 
+        self.classes = ['background'] + list(self.classes)
+        self.class2idx = {v:k for k,v in enumerate(self.classes)}
+        
     def __repr__(self) -> str: return f'{type(self).__name__} of len {len(self.x_fns)}'
     def __len__(self) -> int: return len(self.x_fns)
-    def __getitem__(self, i:int) -> Tuple[Image,ImageBBox]:
+    def __getitem__(self, i:int) -> Tuple[Image,Tuple[ImageBBox, LongTensor]]:
         x = open_image(self.x_fns[i])
-        return x, ImageBBox.create(self.bbs[i], *x.size)
+        cats = LongTensor([self.class2idx[l] for l in self.labels[i]])
+        return x, (ImageBBox.create(self.bbs[i], *x.size, cats))
+    
+    @classmethod
+    def from_json(cls, folder, fname, valid_pct=None):
+        imgs, bbs, cats = get_annotations(fname, prefix=f'{folder}/')
+        if valid_pct:
+            train,valid = random_split(valid_pct, imgs, bbs, cats)
+            return cls(*train), cls(*valid)
+        return cls(imgs, bbs, cats)
 
 class DatasetTfm(Dataset):
     "`Dataset` that applies a list of transforms to every item drawn."
