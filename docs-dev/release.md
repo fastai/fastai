@@ -190,9 +190,13 @@ XXX: travis-ci.org as well.
    If the install is not working, check the state of the package: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
 
 
+
+
 #### Various Helper Tools
 
-Sometimes with too many local installs/uninstalls into the same environment, especially if you nuke folders and files with `rm(1)`, things can get pretty messed up. So this can help diagnose what pip sees:
+* Complete Package Uninstall
+
+   Sometimes with too many local installs/uninstalls into the same environment, especially if you nuke folders and files with `rm(1)`, things can get pretty messed up. So this can help diagnose what pip sees:
 
    ```
    pip show fastai
@@ -202,35 +206,52 @@ Sometimes with too many local installs/uninstalls into the same environment, esp
    Location: /some/path/to/git/clone/of/fastai
    ```
 
-Yet `pip` can't uninstall it:
+   Yet `pip` can't uninstall it:
 
    ```
    pip uninstall fastai
    Can't uninstall 'fastai'. No files were found to uninstall.
    ```
 
-`easy-install` (`pip install -e`) can make things very confusing as it may point to git checkouts that are no longer up-to-date. and you can't uninstall it. It's db is a plain text file here:
+   `easy-install` (`pip install -e`) can make things very confusing as it may point to git checkouts that are no longer up-to-date. and you can't uninstall it. It's db is a plain text file here:
 
    ```
    path/to/lib/python3.6/site-packages/easy-install.pth
    ```
 
-so just removing the relevant path from this file will fix the problem. (or removing the whole file if you need to).
+   so just removing the relevant path from this file will fix the problem. (or removing the whole file if you need to).
 
-Similarly, this is another place where it can hide:
+   Similarly, this is another place where it can hide:
 
    ```
    path/to/lib/python3.6/site-packages/fastai.egg-link
    ```
 
 
-Now running:
+   Now running:
 
    ```
    pip show fastai
    ```
 
-shows nothing.
+   shows nothing.
+
+
+*. To upload to the test server, instead of the live PyPI server, use:
+
+
+   ```
+   twine upload --repository testpypi dist/*
+   ```
+
+   and to install from it:
+
+   ```
+   pip install --index-url https://test.pypi.org/simple/ fastai
+   ```
+
+   Doc: https://packaging.python.org/guides/using-testpypi/
+
 
 ### Conda
 
