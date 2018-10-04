@@ -30,7 +30,7 @@ NB: We are currently using a re-packaged torchvision in order to support pytorch
 If your system doesn't have CUDA, you can install the CPU-only torch build:
 
 ```
-conda install -c pytorch -c fastai fastai pytorch-nightly==1.0.0.dev20180928=py3.6_cpu_0
+conda install -c pytorch -c fastai fastai pytorch-nightly-cpu
 ```
 
 If you encounter installation problems, make sure you have the latest `conda` client:
