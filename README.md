@@ -97,7 +97,7 @@ First, follow the instructions above for either `PyPi` or `Conda`. Then remove t
 git clone https://github.com/fastai/fastai
 cd fastai
 tools/run-after-git-clone
-pip install -e .
+pip install -e .[dev]
 ```
 
 You can test that the build works:

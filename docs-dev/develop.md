@@ -47,18 +47,30 @@ or alternatively run:
 
 
 
-### Development Install
+### Development Editable Install
 
-For working with the project files while being able to edit them:
+For deploying the `fastai` module's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
 
    ```
-   python setup.py develop
+   pip   uninstall fastai
+   conda uninstall fastai
    ```
 
-or
+And then do an editable install:
+
+   ```
+   pip install -e .[dev]
+   ```
+
+It's almost the same as:
 
    ```
    pip install -e .
    ```
+
+but the former will also install extra dependencies needed only by developers.
+
+Best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
+
 
 ###
