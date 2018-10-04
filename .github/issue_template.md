@@ -1,5 +1,5 @@
 
-<!-- Please note: Installation issues should be reported here: http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111) -->
+<!-- **Please note**: Installation issues should be reported here: http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111 -->
 
 **Describe the bug**
 <!-- A clear and concise description of what the bug is. -->
