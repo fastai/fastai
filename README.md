@@ -33,6 +33,10 @@ If your system doesn't have CUDA, you can install the CPU-only torch build:
 conda install -c pytorch -c fastai fastai pytorch-nightly==1.0.0.dev20180928=py3.6_cpu_0
 ```
 
+If you encounter installation problems, make sure you have the latest `conda` client:
+```
+conda update conda
+```
 
 ## PyPI Install
 
@@ -87,6 +91,9 @@ Please execute the following 3 steps:
    This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
 
    If your system is currently not supported, please consider installing and using the very solid "v0" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
+
+
+
 
 
 ## Developer Install
