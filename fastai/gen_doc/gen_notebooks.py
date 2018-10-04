@@ -66,7 +66,11 @@ def get_global_vars(mod):
     return d
 
 def write_nb(nb, nb_path, mode='w'):
-    json.dump(nb, open(nb_path, mode), indent=1)
+    try: 
+        with open(nb_path, mode) as f: f.write(nbformat.writes(nb, version=4))
+    except Exception as e: 
+        print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
+        json.dump(nb, open(nb_path, mode), indent=1)
 
 def execute_nb(fname, metadata=None):
     "Execute notebook `fname` with `metadata` for preprocessing."
