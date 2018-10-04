@@ -49,7 +49,7 @@ Please execute the following 3 steps:
 2. Next, install a custom `torchvision` build, that is built against `torch_nightly`.
 
    ```
-   pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post1
+   pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post2
    ```
 
 3. Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai/issues/):
