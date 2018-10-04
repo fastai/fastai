@@ -19,6 +19,22 @@ def get_image_files(c:Path, check_ext:bool=True)->FilePathList:
             if not o.name.startswith('.') and not o.is_dir()
             and (not check_ext or (o.suffix in image_extensions))]
 
+def get_annotations(fname, prefix=None):
+    annot_dict = json.load(open(fname))
+    id2images, id2bboxes, id2cats = {}, collections.defaultdict(list), collections.defaultdict(list)
+    classes = {}
+    for o in annot_dict['categories']:
+        classes[o['id']] = o['name']
+    for o in annot_dict['annotations']:
+        bb = o['bbox']
+        id2bboxes[o['image_id']].append(to_int([bb[1],bb[0], bb[3]+bb[1], bb[2]+bb[0]]))
+        id2cats[o['image_id']].append(classes[o['category_id']])
+    for o in annot_dict['images']:
+        if o['id'] in id2bboxes:
+            id2images[o['id']] = ifnone(prefix, '') + o['file_name']
+    ids = list(id2images.keys())
+    return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
+
 def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15),
                      denorm:Callable=None) -> None:
     "Show a few images from a batch."
