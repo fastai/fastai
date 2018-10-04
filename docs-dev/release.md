@@ -277,6 +277,37 @@ XXX: travis-ci.org as well.
    Doc: https://packaging.python.org/guides/using-testpypi/
 
 
+
+#### pip Dependencies
+
+Tools for finding out pip dependencies (direct and reversed).
+
+
+* `pipdeptree`: `pip install pipdeptree`
+
+   Print the whole tree of the installed base:
+   ```
+   pipdeptree -fl
+   ```
+
+   To find out why a particular package is installed (i.e. which package requires it):
+   ```
+   pipdeptree --reverse --packages  pillow
+   ```
+
+* `johnnydep`: `pip install johnnydep` (the tool is very slow!):
+
+   Pretty-print a dependency tree for a Python distribution
+   ```
+   johnnydep spacy
+   ```
+
+   Resolve the dependency tree:
+   ```
+   johnnydep spacy --output-format pinned
+   ```
+
+
 ### Conda
 
 `conda-build` uses a build recipe `conda/meta.yaml`.
