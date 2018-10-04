@@ -1,11 +1,48 @@
-# History
+# Changes
 
-1.0.0 (2018-10-01)
-------------------
 
-* Released on Conda and Pypi
+<!--
+**Template For Future Entries**
 
-1.0.0.beta1 (2018-09-22)
-------------------
+### 1.0.0 (2018-10-01)
 
-* First release on PyPI.
+New:
+
+  -
+  -
+
+Changed:
+
+  -
+  -
+
+Fixed:
+
+  -
+  -
+
+-->
+
+
+### 1.0.4-dev (XXX)
+
+New:
+
+  -
+  -
+
+Changed:
+
+  -
+  -
+
+Fixed:
+
+  -
+  -
+
+
+
+### 1.0.0 (2018-10-01)
+
+* First release
