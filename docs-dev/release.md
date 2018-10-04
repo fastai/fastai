@@ -1,5 +1,29 @@
 # Making a Release
 
+
+## Release Process
+
+WIP: this is partially pseudo-code, partially working code
+
+The starting point is to know the sha1 of the last commit to go into the release
+
+1. git pull sha1
+2. version bump (remove ".dev", setup.py, and run `python setup.py --version` to update fastai/version.py (could be automated)
+3. finalize CHANGES.md - version and date (could be automated)
+4. make test
+5. git commit setup.py fastai/version.py CHANGES.md
+6. git tag with version v+version
+7. make release
+
+Then immediately start a new dev cycle:
+
+1. setup.py's version -> add ".dev" / run `python setup.py --version` to update fastai/version.py  (could be automated)
+2. edit CHANGES.md - copy the template and start a new entry for the new version (could be automated)
+3. git commit setup.py fastai/version.py CHANGES.md
+
+
+
+
 ## Project Build
 
 
