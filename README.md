@@ -11,7 +11,9 @@ learn.fit(1)
 
 ## Note for [course.fast.ai](http://course.fast.ai) students
 
-If you are using fastai for any course.fast.ai course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply follow the instructions in the course (i.e. clone this repo, cd to it, and `conda env update`), and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory).
+If you are using fastai for any [course.fast.ai](http://course.fast.ai) course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply follow the instructions in the course (i.e. clone this repo, cd to it, and `conda env update`), and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory).
+
+*Note: If you want to learn how to use fastai v1 from its lead developer, Jeremy Howard, he will be teaching it in the [Deep Learning Part I](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one) course at the University of San Francisco from Oct 22nd, 2018.*
 
 ## Conda Install
 
@@ -72,9 +74,13 @@ pip install fastai
 
    As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
 
-     - linux: fully
-     - mac: CPU-only
-     - windows: not supported
+    | Platform | GPU    | CPU    |
+    | ---      | ---    | ---    |
+    | linux    | binary | binary |
+    | mac      | source | binary |
+    | windows  | source | source |
+
+   Legend: `binary` = can be installed directly, `source` = needs to be built from source.
 
    This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
 
@@ -98,7 +104,8 @@ You can test that the build works:
 jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
 ```
 
-Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [the developers guide](http://docs.fast.ai/developers.html) for more details.
+Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs-dev/develop.md) for more details.
+
 
 ## Copyright
 

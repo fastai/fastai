@@ -156,13 +156,10 @@ def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
 def find_elt(modvars, keyword, match_last=True):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
     if keyword in modvars: return modvars[keyword]
-    if '.' not in keyword: return None
     comps = keyword.split('.')
-    if (comps[0] == 'torch' or comps[0] == 'torchvision'): match_last = False
-    if match_last: return modvars.get(comps[-1])
     comp_elt = modvars.get(comps[0])
-    if hasattr(comp_elt, '__dict__'):
-        return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
+    if hasattr(comp_elt, '__dict__'): return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
+    # else: return modvars.get(comps[-1])
 
 def import_mod(mod_name:str, ignore_errors=False):
     "Return module from `mod_name`."
