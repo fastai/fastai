@@ -48,6 +48,10 @@ def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
 
+def to_int(b):
+    if is_listy(b): return [to_int(x) for x in b]
+    else:          return int(b)
+
 def ifnone(a:Any,b:Any)->Any:
     "`a` if `a` is not None, otherwise `b`."
     return b if a is None else a
