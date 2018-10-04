@@ -155,6 +155,7 @@ def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
 
 def find_elt(modvars, keyword, match_last=True):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
+    keyword = strip_fastai(keyword)
     if keyword in modvars: return modvars[keyword]
     comps = keyword.split('.')
     comp_elt = modvars.get(comps[0])

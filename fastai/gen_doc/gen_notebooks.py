@@ -111,7 +111,7 @@ _default_exclude = ['.ipynb_checkpoints', '__pycache__', '__init__.py', 'imports
 def get_module_names(path_dir, exclude=None):
     if exclude is None: exclude = _default_exclude
     "Search a given `path_dir` and return all the modules contained inside except those in `exclude`"
-    files = path_dir.glob('*')
+    files = sorted(path_dir.glob('*'), key=lambda x: x.is_dir(), reverse=True) # directories first
     res = [f'{path_dir.name}']
     for f in files:
         if f.is_dir() and f.name in exclude: continue # exclude directories
@@ -211,15 +211,16 @@ def get_imported_modules(cells, nb_module_name=''):
     "Finds all submodules of notebook - sorted by submodules > top level modules > manual imports. This gives notebook imports priority"
     module_names = get_top_level_modules()
     nb_imports = [match.group(1) for cell in cells for match in IMPORT_RE.finditer(cell['source']) if cell['cell_type'] == 'code']
-    all_modules = module_names + nb_imports + [nb_module_name]
-
+    parts = nb_module_name.split('.')
+    parent_modules = ['.'.join(parts[:(x+1)]) for x in range(len(parts))] # Imports parent modules - a.b.c = [a, a.b, a.b.c]
+    all_modules = module_names + nb_imports + parent_modules
     mods = [import_mod(m, ignore_errors=True) for m in all_modules]
     return [m for m in mods if m is not None]
 
-def get_top_level_modules():
+def get_top_level_modules(num_levels=1):
     mod_dir = Path(import_mod('fastai').__file__).parent
-    filtered_n = filter(lambda x: x.count('.')<2, get_module_names(mod_dir))
-    return sorted(filtered_n, key=lambda s: str(sorted(s))) # Submodules first (sorted by periods)
+    filtered_n = filter(lambda x: x.count('.')<=num_levels, get_module_names(mod_dir))
+    return sorted(filtered_n, key=lambda s: s.count('.'), reverse=True) # Submodules first (sorted by periods)
 
 NEW_FT_HEADER = '## New Methods - Please document or move to the undocumented section'
 UNDOC_HEADER = '## Undocumented Methods - Methods moved below this line will intentionally be hidden'
@@ -246,7 +247,7 @@ def update_module_page(mod, dest_path='.'):
     nb = read_nb(doc_path)
     cells = nb['cells']
 
-    link_markdown_cells(cells, get_imported_modules(cells, mode.__name__))
+    link_markdown_cells(cells, get_imported_modules(cells, mod.__name__))
 
     type_dict = read_nb_types(cells)
     gvar_map = get_global_vars(mod)
