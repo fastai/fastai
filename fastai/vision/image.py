@@ -364,7 +364,8 @@ def _resolve_tfms(tfms:TfmList):
 
 def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection')->TensorImage:
     "Grab pixels in `coords` from `input` sampling by `mode`. `paddding_mode` is reflection, border or zeros."
-    return F.grid_sample(x[None], coords, mode=mode, padding_mode=padding_mode)[0]
+    x = x[None].permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1)
+    return F.grid_sample(x, coords, mode=mode, padding_mode=padding_mode)[0].contiguous()
 
 def _affine_grid(size:TensorImageSize)->FlowField:
     size = ((1,)+size)
