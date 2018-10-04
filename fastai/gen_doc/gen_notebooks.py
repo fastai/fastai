@@ -207,13 +207,11 @@ def has_metadata_cell(cells, fn):
 def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
 
 IMPORT_RE = re.compile(r"from (fastai[\.\w_]*)")
-def get_imported_modules(cells, nb_module_name):
+def get_imported_modules(cells, nb_module_name=''):
     "Finds all submodules of notebook - sorted by submodules > top level modules > manual imports. This gives notebook imports priority"
     module_names = get_top_level_modules()
-    print('Base mods:', module_names)
     nb_imports = [match.group(1) for cell in cells for match in IMPORT_RE.finditer(cell['source']) if cell['cell_type'] == 'code']
     all_modules = module_names + nb_imports + [nb_module_name]
-    print('All mods:', all_modules)
 
     mods = [import_mod(m, ignore_errors=True) for m in all_modules]
     return [m for m in mods if m is not None]

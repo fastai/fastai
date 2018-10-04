@@ -36,33 +36,35 @@ conda install -c pytorch -c fastai fastai pytorch-nightly==1.0.0.dev20180928=py3
 
 ## PyPI Install
 
-First install the nightly `pytorch` build, e.g. for CUDA 9.2:
+Please execute the following 3 steps:
 
-```
-pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
-```
+1. First install the nightly `pytorch` build, e.g. for CUDA 9.2:
 
-If you have a different CUDA version find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Linux/Pip/python3.6|python3.7 and your CUDA version and it will give you the correct install instruction.
+   ```
+   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
+   ```
 
-Next, install a custom `torchvision` build, that is built against `torch_nightly`.
+   If you have a different CUDA version find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Linux/Pip/python3.6|python3.7 and your CUDA version and it will give you the correct install instruction.
 
-```
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post1
-```
+2. Next, install a custom `torchvision` build, that is built against `torch_nightly`.
 
-Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai/issues/):
+   ```
+   pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post1
+   ```
 
-```
-pip install fastai
-```
+3. Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](https://github.com/fastai/fastai/issues/):
 
-Sometimes, the last `pip` command still tries to get `torch-0.4.1`. If that happens to you, do:
+   ```
+   pip install fastai
+   ```
 
-```
-pip uninstall torchvision fastai
-pip install --no-deps torchvision
-pip install fastai
-```
+   On some setups, the last `pip` command still tries to get `torch-0.4.1`. If that happens to you, you may try:
+
+   ```
+   pip uninstall torchvision fastai
+   pip install --no-deps torchvision
+   pip install fastai
+   ```
 
 ## Is My System Supported?
 
