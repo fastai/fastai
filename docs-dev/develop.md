@@ -73,4 +73,16 @@ but the former will also install extra dependencies needed only by developers.
 Best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
 
 
-###
+### Switching Conda Environments in Jupyter
+
+Other than the normal switching environments with restarts:
+
+   ```
+   source activate env1
+   jupyter notebook
+   (Ctrl-C to kill jupyter)
+   source activate env2
+   jupyter notebook
+   ```
+
+You can install [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels), which provides a separate jupyter kernel for each conda environment, along with the appropriate code to handle their setup. This makes switching conda environments as simple as switching jupyter kernel (e.g. from the kernel menu). And you don't need to worry which environment you started `jupyter notebook` from - just choose the right environment from the notebook.
