@@ -4,9 +4,9 @@ from .image import *
 from .transform import *
 from ..data import *
 
-__all__ = ['DatasetTfm', 'ImageDataset', 'ImageMultiDataset', 'ObjectDetectDataset', 'SegmentationDataset', 'csv_to_fns_labels',
+__all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset', 'SegmentationDataset', 'csv_to_fns_labels',
            'denormalize', 'get_image_files', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
-           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'cifar_norm', 'cifar_denorm', 
+           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'cifar_norm', 'cifar_denorm',
            'imagenet_norm', 'imagenet_denorm']
 
 TfmList = Collection[Transform]
@@ -45,14 +45,20 @@ def show_xy_images(x:Tensor,y:Tensor,rows:int,figsize:tuple=(9,9)):
     plt.tight_layout()
 
 class ImageDataset(LabelDataset):
-    "Dataset for folders of images in style {folder}/{class}/{images}."
+    "Abstract `Dataset` containing images."
+    def __init__(self, fns:FilePathList, y:np.ndarray):
+        self.x = np.array(fns)
+        self.y = np.array(y)
+
+    def __getitem__(self,i): return open_image(self.x[i]),self.y[i]
+
+class ImageClassificationDataset(ImageDataset):
+    "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Classes]=None):
         self.classes = ifnone(classes, list(set(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        self.x = np.array(fns)
-        self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
-
-    def __getitem__(self,i): return open_image(self.x[i]),self.y[i]
+        y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
+        super().__init__(fns, y)
 
     @staticmethod
     def _folder_files(folder:Path, label:ImgLabel, check_ext=True)->Tuple[FilePathList,ImgLabels]:
@@ -67,8 +73,8 @@ class ImageDataset(LabelDataset):
         return cls(fns, labels, classes=classes)
 
     @classmethod
-    def from_folder(cls, folder:Path, classes:Optional[Classes]=None,
-                    valid_pct:float=0., check_ext:bool=True) -> Union['ImageDataset', List['ImageDataset']]:
+    def from_folder(cls, folder:Path, classes:Optional[Classes]=None, valid_pct:float=0., check_ext:bool=True
+                   ) -> Union['ImageClassificationDataset', List['ImageClassificationDataset']]:
         "Dataset of `classes` labeled images in `folder`. Optional `valid_pct` split validation set."
         if classes is None: classes = [cls.name for cls in find_classes(folder)]
 
@@ -222,9 +228,9 @@ def image_data_from_folder(path:PathOrStr, train:PathOrStr='train', valid:PathOr
                           test:Optional[PathOrStr]=None, **kwargs:Any) -> DataBunch:
     "Create `DataBunch` from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders."
     path=Path(path)
-    train_ds = ImageDataset.from_folder(path/train)
-    datasets = [train_ds, ImageDataset.from_folder(path/valid, classes=train_ds.classes)]
-    if test: datasets.append(ImageDataset.from_single_folder(
+    train_ds = ImageClassificationDataset.from_folder(path/train)
+    datasets = [train_ds, ImageClassificationDataset.from_folder(path/valid, classes=train_ds.classes)]
+    if test: datasets.append(ImageClassificationDataset.from_single_folder(
         path/test,classes=train_ds.classes))
     return DataBunch.create(*datasets, path=path, **kwargs)
 
@@ -268,8 +274,8 @@ def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labe
     else:
         folder_path = (path/folder).absolute()
         (train_fns,train_lbls), (valid_fns,valid_lbls) = random_split(valid_pct, f'{folder_path}/' + fnames, labels)
-        datasets = [ImageDataset(train_fns, train_lbls, classes)]
-        datasets.append(ImageDataset(valid_fns, valid_lbls, classes))
-        if test: datasets.append(ImageDataset.from_single_folder(Path(path)/test, classes=classes))
+        datasets = [ImageClassificationDataset(train_fns, train_lbls, classes)]
+        datasets.append(ImageClassificationDataset(valid_fns, valid_lbls, classes))
+        if test: datasets.append(ImageClassificationDataset.from_single_folder(Path(path)/test, classes=classes))
     return DataBunch.create(*datasets, path=path, **kwargs)
 
