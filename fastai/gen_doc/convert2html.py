@@ -22,7 +22,7 @@ exporter.template_file = 'jekyll.tpl'
 path = Path(__file__).parent
 exporter.template_path.append(str(path))
 #Preprocesser that converts the .ipynb links in .html
-exporter.register_preprocessor(HandleLinksPreprocessor, enabled=True)
+#exporter.register_preprocessor(HandleLinksPreprocessor, enabled=True)
 
 def read_nb(fname):
     "Read the notebook in `fname`."
