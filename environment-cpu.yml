@@ -81,7 +81,7 @@ dependencies:
 - sqlite
 - statsmodels
 - testfixtures
-- testpath
+- testpath<0.4
 - tk
 - tornado<5
 - tqdm
