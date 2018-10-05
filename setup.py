@@ -75,7 +75,7 @@ dev_requirements = { 'dev' : to_list("""
     jupyter_contrib_nbextensions
     nbconvert
     nbformat
-    pip>=9.0.1
+    pip>=18.1
     pipreqs>=0.4.9
     traitlets
     wheel>=0.30.0
