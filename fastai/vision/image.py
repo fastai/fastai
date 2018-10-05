@@ -233,8 +233,9 @@ class ImageBBox(ImageMask):
                 bboxes.append(torch.tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
                 if self.labels is not None: lbls.append(self.labels[i])
         if len(bboxes) == 0: return torch.tensor([self.pad_idx] * 4), torch.tensor([self.pad_idx])
-        if self.labels is not None: return torch.cat(bboxes, 0).squeeze(), LongTensor(lbls)
-        else: return torch.cat(bboxes, 0).squeeze()
+        h,w = self.size
+        bboxes = torch.cat(bboxes, 0).squeeze().float() * torch.tensor([2/h,2/w,2/h,2/w]) - 1
+        return bboxes if self.labels is None else bboxes, LongTensor(lbls)
 
 def open_image(fn:PathOrStr)->Image:
     "Return `Image` object created from image in file `fn`."
@@ -268,6 +269,8 @@ def _show(self:Image, ax:plt.Axes=None, y:Image=None, classes=None, **kwargs):
     ax = _show_image(self.data, ax=ax, **kwargs)
     if title: ax.set_title(title)
     y,lbls = y if is_tuple(y) else (y, None)
+    h,w = self.size
+    y = ((y+1) * torch.tensor([h/2,w/2,h/2,w/2])).long()
     if len(y.size()) == 1:
         if lbls is not None:
             text = classes[lbls[0]] if classes is not None else lbls.item()
