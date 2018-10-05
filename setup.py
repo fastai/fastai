@@ -15,7 +15,7 @@ def create_version_file(version):
         f.write("__version__ = '{}'\n".format(version))
 
 # version
-version = '1.0.4'
+version = '1.0.5.dev0'
 create_version_file(version)
 
 with open('README.md') as readme_file:
