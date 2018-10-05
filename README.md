@@ -48,7 +48,7 @@ If the issue persists, please read about [installation issues](README.md#install
 
 ## PyPI Install
 
-Follow the following 3 steps in this exact order:
+Follow the following 2 steps in this exact order:
 
 1. Install the nightly `pytorch` build, with `cudaXX` package version matching your system's setup. For example for CUDA 9.2:
 
