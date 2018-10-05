@@ -518,3 +518,14 @@ platform are shown):
 ### Support
 
 * [conda dev chat channel](https://gitter.im/conda/conda-build)
+
+
+
+## Package Download Statistics
+
+How many times `fastai` was downloaded?
+
+  * from PyPI https://pepy.tech/project/fastai
+  * from Conda https://anaconda.org/fastai/fastai/files
+
+The numbers are probably higher due to caches, CDNs, etc.
