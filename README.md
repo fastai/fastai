@@ -37,7 +37,7 @@ Follow the following 2 steps in this exact order:
    conda install -c fastai fastai
    ```
 
-   NB: We are currently using a re-packaged torchvision in order to support pytorch-nightly, which is required for using fastai.
+   NB: We are currently using a re-packaged `torchvision` as `torchvision-nightly` in order to support `pytorch-nightly`, which is required for using `fastai`.
 
 If you encounter installation problems, make sure you have the latest `conda` client:
 ```
@@ -58,25 +58,13 @@ Follow the following 3 steps in this exact order:
 
    If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Pip/Python3.6|Python3.7 and your CUDA version and it will give you the correct install instruction. Instructions to build `pytorch` from source are provided at the same location.
 
-2. Install a custom `torchvision` build, that is built against `torch_nightly`.
-
-   ```
-   pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post2
-   ```
-
-3. Install `fastai`:
+2. Install `fastai`:
 
    ```
    pip install fastai
    ```
 
-   On some setups, the last `pip` command still tries to get `torch-0.4.1`. If that happens to you, you may try:
-
-   ```
-   pip uninstall torchvision fastai
-   pip install --no-deps torchvision
-   pip install fastai
-   ```
+   NB: this will also fetch `torchvision-nightly`, see the conda entry above for details.
 
 If you experience installation problems, please read about [installation issues](README.md#installation-issues).
 

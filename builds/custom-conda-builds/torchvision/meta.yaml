@@ -1,5 +1,5 @@
 package:
-  name: torchvision
+  name: torchvision-nightly
   version: 0.2.1
 
 source:
