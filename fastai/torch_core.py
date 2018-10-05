@@ -187,3 +187,72 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_class:type=nn.CrossEntropyLoss,
         return torch.cat([loss_class(reduction='none')(*b) for b in loss_dl])
 
 def to_np(x): return x.cpu().numpy()
+
+def show_install(show_nvidia_smi:bool=False):
+    "Print user's setup information: python -c 'import fastai; fastai.show_install()'"
+
+    import platform, fastai.version, subprocess
+
+    print("\n```")
+
+    print(f"platform info  : {platform.platform()}")
+    print(f"python version : {platform.python_version()}")
+    print(f"fastai version : {fastai.__version__}")
+    print(f"torch version  : {torch.__version__}")
+
+    # cuda
+    cmd = "nvidia-smi"
+    have_nvidia_smi = True
+    try:
+        result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
+    except:
+        have_nvidia_smi = False
+    else:
+        if result.returncode != 0 or not result.stdout:
+            have_nvidia_smi = False
+
+    if have_nvidia_smi:
+        smi = result.stdout.decode('utf-8')
+        match = re.findall(r'Driver Version: +(\d+\.\d+)', smi)
+        if match: print(f"nvidia driver  : {match[0]}")
+
+    cuda_is_available = torch.cuda.is_available()
+    if not cuda_is_available: print(f"cuda available: False")
+
+    print(f"cuda version   : {torch.version.cuda}")
+    print(f"cudnn available: {torch.backends.cudnn.enabled}")
+    gpu_cnt = torch.cuda.device_count()
+    print(f"gpu count      : {gpu_cnt}")
+
+    # it's possible that torch might not see what nvidia-smi sees?
+    gpu_total_mem = []
+    if have_nvidia_smi:
+        cmd = "nvidia-smi --query-gpu=memory.total --format=csv,nounits,noheader"
+        result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
+        if result.returncode == 0 and result.stdout:
+            output = result.stdout.decode('utf-8')
+            gpu_total_mem = [int(x) for x in output.strip().split('\n')]
+    else:
+        # if nvidia-smi can't be found try GPUtil
+        try:
+            import GPUtil
+        except ImportError:
+            print("optional GPUtil is not found (pip install GPUtil)", file=sys.stderr)
+        else:
+            gpus = GPUtil.getGPUs()
+            gpu_total_mem = [gpus[i].memoryTotal for i in range(gpu_cnt)]
+
+    # information for each gpu
+    for i in range(gpu_cnt):
+        print(f"  [gpu{i}]")
+        print(f"  Name         : {torch.cuda.get_device_name(i)}")
+        if gpu_total_mem: print(f"  Total Memory : {gpu_total_mem[i]}MB")
+
+    if have_nvidia_smi:
+        if show_nvidia_smi == True:
+            print(f"\n{smi}")
+    else:
+        print(f"nvidia-smi: can't find or execute")
+
+
+    print("```\n")
