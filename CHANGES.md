@@ -24,25 +24,6 @@ Fixed:
 -->
 
 
-### 1.0.4-dev (XXX)
-
-New:
-
-  -
-  -
-
-Changed:
-
-  -
-  -
-
-Fixed:
-
-  -
-  -
-
-
-
 ### 1.0.0 (2018-10-01)
 
 * First release

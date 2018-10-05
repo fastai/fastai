@@ -5,7 +5,6 @@ from fastai.gen_doc import nbdoc
 def assert_link(docstr, expected, nb_cells=None, modules=None, msg=''):
     if modules is None: modules = gen_notebooks.get_imported_modules(nb_cells or [])
     linked = nbdoc.link_docstring(modules, docstr)
-    print('Linked:', linked)
     assert linked == expected, f'{msg}\nExpected: {expected}\nActual: {linked}'
 
 def build_nb_cells(mod_names):
@@ -69,7 +68,7 @@ In each case (except for `collab`), the module is organized this way:
 In each case (except for [`collab`](/collab.html#collab)), the module is organized this way:
 ### [`transform`](/text.transform.html#text.transform)
 ### [`data`](/data.html#data)
-### [`models`](/models.html#models)
+### [`models`](/text.models.html#text.models)
 ### [`learner`](/text.learner.html#text.learner)"""
     assert_link(docstr, expected, msg='data, models should link to highest module. transform and learner links to first match')
 

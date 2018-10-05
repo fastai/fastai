@@ -15,7 +15,7 @@ def create_version_file(version):
         f.write("__version__ = '{}'\n".format(version))
 
 # version
-version = '1.0.3'
+version = '1.0.5.dev0'
 create_version_file(version)
 
 with open('README.md') as readme_file:
@@ -46,7 +46,7 @@ requirements = to_list("""
     requests
     scipy
     spacy
-    torchvision>=0.2.1
+    torchvision-nightly
     typing
 """)
 
@@ -87,7 +87,7 @@ setup_requirements = to_list("""
 test_requirements = to_list("""
     pytest
     torch>=0.4.9
-    torchvision>=0.2.1
+    torchvision-nightly
     numpy>=1.12
 """)
 
