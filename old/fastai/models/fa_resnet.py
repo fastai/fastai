@@ -2,7 +2,7 @@ import torch.nn as nn
 import math
 import torch.utils.model_zoo as model_zoo
 from ..layers import *
-
+from collections import OrderedDict
 
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
@@ -209,10 +209,16 @@ class ResNet(nn.Module):
 
     def forward(self, x): return self.features(x)
 
-def load(model, pre, name):
-    if pretrained: model.load_state_dict(model_zoo.load_url(model_urls[name]))
+def load(model, pretrained, name):
+    if pretrained: model.load_state_dict(updated_dict(model_zoo.load_url(model_urls[name]),model.state_dict()))
     return model
 
+def updated_dict(pre_dict,current_dict):
+    new_dict = OrderedDict()
+    for current_dict_key,pre_dic_val in zip(current_dict.keys(),pre_dict.values()):
+        new_dict[current_dict_key] = pre_dict_val
+    return new_dict 
+    
 def fa_resnet18(pretrained=False, **kwargs):  return load(ResNet(BasicBlock, [2, 2, 2, 2], **kwargs), pretrained, 'resnet18')
 def fa_resnet34(pretrained=False, **kwargs):  return load(ResNet(BasicBlock, [3, 4, 6, 3], **kwargs), pretrained, 'resnet34')
 def fa_resnet50(pretrained=False, **kwargs):  return load(ResNet(Bottleneck, [3, 4, 6, 3], **kwargs), pretrained, 'resnet50')

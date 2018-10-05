@@ -1,71 +1,43 @@
-from .imports import *
-from .torch_imports import *
+"Implements various metrics to measure training accuracy"
+from .torch_core import *
 
-# There are 2 versions of each metrics function, depending on the type of the prediction tensor:
-# *    torch preds/log_preds
-# *_np numpy preds/log_preds
-#
+__all__ = ['accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta']
 
-def accuracy(preds, targs):
-    preds = torch.max(preds, dim=1)[1]
-    return (preds==targs).float().mean()
+def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, beta:float=2, eps:float=1e-9, sigmoid:bool=True) -> Rank0Tensor:
+    "Compute the f_beta between preds and targets."
+    beta2 = beta**2
+    if sigmoid: y_pred = y_pred.sigmoid()
+    y_pred = (y_pred>thresh).float()
+    y_true = y_true.float()
+    TP = (y_pred*y_true).sum(dim=1)
+    prec = TP/(y_pred.sum(dim=1)+eps)
+    rec = TP/(y_true.sum(dim=1)+eps)
+    res = (prec*rec)/(prec*beta2+rec+eps)*(1+beta2)
+    return res.mean()
 
-def accuracy_np(preds, targs):
-    preds = np.argmax(preds, 1)
-    return (preds==targs).mean()
+def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool=True) -> Rank0Tensor:
+    "Compute accuracy when `y_pred` and `y_true` are the same size."
+    if sigmoid: y_pred = y_pred.sigmoid()
+    return ((y_pred>thresh)==y_true.byte()).float().mean()
 
-def accuracy_thresh(thresh):
-    return lambda preds,targs: accuracy_multi(preds, targs, thresh)
+def dice(input:Tensor, targs:Tensor) -> Rank0Tensor:
+    "Dice coefficient metric for binary target."
+    n = targs.shape[0]
+    input = input.argmax(dim=1).view(n,-1)
+    targs = targs.view(n,-1)
+    intersect = (input*targs).sum().float()
+    union = (input+targs).sum().float()
+    return 2. * intersect / union
 
-def accuracy_multi(preds, targs, thresh):
-    return ((preds>thresh).float()==targs).float().mean()
+def accuracy(input:Tensor, targs:Tensor) -> Rank0Tensor:
+    "Compute accuracy with `targs` when `input` is bs * n_classes."
+    n = targs.shape[0]
+    input = input.argmax(dim=1).view(n,-1)
+    targs = targs.view(n,-1)
+    return (input==targs).float().mean()
 
-def accuracy_multi_np(preds, targs, thresh):
-    return ((preds>thresh)==targs).mean()
-
-def recall(log_preds, targs, thresh=0.5, epsilon=1e-8):
-    preds = torch.exp(log_preds)
-    pred_pos = torch.max(preds > thresh, dim=1)[1]
-    tpos = torch.mul((targs.byte() == pred_pos.byte()), targs.byte())
-    return tpos.sum()/(targs.sum() + epsilon)
-
-def recall_np(preds, targs, thresh=0.5, epsilon=1e-8):
-    pred_pos = preds > thresh
-    tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
-    return tpos.sum()/(targs.sum() + epsilon)
-
-def precision(log_preds, targs, thresh=0.5, epsilon=1e-8):
-    preds = torch.exp(log_preds)
-    pred_pos = torch.max(preds > thresh, dim=1)[1]
-    tpos = torch.mul((targs.byte() == pred_pos.byte()), targs.byte())
-    return tpos.sum()/(pred_pos.sum() + epsilon)
-
-def precision_np(preds, targs, thresh=0.5, epsilon=1e-8):
-    pred_pos = preds > thresh
-    tpos = torch.mul((targs.byte() == pred_pos), targs.byte())
-    return tpos.sum()/(pred_pos.sum() + epsilon)
-
-def fbeta(log_preds, targs, beta, thresh=0.5, epsilon=1e-8):
-    """Calculates the F-beta score (the weighted harmonic mean of precision and recall).
-    This is the micro averaged version where the true positives, false negatives and
-    false positives are calculated globally (as opposed to on a per label basis).
-
-    beta == 1 places equal weight on precision and recall, b < 1 emphasizes precision and
-    beta > 1 favors recall.
-    """
-    assert beta > 0, 'beta needs to be greater than 0'
-    beta2 = beta ** 2
-    rec = recall(log_preds, targs, thresh)
-    prec = precision(log_preds, targs, thresh)
-    return (1 + beta2) * prec * rec / (beta2 * prec + rec + epsilon)
-
-def fbeta_np(preds, targs, beta, thresh=0.5, epsilon=1e-8):
-    """ see fbeta """
-    assert beta > 0, 'beta needs to be greater than 0'
-    beta2 = beta ** 2
-    rec = recall_np(preds, targs, thresh)
-    prec = precision_np(preds, targs, thresh)
-    return (1 + beta2) * prec * rec / (beta2 * prec + rec + epsilon)
-
-def f1(log_preds, targs, thresh=0.5): return fbeta(log_preds, targs, 1, thresh)
-def f1_np(preds, targs, thresh=0.5): return fbeta_np(preds, targs, 1, thresh)
+def exp_rmspe(pred:Tensor, targ:Tensor) -> Rank0Tensor:
+    "Exp RMSE between `pred` and `targ`."
+    pred, targ = torch.exp(pred), torch.exp(targ)
+    pct_var = (targ - pred)/targ
+    return torch.sqrt((pct_var**2).mean())

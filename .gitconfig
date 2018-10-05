@@ -1,0 +1,42 @@
+# You need to enable this configuration once after checking out the repo
+# for the first time (assuming you checked it out into fastai/ dir):
+#
+# cd fastai
+# git config --local include.path ../.gitconfig
+#
+# If you need to disable this instrumentation do:
+#
+# git config --local --unset include.path
+#
+# You can always check .git/config to see whether a ../.gitconfig
+# [include] entry is there or not.
+#
+# If tools/fastai-nbstripout is modified to produce a different output,
+# manually rerun all the notebooks under git:
+#
+# tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
+# tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
+# # disable the strip out filter to get git to see changes
+# git config --local --unset include.path
+# git commit -a
+# git push
+# # restore the filter
+# git config --local include.path ../.gitconfig
+#
+
+
+# code notebooks strip out
+[filter "fastai-nbstripout-code"]
+        clean = tools/fastai-nbstripout
+        smudge = cat
+        required = true
+[diff "ipynb-code"]
+        textconv = tools/fastai-nbstripout -t
+
+# docs notebooks strip out
+[filter "fastai-nbstripout-docs"]
+        clean = tools/fastai-nbstripout -d
+        smudge = cat
+        required = true
+[diff "ipynb-docs"]
+        textconv = tools/fastai-nbstripout -dt

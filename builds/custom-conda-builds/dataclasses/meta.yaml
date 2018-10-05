@@ -1,0 +1,51 @@
+{% set name = "dataclasses" %}
+{% set version = "0.6" %}
+{% set file_ext = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_value = "6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
+  '{{ hash_type }}': '{{ hash_value }}'
+
+build:
+  number: 0
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://github.com/ericvsmith/dataclasses
+  license: Apache Software License
+  license_family: APACHE
+  license_file: ''
+  summary: A backport of the dataclasses module for Python 3.6
+  description: ".. image:: https://img.shields.io/pypi/v/dataclasses.svg\n\n\nThis is an implementation of PEP 557, Data Classes.  It is a backport\nfor Python 3.6.  Because dataclasses will be included\
+    \ in Python 3.7,\nany discussion of dataclass features should occur on the python-dev\nmailing list at https://mail.python.org/mailman/listinfo/python-dev.\nAt this point this repo should only be used\
+    \ for historical purposes\n(it's where the original dataclasses discussions took place) and for\ndiscussion of the actual backport to Python 3.6.\n\nSee https://www.python.org/dev/peps/pep-0557/ for\
+    \ the details of how\nData Classes work.\n\nA test file can be found at\nhttps://github.com/ericvsmith/dataclasses/blob/master/test_dataclasses.py,\nor in the sdist file.\n\nInstallation\n-------------\n\
+    \n.. code-block::\n\n  pip install dataclasses\n\n\nExample Usage\n-------------\n\n.. code-block:: python\n\n  from dataclasses import dataclass\n\n  @dataclass\n  class InventoryItem:\n      name:\
+    \ str\n      unit_price: float\n      quantity_on_hand: int = 0\n\n      def total_cost(self) -> float:\n          return self.unit_price * self.quantity_on_hand\n\n  item = InventoryItem('hammers',\
+    \ 10.49, 12)\n  print(item.total_cost())\n\nSome additional tools can be found in dataclass_tools.py, included in\nthe sdist.\n\nCompatibility\n-------------\n\nThis backport assumes that dict objects\
+    \ retain their sort order.  This\nis true in the language spec for Python 3.7 and greater.  Since this\nis a backport to Python 3.6, it raises an interesting question: does\nthat guarantee apply to\
+    \ 3.6?  For CPython 3.6 it does.  As of the time\nof this writing, it's also true for all other Python implementations\nthat claim to be 3.6 compatible, of which there are none.  Any new\n3.6 implementations\
+    \ are expected to have ordered dicts.  See the\nanalysis at the end of this email:\n\nhttps://mail.python.org/pipermail/python-dev/2017-December/151325.html\n\nAs of version 0.4, this code no longer\
+    \ works with Python 3.7. For 3.7,\nuse the built-in dataclasses module.\n\nRelease History\n---------------\n\n+---------+------------+-------------------------------------+\n| Version | Date      \
+    \ | Description                         |\n+=========+============+=====================================+\n| 0.6     | 2018-05-17 | Equivalent to Python 3.7.0rc1       |\n+---------+------------+-------------------------------------+\n\
+    | 0.5     | 2018-03-28 | Equivalent to Python 3.7.0b3        |\n+---------+------------+-------------------------------------+\n\n\n"
+  doc_url: ''
+  dev_url: ''
+
+extra:
+  recipe-maintainers: ''

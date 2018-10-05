@@ -107,7 +107,7 @@ def train_lm(dir_path, pretrain_path, cuda_id=0, cl=25, pretrain_id='wt103', lm_
             ew = to_np(wgts['0.encoder.weight'])
             row_m = ew.mean(0)
 
-            itos2 = pickle.load(open(pretrain_path / 'tmp' / f'itos_{pretrain_id}.pkl', 'rb'))
+            itos2 = pickle.load(open(pretrain_path / 'tmp' / f'itos.pkl', 'rb'))
             stoi2 = collections.defaultdict(lambda:-1, {v:k for k,v in enumerate(itos2)})
             nw = np.zeros((vs, em_sz), dtype=np.float32)
             nb = np.zeros((vs,), dtype=np.float32)

@@ -145,7 +145,7 @@ class Learner():
 
             n_cycle (int): number of cycles
 
-            cycle_len (int):  number of cycles before lr is reset to the initial value.
+            cycle_len (int):  number of epochs before lr is reset to the initial value.
                 E.g if cycle_len = 3, then the lr is varied between a maximum
                 and minimum value over 3 epochs.
 

@@ -1,3 +1,6 @@
+# use/edit this file only for working with fastai-0.7.x version
+# for fastai-1.0+ edit "setup.py" and use "pip install -e ."
+# or "pip install -e .[dev]" for extra developer requirements
 name: fastai-cpu
 channels:
 - fastai
@@ -34,13 +37,13 @@ dependencies:
 - jupyter_client
 - jupyter_console
 - jupyter_core
-- conda-forge::jupyter_contrib_nbextensions  
+- conda-forge::jupyter_contrib_nbextensions
 - libiconv
 - libpng
 - libsodium
 - libxml2
 - markupsafe
-- matplotlib
+- matplotlib <= 2.2.3
 - mistune
 - mkl
 - nbconvert
@@ -104,3 +107,5 @@ dependencies:
   - plotnine
   - kaggle-cli
   - ipywidgets
+  - pdpbox<=0.1.0
+  - treeinterpreter

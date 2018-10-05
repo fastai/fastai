@@ -1,3 +1,6 @@
+# use/edit this file only for working with fastai-0.7.x version
+# for fastai-1.0+ edit "setup.py" and use "pip install -e ."
+# or "pip install -e .[dev]" for extra developer requirements
 name: fastai
 channels:
 - fastai
@@ -31,11 +34,11 @@ dependencies:
 - jedi
 - jinja2
 - jsonschema
-- jupyter
-- jupyter_client
-- jupyter_console
-- jupyter_core
-- conda-forge::jupyter_contrib_nbextensions  
+#- jupyter
+#- jupyter_client
+#- jupyter_console
+#- jupyter_core
+#- conda-forge::jupyter_contrib_nbextensions  
 - libiconv
 - libpng
 - libsodium
@@ -44,7 +47,6 @@ dependencies:
 - matplotlib
 - mistune
 - mkl
-- nbconvert
 - nbformat
 - notebook
 - numpy
@@ -93,6 +95,7 @@ dependencies:
 - bcolz
 - prompt_toolkit
 - pytest
+- cython
 - pip:
   - torchvision>=0.1.9
   - opencv-python
@@ -105,3 +108,5 @@ dependencies:
   - plotnine
   - kaggle-cli
   - ipywidgets
+  - nbconvert
+  - PyHamcrest

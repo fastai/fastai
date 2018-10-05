@@ -21,6 +21,14 @@ class PassthruDataset(Dataset):
 
 
 class ColumnarDataset(Dataset):
+    """Dataset class for column dataset.
+    Args:
+       cats (list of str): List of the name of columns contain categorical variables.
+       conts (list of str): List of the name of columns which contain continuous variables.
+       y (Tensor, optional): Target variables.
+       is_reg (bool): If the task is regression, set ``True``, otherwise (classification) ``False``.
+       is_multi (bool): If the task is multi-label classification, set ``True``.
+    """
     def __init__(self, cats, conts, y, is_reg, is_multi):
         n = len(cats[0]) if cats else len(conts[0])
         self.cats  = np.stack(cats,  1).astype(np.int64)   if cats  else np.zeros((n,1))
@@ -86,6 +94,19 @@ def emb_init(x):
 
 
 class MixedInputModel(nn.Module):
+    """Model able to handle inputs consisting of both categorical and continuous variables.
+    Args:
+       emb_szs (list of int): List of embedding size
+       n_cont (int): Number of continuous variables in inputs
+       emb_drop (float): Dropout applied to the output of embedding
+       out_sz (int): Size of model's output.
+       szs (list of int): List of hidden variables sizes
+       drops (list of float): List of dropout applied to hidden variables
+       y_range (list of float): Min and max of `y`. y_range[0] = min, y_range[1] = max.
+       use_bn (bool): If use BatchNorm, set ``True``
+       is_reg (bool): If regression, set ``True``
+       is_multi (bool): If multi-label classification, set ``True``
+    """
     def __init__(self, emb_szs, n_cont, emb_drop, out_sz, szs, drops,
                  y_range=None, use_bn=False, is_reg=True, is_multi=False):
         super().__init__()

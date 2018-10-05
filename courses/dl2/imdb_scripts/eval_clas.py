@@ -31,6 +31,8 @@ def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,
     else:
         val_sent = np.load(dir_path / 'tmp' / f'val_{IDS}.npy')
     val_lbls = np.load(dir_path / 'tmp' / 'lbl_val.npy').flatten()
+    val_lbls = val_lbls.flatten()
+    val_lbls -= val_lbls.min()
     c=int(val_lbls.max())+1
 
     val_ds = TextDataset(val_sent, val_lbls)
