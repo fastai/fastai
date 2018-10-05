@@ -17,10 +17,13 @@ class TextDataset():
     "Basic dataset for NLP tasks."
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
-                 name:str='train', df=None,  min_freq:int=2, n_labels:int=1, create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None):
+                 name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None,
+                 create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
-        self.chunksize,self.name,self.df,self.n_labels,self.create_mtd = chunksize,name,df,n_labels,create_mtd
+        self.txt_cols, self.label_cols, self.pd_header = txt_cols, label_cols, None if (txt_cols is None) else 'infer'
+        self.n_labels = n_labels if (label_cols is None) else len(label_cols)
+        self.chunksize,self.name,self.df,self.create_mtd = chunksize,name,df,create_mtd
         self.vocab=vocab
         os.makedirs(self.path, exist_ok=True)
         if not self.check_toks(): self.tokenize()
@@ -70,14 +73,25 @@ class TextDataset():
         "Tokenize the texts in the csv file."
         print(f'Tokenizing {self.name}.')
         curr_len = get_chunk_length(self.df) if (self.create_mtd == TextMtd.DF) else get_chunk_length(self.csv_file, self.chunksize)
-        dfs = self.df if (self.create_mtd == TextMtd.DF) else pd.read_csv(self.csv_file, header=None, chunksize=self.chunksize)
+        dfs = self.df if (self.create_mtd == TextMtd.DF) else pd.read_csv(self.csv_file, header=self.pd_header, chunksize=self.chunksize)
         tokens,labels = [],[]
         for _ in progress_bar(range(curr_len), leave=False):
-            df = next(dfs) if (type(dfs) == pd.io.parsers.TextFileReader) else self.df  
-            lbls = df.iloc[:,range(self.n_labels)].values.astype(np.int64)
-            texts = f'\n{BOS} {FLD} 1 ' + df[self.n_labels].astype(str)
-            for i in range(self.n_labels+1, len(df.columns)):
-                texts += f' {FLD} {i-self.n_labels+1} ' + df[i].astype(str)
+            df = next(dfs) if (type(dfs) == pd.io.parsers.TextFileReader) else self.df
+
+            if (self.label_cols):
+                lbls = df[self.label_cols].values.astype(np.int64) if (self.n_labels > 0) else []
+            else:  
+                lbls = df.iloc[:,range(self.n_labels)].values.astype(np.int64)
+            
+            texts = f'\n{BOS} {FLD} 1 ' + (df[self.n_labels].astype(str) if (not self.txt_cols) else df[self.txt_cols[0]].astype(str))
+
+            if(self.txt_cols): 
+                for i, col in enumerate(self.txt_cols[1:]):
+                    texts += f' {FLD} {i+2} ' + df[col].astype(str)
+            else:
+                for i in range(self.n_labels+1, len(df.columns)):
+                    texts += f' {FLD} {i-self.n_labels+1} ' + df[i].astype(str)
+            
             toks = self.tokenizer.process_all(texts)
             tokens += toks
             labels += list(np.squeeze(lbls))
@@ -319,7 +333,7 @@ def text_data_from_df(path:PathOrStr,
     "Create a `DataBunch` from DataFrames."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols'], kwargs)
     train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
     if test_df: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
