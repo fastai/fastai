@@ -207,6 +207,20 @@ def show_install(show_nvidia_smi:bool=False):
     print("\n```")
 
     print(f"platform info  : {platform.platform()}")
+
+    opt_mods = []
+
+    if platform.system() == 'Linux':
+        try:
+            import distro
+        except ImportError:
+            opt_mods.append('distro');
+            # partial distro info
+            print(f"distro version  : {platform.uname().version}")
+        else:
+            # full distro info
+            print(f"distro info    : {' '.join(distro.linux_distribution())}")
+
     print(f"python version : {platform.python_version()}")
     print(f"fastai version : {fastai.__version__}")
     print(f"torch version  : {torch.__version__}")
@@ -254,7 +268,7 @@ def show_install(show_nvidia_smi:bool=False):
         try:
             import GPUtil
         except ImportError:
-            print("optional GPUtil is not found (pip install GPUtil)", file=sys.stderr)
+            opt_mods.append('GPUtil');
         else:
             gpus = GPUtil.getGPUs()
             gpu_total_mem = [gpus[i].memoryTotal for i in range(gpu_cnt)]
@@ -268,10 +282,15 @@ def show_install(show_nvidia_smi:bool=False):
     if have_nvidia_smi:
         if show_nvidia_smi == True: print(f"\n{smi}")
     else:
-        # have gpu, but no nvidia-smi
         if gpu_cnt:
+            # have gpu, but no nvidia-smi
             print(f"no nvidia-smi is found")
         else:
-            print(f"no gpus found on this system")
+            print(f"no supported gpus found on this system")
 
     print("```\n")
+
+    if opt_mods:
+        print("Optional package(s) to enhance the diagnostics can be installed with:")
+        print(f"pip install {' '.join(opt_mods)}")
+        print("Once installed, re-run this utility to get the additional information")

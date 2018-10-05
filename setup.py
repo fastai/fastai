@@ -69,6 +69,8 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 #
 dev_requirements = { 'dev' : to_list("""
     bumpversion==0.5.3
+    distro
+    gputil
     jupyter_contrib_nbextensions
     nbconvert
     nbformat
