@@ -88,9 +88,6 @@ setup_requirements = to_list("""
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
-    torch>=0.4.9
-    torchvision-nightly
-    numpy>=1.12
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
