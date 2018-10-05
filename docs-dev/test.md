@@ -12,7 +12,9 @@ In each case, look for notebooks that have names starting with the application y
 
 ## Automated tests
 
-At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests. We use [pytest](https://docs.pytest.org/en/latest/).
+At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests.
+
+We use [pytest](https://docs.pytest.org/en/latest/). Here is a complete [pytest API reference](https://docs.pytest.org/en/latest/reference.html).
 
 The tests have been configured to automatically run against the git checked out `fastai` repository and not pre-installed `fastai`.
 
@@ -68,7 +70,6 @@ To disable capturing and get the output normally use `-s` or `--capture=no`:
    ```
    pytest -s tests/test_core.py
    ```
-
 
 
 ### Color control
