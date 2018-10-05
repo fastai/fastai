@@ -17,48 +17,54 @@ If you are using fastai for any [course.fast.ai](http://course.fast.ai) course, 
 
 ## Conda Install
 
-To install fastai with pytorch-nightly + CUDA 9.2 simply run:
+Follow the following 2 steps in this exact order:
 
-```
-conda install -c pytorch -c fastai fastai pytorch-nightly cuda92
-```
+1. Install the nightly `pytorch` build, with `cudaXX` package version matching your system's setup. For example, for CUDA 9.2:
+   ```
+   conda install -c pytorch pytorch-nightly cuda92
+   ```
+   If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Conda/Python3.6|Python3.7 and your CUDA version and it will give you the correct install instruction. Instructions to build `pytorch` from source are provided at the same location.
 
-If your setup doesn't have CUDA support remove the `cuda92` above (in which case you'll only be able to train on CPU, not GPU, which will be much slower). For different versions of the CUDA toolkit, you'll need to install the appropriate CUDA conda package based on what you've got installed on your system (i.e. instead of `cuda92` in the above, pick the appropriate option for whichever toolkit version you have installed; to see a list of options type: `conda search "cuda*" -c pytorch`).
+   If your system doesn't have CUDA, you can install the CPU-only `pytorch` build:
 
-NB: We are currently using a re-packaged torchvision in order to support pytorch-nightly, which is required for using fastai.
+   ```
+   conda install -c pytorch pytorch-nightly-cpu
+   ```
 
-If your system doesn't have CUDA, you can install the CPU-only torch build:
+2. Install `fastai`:
 
-```
-conda install -c pytorch -c fastai fastai pytorch-nightly-cpu
-```
+   ```
+   conda install -c fastai fastai
+   ```
+
+   NB: We are currently using a re-packaged torchvision in order to support pytorch-nightly, which is required for using fastai.
 
 If you encounter installation problems, make sure you have the latest `conda` client:
 ```
 conda update conda
 ```
 
-If you still experience installation issues, please report them [here](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111):
+If the issue persists, please read about [installation issues](README.md#installation-issues).
 
 ## PyPI Install
 
-Please execute the following 3 steps:
+Follow the following 3 steps in this exact order:
 
-1. First install the nightly `pytorch` build, e.g. for CUDA 9.2:
+1. Install the nightly `pytorch` build, with `cudaXX` package version matching your system's setup. For example for CUDA 9.2:
 
    ```
    pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
    ```
 
-   If you have a different CUDA version find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Linux/Pip/python3.6|python3.7 and your CUDA version and it will give you the correct install instruction.
+   If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Pip/Python3.6|Python3.7 and your CUDA version and it will give you the correct install instruction. Instructions to build `pytorch` from source are provided at the same location.
 
-2. Next, install a custom `torchvision` build, that is built against `torch_nightly`.
+2. Install a custom `torchvision` build, that is built against `torch_nightly`.
 
    ```
    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ torchvision==0.2.1.post2
    ```
 
-3. Now you can install `fastai`. Note, that this is a beta test version at the moment, please [report any issues](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111):
+3. Install `fastai`:
 
    ```
    pip install fastai
@@ -71,6 +77,45 @@ Please execute the following 3 steps:
    pip install --no-deps torchvision
    pip install fastai
    ```
+
+If you experience installation problems, please read about [installation issues](README.md#installation-issues).
+
+
+## Developer Install
+
+First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the **same package manager you used to install it**, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
+
+
+```
+git clone https://github.com/fastai/fastai
+cd fastai
+tools/run-after-git-clone
+pip install -e .[dev]
+```
+
+You can test that the build works by starting the jupyter notebook:
+
+```
+jupyter notebook
+```
+and executing an example notebook. For example load `examples/tabular.ipynb` and run it.
+
+Alternatively, you can do a quick CLI test:
+
+```
+jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+```
+
+If anything goes wrong please [read and report installation
+issues](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
+
+Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs-dev/develop.md) for more details on how to contribute to the `fastai` project.
+
+
+## Installation Issues
+
+If the installation process fails, first make sure [your system is supported](README.md#is-my-system-supported). And if the problem is still not addressed, please see  [this installation issues thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
+
 
 ## Is My System Supported?
 
@@ -98,24 +143,6 @@ Please execute the following 3 steps:
 
 
 
-## Developer Install
-
-First, follow the instructions above for either `PyPi` or `Conda`. Then remove the fastai package (`pip uninstall fastai` or `conda uninstall fastai`) and replace it with a [pip editable install](http://codumentary.blogspot.com/2014/11/python-tip-of-year-pip-install-editable.html):
-
-```
-git clone https://github.com/fastai/fastai
-cd fastai
-tools/run-after-git-clone
-pip install -e .[dev]
-```
-
-You can test that the build works:
-
-```
-jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
-```
-
-Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs-dev/develop.md) for more details.
 
 
 ## Copyright
