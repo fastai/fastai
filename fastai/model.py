@@ -59,7 +59,7 @@ class Stepper():
         if self.loss_scale != 1:
             for param in self.fp32_params: param.grad.data.div_(self.loss_scale)
         if self.clip:   # Gradient clipping
-            if IS_TORCH_04: nn.utils.clip_grad_norm_(trainable_params_(self.m), self.clip)
+            if IS_TORCH_04: nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
             else: nn.utils.clip_grad_norm(trainable_params_(self.m), self.clip)
         if 'wd' in self.opt.param_groups[0] and self.opt.param_groups[0]['wd'] != 0: 
             #Weight decay out of the loss. After the gradient computation but before the step.
