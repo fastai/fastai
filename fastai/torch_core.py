@@ -216,7 +216,7 @@ def show_install(show_nvidia_smi:bool=False):
         except ImportError:
             opt_mods.append('distro');
             # partial distro info
-            print(f"distro version  : {platform.uname().version}")
+            print(f"distro version : {platform.uname().version}")
         else:
             # full distro info
             print(f"distro info    : {' '.join(distro.linux_distribution())}")
