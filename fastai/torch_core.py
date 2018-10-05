@@ -188,6 +188,17 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_class:type=nn.CrossEntropyLoss,
 
 def to_np(x): return x.cpu().numpy()
 
+def model_type(dtype):
+    return (torch.float32 if np.issubdtype(dtype, np.floating) else
+            torch.int64 if np.issubdtype(dtype, np.integer)
+            else None)
+
+def np2model_tensor(a):
+    dtype = model_type(a.dtype)
+    res = torch.from_numpy(a)
+    if not dtype: return res
+    return res.type(dtype)
+
 def show_install(show_nvidia_smi:bool=False):
     "Print user's setup information: python -c 'import fastai; fastai.show_install()'"
 
