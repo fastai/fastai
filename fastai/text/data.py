@@ -4,10 +4,10 @@ from .transform import *
 from ..data import *
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextDataset', 'TextMtd', 'classifier_data', 'lm_data',
-           'pad_collate', 'read_classes', 'standard_data', 'text_data_from_csv', 'text_data_from_folder', 'text_data_from_ids',
-           'text_data_from_tokens']
+           'pad_collate', 'read_classes', 'standard_data', 'text_data_from_df',  'text_data_from_csv', 
+            'text_data_from_folder', 'text_data_from_ids', 'text_data_from_tokens']
 
-TextMtd = IntEnum('TextMtd', 'CSV TOK IDS')
+TextMtd = IntEnum('TextMtd', 'DF CSV TOK IDS')
 
 def read_classes(fname):
     with open(fname, 'r') as f:
@@ -17,10 +17,10 @@ class TextDataset():
     "Basic dataset for NLP tasks."
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
-                 name:str='train', min_freq:int=2, n_labels:int=1, create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None):
+                 name:str='train', df=None,  min_freq:int=2, n_labels:int=1, create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
-        self.chunksize,self.name,self.n_labels,self.create_mtd = chunksize,name,n_labels,create_mtd
+        self.chunksize,self.name,self.df,self.n_labels,self.create_mtd = chunksize,name,df,n_labels,create_mtd
         self.vocab=vocab
         os.makedirs(self.path, exist_ok=True)
         if not self.check_toks(): self.tokenize()
@@ -42,6 +42,7 @@ class TextDataset():
         "Check that post_files exist and were modified after all the prefiles."
         if not np.all([os.path.isfile(fname) for fname in post_files]): return False
         for pre_file in pre_files:
+            if pre_file is None: return True
             if os.path.getmtime(pre_file) > os.path.getmtime(post_files[0]): return False
         return True
 
@@ -68,11 +69,11 @@ class TextDataset():
     def tokenize(self):
         "Tokenize the texts in the csv file."
         print(f'Tokenizing {self.name}.')
-        curr_len = get_chunk_length(self.csv_file, self.chunksize)
-        dfs = pd.read_csv(self.csv_file, header=None, chunksize=self.chunksize)
+        curr_len = get_chunk_length(self.df) if (self.create_mtd == TextMtd.DF) else get_chunk_length(self.csv_file, self.chunksize)
+        dfs = self.df if (self.create_mtd == TextMtd.DF) else pd.read_csv(self.csv_file, header=None, chunksize=self.chunksize)
         tokens,labels = [],[]
         for _ in progress_bar(range(curr_len), leave=False):
-            df = next(dfs)
+            df = next(dfs) if (type(dfs) == pd.io.parsers.TextFileReader) else self.df  
             lbls = df.iloc[:,range(self.n_labels)].values.astype(np.int64)
             texts = f'\n{BOS} {FLD} 1 ' + df[self.n_labels].astype(str)
             for i in range(self.n_labels+1, len(df.columns)):
@@ -95,12 +96,12 @@ class TextDataset():
     def clear(self):
         "Remove all temporary files."
         files = [self.path/f'{self.name}_{suff}.npy' for suff in ['ids','tok','lbl']]
-        files.append(self.path/f'{self.name}.csv')
+        if (self.create_mtd == TextMtd.DF): files.append(self.path/f'{self.name}.csv')
         for file in files:
             if os.path.isfile(file): os.remove(file)
 
     @property
-    def csv_file(self) -> Path: return self.path/f'{self.name}.csv'
+    def csv_file(self) -> Path: return None if (self.create_mtd == TextMtd.DF) else  self.path/f'{self.name}.csv'
     @property
     def tok_files(self) -> List[Path]: return [self.path/f'{self.name}_tok.npy', self.path/'tokenize.log']
     @property
@@ -131,6 +132,14 @@ class TextDataset():
         maybe_copy(orig, dest)
         return cls(folder, None, name=name, create_mtd=TextMtd.TOK, **kwargs)
 
+    @classmethod
+    def from_df(cls, folder:PathOrStr, df:Union[DataFrame, pd.io.parsers.TextFileReader], 
+                    tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
+        "Create a dataset from texts in a dataframe"
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        chunksize = 1 if (type(df) == DataFrame) else df.chunksize
+        return cls(folder, tokenizer, df=df, create_mtd=TextMtd.DF, name=name, chunksize=chunksize, **kwargs)
+        
     @classmethod
     def from_csv(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
         "Create a dataset from texts in a csv file."
@@ -299,6 +308,21 @@ def text_data_from_tokens(path:PathOrStr, train:str='train', valid:str='valid', 
     train_ds = TextDataset.from_tokens(path, train, vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_tokens(path, valid, vocab=train_ds.vocab, **txt_kwargs)]
     if test: datasets.append(TextDataset.from_tokens(path, test, vocab=train_ds.vocab, **txt_kwargs))
+    return data_func(datasets, path, **kwargs)
+
+
+def text_data_from_df(path:PathOrStr, 
+                        train_df:Union[DataFrame, pd.io.parsers.TextFileReader], 
+                        valid_df:Union[DataFrame, pd.io.parsers.TextFileReader], 
+                        test_df:Optional[Union[DataFrame, pd.io.parsers.TextFileReader]]=None,
+                        tokenizer:Tokenizer=None, data_func:DataFunc=standard_data, vocab:Vocab=None, **kwargs) -> DataBunch:
+    "Create a `DataBunch` from DataFrames."
+    tokenizer = ifnone(tokenizer, Tokenizer())
+    path=Path(path)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels'], kwargs)
+    train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
+    datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
+    if test_df: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
     return data_func(datasets, path, **kwargs)
 
 def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,

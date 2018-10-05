@@ -8,6 +8,7 @@ AnnealFunc = Callable[[Number,Number,float], Number]
 ArgStar = Collection[Any]
 BatchSamples = Collection[Tuple[Collection[int], int]]
 Classes = Collection[Any]
+DataFrameOrChunks = Union[DataFrame, pd.io.parsers.TextFileReader]
 FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]
 ImgLabel = str
@@ -114,9 +115,12 @@ def partition_by_cores(a:Collection, n_cpus:int) -> List[Collection]:
     "Split data in `a` equally among `n_cpus` cores"
     return partition(a, len(a)//n_cpus + 1)
 
-def get_chunk_length(csv_name:PathOrStr, chunksize:int) -> int:
+def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileReader], chunksize:Optional[int] = None) -> int:
     "Read the number of chunks in a pandas `DataFrame`."
-    dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
+    if (type(data) == DataFrame):  return 1
+    elif (type(data) == pd.io.parsers.TextFileReader):
+        dfs = pd.read_csv(data.f, header=None, chunksize=data.chunksize)
+    else:  dfs = pd.read_csv(data, header=None, chunksize=chunksize)
     l = 0
     for _ in dfs: l+=1
     return l
