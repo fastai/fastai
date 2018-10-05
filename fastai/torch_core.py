@@ -202,14 +202,14 @@ def show_install(show_nvidia_smi:bool=False):
 
     # cuda
     cmd = "nvidia-smi"
-    have_nvidia_smi = True
+    have_nvidia_smi = False
     try:
         result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
     except:
-        have_nvidia_smi = False
+        pass
     else:
-        if result.returncode != 0 or not result.stdout:
-            have_nvidia_smi = False
+        if result.returncode == 0 and result.stdout:
+            have_nvidia_smi = True
 
     if have_nvidia_smi:
         smi = result.stdout.decode('utf-8')
@@ -217,21 +217,27 @@ def show_install(show_nvidia_smi:bool=False):
         if match: print(f"nvidia driver  : {match[0]}")
 
     cuda_is_available = torch.cuda.is_available()
-    if not cuda_is_available: print(f"cuda available: False")
+    if not cuda_is_available: print(f"cuda available : False")
 
     print(f"cuda version   : {torch.version.cuda}")
+    print(f"cudnn version  : {torch.backends.cudnn.version()}")
     print(f"cudnn available: {torch.backends.cudnn.enabled}")
+
     gpu_cnt = torch.cuda.device_count()
-    print(f"gpu count      : {gpu_cnt}")
+    print(f"torch gpu count: {gpu_cnt}")
 
     # it's possible that torch might not see what nvidia-smi sees?
     gpu_total_mem = []
     if have_nvidia_smi:
-        cmd = "nvidia-smi --query-gpu=memory.total --format=csv,nounits,noheader"
-        result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
-        if result.returncode == 0 and result.stdout:
-            output = result.stdout.decode('utf-8')
-            gpu_total_mem = [int(x) for x in output.strip().split('\n')]
+        try:
+            cmd = "nvidia-smi --query-gpu=memory.total --format=csv,nounits,noheader"
+            result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
+        except:
+            print("have nvidia-smi, but failed to query it")
+        else:
+            if result.returncode == 0 and result.stdout:
+                output = result.stdout.decode('utf-8')
+                gpu_total_mem = [int(x) for x in output.strip().split('\n')]
     else:
         # if nvidia-smi can't be found try GPUtil
         try:
@@ -245,14 +251,16 @@ def show_install(show_nvidia_smi:bool=False):
     # information for each gpu
     for i in range(gpu_cnt):
         print(f"  [gpu{i}]")
-        print(f"  Name         : {torch.cuda.get_device_name(i)}")
-        if gpu_total_mem: print(f"  Total Memory : {gpu_total_mem[i]}MB")
+        print(f"  name         : {torch.cuda.get_device_name(i)}")
+        if gpu_total_mem: print(f"  total memory : {gpu_total_mem[i]}MB")
 
     if have_nvidia_smi:
-        if show_nvidia_smi == True:
-            print(f"\n{smi}")
+        if show_nvidia_smi == True: print(f"\n{smi}")
     else:
-        print(f"nvidia-smi: can't find or execute")
-
+        # have gpu, but no nvidia-smi
+        if gpu_cnt:
+            print(f"no nvidia-smi is found")
+        else:
+            print(f"no gpus found on this system")
 
     print("```\n")
