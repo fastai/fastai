@@ -276,7 +276,7 @@ def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
         df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
     labels = df.iloc[:,label_col]
     fnames = df.iloc[:,fn_col]
-    if suffix: fnames = fnames + suffix
+    if suffix: fnames = fnames.astype(str) + suffix
     return fnames, labels
 
 def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
