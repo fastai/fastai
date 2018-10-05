@@ -82,7 +82,6 @@ dependencies:
 - statsmodels
 - testfixtures
 - testpath>=0.4.2
-- testpath
 - tk
 - tornado<5
 - tqdm
