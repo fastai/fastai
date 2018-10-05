@@ -34,10 +34,10 @@ dependencies:
 - jedi
 - jinja2
 - jsonschema
-#- jupyter
-#- jupyter_client
-#- jupyter_console
-#- jupyter_core
+- jupyter
+- jupyter_client
+- jupyter_console
+- jupyter_core
 #- conda-forge::jupyter_contrib_nbextensions  
 - libiconv
 - libpng
@@ -81,6 +81,7 @@ dependencies:
 - sqlite
 - statsmodels
 - testfixtures
+- testpath>=0.4.2
 - testpath
 - tk
 - tornado<5
