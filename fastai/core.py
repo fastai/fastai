@@ -112,13 +112,10 @@ def partition_by_cores(a:Collection, n_cpus:int) -> List[Collection]:
 
 def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileReader], chunksize:Optional[int] = None) -> int:
     "Read the number of chunks in a pandas `DataFrame`."
-    if (type(data) == DataFrame):
-        return 1
+    if (type(data) == DataFrame):  return 1
     elif (type(data) == pd.io.parsers.TextFileReader):
         dfs = pd.read_csv(data.f, header=None, chunksize=data.chunksize)
-    else:
-        dfs = pd.read_csv(data, header=None, chunksize=chunksize)
-    
+    else:  dfs = pd.read_csv(data, header=None, chunksize=chunksize)
     l = 0
     for _ in dfs: l+=1
     return l
