@@ -18,11 +18,8 @@ def create_version_file(version):
 version = '1.0.5.dev0'
 create_version_file(version)
 
-with open('README.md') as readme_file:
-    readme = readme_file.read()
-
-with open('CHANGES.md') as history_file:
-    history = history_file.read()
+with open('README.md') as readme_file:   readme = readme_file.read()
+with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
@@ -89,6 +86,7 @@ setup_requirements = to_list("""
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
+    pytest-pspec
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
@@ -120,7 +118,7 @@ setup(
     author_email = 'info@fast.ai',
 
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',

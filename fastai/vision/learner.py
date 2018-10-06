@@ -101,7 +101,7 @@ class ClassificationInterpretation():
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
-        tick_marks = np.arange(len(self.data.classes))
+        tick_marks = arange_of(self.data.classes)
         plt.xticks(tick_marks, self.data.classes, rotation=45)
         plt.yticks(tick_marks, self.data.classes)
 
