@@ -10,7 +10,7 @@ from .core import *
 from ..torch_core import *
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
-           'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'nbshow']
+           'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'doc']
 
 MODULE_NAME = 'fastai'
 SOURCE_URL = 'https://github.com/fastai/fastai/blob/master/'
@@ -91,6 +91,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
              ignore_warn:bool=False, markdown=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
+    elt = getattr(elt, '__func__', elt)
     if full_name is None and hasattr(elt, '__name__'): full_name = elt.__name__
     if inspect.isclass(elt):
         if is_enum(elt.__class__):   doc = get_enum_doc(elt, full_name)
@@ -108,9 +109,11 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     if markdown: display(md)
     else: return md
 
-def nbshow(elt):
+def doc(elt):
+    "Show `show_doc` info in preview window along with link to full docs."
     global use_relative_links
     use_relative_links = False
+    elt = getattr(elt, '__func__', elt)
     md = show_doc(elt, markdown=False)
     if is_fastai_class(elt): md += f'\n\n[Show in docs]({get_fn_link(elt)})'
     output = HTMLExporter().markdown2html(md)
