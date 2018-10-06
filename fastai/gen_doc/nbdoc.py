@@ -123,7 +123,7 @@ def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_wa
     "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
     parsed = ""
     doc = parse_docstring(inspect.getdoc(elt))
-    description = alt_doc_string or doc['long_description'] or doc['short_description']
+    description = alt_doc_string or f"{doc['short_description']} {doc['long_description']}"
     if description: parsed += f'\n\n{link_docstring(inspect.getmodule(elt), description)}'
 
     resolved_comments = {**doc.get('comments', {}), **arg_comments} # arg_comments takes priority
