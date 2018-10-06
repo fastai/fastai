@@ -193,6 +193,12 @@ class Image(ImageBase):
         "Return this images pixels as a tensor."
         return self.px
 
+    def show(self, y:ImageBase=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+              cmap:str='viridis', **kwargs):
+        ax = _show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
+        if y is not None: y.show(ax=ax, **kwargs)
+        if title: ax.set_title(title)
+
 class ImageMask(Image):
     "Class for image segmentation target."
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
@@ -205,6 +211,11 @@ class ImageMask(Image):
     def data(self)->TensorImage:
         "Return this image pixels as a `LongTensor`."
         return self.px.long()
+    
+    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+        cmap:str='viridis', alpha:float=0.5):
+        ax = _show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
+        if title: ax.set_title(title)
 
 class ImageBBox(ImageMask):
     "Image class for bbox-style annotations."
@@ -224,8 +235,7 @@ class ImageBBox(ImageMask):
         bbox.labels,bbox.pad_idx = labels,pad_idx
         return bbox
 
-    @property
-    def data(self)->LongTensor:
+    def _compute_boxes(self) -> Tuple[LongTensor, LongTensor]:
         bboxes,lbls = [],[]
         for i in range(self.px.size(0)):
             idxs = torch.nonzero(self.px[i])
@@ -233,9 +243,24 @@ class ImageBBox(ImageMask):
                 bboxes.append(tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
                 if self.labels is not None: lbls.append(self.labels[i])
         if len(bboxes) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
+        bboxes = torch.cat(bboxes, 0)
+        return bboxes, (None if self.labels is None else LongTensor(lbls))    
+
+    @property
+    def data(self)->LongTensor:
+        bboxes,lbls = self._compute_boxes()
         h,w = self.size
-        bboxes = torch.cat(bboxes, 0).squeeze().float() * tensor([2/h,2/w,2/h,2/w]) - 1
-        return bboxes if self.labels is None else bboxes, LongTensor(lbls)
+        bboxes = bboxes.squeeze().float() * tensor([2/h,2/w,2/h,2/w]) - 1
+        return bboxes if lbls is None else (bboxes, lbls)
+
+    def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+        color:str='white', classes:Classes=None):
+        if ax is None: _,ax = plt.subplot(figsize=figsize)
+        bboxes, lbls = self._compute_boxes()
+        for i, bbox in enumerate(bboxes):
+            if lbls is not None: text = classes[lbls[i]] if classes is not None else lbls[i].item()
+            else: text=None
+            _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 
 def open_image(fn:PathOrStr)->Image:
     "Return `Image` object created from image in file `fn`."
@@ -252,38 +277,6 @@ def _show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool
     ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)
     if hide_axis: ax.axis('off')
     return ax
-
-def show_image(x:Image, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), alpha:float=0.5,
-               title:Optional[str]=None, hide_axis:bool=True, cmap:str='viridis'):
-    "Plot tensor `x` using matplotlib axis `ax`.  `figsize`,`axis`,`title`,`cmap` and `alpha` pass to `ax.imshow`."
-    ax = _show_image(x, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
-    if y is not None: _show_image(y, ax=ax, alpha=alpha, hide_axis=hide_axis, cmap=cmap)
-    if title: ax.set_title(title)
-
-def _show(self:Image, ax:plt.Axes=None, y:Image=None, classes=None, **kwargs):
-    if y is not None:
-        is_bb = isinstance(y, ImageBBox)
-        y=y.data
-    if y is None or not is_bb: return show_image(self.data, ax=ax, y=y, **kwargs)
-    title=kwargs.pop('title') if 'title' in kwargs else None
-    ax = _show_image(self.data, ax=ax, **kwargs)
-    if title: ax.set_title(title)
-    y,lbls = y if is_tuple(y) else (y, None)
-    h,w = self.size
-    y = ((y+1) * tensor([h/2,w/2,h/2,w/2])).long()
-    if len(y.size()) == 1:
-        if lbls is not None:
-            text = classes[lbls[0]] if classes is not None else lbls.item()
-        else: text=None
-        _draw_rect(ax, bb2hw(y), text=text)
-    else:
-        for i in range(y.size(0)):
-            if lbls is not None:
-                text = classes[lbls[i]] if classes is not None else lbls[i].item()
-            else: text=None
-            _draw_rect(ax, bb2hw(y[i]), text=text)
-
-Image.show = _show
 
 class Transform():
     "Utility class for adding probability and wrapping support to transform `func`."
