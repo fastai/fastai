@@ -45,7 +45,6 @@ requirements:
 # jupyter_contrib_nbextensions - only needed for internal tools - it's not on conda and requires too many of its own dependencies which aren't on conda either
 # XXX: change pytorch-nightly to pytorch >=1.0.0 once it's released on conda
 # XXX: change torchvision-nightly to torchvision >=0.2.2 once 0.2.2 (against pytorch-1.0) is released on conda
-# XXX: change testpath <0.4.1 to testpath >=0.4.2 once 0.4.2 is released on conda
 #
 # note: "module # [py36]" tells conda-build that this requirement is only for python3.6, it's not a comment.
   run:
@@ -64,7 +63,6 @@ requirements:
     - scipy
     - spacy
     - traitlets
-    - testpath <0.4.1
     - typing
     - pytorch-nightly
     - torchvision-nightly

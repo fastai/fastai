@@ -47,7 +47,6 @@ requirements = to_list("""
     scipy
     spacy
     torchvision-nightly
-    testpath>=0.4.2
     typing
 """)
 
