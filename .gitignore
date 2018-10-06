@@ -1,6 +1,7 @@
 *.bak
 *.log
 *~
+.~*
 .pypirc
 ~*
 tmp*

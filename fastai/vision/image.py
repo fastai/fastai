@@ -83,7 +83,7 @@ class Image(ImageBase):
     "Support applying transforms to image data."
     def __init__(self, px:Tensor):
         "Create from raw tensor image data `px`."
-        self._px = as_tensor(px)
+        self._px = px
         self._logit_px=None
         self._flow=None
         self._affine_mat=None
@@ -224,13 +224,13 @@ class ImageBBox(ImageMask):
         bbox = self.__class__(self.px.clone())
         bbox.labels,bbox.pad_idx = self.labels.clone(),self.pad_idx
         return bbox
-
+    
     @classmethod
     def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels=None, pad_idx=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         pxls = torch.zeros(len(bboxes),h, w).long()
         for i,bbox in enumerate(bboxes):
-            pxls[i,bbox[0]:bbox[2]+1,bbox[1]:bbox[3]+1] = 1
+            pxls[i,int(bbox[0]):int(np.ceil(bbox[2]))+1,int(bbox[1]):int(np.ceil(bbox[3]))+1] = 1
         bbox = cls(pxls.float())
         bbox.labels,bbox.pad_idx = labels,pad_idx
         return bbox
@@ -240,7 +240,7 @@ class ImageBBox(ImageMask):
         for i in range(self.px.size(0)):
             idxs = torch.nonzero(self.px[i])
             if len(idxs) != 0:
-                bboxes.append(tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
+                bboxes.append(torch.tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
                 if self.labels is not None: lbls.append(self.labels[i])
         if len(bboxes) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
         bboxes = torch.cat(bboxes, 0)

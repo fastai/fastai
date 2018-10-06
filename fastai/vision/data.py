@@ -5,7 +5,7 @@ from .transform import *
 from ..data import *
 
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset', 'SegmentationDataset', 'csv_to_fns_labels',
-           'denormalize', 'get_image_files', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
+           'denormalize', 'get_annotations', 'get_image_files', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
            'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'cifar_norm', 'cifar_denorm',
            'imagenet_norm', 'imagenet_denorm']
 
@@ -20,6 +20,7 @@ def get_image_files(c:Path, check_ext:bool=True)->FilePathList:
             and (not check_ext or (o.suffix in image_extensions))]
 
 def get_annotations(fname, prefix=None):
+    "Open a COCO style json in `fname` and returns the lists of filenames (with `prefix`), bboxes and labels."
     annot_dict = json.load(open(fname))
     id2images, id2bboxes, id2cats = {}, collections.defaultdict(list), collections.defaultdict(list)
     classes = {}
@@ -27,7 +28,7 @@ def get_annotations(fname, prefix=None):
         classes[o['id']] = o['name']
     for o in annot_dict['annotations']:
         bb = o['bbox']
-        id2bboxes[o['image_id']].append(to_int([bb[1],bb[0], bb[3]+bb[1], bb[2]+bb[0]]))
+        id2bboxes[o['image_id']].append([bb[1],bb[0], bb[3]+bb[1], bb[2]+bb[0]])
         id2cats[o['image_id']].append(classes[o['category_id']])
     for o in annot_dict['images']:
         if o['id'] in id2bboxes:

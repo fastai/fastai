@@ -224,7 +224,7 @@ class Recorder(LearnerCallback):
 
     def plot_lr(self, show_moms=False)->None:
         "Plot learning rate, `show_moms` to include momentum."
-        iterations = range_to(self.lrs)
+        iterations = range_of(self.lrs)
         if show_moms:
             _, axs = plt.subplots(1,2, figsize=(12,4))
             axs[0].plot(iterations, self.lrs)
@@ -242,7 +242,7 @@ class Recorder(LearnerCallback):
     def plot_losses(self)->None:
         "Plot training and validation losses."
         _, ax = plt.subplots(1,1)
-        iterations = range_to(self.losses)
+        iterations = range_of(self.losses)
         ax.plot(iterations, self.losses)
         val_iter = self.nb_batches
         val_iter = np.cumsum(val_iter)

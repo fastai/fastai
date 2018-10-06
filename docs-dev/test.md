@@ -60,6 +60,15 @@ More ways: https://docs.pytest.org/en/latest/usage.html
 
 
 
+### To GPU or not to GPU
+
+
+On a GPU-enabled setup, to test in CPU-only mode add `CUDA_VISIBLE_DEVICES=" "`:
+
+   ```
+   CUDA_VISIBLE_DEVICES=" "  py.test tests/test_vision.py
+   ```
+
 
 ### Output capture
 
