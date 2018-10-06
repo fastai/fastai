@@ -163,7 +163,7 @@ class MultiBatchRNNCore(RNNCore):
 
     def concat(self, arrs:Collection[Tensor]) -> Tensor:
         "Concatenate the `arrs` along the batch dimension."
-        return [torch.cat([l[si] for l in arrs]) for si in range(len(arrs[0]))]
+        return [torch.cat([l[si] for l in arrs]) for si in range_of(arrs[0])]
 
     def forward(self, input:LongTensor) -> Tuple[Tensor,Tensor]:
         sl,bs = input.size()

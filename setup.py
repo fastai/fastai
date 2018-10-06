@@ -18,11 +18,8 @@ def create_version_file(version):
 version = '1.0.5.dev0'
 create_version_file(version)
 
-with open('README.md') as readme_file:
-    readme = readme_file.read()
-
-with open('CHANGES.md') as history_file:
-    history = history_file.read()
+with open('README.md') as readme_file:   readme = readme_file.read()
+with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
@@ -34,7 +31,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #   pip install -e .
 #
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
-#
+# XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
 requirements = to_list("""
     fastprogress>=0.1.9
     ipython
@@ -74,7 +71,7 @@ dev_requirements = { 'dev' : to_list("""
     jupyter_contrib_nbextensions
     nbconvert
     nbformat
-    pip>=9.0.1
+    pip>=18.1
     pipreqs>=0.4.9
     traitlets
     wheel>=0.30.0
@@ -88,9 +85,7 @@ setup_requirements = to_list("""
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
-    torch>=0.4.9
-    torchvision-nightly
-    numpy>=1.12
+    pytest-pspec
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
@@ -122,7 +117,7 @@ setup(
     author_email = 'info@fast.ai',
 
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',

@@ -216,7 +216,7 @@ def get_imported_modules(cells, nb_module_name=''):
     module_names = get_top_level_modules()
     nb_imports = [match.group(1) for cell in cells for match in IMPORT_RE.finditer(cell['source']) if cell['cell_type'] == 'code']
     parts = nb_module_name.split('.')
-    parent_modules = ['.'.join(parts[:(x+1)]) for x in range(len(parts))] # Imports parent modules - a.b.c = [a, a.b, a.b.c]
+    parent_modules = ['.'.join(parts[:(x+1)]) for x in range_of(parts)] # Imports parent modules - a.b.c = [a, a.b, a.b.c]
     all_modules = module_names + nb_imports + parent_modules
     mods = [import_mod(m, ignore_errors=True) for m in all_modules]
     return [m for m in mods if m is not None]

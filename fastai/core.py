@@ -168,3 +168,7 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
             pbar.update(nbytes)
             f.write(buffer)
 
+def range_of(x): return list(range(len(x)))
+def arange_of(x): return np.arange(len(x))
+def trange_of(x): return torch.arange(len(x))
+

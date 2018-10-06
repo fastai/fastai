@@ -249,7 +249,7 @@ class SortSampler(Sampler):
     def __init__(self, data_source:NPArrayList, key:KeyFunc): self.data_source,self.key = data_source,key
     def __len__(self) -> int: return len(self.data_source)
     def __iter__(self):
-        return iter(sorted(range(len(self.data_source)), key=self.key, reverse=True))
+        return iter(sorted(range_of(self.data_source), key=self.key, reverse=True))
 
 
 class SortishSampler(Sampler):

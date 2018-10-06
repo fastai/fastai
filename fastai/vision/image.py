@@ -219,7 +219,7 @@ class ImageBBox(ImageMask):
         "Create an ImageBBox object from `bboxes`."
         pxls = torch.zeros(len(bboxes),h, w).long()
         for i,bbox in enumerate(bboxes):
-            pxls[i,bbox[0]:bbox[2]+1,bbox[1]:bbox[3]+1] = 1
+            pxls[i,int(bbox[0]):int(np.ceil(bbox[2]))+1,int(bbox[1]):int(np.ceil(bbox[3]))+1] = 1
         bbox = cls(pxls.float())
         bbox.labels,bbox.pad_idx = labels,pad_idx
         return bbox
@@ -272,13 +272,13 @@ def _show(self:Image, ax:plt.Axes=None, y:Image=None, classes=None, **kwargs):
     h,w = self.size
     y = ((y+1) * torch.tensor([h/2,w/2,h/2,w/2])).long()
     if len(y.size()) == 1:
-        if lbls is not None:
-            text = classes[lbls[0]] if classes is not None else lbls.item()
+        if lbls is not None and len(lbls) > 0:
+            text = classes[lbls[0]] if classes is not None else lbls[0].item()
         else: text=None
         _draw_rect(ax, bb2hw(y), text=text)
     else:
         for i in range(y.size(0)): 
-            if lbls is not None:
+            if lbls is not None and len(lbls) > 0:
                 text = classes[lbls[i]] if classes is not None else lbls[i].item()
             else: text=None
             _draw_rect(ax, bb2hw(y[i]), text=text)

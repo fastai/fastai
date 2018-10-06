@@ -3,9 +3,9 @@ from ..torch_core import *
 from .image import *
 from .image import _affine_mult
 
-_all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'flip_lr', 'get_transforms', 
-          'jitter', 'pad', 'perspective_warp', 'rand_crop', 'rand_resize_crop', 'rand_zoom', 'rotate', 'skew', 'squish', 'symmetric_warp', 
-          'tilt', 'zoom', 'zoom_crop']
+_all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'flip_lr', 'get_transforms',
+          'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rotate', 'skew', 'squish',
+          'rand_resize_crop', 'symmetric_warp', 'tilt', 'zoom', 'zoom_crop']
 
 _pad_mode_convert = {'reflection':'reflect', 'zeros':'constant', 'border':'replicate'}
 
@@ -102,12 +102,21 @@ def crop_pad(x, size, padding_mode='reflection',
     x = x[:, row:row+rows, col:col+cols]
     return x.contiguous() # without this, get NaN later - don't know why
 
+rand_pos = {'row_pct':(0,1), 'col_pct':(0,1)}
+
+def rand_pad(padding:int, size:int, mode:str='reflection'):
+    "Fixed `mode` `padding` and random crop of `size`"
+    return [pad(padding=padding,mode=mode),
+            crop(size=size, **rand_pos)]
+
 def rand_zoom(*args, **kwargs):
     "Randomized version of `zoom`."
-    return zoom(*args, row_pct=(0,1), col_pct=(0,1), **kwargs)
+    return zoom(*args, **rand_pos, **kwargs)
+
 def rand_crop(*args, **kwargs):
     "Randomized version of `crop_pad`."
-    return crop_pad(*args, row_pct=(0,1), col_pct=(0,1), **kwargs)
+    return crop_pad(*args, **rand_pos, **kwargs)
+
 def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     "Randomly zoom and/or crop."
     zoom_fn = rand_zoom if do_rand else zoom
