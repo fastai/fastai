@@ -43,6 +43,9 @@ Learner.mixup = mixup
 
 class ShowGraph(LearnerCallback):
     "Update a graph of learner stats and metrics after each epoch."
+    def __init__(self):
+        super().__init__()
+
     def on_epoch_end(self, n_epochs:int, last_metrics:MetricsList, **kwargs)->bool:
         "If we have metrics plot them in our pbar graph"
         if last_metrics is not None:
@@ -63,13 +66,12 @@ class BnFreeze(LearnerCallback):
         "Put bn layers in eval mode on epoch_begin"
         set_bn_eval(self.learn.model)
 
-@dataclass
 class GradientClipping(LearnerCallback):
     "To do gradient clipping during training."
-    clip:float
 
-    def __post_init__(self):
+    def __init__(self, clip):
         super().__init__()
+        self.clip = clip
 
     def on_backward_end(self, **kwargs):
         if self.clip:  nn.utils.clip_grad_norm_(self.learn.model.parameters(), self.clip)

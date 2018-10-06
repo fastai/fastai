@@ -2,13 +2,13 @@
 from .data import *
 from .torch_core import *
 
-__all__ = ['Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 
+__all__ = ['Callback', 'CallbackHandler', 'CallbackPriority', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly',
-           'CallbackPriority']
+           ]
 
 
 class CallbackPrioritizer():
-    _callbackPriorityLevels = {
+    _callback_priority_levels = {
         "HIGH": 30,
         "MEDIUM": 20,
         "NOTSET": 20,
@@ -16,18 +16,19 @@ class CallbackPrioritizer():
     }
 
     def __getattr__(self, name):
-        if name in _callbackPriorityLevels.keys():
-            return _callbackPriorityLevels[name]
+        if name in self._callback_priority_levels.keys():
+            return self._callback_priority_levels[name]
         else:
             return self.__getattribute__(name)
 
     @classmethod
-    def addPriorityLevel(cls, name, level):
-        cls._callbackPriorityLevels[name] = level
+    def add_priority_level(cls, name, level):
+        cls._callback_priority_levels[name] = level
 
     @staticmethod
-    def sortCallbacks(callbacks):
-        return sorted(callbacks, key=lambda x: x.priority, reverse=True)
+    def sort_callbacks(callbacks):
+        sorted_callbacks = sorted(callbacks, key=lambda x: x.priority, reverse=True)
+        return sorted_callbacks
 
 CallbackPriority = CallbackPrioritizer()
 
@@ -204,7 +205,7 @@ class CallbackHandler():
         "Initialize smoother and learning stats."
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
-        self.callbacks = CallbackPriority.sortCallbacks(self.callbacks)
+        self.callbacks = CallbackPriority.sort_callbacks(self.callbacks)
 
     def __call__(self, cb_name, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."
