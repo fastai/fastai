@@ -83,7 +83,7 @@ class Image(ImageBase):
     "Support applying transforms to image data."
     def __init__(self, px:Tensor):
         "Create from raw tensor image data `px`."
-        self._px = as_tensor(px)
+        self._px = px
         self._logit_px=None
         self._flow=None
         self._affine_mat=None
@@ -213,13 +213,13 @@ class ImageBBox(ImageMask):
         bbox = self.__class__(self.px.clone())
         bbox.labels,bbox.pad_idx = self.labels.clone(),self.pad_idx
         return bbox
-
+    
     @classmethod
     def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels=None, pad_idx=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         pxls = torch.zeros(len(bboxes),h, w).long()
         for i,bbox in enumerate(bboxes):
-            pxls[i,bbox[0]:bbox[2]+1,bbox[1]:bbox[3]+1] = 1
+            pxls[i,int(bbox[0]):int(np.ceil(bbox[2]))+1,int(bbox[1]):int(np.ceil(bbox[3]))+1] = 1
         bbox = cls(pxls.float())
         bbox.labels,bbox.pad_idx = labels,pad_idx
         return bbox
@@ -230,11 +230,11 @@ class ImageBBox(ImageMask):
         for i in range(self.px.size(0)):
             idxs = torch.nonzero(self.px[i])
             if len(idxs) != 0:
-                bboxes.append(tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
+                bboxes.append(torch.tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
                 if self.labels is not None: lbls.append(self.labels[i])
-        if len(bboxes) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
+        if len(bboxes) == 0: return torch.tensor([self.pad_idx] * 4), torch.tensor([self.pad_idx])
         h,w = self.size
-        bboxes = torch.cat(bboxes, 0).squeeze().float() * tensor([2/h,2/w,2/h,2/w]) - 1
+        bboxes = torch.cat(bboxes, 0).squeeze().float() * torch.tensor([2/h,2/w,2/h,2/w]) - 1
         return bboxes if self.labels is None else bboxes, LongTensor(lbls)
 
 def open_image(fn:PathOrStr)->Image:
@@ -270,14 +270,14 @@ def _show(self:Image, ax:plt.Axes=None, y:Image=None, classes=None, **kwargs):
     if title: ax.set_title(title)
     y,lbls = y if is_tuple(y) else (y, None)
     h,w = self.size
-    y = ((y+1) * tensor([h/2,w/2,h/2,w/2])).long()
+    y = ((y+1) * torch.tensor([h/2,w/2,h/2,w/2])).long()
     if len(y.size()) == 1:
         if lbls is not None:
             text = classes[lbls[0]] if classes is not None else lbls.item()
         else: text=None
         _draw_rect(ax, bb2hw(y), text=text)
     else:
-        for i in range(y.size(0)):
+        for i in range(y.size(0)): 
             if lbls is not None:
                 text = classes[lbls[i]] if classes is not None else lbls[i].item()
             else: text=None
