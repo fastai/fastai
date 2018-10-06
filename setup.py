@@ -15,7 +15,7 @@ def create_version_file(version):
         f.write("__version__ = '{}'\n".format(version))
 
 # version
-version = '1.0.5.dev0'
+version = '1.0.5'
 create_version_file(version)
 
 with open('README.md') as readme_file:   readme = readme_file.read()
@@ -67,7 +67,6 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 dev_requirements = { 'dev' : to_list("""
     bumpversion==0.5.3
     distro
-    gputil
     jupyter_contrib_nbextensions
     nbconvert
     nbformat
