@@ -70,6 +70,21 @@ On a GPU-enabled setup, to test in CPU-only mode add `CUDA_VISIBLE_DEVICES=" "`:
    ```
 
 
+### Report each sub-test name and its progress
+
+For a single or a group of tests via `pytest`:
+
+   ```
+   pytest --pspec tests/test_fastai.py
+   pytest --pspec tests
+   ```
+
+For all tests via `setup.py`:
+
+   ```
+   python setup.py test --addopts="--pspec"
+   ```
+
 ### Output capture
 
 During test execution any output sent to `stdout` and `stderr` is captured. If a test or a setup method fails, its according captured output will usually be shown along with the failure traceback.
