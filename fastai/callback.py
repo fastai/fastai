@@ -204,6 +204,7 @@ class CallbackHandler():
         "Initialize smoother and learning stats."
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
+        self.callbacks = CallbackPriority.sortCallbacks(self.callbacks)
 
     def __call__(self, cb_name, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."
