@@ -171,16 +171,19 @@ class Learner():
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
     learn: Learner
+    priority: int=CallbackPriority.NOTSET
     def __post_init__(self):
+        super().__init__(self.priority)
         if self.cb_name: setattr(self.learn, self.cb_name, self)
+
 
     @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
 
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
-    def __init__(self, learn:Learner):
-        super().__init__(learn)
+    def __init__(self, learn:Learner, priority=CallbackPriority.HIGH):
+        super().__init__(learn, priority)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
 

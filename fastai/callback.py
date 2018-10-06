@@ -2,8 +2,9 @@
 from .data import *
 from .torch_core import *
 
-__all__ = ['Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 
-           'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly']
+__all__ = ['Callback', 'CallbackHandler', 'CallbackPriority', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos',
+           'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly',
+           ]
 
 class OptimWrapper():
     "Basic wrapper around an optimizer to simplify HP changes."
@@ -114,7 +115,28 @@ class OptimWrapper():
         if is_tuple(val[0]): val = [o[0] for o in val], [o[1] for o in val]
         return val
 
+class CallbackPrioritizer():
+    _cb_priority_lvl = {
+        "HIGH": 30,
+        "MEDIUM": 20,
+        "NOTSET": 20,
+        "LOW": 10
+    }
+
+    def __getattr__(self, name:str):
+        if name in self._cb_priority_lvl.keys(): return self._cb_priority_lvl[name]
+        else:                                    return self.__getattribute__(name)
+
+    @classmethod
+    def add_priority_lvl(cls, name:str, lvl:int): cls._cb_priority_lvl[name] = lvl
+
+
+CallbackPriority = CallbackPrioritizer()
+
 class Callback():
+    def __init__(self, priority:int=CallbackPriority.NOTSET):
+        self.priority = priority
+
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
     def on_train_begin(self, **kwargs:Any)->None:
         "To initialize constants in the callback."
@@ -148,6 +170,8 @@ class Callback():
         "Useful for cleaning up things and saving files/models."
         pass
 
+
+
 class SmoothenValue():
     "Create a smooth moving average for a value (loss, etc)."
     def __init__(self, beta:float):
@@ -165,6 +189,9 @@ OptCallbackList = Optional[CallbackList]
 
 def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
 
+def prioritize_callbacks(callbacks: CallbackList): return sorted(callbacks, key=lambda x: x.priority, reverse=True)
+CallbackPriority.prioritize_callbacks = prioritize_callbacks
+
 @dataclass
 class CallbackHandler():
     "Manage all of the registered callback objects, smoothing loss by momentum `beta`."
@@ -175,6 +202,7 @@ class CallbackHandler():
         "Initialize smoother and learning stats."
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
+        self.callbacks = CallbackPriority.prioritize_callbacks(self.callbacks)
 
     def __call__(self, cb_name, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."

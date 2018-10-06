@@ -14,6 +14,8 @@ class RNNTrainer(Callback):
     beta:float=0.
     adjust:bool=True
 
+    def __post_init__(self): super().__init__()
+
     def on_loss_begin(self, last_output:Tuple[Tensor,Tensor,Tensor], **kwargs):
         #Save the extra outputs for later and only returns the true output.
         self.raw_out,self.out = last_output[1],last_output[2]
