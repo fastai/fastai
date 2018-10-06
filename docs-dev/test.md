@@ -58,16 +58,37 @@ it will first select `test_listify` and `test_listy`, and then deselect `test_li
 
 More ways: https://docs.pytest.org/en/latest/usage.html
 
+For nuances of configuring pytest's repo-wide behavior see [collection](https://docs.pytest.org/en/latest/example/pythoncollection.html).
+
 
 
 ### To GPU or not to GPU
 
 
-On a GPU-enabled setup, to test in CPU-only mode add `CUDA_VISIBLE_DEVICES=" "`:
+On a GPU-enabled setup, to test in CPU-only mode add `CUDA_VISIBLE_DEVICES=""`:
+   ```
+   CUDA_VISIBLE_DEVICES="" pytest tests/test_vision.py
+   ```
 
+To do the same inside the code of the test:
    ```
-   CUDA_VISIBLE_DEVICES=" "  py.test tests/test_vision.py
+   fastai.torch_core.default_device = torch.device('cpu')
    ```
+
+To switch back to cuda:
+   ```
+   fastai.torch_core.default_device = torch.device('cuda')
+   ```
+
+Make sure you don't hard-code any specific device ids in the test, since different users may have a different GPU setup. So avoid code like:
+   ```
+   fastai.torch_core.default_device = torch.device('cuda:1')
+   ```
+which tells `torch` to use the 2nd GPU. Instead, if you'd like to run a test locally on a different GPU, use the `CUDA_VISIBLE_DEVICES` environment variable:
+   ```
+   CUDA_VISIBLE_DEVICES="1" pytest tests/test_vision.py
+   ```
+
 
 
 ### Report each sub-test name and its progress
