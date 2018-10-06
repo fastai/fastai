@@ -24,8 +24,7 @@ class GeneralScheduler(Callback):
     learn:Learner
     phases:Collection[TrainingPhase]
 
-    def __post_init__(self)->None:
-        super().__init__()
+    def __post_init__(self)->None: super().__init__()
 
     def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
         "Initialize our lr and mom schedules for training."

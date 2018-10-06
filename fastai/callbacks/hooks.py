@@ -62,8 +62,7 @@ class HookCallback(LearnerCallback):
 
 class ActivationStats(HookCallback):
     "Callback that record the activations."
-    def __init__(self):
-        super().__init__()
+    def __init__(self)->None: super().__init__()
 
     def on_train_begin(self, **kwargs):
         super().on_train_begin(**kwargs)

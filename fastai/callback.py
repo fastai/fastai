@@ -6,32 +6,6 @@ __all__ = ['Callback', 'CallbackHandler', 'CallbackPriority', 'OptimWrapper', 'S
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly',
            ]
 
-
-class CallbackPrioritizer():
-    _callback_priority_levels = {
-        "HIGH": 30,
-        "MEDIUM": 20,
-        "NOTSET": 20,
-        "LOWEST": 10
-    }
-
-    def __getattr__(self, name):
-        if name in self._callback_priority_levels.keys():
-            return self._callback_priority_levels[name]
-        else:
-            return self.__getattribute__(name)
-
-    @classmethod
-    def add_priority_level(cls, name, level):
-        cls._callback_priority_levels[name] = level
-
-    @staticmethod
-    def sort_callbacks(callbacks):
-        sorted_callbacks = sorted(callbacks, key=lambda x: x.priority, reverse=True)
-        return sorted_callbacks
-
-CallbackPriority = CallbackPrioritizer()
-
 class OptimWrapper():
     "Basic wrapper around an optimizer to simplify HP changes."
     def __init__(self, opt:optim.Optimizer, wd:Floats=0., true_wd:bool=False, bn_wd:bool=True):
@@ -140,6 +114,26 @@ class OptimWrapper():
         val = [pg[key] for pg in self.opt.param_groups[::2]]
         if is_tuple(val[0]): val = [o[0] for o in val], [o[1] for o in val]
         return val
+
+class CallbackPrioritizer():
+    _cb_prio_lvl = {
+        "HIGH": 30,
+        "MEDIUM": 20,
+        "NOTSET": 20,
+        "LOW": 10
+    }
+
+    def __getattr__(self, name:str):
+        if name in self._cb_prio_lvl.keys(): return self._cb_prio_lvl[name]
+        else:                                return self.__getattribute__(name)
+
+    @classmethod
+    def add_prio_lvl(cls, name:str, lvl:int): cls._cb_prio_lvl[name] = lvl
+
+    @staticmethod
+    def sort_callbacks(callbacks: CallbackList): return sorted(callbacks, key=lambda x: x.priority, reverse=True)
+
+CallbackPriority = CallbackPrioritizer()
 
 class Callback():
     def __init__(self, priority=CallbackPriority.NOTSET):

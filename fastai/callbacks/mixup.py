@@ -11,8 +11,7 @@ class MixUpCallback(Callback):
     stack_x:bool=False
     stack_y:bool=True
 
-    def __post_init__(self):
-        super().__init__()
+    def __post_init__(self)->None: super().__init__()
         
     def on_batch_begin(self, last_input, last_target, **kwargs):
         lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
