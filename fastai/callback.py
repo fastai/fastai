@@ -116,7 +116,7 @@ class OptimWrapper():
         return val
 
 class CallbackPrioritizer():
-    _cb_prio_lvl = {
+    _cb_priority_lvl = {
         "HIGH": 30,
         "MEDIUM": 20,
         "NOTSET": 20,
@@ -124,19 +124,17 @@ class CallbackPrioritizer():
     }
 
     def __getattr__(self, name:str):
-        if name in self._cb_prio_lvl.keys(): return self._cb_prio_lvl[name]
-        else:                                return self.__getattribute__(name)
+        if name in self._cb_priority_lvl.keys(): return self._cb_priority_lvl[name]
+        else:                                    return self.__getattribute__(name)
 
     @classmethod
-    def add_prio_lvl(cls, name:str, lvl:int): cls._cb_prio_lvl[name] = lvl
+    def add_priority_lvl(cls, name:str, lvl:int): cls._cb_priority_lvl[name] = lvl
 
-    @staticmethod
-    def sort_callbacks(callbacks: CallbackList): return sorted(callbacks, key=lambda x: x.priority, reverse=True)
 
 CallbackPriority = CallbackPrioritizer()
 
 class Callback():
-    def __init__(self, priority=CallbackPriority.NOTSET):
+    def __init__(self, priority:int=CallbackPriority.NOTSET):
         self.priority = priority
 
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
@@ -172,6 +170,8 @@ class Callback():
         "Useful for cleaning up things and saving files/models."
         pass
 
+
+
 class SmoothenValue():
     "Create a smooth moving average for a value (loss, etc)."
     def __init__(self, beta:float):
@@ -189,6 +189,9 @@ OptCallbackList = Optional[CallbackList]
 
 def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
 
+def prioritize_callbacks(callbacks: CallbackList): return sorted(callbacks, key=lambda x: x.priority, reverse=True)
+CallbackPriority.prioritize_callbacks = prioritize_callbacks
+
 @dataclass
 class CallbackHandler():
     "Manage all of the registered callback objects, smoothing loss by momentum `beta`."
@@ -199,7 +202,7 @@ class CallbackHandler():
         "Initialize smoother and learning stats."
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
-        self.callbacks = CallbackPriority.sort_callbacks(self.callbacks)
+        self.callbacks = CallbackPriority.prioritize_callbacks(self.callbacks)
 
     def __call__(self, cb_name, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."
