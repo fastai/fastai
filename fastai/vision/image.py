@@ -193,8 +193,8 @@ class Image(ImageBase):
         "Return this images pixels as a tensor."
         return self.px
 
-    def show(self, y:ImageBase=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
-              cmap:str='viridis', **kwargs):
+    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+              cmap:str='viridis', y:ImageBase=None, **kwargs):
         ax = _show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None: y.show(ax=ax, **kwargs)
         if title: ax.set_title(title)
