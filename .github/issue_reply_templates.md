@@ -1,7 +1,6 @@
 # Entries for Issue Replies
 
-Each github user needs to manually add those one by one to [his github account]
-(https://github.com/settings/replies)
+Each github user needs to manually add those one by one to [his github account](https://github.com/settings/replies)
 
 * Sign fastai CLA
 
