@@ -104,7 +104,7 @@ def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
     kernel_szs = ifnone(kernel_szs, [3]*nl)
     strides    = ifnone(strides   , [2]*nl)
     layers = [conv2d_relu(actns[i], actns[i+1], kernel_szs[i], stride=strides[i])
-        for i in range_to(strides)]
+        for i in range_of(strides)]
     layers.append(PoolFlatten())
     return nn.Sequential(*layers)
 
