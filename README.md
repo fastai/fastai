@@ -15,7 +15,11 @@ If you are using fastai for any [course.fast.ai](http://course.fast.ai) course, 
 
 *Note: If you want to learn how to use fastai v1 from its lead developer, Jeremy Howard, he will be teaching it in the [Deep Learning Part I](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one) course at the University of San Francisco from Oct 22nd, 2018.*
 
-## Conda Install
+## Installation
+
+`fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favourite python package manager.
+
+### Conda Install
 
 Follow the following 2 steps in this exact order:
 
@@ -46,7 +50,7 @@ conda update conda
 
 If the issue persists, please read about [installation issues](README.md#installation-issues).
 
-## PyPI Install
+### PyPI Install
 
 Follow the following 2 steps in this exact order:
 
@@ -69,7 +73,7 @@ Follow the following 2 steps in this exact order:
 If you experience installation problems, please read about [installation issues](README.md#installation-issues).
 
 
-## Developer Install
+### Developer Install
 
 First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the **same package manager you used to install it**, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
 
@@ -105,7 +109,7 @@ Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/C
 If the installation process fails, first make sure [your system is supported](README.md#is-my-system-supported). And if the problem is still not addressed, please see  [this installation issues thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
 
 
-## Is My System Supported?
+### Is My System Supported?
 
 1. Python: You need to have python 3.6 or higher
 
