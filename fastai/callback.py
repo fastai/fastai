@@ -5,6 +5,31 @@ from .torch_core import *
 __all__ = ['Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly']
 
+
+class CallbackPrioritizer():
+    _callbackPriorityLevels = {
+        "HIGH": 30,
+        "MEDIUM": 20,
+        "NOTSET": 20,
+        "LOWEST": 10
+    }
+
+    def __getattr__(self, name):
+        if name in _callbackPriorityLevels.keys():
+            return _callbackPriorityLevels[name]
+        else:
+            return self.__getattribute__(name)
+
+    @classmethod
+    def addPriorityLevel(cls, name, level):
+        cls._callbackPriorityLevels[name] = level
+
+    @staticmethod
+    def sortCallbacks(callbacks):
+        return sorted(callbacks, key=lambda x: x.priority, reverse=True)
+
+CallbackPriority = CallbackPrioritizer()
+
 class OptimWrapper():
     "Basic wrapper around an optimizer to simplify HP changes."
     def __init__(self, opt:optim.Optimizer, wd:Floats=0., true_wd:bool=False, bn_wd:bool=True):
