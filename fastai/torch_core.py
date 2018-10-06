@@ -261,15 +261,6 @@ def show_install(show_nvidia_smi:bool=False):
             if result.returncode == 0 and result.stdout:
                 output = result.stdout.decode('utf-8')
                 gpu_total_mem = [int(x) for x in output.strip().split('\n')]
-    else:
-        # if nvidia-smi can't be found try GPUtil
-        try:
-            import GPUtil
-        except ImportError:
-            opt_mods.append('GPUtil');
-        else:
-            gpus = GPUtil.getGPUs()
-            gpu_total_mem = [gpus[i].memoryTotal for i in range(gpu_cnt)]
 
     # information for each gpu
     for i in range(gpu_cnt):
