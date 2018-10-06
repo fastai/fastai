@@ -62,6 +62,12 @@ Follow the following 2 steps in this exact order:
 
    If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Pip/Python3.6|Python3.7 and your CUDA version and it will give you the correct install instruction. Instructions to build `pytorch` from source are provided at the same location.
 
+If your system doesn't have CUDA, you can install the CPU-only `torch` build:
+
+   ```
+   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+   ```
+
 2. Install `fastai`:
 
    ```
