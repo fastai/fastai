@@ -76,7 +76,7 @@ def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:s
     valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                              train_ds.cont_names, train_ds.stats, log_output)
     datasets = [train_ds, valid_ds]
-    if test_df:
+    if test_df is not None:
         datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                                       train_ds.cont_names, train_ds.stats, log_output))
     return DataBunch.create(*datasets, path=path, **kwargs)
