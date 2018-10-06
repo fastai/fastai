@@ -20,6 +20,7 @@ def get_image_files(c:Path, check_ext:bool=True)->FilePathList:
             and (not check_ext or (o.suffix in image_extensions))]
 
 def get_annotations(fname, prefix=None):
+    "Open a COCO style json in `fname` and returns the lists of filenames (with `prefix`), bboxes and labels."
     annot_dict = json.load(open(fname))
     id2images, id2bboxes, id2cats = {}, collections.defaultdict(list), collections.defaultdict(list)
     classes = {}
