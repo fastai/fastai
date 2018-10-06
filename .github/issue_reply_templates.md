@@ -12,10 +12,12 @@ You may need to update these if the information, e.g. links, gets modified.
 
 * Sign fastai CLA
 
-Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai as explained [here](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) before we can proceed.  Thank you.
+Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai as explained [here](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) before we can proceed. Thank you.
 
 * Sign fastai_docs CLA
 
-Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai_docs as explained [here](https://github.com/fastai/fastai_docs/blob/master/CONTRIBUTING.md) before we can proceed.  Thank you.
+Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai_docs as explained [here](https://github.com/fastai/fastai_docs/blob/master/CONTRIBUTING.md) before we can proceed. Thank you.
 
-*
+* Install issues [fastai v1]
+
+fastai v1 installation issues should be reported [here](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111) instead. Thank you.
