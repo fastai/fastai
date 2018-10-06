@@ -56,6 +56,9 @@ class ShowGraph(LearnerCallback):
 
 class BnFreeze(LearnerCallback):
     "Freeze moving average statistics in all non-trainable batchnorm layers."
+    def __init__(self):
+        super().__init__()
+
     def on_epoch_begin(self, **kwargs:Any)->None:
         "Put bn layers in eval mode on epoch_begin"
         set_bn_eval(self.learn.model)
@@ -64,6 +67,9 @@ class BnFreeze(LearnerCallback):
 class GradientClipping(LearnerCallback):
     "To do gradient clipping during training."
     clip:float
+
+    def __post_init__(self):
+        super().__init__()
 
     def on_backward_end(self, **kwargs):
         if self.clip:  nn.utils.clip_grad_norm_(self.learn.model.parameters(), self.clip)

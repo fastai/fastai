@@ -14,6 +14,7 @@ class TrainingPhase():
     mom_anneal:AnnealFunc=None
 
     def __post_init__(self)->None:
+        super().__init__()
         self.lr_step = Stepper(self.lrs, self.length, self.lr_anneal)
         self.mom_step = Stepper(self.moms, self.length, self.mom_anneal)
 
@@ -22,6 +23,9 @@ class GeneralScheduler(Callback):
     "Schedule multiple `TrainingPhase` for a `Learner`."
     learn:Learner
     phases:Collection[TrainingPhase]
+
+    def __post_init__(self)->None:
+        super().__init__()
 
     def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
         "Initialize our lr and mom schedules for training."
