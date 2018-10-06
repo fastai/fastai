@@ -140,6 +140,9 @@ class OptimWrapper():
         return val
 
 class Callback():
+    def __init__(self, priority=CallbackPriority.NOTSET):
+        self.priority = priority
+
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
     def on_train_begin(self, **kwargs:Any)->None:
         "To initialize constants in the callback."
