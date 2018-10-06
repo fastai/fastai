@@ -62,8 +62,6 @@ bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
-def tensor(x): return x if isinstance(x,Tensor) else torch.tensor(x)
-
 def to_data(b:ItemsList):
     "Recursively map lists of items in `b ` to their wrapped data"
     if is_listy(b): return [to_data(o) for o in b]
@@ -182,7 +180,7 @@ def in_channels(m:Model) -> List[int]:
 
 def calc_loss(y_pred:Tensor, y_true:Tensor, loss_class:type=nn.CrossEntropyLoss, bs=64):
     "Calculate loss between `y_pred` and `y_true` using `loss_class` and `bs`."
-    loss_dl = DataLoader(TensorDataset(tensor(y_pred),tensor(y_true)), bs)
+    loss_dl = DataLoader(TensorDataset(as_tensor(y_pred),as_tensor(y_true)), bs)
     with torch.no_grad():
         return torch.cat([loss_class(reduction='none')(*b) for b in loss_dl])
 
@@ -195,7 +193,7 @@ def model_type(dtype):
 
 def np2model_tensor(a):
     dtype = model_type(a.dtype)
-    res = torch.from_numpy(a)
+    res = as_tensor(a)
     if not dtype: return res
     return res.type(dtype)
 
