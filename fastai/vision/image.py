@@ -272,13 +272,13 @@ def _show(self:Image, ax:plt.Axes=None, y:Image=None, classes=None, **kwargs):
     h,w = self.size
     y = ((y+1) * torch.tensor([h/2,w/2,h/2,w/2])).long()
     if len(y.size()) == 1:
-        if lbls is not None:
-            text = classes[lbls[0]] if classes is not None else lbls.item()
+        if lbls is not None and len(lbls) > 0:
+            text = classes[lbls[0]] if classes is not None else lbls[0].item()
         else: text=None
         _draw_rect(ax, bb2hw(y), text=text)
     else:
         for i in range(y.size(0)): 
-            if lbls is not None:
+            if lbls is not None and len(lbls) > 0:
                 text = classes[lbls[i]] if classes is not None else lbls[i].item()
             else: text=None
             _draw_rect(ax, bb2hw(y[i]), text=text)
