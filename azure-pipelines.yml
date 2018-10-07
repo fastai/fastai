@@ -86,6 +86,10 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
+    # XXX: should be fixed in 1.140 release https://github.com/Microsoft/vsts-tasks/issues/8299#issuecomment-427095427
+  - script: sudo install -d -m 0777 /usr/envs
+    displayName: Fix Conda permissions
+
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
@@ -149,6 +153,7 @@ jobs:
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
       pip install -e .[dev]
       # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
+      mkdir -p ~/.matplotlib
       echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
     displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
     continueOnError: false
