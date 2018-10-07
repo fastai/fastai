@@ -8,29 +8,20 @@
 # - Provide at least 10 GB of storage for your source and build outputs.
 # - Can run jobs for up to 360 minutes (6 hours).
 
+# job name must match r'\w+' (no '-', but '_' ok)
 jobs:
 
-# - job: macOS
-#   pool:
-#     vmImage: 'macOS-10.13'
-#   steps:
-#   - script: echo hello from macOS
-#
-# - job: Windows
-#   pool:
-#     vmImage: 'vs2017-win2016'
-#   steps:
-#   - script: echo hello from Windows
+# Build environments: Available vmImage values: 'Ubuntu-16.04', 'macOS-10.13', 'VS2017-Win2016'
+
+################
+### Linux CI ###
+################
 
 
+- job: 'Linux_PyPI'
 
-
-# job name must match r'\w+' (no '-', but '_' ok)
-- job: 'Linux_Test'
-
-  # Configure Build Environment to use Azure Pipelines to build Python project using macOS
   pool:
-    vmImage: 'Ubuntu-16.04' # other options: 'macOS-10.13', 'VS2017-Win2016'
+    vmImage: 'Ubuntu-16.04'
 
   # Run the pipeline with multiple Python versions
   strategy:
@@ -49,30 +40,15 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-  # XXX: Conda Environment https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
-  # Create and activate a Conda environment.
-  #- task: CondaEnvironment@1
-  #  inputs:
-      #createCustomEnvironment: # Optional
-      #environmentName: # Required when createCustomEnvironment == True
-      #packageSpecs: 'python=3' # Optional
-      #updateConda: # Optional
-      #installOptions: # Optional
-      #createOptions: # Optional
-      #cleanEnvironment: # Optional
-  # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts#activate-an-anaconda-environment
-  #- script: conda install -n myEnvironment scipy
-  #  displayName: 'Install conda libraries'
-
-    # Install dependencies - install specific PyPI packages with pip, including cmd2 dependencies
+    # Install dependencies and fastai
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
       pip install -e .[dev]
-    displayName: 'Upgrade pip and setuptools, and fastai deps'
+    displayName: 'Upgrade pip/setuptools. Install deps, pytorch and fastai'
     continueOnError: false
 
-    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+    # Test
   - script: |
       pip install pytest pytest-runner pytest-pspec
       py.test tests tests/test_fastai.py
@@ -88,10 +64,10 @@ jobs:
 
 
 
+- job: 'Linux_Conda'
 
-- job: macOS
   pool:
-    vmImage: 'macOS-10.13'
+    vmImage: 'Ubuntu-16.04'
 
   # Run the pipeline with multiple Python versions
   strategy:
@@ -110,15 +86,74 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-    # Install dependencies - install specific PyPI packages with pip, including cmd2 dependencies
+    # Conda setup environment.
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
+    #
+  - task: CondaEnvironment@0
+  inputs:
+    environmentName: 'fastai-cpu'
+    packageSpecs: 'python=$(python.version)'
+
+    # Install dependencies and fastai
+  - script: |
+      conda activate fastai-cpu
+      conda install -y conda
+      conda install -y pip setuptools
+      # pytorch + torchvision
+      conda install -y -c pytorch pytorch-nightly-cpu
+      conda install -y -c fastai torchvision-nightly-cpu
+      # fastai deps
+      conda install -y -c fastai fastai
+      conda uninstall -y fastai
+      # fastai
+      pip install -e .[dev]
+    displayName: 'Upgrade pip/conda/setuptools. Install deps, pytorch and fastai'
+    continueOnError: false
+
+    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+  - script: |
+      conda install pytest pytest-runner
+      pip install pytest-pspec
+      py.test tests tests/test_fastai.py
+    displayName: 'Run tests'
+    continueOnError: false
+
+
+
+################
+### MacOS CI ###
+################
+
+- job: macOS_PyPI
+  pool:
+    vmImage: 'macOS-10.13'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 4
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+    # Install dependencies
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
       pip install -e .[dev]
-    displayName: 'Upgrade pip and setuptools, and fastai deps'
+      # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
+      echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+    displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
     continueOnError: false
 
-    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+    # Test
   - script: |
       pip install pytest pytest-runner pytest-pspec
       py.test tests tests/test_fastai.py
