@@ -94,7 +94,7 @@ dependencies:
 - pytorch<0.4
 - bcolz
 - prompt_toolkit
-- pytest
+#- pytest
 - pip:
   - torchvision>=0.1.9
   - opencv-python
@@ -104,8 +104,8 @@ dependencies:
   - graphviz
   - sklearn_pandas
   - feather-format
-  - plotnine
+#  - plotnine
   - kaggle-cli
   - ipywidgets
-  - pdpbox<=0.1.0
+#  - pdpbox<=0.1.0
   - treeinterpreter
