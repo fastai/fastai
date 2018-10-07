@@ -2,9 +2,27 @@
 # Create and test a Python package on multiple Python versions.
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts
+
+# Capabilities and limitations:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=vsts&tabs=yaml#capabilities-and-limitations
+# - Provide at least 10 GB of storage for your source and build outputs.
+# - Can run jobs for up to 360 minutes (6 hours).
+
 jobs:
 
-- job: 'Test'
+# - job: macOS
+#   pool:
+#     vmImage: 'macOS-10.13'
+#   steps:
+#   - script: echo hello from macOS
+#
+# - job: Windows
+#   pool:
+#     vmImage: 'vs2017-win2016'
+#   steps:
+#   - script: echo hello from Windows
+
+- job: 'Linux Test'
 
   # Configure Build Environment to use Azure Pipelines to build Python project using macOS
   pool:
@@ -45,14 +63,15 @@ jobs:
     # Install dependencies - install specific PyPI packages with pip, including cmd2 dependencies
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
+      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
       pip install -e .[dev]
     displayName: 'Upgrade pip and setuptools, and fastai deps'
     continueOnError: false
 
     # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
   - script: |
-      pip install pytest
-      py.test tests
+      pip install pytest pytest-runner pytest-pspec
+      py.test tests tests/test_fastai.py
     displayName: 'Run tests'
     continueOnError: false
 
