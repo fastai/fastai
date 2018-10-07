@@ -90,9 +90,9 @@ jobs:
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
   - task: CondaEnvironment@0
-  inputs:
-    environmentName: 'fastai-cpu'
-    packageSpecs: 'python=$(python.version)'
+    inputs:
+      environmentName: 'fastai-cpu'
+      packageSpecs: 'python=$(python.version)'
 
     # Install dependencies and fastai
   - script: |
