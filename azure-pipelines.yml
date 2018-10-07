@@ -22,7 +22,7 @@ jobs:
 #   steps:
 #   - script: echo hello from Windows
 
-- job: 'Linux-Test'
+- job: 'Linux_Test'
 
   # Configure Build Environment to use Azure Pipelines to build Python project using macOS
   pool:
