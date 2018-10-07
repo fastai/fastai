@@ -1,0 +1,64 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts
+jobs:
+
+- job: 'Test'
+
+  # Configure Build Environment to use Azure Pipelines to build Python project using macOS
+  pool:
+    vmImage: 'Ubuntu-16.04' # other options: 'macOS-10.13', 'VS2017-Win2016'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    # Increase the maxParallel value to simultaneously run the job for all versions in the matrix (max 10 for free open-source)
+    maxParallel: 4
+
+  steps:
+    # Set the UsePythonVersion task to reference the matrix variable for its Python version
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  # XXX: Conda Environment https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
+  # Create and activate a Conda environment.
+  #- task: CondaEnvironment@1
+  #  inputs:
+      #createCustomEnvironment: # Optional
+      #environmentName: # Required when createCustomEnvironment == True
+      #packageSpecs: 'python=3' # Optional
+      #updateConda: # Optional
+      #installOptions: # Optional
+      #createOptions: # Optional
+      #cleanEnvironment: # Optional
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts#activate-an-anaconda-environment
+  #- script: conda install -n myEnvironment scipy
+  #  displayName: 'Install conda libraries'
+
+    # Install dependencies - install specific PyPI packages with pip, including cmd2 dependencies
+  - script: |
+      python -m pip install --upgrade pip && pip3 install --upgrade setuptools
+      pip install -e .[dev]
+    displayName: 'Upgrade pip and setuptools, and fastai deps'
+    continueOnError: false
+
+    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+  - script: |
+      pip install pytest
+      py.test tests
+    displayName: 'Run tests'
+    continueOnError: false
+
+  #   # Publish test results to the Azure DevOps server
+  # - task: PublishTestResults@2
+  #   inputs:
+  #     testResultsFiles: '**/test-*.xml'
+  #     testRunTitle: 'Python $(python.version)'
+  #   condition: succeededOrFailed()
