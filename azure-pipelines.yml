@@ -22,6 +22,10 @@ jobs:
 #   steps:
 #   - script: echo hello from Windows
 
+
+
+
+# job name must match r'\w+' (no '-', but '_' ok)
 - job: 'Linux_Test'
 
   # Configure Build Environment to use Azure Pipelines to build Python project using macOS
@@ -81,3 +85,42 @@ jobs:
   #     testResultsFiles: '**/test-*.xml'
   #     testRunTitle: 'Python $(python.version)'
   #   condition: succeededOrFailed()
+
+
+
+
+- job: macOS
+  pool:
+    vmImage: 'macOS-10.13'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    # Increase the maxParallel value to simultaneously run the job for all versions in the matrix (max 10 for free open-source)
+    maxParallel: 4
+
+  steps:
+    # Set the UsePythonVersion task to reference the matrix variable for its Python version
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+    # Install dependencies - install specific PyPI packages with pip, including cmd2 dependencies
+  - script: |
+      python -m pip install --upgrade pip && pip3 install --upgrade setuptools
+      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+      pip install -e .[dev]
+    displayName: 'Upgrade pip and setuptools, and fastai deps'
+    continueOnError: false
+
+    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+  - script: |
+      pip install pytest pytest-runner pytest-pspec
+      py.test tests tests/test_fastai.py
+    displayName: 'Run tests'
+    continueOnError: false
