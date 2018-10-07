@@ -44,7 +44,7 @@ class TabularDataset(DatasetBase):
     def __getitem__(self, idx)->Tuple[Tuple[LongTensor,FloatTensor], Tensor]:
         return ((self.cats[idx], self.conts[idx]), self.y[idx])
     @property
-    def c(self)->int: return 1 if isinstance(self.y, FloatTensor) else self.y.max()+1
+    def c(self)->int: return 1 if isinstance(self.y, FloatTensor) else self.y.max().item()+1
 
     def get_emb_szs(self, sz_dict): return [def_emb_sz(self.df, n, sz_dict) for n in self.cat_names]
 
