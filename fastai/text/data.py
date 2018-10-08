@@ -18,13 +18,15 @@ class TextDataset():
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
                  name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None,
-                 create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None):
+                 create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None, clear_cache:bool=False):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
         self.label_cols = ifnone(label_cols, list(range(n_labels)))
+        self.label_dtype = np.float32 if len(self.label_cols) > 1 else np.int64
         self.txt_cols,self.chunksize,self.name,self.df,self.create_mtd = txt_cols,chunksize,name,df,create_mtd
         self.vocab=vocab
         os.makedirs(self.path, exist_ok=True)
+        if clear_cache: self.clear()
         if not self.check_toks(): self.tokenize()
         if not self.check_ids():  self.numericalize()
 
@@ -32,12 +34,12 @@ class TextDataset():
         self.ids = np.load(self.path/f'{self.name}_ids.npy')
         if os.path.isfile(self.path/f'{self.name}_lbl.npy'):
             self.labels = np.load(self.path/f'{self.name}_lbl.npy')
-        else: self.labels = np.zeros((len(self.ids),), dtype=np.int64)
+        else: self.labels = np.zeros((len(self.ids),), dtype=label_dtype)
         if classes: self.classes = classes
         elif os.path.isfile(self.path/'classes.txt'): self.classes = read_classes(self.path/'classes.txt')
         else: self.classes = np.unique(self.labels)
 
-    def __getitem__(self, idx:int) -> Tuple[int,int]: return self.ids[idx],self.labels[idx]
+    def __getitem__(self, idx:int) -> Tuple[int,Union[int,float]]: return self.ids[idx],self.labels[idx]
     def __len__(self) -> int: return len(self.ids)
 
     def general_check(self, pre_files:Collection[PathOrStr], post_files:Collection[PathOrStr]):
@@ -77,7 +79,7 @@ class TextDataset():
         tokens,labels = [],[]
         for _ in progress_bar(range(curr_len), leave=False):
             df = next(dfs) if (type(dfs) == pd.io.parsers.TextFileReader) else self.df
-            lbls = df[self.label_cols].values.astype(np.int64) if (len(self.label_cols) > 0) else []
+            lbls = df[self.label_cols].values.astype(self.label_dtype) if (len(self.label_cols) > 0) else []
             self.txt_cols = ifnone(self.txt_cols, list(range(len(self.label_cols),len(df.columns))))
             texts = f'{FLD} {1} ' + df[self.txt_cols[0]].astype(str)
             for i, col in enumerate(self.txt_cols[1:]):  texts += f' {FLD} {i+2} ' + df[col].astype(str)
@@ -320,7 +322,7 @@ def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataF
     "Create a `DataBunch` from DataFrames."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache'], kwargs)
     train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
     if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
@@ -331,7 +333,7 @@ def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='trai
     "Create a `DataBunch` from texts in csv files."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache'], kwargs)
     train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
     if test: datasets.append(TextDataset.from_csv(path, tokenizer, test, vocab=train_ds.vocab, **txt_kwargs))
