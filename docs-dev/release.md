@@ -574,30 +574,35 @@ platform are shown):
 
 * Creating tags
 
-To tag commit 9fceb02 with tag "v1.0.5" with current date:
+   To tag current checkout with tag "v1.0.5" with current date:
 
    ```
-   git checkout 9fceb02
+   git tag -a test-1.0.5 -m "test-1.0.5"
+   git push --tags origin master
+   ```
+
+   To tag commit 9fceb02a with tag "v1.0.5" with current date:
+
+   ```
+   git checkout 9fceb02a
    git tag -a v1.0.5 -m "v1.0.5"
    git push --tags origin master
    git checkout master
    ```
 
-* Back-date tagging
-
-To tag commit 8f33a878 with tag "v1.0.5":
+   To tag commit 9fceb02a with tag "v1.0.5" with the date of that commit:
 
    ```
-   git checkout 8f33a878
+   git checkout 9fceb02a
    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "v1.0.5"
    git push --tags origin master
    git checkout master
    ```
 
-or the same without needing to `git checkout` and with typing the variables only once:
+   or the same without needing to `git checkout` and with typing the variables only once:
 
    ```
-   tag="v0.1.3" commit="8f33a878" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
+   tag="v0.1.3" commit="9fceb02a" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
    git push --tags origin master
    ```
 
@@ -626,13 +631,64 @@ or the same without needing to `git checkout` and with typing the variables only
    git tag --delete v0.1.5
    git push --tags origin master
    ```
+   This is important since if the remote tag is deleted, but the local is not, then on the next `git push --tags origin master` it will get restored in remote.
 
 
 Useful scripts:
+
 * [git-backtag](https://github.com/lucasrangit/git-bin/blob/master/git-backtag)
 
 
 
+
+## CI/CD
+
+### Azure DevOps CI (CPU-only)
+
+#### Usage
+
+All the good stuff is here: [Builds](https://dev.azure.com/fastdotai/fastai/_build?definitionId=1)
+
+It uses `fastai/azure-pipelines.yml` script to do the testing. See notes inside the script for more details on how to modify it.
+
+By default it runs the fastai installation and a few basic tests when either `master` gets a push event, or PR is submitted.
+
+To trigger a manual run go to https://dev.azure.com/fastdotai/fastai/_build, choose Queue, choose the commit hash (most likely of the latest commit).
+
+`[...]` options in the right upper corner, next to `Queue` hides a bunch of useful functions:
+
+  * 'Pause builds' which may be important...
+  * Status Badge MD code for the README.md project page
+
+To see various stats/graphs based on tests outcome, go to [Runs](https://dev.azure.com/fastdotai/fastai/_TestManagement/Runs?runId=1&_a=runCharts)
+
+Under Project Settings, important things are:
+
+* [Notifications](https://dev.azure.com/fastdotai/fastai/_settings/notifications)
+
+
+
+#### Configuration
+
+- to [enable azure CI](https://github.com/marketplace/azure-pipelines)
+
+- [pipelines cookbook](https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts)
+
+- azure [installed automatically @github webhooks](https://github.com/fastai/fastai/settings/hooks) these push events:
+* triggers CI build on every push! (ouch!):
+
+   ```
+   https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)
+   ```
+* triggers CI build on every PR:
+   ```
+   https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
+   ```
+
+
+
+### travis-ci.org https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&utm_medium=notification
+https://github.com/python-packaging-tutorial/hello-pypi/tree/master-with-ci
 
 
 

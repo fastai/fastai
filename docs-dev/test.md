@@ -106,6 +106,9 @@ For all tests via `setup.py`:
    python setup.py test --addopts="--pspec"
    ```
 
+This also means that meaningful names for each sub-test are important.
+
+
 ### Output capture
 
 During test execution any output sent to `stdout` and `stderr` is captured. If a test or a setup method fails, its according captured output will usually be shown along with the failure traceback.
@@ -147,4 +150,6 @@ Creating a URL for a whole test session log:
 
 # Writing Tests
 
-XXX: Needs to be written
+XXX: Needs to be written. Contributions are welcome.
+
+Until then look at the existing tests.
