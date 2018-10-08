@@ -270,7 +270,8 @@ def open_image(fn:PathOrStr)->Image:
 
 def open_mask(fn:PathOrStr)->ImageMask:
     "Return `ImageMask` object create from mask in file `fn`."
-    return ImageMask(pil2tensor(PIL.Image.open(fn)).float())
+    x = PIL.Image.open(fn).convert('L')
+    return ImageMask(pil2tensor(x).float())
 
 def _show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None)->plt.Axes:
@@ -359,7 +360,7 @@ def _resolve_tfms(tfms:TfmList):
     "Resolve every tfm in `tfms`."
     for f in listify(tfms): f.resolve()
 
-def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', **kwargs)->TensorImage:
+def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection')->TensorImage:
     "Grab pixels in `coords` from `input` sampling by `mode`. `paddding_mode` is reflection, border or zeros."
     coords = coords.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
     return F.grid_sample(x[None], coords, mode=mode, padding_mode=padding_mode)[0]
