@@ -8,12 +8,22 @@
 # - Provide at least 10 GB of storage for your source and build outputs.
 # - Can run jobs for up to 360 minutes (6 hours).
 
+# Notes on pipeline definitions:
+#
+# the number after @ in task definition indicates the azure internal version of the specific task, e.g:
+# - task: CondaEnvironment@1
+# means use azure's CondaEnvironment's version 1, so need to check the docs for each specific task's desired (usually latest) version. If later 1.2 is released then use:
+# - task: CondaEnvironment@1.2
+# instead
+#
 # job name must match r'\w+' (no '-', but '_' ok)
+#
+# Build environments: Available vmImage values: 'Ubuntu-16.04', 'macOS-10.13', 'VS2017-Win2016'
+#
+
 jobs:
 
-# Build environments: Available vmImage values: 'Ubuntu-16.04', 'macOS-10.13', 'VS2017-Win2016'
-
-################
+  ################
 ### Linux CI ###
 ################
 
@@ -86,14 +96,10 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-    # XXX: should be fixed in 1.140 release https://github.com/Microsoft/vsts-tasks/issues/8299#issuecomment-427095427
-  - script: sudo install -d -m 0777 /usr/envs
-    displayName: Fix Conda permissions
-
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
-  - task: CondaEnvironment@0
+  - task: CondaEnvironment@1
     inputs:
       environmentName: 'fastai-cpu'
       packageSpecs: 'python=$(python.version)'
@@ -203,13 +209,10 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-  - script: sudo install -d -m 0777 /usr/local/miniconda/envs/
-    displayName: Fix Conda permissions
-
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
-  - task: CondaEnvironment@0
+  - task: CondaEnvironment@1
     inputs:
       environmentName: 'fastai-cpu'
       packageSpecs: 'python=$(python.version)'
