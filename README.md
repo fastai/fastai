@@ -60,7 +60,7 @@ Follow the following 2 steps in this exact order:
    conda install -c fastai fastai
    ```
 
-If you experience installation problems, please read about [installation issues](README.md#installation-issues).
+If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
 ### PyPI Install
 
@@ -94,7 +94,7 @@ Follow the following 2 steps in this exact order:
 
    NB: this will also fetch `torchvision-nightly`, which supports `torch-1.x`.
 
-If you experience installation problems, please read about [installation issues](README.md#installation-issues).
+If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
 
 ### Developer Install
@@ -130,7 +130,7 @@ Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/C
 
 ## Installation Issues
 
-If the installation process fails, first make sure [your system is supported](README.md#is-my-system-supported). And if the problem is still not addressed, please see  [this installation issues thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
+If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please see  [this installation issues thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
 
 If you encounter installation problems with conda, make sure you have the latest `conda` client:
 ```
