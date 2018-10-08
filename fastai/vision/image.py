@@ -222,7 +222,8 @@ class ImageBBox(ImageMask):
 
     def clone(self):
         bbox = self.__class__(self.px.clone())
-        bbox.labels,bbox.pad_idx = self.labels.clone(),self.pad_idx
+        bbox.labels = self.labels.clone() if self.labels is not None else None
+        bbox.pad_idx = self.pad_idx
         return bbox
     
     @classmethod
