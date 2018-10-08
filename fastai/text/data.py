@@ -320,7 +320,7 @@ def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataF
     "Create a `DataBunch` from DataFrames."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols'], kwargs)
     train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
     if test_df: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
