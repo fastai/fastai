@@ -118,9 +118,17 @@ jobs:
   - script: |
       conda install -y pytest pytest-runner
       pip install pytest-pspec
-      py.test tests tests/test_fastai.py
+      py.test tests --junitxml=result.xml tests/test_fastai.py
     displayName: 'Run tests'
     continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+
 
 
 
@@ -128,7 +136,7 @@ jobs:
 ### MacOS CI ###
 ################
 
-- job: macOS_PyPI
+- job: MacOS_PyPI
   pool:
     vmImage: 'macOS-10.13'
 
@@ -161,15 +169,23 @@ jobs:
     # Test
   - script: |
       pip install pytest pytest-runner pytest-pspec
-      py.test tests tests/test_fastai.py
+      py.test tests --junitxml=result.xml tests/test_fastai.py
     displayName: 'Run tests'
     continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+
 
 
 - job: 'MacOS_Conda'
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'macOS-10.13'
 
   # Run the pipeline with multiple Python versions
   strategy:
@@ -223,6 +239,13 @@ jobs:
   - script: |
       conda install -y pytest pytest-runner
       pip install pytest-pspec
-      py.test tests tests/test_fastai.py
+      py.test tests --junitxml=result.xml tests/test_fastai.py
     displayName: 'Run tests'
     continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
