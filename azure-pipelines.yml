@@ -56,7 +56,7 @@ jobs:
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
       # test that we can install fastai package (and torchvision)
       pip install fastai
-      pip uninstall fastai
+      pip uninstall -y fastai
       # install editable fastai, which tests the HEAD or PR
       pip install -e .[dev]
     displayName: 'Upgrade pip/setuptools. Install deps, pytorch and fastai'
@@ -174,7 +174,7 @@ jobs:
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
       # test that we can install fastai package (and torchvision)
       pip install fastai
-      pip uninstall fastai
+      pip uninstall -y fastai
       # install editable fastai, which tests the HEAD or PR
       pip install -e .[dev]
       # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
