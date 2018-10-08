@@ -96,6 +96,10 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
+    # XXX: should be fixed in 1.140 release https://github.com/Microsoft/vsts-tasks/issues/8299#issuecomment-427095427
+  - script: sudo install -d -m 0777 /usr/envs
+    displayName: Fix Conda permissions
+
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
@@ -208,6 +212,9 @@ jobs:
     inputs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
+
+  - script: sudo install -d -m 0777 /usr/local/miniconda/envs/
+    displayName: Fix Conda permissions
 
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
