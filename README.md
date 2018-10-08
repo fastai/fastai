@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/fastdotai/fastai/_apis/build/status/fastai.fastai)](https://dev.azure.com/fastdotai/fastai/_build/latest?definitionId=1)
+
 # fastai
 
 The fastai library simplifies training fast and accurate neural nets using modern best practices. See the [fastai website](http://docs.fast.ai) to get started. The library is based on research in to deep learning best practices undertaken at [fast.ai](http://www.fast.ai), and includes \"out of the box\" support for [`vision`](http://docs.fast.ai/vision.html#vision), [`text`](http://docs.fast.ai/text.html#text), [`tabular`](http://docs.fast.ai/tabular.html#tabular), and [`collab`](http://docs.fast.ai/collab.html#collab) (collaborative filtering) models. For brief examples, see the [examples](https://github.com/fastai/fastai/tree/master/examples) folder; detailed examples are provided in the full documentation. For instance, here's how to train an MNIST model using [resnet18](https://arxiv.org/abs/1512.03385) (from the [vision example](https://github.com/fastai/fastai/blob/master/examples/vision.ipynb)):
