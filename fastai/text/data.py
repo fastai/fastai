@@ -315,7 +315,7 @@ def text_data_from_tokens(path:PathOrStr, train:str='train', valid:str='valid', 
     return data_func(datasets, path, **kwargs)
 
 
-def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataFrameOrChunks, 
+def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataFrameOrChunks,
                       test_df:Optional[DataFrameOrChunks]=None, tokenizer:Tokenizer=None, data_func:DataFunc=standard_data,
                       vocab:Vocab=None, **kwargs) -> DataBunch:
     "Create a `DataBunch` from DataFrames."
@@ -324,7 +324,7 @@ def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataF
     txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols','label_dtype', 'clear_cache'], kwargs)
     train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
-    if test_df: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
+    if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
     return data_func(datasets, path, **kwargs)
 
 def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,

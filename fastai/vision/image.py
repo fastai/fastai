@@ -270,7 +270,8 @@ def open_image(fn:PathOrStr)->Image:
 
 def open_mask(fn:PathOrStr)->ImageMask:
     "Return `ImageMask` object create from mask in file `fn`."
-    return ImageMask(pil2tensor(PIL.Image.open(fn)).float())
+    x = PIL.Image.open(fn).convert('L')
+    return ImageMask(pil2tensor(x).float())
 
 def _show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None)->plt.Axes:
