@@ -1,4 +1,7 @@
 [![Build Status](https://dev.azure.com/fastdotai/fastai/_apis/build/status/fastai.fastai)](https://dev.azure.com/fastdotai/fastai/_build/latest?definitionId=1)
+[![PyPI version](https://badge.fury.io/py/fastai.svg)](https://badge.fury.io/py/fastai)
+[![Anaconda-Server Badge](https://anaconda.org/fastai/fastai/badges/version.svg)](https://anaconda.org/fastai/fastai)
+[![Anaconda-Server Badge](https://anaconda.org/fastai/fastai/badges/platforms.svg)](https://anaconda.org/fastai/fastai)
 
 # fastai
 
