@@ -4,7 +4,7 @@ from .transform import *
 from ..data import *
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextDataset', 'TextMtd', 'classifier_data', 'lm_data',
-           'pad_collate', 'read_classes', 'standard_data', 'text_data_from_df',  'text_data_from_csv', 
+           'pad_collate', 'read_classes', 'standard_data', 'text_data_from_df',  'text_data_from_csv',
             'text_data_from_folder', 'text_data_from_ids', 'text_data_from_tokens']
 
 TextMtd = IntEnum('TextMtd', 'DF CSV TOK IDS')
@@ -136,13 +136,13 @@ class TextDataset():
         return cls(folder, None, name=name, create_mtd=TextMtd.TOK, **kwargs)
 
     @classmethod
-    def from_df(cls, folder:PathOrStr, df:Union[DataFrame, pd.io.parsers.TextFileReader], 
+    def from_df(cls, folder:PathOrStr, df:Union[DataFrame, pd.io.parsers.TextFileReader],
                     tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
         "Create a dataset from texts in a dataframe"
         tokenizer = ifnone(tokenizer, Tokenizer())
         chunksize = 1 if (type(df) == DataFrame) else df.chunksize
         return cls(folder, tokenizer, df=df, create_mtd=TextMtd.DF, name=name, chunksize=chunksize, **kwargs)
-        
+
     @classmethod
     def from_csv(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
         "Create a dataset from texts in a csv file."
@@ -314,9 +314,9 @@ def text_data_from_tokens(path:PathOrStr, train:str='train', valid:str='valid', 
     return data_func(datasets, path, **kwargs)
 
 
-def text_data_from_df(path:PathOrStr, 
-                        train_df:Union[DataFrame, pd.io.parsers.TextFileReader], 
-                        valid_df:Union[DataFrame, pd.io.parsers.TextFileReader], 
+def text_data_from_df(path:PathOrStr,
+                        train_df:Union[DataFrame, pd.io.parsers.TextFileReader],
+                        valid_df:Union[DataFrame, pd.io.parsers.TextFileReader],
                         test_df:Optional[Union[DataFrame, pd.io.parsers.TextFileReader]]=None,
                         tokenizer:Tokenizer=None, data_func:DataFunc=standard_data, vocab:Vocab=None, **kwargs) -> DataBunch:
     "Create a `DataBunch` from DataFrames."
@@ -333,7 +333,7 @@ def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='trai
     "Create a `DataBunch` from texts in csv files."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols'], kwargs)
     train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
     if test: datasets.append(TextDataset.from_csv(path, tokenizer, test, vocab=train_ds.vocab, **txt_kwargs))
