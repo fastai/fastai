@@ -1,9 +1,8 @@
 import pytest, torch
 import numpy as np
-from fastai import core
+from fastai import *
 
-def test_cpus():
-    assert core.num_cpus() >= 1
+def test_cpus(): assert num_cpus() >= 1
 
 @pytest.mark.parametrize("p, q, expected", [
     (5  , 1    , [5]),
@@ -16,35 +15,35 @@ def test_cpus():
     (["ab"], ["cd", "ef"], ["ab", "ab"]),
 ])
 def test_listify(p, q, expected):
-    assert core.listify(p, q) == expected
+    assert listify(p, q) == expected
 
 def test_ifnone():
-    assert core.ifnone(None, 5) == 5
-    assert core.ifnone(1, 5)    == 1
+    assert ifnone(None, 5) == 5
+    assert ifnone(1, 5)    == 1
 
 def test_uniqueify():
-    assert core.uniqueify([1,1,3,3,5]) == [1,3,5]
-    assert core.uniqueify([1,3,5])     == [1,3,5]
-    assert core.uniqueify([1,1,1,3,5]) == [1,3,5]
+    assert uniqueify([1,1,3,3,5]) == [1,3,5]
+    assert uniqueify([1,3,5])     == [1,3,5]
+    assert uniqueify([1,1,1,3,5]) == [1,3,5]
 
 
 def test_listy():
-    assert core.is_listy([1,1,3,3,5]) == True
-    assert core.is_listy((1,1,3,3,5)) == True
-    assert core.is_listy(1)           == False
+    assert is_listy([1,1,3,3,5]) == True
+    assert is_listy((1,1,3,3,5)) == True
+    assert is_listy(1)           == False
 
 def test_tuple():
-    assert core.is_tuple((1,1,3,3,5)) == True
-    assert core.is_tuple([1])         == False
-    assert core.is_tuple(1)           == False
+    assert is_tuple((1,1,3,3,5)) == True
+    assert is_tuple([1])         == False
+    assert is_tuple(1)           == False
 
 def test_noop():
-    assert core.noop(1) is 1
+    assert noop(1) is 1
 
 def test_partition_functionality():
 
     def test_partition(a, sz, ex):
-        result = core.partition(a, sz)
+        result = partition(a, sz)
         assert len(result) == len(ex)
         assert all([a == b for a, b in zip(result, ex)])
 
@@ -68,5 +67,5 @@ def test_partition_functionality():
 
     sz = 3
     a = []
-    result = core.partition(a, sz)
+    result = partition(a, sz)
     assert len(result) == 0

@@ -50,7 +50,7 @@ jobs:
 
     # Test
   - script: |
-      pip install pytest pytest-runner pytest-pspec
+      pip install pytest pytest-runner
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -117,7 +117,6 @@ jobs:
     # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
   - script: |
       conda install -y pytest pytest-runner
-      pip install pytest-pspec
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -168,7 +167,7 @@ jobs:
 
     # Test
   - script: |
-      pip install pytest pytest-runner pytest-pspec
+      pip install pytest pytest-runner
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -237,7 +236,6 @@ jobs:
     # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
   - script: |
       conda install -y pytest pytest-runner
-      pip install pytest-pspec
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false

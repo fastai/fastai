@@ -93,7 +93,7 @@ which tells `torch` to use the 2nd GPU. Instead, if you'd like to run a test loc
 
 ### Report each sub-test name and its progress
 
-For a single or a group of tests via `pytest`:
+For a single or a group of tests via `pytest` (after `pip install pytest-pspec`):
 
    ```
    pytest --pspec tests/test_fastai.py

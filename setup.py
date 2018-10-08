@@ -84,7 +84,6 @@ setup_requirements = to_list("""
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
-    pytest-pspec
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
