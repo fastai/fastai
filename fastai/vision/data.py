@@ -20,6 +20,7 @@ def get_image_files(c:Path, check_ext:bool=True)->FilePathList:
             and (not check_ext or (o.suffix in image_extensions))]
 
 def get_annotations(fname, prefix=None):
+    "Open a COCO style json in `fname` and returns the lists of filenames (with `prefix`), bboxes and labels."
     annot_dict = json.load(open(fname))
     id2images, id2bboxes, id2cats = {}, collections.defaultdict(list), collections.defaultdict(list)
     classes = {}
@@ -151,21 +152,21 @@ class ObjectDetectDataset(Dataset):
     x_fns:Collection[Path]
     bbs:Collection[Collection[int]]
     labels:Collection[str]
-    def __post_init__(self): 
+    def __post_init__(self):
         assert len(self.x_fns)==len(self.bbs)
         assert len(self.x_fns)==len(self.labels)
         self.classes = set()
-        for x in self.labels: self.classes = self.classes.union(set(x)) 
+        for x in self.labels: self.classes = self.classes.union(set(x))
         self.classes = ['background'] + list(self.classes)
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        
+
     def __repr__(self) -> str: return f'{type(self).__name__} of len {len(self.x_fns)}'
     def __len__(self) -> int: return len(self.x_fns)
     def __getitem__(self, i:int) -> Tuple[Image,Tuple[ImageBBox, LongTensor]]:
         x = open_image(self.x_fns[i])
         cats = LongTensor([self.class2idx[l] for l in self.labels[i]])
         return x, (ImageBBox.create(self.bbs[i], *x.size, cats))
-    
+
     @classmethod
     def from_json(cls, folder, fname, valid_pct=None):
         imgs, bbs, cats = get_annotations(fname, prefix=f'{folder}/')
@@ -205,6 +206,7 @@ def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Data
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Normalize `x` with `mean` and `std`."
     return (x-mean[...,None,None]) / std[...,None,None]
+
 def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Denormalize `x` with `mean` and `std`."
     return x*std[...,None,None] + mean[...,None,None]
@@ -212,23 +214,23 @@ def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
 def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Tensor,Tensor]:
     "`b` = `x`,`y` - normalize `x` array of imgs and `do_y` optionally `y`."
     x,y = b
+    mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
     if do_y: y = normalize(y,mean,std)
     return x,y
 
 def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y=False, device=None)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
-    if device is None: device=default_device
-    return (partial(_normalize_batch, mean=mean.to(device),std=std.to(device)),
-            partial(denormalize,     mean=mean,           std=std))
+    return (partial(_normalize_batch, mean=mean, std=std),
+            partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = (tensor([0.491, 0.482, 0.447]), tensor([0.247, 0.243, 0.261]))
 cifar_norm,cifar_denorm = normalize_funcs(*cifar_stats)
 imagenet_stats = tensor([0.485, 0.456, 0.406]), tensor([0.229, 0.224, 0.225])
 imagenet_norm,imagenet_denorm = normalize_funcs(*imagenet_stats)
 
-def _create_with_tfm(train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Tfms=None, 
-                     num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None, 
+def _create_with_tfm(train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Tfms=None,
+                     num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                      collate_fn:Callable=data_collate, size:int=None, **kwargs)->'DataBunch':
         "`DataBunch` factory. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]

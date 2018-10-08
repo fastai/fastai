@@ -382,9 +382,6 @@ Upload to the main channel:
    anaconda upload /path/to/fastai-xxx.tar.bz2 -u fastai
    ```
 
-If this is just a test release that shouldn't be visible to all, add the `--label test` option. And then only those who use `-c fastai/label/test` in `conda install` command will see this package.
-Any label name can be used. `main` is the only special, implicit label if none other is used.
-
 To test, see that you can find it:
 
    ```
@@ -394,14 +391,33 @@ To test, see that you can find it:
 and then validate that the installation works correctly:
 
    ```
-   conda install -c pytorch -c fastai fastai
+   conda install -c fastai fastai
    ```
 
-Alternatively, if the package was first uploaded into a test label, once the testing is successful, copy all of the test package(s) back to the `main` label:
+##### Test Release
+
+If this is just a test release that shouldn't be visible to all, add the `--label test` option, like so:
+
+   ```
+   anaconda upload /path/to/fastai-xxx.tar.bz2 -u fastai --label test
+   ```
+
+And then only those who use `-c fastai/label/test` in `conda install` command will see this package:
+
+   ```
+   conda install -c fastai/label/test fastai
+   ```
+
+Any label name can be used. If none was specified, the implicit label `main` is assigned to the package.
+
+The label can be changed either on anaconda.org, or via it's client:
 
    ```
    anaconda label --copy test main
    ```
+
+this will copy all of the test package(s) back to the `main` label. Use this one with care.
+
 
 You can move individual packages from one label to another (anaconda v1.7+):
 
@@ -409,11 +425,15 @@ You can move individual packages from one label to another (anaconda v1.7+):
    anaconda move --from-label OLD --to-label NEW SPEC
    ```
 
-XXX: sort this one out
+Replace OLD with the old label, NEW with the new label, and SPEC with the package to move. SPEC can be either `user/package/version/file`, or `user/package/version` in which case it moves all files in that version. For example to move any released packages that match `fastai-1.0.5-*.tar.bz2` from the `test` label to `main` and thus making it visible to all:
 
-Replace OLD with the old label, NEW with the new label, and SPEC with the package to move. SPEC can be either `user/package/version/file`, or `user/package/version` in which case it moves all files in that version.
+   ```
+   anaconda move --from-label test --to-label main fastai/fastai/1.0.5
+   ```
 
-`anaconda` client won't let you upload a new package with the same final name, i.e. `fastai-1.0.0-py_1.tar.bz2`, so to release an update with the same module version you either need to first delete it from anaconda.org, or to change `meta.yaml` and bump the `number` in:
+##### Re-uploading
+
+Note, that `anaconda` client won't let you re-upload a file with the same name, as previously uploaded one, i.e. `fastai-1.0.0-py_1.tar.bz2`, so to release an update with the same package version you either (1) use `anaconda upload --force` or (2) manually delete it from anaconda.org, or (3) create a release file with a new name, by bumping the value of `number` in `meta.yaml`.
 
    ```
    build:
@@ -423,13 +443,16 @@ Replace OLD with the old label, NEW with the new label, and SPEC with the packag
 Now you need to rebuild the package, and if you changed the `number` to `2`, the package will now become `'fastai-1.0.0-py_2.tar.bz2`.
 
 
+
 #### Various Helper Tools
 
-* To render the final `meta.yaml` (after jinja2 processing):
+* To render the final `meta.yaml`:
 
    ```
    conda-render ./conda/
    ```
+
+This is very useful when you do any `jinja2` template processing inside `meta.yaml` and you want to see what the final outcome is.
 
 * Once the package is built, it can be validated:
 
@@ -446,13 +469,13 @@ Now you need to rebuild the package, and if you changed the `number` to `2`, the
 * To find out the dependencies of the package:
 
    ```
-   conda search --info -c fastai/label/test fastai
+   conda search --info -c fastai fastai
    ```
 
    Another hacky way to find out what the exact dependencies for a given conda package (added `-c fastai/label/test` to make it check our test package):
 
    ```
-   conda create --dry-run --json -n dummy fastai -c fastai/label/test
+   conda create --dry-run --json -n dummy fastai -c fastai
    ```
 
 * Other `conda search` tricks:
@@ -518,6 +541,155 @@ platform are shown):
 ### Support
 
 * [conda dev chat channel](https://gitter.im/conda/conda-build)
+
+
+
+
+
+
+## Tagging
+
+* List tags
+
+   all tags:
+   ```
+   git tag
+   ```
+
+   tags matching pattern:
+   ```
+   git tag -l "v1.8.5*"
+   ```
+
+   by date:
+   ```
+   git log --tags --simplify-by-decoration --pretty="format:%ci %d"
+   ```
+
+   last tag:
+
+   ```
+   git describe --abbrev=0 --tags
+   ```
+
+* Creating tags
+
+   To tag current checkout with tag "v1.0.5" with current date:
+
+   ```
+   git tag -a test-1.0.5 -m "test-1.0.5"
+   git push --tags origin master
+   ```
+
+   To tag commit 9fceb02a with tag "v1.0.5" with current date:
+
+   ```
+   git checkout 9fceb02a
+   git tag -a v1.0.5 -m "v1.0.5"
+   git push --tags origin master
+   git checkout master
+   ```
+
+   To tag commit 9fceb02a with tag "v1.0.5" with the date of that commit:
+
+   ```
+   git checkout 9fceb02a
+   GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "v1.0.5"
+   git push --tags origin master
+   git checkout master
+   ```
+
+   or the same without needing to `git checkout` and with typing the variables only once:
+
+   ```
+   tag="v0.1.3" commit="9fceb02a" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
+   git push --tags origin master
+   ```
+
+* Delete remote tag:
+
+   An unambiguous way:
+
+   ```
+   git push origin :refs/tags/v1.0.5
+   ```
+
+   An ambiguous way (may delete a branch if it's named the same as the tag)
+   ```
+   git push --delete origin v1.0.5
+   ```
+
+   Delete multiple tags:
+
+   ```
+   git push --delete origin tag1 tag2
+   ```
+
+* Delete local tag:
+
+   ```
+   git tag --delete v0.1.5
+   git push --tags origin master
+   ```
+   This is important since if the remote tag is deleted, but the local is not, then on the next `git push --tags origin master` it will get restored in remote.
+
+
+Useful scripts:
+
+* [git-backtag](https://github.com/lucasrangit/git-bin/blob/master/git-backtag)
+
+
+
+
+## CI/CD
+
+### Azure DevOps CI (CPU-only)
+
+#### Usage
+
+All the good stuff is here: [Builds](https://dev.azure.com/fastdotai/fastai/_build?definitionId=1)
+
+It uses `fastai/azure-pipelines.yml` script to do the testing. See notes inside the script for more details on how to modify it.
+
+By default it runs the fastai installation and a few basic tests when either `master` gets a push event, or PR is submitted.
+
+To trigger a manual run go to https://dev.azure.com/fastdotai/fastai/_build, choose Queue, choose the commit hash (most likely of the latest commit).
+
+`[...]` options in the right upper corner, next to `Queue` hides a bunch of useful functions:
+
+  * 'Pause builds' which may be important...
+  * Status Badge MD code for the README.md project page
+
+To see various stats/graphs based on tests outcome, go to [Runs](https://dev.azure.com/fastdotai/fastai/_TestManagement/Runs?runId=1&_a=runCharts)
+
+Under Project Settings, important things are:
+
+* [Notifications](https://dev.azure.com/fastdotai/fastai/_settings/notifications)
+
+
+
+#### Configuration
+
+- to [enable azure CI](https://github.com/marketplace/azure-pipelines)
+
+- [pipelines cookbook](https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts)
+
+- azure [installed automatically @github webhooks](https://github.com/fastai/fastai/settings/hooks) these push events:
+* triggers CI build on every push! (ouch!):
+
+   ```
+   https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)
+   ```
+* triggers CI build on every PR:
+   ```
+   https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
+   ```
+
+
+
+### travis-ci.org https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&utm_medium=notification
+https://github.com/python-packaging-tutorial/hello-pypi/tree/master-with-ci
+
 
 
 

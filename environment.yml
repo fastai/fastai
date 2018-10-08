@@ -38,7 +38,7 @@ dependencies:
 - jupyter_client
 - jupyter_console
 - jupyter_core
-#- conda-forge::jupyter_contrib_nbextensions  
+#- conda-forge::jupyter_contrib_nbextensions
 - libiconv
 - libpng
 - libsodium
@@ -81,7 +81,7 @@ dependencies:
 - sqlite
 - statsmodels
 - testfixtures
-- testpath<0.4
+- testpath>=0.4.2
 - tk
 - tornado<5
 - tqdm
@@ -94,7 +94,7 @@ dependencies:
 - pytorch<0.4
 - bcolz
 - prompt_toolkit
-- pytest
+#- pytest
 - cython
 - pip:
   - torchvision>=0.1.9
@@ -105,7 +105,7 @@ dependencies:
   - graphviz
   - sklearn_pandas
   - feather-format
-  - plotnine
+#  - plotnine
   - kaggle-cli
   - ipywidgets
   - nbconvert

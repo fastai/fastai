@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/fastdotai/fastai/_apis/build/status/fastai.fastai)](https://dev.azure.com/fastdotai/fastai/_build/latest?definitionId=1)
+
 # fastai
 
 The fastai library simplifies training fast and accurate neural nets using modern best practices. See the [fastai website](http://docs.fast.ai) to get started. The library is based on research in to deep learning best practices undertaken at [fast.ai](http://www.fast.ai), and includes \"out of the box\" support for [`vision`](http://docs.fast.ai/vision.html#vision), [`text`](http://docs.fast.ai/text.html#text), [`tabular`](http://docs.fast.ai/tabular.html#tabular), and [`collab`](http://docs.fast.ai/collab.html#collab) (collaborative filtering) models. For brief examples, see the [examples](https://github.com/fastai/fastai/tree/master/examples) folder; detailed examples are provided in the full documentation. For instance, here's how to train an MNIST model using [resnet18](https://arxiv.org/abs/1512.03385) (from the [vision example](https://github.com/fastai/fastai/blob/master/examples/vision.ipynb)):
@@ -11,7 +13,7 @@ learn.fit(1)
 
 ## Note for [course.fast.ai](http://course.fast.ai) students
 
-If you are using fastai for any [course.fast.ai](http://course.fast.ai) course, please do *NOT* install fastai from pip or conda using the instructions below; the instructions below are for fastai v1, but the courses use fastai 0.7. For the courses, you should simply follow the instructions in the course (i.e. clone this repo, cd to it, and `conda env update`), and the notebooks will work (there is a symlink to old/fastai/, which is fastai 0.7, in each course notebook directory), or else use `pip install fastai==0.7.0` to install the version compatible with the course.
+If you are using `fastai` for any [course.fast.ai](http://course.fast.ai) course, you need to use `fastai 0.7.x`. Please ignore the rest of this document, which is written for `fastai 1.0.x`, and instead follow the installation instructions [here](http://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
 
 *Note: If you want to learn how to use fastai v1 from its lead developer, Jeremy Howard, he will be teaching it in the [Deep Learning Part I](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one) course at the University of San Francisco from Oct 22nd, 2018.*
 
@@ -19,21 +21,35 @@ If you are using fastai for any [course.fast.ai](http://course.fast.ai) course, 
 
 `fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favourite python package manager.
 
+If there is no `pytorch` preview conda or pip package available for your system, you may still be able to [build it from source](https://pytorch.org/get-started/locally/).
+
+
 ### Conda Install
 
 Follow the following 2 steps in this exact order:
 
-1. Install the nightly `pytorch` build, with `cudaXX` package version matching your system's setup. For example, for CUDA 9.2:
-   ```
-   conda install -c pytorch pytorch-nightly cuda92
-   ```
-   If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Conda/Python3.6|Python3.7 and your CUDA version and it will give you the correct install instruction. Instructions to build `pytorch` from source are provided at the same location.
+1. Install the nightly `pytorch` build and the corresponding `torchvision` package. Depending on whether you have a CUDA-enabled system or not, follow the corresponding "GPU" or the "CPU" entry instructions:
 
-   If your system doesn't have CUDA, you can install the CPU-only `pytorch` build:
+   * GPU
 
-   ```
-   conda install -c pytorch pytorch-nightly-cpu
-   ```
+      For CUDA-enabled systems, you need to choose the correct `cudaXX` conda package version, matching your system's setup. For example, for CUDA 9.2:
+
+      ```
+      conda install -c pytorch pytorch-nightly cuda92
+      conda install -c fastai torchvision-nightly
+      ```
+
+      If you have a different CUDA version, find the right instructions for the first command [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Conda/Python3.6|Python3.7 and your CUDA version and it will give you the correct installation instruction.
+
+   * CPU
+
+      For systems without CUDA:
+
+      ```
+      conda install -c pytorch pytorch-nightly-cpu
+      conda install -c fastai torchvision-nightly-cpu
+      ```
+
 
 2. Install `fastai`:
 
@@ -41,32 +57,31 @@ Follow the following 2 steps in this exact order:
    conda install -c fastai fastai
    ```
 
-   NB: We are currently using a re-packaged `torchvision` as `torchvision-nightly` in order to support `pytorch-nightly`, which is required for using `fastai`.
-
-If you encounter installation problems, make sure you have the latest `conda` client:
-```
-conda update conda
-```
-
-If the issue persists, please read about [installation issues](README.md#installation-issues).
+If you experience installation problems, please read about [installation issues](README.md#installation-issues).
 
 ### PyPI Install
 
 Follow the following 2 steps in this exact order:
 
-1. Install the nightly `pytorch` build, with `cudaXX` package version matching your system's setup. For example for CUDA 9.2:
+1. Install the nightly `pytorch` build. Depending on whether you have a CUDA-enabled system or not, follow the corresponding "GPU" or the "CPU" entry instructions:
 
-   ```
-   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
-   ```
+   * GPU
 
-   If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Pip/Python3.6|Python3.7 and your CUDA version and it will give you the correct install instruction. Instructions to build `pytorch` from source are provided at the same location.
+      For CUDA-enabled systems, you need to choose the correct `cudaXX` pip package version, matching your system's setup. For example, for CUDA 9.2:
 
-If your system doesn't have CUDA, you can install the CPU-only `torch` build:
+      ```
+      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
+      ```
 
-   ```
-   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-   ```
+      If you have a different CUDA version, find the right build [here](https://pytorch.org/get-started/locally/). Choose Preview/Your OS/Pip/Python3.6|Python3.7 and your CUDA version and it will give you the correct installation instruction.
+
+   * CPU
+
+      For systems without CUDA:
+
+      ```
+      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+      ```
 
 2. Install `fastai`:
 
@@ -74,7 +89,7 @@ If your system doesn't have CUDA, you can install the CPU-only `torch` build:
    pip install fastai
    ```
 
-   NB: this will also fetch `torchvision-nightly`, see the conda entry above for details.
+   NB: this will also fetch `torchvision-nightly`, which supports `torch-1.x`.
 
 If you experience installation problems, please read about [installation issues](README.md#installation-issues).
 
@@ -113,6 +128,11 @@ Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/C
 ## Installation Issues
 
 If the installation process fails, first make sure [your system is supported](README.md#is-my-system-supported). And if the problem is still not addressed, please see  [this installation issues thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
+
+If you encounter installation problems with conda, make sure you have the latest `conda` client:
+```
+conda update conda
+```
 
 
 ### Is My System Supported?

@@ -44,7 +44,7 @@ class TabularDataset(DatasetBase):
     def __getitem__(self, idx)->Tuple[Tuple[LongTensor,FloatTensor], Tensor]:
         return ((self.cats[idx], self.conts[idx]), self.y[idx])
     @property
-    def c(self)->int: return 1 if isinstance(self.y, FloatTensor) else self.y.max()+1
+    def c(self)->int: return 1 if isinstance(self.y, FloatTensor) else self.y.max().item()+1
 
     def get_emb_szs(self, sz_dict): return [def_emb_sz(self.df, n, sz_dict) for n in self.cat_names]
 
@@ -76,7 +76,7 @@ def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:s
     valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                              train_ds.cont_names, train_ds.stats, log_output)
     datasets = [train_ds, valid_ds]
-    if test_df:
+    if test_df is not None:
         datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                                       train_ds.cont_names, train_ds.stats, log_output))
     return DataBunch.create(*datasets, path=path, **kwargs)

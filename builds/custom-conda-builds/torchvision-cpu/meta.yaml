@@ -1,0 +1,41 @@
+package:
+  name: torchvision-nightly-cpu
+  version: 0.2.1
+
+source:
+  git_rev: v0.2.1
+  git_url: https://github.com/pytorch/vision.git
+
+build:
+  number: 0
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - python<=3.7
+    - setuptools
+  run:
+    - python<=3.7
+    - numpy >=1.11
+    - pillow >=4.1.1
+    - six
+    - pytorch-nightly-cpu
+
+test:
+  imports:
+    - torchvision
+  requires:
+
+
+about:
+  home: https://github.com/pytorch
+  license: Apache Software License
+  license_family: APACHE
+  license_file: ''
+  summary: 'image and video datasets and models for torch deep learning'
+  doc_url: ''
+  dev_url: ''
+
+extra:
+  recipe-maintainers: ''

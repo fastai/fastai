@@ -20,7 +20,8 @@ https://github.com/fastai/fastai/blob/master/docs-dev/style.md) first. (Note tha
 ## Do you intend to add a new feature or change an existing one?
 
 * You can suggest your change on the [fastai forum](http://forums.fast.ai/) to see if others are interested or want to help. [This topic](http://forums.fast.ai/t/fastai-v1-adding-features/23041/8) lists the features that will be added to fastai in the foreseeable future. Be sure to read it too!
-* PRs are welcome with a complete description of the new feature and an example of how it's use. Be sure to document your code and read the [doc on code style](https://github.com/fastai/fastai/blob/master/docs-dev/style.md) and [the one on abbreviations](https://github.com/fastai/fastai/blob/master/docs-dev/abbr.md).
+* Before implementing a non-trivial new feature, first create a notebook version of your new feature, like those in [dev_nb](https://github.com/fastai/fastai_old/tree/master/dev_nb). It should show step-by-step what your code is doing, and why, with the result of each step. Try to simplify the code as much as possible. When you're happy with it, let us know on the forum (include a link to a gist with your notebook.)
+* Once your approach has been discussed and confirmed on the forum, you are welcome to push a PR, including a complete description of the new feature and an example of how it's use. Be sure to document your code and read the [doc on code style](https://github.com/fastai/fastai/blob/master/docs-dev/style.md) and [the one on abbreviations](https://github.com/fastai/fastai/blob/master/docs-dev/abbr.md).
 
 ## Do you have questions about the source code?
 

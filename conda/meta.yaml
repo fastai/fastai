@@ -49,7 +49,7 @@ requirements:
 # note: "module # [py36]" tells conda-build that this requirement is only for python3.6, it's not a comment.
   run:
     - dataclasses # [py36]
-    - fastprogress >=0.1.9
+    - fastprogress >=0.1.10
     - ipython
     - jupyter
     - matplotlib
@@ -64,15 +64,21 @@ requirements:
     - spacy
     - traitlets
     - typing
-    - pytorch-nightly
-    - torchvision-nightly
+
+# removed these and instead are asking users to install those directly until a proper pytorch-1.0.0 and the corresponding torchvision are released on conda. otherwise can't support these two sets:
+#    - pytorch-nightly
+#    - torchvision-nightly
+#
+#    - pytorch-nightly-cpu
+#    - torchvision-nightly-cpu
 
 # removing until pytorch-1.0.0 release - conda can't handle these dependencies and tries to pull in pytorch-0.4.1 due to torchvision depending on it. yet, pytorch doesn't release torchvision nightly build... no way out
 #    - pytorch >=1.0.0
 
 test:
   imports:
-    - fastai
+# removing the loading test for now, since we temporarily made fastai conda package not depend on torch/torchvision due to dependencies hell - see above.
+#    - fastai
 
   requires:
     - python
