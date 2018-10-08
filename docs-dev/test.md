@@ -119,6 +119,12 @@ To disable capturing and get the output normally use `-s` or `--capture=no`:
    pytest -s tests/test_core.py
    ```
 
+To send test results to JUnit format output:
+
+   ```
+   py.test tests --junitxml=result.xml
+   ```
+
 
 ### Color control
 
