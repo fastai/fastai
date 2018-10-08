@@ -50,5 +50,4 @@ def convert_all(folder, dest_path='.'):
         if last_checked:
             last_changed = os.path.getmtime(fname)
             if last_changed < last_checked: continue
-        print(f'Converts {fname}')
         convert_nb(fname, dest_path=dest_path)
