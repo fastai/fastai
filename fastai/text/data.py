@@ -33,7 +33,6 @@ class TextDataset():
         self.ids = np.load(self.path/f'{self.name}_ids.npy')
         if os.path.isfile(self.path/f'{self.name}_lbl.npy'):
             self.labels = np.load(self.path/f'{self.name}_lbl.npy')
-            print(self.labels)
         else: self.labels = np.zeros((len(self.ids),), dtype=label_dtype)
         if classes: self.classes = classes
         elif os.path.isfile(self.path/'classes.txt'): self.classes = read_classes(self.path/'classes.txt')
