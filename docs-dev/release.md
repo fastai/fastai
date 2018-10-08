@@ -634,6 +634,42 @@ Useful scripts:
 
 
 
+## CI/CD
+
+### Azure DevOps CI
+
+#### Usage
+
+All the good stuff is here: [Builds](https://dev.azure.com/fastdotai/fastai/_build?definitionId=1)
+
+It uses `fastai/azure-pipelines.yml` script to do the testing. See notes inside the script for more details on how to modify it.
+
+By default it runs the fastai installation and a few basic tests every hour or so.
+
+To trigger a manual run go to https://dev.azure.com/fastdotai/fastai/_build, choose Queue, choose the commit hash, e.g. HEAD
+
+`[...]` options in the right upper corner, next to `Queue` hides a bunch of useful functions, one of which 'Pause builds' which may be important...
+
+
+
+#### Configuration
+
+- add support for azure ci (instead of travis CI)
+https://github.com/marketplace/azure-pipelines
+
+- cookbook:
+https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts
+
+- azure@github installed automatically these push events:
+https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)
+https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
+XXX: we need to make sure these trigger the run:
+
+
+
+### travis-ci.org https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&utm_medium=notification
+https://github.com/python-packaging-tutorial/hello-pypi/tree/master-with-ci
+
 
 
 
