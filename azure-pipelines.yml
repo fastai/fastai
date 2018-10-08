@@ -51,16 +51,16 @@ jobs:
     # Test
   - script: |
       pip install pytest pytest-runner pytest-pspec
-      py.test tests tests/test_fastai.py
+      py.test tests --junitxml=result.xml tests/test_fastai.py
     displayName: 'Run tests'
     continueOnError: false
 
-  #   # Publish test results to the Azure DevOps server
-  # - task: PublishTestResults@2
-  #   inputs:
-  #     testResultsFiles: '**/test-*.xml'
-  #     testRunTitle: 'Python $(python.version)'
-  #   condition: succeededOrFailed()
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
 
 
 
