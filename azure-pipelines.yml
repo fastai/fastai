@@ -23,7 +23,7 @@
 
 jobs:
 
-  ################
+################
 ### Linux CI ###
 ################
 
@@ -50,10 +50,14 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-    # Install dependencies and fastai
+    # Install dependencies and fastai git HEAD or PR
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+      # test that we can install fastai package (and torchvision)
+      pip install fastai
+      pip uninstall fastai
+      # install editable fastai, which tests the HEAD or PR
       pip install -e .[dev]
     displayName: 'Upgrade pip/setuptools. Install deps, pytorch and fastai'
     continueOnError: false
@@ -108,7 +112,7 @@ jobs:
       environmentName: 'fastai-cpu'
       packageSpecs: 'python=$(python.version)'
 
-    # Install dependencies and fastai
+    # Install dependencies and fastai git HEAD or PR
   - script: |
       conda activate fastai-cpu
       conda install -y conda
@@ -116,10 +120,10 @@ jobs:
       # pytorch + torchvision
       conda install -y -c pytorch pytorch-nightly-cpu
       conda install -y -c fastai torchvision-nightly-cpu
-      # fastai deps
+      # test that we can install fastai package
       conda install -y -c fastai fastai
       conda uninstall -y fastai
-      # fastai
+      # install editable fastai, which tests the HEAD or PR
       pip install -e .[dev]
     displayName: 'Upgrade pip/conda/setuptools. Install deps, pytorch and fastai'
     continueOnError: false
@@ -164,10 +168,14 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-    # Install dependencies
+    # Install dependencies and fastai git HEAD or PR
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
       pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+      # test that we can install fastai package (and torchvision)
+      pip install fastai
+      pip uninstall fastai
+      # install editable fastai, which tests the HEAD or PR
       pip install -e .[dev]
       # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
       mkdir -p ~/.matplotlib
@@ -224,7 +232,7 @@ jobs:
       environmentName: 'fastai-cpu'
       packageSpecs: 'python=$(python.version)'
 
-    # Install dependencies and fastai
+    # Install dependencies and fastai git HEAD or PR
   - script: |
       conda activate fastai-cpu
       conda install -y conda
@@ -232,10 +240,10 @@ jobs:
       # pytorch + torchvision
       conda install -y -c pytorch pytorch-nightly-cpu
       conda install -y -c fastai torchvision-nightly-cpu
-      # fastai deps
+      # test that we can install fastai package
       conda install -y -c fastai fastai
       conda uninstall -y fastai
-      # fastai
+      # install editable fastai, which tests the HEAD or PR
       pip install -e .[dev]
       # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
       mkdir -p ~/.matplotlib
