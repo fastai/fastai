@@ -17,11 +17,12 @@ class TextDataset():
     "Basic dataset for NLP tasks."
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
-                 name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None, label_dtype=np.int64,
+                 name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None,
                  create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None, clear_cache:bool=False):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
-        self.label_cols,self.label_dtype = ifnone(label_cols, list(range(n_labels))), label_dtype
+        self.label_cols = ifnone(label_cols, list(range(n_labels)))
+        self.label_dtype = np.float32 if len(self.label_cols) > 1 else np.int64
         self.txt_cols,self.chunksize,self.name,self.df,self.create_mtd = txt_cols,chunksize,name,df,create_mtd
         self.vocab=vocab
         os.makedirs(self.path, exist_ok=True)
@@ -315,16 +316,16 @@ def text_data_from_tokens(path:PathOrStr, train:str='train', valid:str='valid', 
     return data_func(datasets, path, **kwargs)
 
 
-def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataFrameOrChunks, 
+def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataFrameOrChunks,
                       test_df:Optional[DataFrameOrChunks]=None, tokenizer:Tokenizer=None, data_func:DataFunc=standard_data,
                       vocab:Vocab=None, **kwargs) -> DataBunch:
     "Create a `DataBunch` from DataFrames."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols','label_dtype', 'clear_cache'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache'], kwargs)
     train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
-    if test_df: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
+    if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
     return data_func(datasets, path, **kwargs)
 
 def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
@@ -332,7 +333,7 @@ def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='trai
     "Create a `DataBunch` from texts in csv files."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'label_dtype', 'clear_cache'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache'], kwargs)
     train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
     datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
     if test: datasets.append(TextDataset.from_csv(path, tokenizer, test, vocab=train_ds.vocab, **txt_kwargs))
