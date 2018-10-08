@@ -103,7 +103,7 @@ jobs:
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
-  - task: CondaEnvironment@1
+  - task: CondaEnvironment@0
     inputs:
       environmentName: 'fastai-cpu'
       packageSpecs: 'python=$(python.version)'
@@ -219,7 +219,7 @@ jobs:
     # Conda setup environment.
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
     #
-  - task: CondaEnvironment@1
+  - task: CondaEnvironment@0
     inputs:
       environmentName: 'fastai-cpu'
       packageSpecs: 'python=$(python.version)'
