@@ -43,5 +43,12 @@ def convert_nb(fname, dest_path='.'):
 def convert_all(folder, dest_path='.'):
     "Convert all notebooks in `folder` to html pages in `dest_path`."
     path = Path(folder)
-    nb_files = path.glob('*.ipynb')
-    for file in nb_files: convert_nb(file, dest_path=dest_path)
+    fname_last_checked = path/".last_checked"
+    last_checked = os.path.getmtime(fname_last_checked) if fname_last_checked.exists() else None
+    for fname in path.glob("*.ipynb"):
+        # avoid to change too many files if the nb hasn't changed since the last conversion
+        if last_checked:
+            last_changed = os.path.getmtime(fname)
+            if last_changed < last_checked: continue
+        print(f'Converts {fname}')
+        convert_nb(fname, dest_path=dest_path)
