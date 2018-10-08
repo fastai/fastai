@@ -314,11 +314,9 @@ def text_data_from_tokens(path:PathOrStr, train:str='train', valid:str='valid', 
     return data_func(datasets, path, **kwargs)
 
 
-def text_data_from_df(path:PathOrStr,
-                        train_df:Union[DataFrame, pd.io.parsers.TextFileReader],
-                        valid_df:Union[DataFrame, pd.io.parsers.TextFileReader],
-                        test_df:Optional[Union[DataFrame, pd.io.parsers.TextFileReader]]=None,
-                        tokenizer:Tokenizer=None, data_func:DataFunc=standard_data, vocab:Vocab=None, **kwargs) -> DataBunch:
+def text_data_from_df(path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataFrameOrChunks, 
+                      test_df:Optional[DataFrameOrChunks]=None, tokenizer:Tokenizer=None, data_func:DataFunc=standard_data,
+                      vocab:Vocab=None, **kwargs) -> DataBunch:
     "Create a `DataBunch` from DataFrames."
     tokenizer = ifnone(tokenizer, Tokenizer())
     path=Path(path)
