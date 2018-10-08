@@ -51,7 +51,7 @@ jobs:
     # Test
   - script: |
       pip install pytest pytest-runner pytest-pspec
-      py.test tests --junitxml=result.xml tests/test_fastai.py
+      py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -118,7 +118,7 @@ jobs:
   - script: |
       conda install -y pytest pytest-runner
       pip install pytest-pspec
-      py.test tests --junitxml=result.xml tests/test_fastai.py
+      py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -169,7 +169,7 @@ jobs:
     # Test
   - script: |
       pip install pytest pytest-runner pytest-pspec
-      py.test tests --junitxml=result.xml tests/test_fastai.py
+      py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -238,7 +238,7 @@ jobs:
   - script: |
       conda install -y pytest pytest-runner
       pip install pytest-pspec
-      py.test tests --junitxml=result.xml tests/test_fastai.py
+      py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
