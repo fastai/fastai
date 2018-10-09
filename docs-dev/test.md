@@ -5,17 +5,17 @@
 Table of Contents
 -----------------
 
-   * [Testing fastai](test.md#testing-fastai)
-      * [Table of Contents](test.md#table-of-contents)
-      * [Notebook integration tests](test.md#notebook-integration-tests)
-      * [Automated tests](test.md#automated-tests)
-         * [Choosing which tests to run](test.md#choosing-which-tests-to-run)
-         * [To GPU or not to GPU](test.md#to-gpu-or-not-to-gpu)
-         * [Report each sub-test name and its progress](test.md#report-each-sub-test-name-and-its-progress)
-         * [Output capture](test.md#output-capture)
-         * [Color control](test.md#color-control)
-         * [Sending test report to online pastebin service](test.md#sending-test-report-to-online-pastebin-service)
-   * [Writing Tests](test.md#writing-tests)
+   * [Testing fastai](#testing-fastai)
+      * [Table of Contents](#table-of-contents)
+      * [Notebook integration tests](#notebook-integration-tests)
+      * [Automated tests](#automated-tests)
+         * [Choosing which tests to run](#choosing-which-tests-to-run)
+         * [To GPU or not to GPU](#to-gpu-or-not-to-gpu)
+         * [Report each sub-test name and its progress](#report-each-sub-test-name-and-its-progress)
+         * [Output capture](#output-capture)
+         * [Color control](#color-control)
+         * [Sending test report to online pastebin service](#sending-test-report-to-online-pastebin-service)
+   * [Writing Tests](#writing-tests)
 <!--te-->
 
 ## Notebook integration tests
