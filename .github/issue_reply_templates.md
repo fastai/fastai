@@ -16,11 +16,11 @@ Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai a
 
 * fastai: install issues [v1]
 
-fastai 1.0.x installation issues should be reported [here](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111) instead. Thank you.
+fastai 1.0.x installation issues should be reported/discussed [here](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111) instead. Thank you.
 
 * fastai: install issues [v0]
 
-fastai 0.7.x installation issues should be reported [here](http://forums.fast.ai/t/fastai-v0-install-issues-thread/24652) instead. Thank you.
+fastai 0.7.x installation issues should be reported/discussed [here](http://forums.fast.ai/t/fastai-v0-install-issues-thread/24652) instead. Thank you.
 
 
 ### fastai Entries
