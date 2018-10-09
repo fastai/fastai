@@ -5,16 +5,16 @@
 Table of Contents
 -----------------
 
-   * [fastai Style Guide](docs-dev/style.md#fastai-style-guide)
-      * [Table of Contents](docs-dev/style.md#table-of-contents)
-      * [Jeremy's notes on fastai coding style](docs-dev/style.md#jeremys-notes-on-fastai-coding-style)
-      * [Style guide](docs-dev/style.md#style-guide)
-         * [Symbol naming](docs-dev/style.md#symbol-naming)
-         * [Layout](docs-dev/style.md#layout)
-         * [Algorithms](docs-dev/style.md#algorithms)
-         * [Other stuff](docs-dev/style.md#other-stuff)
-         * [Documentation](docs-dev/style.md#documentation)
-      * [FAQ](docs-dev/style.md#faq)
+   * [fastai Style Guide](style.md#fastai-style-guide)
+      * [Table of Contents](style.md#table-of-contents)
+      * [Jeremy's notes on fastai coding style](style.md#jeremys-notes-on-fastai-coding-style)
+      * [Style guide](style.md#style-guide)
+         * [Symbol naming](style.md#symbol-naming)
+         * [Layout](style.md#layout)
+         * [Algorithms](style.md#algorithms)
+         * [Other stuff](style.md#other-stuff)
+         * [Documentation](style.md#documentation)
+      * [FAQ](style.md#faq)
 <!--te-->
 
 ## Jeremy's notes on fastai coding style
