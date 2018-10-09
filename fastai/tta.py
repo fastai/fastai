@@ -11,15 +11,6 @@ def pred_batch(learn:Learner, is_valid:bool=True) -> Tuple[Tensors, Tensors, Ten
     return x,y,learn.model(x).detach()
 Learner.pred_batch = pred_batch
 
-def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None) -> List[Tensor]:
-    "Predicts the output of the elements in the dataloader"
-    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar)]
-
-def _learn_get_preds(learn:Learner, is_test:bool=False) -> List[Tensor]:
-    "Wrapper of get_preds for learner"
-    return get_preds(learn.model, learn.data.holdout(is_test))
-Learner.get_preds = _learn_get_preds
-
 def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[List[Tensor]]:
     "Computes the outputs for several augmented inputs for TTA"
     dl = learn.data.holdout(is_test)

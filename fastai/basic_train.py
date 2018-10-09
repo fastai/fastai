@@ -3,7 +3,8 @@ from .torch_core import *
 from .data import *
 from .callback import *
 
-__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train_epoch', 'validate', 'default_lr', 'default_wd']
+__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'get_preds', 'loss_batch', 'train_epoch', 'validate', 'default_lr',
+           'default_wd']
 
 default_lr = slice(3e-3)
 default_wd = 1e-2
@@ -40,6 +41,10 @@ def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
     with torch.no_grad():
         return zip(*[loss_batch(model, xb, yb, loss_fn, cb_handler=cb_handler, metrics=metrics)
                        for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None))])
+    
+def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
+    "Predict the output of the elements in the dataloader."
+    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar, cb_handler=cb_handler)]
 
 def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossFunction)->None:
     "Simple training of `model` for 1 epoch of `dl` using optim `opt` and loss function `loss_func`."
@@ -162,6 +167,9 @@ class Learner():
     def load(self, name:PathOrStr):
         "Load model `name` from `self.model_dir`."
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+        
+    def get_preds(self, is_test:bool=False) -> List[Tensor]:
+        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks))
 
 @dataclass
 class LearnerCallback(Callback):
