@@ -677,6 +677,22 @@ Useful scripts:
 
 
 
+### Rollback release commit and tag
+
+In case something is discovered wrong after release commit was made, here is how to rollback.
+
+```
+git reset --hard HEAD~1                        # rollback the commit
+git tag -d `git describe --tags --abbrev=0`    # delete the tag
+```
+
+Careful with this as it'll reset any modified files, probably `git stash` first just in case.
+
+Once, things were fixed, `git push`, etc...
+
+
+
+
 ## CI/CD
 
 ### Azure DevOps CI (CPU-only)
