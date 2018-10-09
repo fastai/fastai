@@ -2,6 +2,12 @@ from .core import *
 from .layers import *
 from .learner import *
 from .initializers import *
+try: import bcolz
+except (ImportError, ModuleNotFoundError):
+    print("WARNING: The Module 'bcolz' is required for precomputing activations in ConvLearner ('precompute=True'),")
+    print("but is not installed on your system. The parameter 'precompute' will be automatically set to False.")
+    print("Optional: Do 'conda install bcolz' if you want to use this functionality.")
+    bcolz = False
 
 model_meta = {
     resnet18:[8,6], resnet34:[8,6], resnet50:[8,6], resnet101:[8,6], resnet152:[8,6],
@@ -97,9 +103,10 @@ class ConvLearner(Learner):
         super().__init__(data, models, **kwargs)
         if hasattr(data, 'is_multi') and not data.is_reg and self.metrics is None:
             self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
-        if precompute: self.save_fc1()
+        if precompute and bcolz: 
+            self.save_fc1()
         self.freeze()
-        self.precompute = precompute
+        self.precompute = (precompute and bcolz)
 
     def _get_crit(self, data):
         if not hasattr(data, 'is_multi'): return super()._get_crit(data)
@@ -144,11 +151,11 @@ class ConvLearner(Learner):
 
     def set_data(self, data, precompute=False):
         super().set_data(data)
-        if precompute:
-            self.unfreeze()
-            self.save_fc1()
-            self.freeze()
-            self.precompute = True
+        if precompute and bcolz:
+                self.unfreeze()
+                self.save_fc1()
+                self.freeze()
+                self.precompute = True
         else:
             self.freeze()
 
