@@ -103,8 +103,7 @@ class ConvLearner(Learner):
         super().__init__(data, models, **kwargs)
         if hasattr(data, 'is_multi') and not data.is_reg and self.metrics is None:
             self.metrics = [accuracy_thresh(0.5)] if self.data.is_multi else [accuracy]
-        if precompute and bcolz: 
-            self.save_fc1()
+        if (precompute and bcolz): self.save_fc1()
         self.freeze()
         self.precompute = (precompute and bcolz)
 
