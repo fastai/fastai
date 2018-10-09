@@ -4,7 +4,7 @@
 
 [![Anaconda-Server Badge](https://anaconda.org/fastai/fastai/badges/platforms.svg)](https://anaconda.org/fastai/fastai)
 [![fastai python compatibility](https://img.shields.io/pypi/pyversions/fastai.svg)](https://pypi.python.org/pypi/fastai)
-[![fastai version](https://img.shields.io/pypi/l/fastai.svg)](https://pypi.python.org/pypi/fastai)
+[![fastai license](https://img.shields.io/pypi/l/fastai.svg)](https://pypi.python.org/pypi/fastai)
 
 # fastai
 
