@@ -44,3 +44,4 @@ class LRFinder(LearnerCallback):
         # restore the valid_dl we turned of on `__init__`
         self.data.valid_dl = self.valid_dl
         self.learn.load('tmp')
+        if hasattr(self.learn.model, 'reset'): self.learn.model.reset()

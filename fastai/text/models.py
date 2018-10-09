@@ -45,6 +45,9 @@ class WeightDropout(nn.Module):
             return self.module.forward(*args)
 
     def reset(self):
+        for layer in self.layer_names:
+            raw_w = getattr(self, f'{layer}_raw')
+            self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=False)
         if hasattr(self.module, 'reset'): self.module.reset()
 
 class EmbeddingDropout(nn.Module):
