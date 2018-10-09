@@ -2,6 +2,8 @@
 
 # original script: https://github.com/ekalinin/github-markdown-toc
 #
+# best executed from inside the folder with .md file to avoid filename.md# prefix
+#
 # modified by stas:
 # - insert TOC header tag w/ TOC's contents
 # - in --insert mode don't dump the TOC to STDOUT (need to be quiet)
@@ -64,11 +66,17 @@ gh_toc_md2html() {
     if [ -f "$TOKEN" ]; then
         URL="$URL?access_token=$(cat $TOKEN)"
     fi
-    curl -s --user-agent "$gh_user_agent" \
+    OUTPUT="$(curl -s --user-agent "$gh_user_agent" \
         --data-binary @"$gh_file_md" -H "Content-Type:text/plain" \
-        $URL
+        $URL)"
+
     if [ "$?" != "0" ]; then
         echo "XXNetworkErrorXX"
+    fi
+    if [ "$(echo "${OUTPUT}" | awk '/API rate limit exceeded/')" != "" ]; then
+        echo "XXRateLimitXX"
+    else
+        echo "${OUTPUT}"
     fi
 }
 
@@ -129,6 +137,14 @@ gh_toc(){
              echo "Please make sure curl is installed and check your network connectivity"
              exit 1
         fi
+        if [ "$rawhtml" == "XXRateLimitXX" ]; then
+             echo "Parsing local markdown file requires access to github API"
+             echo "Error: You exceeded the hourly limit. See: https://developer.github.com/v3/#rate-limiting"
+             TOKEN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/token.txt"
+             echo "or place github auth token here: $TOKEN"
+             exit 1
+        fi
+
         local toc=`echo "$rawhtml" | gh_toc_grab "$gh_src_copy"`
         if [ "$need_replace" == "no" ]; then
             echo "$toc"
@@ -171,7 +187,7 @@ gh_toc(){
 # Grabber of the TOC from rendered html
 #
 # $1 — a source url of document.
-# It's need if TOC is generated for multiple documents.
+# It's needed if TOC is generated for multiple documents.
 #
 gh_toc_grab() {
 	# if closed <h[1-6]> is on the new line, then move it on the prev line
