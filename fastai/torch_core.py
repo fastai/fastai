@@ -283,3 +283,5 @@ def show_install(show_nvidia_smi:bool=False):
         print("Optional package(s) to enhance the diagnostics can be installed with:")
         print(f"pip install {' '.join(opt_mods)}")
         print("Once installed, re-run this utility to get the additional information")
+
+def trange_of(x): return torch.arange(len(x))
