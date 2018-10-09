@@ -30,6 +30,8 @@ Table of Contents
          * [Documentation](#documentation)
          * [Support](#support)
       * [Tagging](#tagging)
+         * [Rollback release commit and tag](#rollback-release-commit-and-tag)
+         * [Run install tests in a fresh environment](#run-install-tests-in-a-fresh-environment)
       * [CI/CD](#cicd)
          * [Azure DevOps CI (CPU-only)](#azure-devops-ci-cpu-only)
             * [Usage](#usage)
@@ -691,7 +693,23 @@ Careful with this as it'll reset any modified files, probably `git stash` first 
 Once, things were fixed, `git push`, etc...
 
 
+### Run install tests in a fresh environment
 
+While CI builds now do exactly this, it might be still useful to be able to do it manually, since CI builds are very slow to tweak and experiment with. So here is a quick copy-n-paste recipe to build one and clean it up.
+
+```
+conda create -y  python=3.6 --name fastai-py3.6
+conda activate fastai-py3.6
+conda install -y conda
+conda install -y pip setuptools
+conda install -y -c pytorch pytorch-nightly cuda92
+conda install -y -c fastai torchvision-nightly
+conda install -c fastai fastai
+conda uninstall -y fastai
+pip install -e .
+conda deactivate
+conda env remove -y --name fastai-py3.6
+```
 
 ## CI/CD
 
