@@ -1,5 +1,23 @@
 # Testing fastai
 
+<!--ts-->
+
+Table of Contents
+-----------------
+
+   * [Testing fastai](docs-dev/test.md#testing-fastai)
+      * [Table of Contents](docs-dev/test.md#table-of-contents)
+      * [Notebook integration tests](docs-dev/test.md#notebook-integration-tests)
+      * [Automated tests](docs-dev/test.md#automated-tests)
+         * [Choosing which tests to run](docs-dev/test.md#choosing-which-tests-to-run)
+         * [To GPU or not to GPU](docs-dev/test.md#to-gpu-or-not-to-gpu)
+         * [Report each sub-test name and its progress](docs-dev/test.md#report-each-sub-test-name-and-its-progress)
+         * [Output capture](docs-dev/test.md#output-capture)
+         * [Color control](docs-dev/test.md#color-control)
+         * [Sending test report to online pastebin service](docs-dev/test.md#sending-test-report-to-online-pastebin-service)
+   * [Writing Tests](docs-dev/test.md#writing-tests)
+<!--te-->
+
 ## Notebook integration tests
 
 Currently we have few automated tests, so most testing is through integration tests done in Jupyter Notebooks. The two places you should check for notebooks to test your code with are:

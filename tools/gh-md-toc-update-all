@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# usage: tools/gh-md-toc-update-all
+#
+# update all .md files that have:
+#
+# <!--ts-->
+# <!--te-->
+#
+# tags to inject (or update) the up-to-date TOC for that file.
+#
+# should be run every so often to be up-to-date (or when knowingly changing headers in .md files)
+
+tools/gh-md-toc --insert *.md docs-dev/*md

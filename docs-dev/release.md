@@ -1,5 +1,42 @@
 # Making a Release
 
+<!--ts-->
+
+Table of Contents
+-----------------
+
+   * [Making a Release](docs-dev/release.md#making-a-release)
+      * [Table of Contents](docs-dev/release.md#table-of-contents)
+      * [Release Process](docs-dev/release.md#release-process)
+      * [Project Build](docs-dev/release.md#project-build)
+         * [Build Source distribution / Source Release](docs-dev/release.md#build-source-distribution--source-release)
+         * [Build Built Distribution](docs-dev/release.md#build-built-distribution)
+         * [Build Wheel](docs-dev/release.md#build-wheel)
+         * [Creating requirements.txt file by analyzing the code base](docs-dev/release.md#creating-requirementstxt-file-by-analyzing-the-code-base)
+      * [Project Publish](docs-dev/release.md#project-publish)
+      * [Prep](docs-dev/release.md#prep)
+      * [Test Suite](docs-dev/release.md#test-suite)
+      * [Publish](docs-dev/release.md#publish)
+         * [PyPI](docs-dev/release.md#pypi)
+            * [Various Helper Tools](docs-dev/release.md#various-helper-tools)
+            * [pip Dependencies](docs-dev/release.md#pip-dependencies)
+         * [Conda](docs-dev/release.md#conda)
+            * [Dealing with Missing Conda Packages](docs-dev/release.md#dealing-with-missing-conda-packages)
+            * [The Problem Of Supporting Different Architectures](docs-dev/release.md#the-problem-of-supporting-different-architectures)
+            * [Uploading and Testing](docs-dev/release.md#uploading-and-testing)
+               * [Test Release](docs-dev/release.md#test-release)
+               * [Re-uploading](docs-dev/release.md#re-uploading)
+            * [Various Helper Tools](docs-dev/release.md#various-helper-tools-1)
+         * [Documentation](docs-dev/release.md#documentation)
+         * [Support](docs-dev/release.md#support)
+      * [Tagging](docs-dev/release.md#tagging)
+      * [CI/CD](docs-dev/release.md#cicd)
+         * [Azure DevOps CI (CPU-only)](docs-dev/release.md#azure-devops-ci-cpu-only)
+            * [Usage](docs-dev/release.md#usage)
+            * [Configuration](docs-dev/release.md#configuration)
+         * [travis-ci.org <a href="https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&amp;utm_medium=notification" rel="nofollow">https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&amp;utm_medium=notification</a>](docs-dev/release.md#travis-ciorg-httpstravis-ciorgfastaifastaibuilds429458760utm_sourcegithub_statusutm_mediumnotification)
+      * [Package Download Statistics](docs-dev/release.md#package-download-statistics)
+<!--te-->
 
 ## Release Process
 
