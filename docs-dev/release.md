@@ -34,7 +34,6 @@ Table of Contents
          * [Azure DevOps CI (CPU-only)](docs-dev/release.md#azure-devops-ci-cpu-only)
             * [Usage](docs-dev/release.md#usage)
             * [Configuration](docs-dev/release.md#configuration)
-         * [travis-ci.org <a href="https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&amp;utm_medium=notification" rel="nofollow">https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&amp;utm_medium=notification</a>](docs-dev/release.md#travis-ciorg-httpstravis-ciorgfastaifastaibuilds429458760utm_sourcegithub_statusutm_mediumnotification)
       * [Package Download Statistics](docs-dev/release.md#package-download-statistics)
 <!--te-->
 
@@ -721,12 +720,6 @@ Under Project Settings, important things are:
    ```
    https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
    ```
-
-
-
-### travis-ci.org https://travis-ci.org/fastai/fastai/builds/429458760?utm_source=github_status&utm_medium=notification
-https://github.com/python-packaging-tutorial/hello-pypi/tree/master-with-ci
-
 
 
 
