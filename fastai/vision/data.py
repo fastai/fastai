@@ -284,6 +284,7 @@ def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
 def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
                         test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any) -> DataBunch:
     "Create a `DataBunch` from a csv file."
+    path = Path(path)
     fnames, labels = csv_to_fns_labels(path/csv_labels, suffix=suffix, label_delim=sep)
     classes = uniqueify(np.concatenate(labels)) if sep else uniqueify(labels)
     if sep:
