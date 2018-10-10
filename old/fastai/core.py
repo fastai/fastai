@@ -170,7 +170,7 @@ def load(fn):
     """Utility function that loads model, function, etc as pickle"""
     return pickle.load(open(fn,'rb'))
 def load2(fn):
-    """Utility function allowing model piclking across Python2 and Python3"""
+    """Utility function allowing model pickling across Python2 and Python3"""
     return pickle.load(open(fn,'rb'), encoding='iso-8859-1')
 
 def load_array(fname): 
@@ -178,7 +178,12 @@ def load_array(fname):
     Load array using bcolz, which is based on numpy, for fast array saving and loading operations. 
     https://github.com/Blosc/bcolz
     '''
-    return bcolz.open(fname)[:]
+    try: import bcolz; return bcolz.open(fname)[:]
+    except (ImportError, ModuleNotFoundError):
+        print("ERROR: The Module 'bcolz' is required for this method, but is not installed on your system.")
+        print("Do 'conda install bcolz'.")
+        
+
 
 
 def chunk_iter(iterable, chunk_size):
