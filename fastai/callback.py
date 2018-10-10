@@ -129,6 +129,9 @@ class Callback():
     def on_loss_begin(self, **kwargs:Any)->None:
         "Called after forward pass but before loss has been computed. Returns the output (which can allow us to modify it)."
         pass
+    def on_loss_end(self, **kwargs:Any)->None:
+        "Called after loss has been computed. Returns the final reduced loss"
+        pass
     def on_backward_begin(self, **kwargs:Any)->None:
         """Called after the forward pass and the loss has been computed, but before backprop.
            Returns the loss (which can allow us to modify it, for instance for reg functions)"""
@@ -207,6 +210,13 @@ class CallbackHandler():
             a = cb.on_loss_begin(**self.state_dict)
             if a is not None: self.state_dict['last_output'] = a
         return self.state_dict['last_output']
+
+    def on_loss_end(self, loss:Tensor)->None:
+        self.state_dict['last_loss'] = loss
+        for cb in self.callbacks:
+            a = cb.on_loss_end(**self.state_dict)
+            if a is not None: self.state_dict['last_loss'] = a
+        return self.state_dict['last_loss']
 
     def on_backward_begin(self, loss:Tensor)->None:
         "Handle gradient calculation on `loss`."
