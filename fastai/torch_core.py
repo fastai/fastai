@@ -202,9 +202,9 @@ def show_install(show_nvidia_smi:bool=False):
 
     import platform, fastai.version, subprocess
 
-    print("\n```")
 
-    print(f"platform info  : {platform.platform()}")
+    rep = []
+    rep.append(["platform", platform.platform()])
 
     opt_mods = []
 
@@ -214,16 +214,16 @@ def show_install(show_nvidia_smi:bool=False):
         except ImportError:
             opt_mods.append('distro');
             # partial distro info
-            print(f"distro version : {platform.uname().version}")
+            rep.append(["distro", platform.uname().version])
         else:
             # full distro info
-            print(f"distro info    : {' '.join(distro.linux_distribution())}")
+            rep.append(["distro", ' '.join(distro.linux_distribution())])
 
-    print(f"python version : {platform.python_version()}")
-    print(f"fastai version : {fastai.__version__}")
-    print(f"torch version  : {torch.__version__}")
+    rep.append(["python", platform.python_version()])
+    rep.append(["fastai", fastai.__version__])
+    rep.append(["torch", torch.__version__])
 
-    # cuda
+    # nvidia-smi
     cmd = "nvidia-smi"
     have_nvidia_smi = False
     try:
@@ -234,20 +234,46 @@ def show_install(show_nvidia_smi:bool=False):
         if result.returncode == 0 and result.stdout:
             have_nvidia_smi = True
 
+    # XXX: if nvidia-smi is not available, another check could be:
+    # /proc/driver/nvidia/version on most systems, since it's the
+    # currently active version
+
     if have_nvidia_smi:
         smi = result.stdout.decode('utf-8')
+        # matching: Driver Version: 396.44
         match = re.findall(r'Driver Version: +(\d+\.\d+)', smi)
-        if match: print(f"nvidia driver  : {match[0]}")
+        if match: rep.append(["nvidia dr.", match[0]])
+
+    # nvcc
+    cmd = "nvcc --version"
+    have_nvcc = False
+    try:
+        result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
+    except:
+        pass
+    else:
+        if result.returncode == 0 and result.stdout:
+            have_nvcc = True
+
+    nvcc_cuda_ver = 0
+    if have_nvcc:
+        nvcc = result.stdout.decode('utf-8')
+        # matching: Cuda compilation tools, release 9.2, V9.2.148
+        match = re.findall(r'V(\d+\.\d+.\d+)', nvcc)
+        if match: nvcc_cuda_ver = match[0]
 
     cuda_is_available = torch.cuda.is_available()
-    if not cuda_is_available: print(f"cuda available : False")
+    if not cuda_is_available: rep.append(["torch cuda", "Not available"])
 
-    print(f"cuda version   : {torch.version.cuda}")
-    print(f"cudnn version  : {torch.backends.cudnn.version()}")
-    print(f"cudnn available: {torch.backends.cudnn.enabled}")
+    rep.append(["torch cuda", torch.version.cuda])
+    rep.append(["nvcc cuda", nvcc_cuda_ver])
+
+    # disable this info for now, seems to be available even on cpu-only systems
+    #rep.append(["cudnn", torch.backends.cudnn.version()])
+    #rep.append(["cudnn avail", torch.backends.cudnn.enabled])
 
     gpu_cnt = torch.cuda.device_count()
-    print(f"torch gpu count: {gpu_cnt}")
+    rep.append(["torch gpus", gpu_cnt])
 
     # it's possible that torch might not see what nvidia-smi sees?
     gpu_total_mem = []
@@ -264,20 +290,28 @@ def show_install(show_nvidia_smi:bool=False):
 
     # information for each gpu
     for i in range(gpu_cnt):
-        print(f"  [gpu{i}]")
-        print(f"  name         : {torch.cuda.get_device_name(i)}")
-        if gpu_total_mem: print(f"  total memory : {gpu_total_mem[i]}MB")
+        rep.append([f"  [gpu{i}]", None])
+        rep.append(["  name", torch.cuda.get_device_name(i)])
+        if gpu_total_mem: rep.append(["  total mem", f"{gpu_total_mem[i]}MB"])
+
+    print("\n\n```")
+
+    keylen = max([len(e[0]) for e in rep])
+    for e in rep:
+        print(f"{e[0]:{keylen}}", (f": {e[1]}" if e[1] else ""))
 
     if have_nvidia_smi:
         if show_nvidia_smi == True: print(f"\n{smi}")
     else:
         if gpu_cnt:
             # have gpu, but no nvidia-smi
-            print(f"no nvidia-smi is found")
+            print("no nvidia-smi is found")
         else:
-            print(f"no supported gpus found on this system")
+            print("no supported gpus found on this system")
 
     print("```\n")
+
+    print("Please make sure to include opening/closing ``` when you paste into forums/github to make the reports appear formatted as code sections.\n")
 
     if opt_mods:
         print("Optional package(s) to enhance the diagnostics can be installed with:")
