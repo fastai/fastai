@@ -169,7 +169,7 @@ class Learner():
         "Load model `name` from `self.model_dir`."
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
 
-     def get_preds(self, is_test:bool=False) -> List[Tensor]:
+    def get_preds(self, is_test:bool=False) -> List[Tensor]:
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks))   
 
 @dataclass
