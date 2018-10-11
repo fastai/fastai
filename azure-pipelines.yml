@@ -89,6 +89,8 @@ jobs:
       # 3. check for expected in the output string and bail if it's not there.
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
 
@@ -170,7 +172,9 @@ jobs:
       jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
       # 3. check for expected in the output string and bail if it's not there.
       echo "Testing expected output"
-      grep "Total timeXXX" examples/tabular.nbconvert.ipynb
+      grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
 
@@ -241,6 +245,8 @@ jobs:
       # 3. check for expected in the output string and bail if it's not there.
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
 
@@ -325,5 +331,7 @@ jobs:
       # 3. check for expected in the output string and bail if it's not there.
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
