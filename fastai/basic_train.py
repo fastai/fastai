@@ -33,7 +33,7 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
 
 def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
     "Predict the output of the elements in the dataloader."
-    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False)]
+    return [torch.cat(o).cpu() for o in zip(*validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False))]
 
 def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
              metrics:OptMetrics=None, cb_handler:Optional[CallbackHandler]=None,
