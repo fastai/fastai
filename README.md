@@ -99,7 +99,7 @@ jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook exam
 If anything goes wrong please [read and report installation
 issues](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
 
-Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs-dev/develop.md) for more details on how to contribute to the `fastai` project.
+Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs/develop.md) for more details on how to contribute to the `fastai` project.
 
 
 ## Installation Issues

@@ -1,6 +1,6 @@
 # Documentation For Developers
 
-If you're planning on working on the `fastai` library source code and/or documentation, please make sure to familiarize yourself with the following documents.
+If you're planning on working on the `fastai` library source code and/or documentation, please make sure to familiarize yourself with the following documents. Note: if you're simply using the library, rather than wanting to modify it, you should refer instead to [docs.fast.ai](http://docs.fast.ai).
 
 * [Notes for developers](develop.md)
 
