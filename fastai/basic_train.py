@@ -31,6 +31,9 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
 
     return ((loss.detach().cpu(),) + tuple(mets))
 
+def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
+    "Predict the output of the elements in the dataloader."
+    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar, cb_handler=cb_handler)]
 
 def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
              metrics:OptMetrics=None, cb_handler:Optional[CallbackHandler]=None,
@@ -164,6 +167,9 @@ class Learner():
     def load(self, name:PathOrStr):
         "Load model `name` from `self.model_dir`."
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+
+     def get_preds(self, is_test:bool=False) -> List[Tensor]:
+        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks))   
 
 @dataclass
 class LearnerCallback(Callback):
