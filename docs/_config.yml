@@ -1,1 +1,5 @@
 theme: jekyll-theme-leap-day
+title: "fast.ai library developer docs"
+description: "fast.ai v1"
+show_downloads: false
+
