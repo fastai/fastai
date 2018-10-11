@@ -1,0 +1,39 @@
+entries:
+- folders:
+  - folderitems:
+    - output: web
+      title: Dev notes
+      url: develop
+    - output: web
+      title: Testing
+      url: test
+    - output: web
+      title: Style Guide
+      url: style
+    - output: web
+      title: Abbreviations
+      url: abbr
+    - output: web
+      title: Packaging
+      url: release
+    output: web
+    title: Library development
+  - folderitems:
+    - output: web
+      title: Overview
+      external_url: http://docs.fast.ai/gen_doc.html
+    - output: web
+      title: nbdoc library
+      external_url: http://docs.fast.ai/gen_doc.nbdoc.html
+    output: web
+    title: Documentation development
+  - folderitems:
+    - output: web
+      title: Overview
+      external_url: http://docs.fast.ai
+    - output: web
+      title: readme
+      external_url: https://github.com/fastai/fastai/blob/master/README.md
+    output: web
+    title: fastai users
+

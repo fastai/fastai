@@ -1,0 +1,107 @@
+entries:
+- title: Sidebar
+  folders:
+  - title: Food
+
+    folderitems:
+    - title: Bananas
+      url: bananas.html
+
+      subfolder:
+      - title: Apples
+
+        subfolderitems:
+        - title:  Fuji apples
+          url: fuji_apples.html
+
+
+        - title: Gala apples
+          url: gala_apples.html
+
+name:
+  husband: Tom
+  wife: Shannon
+
+bikes:
+  - title: mountain bikes
+  - title: road bikes
+  - title: hybrid bikes
+
+
+salesteams:
+  - title: Regions
+    subfolderitems:
+      - location: US
+      - location: Spain
+      - location: France
+
+toc:
+  - title: Group 1
+    subfolderitems:
+      - page: Thing 1
+      - page: Thing 2
+      - page: Thing 3
+  - title: Group 2
+    subfolderitems:
+      - page: Piece 1
+      - page: Piece 2
+      - page: Piece 3
+  - title: Group 3
+    subfolderitems:
+      - page: Widget 1
+      - page: Widget 2
+      - page: Widget 3
+
+something: &hello Greetings earthling!
+myref: *hello
+
+about:
+ - zero
+ - one
+ - two
+ - three 
+
+numbercolors:
+ - zero:
+   properties: red
+ - one:
+   properties: yellow
+ - two: 
+   properties: green
+ - three:
+   properties: blue
+
+mypages:
+- section1: Section 1
+  audience: developers
+  product: acme
+  url: facebook.com
+- section2: Section 2
+  audience: writers
+  product: acme
+  url: google.com
+- section3: Section 3
+  audience: developers
+  product: acme
+  url: amazon.com
+- section4: Section 4
+  audience: writers
+  product: gizmo
+  url: apple.com
+- section5: Section 5
+  audience: writers
+  product: acme
+  url: microsoft.com
+
+feedback: > 
+  This is my feedback to you.
+  Even if I include linebreaks here,
+  all of the linebreaks will be removed when the value is inserted.
+    
+block: |
+    This pipe does something a little different. 
+    It preserves the breaks.
+    This is really helpful for code samples, 
+    since you can format the code samples with
+       the appropriate
+       white spacing.

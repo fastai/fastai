@@ -1,46 +1,6 @@
-# Making a Release
-
-<!--ts-->
-
-Table of Contents
------------------
-
-   * [Making a Release](#making-a-release)
-      * [Table of Contents](#table-of-contents)
-      * [Release Process](#release-process)
-      * [Project Build](#project-build)
-         * [Build Source distribution / Source Release](#build-source-distribution--source-release)
-         * [Build Built Distribution](#build-built-distribution)
-         * [Build Wheel](#build-wheel)
-         * [Creating requirements.txt file by analyzing the code base](#creating-requirementstxt-file-by-analyzing-the-code-base)
-      * [Project Publish](#project-publish)
-      * [Prep](#prep)
-      * [Test Suite](#test-suite)
-      * [Publish](#publish)
-         * [PyPI](#pypi)
-            * [Various Helper Tools](#various-helper-tools)
-            * [pip Dependencies](#pip-dependencies)
-         * [Conda](#conda)
-            * [Dealing with Missing Conda Packages](#dealing-with-missing-conda-packages)
-            * [The Problem Of Supporting Different Architectures](#the-problem-of-supporting-different-architectures)
-            * [Uploading and Testing](#uploading-and-testing)
-               * [Test Release](#test-release)
-               * [Re-uploading](#re-uploading)
-            * [Various Helper Tools](#various-helper-tools-1)
-         * [Documentation](#documentation)
-         * [Support](#support)
-      * [Tagging](#tagging)
-         * [Rollback release commit and tag](#rollback-release-commit-and-tag)
-         * [Run install tests in a fresh environment](#run-install-tests-in-a-fresh-environment)
-      * [CI/CD](#cicd)
-         * [Azure DevOps CI (CPU-only)](#azure-devops-ci-cpu-only)
-            * [Usage](#usage)
-            * [CI Builds](#ci-builds)
-            * [PR Builds](#pr-builds)
-            * [Modifying azure-pipelines.yml](#modifying-azure-pipelinesyml)
-            * [Configuration](#configuration)
-      * [Package Download Statistics](#package-download-statistics)
-<!--te-->
+---
+title: Making a Release
+---
 
 ## Release Process
 

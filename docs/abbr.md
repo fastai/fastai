@@ -1,4 +1,6 @@
-# fastai Abbreviation Guide
+---
+title: fastai Abbreviation Guide
+---
 
 As mentioned in the [fastai style](style.md),
 we name symbols following the *Huffman Coding* principle, which basically means
