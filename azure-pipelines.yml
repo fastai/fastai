@@ -87,8 +87,8 @@ jobs:
       # 2. that we can execute a fastai nb
       jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
       # 3. check for expected in the output string and bail if it's not there.
-     echo "Testing expected output"
-     grep "Total time" examples/tabular.nbconvert.ipynb
+      echo "Testing expected output"
+      grep "Total time" examples/tabular.nbconvert.ipynb
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
 
