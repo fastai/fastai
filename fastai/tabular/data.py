@@ -81,12 +81,11 @@ def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:s
                                                       train_ds.cont_names, train_ds.stats, log_output))
     return DataBunch.create(*datasets, path=path, **kwargs)
 
-
-
 def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
-    model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers)
+    model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers, ps=ps, emb_drop=emb_drop,
+                         y_range=y_range)
     return Learner(data, model, metrics=metrics, **kwargs)
 
