@@ -110,6 +110,24 @@ which tells `torch` to use the 2nd GPU. Instead, if you'd like to run a test loc
    CUDA_VISIBLE_DEVICES="1" pytest tests/test_vision.py
    ```
 
+### Slow integration tests
+
+Use it like this (e.g):
+
+   ```
+   @pytest.mark.slow
+   class TestVisionEndToEnd():
+   ```
+
+Tests marked in that way won’t be run on `make test`. To run them, simply say:
+
+   ```
+   pytest --runslow
+   ```
+
+This marker is designed for end to end training integration tests that probably want a GPU, may need internet access (at least the first time) to download data, and may need manual inspection of failures.
+
+
 
 
 ### Report each sub-test name and its progress
