@@ -707,9 +707,9 @@ conda install -y conda
 conda install -y pip setuptools
 conda install -y -c pytorch pytorch-nightly cuda92
 conda install -y -c fastai torchvision-nightly
-conda install -c fastai fastai
+conda install -y -c fastai fastai
 conda uninstall -y fastai
-pip install -e .
+pip install -e .[dev]
 conda deactivate
 conda env remove -y --name fastai-py3.6
 ```
