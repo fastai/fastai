@@ -33,11 +33,11 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
 
 def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
     "Predict the output of the elements in the dataloader."
-    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar, cb_handler=cb_handler)]
+    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False)]
 
 def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
              metrics:OptMetrics=None, cb_handler:Optional[CallbackHandler]=None,
-             pbar:Optional[PBar]=None)->Iterator[Tuple[Union[Tensor,int],...]]:
+             pbar:Optional[PBar]=None, average=True)->Iterator[Tuple[Union[Tensor,int],...]]:
     "Calculate loss and metrics for the validation set."
     model.eval()
     with torch.no_grad():
@@ -48,7 +48,8 @@ def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
             nums.append(yb[0].shape[0])
             if cb_handler and cb_handler.on_batch_end(val_metrics[0], train=False): break
         nums = np.array(nums, dtype=np.float32)
-        return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_metrics)]
+        if average: return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_metrics)]
+        else: return val_metrics
 
 def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossFunction)->None:
     "Simple training of `model` for 1 epoch of `dl` using optim `opt` and loss function `loss_func`."
