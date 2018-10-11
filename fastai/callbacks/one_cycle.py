@@ -36,12 +36,13 @@ class OneCycleScheduler(Callback):
         self.opt.lr,self.opt.mom = self.lr_scheds[0].start,self.mom_scheds[0].start
         self.idx_s = 0
 
-    def on_batch_end(self, **kwargs:Any)->None:
+    def on_batch_end(self, train, **kwargs:Any)->None:
         "Take one step forward on the annealing schedule for the optim params."
-        if self.idx_s >= len(self.lr_scheds): return True
-        self.opt.lr = self.lr_scheds[self.idx_s].step()
-        self.opt.mom = self.mom_scheds[self.idx_s].step()
-        # when the current schedule is complete we move onto the next
-        # schedule. (in 1-cycle there are two schedules)
-        if self.lr_scheds[self.idx_s].is_done:
-            self.idx_s += 1
+        if train:
+            if self.idx_s >= len(self.lr_scheds): return True
+            self.opt.lr = self.lr_scheds[self.idx_s].step()
+            self.opt.mom = self.mom_scheds[self.idx_s].step()
+            # when the current schedule is complete we move onto the next
+            # schedule. (in 1-cycle there are two schedules)
+            if self.lr_scheds[self.idx_s].is_done:
+                self.idx_s += 1

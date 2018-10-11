@@ -3,8 +3,7 @@ from .torch_core import *
 from .data import *
 from .callback import *
 
-__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'get_preds', 'loss_batch', 'train_epoch', 'validate', 'default_lr',
-           'default_wd']
+__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train_epoch', 'validate', 'default_lr', 'default_wd']
 
 default_lr = slice(3e-3)
 default_wd = 1e-2
@@ -30,7 +29,7 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
         cb_handler.on_step_end()
         opt.zero_grad()
 
-    return (loss.detach().cpu(),) + tuple(mets) + (yb[0].shape[0],)
+    return ((loss.detach().cpu(),) + tuple(mets))
 
 
 def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
@@ -39,12 +38,14 @@ def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
     "Calculate loss and metrics for the validation set."
     model.eval()
     with torch.no_grad():
-        return zip(*[loss_batch(model, xb, yb, loss_fn, cb_handler=cb_handler, metrics=metrics)
-                       for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None))])
-    
-def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
-    "Predict the output of the elements in the dataloader."
-    return [torch.cat(o).cpu() for o in validate(model, dl, pbar=pbar, cb_handler=cb_handler)]
+        val_metrics,nums = [],[]
+        for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
+            val_metrics.append(loss_batch(model, xb, yb, loss_fn, cb_handler=cb_handler, metrics=metrics))
+            if not is_listy(yb): yb = [yb]
+            nums.append(yb[0].shape[0])
+            if cb_handler and cb_handler.on_batch_end(val_metrics[0], train=False): break
+        nums = np.array(nums, dtype=np.float32)
+        return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_metrics)]
 
 def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossFunction)->None:
     "Simple training of `model` for 1 epoch of `dl` using optim `opt` and loss function `loss_func`."
@@ -70,16 +71,12 @@ def fit(epochs:int, model:Model, loss_fn:LossFunction, opt:optim.Optimizer,
 
             for xb,yb in progress_bar(data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
-                loss,_ = loss_batch(model, xb, yb, loss_fn, opt, cb_handler)
+                loss = loss_batch(model, xb, yb, loss_fn, opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
             if hasattr(data,'valid_dl') and data.valid_dl is not None:
-                *val_metrics,nums = validate(model, data.valid_dl, loss_fn=loss_fn,
-                                             cb_handler=cb_handler, metrics=metrics,pbar=pbar)
-                nums = np.array(nums, dtype=np.float32)
-                val_metrics = [(to_np(torch.stack(val)) * nums).sum() / nums.sum()
-                               for val in val_metrics]
-
+                val_metrics = validate(model, data.valid_dl, loss_fn=loss_fn,
+                                       cb_handler=cb_handler, metrics=metrics,pbar=pbar)
             else: val_metrics=None
             if cb_handler.on_epoch_end(val_metrics): break
     except Exception as e:
@@ -167,9 +164,6 @@ class Learner():
     def load(self, name:PathOrStr):
         "Load model `name` from `self.model_dir`."
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
-        
-    def get_preds(self, is_test:bool=False) -> List[Tensor]:
-        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks))
 
 @dataclass
 class LearnerCallback(Callback):

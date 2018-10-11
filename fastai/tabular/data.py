@@ -21,7 +21,7 @@ class TabularDataset(DatasetBase):
     "Class for tabular data."
     def __init__(self, df:DataFrame, dep_var:str, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  stats:OptStats=None, log_output:bool=False):
-        if not is_numeric_dtype(df[dep_var]): df[dep_var] = df[dep_var].cat.codes
+        if not is_numeric_dtype(df[dep_var]): df[dep_var] = df[dep_var].cat.astype(np.int64)
         self.y = np2model_tensor(df[dep_var].values)
         if log_output: self.y = torch.log(self.y.float())
         n = len(self.y)

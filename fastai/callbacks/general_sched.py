@@ -31,10 +31,11 @@ class GeneralScheduler(Callback):
         self.opt.lr,self.opt.mom = self.lr_scheds[0].start,self.mom_scheds[0].start
         self.idx_s = 0
 
-    def on_batch_end(self, **kwargs:Any)->None:
+    def on_batch_end(self, train, **kwargs:Any)->None:
         "Take a step in lr,mom sched, start next sched when current is complete."
-        if self.idx_s >= len(self.lr_scheds): return True
-        self.opt.lr = self.lr_scheds[self.idx_s].step()
-        self.opt.mom = self.mom_scheds[self.idx_s].step()
-        if self.lr_scheds[self.idx_s].is_done:
-            self.idx_s += 1
+        if train:
+            if self.idx_s >= len(self.lr_scheds): return True
+            self.opt.lr = self.lr_scheds[self.idx_s].step()
+            self.opt.mom = self.mom_scheds[self.idx_s].step()
+            if self.lr_scheds[self.idx_s].is_done:
+                self.idx_s += 1

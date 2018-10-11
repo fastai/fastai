@@ -224,12 +224,14 @@ class CallbackHandler():
         "Handle end of optimization step."
         self('step_end')
 
-    def on_batch_end(self, loss:Tensor)->None:
+    def on_batch_end(self, loss:Tensor, train:bool=True)->None:
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
+        self.state_dict['train'] = train
         stop = np.any(self('batch_end'))
-        self.state_dict['iteration'] += 1
-        self.state_dict['num_batch'] += 1
+        if train: 
+            self.state_dict['iteration'] += 1
+            self.state_dict['num_batch'] += 1
         return stop
 
     def on_epoch_end(self, val_metrics:MetricsList)->bool:
