@@ -65,7 +65,7 @@ jobs:
     # Install Test deps
   - script: |
       pip install pytest pytest-runner
-    displayName: "Install test deps'
+    displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
@@ -146,7 +146,7 @@ jobs:
     # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
-    displayName: "Install test deps'
+    displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
@@ -215,7 +215,7 @@ jobs:
      # Install Test deps
   - script: |
       pip install pytest pytest-runner
-    displayName: "Install test deps'
+    displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
@@ -298,7 +298,7 @@ jobs:
     # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
-    displayName: "Install test deps'
+    displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
