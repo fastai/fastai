@@ -268,11 +268,10 @@ class SortishSampler(Sampler):
 
 def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tuple[LongTensor, LongTensor]:
     "Function that collect samples and adds padding."
-    ys = torch.tensor([s[1] for s in samples]).squeeze()
-    padded_xs, lengths = pad_packed_sequence(pack_sequence([torch.tensor(s[0]) for s in samples]), batch_first=True,
-                                             padding_value=pad_idx)
+    ys = torch.tensor(np.array([s[1] for s in samples])).squeeze()
+    padded_xs = pad_packed_sequence(pack_sequence([torch.tensor(s[0]) for s in samples]), padding_value=pad_idx)
 
-    return (padded_xs, lengths), ys
+    return (padded_xs,), ys
 
 DataFunc = Callable[[Collection[DatasetBase], PathOrStr, KWArgs], DataBunch]
 fastai_types[DataFunc] = 'DataFunc'

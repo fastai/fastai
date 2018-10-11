@@ -113,18 +113,18 @@ class RNNCore(nn.Module):
         empty_inputs = np.argwhere(lengths <= 0)
         lengths[empty_inputs] = 1
 
-        sl,bs = input.size()
-        if bs!=self.bs:
-            self.bs=bs
+        sl, bs = input.size()
+        if bs != self.bs:
+            self.bs = bs
             self.reset()
 
         raw_output = self.input_dp(self.encoder_dp(input))
-        new_hidden,raw_outputs,outputs = [],[],[]
-        for l, (rnn,hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
+        new_hidden, raw_outputs, outputs = [], [], []
+        for l, (rnn, hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
 
-            packed_rnn_inp = pack_padded_sequence(raw_output, lengths, batch_first=True)
+            packed_rnn_inp = pack_padded_sequence(raw_output, lengths)
             rnn_output, new_h = rnn(packed_rnn_inp, self.hidden[l])
-            raw_output, _ = pad_packed_sequence(rnn_output, batch_first=True, padding_value=self.pad_token)
+            raw_output, _ = pad_packed_sequence(rnn_output, padding_value=self.pad_token)
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
@@ -205,9 +205,9 @@ class PoolingLinearClassifier(nn.Module):
         self.layers = nn.Sequential(*mod_layers)
 
     def avg_pool(self, x:Tensor, lengths:LongTensor):
-        lengths = np.minimum(lengths, x.shape[1]) # in case the text is shorter than max_len
-        lss = to_device(torch.tensor(np.array(lengths).astype(np.float32)))
-        return torch.div(torch.sum(x, dim=1).permute(1,0), lss).permute(1,0)
+        diffs_from_max = lengths[0] - lengths
+        avg_lengths = np.minimum(x.shape[0] - diffs_from_max, lengths)
+        return torch.div(torch.sum(x, dim=0).permute(1, 0), avg_lengths.float()).permute(1, 0)
 
     def max_pool(self, x:Tensor, bs:int):
         "Pool the tensor along the seq_len dimension."
