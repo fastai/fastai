@@ -1,25 +1,6 @@
-# Testing fastai
-
-<!--ts-->
-
-Table of Contents
------------------
-
-   * [Testing fastai](#testing-fastai)
-      * [Table of Contents](#table-of-contents)
-      * [Notebook integration tests](#notebook-integration-tests)
-      * [Automated tests](#automated-tests)
-         * [Choosing which tests to run](#choosing-which-tests-to-run)
-         * [To GPU or not to GPU](#to-gpu-or-not-to-gpu)
-         * [Report each sub-test name and its progress](#report-each-sub-test-name-and-its-progress)
-         * [Output capture](#output-capture)
-         * [Color control](#color-control)
-         * [Sending test report to online pastebin service](#sending-test-report-to-online-pastebin-service)
-   * [Writing Tests](#writing-tests)
-      * [Hints](#hints)
-         * [Skipping tests](#skipping-tests)
-         * [Getting reproducible results](#getting-reproducible-results)
-<!--te-->
+---
+title: Testing fastai
+---
 
 ## Notebook integration tests
 

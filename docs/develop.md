@@ -1,5 +1,6 @@
-# Notes For Developers
-
+---
+title: Notes For Developers
+---
 
 ### Things to Run After git clone
 

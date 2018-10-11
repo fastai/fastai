@@ -1,21 +1,6 @@
-# fastai Style Guide
-
-<!--ts-->
-
-Table of Contents
------------------
-
-   * [fastai Style Guide](#fastai-style-guide)
-      * [Table of Contents](#table-of-contents)
-      * [Jeremy's notes on fastai coding style](#jeremys-notes-on-fastai-coding-style)
-      * [Style guide](#style-guide)
-         * [Symbol naming](#symbol-naming)
-         * [Layout](#layout)
-         * [Algorithms](#algorithms)
-         * [Other stuff](#other-stuff)
-         * [Documentation](#documentation)
-      * [FAQ](#faq)
-<!--te-->
+---
+Title: fastai Style Guide
+---
 
 ## Jeremy's notes on fastai coding style
 
