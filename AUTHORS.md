@@ -11,7 +11,7 @@
 ## Main Contributors
 
 - Stas Bekman
-- Fransesco Ingham
+- Franciscco Ingham
 - Fred Monroe
 - Andrew Shaw
 - Rachel Thomas
