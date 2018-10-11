@@ -16,6 +16,7 @@ Table of Contents
          * [Color control](#color-control)
          * [Sending test report to online pastebin service](#sending-test-report-to-online-pastebin-service)
    * [Writing Tests](#writing-tests)
+      * [Hints](#hints)
          * [Skipping tests](#skipping-tests)
          * [Getting reproducible results](#getting-reproducible-results)
 <!--te-->
@@ -179,6 +180,9 @@ Creating a URL for a whole test session log:
 XXX: Needs to be written. Contributions are welcome.
 
 Until then look at the existing tests.
+
+## Hints
+
 
 ### Skipping tests
 
