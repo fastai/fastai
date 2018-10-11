@@ -178,6 +178,78 @@ XXX: Needs to be written. Contributions are welcome.
 
 Until then look at the existing tests.
 
+### Skipping tests
+
+This is useful when a bug is found and a new test is written, yet the bug is not fixed yet. In order to be able to commit it to the main repository we need make sure it's skipped during `make test`.
+
+Methods:
+
+* A **skip** means that you expect your test to pass only if some conditions are met, otherwise pytest should skip running the test altogether. Common examples are skipping windows-only tests on non-windows platforms, or skipping tests that depend on an external resource which is not available at the moment (for example a database).
+
+* A **xfail** means that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail (marked with pytest.mark.xfail), it’s an xpass and will be reported in the test summary.
+
+Implementation:
+
+* The whole test unconditionally:
+
+   ```
+   @pytest.mark.skip(reason="this bug needs to be fixed")
+   def test_feature_x():
+   ```
+
+   or the `xfail` way:
+   ```
+   @pytest.mark.xfail
+   def test_feature_x():
+   ```
+
+
+
+* Based on some internal check inside the test:
+
+   ```
+   def test_feature_x():
+       if not has_something(): pytest.skip("unsupported configuration")
+   ```
+   or the whole module:
+
+   ```
+   import pytest
+
+   if not pytest.config.getoption("--custom-flag"):
+       pytest.skip("--custom-flag is missing, skipping tests", allow_module_level=True)
+   ```
+   or the `xfail` way:
+
+   ```
+   def test_feature_x():
+       pytest.xfail("expected to fail until bug XYZ is fixed")
+   ```
+
+* Skip all tests in a module if some import is missing:
+
+   ```
+   docutils = pytest.importorskip("docutils", minversion="0.3")
+   ```
+
+* Skip if
+
+   ```
+   import sys
+   @pytest.mark.skipif(sys.version_info < (3,6),
+                      reason="requires python3.6 or higher")
+   def test_feature_x():
+   ```
+   or the whole module:
+
+   ```
+   @pytest.mark.skipif(sys.platform == 'win32',
+                      reason="does not run on windows")
+   class TestPosixCalls(object):
+       def test_feature_x(self):
+   ```
+
+More details, example and ways are [here](https://docs.pytest.org/en/latest/skipping.html).
 
 
 ### Getting reproducible results
