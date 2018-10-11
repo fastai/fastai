@@ -90,6 +90,7 @@ jobs:
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
       # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
       jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
@@ -174,6 +175,7 @@ jobs:
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
       # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
       jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
@@ -246,6 +248,7 @@ jobs:
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
       # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
       jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
@@ -332,6 +335,7 @@ jobs:
       echo "Testing expected output"
       grep "Total time" examples/tabular.nbconvert.ipynb
       # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
       jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
