@@ -721,14 +721,12 @@ All the good stuff is here: [Builds](https://dev.azure.com/fastdotai/fastai/_bui
 
 It uses `fastai/azure-pipelines.yml` script to do the testing. See notes inside the script for more details on how to modify it.
 
-By default it runs the fastai installation and a few basic tests when either `master` gets a push event, or PR is submitted.
-
-To trigger a manual run go to https://dev.azure.com/fastdotai/fastai/_build, choose Queue, choose the commit hash (most likely of the latest commit).
+By default it runs the fastai installation and a few basic tests when either `master` gets a non-document-only push event, or PR is submitted. More details on this topic can be found in the following sections.
 
 `[...]` options in the right upper corner, next to `Queue` hides a bunch of useful functions:
 
   * 'Pause builds' which may be important...
-  * Status Badge MD code for the README.md project page
+  * Status Badge MD code for the `README.md` project page
 
 To see various stats/graphs based on tests outcome, go to [Runs](https://dev.azure.com/fastdotai/fastai/_TestManagement/Runs?runId=1&_a=runCharts)
 
@@ -737,6 +735,36 @@ Under Project Settings, important things are:
 * [Notifications](https://dev.azure.com/fastdotai/fastai/_settings/notifications)
 
 
+#### CI Builds
+
+CI Builds are triggered every time a commit is pushed into the master (except when it's an obvious document only change commit, like a change to an `.md` file).
+
+To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and enter the commit hash (most likely of the latest commit). This is the way to get occasional CI builds against non-master branches.
+
+
+
+
+#### PR Builds
+
+PR Builds get triggered (1) when a new PR is submitted and (2) each time a new commit is added to that PR. It will also get triggered (3) if a closed PR gets re-opened.
+
+If you want to manually trigger a PR Build re-run, you can click on the build status which will take you to the build page at Azure Devops and there under the "..." there is an option to Rebuild.
+
+Note, that neither green or red status of the PR guarantees that it's so. Since the check is done at the point of the PR opening (or if new commits were added to it), it's not redone if master has changed since then. So the only way to know for sure is to force a manual rebuild for a given PR.
+
+Currently we don't have the following enforcement enabled ([PR won't be merge-able at github](https://help.github.com/articles/about-required-status-checks/
+) if the PR's build status is failed.)
+
+
+
+#### Modifying `azure-pipelines.yml`
+
+We now have CI builds running and therefore we shouldn't break those when need to tweak
+`azure-pipelines.yml`, which often involves a lot of trial and error and meanwhile all CI builds and PRs will be broken. Not good.
+
+Therefore **Do not modify `azure-pipelines.yml` directly in master**. Do that only in a branch, then use manual build from that branch: go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch and the commit hash (most likely of the latest commit) and run. Only once the pipeline is working merge it into master.
+
+And remember to sync the branch with the master changes so that you're testing the equivalent of branch.
 
 #### Configuration
 

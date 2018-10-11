@@ -177,3 +177,24 @@ Creating a URL for a whole test session log:
 XXX: Needs to be written. Contributions are welcome.
 
 Until then look at the existing tests.
+
+
+
+### Getting reproducible results
+
+In order for tests to be reliable the test result should not be random (most of the time).
+
+To get identical reproducable results set, depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
+
+* torch RNG
+
+   ```
+   import torch
+   torch.manual_seed(42)
+   ```
+
+* python RNG
+
+   ```
+   random.seed(42)
+   ```
