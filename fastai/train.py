@@ -17,8 +17,10 @@ def fit_one_cycle(learn:Learner, cyc_len:int,
                              pct_start=pct_start, **kwargs)]
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=cbs)
 
-def lr_find(learn:Learner, start_lr:float=1e-5, end_lr:float=10, num_it:int=100, **kwargs:Any):
+def lr_find(learn:Learner, start_lr:Floats=1e-5, end_lr:Floats=10, num_it:int=100, **kwargs:Any):
     "Explore lr from `start_lr` to `end_lr` over `num_it` iterations in `learn`."
+    start_lr = np.array(start_lr) if is_listy(start_lr) else start_lr
+    end_lr = np.array(end_lr) if is_listy(end_lr) else end_lr
     cb = LRFinder(learn, start_lr, end_lr, num_it)
     a = int(np.ceil(num_it/len(learn.data.train_dl)))
     learn.fit(a, start_lr, callbacks=[cb], **kwargs)
