@@ -62,9 +62,14 @@ jobs:
     displayName: 'Upgrade pip/setuptools. Install deps, pytorch and fastai'
     continueOnError: false
 
-    # Test
+    # Install Test deps
   - script: |
       pip install pytest pytest-runner
+    displayName: "Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -138,9 +143,14 @@ jobs:
     displayName: 'Upgrade pip/conda/setuptools. Install deps, pytorch and fastai'
     continueOnError: false
 
-    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+    # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
+    displayName: "Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -152,6 +162,15 @@ jobs:
       testRunTitle: 'Python $(python.version)'
       condition: succeededOrFailed()
 
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      bash -c 'set -e; grep "XXXTotal time" examples/tabular.nbconvert.ipynb'
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
 
 
 
@@ -193,9 +212,14 @@ jobs:
     displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
     continueOnError: false
 
-    # Test
+     # Install Test deps
   - script: |
       pip install pytest pytest-runner
+    displayName: "Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -206,6 +230,16 @@ jobs:
       testResultsFiles: 'result.xml'
       testRunTitle: 'Python $(python.version)'
       condition: succeededOrFailed()
+
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      bash -c 'set -e; grep "Total time" examples/tabular.nbconvert.ipynb'
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
 
 
 
@@ -261,9 +295,14 @@ jobs:
     displayName: 'Upgrade pip/conda/setuptools. Install deps, pytorch and fastai'
     continueOnError: false
 
-    # Test - test with pytest, collect coverage metrics with pytest-cov, and publish these metrics to codecov.io
+    # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
+    displayName: "Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
       py.test tests --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -274,3 +313,13 @@ jobs:
       testResultsFiles: 'result.xml'
       testRunTitle: 'Python $(python.version)'
       condition: succeededOrFailed()
+
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      bash -c 'set -e; grep "Total time" examples/tabular.nbconvert.ipynb'
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
