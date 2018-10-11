@@ -16,6 +16,8 @@ Table of Contents
          * [Color control](#color-control)
          * [Sending test report to online pastebin service](#sending-test-report-to-online-pastebin-service)
    * [Writing Tests](#writing-tests)
+         * [Skipping tests](#skipping-tests)
+         * [Getting reproducible results](#getting-reproducible-results)
 <!--te-->
 
 ## Notebook integration tests

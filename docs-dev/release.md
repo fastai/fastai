@@ -35,6 +35,9 @@ Table of Contents
       * [CI/CD](#cicd)
          * [Azure DevOps CI (CPU-only)](#azure-devops-ci-cpu-only)
             * [Usage](#usage)
+            * [CI Builds](#ci-builds)
+            * [PR Builds](#pr-builds)
+            * [Modifying azure-pipelines.yml](#modifying-azure-pipelinesyml)
             * [Configuration](#configuration)
       * [Package Download Statistics](#package-download-statistics)
 <!--te-->
