@@ -43,7 +43,7 @@ def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
     with torch.no_grad():
         val_metrics,nums = [],[]
         for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
-            xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
+            if cb_handler: xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
             val_metrics.append(loss_batch(model, xb, yb, loss_fn, cb_handler=cb_handler, metrics=metrics))
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
