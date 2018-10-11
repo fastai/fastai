@@ -192,9 +192,10 @@ class CallbackHandler():
         self.state_dict['num_batch'] = 0
         self('epoch_begin')
 
-    def on_batch_begin(self, xb:Tensor, yb:Tensor)->None:
+    def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
         "Handle new batch `xb`,`yb`."
         self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
+        self.state_dict['train'] = train
         for cb in self.callbacks:
             a = cb.on_batch_begin(**self.state_dict)
             if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
@@ -224,12 +225,11 @@ class CallbackHandler():
         "Handle end of optimization step."
         self('step_end')
 
-    def on_batch_end(self, loss:Tensor, train:bool=True)->None:
+    def on_batch_end(self, loss:Tensor)->None:
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
-        self.state_dict['train'] = train
         stop = np.any(self('batch_end'))
-        if train: 
+        if self.state_dict['train']: 
             self.state_dict['iteration'] += 1
             self.state_dict['num_batch'] += 1
         return stop

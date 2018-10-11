@@ -43,10 +43,11 @@ def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
     with torch.no_grad():
         val_metrics,nums = [],[]
         for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
+            xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
             val_metrics.append(loss_batch(model, xb, yb, loss_fn, cb_handler=cb_handler, metrics=metrics))
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
-            if cb_handler and cb_handler.on_batch_end(val_metrics[0], train=False): break
+            if cb_handler and cb_handler.on_batch_end(val_metrics[0]): break
         nums = np.array(nums, dtype=np.float32)
         if average: return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_metrics)]
         else: return val_metrics
@@ -194,13 +195,15 @@ class Recorder(LearnerCallback):
         "Initialize recording status at beginning of training."
         self.pbar = pbar
         self.names = ['epoch', 'train loss', 'valid loss'] + [fn.__name__ for fn in metrics]
+        if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         self.pbar.write('  '.join(self.names))
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
-    def on_batch_begin(self, **kwargs:Any)->None:
+    def on_batch_begin(self, train, **kwargs:Any)->None:
         "Record learning rate and momentum at beginning of batch."
-        self.lrs.append(self.opt.lr)
-        self.moms.append(self.opt.mom)
+        if train:
+            self.lrs.append(self.opt.lr)
+            self.moms.append(self.opt.mom)
 
     def on_backward_begin(self, smooth_loss:Tensor, **kwargs:Any)->None:
         "Record the loss before any other callback has a chance to modify it."
@@ -214,6 +217,7 @@ class Recorder(LearnerCallback):
         self.nb_batches.append(num_batch)
         if last_metrics is not None:
             self.val_losses.append(last_metrics[0])
+            if hasattr(self, '_added_mets'): last_metrics += self._added_mets
             if len(last_metrics) > 1: self.metrics.append(last_metrics[1:])
             self.format_stats([epoch, smooth_loss] + last_metrics)
         else:  self.format_stats([epoch, smooth_loss])
@@ -227,7 +231,13 @@ class Recorder(LearnerCallback):
             t += ' ' * (len(name) - len(t))
             str_stats.append(t)
         self.pbar.write('  '.join(str_stats))
+        
+    def add_metrics(self, metrics):
+        self._added_mets = metrics
 
+    def add_metric_names(self, names):
+        self._added_met_names = names
+        
     def plot_lr(self, show_moms=False)->None:
         "Plot learning rate, `show_moms` to include momentum."
         iterations = range_of(self.lrs)

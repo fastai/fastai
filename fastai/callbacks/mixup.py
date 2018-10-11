@@ -11,7 +11,8 @@ class MixUpCallback(Callback):
     stack_x:bool=False
     stack_y:bool=True
         
-    def on_batch_begin(self, last_input, last_target, **kwargs):
+    def on_batch_begin(self, last_input, last_target, train, **kwargs):
+        if not train: return
         lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
         lambd = np.concatenate([lambd[:,None], 1-lambd[:,None]], 1).max(1)
         lambd = last_input.new(lambd)
