@@ -62,6 +62,14 @@ bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
+def tensor(x:Any)->Tensor:
+    "Like `torch.as_tensor`, but handle lists too"
+    return torch.tensor(x) if is_listy(x) else as_tensor(x)
+
+def np_address(x:np.ndarray)->int:
+    "Address of `x` in memory"
+    return x.__array_interface__['data'][0]
+
 def to_data(b:ItemsList):
     "Recursively map lists of items in `b ` to their wrapped data"
     if is_listy(b): return [to_data(o) for o in b]
