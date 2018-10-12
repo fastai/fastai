@@ -23,9 +23,14 @@ https://github.com/fastai/fastai/blob/master/docs/style.md) first. (Note that we
 * Before implementing a non-trivial new feature, first create a notebook version of your new feature, like those in [dev_nb](https://github.com/fastai/fastai_old/tree/master/dev_nb). It should show step-by-step what your code is doing, and why, with the result of each step. Try to simplify the code as much as possible. When you're happy with it, let us know on the forum (include a link to a gist with your notebook.)
 * Once your approach has been discussed and confirmed on the forum, you are welcome to push a PR, including a complete description of the new feature and an example of how it's use. Be sure to document your code and read the [doc on code style](https://github.com/fastai/fastai/blob/master/docs/style.md) and [the one on abbreviations](https://github.com/fastai/fastai/blob/master/docs/abbr.md).
 
+## How to submit notebook PRs?
+
+* If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to `nbstripout` the notebooks, as explained [here](http://docs-dev.fast.ai/develop).
+
 ## Do you have questions about the source code?
 
 * Please ask it on the [fastai forum](http://forums.fast.ai/) (after searching someone didn't ask the same one before with a quick search). We'd rather have the maximum of discussions there so that the largest number can benefit from it.
+
 
 ## Do you want to contribute to the documentation?
 
