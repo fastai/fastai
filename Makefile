@@ -67,7 +67,7 @@ dist-pypi: clean-pypi ## build pypi source and wheel package
 
 release-pypi: dist-pypi ## release pypi package
 	@echo "\n\n*** Uploading" dist/* "to pypi\n"
-	#XXX twine upload dist/*
+	twine upload dist/*
 
 
 ### Conda ###
@@ -92,7 +92,7 @@ dist-conda: clean-conda ## build conda package
 
 release-conda: dist-conda ## release conda package
 	@echo "\n\n*** Uploading" conda-dist/noarch/*tar.bz2 "to fastai@anaconda.org\n"
-	#XXX anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
+	anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
 
 
 
@@ -122,20 +122,49 @@ git-pull: ## git pull
 
 git-not-dirty:
 	@echo "*** Checking that everything is committed"
-	[[ -n $(git status -s) ]] && $(error uncommitted git files)
+	@if [ -n "$(git status -s)" ]; then\
+		echo "uncommitted git files";\
+		false;\
+    fi
 
+prev-branch-switch:
+	@echo "*** Switching to prev branch"
+	git checkout -
+
+release-branch-create:
+	@echo "*** Creating branch release-$(version)"
+	git checkout -b release-$(version)
+
+release-branch-switch:
+	@echo "*** Switching to branch release-$(version)"
+	git checkout release-$(version)
+
+master-branch-switch:
+	@echo "*** Switching to master branch: version $(version)"
+	git checkout master
+
+commit-dev-cycle-push: ## commit version and CHANGES and push
+	@echo "\n\n*** Start new dev cycle: $(version)"
+	git commit -m "new dev cycle: $(version)" $(version_file) CHANGES.md
+
+	@echo "\n\n*** Push all changes"
+	git push
+
+commit-version: ## commit and tag the release
+	@echo "\n\n*** Start release branch: $(version)"
+	git commit -m "starting release branch: $(version)" $(version_file)
 
 ### Tagging ###
 
-commit-tag: ## commit and tag the release
-	@echo "\n\n*** Commit $(version) version"
-	git commit -m "version $(version) release" $(version_file)
+commit-tag-push: ## commit and tag the release
+	@echo "\n\n*** Commit CHANGES"
+	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
 	@echo "\n\n*** Tag $(version) version"
 	git tag -a $(version) -m "$(version)" && git push --tags
 
 	@echo "\n\n*** Push all changes"
-	git push
+	git push --set-upstream origin release-$(version)
 
 
 ### Testing new package installation

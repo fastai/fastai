@@ -4,62 +4,111 @@ title: Making a Release
 
 ## Release Process
 
-Use this section if you know what you're doing for a quick release, otherwise per-use the sections below to understand what each make target does.
+Use this section if you know what you're doing for a quick release, otherwise per-use the sections below to understand what each `make` target does.
 
+The release process uses the master branch and also creates and uses a `release-$(version)` branch.
 
+The exact order to be followed is essential.
 
-WIP: this is partially pseudo-code, partially working code
+Quick and dirty:
 
-The starting point is to know the sha1 of the last commit to go into the release
-
-1. git pull sha1
-2. edit setup.py and remove ".dev0" from version
-   run `python setup.py --version` to update fastai/version.py (could be automated)
-3. finalize CHANGES.md - version and date (could be automated)
-4. make test
-5. git commit setup.py fastai/version.py CHANGES.md
-6. git tag with version v+version
-7. make release
-
-Then immediately start a new dev cycle:
-
-1. edit setup.py" bump up version and add ".dev0"
-   run `python setup.py --version` to update fastai/version.py  (could be automated)
-2. edit CHANGES.md - copy the template and start a new entry for the new version (could be automated)
-3. git commit setup.py fastai/version.py CHANGES.md
-
-
-
-1. Test code:
    ```
-   make git-pull
-   make test
+   make master-branch-switch
+   make bump && make release-branch-create && make commit-version
+   make master-branch-switch && make bump-dev && make commit-dev-cycle-push
+   make prev-branch-switch && make test && make commit-tag-push
+   make release && make test-install
+   make master-branch-switch
+   ```
+
+We will use starting from `master@1.0.6.dev0` as a starting point for the workflow.
+
+1. make sure we start with master branch
+
+   ```
+   make master-branch-switch
+   ```
+
+2. check-dirty - cleanup/stash/commit so there is nothing in the way
+
+   ```
    make git-not-dirty || echo "Commit changes before proceeding"
    ```
 
-   The next stage requires a clean tree to start with, so commit any uncommitted code. If you `git stash` make sure to rerun `make test`.
+3. pick a starting point
 
-2. Bump and Tag and Commit:
+Normally, `git pull` to HEAD is fine, but it's the best to know which 'stable' <commit sha1> to use as a starting point.
 
    ```
-   make git-not-dirty && make bump && make commit-tag
+   git pull
+   ```
+   or:
+   ```
+   git checkout <commit>
    ```
 
-   This will do patch-level bump, for major/minor bump targets see below.
+4. start release-$(version) branch
 
-3. Release:
+
+   ```
+   make bump                     # 1.0.6.dev0 => 1.0.6
+   make release-branch-create    # git checkout -b release-$(version)
+   make commit-version
+   ```
+
+5. go back to master and bump it to the next version + .dev0
+
+
+   ```
+   make master-branch-switch
+   make bump-dev                 # 1.0.6 => 1.0.7.dev0
+   ```
+
+   edit CHANGES.md - copy the template and start a new entry for the new version (XXX: could be automated)
+
+   ```
+   make commit-dev-cycle-push
+   ```
+
+6. now we are no longer concerned with master, all the rest of the work is done on release-$(version) branch (we are using `git checkout -` here (like in `cd -`, since we no longer have the previous version)
+
+   ```
+   make prev-branch-switch    # git checkout release-$(version)
+   ```
+
+7. finalize CHANGES.md (remove empty items) - version and date (could be automated)
+
+8. validate quality
+
+   ```
+   make test
+   ```
+
+9. git tag with version, commit and push CHANGES.md and version.py
+
+   ```
+   make commit-tag-push
+   ```
+
+10. build and upload packages
 
    ```
    make release
    ```
 
-4. Test uploads by installing them:
+11. test uploads by installing them:
 
    ```
    make test-install
    ```
 
+12. leave this branch to be indefinitely, and switch back to master:
 
+   ```
+   make master-branch-switch
+   ```
+
+13. if some problems were detected during the release and patches were made, merge those back into the master branch.
 
 
 ## Project Publish (Detailed)
