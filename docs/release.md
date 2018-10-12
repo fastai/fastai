@@ -4,13 +4,17 @@ title: Making a Release
 
 ## Release Process
 
-Use this section if you know what you're doing for a quick release, otherwise per-use the sections below to understand what each `make` target does.
+Use this section if you know what you're doing for a quick release, otherwise first explore the sections below to understand what each `make` target does.
 
-The release process uses the master branch and also creates and uses a `release-$(version)` branch.
+The es sense of the process is simple - bump the version number, build and upload the packages for conda and pypi. All the other steps handle various other things like tagging, testing the code base, testing the installability of the packages, etc.
+
+Note, that the release process uses the master branch and also creates and uses a `release-$(version)` branch. That release branch remains after the release so that it's accessible from github as a release branch.
 
 The exact order to be followed is essential.
 
-Quick and dirty:
+### Quick process
+
+Here is the quick version that includes all the steps w/o the explanations.
 
 ```
 make master-branch-switch
@@ -21,15 +25,19 @@ make release && make test-install
 make master-branch-switch
 ```
 
-We will use starting from `master@1.0.6.dev0` as a starting point for the workflow.
+### Step-by-step process
+
+Here is the step-by-step version
+
+The starting point of the workflow is a dev version of the master branch. For this example we will use `1.0.6.dev0`.
 
 1. make sure we start with master branch
 
     ```
-    make master-branch-switch
+    make master-branch-switch    # git checkout master
     ```
 
-2. check-dirty - cleanup/stash/commit so there is nothing in the way
+2. check-dirty - git cleanup/stash/commit so there is nothing in the way
 
     ```
     make git-not-dirty || echo "Commit changes before proceeding"
@@ -52,28 +60,28 @@ We will use starting from `master@1.0.6.dev0` as a starting point for the workfl
 
     ```
     make bump                     # 1.0.6.dev0 => 1.0.6
-    make release-branch-create    # git checkout -b release-$(version)
-    make commit-version
+    make release-branch-create    # git checkout -b release-1.0.6
+    make commit-version           # git commit fastai/version.py
     ```
 
 5. go back to master and bump it to the next version + .dev0
 
 
     ```
-    make master-branch-switch
+    make master-branch-switch     # git checkout master
     make bump-dev                 # 1.0.6 => 1.0.7.dev0
     ```
 
     edit CHANGES.md - copy the template and start a new entry for the new version (XXX: could be automated)
 
     ```
-    make commit-dev-cycle-push
+    make commit-dev-cycle-push    # git commit fastai/version.py CHANGES.md; git push
     ```
 
 6. now we are no longer concerned with master, all the rest of the work is done on release-$(version) branch (we are using `git checkout -` here (like in `cd -`, since we no longer have the previous version)
 
     ```
-    make prev-branch-switch    # git checkout release-$(version)
+    make prev-branch-switch       # git checkout - (i.e. release-1.0.6 branch)
     ```
 
 7. finalize CHANGES.md (remove empty items) - version and date (could be automated)
@@ -81,31 +89,32 @@ We will use starting from `master@1.0.6.dev0` as a starting point for the workfl
 8. validate quality
 
     ```
-    make test
+    make test                     # py.test tests
     ```
 
 9. git tag with version, commit and push CHANGES.md and version.py
 
     ```
-    make commit-tag-push
+    make commit-tag-push          # git commit CHANGES.md; git tag; git push
     ```
 
 10. build and upload packages
 
     ```
-    make release
+    make release                  # make dist; make release-pypi; make release-conda
     ```
 
-11. test uploads by installing them:
+11. test uploads by installing them (telling the installers to install the exact version we uploaded)
 
     ```
-    make test-install
+    make test-install             # pip install fastai==1.0.6; pip uninstall fastai
+                                  # conda install -y -c fastai fastai==1.0.6
     ```
 
 12. leave this branch to be indefinitely, and switch back to master:
 
     ```
-    make master-branch-switch
+    make master-branch-switch     # git checkout master
     ```
 
 13. if some problems were detected during the release and patches were made, merge those back into the master branch.
@@ -114,7 +123,7 @@ We will use starting from `master@1.0.6.dev0` as a starting point for the workfl
 ## Project Publish (Detailed)
 
 
-The following is needed if the combined release instructions are failing or understanding is needed. So that each step can be done separately.
+The following is needed if the combined release instructions are failing or better understanding is needed. So that each step can be done separately.
 
 `fastai` package is distributed via [PyPI](https://pypi.org/) and [anaconda](https://anaconda.org/). Therefore we need to make two different builds and upload them to their respective servers upon a new release.
 
