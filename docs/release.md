@@ -12,101 +12,101 @@ The exact order to be followed is essential.
 
 Quick and dirty:
 
-   ```
-   make master-branch-switch
-   make bump && make release-branch-create && make commit-version
-   make master-branch-switch && make bump-dev && make commit-dev-cycle-push
-   make prev-branch-switch && make test && make commit-tag-push
-   make release && make test-install
-   make master-branch-switch
-   ```
+```
+make master-branch-switch
+make bump && make release-branch-create && make commit-version
+make master-branch-switch && make bump-dev && make commit-dev-cycle-push
+make prev-branch-switch && make test && make commit-tag-push
+make release && make test-install
+make master-branch-switch
+```
 
 We will use starting from `master@1.0.6.dev0` as a starting point for the workflow.
 
 1. make sure we start with master branch
 
-   ```
-   make master-branch-switch
-   ```
+    ```
+    make master-branch-switch
+    ```
 
 2. check-dirty - cleanup/stash/commit so there is nothing in the way
 
-   ```
-   make git-not-dirty || echo "Commit changes before proceeding"
-   ```
+    ```
+    make git-not-dirty || echo "Commit changes before proceeding"
+    ```
 
 3. pick a starting point
 
-Normally, `git pull` to HEAD is fine, but it's the best to know which 'stable' <commit sha1> to use as a starting point.
+    Normally, `git pull` to HEAD is fine, but it's the best to know which 'stable' <commit sha1> to use as a starting point.
 
-   ```
-   git pull
-   ```
-   or:
-   ```
-   git checkout <commit>
-   ```
+    ```
+    git pull
+    ```
+    or:
+    ```
+    git checkout <commit>
+    ```
 
 4. start release-$(version) branch
 
 
-   ```
-   make bump                     # 1.0.6.dev0 => 1.0.6
-   make release-branch-create    # git checkout -b release-$(version)
-   make commit-version
-   ```
+    ```
+    make bump                     # 1.0.6.dev0 => 1.0.6
+    make release-branch-create    # git checkout -b release-$(version)
+    make commit-version
+    ```
 
 5. go back to master and bump it to the next version + .dev0
 
 
-   ```
-   make master-branch-switch
-   make bump-dev                 # 1.0.6 => 1.0.7.dev0
-   ```
+    ```
+    make master-branch-switch
+    make bump-dev                 # 1.0.6 => 1.0.7.dev0
+    ```
 
-   edit CHANGES.md - copy the template and start a new entry for the new version (XXX: could be automated)
+    edit CHANGES.md - copy the template and start a new entry for the new version (XXX: could be automated)
 
-   ```
-   make commit-dev-cycle-push
-   ```
+    ```
+    make commit-dev-cycle-push
+    ```
 
 6. now we are no longer concerned with master, all the rest of the work is done on release-$(version) branch (we are using `git checkout -` here (like in `cd -`, since we no longer have the previous version)
 
-   ```
-   make prev-branch-switch    # git checkout release-$(version)
-   ```
+    ```
+    make prev-branch-switch    # git checkout release-$(version)
+    ```
 
 7. finalize CHANGES.md (remove empty items) - version and date (could be automated)
 
 8. validate quality
 
-   ```
-   make test
-   ```
+    ```
+    make test
+    ```
 
 9. git tag with version, commit and push CHANGES.md and version.py
 
-   ```
-   make commit-tag-push
-   ```
+    ```
+    make commit-tag-push
+    ```
 
 10. build and upload packages
 
-   ```
-   make release
-   ```
+    ```
+    make release
+    ```
 
 11. test uploads by installing them:
 
-   ```
-   make test-install
-   ```
+    ```
+    make test-install
+    ```
 
 12. leave this branch to be indefinitely, and switch back to master:
 
-   ```
-   make master-branch-switch
-   ```
+    ```
+    make master-branch-switch
+    ```
 
 13. if some problems were detected during the release and patches were made, merge those back into the master branch.
 
@@ -125,54 +125,54 @@ The following is needed if the combined release instructions are failing or unde
 
 1. You need to register (free) with:
 
-   - [PyPI](​https://pypi.org/account/register/)
-   - [TestPyPI](https://test.pypi.org/account/register/)
-   - [anaconda.org](​https://anaconda.org/​)
+    - [PyPI](​https://pypi.org/account/register/)
+    - [TestPyPI](https://test.pypi.org/account/register/)
+    - [anaconda.org](​https://anaconda.org/​)
 
-   After registration, to upload to fastai project, you will need to ask Jeremy to add your username to PyPI and anaconda.
+    After registration, to upload to fastai project, you will need to ask Jeremy to add your username to PyPI and anaconda.
 
 2. Create file `~/.pypirc` with the following content:
 
-   ```
-   [distutils]
-   index-servers#
-   pypi
-   testpypi
+    ```
+    [distutils]
+    index-servers#
+    pypi
+    testpypi
 
-   [testpypi]
-   repository: https://test.pypi.org/legacy/
-   username: your testpypi username
-   password: your testpypi password
+    [testpypi]
+    repository: https://test.pypi.org/legacy/
+    username: your testpypi username
+    password: your testpypi password
 
-   [pypi]
-   username: your testpypi username
-   password: your testpypi password
-   ```
+    [pypi]
+    username: your testpypi username
+    password: your testpypi password
+    ```
 
 3. You can also setup your client to have transparent access to anaconda tools, see https://anaconda.org/YOURUSERNAME/settings/access (adjust the url to insert your username).
 
-   You don't really need it, as the anaconda client cashes your credentials so you need to login only infrequently.
+    You don't really need it, as the anaconda client cashes your credentials so you need to login only infrequently.
 
 4. Install build tools:
 
-   ```
-   conda install conda-verify conda-build anaconda-client
-   pip install twine>=1.12
-   ```
+    ```
+    conda install conda-verify conda-build anaconda-client
+    pip install twine>=1.12
+    ```
 
 ### Test Suite
 
 Before building the packages make sure the test suite runs successfully:
 
-   ```
-   make test
-   ```
+```
+make test
+```
 
 or:
 
-   ```
-   python setup.py test
-   ```
+```
+python setup.py test
+```
 
 When building a `fastai` conda package, it runs a basic `import fastai` test in a fresh environment. That's it.
 
@@ -185,31 +185,31 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
 
 1. Build the pip packages (source and wheel)
 
-   ```
-   make dist-pypi
-   ```
+    ```
+    make dist-pypi
+    ```
 
 2. Publish:
 
-   ```
-   make release-pypi
-   ```
+    ```
+    make release-pypi
+    ```
 
-   Note: PyPI won't allow re-uploading the same package filename, even if it's a minor fix. If you delete the file from pypi or test.pypi it still won't let you do it. So either a patch-level version needs to be bumped (A.B.C++) or some [post release string added](https://www.python.org/dev/peps/pep-0440/#post-releases) in `version.py`.
+    Note: PyPI won't allow re-uploading the same package filename, even if it's a minor fix. If you delete the file from pypi or test.pypi it still won't let you do it. So either a patch-level version needs to be bumped (A.B.C++) or some [post release string added](https://www.python.org/dev/peps/pep-0440/#post-releases) in `version.py`.
 
 3. Test that the uploaded package is found and gets installed:
 
-   Test the webpage so that the description looks correct: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
+    Test the webpage so that the description looks correct: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
 
-   Test installation:
+    Test installation:
 
-   ```
-   pip install fastai==1.0.10
-   ```
+    ```
+    pip install fastai==1.0.10
+    ```
 
-   XXX: May be add: `--force-reinstall` or manually remove preinstalled `fastai` first from your python installation: e.g. `python3.6/site-packages/fastai*`, run `python -m site` to find out the location.
+    XXX: May be add: `--force-reinstall` or manually remove preinstalled `fastai` first from your python installation: e.g. `python3.6/site-packages/fastai*`, run `python -m site` to find out the location.
 
-   If the install is not working, check the state of the package: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
+    If the install is not working, check the state of the package: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
 
 
 #### Even more details
@@ -217,104 +217,104 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
 
 * Build Source distribution / Source Release
 
-   It provides metadata + source files.
+    It provides metadata + source files.
 
-   It is needed for installing.
+    It is needed for installing.
 
-   ```
-   python setup.py sdist
-   ```
+    ```
+    python setup.py sdist
+    ```
 
 *  Build Built Distribution
 
-   It provides metadata + pre-built files.
+    It provides metadata + pre-built files.
 
-   It only needs to be moved (usually by pip) to the correct locations on the target system.
+    It only needs to be moved (usually by pip) to the correct locations on the target system.
 
-   ```
-   python setup.py bdist
-   ```
+    ```
+    python setup.py bdist
+    ```
 
 * Build Wheel
 
-   This is a Built Distribution.
+    This is a Built Distribution.
 
-   ```
-   python setup.py bdist_wheel
-   ```
+    ```
+    python setup.py bdist_wheel
+    ```
 
-   It's a ZIP-format archive with .whl extension
+    It's a ZIP-format archive with .whl extension
 
-   ```
-   {distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
-   ```
+    ```
+    {distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
+    ```
 
-   Note: To build all the requirements wheels (not needed for the release):
+    Note: To build all the requirements wheels (not needed for the release):
 
-   ```
-   pip wheel . -w dist
-   ```
+    ```
+    pip wheel . -w dist
+    ```
 
 
 #### Pip Helper Tools
 
 * Complete Package Uninstall
 
-   Sometimes with too many local installs/uninstalls into the same environment, especially if you nuke folders and files with `rm(1)`, things can get pretty messed up. So this can help diagnose what pip sees:
+    Sometimes with too many local installs/uninstalls into the same environment, especially if you nuke folders and files with `rm(1)`, things can get pretty messed up. So this can help diagnose what pip sees:
 
-   ```
-   pip show fastai
-   [...]
-   Name: fastai
-   Version: 1.0.0b1
-   Location: /some/path/to/git/clone/of/fastai
-   ```
+    ```
+    pip show fastai
+    [...]
+    Name: fastai
+    Version: 1.0.0b1
+    Location: /some/path/to/git/clone/of/fastai
+    ```
 
-   Yet `pip` can't uninstall it:
+    Yet `pip` can't uninstall it:
 
-   ```
-   pip uninstall fastai
-   Can't uninstall 'fastai'. No files were found to uninstall.
-   ```
+    ```
+    pip uninstall fastai
+    Can't uninstall 'fastai'. No files were found to uninstall.
+    ```
 
-   `easy-install` (`pip install -e`) can make things very confusing as it may point to git checkouts that are no longer up-to-date. and you can't uninstall it. It's db is a plain text file here:
+    `easy-install` (`pip install -e`) can make things very confusing as it may point to git checkouts that are no longer up-to-date. and you can't uninstall it. It's db is a plain text file here:
 
-   ```
-   path/to/lib/python3.6/site-packages/easy-install.pth
-   ```
+    ```
+    path/to/lib/python3.6/site-packages/easy-install.pth
+    ```
 
-   so just removing the relevant path from this file will fix the problem. (or removing the whole file if you need to).
+    so just removing the relevant path from this file will fix the problem. (or removing the whole file if you need to).
 
-   Similarly, this is another place where it can hide:
+    Similarly, this is another place where it can hide:
 
-   ```
-   path/to/lib/python3.6/site-packages/fastai.egg-link
-   ```
-
-
-   Now running:
-
-   ```
-   pip show fastai
-   ```
-
-   shows nothing.
+    ```
+    path/to/lib/python3.6/site-packages/fastai.egg-link
+    ```
 
 
-*. To upload to the test server, instead of the live PyPI server, use:
+    Now running:
+
+    ```
+    pip show fastai
+    ```
+
+    shows nothing.
 
 
-   ```
-   twine upload --repository testpypi dist/*
-   ```
+* To upload to the test server, instead of the live PyPI server, use:
 
-   and to install from it:
 
-   ```
-   pip install --index-url https://test.pypi.org/simple/ fastai
-   ```
+    ```
+    twine upload --repository testpypi dist/*
+    ```
 
-   Doc: https://packaging.python.org/guides/using-testpypi/
+    and to install from it:
+
+    ```
+    pip install --index-url https://test.pypi.org/simple/ fastai
+    ```
+
+    Doc: https://packaging.python.org/guides/using-testpypi/
 
 
 
@@ -327,27 +327,27 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 
 1. Build the fastai conda package:
 
-   ```
-   make dist-conda
+    ```
+    make dist-conda
 
-   ```
+    ```
 
 2. Upload
 
-   ```
-   make release-conda
+    ```
+    make release-conda
 
-   ```
+    ```
 
 3. Test that the uploaded package is found and gets installed:
 
-   Test the webpage so that the description looks correct: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
+    Test the webpage so that the description looks correct: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
 
-   Test installation:
+    Test installation:
 
-   ```
-   conda install -c fastai fastai
-   ```
+    ```
+    conda install -c fastai fastai
+    ```
 
 #### More detailed version
 
@@ -355,23 +355,23 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 
 1. Check that it's valid:
 
-   ```
-   conda-build --check ./conda/
-   ```
+    ```
+    conda-build --check ./conda/
+    ```
 
 2. Build the fastai package (include the `pytorch` channel, for `torch/` dependencies, and fastai test channel for `torchvision/fastai`):
 
-   ```
-   conda-build ./conda/ -c pytorch -c fastai/label/main
-   ```
+    ```
+    conda-build ./conda/ -c pytorch -c fastai/label/main
+    ```
 
-   If `conda-build` fails with:
+    If `conda-build` fails with:
 
-   ```
-   conda_build.exceptions.DependencyNeedsBuildingError: Unsatisfiable dependencies for platform linux-64: {'dataclasses', 'jupyter_contrib_nbextensions'}
-   ```
+    ```
+    conda_build.exceptions.DependencyNeedsBuildingError: Unsatisfiable dependencies for platform linux-64: {'dataclasses', 'jupyter_contrib_nbextensions'}
+    ```
 
-   it indicates that these packages are not in the specified via `-c` and user-pre-configured conda channels. Follow the instructions in the section `Dealing with Missing Conda Packages` and then come back to the current section and try to build again.
+    it indicates that these packages are not in the specified via `-c` and user-pre-configured conda channels. Follow the instructions in the section `Dealing with Missing Conda Packages` and then come back to the current section and try to build again.
 
 
 
@@ -380,12 +380,12 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 
 Packages that are missing from conda, but available on pypi, need to built one at a time and uploaded to the `fastai` channel. For example, let's do it for the `fastprogress` package:
 
-   ```
-   conda skeleton pypi fastprogress
-   conda-build fastprogress
-   # the output from the above command will tell the path to the built package
-   anaconda upload -u fastai ~/anaconda3/conda-bld/path/to/fastprogress-0.1.4-py36_0.tar.bz2
-   ```
+```
+conda skeleton pypi fastprogress
+conda-build fastprogress
+# the output from the above command will tell the path to the built package
+anaconda upload -u fastai ~/anaconda3/conda-bld/path/to/fastprogress-0.1.4-py36_0.tar.bz2
+```
 
 and then rerun `conda-build` and see if some packages are still missing. Repeat until all missing conda packages have been built and uploaded.
 
@@ -393,9 +393,9 @@ Note, that it's possible that a build of a certain package will fail as it'll de
 
 Once the extra packages have been built you can install them from the build directory locally:
 
-   ```
-   conda install --use-local fastprogress
-   ```
+```
+conda install --use-local fastprogress
+```
 
 Or upload them first and then install normally via `conda install`.
 
@@ -409,76 +409,76 @@ So far `fastai` is `noarch` (pure python), so we only need to make one `python3.
 
 But as shown in the previous section we also have to deal with several dependencies which are not on conda. If they are `noarch`, it should be easy to release conda packages for dependencies every so often. If they are platform-specific we will have to remove them from conda dependencies and ask users to install those via pip. An easy way to check whether a package for a specific platform is available is to:
 
-   ```
-   conda search -i --platform win-64
-   ```
+```
+conda search -i --platform win-64
+```
 
 
 #### Uploading and Testing
 
 Upload to the main channel:
 
-   ```
-   anaconda upload /path/to/fastai-xxx.tar.bz2 -u fastai
-   ```
+```
+anaconda upload /path/to/fastai-xxx.tar.bz2 -u fastai
+```
 
 To test, see that you can find it:
 
-   ```
-   conda search fastai
-   ```
+```
+conda search fastai
+```
 
 and then validate that the installation works correctly:
 
-   ```
-   conda install -c fastai fastai
-   ```
+```
+conda install -c fastai fastai
+```
 
 ##### Test Release
 
 If this is just a test release that shouldn't be visible to all, add the `--label test` option, like so:
 
-   ```
-   anaconda upload /path/to/fastai-xxx.tar.bz2 -u fastai --label test
-   ```
+```
+anaconda upload /path/to/fastai-xxx.tar.bz2 -u fastai --label test
+```
 
 And then only those who use `-c fastai/label/test` in `conda install` command will see this package:
 
-   ```
-   conda install -c fastai/label/test fastai
-   ```
+```
+conda install -c fastai/label/test fastai
+```
 
 Any label name can be used. If none was specified, the implicit label `main` is assigned to the package.
 
 The label can be changed either on anaconda.org, or via it's client:
 
-   ```
-   anaconda label --copy test main
-   ```
+```
+anaconda label --copy test main
+```
 
 this will copy all of the test package(s) back to the `main` label. Use this one with care.
 
 
 You can move individual packages from one label to another (anaconda v1.7+):
 
-   ```
-   anaconda move --from-label OLD --to-label NEW SPEC
-   ```
+```
+anaconda move --from-label OLD --to-label NEW SPEC
+```
 
 Replace OLD with the old label, NEW with the new label, and SPEC with the package to move. SPEC can be either `user/package/version/file`, or `user/package/version` in which case it moves all files in that version. For example to move any released packages that match `fastai-1.0.5-*.tar.bz2` from the `test` label to `main` and thus making it visible to all:
 
-   ```
-   anaconda move --from-label test --to-label main fastai/fastai/1.0.5
-   ```
+```
+anaconda move --from-label test --to-label main fastai/fastai/1.0.5
+```
 
 ##### Re-uploading
 
 Note, that `anaconda` client won't let you re-upload a file with the same name, as previously uploaded one, i.e. `fastai-1.0.0-py_1.tar.bz2`, so to release an update with the same package version you either (1) use `anaconda upload --force` or (2) manually delete it from anaconda.org, or (3) create a release file with a new name, by bumping the value of `number` in `meta.yaml`.
 
-   ```
-   build:
-     number: 1
-   ```
+```
+build:
+  number: 1
+```
 
 Now you need to rebuild the package, and if you changed the `number` to `2`, the package will now become `'fastai-1.0.0-py_2.tar.bz2`.
 
@@ -488,86 +488,86 @@ Now you need to rebuild the package, and if you changed the `number` to `2`, the
 
 * To render the final `meta.yaml`:
 
-   ```
-   conda-render ./conda/
-   ```
+    ```
+    conda-render ./conda/
+    ```
 
 This is very useful when you do any `jinja2` template processing inside `meta.yaml` and you want to see what the final outcome is.
 
 * Once the package is built, it can be validated:
 
-   ```
-   conda-verify path/to/package.tar.bz2
-   ```
+    ```
+    conda-verify path/to/package.tar.bz2
+    ```
 
 * To validate the `meta.yaml` recipe (similar to using `conda-build --check`):
 
-   ```
-   conda-verify ./conda/
-   ```
+    ```
+    conda-verify ./conda/
+    ```
 
 * To find out the dependencies of the package:
 
-   ```
-   conda search --info -c fastai fastai
-   ```
+    ```
+    conda search --info -c fastai fastai
+    ```
 
-   Another hacky way to find out what the exact dependencies for a given conda package (added `-c fastai/label/test` to make it check our test package):
+    Another hacky way to find out what the exact dependencies for a given conda package (added `-c fastai/label/test` to make it check our test package):
 
-   ```
-   conda create --dry-run --json -n dummy fastai -c fastai
-   ```
+    ```
+    conda create --dry-run --json -n dummy fastai -c fastai
+    ```
 
 * Other `conda search` tricks:
 
   `conda search` outputs results as following:
 
-   ```
-   conda search -c pytorch "pytorch-nightly"
-   Loading channels: done
-   # Name                  Version           Build                   Channel
-   pytorch-nightly 0.5.0.dev20180914 py3.5_cpu_0                     pytorch
-   pytorch-nightly 0.5.0.dev20180914 py3.5_cuda8.0.61_cudnn7.1.2_0   pytorch
-   pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.0.176_cudnn7.1.2_0  pytorch
-   pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.2.148_cudnn7.1.4_0  pytorch
-   [...]
-   ```
+    ```
+    conda search -c pytorch "pytorch-nightly"
+    Loading channels: done
+    # Name                  Version           Build                   Channel
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cpu_0                     pytorch
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda8.0.61_cudnn7.1.2_0   pytorch
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.0.176_cudnn7.1.2_0  pytorch
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.2.148_cudnn7.1.4_0  pytorch
+    [...]
+    ```
 
-   To narrow the results, e.g. show only python3 cpu builds:
+    To narrow the results, e.g. show only python3 cpu builds:
 
-   ```
-   conda search -c pytorch "pytorch-nightly[build=py3*_cpu_0]"
-   ```
+    ```
+    conda search -c pytorch "pytorch-nightly[build=py3*_cpu_0]"
+    ```
 
-   and then feed it to `conda install` with specific `==version=build` after the package name, e.g. `pytorch-nightly==1.0.0.dev20180916=py3.6_cpu_0`
+    and then feed it to `conda install` with specific `==version=build` after the package name, e.g. `pytorch-nightly==1.0.0.dev20180916=py3.6_cpu_0`
 
 
-   To search for packages for a given system (by default, packages for your current
+    To search for packages for a given system (by default, packages for your current
 platform are shown):
 
-   ```
-   conda search -c pytorch "pytorch-nightly[subdir=osx-64]"
-   ```
+    ```
+    conda search -c pytorch "pytorch-nightly[subdir=osx-64]"
+    ```
 
-   Some of the possible platforms include `linux-32`, `linux-64`, `win-64`, `osx-64`.
+    Some of the possible platforms include `linux-32`, `linux-64`, `win-64`, `osx-64`.
 
-   And these can be combined:
+    And these can be combined:
 
-   ```
-   conda search -c pytorch "pytorch-nightly[subdir=osx-64, build=py3.7*]"
-   ```
+    ```
+    conda search -c pytorch "pytorch-nightly[subdir=osx-64, build=py3.7*]"
+    ```
 
-   To search all packages released by user `fastai`:
+    To search all packages released by user `fastai`:
 
-   ```
-   conda search -c fastai --override
-   ```
+    ```
+    conda search -c fastai --override
+    ```
 
-   To search all packages released by user `fastai` for a specific platform, e.g. `linux-64`:
+    To search all packages released by user `fastai` for a specific platform, e.g. `linux-64`:
 
-   ```
-   conda search -c fastai --override --platform linux-64
-   ```
+    ```
+    conda search -c fastai --override --platform linux-64
+    ```
 
 
 #### Documentation
@@ -593,22 +593,24 @@ You can either edit `fastai/version.py` and change the version number by hand.
 
 Or run one of these `make` targets:
 
-   Target             | Function
-   -------------------| --------------------------------------------
-   bump-major         | bump major-level unless has .devX, then don't bump, but remove .devX
-   bump-minor         | bump minor-level unless has .devX, then don't bump, but remove .devX
-   bump-patch         | bump patch-level unless has .devX, then don't bump, but remove .devX
-   bump               | alias to bump-patch (as it's used often)
-   bump-major-dev     | bump major-level and add .dev0
-   bump-minor-dev     | bump minor-level and add .dev0
-   bump-patch-dev     | bump patch-level and add .dev0
-   bump-dev           | alias to bump-patch-dev (as it's used often)
+```
+Target             | Function
+-------------------| --------------------------------------------
+bump-major         | bump major-level unless has .devX, then don't bump, but remove .devX
+bump-minor         | bump minor-level unless has .devX, then don't bump, but remove .devX
+bump-patch         | bump patch-level unless has .devX, then don't bump, but remove .devX
+bump               | alias to bump-patch (as it's used often)
+bump-major-dev     | bump major-level and add .dev0
+bump-minor-dev     | bump minor-level and add .dev0
+bump-patch-dev     | bump patch-level and add .dev0
+bump-dev           | alias to bump-patch-dev (as it's used often)
+```
 
 e.g.:
 
-   ```
-   make bump
-   ```
+```
+make bump
+```
 
 We use the semver version convention w/ python adjustment to `.devX`, instead of `-devX`:
 
@@ -636,87 +638,87 @@ XXX: `make commit-tag`
 
 * List tags
 
-   all tags:
-   ```
-   git tag
-   ```
+    all tags:
+    ```
+    git tag
+    ```
 
-   tags matching pattern:
-   ```
-   git tag -l "v1.8.5*"
-   ```
+    tags matching pattern:
+    ```
+    git tag -l "v1.8.5*"
+    ```
 
-   by date:
-   ```
-   git log --tags --simplify-by-decoration --pretty="format:%ci %d"
-   ```
+    by date:
+    ```
+    git log --tags --simplify-by-decoration --pretty="format:%ci %d"
+    ```
 
-   last tag:
+    last tag:
 
-   ```
-   git describe --abbrev=0 --tags
-   ```
+    ```
+    git describe --abbrev=0 --tags
+    ```
 
 * Creating tags
 
-   To tag current checkout with tag "v1.0.5" with current date:
+    To tag current checkout with tag "v1.0.5" with current date:
 
-   ```
-   git tag -a test-1.0.5 -m "test-1.0.5"
-   git push --tags origin master
-   ```
+    ```
+    git tag -a test-1.0.5 -m "test-1.0.5"
+    git push --tags origin master
+    ```
 
-   To tag commit 9fceb02a with tag "v1.0.5" with current date:
+    To tag commit 9fceb02a with tag "v1.0.5" with current date:
 
-   ```
-   git checkout 9fceb02a
-   git tag -a v1.0.5 -m "v1.0.5"
-   git push --tags origin master
-   git checkout master
-   ```
+    ```
+    git checkout 9fceb02a
+    git tag -a v1.0.5 -m "v1.0.5"
+    git push --tags origin master
+    git checkout master
+    ```
 
-   To tag commit 9fceb02a with tag "v1.0.5" with the date of that commit:
+    To tag commit 9fceb02a with tag "v1.0.5" with the date of that commit:
 
-   ```
-   git checkout 9fceb02a
-   GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "v1.0.5"
-   git push --tags origin master
-   git checkout master
-   ```
+    ```
+    git checkout 9fceb02a
+    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "v1.0.5"
+    git push --tags origin master
+    git checkout master
+    ```
 
-   or the same without needing to `git checkout` and with typing the variables only once:
+    or the same without needing to `git checkout` and with typing the variables only once:
 
-   ```
-   tag="v0.1.3" commit="9fceb02a" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
-   git push --tags origin master
-   ```
+    ```
+    tag="v0.1.3" commit="9fceb02a" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
+    git push --tags origin master
+    ```
 
 * Delete remote tag:
 
-   An unambiguous way:
+    An unambiguous way:
 
-   ```
-   git push origin :refs/tags/v1.0.5
-   ```
+    ```
+    git push origin :refs/tags/v1.0.5
+    ```
 
-   An ambiguous way (may delete a branch if it's named the same as the tag)
-   ```
-   git push --delete origin v1.0.5
-   ```
+    An ambiguous way (may delete a branch if it's named the same as the tag)
+    ```
+    git push --delete origin v1.0.5
+    ```
 
-   Delete multiple tags:
+    Delete multiple tags:
 
-   ```
-   git push --delete origin tag1 tag2
-   ```
+    ```
+    git push --delete origin tag1 tag2
+    ```
 
 * Delete local tag:
 
-   ```
-   git tag --delete v0.1.5
-   git push --tags origin master
-   ```
-   This is important since if the remote tag is deleted, but the local is not, then on the next `git push --tags origin master` it will get restored in remote.
+    ```
+    git tag --delete v0.1.5
+    git push --tags origin master
+    ```
+    This is important since if the remote tag is deleted, but the local is not, then on the next `git push --tags origin master` it will get restored in remote.
 
 
 Useful scripts:
@@ -765,27 +767,27 @@ Tools for finding out pip dependencies (direct and reversed).
 
 * `pipdeptree`: `pip install pipdeptree`
 
-   Print the whole tree of the installed base:
-   ```
-   pipdeptree -fl
-   ```
+    Print the whole tree of the installed base:
+    ```
+    pipdeptree -fl
+    ```
 
-   To find out why a particular package is installed (i.e. which package requires it):
-   ```
-   pipdeptree --reverse --packages  pillow
-   ```
+    To find out why a particular package is installed (i.e. which package requires it):
+    ```
+    pipdeptree --reverse --packages  pillow
+    ```
 
 * `johnnydep`: `pip install johnnydep` (the tool is very slow!):
 
-   Pretty-print a dependency tree for a Python distribution
-   ```
-   johnnydep spacy
-   ```
+    Pretty-print a dependency tree for a Python distribution
+    ```
+    johnnydep spacy
+    ```
 
-   Resolve the dependency tree:
-   ```
-   johnnydep spacy --output-format pinned
-   ```
+    Resolve the dependency tree:
+    ```
+    johnnydep spacy --output-format pinned
+    ```
 
 
 
@@ -795,33 +797,33 @@ We will use 2 tools, each not finding all packages, but together they get it mos
 
 Install them with:
 
-   ```
-   pip install pipreqs pigar
-   ```
+```
+pip install pipreqs pigar
+```
 
 or
 
-   ```
-   conda install pipreqs pigar -c conda-forge
-   ```
+```
+conda install pipreqs pigar -c conda-forge
+```
 
 And then to the mashup:
 
-   ```
-   cd fastai/fastai/
-   pipreqs --savepath req1.txt .
-   pigar -p req2.txt
-   perl -pi -e 's| ||g' req2.txt
-   cat req1.txt req2.txt | grep "##" | sort | uniq > req.txt
-   ```
+```
+cd fastai/fastai/
+pipreqs --savepath req1.txt .
+pigar -p req2.txt
+perl -pi -e 's| ||g' req2.txt
+cat req1.txt req2.txt | grep "##" | sort | uniq > req.txt
+```
 
 So this gives us `requirements.txt`-like file which can be used for pip. But we will get pip to sort things out from `setup.py`, by putting `.` inside `fastai/requirements.txt`.
 
 Now make a list for `setup.py`'s `install_requires`:
 
-   ```
-   perl -nle '$q # chr(39); m/^(.*?)#/ && push @l, $1; END{ print join ", ", map {qq[$q$_$q]} @l}' req.txt
-   ```
+```
+perl -nle '$q # chr(39); m/^(.*?)#/ && push @l, $1; END{ print join ", ", map {qq[$q$_$q]} @l}' req.txt
+```
 
 and use the output to update `setup.py`.
 
@@ -829,9 +831,9 @@ When merging make sure to not overwrite minimal version requirements, e.g. `pyto
 
 Cleanup:
 
-   ```
-   rm req1.txt req2.txt req.txt
-   ```
+```
+rm req1.txt req2.txt req.txt
+```
 
 The same can be repeated for getting test requirements, just repeat the same process inside `tests` directory.
 
@@ -899,15 +901,16 @@ And remember to sync the branch with the master changes so that you're testing t
 - [pipelines cookbook](https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts)
 
 - azure [installed automatically @github webhooks](https://github.com/fastai/fastai/settings/hooks) these push events:
-* triggers CI build on every push! (ouch!):
 
-   ```
-   https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)
-   ```
-* triggers CI build on every PR:
-   ```
-   https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
-   ```
+   * triggers CI build on every non-document commit!:
+
+    ```
+    https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)
+    ```
+   * triggers CI build on every PR:
+    ```
+    https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
+    ```
 
 
 
