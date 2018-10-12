@@ -87,7 +87,7 @@ class TextDataset():
             tokens += toks
             labels += list(np.squeeze(lbls))
         np.save(self.tok_files[0], np.array(tokens))
-        np.save(self.path/f'{self.name}_lbl.npy', np.array(labels))
+        if (len(labels) > 0): np.save(self.path/f'{self.name}_lbl.npy', np.array(labels))
         with open(self.tok_files[1],'w') as f: f.write(repr(self.tokenizer))
 
     def numericalize(self):
