@@ -18,7 +18,8 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
     out = model(*xb)
     out = cb_handler.on_loss_begin(out)
     if not loss_fn: 
-        return out[0].detach(), yb[0].detach()
+        out_d = out[0].detach() if isinstance(out, tuple) else out.detach()
+        return out_d, yb[0].detach()
     loss = loss_fn(out, *yb)
     mets = [f(out,*yb).detach().cpu() for f in metrics] if metrics is not None else []
 
