@@ -16,6 +16,9 @@ Note: windows users, not using bash emulation, will need to invoke the command a
 
     python tools\run-after-git-clone
 
+Note that if you work on `fastai/fastai_docs` repository as well, you need to run that script once too in the directory of that repository upon cloning it.
+
+
 #### after-git-clone #1: a mandatory notebook strip out
 
 Currently we only store `source` code cells under git (and a few extra fields for documentation notebooks). If you would like to commit or submit a PR, you need to confirm to that standard.
