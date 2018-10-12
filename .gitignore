@@ -19,6 +19,7 @@ __pycache__/
 .Python
 env/
 build/
+conda-dist
 develop-eggs/
 dist/
 downloads/
