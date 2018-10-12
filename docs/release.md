@@ -4,6 +4,10 @@ title: Making a Release
 
 ## Release Process
 
+Use this section if you know what you're doing for a quick release, otherwise per-use the sections below to understand what each make target does.
+
+
+
 WIP: this is partially pseudo-code, partially working code
 
 The starting point is to know the sha1 of the last commit to go into the release
@@ -26,107 +30,49 @@ Then immediately start a new dev cycle:
 
 
 
-
-## Project Build
-
-
-### Build Source distribution / Source Release
-
-It provides metadata + source files.
-
-It is needed for installing.
-
+1. Test code:
    ```
-   python setup.py sdist
+   make git-pull
+   make test
+   make git-not-dirty || echo "Commit changes before proceeding"
    ```
 
+   The next stage requires a clean tree to start with, so commit any uncommitted code. If you `git stash` make sure to rerun `make test`.
 
-
-### Build Built Distribution
-
-It provides metadata + pre-built files.
-
-It only needs to be moved (usually by pip) to the correct locations on the target system.
+2. Bump and Tag and Commit:
 
    ```
-   python setup.py bdist
+   make git-not-dirty && make bump && make commit-tag
    ```
 
+   This will do patch-level bump, for major/minor bump targets see below.
 
-
-### Build Wheel
-
-This is a Built Distribution.
+3. Release:
 
    ```
-   python setup.py bdist_wheel
+   make release
    ```
 
-It's a ZIP-format archive with .whl extension
+4. Test uploads by installing them:
 
    ```
-   {distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
-   ```
-
-Note: To build all the requirements wheels (not needed for the release):
-
-   ```
-   pip wheel . -w dist
+   make test-install
    ```
 
 
 
-### Creating requirements.txt file by analyzing the code base
 
-We will use 2 tools, each not finding all packages, but together they get it mostly right. So we run both and combine their results.
+## Project Publish (Detailed)
 
-Install them with:
 
-   ```
-   pip install pipreqs pigar
-   ```
+The following is needed if the combined release instructions are failing or understanding is needed. So that each step can be done separately.
 
-or
-
-   ```
-   conda install pipreqs pigar -c conda-forge
-   ```
-
-And then to the mashup:
-
-   ```
-   cd fastai/fastai/
-   pipreqs --savepath req1.txt .
-   pigar -p req2.txt
-   perl -pi -e 's| ||g' req2.txt
-   cat req1.txt req2.txt | grep "##" | sort | uniq > req.txt
-   ```
-
-So this gives us `requirements.txt`-like file which can be used for pip. But we will get pip to sort things out from `setup.py`, by putting `.` inside `fastai/requirements.txt`.
-
-Now make a list for `setup.py`'s `install_requires`:
-
-   ```
-   perl -nle '$q # chr(39); m/^(.*?)#/ && push @l, $1; END{ print join ", ", map {qq[$q$_$q]} @l}' req.txt
-   ```
-
-and use the output to update `setup.py`.
-
-When merging make sure to not overwrite minimal version requirements, e.g. `pytorch>#0.5`. Also, you should manually clean these up since some will be deps only for doc authors or fastai library contributors; these don't need to be in the main requirements list.
-
-Cleanup:
-
-   ```
-   rm req1.txt req2.txt req.txt
-   ```
-
-The same can be repeated for getting test requirements, just repeat the same process inside `tests` directory.
+`fastai` package is distributed via [PyPI](https://pypi.org/) and [anaconda](https://anaconda.org/). Therefore we need to make two different builds and upload them to their respective servers upon a new release.
 
 
 
-## Project Publish
 
-## Prep
+### Prep
 
 1. You need to register (free) with:
 
@@ -165,7 +111,7 @@ The same can be repeated for getting test requirements, just repeat the same pro
    pip install twine>=1.12
    ```
 
-## Test Suite
+### Test Suite
 
 Before building the packages make sure the test suite runs successfully:
 
@@ -182,34 +128,34 @@ or:
 When building a `fastai` conda package, it runs a basic `import fastai` test in a fresh environment. That's it.
 
 
-## Publish
 
-`fastai` package is distributed via [PyPI](https://pypi.org/) and [anaconda](https://anaconda.org/). Therefore we need to make two different builds and upload them to their respective servers upon a new release.
 
-XXX: travis-ci.org as well.
+### PyPI build and release details
 
-### PyPI
+To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/fastai/):
 
-1. Build the package (source and wheel)
+1. Build the pip packages (source and wheel)
 
    ```
-   make dist
+   make dist-pypi
    ```
 
 2. Publish:
 
    ```
-   make release
+   make release-pypi
    ```
 
-   Note: PyPI won't allow re-uploading the same package filename, even if it's a minor fix. If you delete the file from pypi or test.pypi it still won't let you do it. So either a micro-level version needs to be bumped (A.B.C++) or some [post release string added](https://www.python.org/dev/peps/pep-0440/#post-releases) in `setup.py`.
+   Note: PyPI won't allow re-uploading the same package filename, even if it's a minor fix. If you delete the file from pypi or test.pypi it still won't let you do it. So either a patch-level version needs to be bumped (A.B.C++) or some [post release string added](https://www.python.org/dev/peps/pep-0440/#post-releases) in `version.py`.
 
 3. Test that the uploaded package is found and gets installed:
+
+   Test the webpage so that the description looks correct: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
 
    Test installation:
 
    ```
-   pip install fastai==1.0.0b7
+   pip install fastai==1.0.10
    ```
 
    XXX: May be add: `--force-reinstall` or manually remove preinstalled `fastai` first from your python installation: e.g. `python3.6/site-packages/fastai*`, run `python -m site` to find out the location.
@@ -217,9 +163,51 @@ XXX: travis-ci.org as well.
    If the install is not working, check the state of the package: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
 
 
+#### Even more details
 
 
-#### Various Helper Tools
+* Build Source distribution / Source Release
+
+   It provides metadata + source files.
+
+   It is needed for installing.
+
+   ```
+   python setup.py sdist
+   ```
+
+*  Build Built Distribution
+
+   It provides metadata + pre-built files.
+
+   It only needs to be moved (usually by pip) to the correct locations on the target system.
+
+   ```
+   python setup.py bdist
+   ```
+
+* Build Wheel
+
+   This is a Built Distribution.
+
+   ```
+   python setup.py bdist_wheel
+   ```
+
+   It's a ZIP-format archive with .whl extension
+
+   ```
+   {distribution}-{version}(-{build tag})?-{python tag}-{abi tag}-{platform tag}.whl
+   ```
+
+   Note: To build all the requirements wheels (not needed for the release):
+
+   ```
+   pip wheel . -w dist
+   ```
+
+
+#### Pip Helper Tools
 
 * Complete Package Uninstall
 
@@ -281,37 +269,38 @@ XXX: travis-ci.org as well.
 
 
 
-#### pip Dependencies
-
-Tools for finding out pip dependencies (direct and reversed).
 
 
-* `pipdeptree`: `pip install pipdeptree`
 
-   Print the whole tree of the installed base:
+### Conda build details
+
+To build a Conda package and release it on [anaconda.org](https://anaconda.org/fastai/fastai):
+
+1. Build the fastai conda package:
+
    ```
-   pipdeptree -fl
-   ```
+   make dist-conda
 
-   To find out why a particular package is installed (i.e. which package requires it):
-   ```
-   pipdeptree --reverse --packages  pillow
    ```
 
-* `johnnydep`: `pip install johnnydep` (the tool is very slow!):
+2. Upload
 
-   Pretty-print a dependency tree for a Python distribution
    ```
-   johnnydep spacy
-   ```
+   make release-conda
 
-   Resolve the dependency tree:
-   ```
-   johnnydep spacy --output-format pinned
    ```
 
+3. Test that the uploaded package is found and gets installed:
 
-### Conda
+   Test the webpage so that the description looks correct: [https://pypi.org/project/fastai/](https://pypi.org/project/fastai/)
+
+   Test installation:
+
+   ```
+   conda install -c fastai fastai
+   ```
+
+#### More detailed version
 
 `conda-build` uses a build recipe `conda/meta.yaml`.
 
@@ -334,6 +323,7 @@ Tools for finding out pip dependencies (direct and reversed).
    ```
 
    it indicates that these packages are not in the specified via `-c` and user-pre-configured conda channels. Follow the instructions in the section `Dealing with Missing Conda Packages` and then come back to the current section and try to build again.
+
 
 
 
@@ -445,7 +435,7 @@ Now you need to rebuild the package, and if you changed the `number` to `2`, the
 
 
 
-#### Various Helper Tools
+#### Conda Helper Tools
 
 * To render the final `meta.yaml`:
 
@@ -531,7 +521,7 @@ platform are shown):
    ```
 
 
-### Documentation
+#### Documentation
 
 * To figure out the nuances of the `meta.yaml` recipe writing see this [tutorial](https://conda.io/docs/user-guide/tasks/build-packages/define-metadata.html)
 
@@ -539,7 +529,7 @@ platform are shown):
 
 
 
-### Support
+#### Support
 
 * [conda dev chat channel](https://gitter.im/conda/conda-build)
 
@@ -548,7 +538,52 @@ platform are shown):
 
 
 
-## Tagging
+### Bump the version
+
+You can either edit `fastai/version.py` and change the version number by hand.
+
+Or run one of these `make` targets:
+
+   Target             | Function
+   -------------------| --------------------------------------------
+   bump-major         | bump major-level unless has .devX, then don't bump, but remove .devX
+   bump-minor         | bump minor-level unless has .devX, then don't bump, but remove .devX
+   bump-patch         | bump patch-level unless has .devX, then don't bump, but remove .devX
+   bump               | alias to bump-patch (as it's used often)
+   bump-major-dev     | bump major-level and add .dev0
+   bump-minor-dev     | bump minor-level and add .dev0
+   bump-patch-dev     | bump patch-level and add .dev0
+   bump-dev           | alias to bump-patch-dev (as it's used often)
+
+e.g.:
+
+   ```
+   make bump
+   ```
+
+We use the semver version convention w/ python adjustment to `.devX`, instead of `-devX`:
+
+* release: `major.minor.patch`, 0.1.10
+* dev or rc: `major.minor.patch.devX`, 0.1.10.dev0
+
+Remember that master should always have `.dev0` in its version number, e.g. `0.1.10.dev0`. Only the release branch will turn it into `0.1.10`. So when a release is made, master should immediately be switched to `0.1.11.dev0`.
+
+
+### Other Makefile targets
+
+`make clean` removes any intermediary build artifacts.
+
+`make` will show all possible targets with a short description of what they do.
+
+
+
+
+### Tagging
+
+
+Tagging targets:
+
+XXX: `make commit-tag`
 
 * List tags
 
@@ -673,6 +708,85 @@ pip install -e .
 conda deactivate
 conda env remove -y --name fastai-py3.6
 ```
+
+### pip Dependencies
+
+Tools for finding out pip dependencies (direct and reversed).
+
+
+* `pipdeptree`: `pip install pipdeptree`
+
+   Print the whole tree of the installed base:
+   ```
+   pipdeptree -fl
+   ```
+
+   To find out why a particular package is installed (i.e. which package requires it):
+   ```
+   pipdeptree --reverse --packages  pillow
+   ```
+
+* `johnnydep`: `pip install johnnydep` (the tool is very slow!):
+
+   Pretty-print a dependency tree for a Python distribution
+   ```
+   johnnydep spacy
+   ```
+
+   Resolve the dependency tree:
+   ```
+   johnnydep spacy --output-format pinned
+   ```
+
+
+
+### Creating requirements.txt file by analyzing the code base
+
+We will use 2 tools, each not finding all packages, but together they get it mostly right. So we run both and combine their results.
+
+Install them with:
+
+   ```
+   pip install pipreqs pigar
+   ```
+
+or
+
+   ```
+   conda install pipreqs pigar -c conda-forge
+   ```
+
+And then to the mashup:
+
+   ```
+   cd fastai/fastai/
+   pipreqs --savepath req1.txt .
+   pigar -p req2.txt
+   perl -pi -e 's| ||g' req2.txt
+   cat req1.txt req2.txt | grep "##" | sort | uniq > req.txt
+   ```
+
+So this gives us `requirements.txt`-like file which can be used for pip. But we will get pip to sort things out from `setup.py`, by putting `.` inside `fastai/requirements.txt`.
+
+Now make a list for `setup.py`'s `install_requires`:
+
+   ```
+   perl -nle '$q # chr(39); m/^(.*?)#/ && push @l, $1; END{ print join ", ", map {qq[$q$_$q]} @l}' req.txt
+   ```
+
+and use the output to update `setup.py`.
+
+When merging make sure to not overwrite minimal version requirements, e.g. `pytorch>#0.5`. Also, you should manually clean these up since some will be deps only for doc authors or fastai library contributors; these don't need to be in the main requirements list.
+
+Cleanup:
+
+   ```
+   rm req1.txt req2.txt req.txt
+   ```
+
+The same can be repeated for getting test requirements, just repeat the same process inside `tests` directory.
+
+
 
 ## CI/CD
 

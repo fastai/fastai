@@ -7,16 +7,8 @@ import sys
 from pathlib import Path
 from setuptools import setup, find_packages
 
-def create_version_file(version):
-    print('-- Building version ' + version)
-    version_path = Path.cwd() / 'fastai' / 'version.py'
-    with open(version_path, 'w') as f:
-        f.write("__all__ = ['__version__']\n")
-        f.write("__version__ = '{}'\n".format(version))
-
-# version
-version = '1.0.6.dev0'
-create_version_file(version)
+# note: version is maintained inside fastai/version.py
+exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file:   readme = readme_file.read()
 with open('CHANGES.md') as history_file: history = history_file.read()
@@ -89,7 +81,7 @@ test_requirements = to_list("""
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 setup(
     name = 'fastai',
-    version = version,
+    version = __version__,
 
     packages = find_packages(),
     include_package_data = True,
