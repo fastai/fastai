@@ -7,7 +7,7 @@ def data():
     path = Paths.MNIST_TINY
     untar_data(path)
     defaults.device = torch.device('cpu')
-    data = image_data_from_folder(Paths.MNIST, ds_tfms=(rand_pad(2, 28), []))
+    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     return data
 
 def test_normalize(data):
