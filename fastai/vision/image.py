@@ -4,7 +4,7 @@ from ..data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageBase', 'ImageMask', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
+__all__ = ['Image', 'ImageBBox', 'ImageMask', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
            'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
            'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
 
@@ -62,23 +62,13 @@ def _get_default_args(func:Callable):
             for k, v in inspect.signature(func).parameters.items()
             if v.default is not inspect.Parameter.empty}
 
-class ImageBase(ItemBase):
-    "Image based `Dataset` items derive from this. Subclass to handle lighting, pixel, etc..."
-    def lighting(self, func:LightingFunc, *args, **kwargs)->'ImageBase': return self
-    def pixel(self, func:PixelFunc, *args, **kwargs)->'ImageBase': return self
-    def coord(self, func:CoordFunc, *args, **kwargs)->'ImageBase': return self
-    def affine(self, func:AffineFunc, *args, **kwargs)->'ImageBase': return self
+@dataclass
+class FlowField():
+    "Wrap together some `coords` flow with a `size`."
+    size:Tuple[int,int]
+    flow:Tensor
 
-    def set_sample(self, **kwargs)->'ImageBase':
-        "Set parameters that control how we `grid_sample` the image after transforms are applied."
-        self.sample_kwargs = kwargs
-        return self
-
-    def clone(self)->'ImageBase':
-        "Clone this item and its `data`."
-        return self.__class__(self.data.clone())
-
-class Image(ImageBase):
+class Image(ItemBase):
     "Support applying transforms to image data."
     def __init__(self, px:Tensor):
         "Create from raw tensor image data `px`."
@@ -87,6 +77,11 @@ class Image(ImageBase):
         self._flow=None
         self._affine_mat=None
         self.sample_kwargs = {}
+
+    def set_sample(self, **kwargs)->'ImageBase':
+        "Set parameters that control how we `grid_sample` the image after transforms are applied."
+        self.sample_kwargs = kwargs
+        return self
 
     def clone(self):
         "Mimic the behavior of torch.clone for `Image` objects."
@@ -154,7 +149,7 @@ class Image(ImageBase):
 
     def coord(self, func:CoordFunc, *args, **kwargs)->'Image':
         "Equivalent to `image.flow = func(image.flow, image.size)`."
-        self.flow = func(self.flow, self.shape, *args, **kwargs)
+        self.flow = func(self.flow, *args, **kwargs)
         return self
 
     def affine(self, func:AffineFunc, *args, **kwargs)->'Image':
@@ -193,7 +188,7 @@ class Image(ImageBase):
         return self.px
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
-              cmap:str='viridis', y:ImageBase=None, **kwargs):
+              cmap:str='viridis', y:'Image'=None, **kwargs):
         ax = _show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None: y.show(ax=ax, **kwargs)
         if title: ax.set_title(title)
@@ -361,7 +356,7 @@ def _resolve_tfms(tfms:TfmList):
 
 def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', **kwargs)->TensorImage:
     "Grab pixels in `coords` from `input` sampling by `mode`. `paddding_mode` is reflection, border or zeros."
-    coords = coords.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
+    coords = coords.flow.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
     return F.grid_sample(x[None], coords, mode=mode, padding_mode=padding_mode)[0]
 
 def _affine_grid(size:TensorImageSize)->FlowField:
@@ -372,18 +367,18 @@ def _affine_grid(size:TensorImageSize)->FlowField:
     grid[:, :, :, 0] = torch.ger(torch.ones(H), linear_points).expand_as(grid[:, :, :, 0])
     linear_points = torch.linspace(-1, 1, H) if H > 1 else tensor([-1])
     grid[:, :, :, 1] = torch.ger(linear_points, torch.ones(W)).expand_as(grid[:, :, :, 1])
-    return grid
+    return FlowField(size[2:], grid)
 
 def _affine_mult(c:FlowField,m:AffineMatrix)->FlowField:
     "Multiply `c` by `m` - can adjust for rectangular shaped `c`."
     if m is None: return c
-    size = c.size()
+    size = c.flow.size()
     _,h,w,_ = size
     m[0,1] *= h/w
     m[1,0] *= w/h
-    c = c.view(-1,2)
-    c = torch.addmm(m[:2,2], c,  m[:2,:2].t())
-    return c.view(size)
+    c.flow = c.flow.view(-1,2)
+    c.flow = torch.addmm(m[:2,2], c.flow,  m[:2,:2].t()).view(size)
+    return c
 
 class TfmAffine(Transform):
     "Decorator for affine tfm funcs."
