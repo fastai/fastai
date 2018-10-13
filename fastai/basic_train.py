@@ -172,6 +172,7 @@ class Learner():
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
 
     def get_preds(self, is_test:bool=False) -> List[Tensor]:
+        "Return predictions and targets on the valid or test set, depending on `is_test`."
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks))   
 
 @dataclass
