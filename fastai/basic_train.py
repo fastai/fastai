@@ -18,9 +18,7 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
     out = model(*xb)
     out = cb_handler.on_loss_begin(out)
 
-    if not loss_fn:
-        out_d = out[0].detach() if isinstance(out, tuple) else out.detach()
-        return out_d, yb[0].detach()
+    if not loss_fn: return to_detach(out), yb[0].detach()
     loss = loss_fn(out, *yb)
     mets = [f(out,*yb).detach().cpu() for f in metrics] if metrics is not None else []
 
@@ -174,6 +172,7 @@ class Learner():
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
 
     def get_preds(self, is_test:bool=False) -> List[Tensor]:
+        "Return predictions and targets on the valid or test set, depending on `is_test`."
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks))   
 
 @dataclass
