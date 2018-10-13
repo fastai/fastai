@@ -6,8 +6,8 @@ from ..data import *
 
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset', 'SegmentationDataset', 'csv_to_fns_labels',
            'denormalize', 'get_annotations', 'get_image_files', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
-           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
-           'cifar_norm', 'cifar_denorm', 'mnist_norm', 'mnist_denorm', 'imagenet_norm', 'imagenet_denorm']
+           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'channel_view',
+           'cifar_norm', 'cifar_denorm', 'mnist_norm', 'mnist_denorm', 'imagenet_stats', 'imagenet_norm', 'imagenet_denorm']
 
 TfmList = Collection[Transform]
 
@@ -300,4 +300,24 @@ def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labe
         datasets.append(ImageClassificationDataset(valid_fns, valid_lbls, classes))
         if test: datasets.append(ImageClassificationDataset.from_single_folder(Path(path)/test, classes=classes))
     return DataBunch.create(*datasets, path=path, **kwargs)
+
+def channel_view(x:Tensor)->Tensor:
+    "Make channel the first axis of `x` and flatten remaining axes"
+    return x.transpose(0,1).contiguous().view(x.shape[1],-1)
+
+def _batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
+    "Grab a batch of data and call reduction function `func` per channel"
+    funcs = ifnone(funcs, [torch.mean,torch.std])
+    x = next(iter(self.valid_dl))[0].cpu()
+    return [func(channel_view(x), 1) for func in funcs]
+
+DataBunch.batch_stats = _batch_stats
+
+def _normalize_data(self, stats:Collection[Tensor]=None)->None:
+    "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
+    stats = ifnone(stats, self.batch_stats())
+    self.norm,self.denorm = normalize_funcs(*stats)
+    self.add_tfm(self.norm)
+
+DataBunch.normalize = _normalize_data
 

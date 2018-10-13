@@ -7,9 +7,10 @@ from fastai.vision import *
 def learn():
     path = Paths.MNIST_TINY
     untar_data(path)
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []), tfms=mnist_norm)
-    learn = Learner(data, simple_cnn((3,16,32,2)), metrics=accuracy)
-    learn.fit_one_cycle(2)
+    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data.normalize()
+    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=accuracy)
+    learn.fit_one_cycle(3)
     return learn
 
 def test_accuracy(learn):

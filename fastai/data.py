@@ -57,18 +57,19 @@ class DeviceDataLoader():
 class DataBunch():
     "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
-                 device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.', 
+                 device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate):
         "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
+        self.tfms = listify(tfms)
         self.device = default_device if device is None else device
-        self.train_dl = DeviceDataLoader(train_dl, self.device, tfms, collate_fn)
-        self.valid_dl = DeviceDataLoader(valid_dl, self.device, tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl,  self.device, tfms, collate_fn) if test_dl else None
+        self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
+        self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
+        self.test_dl  = DeviceDataLoader(test_dl,  self.device, self.tfms, collate_fn) if test_dl else None
         self.path = Path(path)
 
     @classmethod
-    def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64, 
-               num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None, 
+    def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
+               num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                collate_fn:Callable=data_collate)->'DataBunch':
         "`DataBunch` factory. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
@@ -81,6 +82,11 @@ class DataBunch():
     def holdout(self, is_test:bool=False)->DeviceDataLoader:
         "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
         return self.test_dl if is_test else self.valid_dl
+
+    def add_tfm(self,tfm:Callable)->None:
+        self.train_dl.add_tfm(tfm)
+        self.valid_dl.add_tfm(tfm)
+        if self.test_dl: self.test_dl.add_tfm(tfm)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
