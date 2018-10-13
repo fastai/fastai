@@ -70,6 +70,11 @@ def np_address(x:np.ndarray)->int:
     "Address of `x` in memory"
     return x.__array_interface__['data'][0]
 
+def to_detach(b:Tensors):
+    "Recursively detach lists of tensors in `b `"
+    if is_listy(b): return [to_detach(o) for o in b]
+    return b.detach() if isinstance(b,Tensor) else b
+
 def to_data(b:ItemsList):
     "Recursively map lists of items in `b ` to their wrapped data"
     if is_listy(b): return [to_data(o) for o in b]
