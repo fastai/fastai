@@ -2,37 +2,22 @@ import pytest
 from fastai import *
 from fastai.vision import *
 
-#@pytest.mark.slow
 @pytest.fixture(scope="module")
-def learn():
+def data():
     path = Paths.MNIST_TINY
     untar_data(path)
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    defaults.device = torch.device('cpu')
+    data = image_data_from_folder(Paths.MNIST, ds_tfms=(rand_pad(2, 28), []))
+    return data
+
+def test_normalize(data):
+    x,y = next(iter(data.train_dl))
+    m,s = x.mean(),x.std()
     data.normalize()
-    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=accuracy)
-    learn.fit_one_cycle(3)
-    return learn
+    x,y = next(iter(data.train_dl))
+    print(x.mean(),m,x.std(),s)
+    assert abs(x.mean()) < abs(m)
+    assert abs(x.std()-1) < abs(m-1)
 
-def test_accuracy(learn):
-    assert accuracy(*learn.get_preds()) > 0.8
-
-def test_image_data(learn):
-    img,label = learn.data.train_ds[0]
-    d = img.data
-    assert abs(d.max()-1)<0.05
-    assert abs(d.min())<0.05
-    assert abs(d.mean()-0.2)<0.1
-    assert abs(d.std()-0.3)<0.1
-
-def test_1cycle_lrs(learn):
-    lrs = learn.recorder.lrs
-    assert lrs[0]<0.001
-    assert lrs[-1]<0.0001
-    assert np.max(lrs)==3e-3
-
-def test_1cycle_moms(learn):
-    moms = learn.recorder.moms
-    assert moms[0]==0.95
-    assert abs(moms[-1]-0.95)<0.01
-    assert np.min(moms)==0.85
+    with pytest.raises(Exception): data.normalize()
 

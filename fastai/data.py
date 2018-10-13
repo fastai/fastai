@@ -48,8 +48,8 @@ class DeviceDataLoader():
         return iter(self.gen)
 
     @classmethod
-    def create(cls, dataset:Dataset, bs:int=1, shuffle:bool=False, device:torch.device=default_device,
-               tfms:Collection[Callable]=tfms, num_workers:int=default_cpus, collate_fn:Callable=data_collate, **kwargs:Any):
+    def create(cls, dataset:Dataset, bs:int=1, shuffle:bool=False, device:torch.device=defaults.device,
+               tfms:Collection[Callable]=tfms, num_workers:int=defaults.cpus, collate_fn:Callable=data_collate, **kwargs:Any):
         "Create DeviceDataLoader from `dataset` with `batch_size` and `shuffle`: processs using `num_workers`."
         return cls(DataLoader(dataset, batch_size=bs, shuffle=shuffle, num_workers=num_workers, **kwargs),
                    device=device, tfms=tfms, collate_fn=collate_fn)
@@ -61,7 +61,7 @@ class DataBunch():
                  collate_fn:Callable=data_collate):
         "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
         self.tfms = listify(tfms)
-        self.device = default_device if device is None else device
+        self.device = defaults.device if device is None else device
         self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
         self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
         self.test_dl  = DeviceDataLoader(test_dl,  self.device, self.tfms, collate_fn) if test_dl else None
@@ -69,7 +69,7 @@ class DataBunch():
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
-               num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
+               num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                collate_fn:Callable=data_collate)->'DataBunch':
         "`DataBunch` factory. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]

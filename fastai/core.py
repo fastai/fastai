@@ -43,8 +43,6 @@ def num_cpus()->int:
     try:                   return len(os.sched_getaffinity(0))
     except AttributeError: return os.cpu_count()
 
-default_cpus = min(16, num_cpus())
-
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x

@@ -59,7 +59,9 @@ fastai_types = {
 }
 
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
-default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+_default_cpus = min(16, num_cpus())
+_default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+defaults = SimpleNamespace(device=_default_device, cpus=_default_cpus)
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
 def tensor(x:Any)->Tensor:
@@ -82,7 +84,7 @@ def to_data(b:ItemsList):
 
 def to_device(b:Tensors, device:torch.device):
     "Ensure `b` is on `device`."
-    device = ifnone(device, default_device)
+    device = ifnone(device, defaults.device)
     if is_listy(b): return [to_device(o, device) for o in b]
     return b.to(device)
 

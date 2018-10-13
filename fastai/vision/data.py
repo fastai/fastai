@@ -233,7 +233,7 @@ mnist_stats = ([0.15]*3, [0.15]*3)
 mnist_norm,mnist_denorm = normalize_funcs(*mnist_stats)
 
 def _create_with_tfm(train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Tfms=None,
-                     num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
+                     num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                      collate_fn:Callable=data_collate, size:int=None, **kwargs)->'DataBunch':
         "`DataBunch` factory. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
@@ -316,6 +316,7 @@ DataBunch.batch_stats = _batch_stats
 def _normalize_data(self, stats:Collection[Tensor]=None)->None:
     "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
     stats = ifnone(stats, self.batch_stats())
+    if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
     self.norm,self.denorm = normalize_funcs(*stats)
     self.add_tfm(self.norm)
 
