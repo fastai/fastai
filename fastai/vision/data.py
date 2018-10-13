@@ -6,8 +6,8 @@ from ..data import *
 
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset', 'SegmentationDataset', 'csv_to_fns_labels',
            'denormalize', 'get_annotations', 'get_image_files', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
-           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'cifar_norm', 'cifar_denorm',
-           'imagenet_norm', 'imagenet_denorm']
+           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
+           'cifar_norm', 'cifar_denorm', 'mnist_norm', 'mnist_denorm', 'imagenet_norm', 'imagenet_denorm']
 
 TfmList = Collection[Transform]
 
@@ -219,15 +219,18 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     if do_y: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y=False, device=None)->Tuple[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
+    mean,std = tensor(mean),tensor(std)
     return (partial(_normalize_batch, mean=mean, std=std),
             partial(denormalize,      mean=mean, std=std))
 
-cifar_stats = (tensor([0.491, 0.482, 0.447]), tensor([0.247, 0.243, 0.261]))
+cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
 cifar_norm,cifar_denorm = normalize_funcs(*cifar_stats)
-imagenet_stats = tensor([0.485, 0.456, 0.406]), tensor([0.229, 0.224, 0.225])
+imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 imagenet_norm,imagenet_denorm = normalize_funcs(*imagenet_stats)
+mnist_stats = ([0.15]*3, [0.15]*3)
+mnist_norm,mnist_denorm = normalize_funcs(*mnist_stats)
 
 def _create_with_tfm(train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Tfms=None,
                      num_workers:int=default_cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,

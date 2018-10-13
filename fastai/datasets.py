@@ -7,8 +7,9 @@ __all__ = ['Paths', 'untar_data', 'download_data']
 
 URL = 'http://files.fast.ai/data/examples/'
 class Paths():
-    DATA = Path('..')/'data'
+    DATA = Path(__file__).parent/'..'/'data'
     MNIST = DATA/'mnist_sample'
+    MNIST_TINY = DATA/'mnist_tiny'
     IMDB = DATA/'imdb_sample'
     ADULT = DATA/'adult_sample'
     ML = DATA/'movie_lens_sample'
