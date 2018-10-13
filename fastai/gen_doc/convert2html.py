@@ -47,7 +47,7 @@ def convert_all(folder, dest_path='.', force_all=False):
     changed_cnt = 0
     for fname in path.glob("*.ipynb"):
         # only rebuild modified files
-        fname_out = dest_path/fname.with_suffix('.html')
+        fname_out = Path(dest_path)/fname.with_suffix('.html').name
         if not force_all and fname_out.exists():
             in_mod  = os.path.getmtime(fname)
             out_mod = os.path.getmtime(fname_out)
