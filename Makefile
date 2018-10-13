@@ -209,10 +209,6 @@ bump-major-dev: ## bump major-level and add .dev0
 
 
 # # XXX: untested
-# test-all: ## run tests on every python version with tox
-# 	tox
-#
-# # XXX: untested
 # coverage: ## check code coverage quickly with the default python
 # 	coverage run --source fastai -m pytest
 # 	coverage report -m
