@@ -22,8 +22,13 @@ fastai 1.0.x installation issues should be reported/discussed [here](http://foru
 
 fastai 0.7.x installation issues should be reported/discussed [here](http://forums.fast.ai/t/fastai-v0-install-issues-thread/24652) instead. Thank you.
 
+* fastai: unstripped notebook
 
-### fastai Entries
+If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to `nbstripout` the notebooks, as explained [here](http://docs-dev.fast.ai/develop). PRs with unstripped out notebooks cannot be accepted.
+
+
+
+### fastai_docs Entries
 
 * fastai_docs: sign CLA
 
