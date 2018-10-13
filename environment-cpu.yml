@@ -100,7 +100,7 @@ dependencies:
   - opencv-python
   - isoweek
   - pandas_summary
-  - torchtext
+  - torchtext=0.2.3
   - graphviz
   - sklearn_pandas
   - feather-format
