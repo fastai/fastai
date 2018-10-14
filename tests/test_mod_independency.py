@@ -19,8 +19,12 @@ class CheckDependencyImporter(object):
 sys.meta_path.insert(0, CheckDependencyImporter())
 
 def test_unwanted_mod_dependencies():
+    # save
+    mod_saved = sys.modules['fastai']
     # unload any candidates we want to test, including fastai, so we can test import
     for mod in unwanted_deps + ['fastai']:
         if mod in sys.modules: del sys.modules[mod]
     # test
     import fastai
+    # restore
+    sys.modules['fastai'] = mod_saved
