@@ -69,7 +69,7 @@ For nuances of configuring pytest's repo-wide behavior see [collection](https://
 CI builds and when isolation is important (against speed), cache should be cleared:
 
    ```
-   pytest ---cache-clear tests
+   pytest --cache-clear tests
    ```
 
 

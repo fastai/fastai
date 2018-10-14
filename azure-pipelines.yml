@@ -70,7 +70,7 @@ jobs:
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -156,7 +156,7 @@ jobs:
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -229,7 +229,7 @@ jobs:
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -317,7 +317,7 @@ jobs:
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
