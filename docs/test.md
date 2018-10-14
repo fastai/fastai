@@ -64,6 +64,93 @@ For nuances of configuring pytest's repo-wide behavior see [collection](https://
 
 
 
+### Clearing state
+
+CI builds and when isolation is important (against speed), cache should be cleared:
+
+   ```
+   pytest ---cache-clear tests
+   ```
+
+
+
+### Test order and repetition
+
+It's good to repeat the tests several times, in sequence, randomly, or in sets, to detect any potential inter-dependency and state-related bugs (tear down). And the straightforward multiple repetition is just good to detect some problems that get uncovered by randomness of DL.
+
+Plugins:
+
+* Repeat tests:
+
+   ```
+   pip install pytest-repeat
+   ```
+
+   Now 2 new options becomes available:
+
+   ```
+  --count=COUNT         Number of times to repeat each test
+  --repeat-scope={function,class,module,session} Scope for repeating tests
+   ```
+
+   e.g.:
+   ```
+   pytest --count=10 tests/test_fastai.py
+   ```
+   ```
+   pytest --count=10 --repeat-scope=function tests
+   ```
+
+
+
+* Run tests in a random order:
+
+   ```
+   pip install pytest-random-order
+   ```
+
+   Important: Presence of `pytest-random-order` will automatically randomize tests, no configuration change or command line options is required.
+
+   As explained earlier this allows detection of coupled tests - where one test's state affects the state of another. When `pytest-random-order` is installed it will print the random seed it used for that session, e.g:
+
+   ```
+   pytest tests
+   [...]
+   Using --random-order-bucket=module
+   Using --random-order-seed=573663
+   [...]
+   ```
+
+   So that if the given particular sequence fails, you can reproduce it by adding that exact seed, e.g.:
+
+   ```
+   pytest --random-order-seed=573663
+   [...]
+   Using --random-order-bucket=module
+   Using --random-order-seed=573663
+   ```
+
+   It will only reproduce the exact order if you use the exact same list of tests (or no list at all (==all)). Once you start to manually narrowing down the list you can no longer rely on the seed, but have to list them manually in the exact order they failed and tell pytest to not randomize them instead using `--random-order-bucket=none`, e.g.:
+
+   ```
+   pytest --random-order-bucket=none tests/test_a.py tests/test_c.py tests/test_b.py
+   ```
+
+   To disable the shuffling for all tests:
+
+   ```
+   pytest --random-order-bucket=none
+   ```
+
+   By default `--random-order-bucket=module` is implied, which will shuffle the files on the module levels. It can also shuffle on `class`, `package`, `global` and `none` levels. For the complete details please see its [documentation](https://github.com/jbasko/pytest-random-order).
+
+Randomization alternatives:
+
+* [`pytest-randomly`](https://github.com/pytest-dev/pytest-randomly)
+
+   This module has a very similar functionality/interface, but it doesn't have the bucket modes available in `pytest-random-order`.
+
+
 ### To GPU or not to GPU
 
 
@@ -174,6 +261,8 @@ Methods:
 * A **skip** means that you expect your test to pass only if some conditions are met, otherwise pytest should skip running the test altogether. Common examples are skipping windows-only tests on non-windows platforms, or skipping tests that depend on an external resource which is not available at the moment (for example a database).
 
 * A **xfail** means that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail (marked with pytest.mark.xfail), it’s an xpass and will be reported in the test summary.
+
+One of the important differences between the two is that `skip` doesn't run the test, and `xfail` does. So if the code that's buggy causes some bad state that will affect other tests, do not use `xfail`.
 
 Implementation:
 
