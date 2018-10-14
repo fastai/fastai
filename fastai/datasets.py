@@ -3,52 +3,65 @@ from fastai import *
 from fastai.vision import *
 from fastai.text import *
 
-__all__ = ['Paths', 'untar_data', 'download_data']
+__all__ = ['URLs', 'untar_data', 'download_data', 'url2path']
 
 URL = 'http://files.fast.ai/data/examples/'
-class Paths():
+S3_URL = 'https://s3.amazonaws.com/fast-ai-'
+S3_IMAGE_URL = f'{S3_URL}imageclas/'
+class URLs():
     DATA = Path(__file__).parent/'..'/'data'
-    MNIST = DATA/'mnist_sample'
-    MNIST_TINY = DATA/'mnist_tiny'
-    IMDB = DATA/'imdb_sample'
-    ADULT = DATA/'adult_sample'
-    ML = DATA/'movie_lens_sample'
-    CIFAR = DATA/'cifar10'
-    PLANET = DATA/'planet_sample'
+    MNIST_SAMPLE = f'{URL}mnist_sample'
+    MNIST_TINY = f'{URL}mnist_tiny'
+    IMDB = f'{URL}imdb_sample'
+    ADULT = f'{URL}adult_sample'
+    ML = f'{URL}movie_lens_sample'
+    CIFAR = f'{URL}cifar10'
+    PLANET = f'{URL}planet_sample'
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
-    DOGS = DATA/'dogscats'
+    DOGS = f'{URL}dogscats'
+    PETS = f'{S3_IMAGE_URL}oxford-iiit-pet'
+    MNIST = f'{S3_IMAGE_URL}mnist_png'
 
-def f_name(name): return f'{name}.tgz'
+def _url2name(url): return url.split('/')[-1]
+def url2path(url): return URLs.DATA/f'{_url2name(url)}'
+def _url2tgz(url): return URLs.DATA/f'{_url2name(url)}.tgz'
 
-def download_data(name):
-    os.makedirs(Paths.DATA, exist_ok=True)
-    dest = Paths.DATA/f_name(name)
-    if not dest.exists(): download_url(f'{URL}{f_name(name)}', dest)
+def download_data(url):
+    os.makedirs(URLs.DATA, exist_ok=True)
+    tgz = _url2tgz(url)
+    if not tgz.exists():
+        print(f'Downloading {url}')
+        download_url(f'{url}.tgz', tgz)
+    return tgz
 
-def untar_data(path):
-    download_data(path.name)
-    if not path.exists(): tarfile.open(f_name(path), 'r:gz').extractall(Paths.DATA)
+def untar_data(url):
+    tgz = download_data(url)
+    dest = url2path(url)
+    if not dest.exists(): tarfile.open(tgz, 'r:gz').extractall(URLs.DATA)
+    return dest
 
 def get_adult():
-    untar_data(Paths.ADULT)
-    return pd.read_csv(Paths.ADULT/'adult.csv')
+    path = untar_data(URLs.ADULT)
+    return pd.read_csv(path/'adult.csv')
 
 def get_mnist():
-    untar_data(Paths.MNIST)
-    return image_data_from_folder(Paths.MNIST)
+    path = untar_data(URLs.MNIST_SAMPLE)
+    return image_data_from_folder(path)
 
 def get_imdb(classifier=False):
-    untar_data(Paths.IMDB)
+    path = untar_data(URLs.IMDB)
     data_func = classifier_data if classifier else lm_data
-    return text_data_from_csv(Paths.IMDB, data_func=data_func)
+    return text_data_from_csv(path, data_func=data_func)
 
 def get_movie_lens():
-    untar_data(Paths.ML)
-    return pd.read_csv(Paths.ML/'ratings.csv')
+    path = untar_data(URLs.ML)
+    return pd.read_csv(path/'ratings.csv')
 
 def download_wt103_model():
-    model_path = Paths.IMDB/'models'
-    os.makedirs(model_path, exist_ok=True)
-    download_url('http://files.fast.ai/models/wt103_v1/lstm_wt103.pth', model_path/'lstm_wt103.pth')
-    download_url('http://files.fast.ai/models/wt103_v1/itos_wt103.pkl', model_path/'itos_wt103.pkl')
+    path = untar_data(URLs.IMDB)
+    model_path = path/'models'
+    model_path.mkdir(exist_ok=True)
+    url = 'http://files.fast.ai/models/wt103_v1/'
+    download_url(f'{url}lstm_wt103.pth', model_path/'lstm_wt103.pth')
+    download_url(f'{url}itos_wt103.pkl', model_path/'itos_wt103.pkl')
 
