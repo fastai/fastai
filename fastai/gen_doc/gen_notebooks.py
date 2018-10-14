@@ -66,9 +66,9 @@ def get_global_vars(mod):
     return d
 
 def write_nb(nb, nb_path, mode='w'):
-    try: 
+    try:
         with open(nb_path, mode) as f: f.write(nbformat.writes(nb, version=4))
-    except Exception as e: 
+    except Exception as e:
         print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
         json.dump(nb, open(nb_path, mode), indent=1)
 
@@ -205,7 +205,7 @@ def update_nb_metadata(nb_path=None, title=None, summary=None, keywords='fastai'
     NotebookNotary().sign(nb)
 
 def has_metadata_cell(cells, fn):
-    for c in cells: 
+    for c in cells:
         if re.search(f"update_nb_metadata\('{fn}'", c['source']): return c
 
 def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
@@ -243,6 +243,14 @@ def parse_sections(cells):
 def remove_undoc_cells(cells):
     old, _, _ = parse_sections(cells)
     return old
+
+# currently code vbox sub-cells mainly
+def remove_code_cell_jupyter_widget_state_elem(cells):
+    for c in cells:
+        if c['cell_type'] == 'code':
+            if 'outputs' in c:
+                c['outputs'] = [l for l in c['outputs'] if not ('data' in l and 'application/vnd.jupyter.widget-view+json' in l.data)]
+    return cells
 
 def update_module_page(mod, dest_path='.'):
     "Update the documentation notebook of a given module."
@@ -319,4 +327,3 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         for f in Path(source_path).glob('*.ipynb'):
             update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb, update_nb_links=update_nb_links, do_execute=do_execute, html_path=html_path)
     else: print('Could not resolve source file:', source_path)
-
