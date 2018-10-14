@@ -71,8 +71,6 @@ dev_requirements = { 'dev' : to_list("""
     pip>=18.1
     pipreqs>=0.4.9
     pytest
-    pytest-repeat
-    pytest-random-order
     traitlets
     wheel>=0.30.0
 """) }
@@ -89,13 +87,9 @@ setup_requirements = to_list("""
 #   Therefore it's the best to install them explicitly with:
 #   pip install -e .[dev]
 #
-# * presence of pytest-random-order will automatically randomize tests (docs/test.md)
-#
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
-    pytest-repeat
-    pytest-random-order
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers

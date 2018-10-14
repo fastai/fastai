@@ -64,7 +64,7 @@ jobs:
 
     # Install Test deps
   - script: |
-      pip install pytest pytest-runner pytest-repeat pytest-random-order
+      pip install pytest pytest-runner
     displayName: 'Install test deps'
     continueOnError: false
 
@@ -150,7 +150,6 @@ jobs:
     # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
-      pip install pytest-repeat pytest-random-order
     displayName: 'Install test deps'
     continueOnError: false
 
@@ -223,7 +222,7 @@ jobs:
 
      # Install Test deps
   - script: |
-      pip install pytest pytest-runner pytest-repeat pytest-random-order
+      pip install pytest pytest-runner
     displayName: 'Install test deps'
     continueOnError: false
 
@@ -311,7 +310,6 @@ jobs:
     # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
-      pip install pytest-repeat pytest-random-order
     displayName: 'Install test deps'
     continueOnError: false
 

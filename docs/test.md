@@ -111,6 +111,8 @@ Plugins:
 
    Important: Presence of `pytest-random-order` will automatically randomize tests, no configuration change or command line options is required.
 
+   XXX: need to find a package or write our own `pytest` extension to be able to randomize at will, since the two available modules that do that once installed force the randomization by default.
+
    As explained earlier this allows detection of coupled tests - where one test's state affects the state of another. When `pytest-random-order` is installed it will print the random seed it used for that session, e.g:
 
    ```
@@ -148,7 +150,7 @@ Randomization alternatives:
 
 * [`pytest-randomly`](https://github.com/pytest-dev/pytest-randomly)
 
-   This module has a very similar functionality/interface, but it doesn't have the bucket modes available in `pytest-random-order`.
+   This module has a very similar functionality/interface, but it doesn't have the bucket modes available in `pytest-random-order`. It has the same problem of imposing itself once installed.
 
 
 ### To GPU or not to GPU
