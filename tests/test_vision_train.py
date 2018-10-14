@@ -14,7 +14,7 @@ def learn():
     return learn
 
 def test_accuracy(learn):
-    assert accuracy(*learn.get_preds()) > 0.8
+    assert accuracy(*learn.get_preds()) > 0.9
 
 def test_image_data(learn):
     img,label = learn.data.train_ds[0]
