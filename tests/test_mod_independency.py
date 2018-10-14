@@ -9,22 +9,24 @@ class CheckDependencyImporter(object):
 
     def find_spec(self, fullname, path, target=None):
         #print("spec: ", fullname, path, target)
-        # catch if any of the unwanted dependencies gets triggered
-        for mod in unwanted_deps:
-            if mod == fullname:
-                print(f"detected unwanted dependency on {mod}")
-                sys.exit(1)
+        # catch if import of any unwanted dependencies gets triggered
+        assert fullname not in unwanted_deps, f"detected unwanted dependency on {fullname}"
         return None
 
-sys.meta_path.insert(0, CheckDependencyImporter())
-
 def test_unwanted_mod_dependencies():
-    # save
-    mod_saved = sys.modules['fastai']
-    # unload any candidates we want to test, including fastai, so we can test import
+    # save the original state
+    mod_saved = sys.modules['fastai'] if 'fastai' in sys.modules else None
+    meta_path_saved = sys.meta_path.copy
+
+    # unload any candidates we want to test, including fastai, so we can test their import
     for mod in unwanted_deps + ['fastai']:
         if mod in sys.modules: del sys.modules[mod]
+
     # test
-    import fastai
-    # restore
-    sys.modules['fastai'] = mod_saved
+    try:
+        sys.meta_path.insert(0, CheckDependencyImporter())
+        import fastai
+    finally:
+        # restore the original state
+        del sys.meta_path[0]
+        if mod_saved is not None: sys.modules['fastai'] = mod_saved
