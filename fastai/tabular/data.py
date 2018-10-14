@@ -71,6 +71,7 @@ def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:s
                         tfms:OptTabTfms=None, cat_names:OptStrList=None, cont_names:OptStrList=None,
                         stats:OptStats=None, log_output:bool=False, **kwargs)->DataBunch:
     "Create a `DataBunch` from train/valid/test dataframes."
+    cat_names = ifnone(cat_names, [])
     cont_names = ifnone(cont_names, list(set(train_df)-set(cat_names)-{dep_var}))
     train_ds = TabularDataset.from_dataframe(train_df, dep_var, tfms, cat_names, cont_names, stats, log_output)
     valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
