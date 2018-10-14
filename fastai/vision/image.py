@@ -4,9 +4,9 @@ from ..data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageMask', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
-           'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
-           'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
+__all__ = ['CoordFunc', 'FlowField', 'Image', 'ImageBBox', 'ImageMask', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 
+           'TfmLighting', 'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 
+           'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
 
 def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
 def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
@@ -64,9 +64,11 @@ def _get_default_args(func:Callable):
 
 @dataclass
 class FlowField():
-    "Wrap together some `coords` flow with a `size`."
+    "Wrap together some coords `flow` with a `size`."
     size:Tuple[int,int]
     flow:Tensor
+        
+CoordFunc = Callable[[FlowField, ArgStar, KWArgs], LogitTensorImage]
 
 class Image(ItemBase):
     "Support applying transforms to image data."
@@ -373,7 +375,7 @@ def _affine_mult(c:FlowField,m:AffineMatrix)->FlowField:
     "Multiply `c` by `m` - can adjust for rectangular shaped `c`."
     if m is None: return c
     size = c.flow.size()
-    _,h,w,_ = size
+    h,w = c.size
     m[0,1] *= h/w
     m[1,0] *= w/h
     c.flow = c.flow.view(-1,2)
