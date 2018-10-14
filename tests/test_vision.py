@@ -12,18 +12,22 @@ def data(request):
     def _final(): defaults.device = d
     request.addfinalizer(_final)
 
-@pytest.mark.skip(reason="pytorch bug")
 def test_multi_iter_broken():
     data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     for i in range(5): x,y = next(iter(data.train_dl))
 
-@pytest.mark.skip(reason="pytorch bug")
 def test_multi_iter():
     data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
     for i in range(5): x,y = data.train_dl.one_batch()
 
-@pytest.mark.skip(reason="pytorch bug")
+def test_clean_tear_down():
+    docstr = "test DataLoader iter doesn't get stuck"
+    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data.normalize()
+    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data.normalize()
+
 def test_normalize():
     data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     x,y = data.train_dl.one_batch()

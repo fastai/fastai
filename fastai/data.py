@@ -49,8 +49,7 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        self.gen = map(self.proc_batch, self.dl)
-        return iter(self.gen)
+        for b in self.dl: yield self.proc_batch(b)
 
     def one_batch(self)->Collection[Tensor]:
         "Get one batch from the data loader."
