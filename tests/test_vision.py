@@ -9,7 +9,7 @@ def data():
     untar_data(path)
     defaults.device = torch.device('cpu')
 
-@pytest.mark.xfail
+@pytest.mark.skip(reason="pytorch bug")
 def test_multi_iter():
     data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
@@ -17,7 +17,7 @@ def test_multi_iter():
         print(i)
         x,y = next(iter(data.train_dl))
 
-@pytest.mark.xfail
+@pytest.mark.skip(reason="pytorch bug")
 def test_normalize():
     data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     x,y = next(iter(data.train_dl))
@@ -28,4 +28,3 @@ def test_normalize():
     assert abs(x.std()-1) < abs(m-1)
 
     with pytest.raises(Exception): data.normalize()
-
