@@ -53,20 +53,26 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 #
 # anything else that's not required by a user to run the library, but
 # either an enhancement or developer-build requirement goes here.
+#
+# the [dev] feature is documented here:
 # https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 #
 # these get installed with:
 #
 #   pip install -e .[dev]
 #
+# some of the listed modules appear in test_requirements as well, explained below.
+#
 dev_requirements = { 'dev' : to_list("""
-    bumpversion==0.5.3
     distro
     jupyter_contrib_nbextensions
     nbconvert
     nbformat
     pip>=18.1
     pipreqs>=0.4.9
+    pytest
+    pytest-repeat
+    pytest-random-order
     traitlets
     wheel>=0.30.0
 """) }
@@ -76,9 +82,20 @@ setup_requirements = to_list("""
     pytest-runner
 """)
 
+# notes:
+#
+# * these deps will be installed locally under .eggs/ and will not be
+#   visible to pytest unless it's invoked via `python setup test`.
+#   Therefore it's the best to install them explicitly with:
+#   pip install -e .[dev]
+#
+# * presence of pytest-random-order will automatically randomize tests (docs/test.md)
+#
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
+    pytest-repeat
+    pytest-random-order
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers

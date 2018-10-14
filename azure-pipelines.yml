@@ -64,13 +64,13 @@ jobs:
 
     # Install Test deps
   - script: |
-      pip install pytest pytest-runner
+      pip install pytest pytest-runner pytest-repeat pytest-random-order
     displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -150,12 +150,13 @@ jobs:
     # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
+      pip install pytest-repeat pytest-random-order
     displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -222,13 +223,13 @@ jobs:
 
      # Install Test deps
   - script: |
-      pip install pytest pytest-runner
+      pip install pytest pytest-runner pytest-repeat pytest-random-order
     displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
@@ -310,12 +311,13 @@ jobs:
     # Install Test deps
   - script: |
       conda install -y pytest pytest-runner
+      pip install pytest-repeat pytest-random-order
     displayName: 'Install test deps'
     continueOnError: false
 
     # Run Tests
   - script: |
-      py.test tests --junitxml=result.xml
+      py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
 
