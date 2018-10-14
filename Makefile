@@ -192,10 +192,10 @@ bump-major-dev: ## bump major-level and add .dev0
 	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, $$3, $$4, "dev0"); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 
-###@ Coverage
-# # XXX: untested
-# coverage: ## check code coverage quickly with the default python
-# 	coverage run --source fastai -m pytest
-# 	coverage report -m
-# 	coverage html
-# 	$(BROWSER) htmlcov/index.html
+##@ Coverage
+
+coverage: ## check code coverage quickly with the default python
+	coverage run --source fastai -m pytest
+	coverage report -m
+	coverage html
+	$(BROWSER) htmlcov/index.html
