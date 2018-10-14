@@ -260,7 +260,7 @@ When you run:
    make coverage
    ```
 
-it will open a browser and show you the coverage report, which will give you an indication of which parts of the code base haven't been exercised by tests yet. So if you are not sure which new tests to write this output can be of great insight.
+it will run the test suite directly via `pytest` and on completion open a browser to show you the coverage report, which will give you an indication of which parts of the code base haven't been exercised by tests yet. So if you are not sure which new tests to write this output can be of great insight.
 
 Remember, that coverage only indicated which parts of the code tests have exercised. It can't tell anything about the quality of the tests. As such, you may have a 100% coverage and a very poorly performing code.
 
