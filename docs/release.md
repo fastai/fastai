@@ -873,7 +873,7 @@ Under Project Settings, important things are:
 
 #### CI Builds
 
-CI Builds are triggered every time a commit is pushed into the master (except when it's an obvious document only change commit, like a change to an `.md` file).
+CI Builds are triggered on every `git push` to master (except when it's an obvious document only change commit, like a change to an `.md` file).
 
 To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and enter the commit hash (most likely of the latest commit). This is the way to get occasional CI builds against non-master branches.
 
@@ -910,7 +910,7 @@ And remember to sync the branch with the master changes so that you're testing t
 
 - azure [installed automatically @github webhooks](https://github.com/fastai/fastai/settings/hooks) these push events:
 
-   * triggers CI build on every non-document commit!:
+   * triggers CI build on every push (except when it's only doc change)!:
 
     ```
     https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)
