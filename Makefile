@@ -26,7 +26,7 @@ for line in sorted(sys.stdin):
 	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
 	if match:
 		target, help = match.groups()
-		print("\033[36m%-20s\033[0m %s" % (target, help))
+		print("\033[36m%-22s\033[0m %s" % (target, help))
 endef
 export PRINT_HELP_PYSCRIPT
 
