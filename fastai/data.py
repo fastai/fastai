@@ -48,7 +48,7 @@ class DeviceDataLoader():
         return iter(self.gen)
 
     @classmethod
-    def create(cls, dataset:Dataset, bs:int=1, shuffle:bool=False, device:torch.device=defaults.device,
+    def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
                tfms:Collection[Callable]=tfms, num_workers:int=defaults.cpus, collate_fn:Callable=data_collate, **kwargs:Any):
         "Create DeviceDataLoader from `dataset` with `batch_size` and `shuffle`: processs using `num_workers`."
         return cls(DataLoader(dataset, batch_size=bs, shuffle=shuffle, num_workers=num_workers, **kwargs),
