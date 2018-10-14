@@ -33,6 +33,11 @@ class DeviceDataLoader():
     def __len__(self)->int: return len(self.dl)
     def __getattr__(self,k:str)->Any: return getattr(self.dl, k)
 
+    @property
+    def num_workers(self):   return self.dl.num_workers
+    @num_workers.setter
+    def num_workers(self,v): self.dl.num_workers = v
+
     def add_tfm(self,tfm:Callable)->None:    self.tfms.append(tfm)
     def remove_tfm(self,tfm:Callable)->None: self.tfms.remove(tfm)
 
@@ -46,6 +51,14 @@ class DeviceDataLoader():
         "Process and returns items from `DataLoader`."
         self.gen = map(self.proc_batch, self.dl)
         return iter(self.gen)
+
+    def one_batch(self)->Collection[Tensor]:
+        "Get one batch from the data loader."
+        w = self.num_workers
+        self.num_workers = 0
+        it = iter(self)
+        try:     return next(it)
+        finally: self.num_workers = w
 
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
