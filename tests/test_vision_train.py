@@ -7,7 +7,7 @@ from fastai.vision import *
 def learn():
     path = Paths.MNIST_TINY
     untar_data(path)
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []), num_workers=2)
+    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
     data.normalize()
     learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=accuracy)
     learn.fit_one_cycle(3)
