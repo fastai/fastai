@@ -30,3 +30,5 @@ path = Path("tools")
 # facilitate trusting of the repo-wide .gitconfig
 run_script(path/"trust-origin-git-config")
 
+# facilitate trusting notebooks under docs_src
+run_script(path/"trust-doc-nbs-install-hook")

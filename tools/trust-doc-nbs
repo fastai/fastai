@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+# This script signs all notebooks in the examples directory as trusted
+# It's is used as a git post-merge hook
+
+import nbformat.sign, sys, os, os.path
+from pathlib import Path
+
+# make sure we are under the root of the project
+cur_dir = Path(".").resolve().name
+if (cur_dir == "tools"): os.chdir("..")
+
+# Be almost invisible when run as a git hook, to keep the `git pull`
+# output familiar, yet telling the user that his system is busy
+# running the script.
+# We know we run under git when this script is invoked as
+# .git/hooks/post-merge. When it is invoked as tools/trust-doc-nbs we
+# can be more verbose.
+stealth = True if "post-merge" in __file__ else False
+end = "\r" if stealth else "\n"
+
+print("Attention! Signing notebooks under examples as *trusted*", end=end)
+
+path = Path('examples')
+fname_last_checked = path/".last_checked"
+last_checked = os.path.getmtime(fname_last_checked) if fname_last_checked.exists() else None
+
+for fname in path.glob("*.ipynb"):
+
+    # speed up things by skipping the if-not-signed test if the nb hasn't changed since the last signing attempt
+    if last_checked:
+        last_changed = os.path.getmtime(fname)
+        if last_changed < last_checked: continue
+
+    with open(fname) as f:
+        nb = nbformat.read(f, as_version=4)
+        if not nbformat.sign.NotebookNotary().check_signature(nb):
+            #print(f"unsigned {fname}")
+            nbformat.sign.NotebookNotary().sign(nb)
+
+fname_last_checked.touch(exist_ok=True)
+
+# clear the temporary output
+if stealth: sys.stdout.write("\033[K")
