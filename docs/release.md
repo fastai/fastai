@@ -8,7 +8,9 @@ Use this section if you know what you're doing for a quick release, otherwise fi
 
 You can run `make help` or just `make` to find out what targets are available and what they do.
 
-The essense of the process is simple - bump the version number, build and upload the packages for conda and pypi. All the other steps handle various other things like tagging, testing the code base, testing the installability of the packages, etc.
+If for some reason you can't use `make`, remember that it is just a front-end for the normal `git` and other commands, so you can always make a release without using `make`.
+
+The essence of the process is simple - bump the version number, build and upload the packages for conda and pypi. All the other steps handle various other things like tagging, testing the code base, testing the installability of the packages, etc.
 
 Note, that the release process uses the master branch and also creates and uses a `release-$(version)` branch. That release branch remains after the release so that it's accessible from github as a release branch.
 
