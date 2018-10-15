@@ -30,9 +30,10 @@ def read_nb(fname):
 
 def convert_nb(fname, dest_path='.'):
     "Convert a notebook `fname` to html file in `dest_path`."
-    from .gen_notebooks import remove_undoc_cells
+    from .gen_notebooks import remove_undoc_cells, remove_code_cell_jupyter_widget_state_elem
     nb = read_nb(fname)
     nb['cells'] = remove_undoc_cells(nb['cells'])
+    nb['cells'] = remove_code_cell_jupyter_widget_state_elem(nb['cells'])
     fname = Path(fname)
     dest_name = fname.with_suffix('.html').name
     meta = nb['metadata']
