@@ -2,15 +2,16 @@
 
 import sys
 
-# packages that shouldn't be required to be installed for fastai to work:
-unwanted_deps = ['jupyter_contrib_nbextensions']
+# packages that shouldn't be required to be installed for fastai to work
+# this is basically dev_requirements from setup.py which won't be installed by default
+unwanted_deps = 'jupyter_contrib_nbextensions distro'.split()
 
 class CheckDependencyImporter(object):
 
     def find_spec(self, fullname, path, target=None):
         #print("spec: ", fullname, path, target)
         # catch if import of any unwanted dependencies gets triggered
-        assert fullname not in unwanted_deps, f"detected unwanted dependency on {fullname}"
+        assert fullname not in unwanted_deps, f"detected unwanted dependency on '{fullname}'"
         return None
 
 def test_unwanted_mod_dependencies():
