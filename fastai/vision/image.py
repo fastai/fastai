@@ -6,7 +6,7 @@ import PIL
 
 __all__ = ['Image', 'ImageBBox', 'ImageMask', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
            'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
-           'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
+           'open_mask', 'pil2tensor', 'rand_bool', 'show_image', 'uniform', 'uniform_int']
 
 def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
 def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
