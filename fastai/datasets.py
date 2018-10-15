@@ -3,7 +3,8 @@ from fastai import *
 from fastai.vision import *
 from fastai.text import *
 
-__all__ = ['URLs', 'untar_data', 'download_data', 'url2path']
+__all__ = ['URLs', 'untar_data', 'download_data', 'url2path', 'download_wt103_model',
+           'get_mnist', 'get_imdb', 'get_adult', 'get_movie_lens']
 
 URL = 'http://files.fast.ai/data/examples/'
 S3_URL = 'https://s3.amazonaws.com/fast-ai-'
@@ -26,18 +27,20 @@ def _url2name(url): return url.split('/')[-1]
 def url2path(url): return URLs.DATA/f'{_url2name(url)}'
 def _url2tgz(url): return URLs.DATA/f'{_url2name(url)}.tgz'
 
-def download_data(url):
-    os.makedirs(URLs.DATA, exist_ok=True)
-    tgz = _url2tgz(url)
-    if not tgz.exists():
+def download_data(url:str, fname:PathOrStr=None):
+    "Download `url` to destination `fname`"
+    fname = Path(ifnone(fname, _url2tgz(url)))
+    os.makedirs(fname.parent, exist_ok=True)
+    if not fname.exists():
         print(f'Downloading {url}')
-        download_url(f'{url}.tgz', tgz)
-    return tgz
+        download_url(f'{url}.tgz', fname)
+    return fname
 
-def untar_data(url):
-    tgz = download_data(url)
-    dest = url2path(url)
-    if not dest.exists(): tarfile.open(tgz, 'r:gz').extractall(URLs.DATA)
+def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None):
+    "Download `url` if doesn't exist to `fname` and un-tgz to folder `dest`"
+    fname = download_data(url, fname=fname)
+    dest = Path(ifnone(dest, url2path(url)))
+    if not dest.exists(): tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest
 
 def get_adult():

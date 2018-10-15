@@ -6,7 +6,7 @@ import PIL
 
 __all__ = ['Image', 'ImageBBox', 'ImageMask', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
            'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
-           'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
+           'show_image', 'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
 
 def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
 def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
@@ -189,7 +189,7 @@ class Image(ItemBase):
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
               cmap:str='viridis', y:'Image'=None, **kwargs):
-        ax = _show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
+        ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None: y.show(ax=ax, **kwargs)
         if title: ax.set_title(title)
 
@@ -208,7 +208,7 @@ class ImageMask(Image):
     
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
         cmap:str='viridis', alpha:float=0.5):
-        ax = _show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
+        ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
         if title: ax.set_title(title)
 
 class ImageBBox(ImageMask):
@@ -267,7 +267,7 @@ def open_mask(fn:PathOrStr)->ImageMask:
     x = PIL.Image.open(fn).convert('L')
     return ImageMask(pil2tensor(x).float())
 
-def _show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
+def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None)->plt.Axes:
     if ax is None: fig,ax = plt.subplots(figsize=figsize)
     ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)

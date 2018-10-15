@@ -4,8 +4,9 @@ from .image import *
 from .transform import *
 from ..data import *
 
-__all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset', 'SegmentationDataset', 'csv_to_fns_labels',
-           'denormalize', 'get_annotations', 'get_image_files', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
+__all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
+           'SegmentationDataset', 'df_to_fns_labels', 'denormalize', 'get_annotations', 'get_image_files',
+           'image_data_from_df', 'image_data_from_csv', 'image_data_from_folder', 'normalize', 'normalize_funcs',
            'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'channel_view',
            'cifar_norm', 'cifar_denorm', 'mnist_norm', 'mnist_denorm', 'imagenet_stats', 'imagenet_norm', 'imagenet_denorm']
 
@@ -39,20 +40,21 @@ def get_annotations(fname, prefix=None):
 def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15),
                      denorm:Callable=None) -> None:
     "Show a few images from a batch."
-    x,y = next(iter(dl))
+    x,y = dl.one_batch()
     if rows is None: rows = int(math.sqrt(len(x)))
     x = x[:rows*rows].cpu()
     if denorm: x = denorm(x)
     show_images(x,y[:rows*rows].cpu(),rows, classes, figsize)
 
-def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str], figsize:Tuple[int,int]=(9,9))->None:
+def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str]=None, figsize:Tuple[int,int]=(9,9))->None:
     "Plot images (`x[i]`) from `x` titled according to `classes[y[i]]`."
     fig, axs = plt.subplots(rows,rows,figsize=figsize)
     for i, ax in enumerate(axs.flatten()):
         show_image(x[i], ax=ax)
-        if len(y.size()) == 1: title = classes[y[i]]
-        else:  title = '; '.join([classes[a] for a,t in enumerate(y[i]) if t==1])
-        ax.set_title(title)
+        if classes is not None:
+            if len(y.size()) == 1: title = classes[y[i]]
+            else:  title = '; '.join([classes[a] for a,t in enumerate(y[i]) if t==1])
+            ax.set_title(title)
     plt.tight_layout()
 
 def show_xy_images(x:Tensor,y:Tensor,rows:int,figsize:tuple=(9,9)):
@@ -273,10 +275,9 @@ def _labels_to_csv(self, dest:str):
 
 DataBunch.labels_to_csv = _labels_to_csv
 
-def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
-                      label_delim:str=None, header:Optional[Union[int,str]]='infer', suffix:Optional[str]=None):
-    "Read the csv in `csv_path` and return the labels."
-    df = pd.read_csv(csv_path, header=header)
+def df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
+                      label_delim:str=None, suffix:Optional[str]=None):
+    "Get image file names and labels from `df`."
     if label_delim:
         df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
     labels = df.iloc[:,label_col]
@@ -284,11 +285,11 @@ def csv_to_fns_labels(csv_path:PathOrStr, fn_col:int=0, label_col:int=1,
     if suffix: fnames = fnames.astype(str) + suffix
     return fnames, labels
 
-def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
-                        test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any) -> DataBunch:
-    "Create a `DataBunch` from a csv file."
+def image_data_from_df(path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
+                       fn_col:int=0, label_col:int=1, test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any) -> DataBunch:
+    "Create a `DataBunch` from a DataFrame."
     path = Path(path)
-    fnames, labels = csv_to_fns_labels(path/csv_labels, suffix=suffix, label_delim=sep)
+    fnames, labels = df_to_fns_labels(df, suffix=suffix, label_delim=sep, fn_col=fn_col, label_col=label_col)
     classes = uniqueify(np.concatenate(labels)) if sep else uniqueify(labels)
     if sep:
         datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct, classes=classes)
@@ -301,6 +302,15 @@ def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labe
         if test: datasets.append(ImageClassificationDataset.from_single_folder(Path(path)/test, classes=classes))
     return DataBunch.create(*datasets, path=path, **kwargs)
 
+
+def image_data_from_csv(path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
+                        fn_col:int=0, label_col:int=1, test:Optional[PathOrStr]=None, suffix:str=None,
+                        header:Optional[Union[int,str]]='infer', **kwargs:Any) -> DataBunch:
+    "Create a `DataBunch` from a csv file."
+    df = pd.read_csv(path/csv_labels, header=header)
+    return image_data_from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct, test=test,
+                              fn_col=fn_col, label_col=label_col, suffix=suffix, header=header, **kwargs)
+
 def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
@@ -308,7 +318,7 @@ def channel_view(x:Tensor)->Tensor:
 def _batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
     "Grab a batch of data and call reduction function `func` per channel"
     funcs = ifnone(funcs, [torch.mean,torch.std])
-    x = next(iter(self.valid_dl))[0].cpu()
+    x = self.valid_dl.one_batch()[0].cpu()
     return [func(channel_view(x), 1) for func in funcs]
 
 DataBunch.batch_stats = _batch_stats
