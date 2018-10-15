@@ -37,7 +37,7 @@ requirements = to_list("""
     Pillow
     requests
     scipy
-    spacy<=2.0.13
+    spacy>=2.0.16
     torchvision-nightly
     typing
 """)
