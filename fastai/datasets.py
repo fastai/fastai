@@ -49,7 +49,7 @@ def get_adult():
 
 def get_mnist():
     path = untar_data(URLs.MNIST_SAMPLE)
-    return image_data_from_folder(path)
+    return ImageDataBunch.from_folder(path)
 
 def get_imdb(classifier=False):
     path = untar_data(URLs.IMDB)

@@ -12,23 +12,23 @@ def path(request):
     return path
 
 def test_multi_iter_broken(path):
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     for i in range(5): x,y = next(iter(data.train_dl))
 
 def test_multi_iter(path):
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
     for i in range(5): x,y = data.train_dl.one_batch()
 
 def test_clean_tear_down(path):
     docstr = "test DataLoader iter doesn't get stuck"
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
 
 def test_normalize(path):
-    data = image_data_from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     x,y = data.train_dl.one_batch()
     m,s = x.mean(),x.std()
     data.normalize()
