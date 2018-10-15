@@ -54,9 +54,9 @@ def conv2d_relu(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bn:boo
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
 
-def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0) -> nn.ConvTranspose2d:
+def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=False) -> nn.ConvTranspose2d:
     "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
-    return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding)
+    return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."

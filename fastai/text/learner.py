@@ -73,7 +73,7 @@ class RNNLearner(Learner):
                        pretrained_fnames:OptStrTuple=None, **kwargs) -> 'RNNLearner':
         "Create a `Learner` with a language model."
         dps = np.array([0.25, 0.1, 0.2, 0.02, 0.15]) * drop_mult
-        vocab_size = len(data.train_ds.vocab.itos)
+        vocab_size = data.train_ds.vocab_size
         model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                     weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
         learn = cls(data, model, bptt, split_func=lm_split, **kwargs)
@@ -91,8 +91,7 @@ class RNNLearner(Learner):
         if lin_ftrs is None: lin_ftrs = [50]
         if ps is None:  ps = [0.1]
         ds = data.train_ds
-        vocab_size = len(ds.vocab.itos)
-        lbl = ds.labels[0]
+        vocab_size, lbl = ds.vocab_size, ds.labels[0]
         n_class = (len(ds.classes) if (not is_listy(lbl) or (len(lbl) == 1))
                    else len(lbl))
         layers = [emb_sz*3] + lin_ftrs + [n_class]

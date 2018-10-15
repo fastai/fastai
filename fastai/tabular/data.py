@@ -6,7 +6,7 @@ from ..basic_train import *
 from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
 
-__all__ = ['TabularDataset', 'tabular_data_from_df', 'get_tabular_learner']
+__all__ = ['TabularDataBunch', 'TabularDataset', 'get_tabular_learner']
 
 OptTabTfms = Optional[Collection[TabularTransform]]
 
@@ -66,21 +66,23 @@ class TabularDataset(DatasetBase):
         ds.tfms,ds.cat_names,ds.cont_names = tfms,cat_names,cont_names
         return ds
 
-
-def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:str, test_df:OptDataFrame=None,
+class TabularDataBunch(DataBunch):
+    "Create a `DataBunch` suitable for tabular data."
+    @classmethod
+    def from_df(cls, path, train_df:DataFrame, valid_df:DataFrame, dep_var:str, test_df:OptDataFrame=None,
                         tfms:OptTabTfms=None, cat_names:OptStrList=None, cont_names:OptStrList=None,
                         stats:OptStats=None, log_output:bool=False, **kwargs)->DataBunch:
-    "Create a `DataBunch` from train/valid/test dataframes."
-    cat_names = ifnone(cat_names, [])
-    cont_names = ifnone(cont_names, list(set(train_df)-set(cat_names)-{dep_var}))
-    train_ds = TabularDataset.from_dataframe(train_df, dep_var, tfms, cat_names, cont_names, stats, log_output)
-    valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
+        "Create a `DataBunch` from train/valid/test dataframes."
+        cat_names = ifnone(cat_names, [])
+        cont_names = ifnone(cont_names, list(set(train_df)-set(cat_names)-{dep_var}))
+        train_ds = TabularDataset.from_dataframe(train_df, dep_var, tfms, cat_names, cont_names, stats, log_output)
+        valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                              train_ds.cont_names, train_ds.stats, log_output)
-    datasets = [train_ds, valid_ds]
-    if test_df is not None:
-        datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
+        datasets = [train_ds, valid_ds]
+        if test_df is not None:
+            datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                                       train_ds.cont_names, train_ds.stats, log_output))
-    return DataBunch.create(*datasets, path=path, **kwargs)
+        return cls.create(*datasets, path=path, **kwargs)
 
 def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
