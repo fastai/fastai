@@ -4,12 +4,57 @@ title: Testing fastai
 
 ## Notebook integration tests
 
-Currently we have few automated tests, so most testing is through integration tests done in Jupyter Notebooks. The two places you should check for notebooks to test your code with are:
+Currently most testing is done through integration tests in Jupyter Notebooks.
+
+The two places you should check for notebooks to test your code with are:
 
  - [The fastai examples](https://github.com/fastai/fastai/tree/master/examples)
  - [The fastai_docs notebooks](https://github.com/fastai/fastai_docs/tree/master/docs_src)
 
 In each case, look for notebooks that have names starting with the application you're working on - e.g. 'text' or 'vision'.
+
+### fastai/examples/*ipynb
+
+You can run each of these interactively in jupyter, or as CLI:
+
+```
+jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+```
+
+This set is examples and there is no pass/fail other than visual observation.
+
+### fastai_docs/docs_src/*ipynb
+
+The `fastai_docs` repo's notebooks can be executed as a test suite:
+
+1. Prep (first time you run it):
+
+   ```
+   python -m spacy download en
+   ```
+
+2. Sync both git repos. Remember that these tests from the `fastai_docs` repo, run the code from the `fastai` repo:
+
+   ```
+   cd fastai
+   git pull
+   cd fastai_docs
+   git pull
+   ```
+
+3. Run:
+
+   ```
+   cd fastai_docs
+   cd docs_src
+   ./run_tests.sh
+   ```
+
+   To run a subset:
+
+   ```
+   ./run_tests.sh callback*
+   ```
 
 
 ## Automated tests
