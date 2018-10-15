@@ -4,9 +4,9 @@ from ..data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageMask', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
+__all__ = ['Image', 'ImageBBox', 'ImageMask', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
            'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
-           'show_image', 'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
+           'open_mask', 'pil2tensor', 'rand_bool', 'uniform', 'uniform_int']
 
 def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
 def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
@@ -64,9 +64,11 @@ def _get_default_args(func:Callable):
 
 @dataclass
 class FlowField():
-    "Wrap together some `coords` flow with a `size`."
+    "Wrap together some coords `flow` with a `size`."
     size:Tuple[int,int]
     flow:Tensor
+
+CoordFunc = Callable[[FlowField, ArgStar, KWArgs], LogitTensorImage]
 
 class Image(ItemBase):
     "Support applying transforms to image data."
@@ -187,7 +189,7 @@ class Image(ItemBase):
         "Return this images pixels as a tensor."
         return self.px
 
-    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
               cmap:str='viridis', y:'Image'=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None: y.show(ax=ax, **kwargs)
@@ -205,8 +207,8 @@ class ImageMask(Image):
     def data(self)->TensorImage:
         "Return this image pixels as a `LongTensor`."
         return self.px.long()
-    
-    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+
+    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
         cmap:str='viridis', alpha:float=0.5):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
         if title: ax.set_title(title)
@@ -219,7 +221,7 @@ class ImageBBox(ImageMask):
         bbox.labels = self.labels.clone() if self.labels is not None else None
         bbox.pad_idx = self.pad_idx
         return bbox
-    
+
     @classmethod
     def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels=None, pad_idx=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
@@ -239,7 +241,7 @@ class ImageBBox(ImageMask):
                 if self.labels is not None: lbls.append(self.labels[i])
         if len(bboxes) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
         bboxes = torch.cat(bboxes, 0)
-        return bboxes, (None if self.labels is None else LongTensor(lbls))    
+        return bboxes, (None if self.labels is None else LongTensor(lbls))
 
     @property
     def data(self)->LongTensor:
@@ -248,7 +250,7 @@ class ImageBBox(ImageMask):
         bboxes = bboxes.squeeze().float() * tensor([2/h,2/w,2/h,2/w]) - 1
         return bboxes if lbls is None else (bboxes, lbls)
 
-    def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, 
+    def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
         color:str='white', classes:Classes=None):
         if ax is None: _,ax = plt.subplot(figsize=figsize)
         bboxes, lbls = self._compute_boxes()
@@ -373,7 +375,7 @@ def _affine_mult(c:FlowField,m:AffineMatrix)->FlowField:
     "Multiply `c` by `m` - can adjust for rectangular shaped `c`."
     if m is None: return c
     size = c.flow.size()
-    _,h,w,_ = size
+    h,w = c.size
     m[0,1] *= h/w
     m[1,0] *= w/h
     c.flow = c.flow.view(-1,2)

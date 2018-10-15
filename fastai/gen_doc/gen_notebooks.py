@@ -72,15 +72,16 @@ def write_nb(nb, nb_path, mode='w'):
         print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
         json.dump(nb, open(nb_path, mode), indent=1)
 
-def execute_nb(fname, metadata=None):
+def execute_nb(fname, metadata=None, save=True):
     "Execute notebook `fname` with `metadata` for preprocessing."
     # Any module used in the notebook that isn't inside must be in the same directory as this script
     with open(fname) as f: nb = nbformat.read(f, as_version=4)
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
     metadata = metadata or {}
     ep.preprocess(nb, metadata)
-    with open(fname, 'wt') as f: nbformat.write(nb, f)
-    NotebookNotary().sign(nb)
+    if save:
+        with open(fname, 'wt') as f: nbformat.write(nb, f)
+        NotebookNotary().sign(nb)
 
 def _symbol_skeleton(name): return [get_doc_cell(name), get_md_cell(f"`{name}`")]
 
