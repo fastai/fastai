@@ -124,9 +124,11 @@ conda install conda
 
 2. CPU or GPU
 
-   Please note that `pytorch` comes with its own CUDA libraries so you don't have to install NVIDIA's CUDA libraries if you don't need them for something else. If you have them installed already it doesn't matter which NVIDIA's CUDA version you have. Your system could have CUDA 9.0 libraries, and you can use `pytorch` build with `cuda9.2` libraries without any problem, since `pytorch` is self-contained.
+   The `pytorch` binary package comes with its own CUDA, CuDNN, NCCL, MKL, and other libraries so you don't have to install system-wide NVIDIA's CUDA and related libraries if you don't need them for something else. If you have them installed already it doesn't matter which NVIDIA's CUDA version library you have installed system-wide. Your system could have CUDA 9.0 libraries, and you can still use `pytorch` build with `cuda9.2` libraries without any problem, since the `pytorch` binary package is self-contained.
 
    The only requirement is that you have installed and configured the NVIDIA driver correctly. Usually you can test that by running `nvidia-smi`. While it's possible that this application is not available on your system, it's very likely that if it doesn't work, than your don't have your NVIDIA drivers configured properly. And remember that a reboot is always required after installing NVIDIA drivers.
+
+   If you build `pytorch` from source then you will need to first install CUDA, CuDNN, and other required libraries. See [pytorch.org](https://pytorch.org/).
 
 3. Operating System:
 
