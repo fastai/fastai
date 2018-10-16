@@ -53,8 +53,8 @@ def get_mnist():
 
 def get_imdb(classifier=False):
     path = untar_data(URLs.IMDB)
-    data_func = classifier_data if classifier else lm_data
-    return text_data_from_csv(path, data_func=data_func)
+    data_class = TextClasDataBunch if classifier else TextLMDataBunch
+    return data_class.from_csv(path)
 
 def get_movie_lens():
     path = untar_data(URLs.ML)
