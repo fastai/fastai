@@ -6,7 +6,11 @@ title: Making a Release
 
 Use this section if you know what you're doing for a quick release, otherwise first explore the sections below to understand what each `make` target does.
 
-The es sense of the process is simple - bump the version number, build and upload the packages for conda and pypi. All the other steps handle various other things like tagging, testing the code base, testing the installability of the packages, etc.
+You can run `make help` or just `make` to find out what targets are available and what they do.
+
+If for some reason you can't use `make`, remember that it is just a front-end for the normal `git` and other commands, so you can always make a release without using `make`.
+
+The essence of the process is simple - bump the version number, build and upload the packages for conda and pypi. All the other steps handle various other things like tagging, testing the code base, testing the installability of the packages, etc.
 
 Note, that the release process uses the master branch and also creates and uses a `release-$(version)` branch. That release branch remains after the release so that it's accessible from github as a release branch.
 
@@ -873,7 +877,7 @@ Under Project Settings, important things are:
 
 #### CI Builds
 
-CI Builds are triggered every time a commit is pushed into the master (except when it's an obvious document only change commit, like a change to an `.md` file).
+CI Builds are triggered on every `git push` to master (except when it's an obvious document only change commit, like a change to an `.md` file).
 
 To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and enter the commit hash (most likely of the latest commit). This is the way to get occasional CI builds against non-master branches.
 
@@ -910,7 +914,7 @@ And remember to sync the branch with the master changes so that you're testing t
 
 - azure [installed automatically @github webhooks](https://github.com/fastai/fastai/settings/hooks) these push events:
 
-   * triggers CI build on every non-document commit!:
+   * triggers CI build on every push (except when it's only doc change)!:
 
     ```
     https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (push)

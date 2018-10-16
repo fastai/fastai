@@ -26,5 +26,6 @@ from fastprogress.fastprogress import MasterBar, ProgressBar
 from matplotlib.patches import Patch
 from numbers import Number
 from pandas import Series, DataFrame
-from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional 
+from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional
 from typing import Sequence, Tuple, TypeVar, Union
+from types import SimpleNamespace

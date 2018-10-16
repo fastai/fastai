@@ -11,7 +11,10 @@ from setuptools import setup, find_packages
 exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file:   readme = readme_file.read()
-with open('CHANGES.md') as history_file: history = history_file.read()
+
+# XXX: re-enable once we actually maintain this file.
+history = ''
+#with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
@@ -34,7 +37,7 @@ requirements = to_list("""
     Pillow
     requests
     scipy
-    spacy
+    spacy>=2.0.16
     torchvision-nightly
     typing
 """)
@@ -50,20 +53,24 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 #
 # anything else that's not required by a user to run the library, but
 # either an enhancement or developer-build requirement goes here.
+#
+# the [dev] feature is documented here:
 # https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 #
 # these get installed with:
 #
 #   pip install -e .[dev]
 #
+# some of the listed modules appear in test_requirements as well, explained below.
+#
 dev_requirements = { 'dev' : to_list("""
-    bumpversion==0.5.3
     distro
     jupyter_contrib_nbextensions
     nbconvert
     nbformat
     pip>=18.1
     pipreqs>=0.4.9
+    pytest
     traitlets
     wheel>=0.30.0
 """) }
@@ -73,6 +80,13 @@ setup_requirements = to_list("""
     pytest-runner
 """)
 
+# notes:
+#
+# * these deps will be installed locally under .eggs/ and will not be
+#   visible to pytest unless it's invoked via `python setup test`.
+#   Therefore it's the best to install them explicitly with:
+#   pip install -e .[dev]
+#
 ### test dependencies ###
 test_requirements = to_list("""
     pytest

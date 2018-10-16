@@ -125,7 +125,7 @@ Thumbs.db
 .pytest_cache
 
 # tools/trust-doc-nbs
-docs_src/.last_checked
+examples/.last_checked
 
 # symlinks to fastai
 examples/fastai

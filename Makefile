@@ -19,24 +19,12 @@ webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
 endef
 export BROWSER_PYSCRIPT
 
-define PRINT_HELP_PYSCRIPT
-import re, sys
-
-for line in sorted(sys.stdin):
-	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
-	if match:
-		target, help = match.groups()
-		print("\033[36m%-20s\033[0m %s" % (target, help))
-endef
-export PRINT_HELP_PYSCRIPT
-
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
 
 help: ## this help
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-
-### PyPI ###
+##@ PyPI
 
 clean-pypi: clean-build-pypi clean-pyc-pypi clean-test-pypi ## remove all build, test, coverage and python artifacts
 
@@ -70,7 +58,7 @@ release-pypi: dist-pypi ## release pypi package
 	twine upload dist/*
 
 
-### Conda ###
+##@ Conda
 
 clean-conda: clean-build-conda clean-pyc-conda clean-test-conda ## remove all build, test, coverage and python artifacts
 
@@ -96,9 +84,7 @@ release-conda: dist-conda ## release conda package
 
 
 
-### Combined ###
-
-## package and upload a release
+##@ Combined (pip and conda)
 
 clean: clean-pypi clean-conda ## clean pip && conda package
 
@@ -113,7 +99,7 @@ test: ## run tests with the default python
 	python setup.py --quiet test
 
 
-### git ###
+##@ git helpers
 
 git-pull: ## git pull
 	@echo "\n\n*** Making sure we have the latest checkout"
@@ -154,8 +140,6 @@ commit-version: ## commit and tag the release
 	@echo "\n\n*** Start release branch: $(version)"
 	git commit -m "starting release branch: $(version)" $(version_file)
 
-### Tagging ###
-
 commit-tag-push: ## commit and tag the release
 	@echo "\n\n*** Commit CHANGES"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
@@ -167,7 +151,7 @@ commit-tag-push: ## commit and tag the release
 	git push --set-upstream origin release-$(version)
 
 
-### Testing new package installation
+##@ Testing new package installation
 
 test-install: ## test conda/pip package by installing that version them
 	@echo "\n\n*** Install/uninstall $(version) pip version"
@@ -181,7 +165,7 @@ test-install: ## test conda/pip package by installing that version them
 	@# leave conda package installed: conda uninstall -y fastai
 
 
-### Version bumping ###
+##@ Version bumping
 
 # Support semver, but using python's .dev0 instead of -dev0
 
@@ -208,13 +192,10 @@ bump-major-dev: ## bump major-level and add .dev0
 	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, $$3, $$4, "dev0"); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 
-# # XXX: untested
-# test-all: ## run tests on every python version with tox
-# 	tox
-#
-# # XXX: untested
-# coverage: ## check code coverage quickly with the default python
-# 	coverage run --source fastai -m pytest
-# 	coverage report -m
-# 	coverage html
-# 	$(BROWSER) htmlcov/index.html
+##@ Coverage
+
+coverage: ## check code coverage quickly with the default python
+	coverage run --source fastai -m pytest
+	coverage report -m
+	coverage html
+	$(BROWSER) htmlcov/index.html
