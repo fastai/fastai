@@ -25,6 +25,9 @@ def show_install(show_nvidia_smi:bool=False):
             # full distro info
             rep.append(["distro", ' '.join(distro.linux_distribution())])
 
+    cenv = 'CONDA_DEFAULT_ENV'
+    rep.append(["conda env", (os.environ[cenv] if (cenv in os.environ and len(os.environ[cenv])) else "Unknown")])
+
     rep.append(["python version", platform.python_version()])
     rep.append(["fastai version", fastai.__version__])
     rep.append(["torch version",  torch.__version__])
@@ -84,7 +87,7 @@ def show_install(show_nvidia_smi:bool=False):
 
     keylen = max([len(e[0]) for e in rep])
     for e in rep:
-        print(f"{e[0]:{keylen}}", (f": {e[1]}" if e[1] else ""))
+        print(f"{e[0]:{keylen}}", (f": {e[1]}" if e[1] is not None else ""))
 
     if have_nvidia_smi:
         if show_nvidia_smi == True: print(f"\n{smi}")
