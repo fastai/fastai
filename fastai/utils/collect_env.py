@@ -25,9 +25,9 @@ def show_install(show_nvidia_smi:bool=False):
             # full distro info
             rep.append(["distro", ' '.join(distro.linux_distribution())])
 
-    rep.append(["python", platform.python_version()])
-    rep.append(["fastai", fastai.__version__])
-    rep.append(["torch",  torch.__version__])
+    rep.append(["python version", platform.python_version()])
+    rep.append(["fastai version", fastai.__version__])
+    rep.append(["torch version",  torch.__version__])
 
     # nvidia-smi
     cmd = "nvidia-smi"
@@ -48,31 +48,11 @@ def show_install(show_nvidia_smi:bool=False):
         smi = result.stdout.decode('utf-8')
         # matching: "Driver Version: 396.44"
         match = re.findall(r'Driver Version: +(\d+\.\d+)', smi)
-        if match: rep.append(["nvidia dr.", match[0]])
+        if match: rep.append(["nvidia driver", match[0]])
 
-    # nvcc
-    cmd = "nvcc --version"
-    have_nvcc = False
-    try:
-        result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
-    except:
-        pass
-    else:
-        if result.returncode == 0 and result.stdout:
-            have_nvcc = True
-
-    nvcc_cuda_ver = "Unknown"
-    if have_nvcc:
-        nvcc = result.stdout.decode('utf-8')
-        # matching: "Cuda compilation tools, release 9.2, V9.2.148"
-        match = re.findall(r'V(\d+\.\d+.\d+)', nvcc)
-        if match: nvcc_cuda_ver = match[0]
-
-    cuda_is_available = torch.cuda.is_available()
-    if not cuda_is_available: rep.append(["torch cuda", "Not available"])
-
-    rep.append(["torch cuda", torch.version.cuda])
-    rep.append(["nvcc  cuda", nvcc_cuda_ver])
+    rep.append(["torch cuda is",
+                f"{'' if torch.cuda.is_available() else 'Not '}available"])
+    rep.append(["torch cuda ver", torch.version.cuda])
 
     # disable this info for now, seems to be available even on cpu-only systems
     #rep.append(["cudnn", torch.backends.cudnn.version()])
