@@ -300,6 +300,7 @@ class ImageDataBunch(DataBunch):
             fn_col:int=0, label_col:int=1, test:Optional[PathOrStr]=None, suffix:str=None,
             header:Optional[Union[int,str]]='infer', **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file."
+        path = Path(path)
         df = pd.read_csv(path/csv_labels, header=header)
         return cls.from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct, test=test,
                 fn_col=fn_col, label_col=label_col, suffix=suffix, header=header, **kwargs)

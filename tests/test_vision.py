@@ -11,6 +11,9 @@ def path(request):
     request.addfinalizer(_final)
     return path
 
+def test_path_can_be_str_type(path):
+    assert ImageDataBunch.from_csv(str(path))
+
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     for i in range(5): x,y = next(iter(data.train_dl))
