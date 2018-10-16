@@ -72,8 +72,7 @@ def show_install(show_nvidia_smi:bool=False):
                 nvidia_gpu_cnt = len(gpu_total_mem)
 
 
-    if nvidia_gpu_cnt:
-        rep.append(["nvidia gpus", nvidia_gpu_cnt])
+    if nvidia_gpu_cnt: rep.append(["nvidia gpus", nvidia_gpu_cnt])
 
     torch_gpu_cnt = torch.cuda.device_count()
     if torch_gpu_cnt:
@@ -107,7 +106,7 @@ def show_install(show_nvidia_smi:bool=False):
     rep.append(["python", sys.executable])
     rep.append(["sys.path", "\n".join(sys.path)])
 
-    print("\n\n```")
+    print("\n\n```text")
 
     keylen = max([len(e[0]) for e in rep if e[1] is not None])
     for e in rep:
