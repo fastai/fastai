@@ -68,9 +68,10 @@ class ClassificationInterpretation():
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
-    def from_learner(cls, learn:Learner, loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=True):
+    def from_learner(cls, learn:Learner, loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=True, tta=False):
         "Factory method to create from a Learner."
-        return cls(learn.data, *learn.get_preds(), loss_class=loss_class, sigmoid=sigmoid)
+        preds = learn.tta() if tta else learn.get_preds()
+        return cls(learn.data, *preds, loss_class=loss_class, sigmoid=sigmoid)
 
     def top_losses(self, k, largest=True):
         "`k` largest(/smallest) losses."
@@ -100,10 +101,9 @@ class ClassificationInterpretation():
         plt.figure(figsize=figsize)
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
-        plt.colorbar()
         tick_marks = arange_of(self.data.classes)
-        plt.xticks(tick_marks, self.data.classes, rotation=45)
-        plt.yticks(tick_marks, self.data.classes)
+        plt.xticks(tick_marks, self.data.classes, rotation=90)
+        plt.yticks(tick_marks, self.data.classes, rotation=45)
 
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
@@ -113,4 +113,12 @@ class ClassificationInterpretation():
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
+
+    def most_confused(self, min_val:int=1)->Collection[Tuple[str,str,int]]:
+        "Sorted descending list of largest non-diagonal entries of confusion matrix"
+        cm = self.confusion_matrix()
+        np.fill_diagonal(cm, 0)
+        res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
+                for i,j in zip(*np.where(cm>min_val))]
+        return sorted(res, key=itemgetter(2), reverse=True)
 

@@ -8,8 +8,15 @@ __all__ = ['Image', 'ImageBBox', 'ImageMask', 'FlowField', 'RandTransform', 'Tfm
            'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
            'open_mask', 'pil2tensor', 'rand_bool', 'show_image', 'uniform', 'uniform_int']
 
-def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
-def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
+def logit(x:Tensor)->Tensor:
+    "Logit of `x`, clamped to avoid inf"
+    x = x.clamp(1e-7, 1-1e-7)
+    return -(1/x-1).log()
+
+def logit_(x:Tensor)->Tensor:
+    "Inplace logit of `x`, clamped to avoid inf"
+    x.clamp_(1e-7, 1-1e-7)
+    return (x.reciprocal_().sub_(1)).log_().neg_()
 
 def uniform(low:Number, high:Number=None, size:Optional[List[int]]=None)->FloatOrTensor:
     "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`."
