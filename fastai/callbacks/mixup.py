@@ -25,6 +25,8 @@ class MixUpCallback(Callback):
         if self.stack_y:
             new_target = torch.cat([last_target[:,None].float(), y1[:,None].float(), lambd[:,None].float()], 1)
         else:
+            if len(last_target.shape) == 2:
+                lambd = lambd.unsqueeze(1)
             new_target = last_target * lambd + y1 * (1-lambd)
         return (new_input, new_target)  
 
