@@ -33,6 +33,8 @@ The `fastai_docs` repo's notebooks can be executed as a test suite:
    python -m spacy download en
    ```
 
+   You need to have at least 8GB available on your GPU to run all of the tests. So make sure you shutdown any unnecessary jupyter kernels, so that the output of your `nvidia-smi` shows that you have at least 8GB free.
+
 2. Sync both git repos. Remember that these tests from the `fastai_docs` repo, run the code from the `fastai` repo:
 
    ```
