@@ -48,15 +48,17 @@ def show_install(show_nvidia_smi:bool=False):
 
     rep.append(["torch cuda ver", torch.version.cuda])
     rep.append(["torch cuda is",
-                f"{'' if torch.cuda.is_available() else 'Not '}available"])
+                "available" if torch.cuda.is_available() else "**Not available** "])
 
     # disable this info for now, seems to be available even on cpu-only systems
     #rep.append(["cudnn", torch.backends.cudnn.version()])
     #rep.append(["cudnn avail", torch.backends.cudnn.enabled])
 
+    rep.append(["\n=== Hardware ===", None])
 
     # it's possible that torch might not see what nvidia-smi sees?
     gpu_total_mem = []
+    nvidia_gpu_cnt = 0
     if have_nvidia_smi:
         try:
             cmd = "nvidia-smi --query-gpu=memory.total --format=csv,nounits,noheader"
@@ -67,16 +69,23 @@ def show_install(show_nvidia_smi:bool=False):
             if result.returncode == 0 and result.stdout:
                 output = result.stdout.decode('utf-8')
                 gpu_total_mem = [int(x) for x in output.strip().split('\n')]
+                nvidia_gpu_cnt = len(gpu_total_mem)
 
-    gpu_cnt = torch.cuda.device_count()
-    rep.append(["\n=== Hardware ===", None])
-    if gpu_cnt:
-        rep.append(["torch gpus", gpu_cnt])
+
+    if nvidia_gpu_cnt:
+        rep.append(["nvidia gpus", nvidia_gpu_cnt])
+
+    torch_gpu_cnt = torch.cuda.device_count()
+    if torch_gpu_cnt:
+        rep.append(["torch available", torch_gpu_cnt])
         # information for each gpu
-        for i in range(gpu_cnt):
-            rep.append([f"  gpu{i}", (f"{gpu_total_mem[i]}MB | " if gpu_total_mem else "") + torch.cuda.get_device_name(i)])
+        for i in range(torch_gpu_cnt):
+            rep.append([f"  - gpu{i}", (f"{gpu_total_mem[i]}MB | " if gpu_total_mem else "") + torch.cuda.get_device_name(i)])
     else:
-        rep.append([f"No GPUs", None])
+        if nvidia_gpu_cnt:
+            rep.append([f"Have {nvidia_gpu_cnt} GPU(s), but torch can't use them (check nvidia driver)", None])
+        else:
+            rep.append([f"No GPUs available", None])
 
 
     rep.append(["\n=== Environment ===", None])
@@ -107,7 +116,7 @@ def show_install(show_nvidia_smi:bool=False):
     if have_nvidia_smi:
         if show_nvidia_smi == True: print(f"\n{smi}")
     else:
-        if gpu_cnt:
+        if torch_gpu_cnt:
             # have gpu, but no nvidia-smi
             print("no nvidia-smi is found")
         else:
