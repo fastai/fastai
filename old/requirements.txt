@@ -39,7 +39,7 @@ Pygments>=2.2.0
 pyparsing>=2.2.0
 pytest>=3.5.0
 pytest-cov>=2.5.1
-python>=3.6.0
+python>=3.6.0,<3.7.0
 python-dateutil>=2.6.1
 pytorch<0.4
 pytz>=2017.2
