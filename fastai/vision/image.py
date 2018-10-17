@@ -304,47 +304,47 @@ class ImagePoints(Image):
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
 
-class ImageBBox(ImageMask):
+class ImageBBox(ImagePoints):
     "Image class for bbox-style annotations."
-
+    def __init__(self, flow:FlowField, scale:bool=True, y_first=True, labels=None, pad_idx=0):
+        super().__init__(flow, scale, y_first)
+        self.labels, self.pad_idx = labels, pad_idx
+        
     def clone(self):
-        bbox = self.__class__(self.px.clone())
-        bbox.labels = self.labels.clone() if self.labels is not None else None
-        bbox.pad_idx = self.pad_idx
-        return bbox
+        "Mimic the behavior of torch.clone for `Image` objects."
+        flow = FlowField(self.size, self.flow.flow.clone())
+        return self.__class__(flow, False, False,
+                              self.labels.clone() if self.labels is not None else None, self.pad_idx)
 
     @classmethod
     def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels=None, pad_idx=0)->'ImageBBox':
-        "Create an ImageBBox object from `bboxes`."
-        pxls = torch.zeros(len(bboxes),h, w).long()
-        for i,bbox in enumerate(bboxes):
-            pxls[i,int(bbox[0]):int(np.ceil(bbox[2]))+1,int(bbox[1]):int(np.ceil(bbox[3]))+1] = 1
-        bbox = cls(pxls.float())
-        bbox.labels,bbox.pad_idx = labels,pad_idx
-        return bbox
+        "Create an ImageBBox object from `bboxes`."  
+        bboxes = tensor(bboxes).float()
+        tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
+        bl_corners = bboxes[:,1:3].flip(1)
+        bboxes = torch.cat([bboxes[:,:2], tr_corners, bl_corners, bboxes[:,2:]], 1)
+        flow = FlowField((h,w), bboxes.view(-1,2))
+        return cls(flow, labels=labels, pad_idx=pad_idx, y_first=True)
 
     def _compute_boxes(self) -> Tuple[LongTensor, LongTensor]:
-        bboxes,lbls = [],[]
-        for i in range(self.px.size(0)):
-            idxs = torch.nonzero(self.px[i])
-            if len(idxs) != 0:
-                bboxes.append(torch.tensor([idxs[:,0].min(), idxs[:,1].min(), idxs[:,0].max(), idxs[:,1].max()])[None])
-                if self.labels is not None: lbls.append(self.labels[i])
-        if len(bboxes) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
-        bboxes = torch.cat(bboxes, 0)
-        return bboxes, (None if self.labels is None else LongTensor(lbls))
+        bboxes = self.flow.flow.flip(1).view(-1, 4, 2).contiguous().clamp(min=-1, max=1)
+        mins, maxes = bboxes.min(dim=1)[0], bboxes.max(dim=1)[0]
+        bboxes = torch.cat([mins, maxes], 1)
+        mask = (bboxes[:,2]-bboxes[:,0] > 0) * (bboxes[:,3]-bboxes[:,1] > 0)
+        if len(mask) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
+        return bboxes[mask], (self.labels[mask].long() if self.labels is not None else None)
 
     @property
     def data(self)->LongTensor:
         bboxes,lbls = self._compute_boxes()
-        h,w = self.size
-        bboxes = bboxes.squeeze().float() * tensor([2/h,2/w,2/h,2/w]) - 1
         return bboxes if lbls is None else (bboxes, lbls)
 
     def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
         color:str='white', classes:Classes=None):
         if ax is None: _,ax = plt.subplot(figsize=figsize)
         bboxes, lbls = self._compute_boxes()
+        h,w = self.flow.size
+        bboxes.add_(1).mul_(torch.tensor([h/2, w/2, h/2, w/2])).long()
         for i, bbox in enumerate(bboxes):
             if lbls is not None: text = classes[lbls[i]] if classes is not None else lbls[i].item()
             else: text=None
