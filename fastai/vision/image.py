@@ -358,7 +358,7 @@ def open_image(fn:PathOrStr)->Image:
 def open_mask(fn:PathOrStr)->ImageSegment:
     "Return `ImageMask` object create from mask in file `fn`."
     x = PIL.Image.open(fn).convert('L')
-    return ImageMask(pil2tensor(x).float().div_(255))
+    return ImageSegment(pil2tensor(x).float().div_(255))
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None)->plt.Axes:
