@@ -32,10 +32,10 @@ def test_clean_tear_down(path):
 
 def test_normalize(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
-    x,y = data.train_dl.one_batch()
+    x,y = data.valid_dl.one_batch()
     m,s = x.mean(),x.std()
     data.normalize()
-    x,y = data.train_dl.one_batch()
+    x,y = data.valid_dl.one_batch()
     assert abs(x.mean()) < abs(m)
     assert abs(x.std()-1) < abs(m-1)
 
