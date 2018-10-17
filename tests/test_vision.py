@@ -11,6 +11,9 @@ def path(request):
     request.addfinalizer(_final)
     return path
 
+def test_path_can_be_str_type(path):
+    assert ImageDataBunch.from_csv(str(path))
+
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     for i in range(5): x,y = next(iter(data.train_dl))
@@ -29,10 +32,10 @@ def test_clean_tear_down(path):
 
 def test_normalize(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
-    x,y = data.train_dl.one_batch()
+    x,y = data.valid_dl.one_batch()
     m,s = x.mean(),x.std()
     data.normalize()
-    x,y = data.train_dl.one_batch()
+    x,y = data.valid_dl.one_batch()
     assert abs(x.mean()) < abs(m)
     assert abs(x.std()-1) < abs(m-1)
 

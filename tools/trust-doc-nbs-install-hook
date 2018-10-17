@@ -19,6 +19,9 @@
 # note: windows users, not using bash emulation, will need to invoke this tool as:
 #   python tools\trust-doc-nbs-install-hook
 
+import sys
+if sys.hexversion < 0x03060000: sys.exit("!!! Please re-run this script with python-3.6 or higher")
+
 from shutil import copy2
 from pathlib import Path
 

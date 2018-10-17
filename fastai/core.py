@@ -168,3 +168,6 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
 
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
+
+Path.ls = lambda x: [o.name for o in x.iterdir()]
+

@@ -55,7 +55,7 @@ requirements:
     - matplotlib
     - nbconvert
     - nbformat
-    - numpy >=1.12
+    - numpy >=1.15
     - pandas
     - pillow
     - python

@@ -11,10 +11,7 @@ from setuptools import setup, find_packages
 exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file:   readme = readme_file.read()
-
-# XXX: re-enable once we actually maintain this file.
-history = ''
-#with open('CHANGES.md') as history_file: history = history_file.read()
+with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
@@ -32,13 +29,16 @@ requirements = to_list("""
     ipython
     jupyter
     matplotlib
-    numpy>=1.12
+    nbconvert
+    nbformat
+    numpy>=1.15
     pandas
     Pillow
     requests
     scipy
-    spacy>=2.0.16
+    spacy
     torchvision-nightly
+    traitlets
     typing
 """)
 
@@ -66,12 +66,9 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 dev_requirements = { 'dev' : to_list("""
     distro
     jupyter_contrib_nbextensions
-    nbconvert
-    nbformat
     pip>=18.1
     pipreqs>=0.4.9
     pytest
-    traitlets
     wheel>=0.30.0
 """) }
 

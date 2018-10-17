@@ -58,6 +58,7 @@ The `fastai_docs` repo's notebooks can be executed as a test suite:
    ./run_tests.sh callback*
    ```
 
+There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai_docs/blob/master/docs_src/nbval/README.md).
 
 ## Automated tests
 

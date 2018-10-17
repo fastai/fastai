@@ -50,9 +50,12 @@ def show_install(show_nvidia_smi:bool=False):
     rep.append(["torch cuda is",
                 "available" if torch.cuda.is_available() else "**Not available** "])
 
-    # disable this info for now, seems to be available even on cpu-only systems
-    #rep.append(["cudnn", torch.backends.cudnn.version()])
-    #rep.append(["cudnn avail", torch.backends.cudnn.enabled])
+    # no point reporting on cudnn if cuda is not available, as it
+    # seems to be enabled at times even on cpu-only setups
+    if torch.cuda.is_available():
+        rep.append(["torch cudnn ver", torch.backends.cudnn.version()])
+        rep.append(["torch cudnn is",
+                "enabled" if torch.backends.cudnn.enabled else "**Not enabled** "])
 
     rep.append(["\n=== Hardware ===", None])
 
