@@ -50,7 +50,7 @@ def conv2d_relu(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bn:boo
                 bias:bool=False) -> nn.Sequential:
     """Create a `conv2d` layer with `nn.ReLU` activation and optional(`bn`) `nn.BatchNorm2d`: `ni` input, `nf` out
     filters, `ks` kernel, `stride`:stride, `padding`:padding, `bn`: batch normalization."""
-    layers = [conv2d(ni, nf, ks=ks, stride=stride, padding=padding, bias=bias), nn.ReLU()]
+    layers = [conv2d(ni, nf, ks=ks, stride=stride, padding=padding, bias=bias), nn.ReLU(inplace=True)]
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
 
