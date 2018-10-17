@@ -29,13 +29,16 @@ requirements = to_list("""
     ipython
     jupyter
     matplotlib
-    numpy>=1.12
+    nbconvert
+    nbformat
+    numpy>=1.15
     pandas
     Pillow
     requests
     scipy
-    spacy>=2.0.16
+    spacy
     torchvision-nightly
+    traitlets
     typing
 """)
 
@@ -63,12 +66,9 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 dev_requirements = { 'dev' : to_list("""
     distro
     jupyter_contrib_nbextensions
-    nbconvert
-    nbformat
     pip>=18.1
     pipreqs>=0.4.9
     pytest
-    traitlets
     wheel>=0.30.0
 """) }
 

@@ -339,3 +339,36 @@ jobs:
       jupyter kernelspec list | grep python3
     displayName: 'Run jupyter notebook tests'
     continueOnError: false
+
+
+
+
+##################
+### nbstripout ###
+##################
+
+
+- job: 'nbstripout_config'
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+
+    # check that notebooks are stripped out. if they aren't that means the committer doesn't have the correct configuration for the stripout filter.
+  - script: |
+      echo "Check we are starting with clean git checkout"
+      if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
+
+      echo "Trying to strip out notebooks"
+      tools/fastai-nbstripout -d examples/*ipynb
+
+      echo "Check that strip out was unnecessary"
+      git status -s # display the status to see which nbs need cleaning up
+      if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run tools/run-after-git-clone"; false; fi
+    displayName: 'Detect unstripped out notebook commits'
+    continueOnError: false
