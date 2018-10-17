@@ -11,10 +11,7 @@ from setuptools import setup, find_packages
 exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file:   readme = readme_file.read()
-
-# XXX: re-enable once we actually maintain this file.
-history = ''
-#with open('CHANGES.md') as history_file: history = history_file.read()
+with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 

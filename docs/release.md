@@ -25,7 +25,8 @@ make master-branch-switch
 make bump && make release-branch-create && make commit-version
 make master-branch-switch && make bump-dev && make commit-dev-cycle-push
 make prev-branch-switch && make test && make commit-tag-push
-make release && make test-install
+make release
+# make test-install # not working yet - optional
 make master-branch-switch
 ```
 
