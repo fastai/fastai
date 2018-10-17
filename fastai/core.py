@@ -43,8 +43,6 @@ def num_cpus()->int:
     try:                   return len(os.sched_getaffinity(0))
     except AttributeError: return os.cpu_count()
 
-default_cpus = min(16, num_cpus())
-
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
@@ -170,3 +168,6 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
 
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
+
+Path.ls = lambda x: [o.name for o in x.iterdir()]
+

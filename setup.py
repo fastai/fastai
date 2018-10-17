@@ -24,18 +24,23 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
 # XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
+# pytest should probably not be here, but cupy (via spacy) depends on it
 requirements = to_list("""
     fastprogress>=0.1.10
     ipython
     jupyter
     matplotlib
-    numpy>=1.12
+    nbconvert
+    nbformat
+    numpy>=1.15
     pandas
     Pillow
     requests
+    pytest
     scipy
     spacy
     torchvision-nightly
+    traitlets
     typing
 """)
 
@@ -50,21 +55,21 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 #
 # anything else that's not required by a user to run the library, but
 # either an enhancement or developer-build requirement goes here.
+#
+# the [dev] feature is documented here:
 # https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 #
 # these get installed with:
 #
 #   pip install -e .[dev]
 #
+# some of the listed modules appear in test_requirements as well, explained below.
+#
 dev_requirements = { 'dev' : to_list("""
-    bumpversion==0.5.3
     distro
     jupyter_contrib_nbextensions
-    nbconvert
-    nbformat
     pip>=18.1
     pipreqs>=0.4.9
-    traitlets
     wheel>=0.30.0
 """) }
 
@@ -73,6 +78,13 @@ setup_requirements = to_list("""
     pytest-runner
 """)
 
+# notes:
+#
+# * these deps will be installed locally under .eggs/ and will not be
+#   visible to pytest unless it's invoked via `python setup test`.
+#   Therefore it's the best to install them explicitly with:
+#   pip install -e .[dev]
+#
 ### test dependencies ###
 test_requirements = to_list("""
     pytest

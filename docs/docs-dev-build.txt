@@ -1,8 +1,10 @@
 *** How to maintain http://docs-dev.fast.ai/ ***
 
-fastai/docs/ is automatically mapped to http://docs-dev.fast.ai/ so any changes committed to git will instantly appear on http://docs-dev.fast.ai/ 
+fastai/docs/ is automatically mapped to http://docs-dev.fast.ai/ so any changes committed to git will instantly appear on http://docs-dev.fast.ai/
 
-* When a file is added/removed/renamed must adjust the sidebar: docs/_data/sidebars/home_sidebar.yml
+* When a file is added/removed/renamed adjust:
+  1. docs/_data/sidebars/home_sidebar.yml (sidebar menu)
+  2. docs/README.md
 
 * theme/stylesheets:
 
@@ -10,5 +12,3 @@ fastai/docs/ is automatically mapped to http://docs-dev.fast.ai/ so any changes 
 - supported themes https://pages.github.com/themes/
 - currently using: https://pages-themes.github.io/cayman/ - see that url for extra customizations
 - guide for jekyll themes: https://idratherbewriting.com/documentation-theme-jekyll/
-
-

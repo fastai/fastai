@@ -69,7 +69,7 @@ def format_ft_def(func, full_name:str=None)->str:
     fmt_params = [format_param(param) for name,param
                   in sig.parameters.items() if name not in ('self','cls')]
     arg_str = f"({', '.join(fmt_params)})"
-    if sig.return_annotation and (sig.return_annotation != sig.empty): arg_str += f" -> {anno_repr(sig.return_annotation)}"
+    if sig.return_annotation and (sig.return_annotation != sig.empty): arg_str += f" → {anno_repr(sig.return_annotation)}"
     if is_fastai_class(type(func)):        arg_str += f" :: {link_type(type(func))}"
     f_name = f"`class` {name}" if inspect.isclass(func) else name
     return f'{f_name}\n> {name}{arg_str}'

@@ -17,6 +17,9 @@
 # note: windows users, not using bash emulation, will need to invoke this tool as:
 #   python tools\trust-origin-git-config
 
+import sys
+if sys.hexversion < 0x03060000: sys.exit("!!! Please re-run this script with python-3.6 or higher")
+
 import os, argparse, subprocess
 
 parser = argparse.ArgumentParser()

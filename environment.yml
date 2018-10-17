@@ -66,7 +66,7 @@ dependencies:
 - pygments
 - pyparsing
 - pyqt
-- python=3.6.*
+- python>=3.6.0
 - python-dateutil
 - pytz
 - pyzmq
@@ -101,7 +101,7 @@ dependencies:
   - opencv-python
   - isoweek
   - pandas_summary==0.0.5
-  - torchtext
+  - torchtext==0.2.3
   - graphviz
   - sklearn_pandas
   - feather-format

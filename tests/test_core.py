@@ -69,3 +69,28 @@ def test_partition_functionality():
     a = []
     result = partition(a, sz)
     assert len(result) == 0
+
+def test_idx_dict():
+    assert idx_dict(np.array([1,2,3]))=={1: 0, 2: 1, 3: 2}
+    assert idx_dict([1, 2, 3])=={1: 0, 2: 1, 3: 2}
+    assert idx_dict((1, 2, 3))=={1: 0, 2: 1, 3: 2}
+
+def test_find_classes():
+    path = Path('./classes_test').resolve()
+    os.mkdir(path)
+    classes = ['class_0', 'class_1', 'class_2']
+    for class_num in classes:
+        os.mkdir(path/class_num)
+    try:
+        assert find_classes(path)==[Path('./classes_test/class_0').resolve(),Path('./classes_test/class_1').resolve(),Path('./classes_test/class_2').resolve()]
+    finally:
+        shutil.rmtree(path)
+
+def test_arrays_split():
+    a = arrays_split([0,3],[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'])
+    b = [(array([1, 4]),array(['a', 'd'])), (array([5, 2]),(array(['e','b'])))]
+    np.testing.assert_array_equal(a,b)
+
+    c = arrays_split([0,3],[1, 2, 3, 4, 5])
+    d = [(array([1, 4]),), (array([5, 2]),)]
+    np.testing.assert_array_equal(c,d)

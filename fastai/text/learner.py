@@ -44,7 +44,7 @@ class RNNLearner(Learner):
     "Basic class for a Learner in RNN."
     def __init__(self, data:DataBunch, model:Model, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  adjust:bool=False, alpha:float=2., beta:float=1., **kwargs):
-        super().__init__(data, model)
+        super().__init__(data, model, **kwargs)
         self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta, adjust=adjust))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
@@ -73,7 +73,7 @@ class RNNLearner(Learner):
                        pretrained_fnames:OptStrTuple=None, **kwargs) -> 'RNNLearner':
         "Create a `Learner` with a language model."
         dps = np.array([0.25, 0.1, 0.2, 0.02, 0.15]) * drop_mult
-        vocab_size = len(data.train_ds.vocab.itos)
+        vocab_size = data.train_ds.vocab_size
         model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                     weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
         learn = cls(data, model, bptt, split_func=lm_split, **kwargs)
@@ -90,8 +90,10 @@ class RNNLearner(Learner):
         dps = np.array([0.4,0.5,0.05,0.3,0.4]) * drop_mult
         if lin_ftrs is None: lin_ftrs = [50]
         if ps is None:  ps = [0.1]
-        vocab_size = len(data.train_ds.vocab.itos)
-        n_class = len(data.train_ds.classes) if len(data.train_ds.labels[0]) == 1 else len(data.train_ds.labels[0])
+        ds = data.train_ds
+        vocab_size, lbl = ds.vocab_size, ds.labels[0]
+        n_class = (len(ds.classes) if (not is_listy(lbl) or (len(lbl) == 1))
+                   else len(lbl))
         layers = [emb_sz*3] + lin_ftrs + [n_class]
         ps = [dps[4]] + ps
         model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,

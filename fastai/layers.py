@@ -1,8 +1,8 @@
 "`fastai.layers` provides essential functions to building and modifying `model` architectures"
 from .torch_core import *
 
-__all__ = ['AdaptiveConcatPool2d', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 
-           'StdUpsample', 'bn_drop_lin', 'conv2d', 'conv2d_relu', 'conv2d_trans', 'conv_layer', 'get_embedding', 'simple_cnn', 
+__all__ = ['AdaptiveConcatPool2d', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
+           'StdUpsample', 'bn_drop_lin', 'conv2d', 'conv2d_relu', 'conv2d_trans', 'conv_layer', 'get_embedding', 'simple_cnn',
            'std_upsample_head', 'trunc_normal_']
 
 class Lambda(nn.Module):
@@ -48,15 +48,15 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
 
 def conv2d_relu(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bn:bool=False,
                 bias:bool=False) -> nn.Sequential:
-    """Create a `conv2d` layer with `nn.ReLU` activation and optional(`bn`) `nn.BatchNorm2d`: `ni` input, `nf` out 
+    """Create a `conv2d` layer with `nn.ReLU` activation and optional(`bn`) `nn.BatchNorm2d`: `ni` input, `nf` out
     filters, `ks` kernel, `stride`:stride, `padding`:padding, `bn`: batch normalization."""
-    layers = [conv2d(ni, nf, ks=ks, stride=stride, padding=padding, bias=bias), nn.ReLU()]
+    layers = [conv2d(ni, nf, ks=ks, stride=stride, padding=padding, bias=bias), nn.ReLU(inplace=True)]
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
 
-def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0) -> nn.ConvTranspose2d:
+def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=False) -> nn.ConvTranspose2d:
     "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
-    return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding)
+    return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
@@ -98,13 +98,13 @@ class CrossEntropyFlat(nn.CrossEntropyLoss):
         return super().forward(input.view(n, c, -1), target.view(n, -1))
 
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
-               strides:Collection[int]=None) -> nn.Sequential:
-    "CNN with `conv2d_relu` layers defined by `actns`, `kernel_szs` and `strides`."
+               strides:Collection[int]=None, bn=False) -> nn.Sequential:
+    "CNN with `conv2d_relu` layers defined by `actns`, `kernel_szs` and `strides`, plus batchnorm if `bn`."
     nl = len(actns)-1
     kernel_szs = ifnone(kernel_szs, [3]*nl)
     strides    = ifnone(strides   , [2]*nl)
-    layers = [conv2d_relu(actns[i], actns[i+1], kernel_szs[i], stride=strides[i])
-        for i in range_of(strides)]
+    layers = [conv2d_relu(actns[i], actns[i+1], kernel_szs[i], stride=strides[i],
+              bn=(bn and i<(len(strides)-1))) for i in range_of(strides)]
     layers.append(PoolFlatten())
     return nn.Sequential(*layers)
 

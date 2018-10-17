@@ -12,7 +12,7 @@ from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
 from fastprogress import master_bar, progress_bar
-from functools import partial, reduce
+from functools import partial, reduce, singledispatch
 from IPython.core.debugger import set_trace
 from matplotlib import patches, patheffects
 from numpy import array, cos, exp, log, sin, tan, tanh
@@ -26,5 +26,6 @@ from fastprogress.fastprogress import MasterBar, ProgressBar
 from matplotlib.patches import Patch
 from numbers import Number
 from pandas import Series, DataFrame
-from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional 
+from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional
 from typing import Sequence, Tuple, TypeVar, Union
+from types import SimpleNamespace

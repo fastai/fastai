@@ -1,15 +1,5 @@
-import pytest, torch, re, fastai
+import pytest, torch, fastai
 from fastai.torch_core import *
-
-def test_show_install(capsys):
-    show_install()
-    captured = capsys.readouterr()
-    #print(captured.out)
-    match = re.findall(rf'fastai\s+: {fastai.__version__}', captured.out)
-    assert match
-    match = re.findall(rf'torch\s+: {torch.__version__}',   captured.out)
-    assert match
-
 
 a=[1,2,3]
 exp=torch.tensor(a)
@@ -29,4 +19,3 @@ def test_tensor_with_tensor():
     r = tensor(c)
     assert r.data_ptr()==c.data_ptr()
     assert torch.all(r==exp)
-
