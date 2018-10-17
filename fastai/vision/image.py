@@ -4,9 +4,9 @@ from ..data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageMask', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 'TfmLighting',
-           'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 'open_image',
-           'open_mask', 'pil2tensor', 'rand_bool', 'show_image', 'uniform', 'uniform_int']
+__all__ = ['Image', 'ImageBBox', 'ImageMask', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 
+           'TfmLighting', 'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 
+           'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image', 'uniform', 'uniform_int', 'CoordFunc']
 
 def logit(x:Tensor)->Tensor:  return -(1/x-1).log()
 def logit_(x:Tensor)->Tensor: return (x.reciprocal_().sub_(1)).log_().neg_()
@@ -213,6 +213,90 @@ class ImageMask(Image):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
         if title: ax.set_title(title)
 
+class ImagePoints(Image):
+    "Support applying transforms to a flow points."
+    def __init__(self, flow:FlowField, scale:bool=True, y_first=True):
+        "Create from raw tensor image data `px`."
+        if scale: flow = scale_flow(flow)
+        if y_first: flow.flow = flow.flow.flip(1)
+        self._flow = flow
+        self._affine_mat = None
+        self.flow_func = []
+        self.sample_kwargs = {}
+        self.transformed = False
+
+    def clone(self):
+        "Mimic the behavior of torch.clone for `Image` objects."
+        return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
+
+    @property
+    def shape(self)->Tuple[int,int,int]: return (1, *self._flow.size)
+    @property
+    def size(self)->Tuple[int,int]: return self._flow.size
+    @size.setter
+    def size(self, sz:int): self._flow.size=sz
+    @property
+    def device(self)->torch.device: return self._flow.flow.device
+
+    def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
+    
+    @property
+    def flow(self)->FlowField:
+        "Access the flow-field grid after applying queued affine and coord transforms."
+        if self._affine_mat is not None:
+            self._flow = _affine_inv_mult(self._flow, self._affine_mat)
+            self._affine_mat = None
+            self.transformed = True
+        if len(self.flow_func) != 0:
+            for f in self.flow_func[::-1]: self._flow = f(self._flow)
+            self.transformed = True
+            self.flow_func = []
+        return self._flow
+    
+    @flow.setter
+    def flow(self,v:FlowField):  self._flow=v
+    
+    def coord(self, func:CoordFunc, *args, **kwargs)->'Image':
+        "Put `func` with `args` and `kwargs` in `self.flow_func` for later."
+        if 'invert' in kwargs: kwargs['invert'] = True
+        else: warn(f"{func.__name__} isn't implemented for `ImagePoints`.")
+        self.flow_func.append(partial(func, *args, **kwargs))
+        return self
+
+    def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
+
+    def pixel(self, func:PixelFunc, *args, **kwargs)->'Image':
+        "Equivalent to `self = func_flow(self)`."
+        self = func(self, *args, **kwargs)
+        self.transformed=True
+        return self
+    
+    def refresh(self):
+        return self
+    
+    def resize(self, size:Union[int,TensorImageSize]):
+        "Resize the image to `size`, size can be a single int."
+        if isinstance(size, int): size=(1, size, size)
+        self._flow.size = size[1:]
+        return self
+    
+    @property
+    def data(self)->TensorImage:
+        "Return the points associated to this object."
+        flow = self.flow #This updates flow before we test if some transforms happened
+        if self.transformed:
+            if 'remove_out' not in self.sample_kwargs or self.sample_kwargs['remove_out']:
+                flow = _remove_points_out(flow)
+            self.transformed=False
+        return flow.flow.flip(1)
+    
+    def show(self, ax=None, figsize=(3,3), title:Optional[str]=None, hide_axis:bool=True):
+        if ax is None: _,ax = plt.subplots(figsize=figsize)
+        pnt = scale_flow(FlowField(self.size, self.data), to_unit=False).flow.flip(1)
+        ax.scatter(pnt[:, 0], pnt[:, 1], s=10, marker='.', c='r')
+        if hide_axis: ax.axis('off')
+        if title: ax.set_title(title)
+
 class ImageBBox(ImageMask):
     "Image class for bbox-style annotations."
 
@@ -275,6 +359,18 @@ def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=
     ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)
     if hide_axis: ax.axis('off')
     return ax
+
+def scale_flow(flow, to_unit=True):
+    "Scale the coords in `flow` to -1/1 or the image size depending on `to_unit`."
+    s = tensor([flow.size[0]/2,flow.size[1]/2])[None]
+    if to_unit: flow.flow = flow.flow/s-1
+    else:       flow.flow = (flow.flow+1)*s
+    return flow
+
+def _remove_points_out(flow:FlowField):
+    pad_mask = (flow.flow[:,0] >= -1) * (flow.flow[:,0] <= 1) * (flow.flow[:,1] >= -1) * (flow.flow[:,1] <= 1)
+    flow.flow = flow.flow[pad_mask]
+    return flow
 
 class Transform():
     "Utility class for adding probability and wrapping support to transform `func`."
@@ -351,7 +447,6 @@ class RandTransform():
         "Randomly execute our tfm on `x`."
         return self.tfm(x, *args, **{**self.resolved, **kwargs}) if self.do_run else x
 
-
 def _resolve_tfms(tfms:TfmList):
     "Resolve every tfm in `tfms`."
     for f in listify(tfms): f.resolve()
@@ -380,6 +475,17 @@ def _affine_mult(c:FlowField,m:AffineMatrix)->FlowField:
     m[1,0] *= w/h
     c.flow = c.flow.view(-1,2)
     c.flow = torch.addmm(m[:2,2], c.flow,  m[:2,:2].t()).view(size)
+    return c
+
+def _affine_inv_mult(c, m):
+    "Applies the inverse affine transform described in m"
+    size = c.flow.size()
+    h,w = c.size
+    m[0,1] *= h/w
+    m[1,0] *= w/h
+    c.flow = c.flow.view(-1,2)
+    a = torch.inverse(m[:2,:2].t())
+    c.flow = torch.mm(c.flow - m[:2,2], a).view(size)
     return c
 
 class TfmAffine(Transform):
@@ -429,7 +535,6 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
             crop_target = _get_crop_target(size, mult=mult)
             target = _get_resize_target(x, crop_target, do_crop=do_crop)
             x.resize(target)
-
         size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
         for tfm in tfms:
             if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
