@@ -44,7 +44,7 @@ class RNNLearner(Learner):
     "Basic class for a Learner in RNN."
     def __init__(self, data:DataBunch, model:Model, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  adjust:bool=False, alpha:float=2., beta:float=1., **kwargs):
-        super().__init__(data, model)
+        super().__init__(data, model, **kwargs)
         self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta, adjust=adjust))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
