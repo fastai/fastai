@@ -34,12 +34,12 @@ requirements = to_list("""
     matplotlib
     nbconvert
     nbformat
-    numpy>=1.12
+    numpy>=1.15
     pandas
     Pillow
     requests
     scipy
-    spacy>=2.0.16
+    spacy
     torchvision-nightly
     traitlets
     typing
