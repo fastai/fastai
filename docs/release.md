@@ -18,7 +18,7 @@ The exact order to be followed is essential.
 
 ### Quick process
 
-Here is the quick version that includes all the steps w/o the explanations.
+Here is the quick version that includes all the steps w/o the explanations. It assumes you've completed **Prep** (next section).
 
 ```
 make master-branch-switch
@@ -30,9 +30,48 @@ make release
 make master-branch-switch
 ```
 
-### Step-by-step process
+Here is the step-by-step version. Make sure the prereqs are installed:
 
-Here is the step-by-step version
+```
+conda install conda-verify conda-build anaconda-client
+pip install "twine>=1.12"
+```
+
+### Prep
+
+These are the steps you just have to complete once.
+
+1. You need to register (free) with:
+
+    - [PyPI](https://pypi.org/account/register/)
+    - [TestPyPI](https://test.pypi.org/account/register/)
+    - [anaconda.org](https://anaconda.org/)
+
+    After registration, to upload to fastai project, you will need to ask Jeremy to add your username to PyPI and anaconda.
+
+2. Create file `~/.pypirc` with the following content:
+
+    ```
+    [distutils]
+    index-servers =
+      pypi
+      testpypi
+
+    [testpypi]
+    repository: https://test.pypi.org/legacy/
+    username: your testpypi username
+    password: your testpypi password
+
+    [pypi]
+    username: your pypi username
+    password: your pypi password
+    ```
+
+3. You can also setup your client to have transparent access to anaconda tools, see https://anaconda.org/YOURUSERNAME/settings/access (adjust the url to insert your username).
+
+    You don't really need it, as the anaconda client cashes your credentials so you need to login only infrequently.
+
+### Step-by-step process
 
 The starting point of the workflow is a dev version of the master branch. For this example we will use `1.0.6.dev0`.
 
@@ -103,7 +142,7 @@ The starting point of the workflow is a dev version of the master branch. For th
     make commit-tag-push          # git commit CHANGES.md; git tag; git push
     ```
 
-10. build and upload packages
+10. build and upload packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
 
     ```
     make release                  # make dist; make release-pypi; make release-conda
@@ -131,49 +170,6 @@ The starting point of the workflow is a dev version of the master branch. For th
 The following is needed if the combined release instructions are failing or better understanding is needed. So that each step can be done separately.
 
 `fastai` package is distributed via [PyPI](https://pypi.org/) and [anaconda](https://anaconda.org/). Therefore we need to make two different builds and upload them to their respective servers upon a new release.
-
-
-
-
-### Prep
-
-1. You need to register (free) with:
-
-    - [PyPI](​https://pypi.org/account/register/)
-    - [TestPyPI](https://test.pypi.org/account/register/)
-    - [anaconda.org](​https://anaconda.org/​)
-
-    After registration, to upload to fastai project, you will need to ask Jeremy to add your username to PyPI and anaconda.
-
-2. Create file `~/.pypirc` with the following content:
-
-    ```
-    [distutils]
-    index-servers#
-    pypi
-    testpypi
-
-    [testpypi]
-    repository: https://test.pypi.org/legacy/
-    username: your testpypi username
-    password: your testpypi password
-
-    [pypi]
-    username: your testpypi username
-    password: your testpypi password
-    ```
-
-3. You can also setup your client to have transparent access to anaconda tools, see https://anaconda.org/YOURUSERNAME/settings/access (adjust the url to insert your username).
-
-    You don't really need it, as the anaconda client cashes your credentials so you need to login only infrequently.
-
-4. Install build tools:
-
-    ```
-    conda install conda-verify conda-build anaconda-client
-    pip install twine>=1.12
-    ```
-
 ### Test Suite
 
 Before building the packages make sure the test suite runs successfully:
