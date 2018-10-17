@@ -145,7 +145,7 @@ class SegmentationDataset(DatasetBase):
         assert len(x)==len(y)
         self.x,self.y = np.array(x),np.array(y)
 
-    def __getitem__(self, i:int)->Tuple[Image,ImageMask]:
+    def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
         return open_image(self.x[i]), open_mask(self.y[i])
 
 @dataclass

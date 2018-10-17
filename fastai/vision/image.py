@@ -4,7 +4,7 @@ from ..data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageMask', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 
+__all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 
            'TfmLighting', 'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 
            'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image', 'uniform', 'uniform_int', 'CoordFunc']
 
@@ -78,7 +78,7 @@ class FlowField():
 CoordFunc = Callable[[FlowField, ArgStar, KWArgs], LogitTensorImage]
 
 class Image(ItemBase):
-    "Support applying transforms to image data."
+    "Support applying transforms to image data in `px`." 
     def __init__(self, px:Tensor):
         "Create from raw tensor image data `px`."
         self._px = px
@@ -202,8 +202,8 @@ class Image(ItemBase):
         if y is not None: y.show(ax=ax, **kwargs)
         if title: ax.set_title(title)
 
-class ImageMask(Image):
-    "Class for image segmentation target."
+class ImageSegment(Image):
+    "Support applying transforms to segmentation masks data in `px`." 
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
 
     def refresh(self):
@@ -221,8 +221,8 @@ class ImageMask(Image):
         if title: ax.set_title(title)
 
 class ImagePoints(Image):
-    "Support applying transforms to a flow points."
-    def __init__(self, flow:FlowField, scale:bool=True, y_first=True):
+    "Support applying transforms to a `flow` of points."
+    def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True):
         "Create from raw tensor image data `px`."
         if scale: flow = scale_flow(flow)
         if y_first: flow.flow = flow.flow.flip(1)
@@ -263,32 +263,32 @@ class ImagePoints(Image):
     @flow.setter
     def flow(self,v:FlowField):  self._flow=v
     
-    def coord(self, func:CoordFunc, *args, **kwargs)->'Image':
+    def coord(self, func:CoordFunc, *args, **kwargs)->'ImagePoints':
         "Put `func` with `args` and `kwargs` in `self.flow_func` for later."
         if 'invert' in kwargs: kwargs['invert'] = True
-        else: warn(f"{func.__name__} isn't implemented for `ImagePoints`.")
+        else: warn(f"{func.__name__} isn't implemented for {self.__class__}.")
         self.flow_func.append(partial(func, *args, **kwargs))
         return self
 
-    def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
+    def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'ImagePoints': return self
 
-    def pixel(self, func:PixelFunc, *args, **kwargs)->'Image':
+    def pixel(self, func:PixelFunc, *args, **kwargs)->'ImagePoints':
         "Equivalent to `self = func_flow(self)`."
         self = func(self, *args, **kwargs)
         self.transformed=True
         return self
     
-    def refresh(self):
+    def refresh(self) -> 'ImagePoints':
         return self
     
-    def resize(self, size:Union[int,TensorImageSize]):
+    def resize(self, size:Union[int,TensorImageSize]) -> 'ImagePoints':
         "Resize the image to `size`, size can be a single int."
         if isinstance(size, int): size=(1, size, size)
         self._flow.size = size[1:]
         return self
     
     @property
-    def data(self)->TensorImage:
+    def data(self)->Tensor:
         "Return the points associated to this object."
         flow = self.flow #This updates flow before we test if some transforms happened
         if self.transformed:
@@ -297,7 +297,7 @@ class ImagePoints(Image):
             self.transformed=False
         return flow.flow.flip(1)
     
-    def show(self, ax=None, figsize=(3,3), title:Optional[str]=None, hide_axis:bool=True):
+    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True):
         if ax is None: _,ax = plt.subplots(figsize=figsize)
         pnt = scale_flow(FlowField(self.size, self.data), to_unit=False).flow.flip(1)
         ax.scatter(pnt[:, 0], pnt[:, 1], s=10, marker='.', c='r')
@@ -305,19 +305,19 @@ class ImagePoints(Image):
         if title: ax.set_title(title)
 
 class ImageBBox(ImagePoints):
-    "Image class for bbox-style annotations."
-    def __init__(self, flow:FlowField, scale:bool=True, y_first=True, labels=None, pad_idx=0):
+    "Support applying transforms to a `flow` of bounding boxes."
+    def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True, labels:LongTensor=None, pad_idx:int=0):
         super().__init__(flow, scale, y_first)
         self.labels, self.pad_idx = labels, pad_idx
         
-    def clone(self):
+    def clone(self) -> 'ImageBBox':
         "Mimic the behavior of torch.clone for `Image` objects."
         flow = FlowField(self.size, self.flow.flow.clone())
         return self.__class__(flow, False, False,
                               self.labels.clone() if self.labels is not None else None, self.pad_idx)
 
     @classmethod
-    def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels=None, pad_idx=0)->'ImageBBox':
+    def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels:LongTensor=None, pad_idx:int=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."  
         bboxes = tensor(bboxes).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
@@ -335,7 +335,7 @@ class ImageBBox(ImagePoints):
         return bboxes[mask], (self.labels[mask].long() if self.labels is not None else None)
 
     @property
-    def data(self)->LongTensor:
+    def data(self)->Union[FloatTensor, Tuple[FloatTensor,LongTensor]]:
         bboxes,lbls = self._compute_boxes()
         return bboxes if lbls is None else (bboxes, lbls)
 
@@ -355,7 +355,7 @@ def open_image(fn:PathOrStr)->Image:
     x = PIL.Image.open(fn).convert('RGB')
     return Image(pil2tensor(x).float().div_(255))
 
-def open_mask(fn:PathOrStr)->ImageMask:
+def open_mask(fn:PathOrStr)->ImageSegment:
     "Return `ImageMask` object create from mask in file `fn`."
     x = PIL.Image.open(fn).convert('L')
     return ImageMask(pil2tensor(x).float().div_(255))
