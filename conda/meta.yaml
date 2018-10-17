@@ -61,7 +61,7 @@ requirements:
     - python
     - requests
     - scipy
-    - spacy >=2.0.16
+    - spacy
     - traitlets
     - typing
 
