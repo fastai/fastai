@@ -14,11 +14,11 @@ Note that the top-most release is changes in the unreleased master branch on Git
 
 ### New:
 
--
+- New class `ImagePoints` for targets that are a set of point coordinates.
 
 ### Changed:
 
--
+- `ImageBBox` is now a subclass of `ImagePoints`.
 
 ### Fixed:
 
