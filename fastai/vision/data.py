@@ -141,12 +141,12 @@ class ImageMultiDataset(LabelDataset):
 
 class SegmentationDataset(DatasetBase):
     "A dataset for segmentation task."
-    def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr]):
+    def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False):
         assert len(x)==len(y)
-        self.x,self.y = np.array(x),np.array(y)
+        self.x,self.y,self.div = np.array(x),np.array(y),div
 
     def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
-        return open_image(self.x[i]), open_mask(self.y[i])
+        return open_image(self.x[i]), open_mask(self.y[i], self.div)
 
 @dataclass
 class ObjectDetectDataset(Dataset):

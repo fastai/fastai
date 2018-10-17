@@ -203,7 +203,7 @@ class Image(ItemBase):
         if title: ax.set_title(title)
 
 class ImageSegment(Image):
-    "Support applying transforms to segmentation masks data in `px`." 
+    "Support applying transforms to segmentation masks data in `px`."      
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
 
     def refresh(self):
@@ -355,10 +355,12 @@ def open_image(fn:PathOrStr)->Image:
     x = PIL.Image.open(fn).convert('RGB')
     return Image(pil2tensor(x).float().div_(255))
 
-def open_mask(fn:PathOrStr)->ImageSegment:
-    "Return `ImageMask` object create from mask in file `fn`."
+def open_mask(fn:PathOrStr, div=False)->ImageSegment:
+    "Return `ImageMask` object create from mask in file `fn`. If `div`, divides pixel values by 255."
     x = PIL.Image.open(fn).convert('L')
-    return ImageSegment(pil2tensor(x).float().div_(255))
+    mask = pil2tensor(x).float()
+    if div: mask.div_(255)
+    return ImageSegment(mask)
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None)->plt.Axes:
