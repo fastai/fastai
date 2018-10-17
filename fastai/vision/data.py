@@ -121,7 +121,7 @@ class ImageMultiDataset(LabelDataset):
         return res
 
     def get_labels(self, idx:int)->ImgLabels: return [self.classes[i] for i in self.y[idx]]
-    def __getitem__(self,i:int)->Tuple[Image, ImgLabels]: return open_image(self.x[i]), self.encode(self.y[i])
+    def __getitem__(self,i:int)->Tuple[Image, np.ndarray]: return open_image(self.x[i]), self.encode(self.y[i])
 
     @classmethod
     def from_single_folder(cls, folder:PathOrStr, classes:Classes, check_ext=True):
