@@ -22,8 +22,10 @@ Note that the top-most release is changes in the unreleased master branch on Git
 
 ### Fixed:
 
--
--->
+- Fix `WeightDropout` in RNNs when `p=0`.
+- `pad_collate` gets its `kwargs` from `TextClasDataBunch`.
+- Add small `eps` to `std` in `TabularDataset` to avoid division by zero.
+
 
 ## 1.0.6dev (2018-XXX)
 

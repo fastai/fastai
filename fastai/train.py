@@ -8,14 +8,15 @@ __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_fin
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     return partial(OneCycleScheduler, lr_max=lr_max, **kwargs)
 
-def fit_one_cycle(learn:Learner, cyc_len:int,
-                  max_lr:Union[Floats,slice]=default_lr, moms:Tuple[float,float]=(0.95,0.85),
-                  div_factor:float=25., pct_start:float=0.3, wd:float=None, **kwargs)->None:
+def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=default_lr, 
+                  moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, 
+                  wd:float=None, callbacks:Optional[CallbackList]=None, **kwargs)->None:
     "Fit a model following the 1cycle policy."
     max_lr = learn.lr_range(max_lr)
-    cbs = [OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor,
-                             pct_start=pct_start, **kwargs)]
-    learn.fit(cyc_len, max_lr, wd=wd, callbacks=cbs)
+    callbacks = ifnone(callbacks, [])
+    callbacks.append(OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor,
+                                        pct_start=pct_start, **kwargs))
+    learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
 
 def lr_find(learn:Learner, start_lr:Floats=1e-5, end_lr:Floats=10, num_it:int=100, **kwargs:Any):
     "Explore lr from `start_lr` to `end_lr` over `num_it` iterations in `learn`."
