@@ -46,8 +46,6 @@ requirements = to_list("""
     typing
 """)
 
- spacy==2.0.16    regex==2018.01.10    thinc==6.12.0    cymem==2.0.2
-
 # dependencies to skip for now:
 #
 # cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
