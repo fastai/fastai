@@ -15,18 +15,19 @@ class Fbeta(Callback):
         self.TP, self.pred, self.true = 0, 0, 0
     
     def on_batch_end(self, last_output, last_target, train, **kwargs):
-        if sigmoid: y_pred = y_pred.sigmoid()
-        y_pred = (y_pred>thresh).float()
-        y_true = y_true.float()[:,None]
-        TP += (y_pred*y_true).sum(dim=1)
-        self.pred += y_pred
-        self.true += y_true
+        if self.sigmoid: last_output = last_output.sigmoid()
+        y_pred = (last_output>self.thresh).float()
+        y_true = last_target.float()
+        self.TP += (y_pred*y_true).sum(dim=0)
+        self.pred += y_pred.sum(dim=0)
+        self.true += y_true.sum(dim=0)
     
     def on_epoch_end(self, **kwargs):
         beta2 = self.beta**2
-        prec = self.TP/(self.pred.sum(dim=1)+self.eps)
-        rec = self.TP/(self.true.sum(dim=1)+self.eps)
-        res = (prec*rec)/(prec*beta2+rec+eps)*(1+beta2)
+        prec = self.TP/(self.pred+self.eps)
+        rec = self.TP/(self.true+self.eps)
+        res = (prec*rec)/(prec*beta2+rec+self.eps)*(1+beta2)
+        self.metric = res.mean().detach().item()
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, beta:float=2, eps:float=1e-9, sigmoid:bool=True) -> Rank0Tensor:
     "Compute the f_beta between preds and targets."
