@@ -4,7 +4,7 @@ Title: fastai Style Guide
 
 ## Jeremy's notes on fastai coding style
 
-This is a brief discussion of fastai's coding style, which is loosely informed by (a much diluted version of) the ideas developed over the last 60 continuous years of development in the [APL](https://en.wikipedia.org/wiki/APL_\(programming_language\)) / [J](https://en.wikipedia.org/wiki/J_\(programming_language\)) / [K](https://en.wikipedia.org/wiki/K_\(programming_language\)) programming communities, along with Jeremy's personal experience contributing to programming language design and library development over the last 25 years. The style is particularly designed to be aligned with the needs of scientific programming and iterative, experimental development.
+This is a brief discussion of fastai's coding style, which is loosely informed by (a much diluted version of) the ideas developed over the last 60 continuous years of development in the [APL](https://en.wikipedia.org/wiki/APL_(programming_language)) / [J](https://en.wikipedia.org/wiki/J_(programming_language)) / [K](https://en.wikipedia.org/wiki/K_(programming_language)) programming communities, along with Jeremy's personal experience contributing to programming language design and library development over the last 25 years. The style is particularly designed to be aligned with the needs of scientific programming and iterative, experimental development.
 
 Everyone has strong opinions about coding style, except perhaps some very experienced coders, who have used many languages, who realize there's lots of different perfectly acceptable approaches. The python community has particularly strongly held views, on the whole. I suspect this is related to Python being a language targeted at beginners, and therefore there are a lot of users with limited experience in other languages; however this is just a guess. Anyway, I don't much mind what coding style you use when contributing to fastai, as long as:
 
@@ -20,7 +20,7 @@ My personal approach to coding style is informed heavily by [Iverson's](https://
 One key idea in the paper is that "*brevity facilitates reasoning*", which has been incorporated into various guidelines such as "[shorten lines of communication](http://archive.vector.org.uk/art10009750)". This is sometimes incorrectly assumed to just mean 'terseness', but it is a much deeper idea, as described in [this Hacker News thread](https://news.ycombinator.com/item?id=13595729). I can't hope to summarize this thinking here, but I can point out a couple of key benefits:
 
 - It supports [expository programming](http://vector.org.uk/art10000980), particularly when combined with the use of Jupyter Notebook or a similar tool designed for experimentation
-- The most productive programmers I'm aware of in the world, such as the extraordinary [Arthur Whitney](https://en.wikipedia.org/wiki/Arthur_Whitney_\(computer_scientist\)) often use this coding style (which may or may not be a coincidence!)
+- The most productive programmers I'm aware of in the world, such as the extraordinary [Arthur Whitney](https://en.wikipedia.org/wiki/Arthur_Whitney_(computer_scientist)) often use this coding style (which may or may not be a coincidence!)
 
 ## Style guide
 
