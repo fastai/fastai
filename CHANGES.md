@@ -15,11 +15,13 @@ Note that the top-most release is changes in the unreleased master branch on Git
 ### New:
 
 - New class `ImagePoints` for targets that are a set of point coordinates.
-- New function `Image.predict(learn:Learner)`.
+- New function `Image.predict(learn:Learner)` to get the activations of the model in `Learner` for an image.
+- New function `Learner.validate` to validate on a given dl (default valid_dl), with maybe new metrics or callbacks. 
 
 ### Changed:
 
 - `ImageBBox` is now a subclass of `ImagePoints`.
+- All metrics are now `Callback`. You can pass a regular function like `accuracy` that will get averaged over batch or a full `Callback` that can do more complex things. 
 
 ### Fixed:
 
