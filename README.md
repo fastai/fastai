@@ -101,24 +101,32 @@ issues](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
 
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs/develop.md) for more details on how to contribute to the `fastai` project.
 
+
+
 ### Building From Source
 
-If you're building `pytorch` from source, you will also need to build `torchvision` from source:
+If for any reason you can't use the prepackaged packages and have to build from source, this section is for you.
 
-```
-git clone https://github.com/pytorch/vision
-cd vision
-python setup.py install
-```
+1. To build `pytorch` from source follow the [complete instructions](https://github.com/pytorch/pytorch#from-source). Remember to first install CUDA, CuDNN, and other required libraries as suggested - everything will be very slow without those libraries built into `pytorch`.
 
-When both `pytorch` and `torchvision` are installed, first test that you can load each of these libraries:
+2. Next, you will also need to build `torchvision` from source:
 
-```
-import torch
-import torchvision
-```
+   ```
+   git clone https://github.com/pytorch/vision
+   cd vision
+   python setup.py install
+   ```
 
-to validate that they were installed correctly and then you can proceed with `fastai` installation as normal.
+3. When both `pytorch` and `torchvision` are installed, first test that you can load each of these libraries:
+
+   ```
+   import torch
+   import torchvision
+   ```
+
+   to validate that they were installed correctly
+
+   Finally, proceed with `fastai` installation as normal, either through prepackaged pip or conda builds or installing from source ("the developer install") as explained in the sections above.
 
 
 
@@ -147,8 +155,6 @@ conda install conda
    The `pytorch` binary package comes with its own CUDA, CuDNN, NCCL, MKL, and other libraries so you don't have to install system-wide NVIDIA's CUDA and related libraries if you don't need them for something else. If you have them installed already it doesn't matter which NVIDIA's CUDA version library you have installed system-wide. Your system could have CUDA 9.0 libraries, and you can still use `pytorch` build with `cuda9.2` libraries without any problem, since the `pytorch` binary package is self-contained.
 
    The only requirement is that you have installed and configured the NVIDIA driver correctly. Usually you can test that by running `nvidia-smi`. While it's possible that this application is not available on your system, it's very likely that if it doesn't work, than your don't have your NVIDIA drivers configured properly. And remember that a reboot is always required after installing NVIDIA drivers.
-
-   If you build `pytorch` from source then you will need to first install CUDA, CuDNN, and other required libraries. See [pytorch.org](https://pytorch.org/).
 
 3. Operating System:
 
