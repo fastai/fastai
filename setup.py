@@ -24,7 +24,6 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
 # XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
-# pytest should probably not be here, but cupy (via spacy) depends on it
 requirements = to_list("""
     fastprogress>=0.1.10
     ipython
@@ -36,7 +35,6 @@ requirements = to_list("""
     pandas
     Pillow
     requests
-    pytest
     scipy
     spacy
     torchvision-nightly
@@ -70,6 +68,7 @@ dev_requirements = { 'dev' : to_list("""
     jupyter_contrib_nbextensions
     pip>=18.1
     pipreqs>=0.4.9
+    pytest
     wheel>=0.30.0
 """) }
 
