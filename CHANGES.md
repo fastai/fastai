@@ -15,6 +15,7 @@ Note that the top-most release is changes in the unreleased master branch on Git
 ### New:
 
 - New class `ImagePoints` for targets that are a set of point coordinates.
+- New function `Image.predict(learn:Learner)`.
 
 ### Changed:
 
@@ -25,6 +26,7 @@ Note that the top-most release is changes in the unreleased master branch on Git
 - Fix `WeightDropout` in RNNs when `p=0`.
 - `pad_collate` gets its `kwargs` from `TextClasDataBunch`.
 - Add small `eps` to `std` in `TabularDataset` to avoid division by zero.
+- `fit_one_cycle` doesn't take other callbacks.
 
 
 ## 1.0.6dev (2018-XXX)

@@ -97,7 +97,7 @@ class Learner():
     data:DataBunch
     model:nn.Module
     opt_fn:Callable=AdamW
-    loss_fn:Callable=F.cross_entropy
+    loss_fn:Callable=None
     metrics:Collection[Callable]=None
     true_wd:bool=True
     bn_wd:bool=True
@@ -113,6 +113,7 @@ class Learner():
         self.path = Path(ifnone(self.path, self.data.path))
         (self.path/self.model_dir).mkdir(parents=True, exist_ok=True)
         self.model = self.model.to(self.data.device)
+        self.loss_fn = ifnone(self.loss_fn, self.data.loss_fn)
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
