@@ -8,6 +8,7 @@ AnnealFunc = Callable[[Number,Number,float], Number]
 ArgStar = Collection[Any]
 BatchSamples = Collection[Tuple[Collection[int], int]]
 Classes = Collection[Any]
+DataFrameOrChunks = Union[DataFrame, pd.io.parsers.TextFileReader]
 FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]
 ImgLabel = str
@@ -41,8 +42,6 @@ def num_cpus()->int:
     "Get number of cpus"
     try:                   return len(os.sched_getaffinity(0))
     except AttributeError: return os.cpu_count()
-
-default_cpus = min(16, num_cpus())
 
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
@@ -114,9 +113,12 @@ def partition_by_cores(a:Collection, n_cpus:int) -> List[Collection]:
     "Split data in `a` equally among `n_cpus` cores"
     return partition(a, len(a)//n_cpus + 1)
 
-def get_chunk_length(csv_name:PathOrStr, chunksize:int) -> int:
+def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileReader], chunksize:Optional[int] = None) -> int:
     "Read the number of chunks in a pandas `DataFrame`."
-    dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
+    if (type(data) == DataFrame):  return 1
+    elif (type(data) == pd.io.parsers.TextFileReader):
+        dfs = pd.read_csv(data.f, header=None, chunksize=data.chunksize)
+    else:  dfs = pd.read_csv(data, header=None, chunksize=chunksize)
     l = 0
     for _ in dfs: l+=1
     return l
@@ -163,4 +165,9 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
             nbytes += len(buffer)
             pbar.update(nbytes)
             f.write(buffer)
+
+def range_of(x): return list(range(len(x)))
+def arange_of(x): return np.arange(len(x))
+
+Path.ls = lambda x: [o.name for o in x.iterdir()]
 

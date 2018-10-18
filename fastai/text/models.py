@@ -45,6 +45,9 @@ class WeightDropout(nn.Module):
             return self.module.forward(*args)
 
     def reset(self):
+        for layer in self.layer_names:
+            raw_w = getattr(self, f'{layer}_raw')
+            self.module._parameters[layer] = F.dropout(raw_w, p=self.weight_p, training=False)
         if hasattr(self.module, 'reset'): self.module.reset()
 
 class EmbeddingDropout(nn.Module):
@@ -66,9 +69,9 @@ class EmbeddingDropout(nn.Module):
         return F.embedding(words, masked_embed, self.pad_idx, self.emb.max_norm,
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
-def _repackage_var(h:Tensors) -> Tensors:
-    "Detach h from its history."
-    return h.detach() if type(h) == torch.Tensor else tuple(_repackage_var(v) for v in h)
+#def _repackage_var(h:Tensors) -> Tensors:
+#    "Detach h from its history."
+#    return h.detach() if type(h) == torch.Tensor else tuple(_repackage_var(v) for v in h)
 
 class RNNCore(nn.Module):
     "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182."
@@ -114,7 +117,7 @@ class RNNCore(nn.Module):
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
-        self.hidden = _repackage_var(new_hidden)
+        self.hidden = to_detach(new_hidden)
         return raw_outputs, outputs
 
     def _one_hidden(self, l:int) -> Tensor:
@@ -163,7 +166,7 @@ class MultiBatchRNNCore(RNNCore):
 
     def concat(self, arrs:Collection[Tensor]) -> Tensor:
         "Concatenate the `arrs` along the batch dimension."
-        return [torch.cat([l[si] for l in arrs]) for si in range(len(arrs[0]))]
+        return [torch.cat([l[si] for l in arrs]) for si in range_of(arrs[0])]
 
     def forward(self, input:LongTensor) -> Tuple[Tensor,Tensor]:
         sl,bs = input.size()

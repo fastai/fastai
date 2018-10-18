@@ -1,4 +1,6 @@
-# fastai Style Guide
+---
+Title: fastai Style Guide
+---
 
 ## Jeremy's notes on fastai coding style
 

@@ -51,6 +51,7 @@ def train_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, cl=1, backwards
     assert trn_lbls.shape[1] == 1 and val_lbls.shape[1] == 1, 'This classifier uses cross entropy loss and only support single label samples'
     trn_lbls = trn_lbls.flatten()
     val_lbls = val_lbls.flatten()
+    print('Trn lbls shape:', trn_lbls.shape)
     trn_lbls -= trn_lbls.min()
     val_lbls -= val_lbls.min()
     c=int(trn_lbls.max())+1

@@ -1,12 +1,21 @@
 import pytest, torch, fastai
+from fastai.torch_core import *
 
-from fastai import torch_core
+a=[1,2,3]
+exp=torch.tensor(a)
 
-def test_show_install(capsys):
-    fastai_version_check = f"fastai version : {fastai.__version__}"
-    torch_version_check  = f"torch version  : {torch.__version__}"
-    torch_core.show_install()
-    captured = capsys.readouterr()
-    #print(captured.out)
-    assert fastai_version_check in captured.out
-    assert torch_version_check  in captured.out
+def test_tensor_with_list():
+    r = tensor(a)
+    assert torch.all(r==exp)
+
+def test_tensor_with_ndarray():
+    b=np.array(a)
+    r = tensor(b)
+    assert np_address(r.numpy()) == np_address(b)
+    assert torch.all(r==exp)
+
+def test_tensor_with_tensor():
+    c=torch.tensor(a)
+    r = tensor(c)
+    assert r.data_ptr()==c.data_ptr()
+    assert torch.all(r==exp)

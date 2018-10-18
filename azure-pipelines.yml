@@ -1,0 +1,374 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts
+
+# Capabilities and limitations:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=vsts&tabs=yaml#capabilities-and-limitations
+# - Provide at least 10 GB of storage for your source and build outputs.
+# - Can run jobs for up to 360 minutes (6 hours).
+
+# Notes on pipeline definitions:
+#
+# the number after @ in task definition indicates the azure internal version of the specific task, e.g:
+# - task: CondaEnvironment@1
+# means use azure's CondaEnvironment's version 1, so need to check the docs for each specific task's desired (usually latest) version. If later 1.2 is released then use:
+# - task: CondaEnvironment@1.2
+# instead
+#
+# job name must match r'\w+' (no '-', but '_' ok)
+#
+# Build environments: Available vmImage values: 'Ubuntu-16.04', 'macOS-10.13', 'VS2017-Win2016'
+#
+
+jobs:
+
+################
+### Linux CI ###
+################
+
+
+- job: 'Linux_PyPI'
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    # Increase the maxParallel value to simultaneously run the job for all versions in the matrix (max 10 for free open-source)
+    maxParallel: 4
+
+  steps:
+    # Set the UsePythonVersion task to reference the matrix variable for its Python version
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+    # Install dependencies and fastai git HEAD or PR
+  - script: |
+      python -m pip install --upgrade pip && pip3 install --upgrade setuptools
+      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+      # test that we can install fastai package (and torchvision)
+      pip install fastai
+      pip uninstall -y fastai
+      # install editable fastai, which tests the HEAD or PR
+      pip install -e .[dev]
+    displayName: 'Upgrade pip/setuptools. Install deps, pytorch and fastai'
+    continueOnError: false
+
+    # Install Test deps
+  - script: |
+      pip install pytest pytest-runner
+    displayName: 'Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
+      py.test tests --cache-clear --junitxml=result.xml
+    displayName: 'Run tests'
+    continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      echo "Testing expected output"
+      grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
+      jupyter kernelspec list | grep python3
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
+
+
+
+- job: 'Linux_Conda'
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    # Increase the maxParallel value to simultaneously run the job for all versions in the matrix (max 10 for free open-source)
+    maxParallel: 4
+
+  steps:
+    # Set the UsePythonVersion task to reference the matrix variable for its Python version
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+    # XXX: should be fixed in 1.140 release https://github.com/Microsoft/vsts-tasks/issues/8299#issuecomment-427095427
+  - script: sudo install -d -m 0777 /usr/envs
+    displayName: Fix Conda permissions
+
+    # Conda setup environment.
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
+    #
+  - task: CondaEnvironment@0
+    inputs:
+      environmentName: 'fastai-cpu'
+      packageSpecs: 'python=$(python.version)'
+
+    # Install dependencies and fastai git HEAD or PR
+  - script: |
+      conda activate fastai-cpu
+      conda install -y conda
+      conda install -y pip setuptools
+      # pytorch + torchvision
+      conda install -y -c pytorch pytorch-nightly-cpu
+      conda install -y -c fastai torchvision-nightly-cpu
+      # test that we can install fastai package
+      conda install -y -c fastai fastai
+      conda uninstall -y fastai
+      # install editable fastai, which tests the HEAD or PR
+      pip install -e .[dev]
+    displayName: 'Upgrade pip/conda/setuptools. Install deps, pytorch and fastai'
+    continueOnError: false
+
+    # Install Test deps
+  - script: |
+      conda install -y pytest pytest-runner
+    displayName: 'Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
+      py.test tests --cache-clear --junitxml=result.xml
+    displayName: 'Run tests'
+    continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      echo "Testing expected output"
+      grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
+      jupyter kernelspec list | grep python3
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
+
+
+
+################
+### MacOS CI ###
+################
+
+- job: MacOS_PyPI
+  pool:
+    vmImage: 'macOS-10.13'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 4
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+    # Install dependencies and fastai git HEAD or PR
+  - script: |
+      python -m pip install --upgrade pip && pip3 install --upgrade setuptools
+      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+      # test that we can install fastai package (and torchvision)
+      pip install fastai
+      pip uninstall -y fastai
+      # install editable fastai, which tests the HEAD or PR
+      pip install -e .[dev]
+      # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
+      mkdir -p ~/.matplotlib
+      echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+    displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
+    continueOnError: false
+
+     # Install Test deps
+  - script: |
+      pip install pytest pytest-runner
+    displayName: 'Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
+      py.test tests --cache-clear --junitxml=result.xml
+    displayName: 'Run tests'
+    continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      echo "Testing expected output"
+      grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
+      jupyter kernelspec list | grep python3
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
+
+
+
+- job: 'MacOS_Conda'
+
+  pool:
+    vmImage: 'macOS-10.13'
+
+  # Run the pipeline with multiple Python versions
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    # Increase the maxParallel value to simultaneously run the job for all versions in the matrix (max 10 for free open-source)
+    maxParallel: 4
+
+  steps:
+    # Set the UsePythonVersion task to reference the matrix variable for its Python version
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: sudo install -d -m 0777 /usr/local/miniconda/envs/
+    displayName: Fix Conda permissions
+
+    # Conda setup environment.
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/package/conda-environment?view=vsts
+    #
+  - task: CondaEnvironment@0
+    inputs:
+      environmentName: 'fastai-cpu'
+      packageSpecs: 'python=$(python.version)'
+
+    # Install dependencies and fastai git HEAD or PR
+  - script: |
+      conda activate fastai-cpu
+      conda install -y conda
+      conda install -y pip setuptools
+      # pytorch + torchvision
+      conda install -y -c pytorch pytorch-nightly-cpu
+      conda install -y -c fastai torchvision-nightly-cpu
+      # test that we can install fastai package
+      conda install -y -c fastai fastai
+      conda uninstall -y fastai
+      # install editable fastai, which tests the HEAD or PR
+      pip install -e .[dev]
+      # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
+      mkdir -p ~/.matplotlib
+      echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+    displayName: 'Upgrade pip/conda/setuptools. Install deps, pytorch and fastai'
+    continueOnError: false
+
+    # Install Test deps
+  - script: |
+      conda install -y pytest pytest-runner
+    displayName: 'Install test deps'
+    continueOnError: false
+
+    # Run Tests
+  - script: |
+      py.test tests --cache-clear --junitxml=result.xml
+    displayName: 'Run tests'
+    continueOnError: false
+
+    # Publish test results to the Azure DevOps server
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'result.xml'
+      testRunTitle: 'Python $(python.version)'
+      condition: succeededOrFailed()
+
+    # Jupyter Test
+  - script: |
+      # 1. test that we can run jupyter (have all the deps figured out)
+      # 2. that we can execute a fastai nb
+      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+      # 3. check for expected in the output string and bail if it's not there.
+      echo "Testing expected output"
+      grep "Total time" examples/tabular.nbconvert.ipynb
+      # 4. test that python kernel is available
+      echo "Testing jupyter kernelspec list"
+      jupyter kernelspec list | grep python3
+    displayName: 'Run jupyter notebook tests'
+    continueOnError: false
+
+
+
+
+##################
+### nbstripout ###
+##################
+
+
+- job: 'nbstripout_config'
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      architecture: 'x64'
+
+    # check that notebooks are stripped out. if they aren't that means the committer doesn't have the correct configuration for the stripout filter.
+  - script: |
+      echo "Check we are starting with clean git checkout"
+      if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
+
+      echo "Trying to strip out notebooks"
+      tools/fastai-nbstripout -d examples/*ipynb
+
+      echo "Check that strip out was unnecessary"
+      git status -s # display the status to see which nbs need cleaning up
+      if [ -n "$(git status -uno -s)" ]; then echo -e "!!! Detected unstripped out notebooks\n!!!Remember to run tools/run-after-git-clone"; false; fi
+    displayName: 'Detect unstripped out notebook commits'
+    continueOnError: false

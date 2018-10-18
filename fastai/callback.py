@@ -2,7 +2,7 @@
 from .data import *
 from .torch_core import *
 
-__all__ = ['Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 
+__all__ = ['Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly']
 
 class OptimWrapper():
@@ -116,6 +116,7 @@ class OptimWrapper():
 
 class Callback():
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
+    _order=0
     def on_train_begin(self, **kwargs:Any)->None:
         "To initialize constants in the callback."
         pass
@@ -161,7 +162,6 @@ class SmoothenValue():
         self.smooth = self.mov_avg / (1 - self.beta ** self.n)
 
 CallbackList = Collection[Callback]
-OptCallbackList = Optional[CallbackList]
 
 def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
 
@@ -173,6 +173,7 @@ class CallbackHandler():
 
     def __post_init__(self)->None:
         "Initialize smoother and learning stats."
+        self.callbacks = sorted(self.callbacks, key=lambda o: getattr(o, '_order', 0))
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
 
@@ -191,9 +192,10 @@ class CallbackHandler():
         self.state_dict['num_batch'] = 0
         self('epoch_begin')
 
-    def on_batch_begin(self, xb:Tensor, yb:Tensor)->None:
+    def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
         "Handle new batch `xb`,`yb`."
         self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
+        self.state_dict['train'] = train
         for cb in self.callbacks:
             a = cb.on_batch_begin(**self.state_dict)
             if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
@@ -227,8 +229,9 @@ class CallbackHandler():
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
         stop = np.any(self('batch_end'))
-        self.state_dict['iteration'] += 1
-        self.state_dict['num_batch'] += 1
+        if self.state_dict['train']: 
+            self.state_dict['iteration'] += 1
+            self.state_dict['num_batch'] += 1
         return stop
 
     def on_epoch_end(self, val_metrics:MetricsList)->bool:

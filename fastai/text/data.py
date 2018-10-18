@@ -3,26 +3,37 @@ from ..torch_core import *
 from .transform import *
 from ..data import *
 
-__all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextDataset', 'TextMtd', 'classifier_data', 'lm_data',
-           'pad_collate', 'read_classes', 'standard_data', 'text_data_from_csv', 'text_data_from_folder', 'text_data_from_ids',
-           'text_data_from_tokens']
+__all__ = ['BaseTextDataset', 'LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextDataset', 'TextMtd',
+           'pad_collate', 'read_classes', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch']
 
-TextMtd = IntEnum('TextMtd', 'CSV TOK IDS')
+TextMtd = IntEnum('TextMtd', 'DF CSV TOK IDS')
 
 def read_classes(fname):
     with open(fname, 'r') as f:
         return [l[:-1] for l in f.readlines()]
 
-class TextDataset():
+class BaseTextDataset():
+    "To directly create a text datasets from `ids` and `labels`."
+    def __init__(self, ids:Collection[Collection[int]], labels:Collection[Union[int,float]], vocab_size:int, 
+                 classes:Classes=None):
+        self.ids,self.labels,self.vocab_size,self.classes = ids,labels,vocab_size,classes
+    
+    def __getitem__(self, idx:int) -> Tuple[Collection[int],Union[int,float]]: return self.ids[idx],self.labels[idx]
+    def __len__(self) -> int: return len(self.ids)
+                                      
+class TextDataset(BaseTextDataset):
     "Basic dataset for NLP tasks."
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
-                 name:str='train', min_freq:int=2, n_labels:int=1, create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None):
+                 name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None,
+                 create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None, clear_cache:bool=False):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
-        self.chunksize,self.name,self.n_labels,self.create_mtd = chunksize,name,n_labels,create_mtd
+        self.label_cols = ifnone(label_cols, list(range(n_labels)))
+        self.txt_cols,self.chunksize,self.name,self.df,self.create_mtd = txt_cols,chunksize,name,df,create_mtd
         self.vocab=vocab
         os.makedirs(self.path, exist_ok=True)
+        if clear_cache: self.clear()
         if not self.check_toks(): self.tokenize()
         if not self.check_ids():  self.numericalize()
 
@@ -30,18 +41,17 @@ class TextDataset():
         self.ids = np.load(self.path/f'{self.name}_ids.npy')
         if os.path.isfile(self.path/f'{self.name}_lbl.npy'):
             self.labels = np.load(self.path/f'{self.name}_lbl.npy')
-        else: self.labels = np.zeros((len(self.ids),), dtype=np.int64)
+        else: self.labels = np.zeros((len(self.ids),), dtype=np.float32 if len(self.label_cols) > 1 else np.int64)
         if classes: self.classes = classes
         elif os.path.isfile(self.path/'classes.txt'): self.classes = read_classes(self.path/'classes.txt')
         else: self.classes = np.unique(self.labels)
-
-    def __getitem__(self, idx:int) -> Tuple[int,int]: return self.ids[idx],self.labels[idx]
-    def __len__(self) -> int: return len(self.ids)
+        super().__init__(self.ids, self.labels, len(self.vocab.itos), self.classes)
 
     def general_check(self, pre_files:Collection[PathOrStr], post_files:Collection[PathOrStr]):
         "Check that post_files exist and were modified after all the prefiles."
         if not np.all([os.path.isfile(fname) for fname in post_files]): return False
         for pre_file in pre_files:
+            if pre_file is None: return True
             if os.path.getmtime(pre_file) > os.path.getmtime(post_files[0]): return False
         return True
 
@@ -68,20 +78,22 @@ class TextDataset():
     def tokenize(self):
         "Tokenize the texts in the csv file."
         print(f'Tokenizing {self.name}.')
-        curr_len = get_chunk_length(self.csv_file, self.chunksize)
-        dfs = pd.read_csv(self.csv_file, header=None, chunksize=self.chunksize)
+        curr_len = get_chunk_length(self.df) if (self.create_mtd == TextMtd.DF) else get_chunk_length(self.csv_file, self.chunksize)
+        if (self.create_mtd == TextMtd.DF): dfs = self.df
+        else: dfs = pd.read_csv(self.csv_file, header='infer' if self.txt_cols is not None else None, chunksize=self.chunksize)
         tokens,labels = [],[]
         for _ in progress_bar(range(curr_len), leave=False):
-            df = next(dfs)
-            lbls = df.iloc[:,range(self.n_labels)].values.astype(np.int64)
-            texts = f'\n{BOS} {FLD} 1 ' + df[self.n_labels].astype(str)
-            for i in range(self.n_labels+1, len(df.columns)):
-                texts += f' {FLD} {i-self.n_labels+1} ' + df[i].astype(str)
+            df = next(dfs) if (type(dfs) == pd.io.parsers.TextFileReader) else self.df
+            lbl_type = np.float32 if len(self.label_cols) > 1 else np.int64
+            lbls = df[self.label_cols].values.astype(lbl_type) if (len(self.label_cols) > 0) else []
+            self.txt_cols = ifnone(self.txt_cols, list(range(len(self.label_cols),len(df.columns))))
+            texts = f'{FLD} {1} ' + df[self.txt_cols[0]].astype(str)
+            for i, col in enumerate(self.txt_cols[1:]):  texts += f' {FLD} {i+2} ' + df[col].astype(str)
             toks = self.tokenizer.process_all(texts)
             tokens += toks
             labels += list(np.squeeze(lbls))
         np.save(self.tok_files[0], np.array(tokens))
-        np.save(self.path/f'{self.name}_lbl.npy', np.array(labels))
+        if (len(labels) > 0): np.save(self.path/f'{self.name}_lbl.npy', np.array(labels))
         with open(self.tok_files[1],'w') as f: f.write(repr(self.tokenizer))
 
     def numericalize(self):
@@ -95,12 +107,12 @@ class TextDataset():
     def clear(self):
         "Remove all temporary files."
         files = [self.path/f'{self.name}_{suff}.npy' for suff in ['ids','tok','lbl']]
-        files.append(self.path/f'{self.name}.csv')
+        if (self.create_mtd == TextMtd.DF): files.append(self.path/f'{self.name}.csv')
         for file in files:
             if os.path.isfile(file): os.remove(file)
 
     @property
-    def csv_file(self) -> Path: return self.path/f'{self.name}.csv'
+    def csv_file(self) -> Path: return None if (self.create_mtd == TextMtd.DF) else  self.path/f'{self.name}.csv'
     @property
     def tok_files(self) -> List[Path]: return [self.path/f'{self.name}_tok.npy', self.path/'tokenize.log']
     @property
@@ -130,6 +142,14 @@ class TextDataset():
         dest = [Path(folder)/'tmp'/file for file in [f'{name}_tok.npy', f'{name}_lbl.npy']]
         maybe_copy(orig, dest)
         return cls(folder, None, name=name, create_mtd=TextMtd.TOK, **kwargs)
+
+    @classmethod
+    def from_df(cls, folder:PathOrStr, df:Union[DataFrame, pd.io.parsers.TextFileReader],
+                    tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
+        "Create a dataset from texts in a dataframe"
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        chunksize = 1 if (type(df) == DataFrame) else df.chunksize
+        return cls(folder, tokenizer, df=df, create_mtd=TextMtd.DF, name=name, chunksize=chunksize, **kwargs)
 
     @classmethod
     def from_csv(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
@@ -226,7 +246,7 @@ class SortSampler(Sampler):
     def __init__(self, data_source:NPArrayList, key:KeyFunc): self.data_source,self.key = data_source,key
     def __len__(self) -> int: return len(self.data_source)
     def __iter__(self):
-        return iter(sorted(range(len(self.data_source)), key=self.key, reverse=True))
+        return iter(sorted(range_of(self.data_source), key=self.key, reverse=True))
 
 
 class SortishSampler(Sampler):
@@ -255,72 +275,107 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     max_len = max([len(s[0]) for s in samples])
     res = torch.zeros(max_len, len(samples)).long() + pad_idx
     for i,s in enumerate(samples): res[-len(s[0]):,i] = LongTensor(s[0])
-    return res, LongTensor([s[1] for s in samples]).squeeze()
+    return res, torch.tensor([s[1] for s in samples]).squeeze()
 
-DataFunc = Callable[[Collection[DatasetBase], PathOrStr, KWArgs], DataBunch]
-fastai_types[DataFunc] = 'DataFunc'
+class TextDataBunch(DataBunch):
+    """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or 
+    `TextClasDataBunch`."""
+    
+    @classmethod
+    def from_ids(cls, path, trn_ids:Collection[Collection[int]], trn_lbls:Collection[Union[int,float]], 
+                 val_ids:Collection[Collection[int]], val_lbls:Collection[Union[int,float]], vocab_size:int,
+                 tst_ids:Collection[Collection[int]]=None, classes:Classes=None, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from ids, labels and a dictionary."
+        path=Path(path)
+        train_ds = BaseTextDataset(trn_ids, trn_lbls, vocab_size, classes)
+        datasets = [train_ds, BaseTextDataset(val_ids, val_lbls, vocab_size, classes)]
+        if tst_ids is not None: datasets.append(BaseTextDataset(tst_ids, np.zeros(len(tst_ids)), vocab_size, classes))
+        return cls.create(datasets, path, **kwargs)
+    
+    @classmethod
+    def from_id_files(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
+                      itos:str='itos.pkl', **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from ids, labels and a dictionary."
+        path=Path(path)
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'id_suff', 'lbl_suff', 'clear_cache']
+        txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
+        train_ds = TextDataset.from_ids(path, train, itos=itos, **txt_kwargs)
+        datasets = [train_ds, TextDataset.from_ids(path, valid, itos=itos, **txt_kwargs)]
+        if test: datasets.append(TextDataset.from_ids(path, test, itos=itos, **txt_kwargs))
+        return cls.create(datasets, path, **kwargs)
 
-def standard_data(datasets:Collection[DatasetBase], path:PathOrStr, **kwargs) -> DataBunch:
-    "Simply create a `DataBunch` from the `datasets`."
-    return DataBunch.create(*datasets, path=path, **kwargs)
+    @classmethod
+    def from_tokens(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
+                         vocab:Vocab=None, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from tokens and labels."
+        path=Path(path)
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'tok_suff', 'lbl_suff', 'clear_cache']
+        txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
+        train_ds = TextDataset.from_tokens(path, train, vocab=vocab, **txt_kwargs)
+        datasets = [train_ds, TextDataset.from_tokens(path, valid, vocab=train_ds.vocab, **txt_kwargs)]
+        if test: datasets.append(TextDataset.from_tokens(path, test, vocab=train_ds.vocab, **txt_kwargs))
+        return cls.create(datasets, path, **kwargs)
 
-def lm_data(datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
-    "Create a `DataBunch` in `path` from the `datasets` for language modelling."
-    dataloaders = [LanguageModelLoader(ds, **kwargs) for ds in datasets]
-    return DataBunch(*dataloaders, path=path)
+    @classmethod
+    def from_df(cls, path:PathOrStr, train_df:DataFrameOrChunks, valid_df:DataFrameOrChunks,
+             test_df:Optional[DataFrameOrChunks]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from DataFrames."
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        path=Path(path)
+        k_names = ['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache']
+        txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
+        train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
+        datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
+        if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
+        return cls.create(datasets, path, **kwargs)
+    
+    @classmethod
+    def from_csv(cls, path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
+                      vocab:Vocab=None, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from texts in csv files."
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        path=Path(path)
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache']
+        txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
+        train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
+        datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
+        if test: datasets.append(TextDataset.from_csv(path, tokenizer, test, vocab=train_ds.vocab, **txt_kwargs))
+        return cls.create(datasets, path, **kwargs)
 
-def classifier_data(datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
-    "Function that transform the `datasets` in a `DataBunch` for classification."
-    bs = kwargs.pop('bs') if 'bs' in kwargs else 64
-    pad_idx = kwargs.pop('pad_idx') if 'pad_idx' in kwargs else 1
-    train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
-    train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=pad_collate)
-    dataloaders = [train_dl]
-    for ds in datasets[1:]:
-        sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
-        dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=pad_collate))
-    return DataBunch(*dataloaders, path=path)
-
-def text_data_from_ids(path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
-                      data_func:DataFunc=standard_data, itos:str='itos.pkl', **kwargs) -> DataBunch:
-    "Create a `DataBunch` from ids, labels and a dictionary."
-    path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'id_suff', 'lbl_suff'], kwargs)
-    train_ds = TextDataset.from_ids(path, train, itos=itos, **txt_kwargs)
-    datasets = [train_ds, TextDataset.from_ids(path, valid, itos=itos, **txt_kwargs)]
-    if test: datasets.append(TextDataset.from_ids(path, test, itos=itos, **txt_kwargs))
-    return data_func(datasets, path, **kwargs)
-
-def text_data_from_tokens(path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
-                         data_func:DataFunc=standard_data, vocab:Vocab=None, **kwargs) -> DataBunch:
-    "Create a `DataBunch` from tokens and labels."
-    path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'tok_suff', 'lbl_suff'], kwargs)
-    train_ds = TextDataset.from_tokens(path, train, vocab=vocab, **txt_kwargs)
-    datasets = [train_ds, TextDataset.from_tokens(path, valid, vocab=train_ds.vocab, **txt_kwargs)]
-    if test: datasets.append(TextDataset.from_tokens(path, test, vocab=train_ds.vocab, **txt_kwargs))
-    return data_func(datasets, path, **kwargs)
-
-def text_data_from_csv(path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
-                      data_func:DataFunc=standard_data, vocab:Vocab=None, **kwargs) -> DataBunch:
-    "Create a `DataBunch` from texts in csv files."
-    tokenizer = ifnone(tokenizer, Tokenizer())
-    path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels'], kwargs)
-    train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
-    datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
-    if test: datasets.append(TextDataset.from_csv(path, tokenizer, test, vocab=train_ds.vocab, **txt_kwargs))
-    return data_func(datasets, path, **kwargs)
-
-def text_data_from_folder(path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
-                         shuffle:bool=True, data_func:DataFunc=standard_data, vocab:Vocab=None, **kwargs):
-    "Create a `DataBunch` from text files in folders."
-    tokenizer = ifnone(tokenizer, Tokenizer())
-    path=Path(path)
-    txt_kwargs, kwargs = extract_kwargs(['max_vocab', 'chunksize', 'min_freq', 'n_labels'], kwargs)
-    train_ds = TextDataset.from_folder(path, tokenizer, train, shuffle=shuffle, vocab=vocab, **txt_kwargs)
-    datasets = [train_ds, TextDataset.from_folder(path, tokenizer, valid, classes=train_ds.classes,
+    @classmethod
+    def from_folder(cls, path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
+                         shuffle:bool=True, vocab:Vocab=None, **kwargs):
+        "Create a `TextDataBunch` from text files in folders."
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        path=Path(path)
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'clear_cache']
+        txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
+        train_ds = TextDataset.from_folder(path, tokenizer, train, shuffle=shuffle, vocab=vocab, **txt_kwargs)
+        datasets = [train_ds, TextDataset.from_folder(path, tokenizer, valid, classes=train_ds.classes,
                                         shuffle=shuffle, vocab=train_ds.vocab, **txt_kwargs)]
-    if test: datasets.append(TextDataset.from_one_folder(path, tokenizer=tokenizer, folder=test, classes=train_ds.classes,
+        if test: datasets.append(TextDataset.from_one_folder(path, tokenizer=tokenizer, folder=test, classes=train_ds.classes,
                                         shuffle=shuffle, vocab=train_ds.vocab, **txt_kwargs))
-    return data_func(datasets, path, **kwargs)
+        return cls.create(datasets, path, **kwargs)
+
+class TextLMDataBunch(TextDataBunch):
+    "Create a `TextDataBunch` suitable for training a language model."
+    @classmethod
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
+        dataloaders = [LanguageModelLoader(ds, **kwargs) for ds in datasets]
+        return cls(*dataloaders, path=path)
+
+class TextClasDataBunch(TextDataBunch):
+    "Create a `TextDataBunch` suitable for training an RNN classifier."
+    @classmethod
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
+        "Function that transform the `datasets` in a `DataBunch` for classification."
+        bs = kwargs.pop('bs') if 'bs' in kwargs else 64
+        pad_idx = kwargs.pop('pad_idx') if 'pad_idx' in kwargs else 1
+        train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
+        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=pad_collate)
+        dataloaders = [train_dl]
+        for ds in datasets[1:]:
+            sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
+            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=pad_collate))
+        return cls(*dataloaders, path=path)

@@ -28,7 +28,7 @@ numpy>=1.13.1
 olefile>=0.44
 opencv-python>=3.3.0.10
 pandas>=0.20.3
-pandas_summary>=0.0.5
+pandas_summary==0.0.5
 pandocfilters>=1.4.2
 pexpect>=4.2.1
 pickleshare>=0.7.4
@@ -39,7 +39,9 @@ Pygments>=2.2.0
 pyparsing>=2.2.0
 pytest>=3.5.0
 pytest-cov>=2.5.1
+python>=3.6.0,<3.7.0
 python-dateutil>=2.6.1
+pytorch<0.4
 pytz>=2017.2
 PyYAML>=3.12
 pyzmq>=16.0.2
@@ -49,10 +51,12 @@ seaborn>=0.8.1
 simplegeneric>=0.8.1
 six>=1.11.0
 sklearn_pandas>=1.6.0
+spacy>=2.0.11
 terminado>=0.6
-testpath>=0.3.1
+testfixtures>=6.2.0
+testpath>=0.4.2
 torch<0.4
-torchtext>=0.2.3
+torchtext==0.2.3
 torchvision>=0.2.0
 tornado>=4.5.2,<5
 tqdm>=4.15.0
@@ -60,5 +64,3 @@ traitlets>=4.3.2
 wcwidth>=0.1.7
 webencodings>=0.5.1
 widgetsnbextension>=3.0.3
-spacy>=2.0.11
-testfixtures>=6.2.0

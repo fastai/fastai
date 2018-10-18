@@ -66,21 +66,22 @@ def get_global_vars(mod):
     return d
 
 def write_nb(nb, nb_path, mode='w'):
-    try: 
+    try:
         with open(nb_path, mode) as f: f.write(nbformat.writes(nb, version=4))
-    except Exception as e: 
+    except Exception as e:
         print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
         json.dump(nb, open(nb_path, mode), indent=1)
 
-def execute_nb(fname, metadata=None):
+def execute_nb(fname, metadata=None, save=True):
     "Execute notebook `fname` with `metadata` for preprocessing."
     # Any module used in the notebook that isn't inside must be in the same directory as this script
     with open(fname) as f: nb = nbformat.read(f, as_version=4)
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
     metadata = metadata or {}
     ep.preprocess(nb, metadata)
-    with open(fname, 'wt') as f: nbformat.write(nb, f)
-    NotebookNotary().sign(nb)
+    if save:
+        with open(fname, 'wt') as f: nbformat.write(nb, f)
+        NotebookNotary().sign(nb)
 
 def _symbol_skeleton(name): return [get_doc_cell(name), get_md_cell(f"`{name}`")]
 
@@ -115,7 +116,7 @@ _default_exclude = ['.ipynb_checkpoints', '__pycache__', '__init__.py', 'imports
 def get_module_names(path_dir, exclude=None):
     if exclude is None: exclude = _default_exclude
     "Search a given `path_dir` and return all the modules contained inside except those in `exclude`"
-    files = sorted(path_dir.glob('*'), key=lambda x: x.is_dir(), reverse=True) # directories first
+    files = sorted(path_dir.glob('*'), key=lambda x: (x.is_dir(), x.name), reverse=True) # directories first
     res = [f'{path_dir.name}']
     for f in files:
         if f.is_dir() and f.name in exclude: continue # exclude directories
@@ -205,7 +206,7 @@ def update_nb_metadata(nb_path=None, title=None, summary=None, keywords='fastai'
     NotebookNotary().sign(nb)
 
 def has_metadata_cell(cells, fn):
-    for c in cells: 
+    for c in cells:
         if re.search(f"update_nb_metadata\('{fn}'", c['source']): return c
 
 def stringify(s): return f'\'{s}\'' if isinstance(s, str) else s
@@ -216,7 +217,7 @@ def get_imported_modules(cells, nb_module_name=''):
     module_names = get_top_level_modules()
     nb_imports = [match.group(1) for cell in cells for match in IMPORT_RE.finditer(cell['source']) if cell['cell_type'] == 'code']
     parts = nb_module_name.split('.')
-    parent_modules = ['.'.join(parts[:(x+1)]) for x in range(len(parts))] # Imports parent modules - a.b.c = [a, a.b, a.b.c]
+    parent_modules = ['.'.join(parts[:(x+1)]) for x in range_of(parts)] # Imports parent modules - a.b.c = [a, a.b, a.b.c]
     all_modules = module_names + nb_imports + parent_modules
     mods = [import_mod(m, ignore_errors=True) for m in all_modules]
     return [m for m in mods if m is not None]
@@ -243,6 +244,14 @@ def parse_sections(cells):
 def remove_undoc_cells(cells):
     old, _, _ = parse_sections(cells)
     return old
+
+# currently code vbox sub-cells mainly
+def remove_code_cell_jupyter_widget_state_elem(cells):
+    for c in cells:
+        if c['cell_type'] == 'code':
+            if 'outputs' in c:
+                c['outputs'] = [l for l in c['outputs'] if not ('data' in l and 'application/vnd.jupyter.widget-view+json' in l.data)]
+    return cells
 
 def update_module_page(mod, dest_path='.'):
     "Update the documentation notebook of a given module."
@@ -319,4 +328,3 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         for f in Path(source_path).glob('*.ipynb'):
             update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb, update_nb_links=update_nb_links, do_execute=do_execute, html_path=html_path)
     else: print('Could not resolve source file:', source_path)
-

@@ -10,8 +10,8 @@
 
 ## Main Contributors
 
-- Stas Beckman
-- Fransesco Ingham
+- Stas Bekman
+- Francisco Ingham
 - Fred Monroe
 - Andrew Shaw
 - Rachel Thomas

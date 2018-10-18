@@ -6,7 +6,7 @@ from ..basic_train import *
 from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
 
-__all__ = ['TabularDataset', 'tabular_data_from_df', 'get_tabular_learner']
+__all__ = ['TabularDataBunch', 'TabularDataset', 'get_tabular_learner']
 
 OptTabTfms = Optional[Collection[TabularTransform]]
 
@@ -21,8 +21,8 @@ class TabularDataset(DatasetBase):
     "Class for tabular data."
     def __init__(self, df:DataFrame, dep_var:str, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  stats:OptStats=None, log_output:bool=False):
-        if not is_numeric_dtype(df[dep_var]): df[dep_var] = df[dep_var].cat.codes
-        self.y = torch.tensor(df[dep_var].values)
+        if not is_numeric_dtype(df[dep_var]): df[dep_var] = df[dep_var].cat.astype(np.int64)
+        self.y = np2model_tensor(df[dep_var].values)
         if log_output: self.y = torch.log(self.y.float())
         n = len(self.y)
         if cat_names and len(cat_names) >= 1:
@@ -44,7 +44,7 @@ class TabularDataset(DatasetBase):
     def __getitem__(self, idx)->Tuple[Tuple[LongTensor,FloatTensor], Tensor]:
         return ((self.cats[idx], self.conts[idx]), self.y[idx])
     @property
-    def c(self)->int: return 1 if isinstance(self.y, FloatTensor) else self.y.max()+1
+    def c(self)->int: return 1 if isinstance(self.y, FloatTensor) else self.y.max().item()+1
 
     def get_emb_szs(self, sz_dict): return [def_emb_sz(self.df, n, sz_dict) for n in self.cat_names]
 
@@ -66,27 +66,29 @@ class TabularDataset(DatasetBase):
         ds.tfms,ds.cat_names,ds.cont_names = tfms,cat_names,cont_names
         return ds
 
-
-def tabular_data_from_df(path, train_df:DataFrame, valid_df:DataFrame, dep_var:str, test_df:OptDataFrame=None,
+class TabularDataBunch(DataBunch):
+    "Create a `DataBunch` suitable for tabular data."
+    @classmethod
+    def from_df(cls, path, train_df:DataFrame, valid_df:DataFrame, dep_var:str, test_df:OptDataFrame=None,
                         tfms:OptTabTfms=None, cat_names:OptStrList=None, cont_names:OptStrList=None,
                         stats:OptStats=None, log_output:bool=False, **kwargs)->DataBunch:
-    "Create a `DataBunch` from train/valid/test dataframes."
-    cont_names = ifnone(cont_names, list(set(train_df)-set(cat_names)-{dep_var}))
-    train_ds = TabularDataset.from_dataframe(train_df, dep_var, tfms, cat_names, cont_names, stats, log_output)
-    valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
+        "Create a `DataBunch` from train/valid/test dataframes."
+        cat_names = ifnone(cat_names, [])
+        cont_names = ifnone(cont_names, list(set(train_df)-set(cat_names)-{dep_var}))
+        train_ds = TabularDataset.from_dataframe(train_df, dep_var, tfms, cat_names, cont_names, stats, log_output)
+        valid_ds = TabularDataset.from_dataframe(valid_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                              train_ds.cont_names, train_ds.stats, log_output)
-    datasets = [train_ds, valid_ds]
-    if test_df:
-        datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
+        datasets = [train_ds, valid_ds]
+        if test_df is not None:
+            datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                                       train_ds.cont_names, train_ds.stats, log_output))
-    return DataBunch.create(*datasets, path=path, **kwargs)
-
-
+        return cls.create(*datasets, path=path, **kwargs)
 
 def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
-    model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers)
+    model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers, ps=ps, emb_drop=emb_drop,
+                         y_range=y_range)
     return Learner(data, model, metrics=metrics, **kwargs)
 

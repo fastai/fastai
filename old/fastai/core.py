@@ -38,7 +38,7 @@ def T(a, half=False, cuda=True):
         elif a.dtype in (np.float32, np.float64):
             a = to_half(a) if half else torch.FloatTensor(a)
         else: raise NotImplementedError(a.dtype)
-    if cuda: a = to_gpu(a, async=True)
+    if cuda: a = to_gpu(a)
     return a
 
 def to_half(tensor):
@@ -70,6 +70,7 @@ def VV(x):
 
 def to_np(v):
     '''returns an np.array object given an input of np.array, list, tuple, torch variable or tensor.'''
+    if isinstance(v, float): return np.array(v)
     if isinstance(v, (np.ndarray, np.generic)): return v
     if isinstance(v, (list,tuple)): return [to_np(o) for o in v]
     if isinstance(v, Variable): v=v.data

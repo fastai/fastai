@@ -1,0 +1,44 @@
+repository: tomjoht/documentation-theme-jekyll
+output: web
+topnav_title: fastai developer docs
+site_title: fastai developer docs
+company_name: fast.ai
+github_editme_path: 
+disqus_shortname: 
+google_analytics: UA-89522379-3
+host: 127.0.0.1
+port: 4000
+exclude:
+  - .idea/
+  - .gitignore
+  - vendor
+feedback_disable: true
+highlighter: rouge
+markdown: kramdown
+kramdown:
+ input: GFM
+ auto_ids: true
+ hard_wrap: false
+ syntax_highlighter: rouge
+
+#collections:
+#tooltips:
+#output: false
+# collections are declared here. this renders the content in _tooltips and processes it, but doesn't output it as actual files in the output unless you change output to true
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      sidebar: home_sidebar
+      topnav: topnav
+
+sidebars:
+- home_sidebar
+description: "fastai library developer docs"
+

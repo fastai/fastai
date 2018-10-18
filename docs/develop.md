@@ -1,5 +1,6 @@
-# Notes For Developers
-
+---
+title: Notes For Developers
+---
 
 ### Things to Run After git clone
 
@@ -14,6 +15,9 @@ This will take care of everything that is explained in the following sections. T
 Note: windows users, not using bash emulation, will need to invoke the command as:
 
     python tools\run-after-git-clone
+
+Note that if you work on `fastai/fastai_docs` repository as well, you need to run that script once too in the directory of that repository upon cloning it.
+
 
 #### after-git-clone #1: a mandatory notebook strip out
 
@@ -86,3 +90,22 @@ Other than the normal switching environments with restarts:
    ```
 
 You can install [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels), which provides a separate jupyter kernel for each conda environment, along with the appropriate code to handle their setup. This makes switching conda environments as simple as switching jupyter kernel (e.g. from the kernel menu). And you don't need to worry which environment you started `jupyter notebook` from - just choose the right environment from the notebook.
+
+
+### Full Diffs Mailing List
+
+If you'd like to follow closely the development of fastai, and you don't like clicking around github, we have a read-only full diffs mailing list that is open to all.
+
+You can subscribe or unsubscribe at any time on your own accord [here](https://groups.google.com/forum/#!forum/fastai-diff).
+
+If you need to comment on any diff you read on that list, click on the link on top of the email and it'll take you to the github page, corresponding to that commit, and you can comment there. Alternatively ask questions on the developer's section of the  [forums](http://forums.fast.ai/c/fastai-dev).
+
+Make sure you use a descent email client, surely don't read it on google groups or gmail, you need to have a client that can properly render fixed fonts and not use a variable fonts which look horrible with diffs. For example it works well in [Thunderbird](https://www.thunderbird.net/).
+
+Chances are that your email client may start putting those into the spam folder, so make sure you tell it it's ham!
+
+You will probably want to filter these emails into a dedicated folder. If so use the `List-ID` email header in the configuration of your email:
+
+```
+List-ID: <fastai-diff.googlegroups.com>
+```

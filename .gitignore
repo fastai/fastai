@@ -1,6 +1,7 @@
 *.bak
 *.log
 *~
+.~*
 .pypirc
 ~*
 tmp*
@@ -18,6 +19,7 @@ __pycache__/
 .Python
 env/
 build/
+conda-dist
 develop-eggs/
 dist/
 downloads/
@@ -123,4 +125,7 @@ Thumbs.db
 .pytest_cache
 
 # tools/trust-doc-nbs
-docs_src/.last_checked
+examples/.last_checked
+
+# symlinks to fastai
+examples/fastai

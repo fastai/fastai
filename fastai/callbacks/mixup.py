@@ -11,7 +11,8 @@ class MixUpCallback(Callback):
     stack_x:bool=False
     stack_y:bool=True
         
-    def on_batch_begin(self, last_input, last_target, **kwargs):
+    def on_batch_begin(self, last_input, last_target, train, **kwargs):
+        if not train: return
         lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
         lambd = np.concatenate([lambd[:,None], 1-lambd[:,None]], 1).max(1)
         lambd = last_input.new(lambd)
@@ -24,6 +25,8 @@ class MixUpCallback(Callback):
         if self.stack_y:
             new_target = torch.cat([last_target[:,None].float(), y1[:,None].float(), lambd[:,None].float()], 1)
         else:
+            if len(last_target.shape) == 2:
+                lambd = lambd.unsqueeze(1)
             new_target = last_target * lambd + y1 * (1-lambd)
         return (new_input, new_target)  
 

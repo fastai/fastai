@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# usage: tools/gh-md-toc-update-all
+#
+# update all .md files that have:
+#
+# <!--ts-->
+# <!--te-->
+#
+# tags to inject (or update) the up-to-date TOC for that file.
+#
+# should be run every so often to be up-to-date (or when knowingly changing headers in .md files)
+#
+# notes:
+# 1) The script relies on github api so without auth you only have 60 queries an hour.
+#    you can temporarily place your github access token at tools/token.txt to overcome the limit
+# 2) you will need curl installed
+
+pwd=`pwd`
+# - skip .git folder
+# - only process .md files that have the <!--ts--> template in them.
+# - must execute from the folder of the file to get the anchors right
+find . -type d -name ".git" -prune -o -type f -name "*md" -execdir grep -q "\--ts--" {} \; -execdir $pwd/tools/gh-md-toc --insert {} \;

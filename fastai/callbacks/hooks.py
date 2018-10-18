@@ -68,7 +68,8 @@ class ActivationStats(HookCallback):
 
     def hook(self, m:Model, i:Tensors, o:Tensors) -> Tuple[Rank0Tensor,Rank0Tensor]:
         return o.mean().item(),o.std().item()
-    def on_batch_end(self, **kwargs): self.stats.append(self.hooks.stored)
+    def on_batch_end(self, train, **kwargs): 
+        if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
 
 def model_sizes(m:Model, size:tuple=(256,256), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:

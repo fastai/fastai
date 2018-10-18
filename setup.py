@@ -7,22 +7,11 @@ import sys
 from pathlib import Path
 from setuptools import setup, find_packages
 
-def create_version_file(version):
-    print('-- Building version ' + version)
-    version_path = Path.cwd() / 'fastai' / 'version.py'
-    with open(version_path, 'w') as f:
-        f.write("__all__ = ['__version__']\n")
-        f.write("__version__ = '{}'\n".format(version))
+# note: version is maintained inside fastai/version.py
+exec(open('fastai/version.py').read())
 
-# version
-version = '1.0.5.dev0'
-create_version_file(version)
-
-with open('README.md') as readme_file:
-    readme = readme_file.read()
-
-with open('CHANGES.md') as history_file:
-    history = history_file.read()
+with open('README.md') as readme_file:   readme = readme_file.read()
+with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
@@ -34,19 +23,24 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #   pip install -e .
 #
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
-#
+# XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
+# pytest should probably not be here, but cupy (via spacy) depends on it
 requirements = to_list("""
-    fastprogress>=0.1.9
+    fastprogress>=0.1.10
     ipython
     jupyter
     matplotlib
-    numpy>=1.12
+    nbconvert
+    nbformat
+    numpy>=1.15
     pandas
     Pillow
     requests
+    pytest
     scipy
     spacy
     torchvision-nightly
+    traitlets
     typing
 """)
 
@@ -61,20 +55,21 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 #
 # anything else that's not required by a user to run the library, but
 # either an enhancement or developer-build requirement goes here.
+#
+# the [dev] feature is documented here:
 # https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 #
 # these get installed with:
 #
 #   pip install -e .[dev]
 #
+# some of the listed modules appear in test_requirements as well, explained below.
+#
 dev_requirements = { 'dev' : to_list("""
-    bumpversion==0.5.3
+    distro
     jupyter_contrib_nbextensions
-    nbconvert
-    nbformat
-    pip>=9.0.1
+    pip>=18.1
     pipreqs>=0.4.9
-    traitlets
     wheel>=0.30.0
 """) }
 
@@ -83,18 +78,22 @@ setup_requirements = to_list("""
     pytest-runner
 """)
 
+# notes:
+#
+# * these deps will be installed locally under .eggs/ and will not be
+#   visible to pytest unless it's invoked via `python setup test`.
+#   Therefore it's the best to install them explicitly with:
+#   pip install -e .[dev]
+#
 ### test dependencies ###
 test_requirements = to_list("""
     pytest
-    torch>=0.4.9
-    torchvision-nightly
-    numpy>=1.12
 """)
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 setup(
     name = 'fastai',
-    version = version,
+    version = __version__,
 
     packages = find_packages(),
     include_package_data = True,
@@ -120,7 +119,7 @@ setup(
     author_email = 'info@fast.ai',
 
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
