@@ -1033,11 +1033,11 @@ By default it runs the fastai installation and a few basic tests when either `ma
   * 'Pause builds' which may be important...
   * Status Badge MD code for the `README.md` project page
 
-To see various stats/graphs based on tests outcome, go to [Runs](https://dev.azure.com/fastdotai/fastai/_TestManagement/Runs?runId=1&_a=runCharts)
+To see various stats/graphs based on tests outcome, go to [Test Plans] => [Runs].
 
 Under Project Settings, important things are:
 
-* [Notifications](https://dev.azure.com/fastdotai/fastai/_settings/notifications)
+* [Notifications]
 
 
 #### CI Builds
