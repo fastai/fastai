@@ -102,6 +102,34 @@ issues](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs/develop.md) for more details on how to contribute to the `fastai` project.
 
 
+
+### Building From Source
+
+If for any reason you can't use the prepackaged packages and have to build from source, this section is for you.
+
+1. To build `pytorch` from source follow the [complete instructions](https://github.com/pytorch/pytorch#from-source). Remember to first install CUDA, CuDNN, and other required libraries as suggested - everything will be very slow without those libraries built into `pytorch`.
+
+2. Next, you will also need to build `torchvision` from source:
+
+   ```
+   git clone https://github.com/pytorch/vision
+   cd vision
+   python setup.py install
+   ```
+
+3. When both `pytorch` and `torchvision` are installed, first test that you can load each of these libraries:
+
+   ```
+   import torch
+   import torchvision
+   ```
+
+   to validate that they were installed correctly
+
+   Finally, proceed with `fastai` installation as normal, either through prepackaged pip or conda builds or installing from source ("the developer install") as explained in the sections above.
+
+
+
 ## Installation Issues
 
 If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please see  [this installation issues thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
@@ -128,8 +156,6 @@ conda install conda
 
    The only requirement is that you have installed and configured the NVIDIA driver correctly. Usually you can test that by running `nvidia-smi`. While it's possible that this application is not available on your system, it's very likely that if it doesn't work, than your don't have your NVIDIA drivers configured properly. And remember that a reboot is always required after installing NVIDIA drivers.
 
-   If you build `pytorch` from source then you will need to first install CUDA, CuDNN, and other required libraries. See [pytorch.org](https://pytorch.org/).
-
 3. Operating System:
 
    Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
@@ -149,10 +175,6 @@ conda install conda
    If there is no `pytorch` preview conda or pip package available for your system, you may still be able to [build it from source](https://pytorch.org/get-started/locally/).
 
    Alternatively, please consider installing and using the very solid "0.7.x" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
-
-
-
-
 
 
 
