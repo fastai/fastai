@@ -32,6 +32,59 @@ python -c 'import fastai; fastai.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
+### Dedicated environment
+
+`fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
+
+Here is a quick way to set it up:
+
+```
+conda create -y python=3.6 --name fastai-3.6
+conda activate fastai-3.6
+conda install -y conda
+conda install -y pip setuptools
+```
+
+Now you can [install `fastai`](https://github.com/fastai/fastai/blob/master/README.md#conda-install) and it prerequisites using `conda`.
+
+The only thing you need to remember when you start using a virtual environment is that you must activate it before using it. So for example when you open a new console and want to start `jupyter`, instead of doing:
+
+
+```
+jupyter notebook
+```
+
+you'd change your script to:
+
+```
+conda activate fastai-3.6
+jupyter notebook
+```
+
+sometimes when you're outside of conda the above doesn't work and you need to do:
+
+```
+source ~/anaconda3/bin/activate fastai-3.6
+jupyter notebook
+```
+
+(of course adjust the path to your conda installation if need to).
+
+Virtual environments provide a lot of conveniences - for example if you want to have a stable env and an experimental one you can clone them in one command:
+
+```
+conda create --name fastai-3.6-experimental --clone fastai-3.6
+```
+
+or say you want to see how the well-working python-3.6 env will work with python-3.7:
+
+```
+conda create --name fastai-3.7 --clone fastai-3.6
+conda install -n fastai-3.7 python=3.7
+conda update -n fastai-3.7 --all
+
+
+```
 
 ### Am I using my GPU(s)?
 
