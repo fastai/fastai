@@ -2,9 +2,6 @@ entries:
 - folders:
   - folderitems:
     - output: web
-      title: Troubleshooting
-      url: troubleshoot
-    - output: web
       title: Dev notes
       url: develop
     - output: web
@@ -37,5 +34,8 @@ entries:
     - output: web
       title: readme
       external_url: https://github.com/fastai/fastai/blob/master/README.md
+    - output: web
+      title: Troubleshooting
+      url: troubleshoot
     output: web
     title: fastai users

@@ -77,7 +77,7 @@ make backport-check
 
 ```
 
-If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting_release_branch_to_master). This stage can't be fully automated since it requires you to decide what to backport if anything.
+If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
 
 
 ```
@@ -90,7 +90,7 @@ make master-branch-switch
 
 ## Step-by-step Release Process
 
-This is a one-step at a time process. If you find any difficulties scroll down to [Detailed Release Process](#Detailed_Release_Process), which goes into many more details and explanations.
+This is a one-step at a time process. If you find any difficulties scroll down to [Detailed Release Process](#detailed-release-process), which goes into many more details and explanations.
 
 The starting point of the workflow is a dev version of the master branch. For this process we will use `1.0.6.dev0` starting point as an example.
 
@@ -191,7 +191,7 @@ The starting point of the workflow is a dev version of the master branch. For th
     make backport-check
     ```
 
-    If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting_release_branch_to_master). This stage can't be fully automated since it requires you to decide what to backport if anything.
+    If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
 
 
 14. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
@@ -1033,11 +1033,11 @@ By default it runs the fastai installation and a few basic tests when either `ma
   * 'Pause builds' which may be important...
   * Status Badge MD code for the `README.md` project page
 
-To see various stats/graphs based on tests outcome, go to [Runs](https://dev.azure.com/fastdotai/fastai/_TestManagement/Runs?runId=1&_a=runCharts)
+To see various stats/graphs based on tests outcome, go to [Test Plans] => [Runs].
 
 Under Project Settings, important things are:
 
-* [Notifications](https://dev.azure.com/fastdotai/fastai/_settings/notifications)
+* [Notifications]
 
 
 #### CI Builds
