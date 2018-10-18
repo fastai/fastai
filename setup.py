@@ -24,6 +24,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #
 # XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
 # XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
+# XXX: temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
 requirements = to_list("""
     fastprogress>=0.1.10
     ipython
@@ -36,11 +37,16 @@ requirements = to_list("""
     Pillow
     requests
     scipy
-    spacy
+    spacy==2.0.16
+    regex==2018.8.29
+    thinc==6.12.0
+    cymem==2.0.2
     torchvision-nightly
     traitlets
     typing
 """)
+
+ spacy==2.0.16    regex==2018.01.10    thinc==6.12.0    cymem==2.0.2
 
 # dependencies to skip for now:
 #
