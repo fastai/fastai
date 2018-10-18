@@ -2,7 +2,7 @@
 from .data import *
 from .torch_core import *
 
-__all__ = ['Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
+__all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
            'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly']
 
 class OptimWrapper():
@@ -15,11 +15,11 @@ class OptimWrapper():
         self.wd = wd
 
     @classmethod
-    def create(cls, opt_fn:Union[type,Callable], lr:Union[float,Tuple,List],
+    def create(cls, opt_func:Union[type,Callable], lr:Union[float,Tuple,List],
                layer_groups:ModuleList, **kwargs:Any)->optim.Optimizer:
-        "Create an optim.Optimizer from `opt_fn` with `lr`. Set lr on `layer_groups`."
+        "Create an optim.Optimizer from `opt_func` with `lr`. Set lr on `layer_groups`."
         split_groups = split_bn_bias(layer_groups)
-        opt = opt_fn([{'params': trainable_params(l), 'lr':0} for l in split_groups])
+        opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
         opt = cls(opt, **kwargs)
         opt.lr = listify(lr, layer_groups)
         return opt
@@ -169,23 +169,29 @@ def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
 class CallbackHandler():
     "Manage all of the registered callback objects, smoothing loss by momentum `beta`."
     callbacks:CallbackList
+    metrics:CallbackList
     beta:float=0.98
 
     def __post_init__(self)->None:
         "Initialize smoother and learning stats."
+        self.callbacks = ifnone(self.callbacks, [])
+        self.metrics = ifnone(self.metrics, [])
+        self.metrics = [(met if isinstance(met, Callback) else AverageMetric(met)) for met in self.metrics]
         self.callbacks = sorted(self.callbacks, key=lambda o: getattr(o, '_order', 0))
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
 
-    def __call__(self, cb_name, **kwargs)->None:
+    def __call__(self, cb_name, call_mets=True, **kwargs)->None:
         "Call through to all of the `CallbakHandler` functions."
+        if call_mets: [getattr(met, f'on_{cb_name}')(**self.state_dict, **kwargs) for met in self.metrics]
         return [getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs) for cb in self.callbacks]
 
     def on_train_begin(self, epochs:int, pbar:PBar, metrics:MetricFuncList)->None:
         "About to start learning."
         self.state_dict = _get_init_state()
         self.state_dict['n_epochs'],self.state_dict['pbar'],self.state_dict['metrics'] = epochs,pbar,metrics
-        self('train_begin')
+        names = [(met.name if hasattr(met, 'name') else camel2snake(met.__class__.__name__)) for met in self.metrics]
+        self('train_begin', metrics_names=names)
 
     def on_epoch_begin(self)->None:
         "Handle new epoch."
@@ -196,6 +202,7 @@ class CallbackHandler():
         "Handle new batch `xb`,`yb`."
         self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
         self.state_dict['train'] = train
+        cbs = self.callbacks if train else self.metrics + self.callbacks
         for cb in self.callbacks:
             a = cb.on_batch_begin(**self.state_dict)
             if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
@@ -220,24 +227,27 @@ class CallbackHandler():
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
-        self('backward_end')
+        self('backward_end', False)
     def on_step_end(self)->None:
         "Handle end of optimization step."
-        self('step_end')
+        self('step_end', False)
 
     def on_batch_end(self, loss:Tensor)->None:
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
-        stop = np.any(self('batch_end'))
+        stop = np.any(self('batch_end', not self.state_dict['train']))
         if self.state_dict['train']: 
             self.state_dict['iteration'] += 1
             self.state_dict['num_batch'] += 1
         return stop
 
-    def on_epoch_end(self, val_metrics:MetricsList)->bool:
+    def on_epoch_end(self, val_loss:Tensor)->bool:
         "Epoch is done, process `val_metrics`."
-        self.state_dict['last_metrics'] = val_metrics
-        stop = np.any(self('epoch_end'))
+        self.state_dict['last_metrics'] = val_loss
+        for met in self.metrics:
+            met.on_epoch_end(**self.state_dict)
+            self.state_dict['last_metrics'].append(met.metric)
+        stop = np.any(self('epoch_end', False))
         self.state_dict['epoch'] += 1
         return stop
 
@@ -245,6 +255,20 @@ class CallbackHandler():
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
         self('train_end', exception=exception)
 
+class AverageMetric(Callback):
+    def __init__(self, func):
+        self.func, self.name = func, func.__name__
+    
+    def on_epoch_begin(self, **kwargs):
+        self.val, self.count = 0.,0
+    
+    def on_batch_end(self, last_output, last_target, train, **kwargs):
+        self.count += last_target.size(0)
+        self.val += last_target.size(0) * self.func(last_output, last_target).detach().item()
+    
+    def on_epoch_end(self, **kwargs):
+        self.metric = self.val/self.count
+        
 def annealing_no(start:Number, end:Number, pct:float)->Number:
     "No annealing, always return `start`."
     return start

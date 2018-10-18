@@ -2,6 +2,8 @@
 from ..torch_core import *
 from ..basic_train import *
 from ..data import *
+from .image import *
+from ..callback import *
 from ..layers import *
 import torchvision.models as tvm
 
@@ -122,3 +124,11 @@ class ClassificationInterpretation():
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
 
+def _predict(img, learn):
+    img = apply_tfms(learn.data.valid_ds.tfms, img, **learn.data.valid_ds.kwargs)
+    ds = TensorDataset(img.data[None], torch.zeros(1))
+    dl = DeviceDataLoader.create(ds, bs=1, shuffle=False, device=learn.data.device, tfms=learn.data.valid_dl.tfms,
+                                 num_workers=0)
+    return get_preds(learn.model, dl, cb_handler=CallbackHandler(learn.callbacks, []))[0][0]
+    
+Image.predict = _predict

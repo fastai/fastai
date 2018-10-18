@@ -14,16 +14,22 @@ Note that the top-most release is changes in the unreleased master branch on Git
 
 ### New:
 
--
+- New class `ImagePoints` for targets that are a set of point coordinates.
+- New function `Image.predict(learn:Learner)` to get the activations of the model in `Learner` for an image.
+- New function `Learner.validate` to validate on a given dl (default valid_dl), with maybe new metrics or callbacks. 
 
 ### Changed:
 
--
+- `ImageBBox` is now a subclass of `ImagePoints`.
+- All metrics are now `Callback`. You can pass a regular function like `accuracy` that will get averaged over batch or a full `Callback` that can do more complex things. 
 
 ### Fixed:
 
--
--->
+- Fix `WeightDropout` in RNNs when `p=0`.
+- `pad_collate` gets its `kwargs` from `TextClasDataBunch`.
+- Add small `eps` to `std` in `TabularDataset` to avoid division by zero.
+- `fit_one_cycle` doesn't take other callbacks.
+
 
 ## 1.0.6dev (2018-XXX)
 

@@ -32,6 +32,75 @@ python -c 'import fastai; fastai.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
+### Dedicated environment
+
+`fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
+
+The following example is for using a conda environment.
+
+First you need to install [miniconda](http://conda.io/docs/install/quick.html) or [anaconda](https://docs.anaconda.com/anaconda/install/). The former comes with bare minimum of packages preinstalled, the latter has hundreds more. If you haven't changed the default configuration, miniconda usually ends up under `~/miniconda3/`, and anaconda under `~/anaconda3/`.
+
+Once you have the software installed, here is a quick way to set up a dedicated environment for just `fastai` with `python-3.6` (of course feel free to name it the way you want it to):
+
+```
+conda update conda
+conda create -y python=3.6 --name fastai-3.6
+conda activate fastai-3.6
+conda install -y conda
+conda install -y pip setuptools
+```
+
+Now you can [install `fastai` prerequisites and itself](https://github.com/fastai/fastai/blob/master/README.md#conda-install) using `conda`.
+
+The only thing you need to remember when you start using a virtual environment is that you must activate it before using it. So for example when you open a new console and want to start `jupyter`, instead of doing:
+
+
+```
+jupyter notebook
+```
+
+you'd change your script to:
+
+```
+conda activate fastai-3.6
+jupyter notebook
+```
+
+sometimes when you're outside of conda the above doesn't work and you need to do:
+
+```
+source ~/anaconda3/bin/activate fastai-3.6
+jupyter notebook
+```
+
+(of course adjust the path to your conda installation if need to).
+
+Virtual environments provide a lot of conveniences - for example if you want to have a stable env and an experimental one you can clone them in one command:
+
+```
+conda create --name fastai-3.6-experimental --clone fastai-3.6
+```
+
+or say you want to see how the well-working python-3.6 env will work with python-3.7:
+
+```
+conda create --name fastai-3.7 --clone fastai-3.6
+conda install -n fastai-3.7 python=3.7
+conda update -n fastai-3.7 --all
+```
+
+If you use advanced bash prompt functionality, like with [git-prompt](https://github.com/magicmonty/bash-git-prompt), it'll now tell you automatically which environment has been activated, no matter where you're on your system. e.g. on my setup it shows:
+
+```
+             /fastai:[master|✚1…4⚑3] > conda activate
+(base)       /fastai:[master|✚1…4⚑3] > conda activate fastai-3.6
+(fastai-3.6) /fastai:[master|✚1…4⚑3] > conda deactivate
+             /fastai:[master|✚1…4⚑3] >
+```
+
+I tweaked the prompt output for this example by adding whitespace to align the entries to make it easy to see the differences. That leading white space is not there normally. Besides the virtual env, it also shows me which git branch I'm on, and various git status information.
+
+So now you don't need to guess and you know exactly which environment has been activated if any before you execute any code.
 
 ### Am I using my GPU(s)?
 

@@ -98,6 +98,11 @@ install: clean ## install the package to the active python's site-packages
 test: ## run tests with the default python
 	python setup.py --quiet test
 
+tools-update: ## install/update build tools
+	@echo "\n\n*** Updating build tools"
+	conda install -y conda-verify conda-build anaconda-client
+	pip install -U twine
+
 
 ##@ git helpers
 
@@ -149,6 +154,20 @@ commit-tag-push: ## commit and tag the release
 
 	@echo "\n\n*** Push all changes"
 	git push --set-upstream origin release-$(version)
+
+# check whether there any commits besides fastai/version.py from the
+# point of branching of release-$(version) till its HEAD. If there are
+# then probably there are things to backport.
+backport-check: ## backport to master check
+	@echo "*** Checking if anything needs to be backported"
+	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base --fork-point master origin/release-$(version))))
+	@echo "*** branching point: $(start_rev)"
+	$(eval log := $(shell git log --oneline $(start_rev)..origin/release-$(version) -- . ":(exclude)fastai/version.py"))
+	@if [ -n "$(log)" ]; then\
+		echo "!!! These commits may need to be backported:\n\n$(log)\n\nuse 'git show <commit>' to review or go to https://github.com/fastai/fastai/compare/release-$(version) to do it visually";\
+	else\
+		echo "Nothing to backport";\
+    fi
 
 
 ##@ Testing new package installation
