@@ -87,9 +87,20 @@ or say you want to see how the well-working python-3.6 env will work with python
 conda create --name fastai-3.7 --clone fastai-3.6
 conda install -n fastai-3.7 python=3.7
 conda update -n fastai-3.7 --all
+```
 
+If you use advanced bash prompt functionality, like with [git-prompt](https://github.com/magicmonty/bash-git-prompt), it'll now tell you automatically which environment has been activated, no matter where you're on your system. e.g. on my setup it shows:
 
 ```
+             /fastai:[master|✚1…4⚑3] > conda activate
+(base)       /fastai:[master|✚1…4⚑3] > conda activate fastai-3.6
+(fastai-3.6) /fastai:[master|✚1…4⚑3] > conda deactivate
+             /fastai:[master|✚1…4⚑3] >
+```
+
+I tweaked the prompt output for this example by adding whitespace to align the entries to make it easy to see the differences. That leading white space is not there normally. Besides the virtual env, it also shows me which git branch I'm on, and various git status information.
+
+So now you don't need to guess and you know exactly which environment has been activated if any before you execute any code.
 
 ### Am I using my GPU(s)?
 
