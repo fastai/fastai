@@ -173,6 +173,7 @@ class CallbackHandler():
 
     def __post_init__(self)->None:
         "Initialize smoother and learning stats."
+        self.callbacks = ifnone(self.callbacks, [])
         self.callbacks = sorted(self.callbacks, key=lambda o: getattr(o, '_order', 0))
         self.smoothener = SmoothenValue(self.beta)
         self.state_dict:Dict[str,Union[int,float,Tensor]]=_get_init_state()
