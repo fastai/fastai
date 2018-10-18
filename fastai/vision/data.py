@@ -247,7 +247,7 @@ def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
     "Get image file names and labels from `df`."
     if label_delim:
         df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
-    labels = df.iloc[:,label_col]
+    labels = df.iloc[:,label_col].values
     fnames = df.iloc[:,fn_col]
     if suffix: fnames = fnames.astype(str) + suffix
     return fnames, labels
