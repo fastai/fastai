@@ -90,7 +90,7 @@ make master-branch-switch
 
 ## Step-by-step Release Process
 
-This is a one-step at a time process. If you find any difficulties scroll down to [Detailed Release Process](#Detailed-Release-Process), which goes into many more details and explanations.
+This is a one-step at a time process. If you find any difficulties scroll down to [Detailed Release Process](#detailed-release-process), which goes into many more details and explanations.
 
 The starting point of the workflow is a dev version of the master branch. For this process we will use `1.0.6.dev0` starting point as an example.
 
