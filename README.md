@@ -101,6 +101,26 @@ issues](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111).
 
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs/develop.md) for more details on how to contribute to the `fastai` project.
 
+### Building From Source
+
+If you're building `pytorch` from source, you will also need to build `torchvision` from source:
+
+```
+git clone https://github.com/pytorch/vision
+cd vision
+python setup.py install
+```
+
+When both `pytorch` and `torchvision` are installed, first test that you can load each of these libraries:
+
+```
+import torch
+import torchvision
+```
+
+to validate that they were installed correctly and then you can proceed with `fastai` installation as normal.
+
+
 
 ## Installation Issues
 
@@ -149,10 +169,6 @@ conda install conda
    If there is no `pytorch` preview conda or pip package available for your system, you may still be able to [build it from source](https://pytorch.org/get-started/locally/).
 
    Alternatively, please consider installing and using the very solid "0.7.x" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
-
-
-
-
 
 
 
