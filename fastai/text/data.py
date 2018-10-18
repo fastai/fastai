@@ -42,7 +42,7 @@ class TextDataset(BaseTextDataset):
         if os.path.isfile(self.path/f'{self.name}_lbl.npy'):
             self.labels = np.load(self.path/f'{self.name}_lbl.npy')
         else: self.labels = np.zeros((len(self.ids),), dtype=np.float32 if len(self.label_cols) > 1 else np.int64)
-        self.loss_fn = F.cross_entropy if len(self.label_cols) == 1 else F.binary_cross_entropy_with_logits
+        self.loss_func = F.cross_entropy if len(self.label_cols) == 1 else F.binary_cross_entropy_with_logits
         if classes: self.classes = classes
         elif os.path.isfile(self.path/'classes.txt'): self.classes = read_classes(self.path/'classes.txt')
         else: self.classes = np.unique(self.labels)

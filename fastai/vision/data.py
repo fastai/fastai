@@ -79,7 +79,7 @@ class ImageClassificationDataset(ImageDataset):
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         super().__init__(fns, y)
-        self.loss_fn = F.cross_entropy
+        self.loss_func = F.cross_entropy
 
     @staticmethod
     def _folder_files(folder:Path, label:ImgLabel, check_ext=True)->Tuple[FilePathList,ImgLabels]:
@@ -116,7 +116,7 @@ class ImageMultiDataset(LabelDataset):
         self.x = np.array(fns)
         self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64)
                   for l in labels]
-        self.loss_fn = F.binary_cross_entropy_with_logits
+        self.loss_func = F.binary_cross_entropy_with_logits
 
     def encode(self, x:Collection[int]):
         "One-hot encode the target."
@@ -149,7 +149,7 @@ class SegmentationDataset(DatasetBase):
     def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False):
         assert len(x)==len(y)
         self.x,self.y,self.div = np.array(x),np.array(y),div
-        self.loss_fn = CrossEntropyFlat()
+        self.loss_func = CrossEntropyFlat()
 
     def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
         return open_image(self.x[i]), open_mask(self.y[i], self.div)

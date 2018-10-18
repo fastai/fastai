@@ -74,7 +74,7 @@ class MixedPrecision(Callback):
         mom,wd,beta = opt.mom,opt.wd,opt.beta
         lrs = [lr for lr in self.learn.opt._lr for _ in range(2)]
         opt_params = [{'params': mp, 'lr': lr} for mp,lr in zip(self.master_params, lrs)]
-        self.learn.opt.opt = self.learn.opt_fn(opt_params)
+        self.learn.opt.opt = self.learn.opt_func(opt_params)
         opt.mom,opt.wd,opt.beta = mom,wd,beta
 
     def on_train_end(self, **kwargs:Any)->None:
