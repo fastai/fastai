@@ -10,6 +10,7 @@ def assert_link(docstr, expected, nb_cells=None, modules=None, msg=''):
 def build_nb_cells(mod_names):
     return [{'cell_type': 'code', 'source': f'from {m} import *'} for m in mod_names]
 
+@pytest.mark.skip(reason="need to update")
 def test_torchvision():
     docstr = 'Note that `tvm` is the namespace we use for `torchvision.models`.'
     expected = 'Note that [`tvm`](https://pytorch.org/docs/stable/torchvision/models.html#torchvision.models) is the namespace we use for `torchvision.models`.'
@@ -19,7 +20,7 @@ def test_fastai_prefix():
     docstr = "functions for your application (`fastai.vision`)"
     expected = "functions for your application ([`fastai.vision`](/vision.html#vision))"
     assert_link(docstr, expected, msg='Should match keywords prefixed with fastai. See `index.ipynb`')
-    
+
 def test_link_typedef():
     docstr = "- `LayerFunc` = `Callable`\[`nn.Module`],`None`]"
     expected = "- `LayerFunc` = `Callable`\[[`nn.Module`](https://pytorch.org/docs/stable/nn.html#torch.nn.Module)],`None`]"
@@ -84,4 +85,4 @@ def test_link_vision_learner_priority():
     err_msg = "`data` should link to vision.data instead of text.data. Even though `fastai.docs` is imported into module last (which imports fastai.text last)"
     modules = gen_notebooks.get_imported_modules([gen_notebooks.get_code_cell(imports)], nb_module_name='fastai.vision.learner')
     assert_link(docstr, expected, modules=modules, msg=err_msg)
-    
+
