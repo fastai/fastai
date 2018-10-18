@@ -13,7 +13,7 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
                opt:OptOptimizer=None, cb_handler:Optional[CallbackHandler]=None,
                metrics:OptMetrics=None)->Tuple[Union[Tensor,int,float,str]]:
     "Calculate loss and metrics for a batch, call out to callbacks as necessary."
-    if cb_handler is None: cb_handler = CallbackHandler([])
+    cb_handler = ifnone(cb_handler, CallbackHandler([]))
     if not is_listy(xb): xb = [xb]
     if not is_listy(yb): yb = [yb]
     out = model(*xb)

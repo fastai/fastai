@@ -32,7 +32,7 @@ class TabularDataset(DatasetBase):
         if cont_names and len(cont_names) >= 1:
             self.conts = np.stack([c.astype('float32').values for n,c in df[cont_names].items()], 1)
             means, stds = stats if stats is not None else (self.conts.mean(0), self.conts.std(0))
-            self.conts = (self.conts - means[None]) / stds[None]
+            self.conts = (self.conts - means[None]) / (stds[None]+1e-7)
             self.stats = means,stds
         else:
             self.conts = np.zeros((n,1), dtype=np.float32)

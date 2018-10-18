@@ -274,7 +274,9 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     "Function that collect samples and adds padding."
     max_len = max([len(s[0]) for s in samples])
     res = torch.zeros(max_len, len(samples)).long() + pad_idx
-    for i,s in enumerate(samples): res[-len(s[0]):,i] = LongTensor(s[0])
+    for i,s in enumerate(samples): 
+        if pad_first: res[-len(s[0]):,i] = LongTensor(s[0])
+        else:         res[:len(s[0]):,i] = LongTensor(s[0])
     return res, torch.tensor([s[1] for s in samples]).squeeze()
 
 class TextDataBunch(DataBunch):
@@ -372,10 +374,12 @@ class TextClasDataBunch(TextDataBunch):
         "Function that transform the `datasets` in a `DataBunch` for classification."
         bs = kwargs.pop('bs') if 'bs' in kwargs else 64
         pad_idx = kwargs.pop('pad_idx') if 'pad_idx' in kwargs else 1
+        pad_first = kwargs.pop('pad_first') if 'pad_first' in kwargs else True
+        collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
-        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=pad_collate)
+        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
-            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=pad_collate))
+            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=collate_fn))
         return cls(*dataloaders, path=path)
