@@ -8,7 +8,7 @@ def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, beta:float=2, eps:floa
     beta2 = beta**2
     if sigmoid: y_pred = y_pred.sigmoid()
     y_pred = (y_pred>thresh).float()
-    y_true = y_true.float().reshape(-1,1)
+    y_true = y_true.float()[:,None]
     TP = (y_pred*y_true).sum(dim=1)
     prec = TP/(y_pred.sum(dim=1)+eps)
     rec = TP/(y_true.sum(dim=1)+eps)
