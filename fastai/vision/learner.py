@@ -129,6 +129,6 @@ def _predict(img, learn):
     ds = TensorDataset(img.data[None], torch.zeros(1))
     dl = DeviceDataLoader.create(ds, bs=1, shuffle=False, device=learn.data.device, tfms=learn.data.valid_dl.tfms,
                                  num_workers=0)
-    return get_preds(learn.model, dl, cb_handler=CallbackHandler(learn.callbacks))[0][0]
+    return get_preds(learn.model, dl, cb_handler=CallbackHandler(learn.callbacks, []))[0][0]
     
 Image.predict = _predict
