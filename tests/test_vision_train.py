@@ -35,3 +35,12 @@ def test_1cycle_moms(learn):
     assert abs(moms[-1]-0.95)<0.01
     assert np.min(moms)==0.85
 
+def test_preds(learn):
+    pass_tst = False
+    for i in range(3):
+        img, label = learn.data.valid_ds[0]
+        activ = img.predict(learn)
+        if activ[label] > activ[1-label]:
+            pass_tst=True
+            break
+    assert pass_tst

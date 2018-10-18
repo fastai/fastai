@@ -3,6 +3,7 @@ from ..torch_core import *
 from .image import *
 from .transform import *
 from ..data import *
+from ..layers import CrossEntropyFlat
 
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'get_image_files',
@@ -78,6 +79,7 @@ class ImageClassificationDataset(ImageDataset):
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         super().__init__(fns, y)
+        self.loss_func = F.cross_entropy
 
     @staticmethod
     def _folder_files(folder:Path, label:ImgLabel, check_ext=True)->Tuple[FilePathList,ImgLabels]:
@@ -107,12 +109,14 @@ class ImageClassificationDataset(ImageDataset):
 
 #Draft, to check
 class ImageMultiDataset(LabelDataset):
+    
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Classes]=None):
         self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         self.x = np.array(fns)
         self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64)
                   for l in labels]
+        self.loss_func = F.binary_cross_entropy_with_logits
 
     def encode(self, x:Collection[int]):
         "One-hot encode the target."
@@ -141,9 +145,11 @@ class ImageMultiDataset(LabelDataset):
 
 class SegmentationDataset(DatasetBase):
     "A dataset for segmentation task."
+    
     def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False):
         assert len(x)==len(y)
         self.x,self.y,self.div = np.array(x),np.array(y),div
+        self.loss_func = CrossEntropyFlat()
 
     def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
         return open_image(self.x[i]), open_mask(self.y[i], self.div)

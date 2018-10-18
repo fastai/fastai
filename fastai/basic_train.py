@@ -9,7 +9,7 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train
 default_lr = slice(3e-3)
 default_wd = 1e-2
 
-def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
+def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None,
                opt:OptOptimizer=None, cb_handler:Optional[CallbackHandler]=None,
                metrics:OptMetrics=None)->Tuple[Union[Tensor,int,float,str]]:
     "Calculate loss and metrics for a batch, call out to callbacks as necessary."
@@ -19,8 +19,8 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_fn:OptLossFunc=None,
     out = model(*xb)
     out = cb_handler.on_loss_begin(out)
 
-    if not loss_fn: return to_detach(out), yb[0].detach()
-    loss = loss_fn(out, *yb)
+    if not loss_func: return to_detach(out), yb[0].detach()
+    loss = loss_func(out, *yb)
     mets = [f(out,*yb).detach().cpu() for f in metrics] if metrics is not None else []
 
     if opt is not None:
@@ -37,7 +37,7 @@ def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:O
     "Predict the output of the elements in the dataloader."
     return [torch.cat(o).cpu() for o in zip(*validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False))]
 
-def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
+def validate(model:Model, dl:DataLoader, loss_func:OptLossFunc=None,
              metrics:OptMetrics=None, cb_handler:Optional[CallbackHandler]=None,
              pbar:Optional[PBar]=None, average=True)->Iterator[Tuple[Union[Tensor,int],...]]:
     "Calculate loss and metrics for the validation set."
@@ -46,7 +46,7 @@ def validate(model:Model, dl:DataLoader, loss_fn:OptLossFunc=None,
         val_metrics,nums = [],[]
         for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
             if cb_handler: xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
-            val_metrics.append(loss_batch(model, xb, yb, loss_fn, cb_handler=cb_handler, metrics=metrics))
+            val_metrics.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler, metrics=metrics))
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
             if cb_handler and cb_handler.on_batch_end(val_metrics[0]): break
@@ -63,7 +63,7 @@ def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossF
         opt.step()
         opt.zero_grad()
 
-def fit(epochs:int, model:Model, loss_fn:LossFunction, opt:optim.Optimizer,
+def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
         data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss` and `opt`."
     cb_handler = CallbackHandler(callbacks)
@@ -78,11 +78,11 @@ def fit(epochs:int, model:Model, loss_fn:LossFunction, opt:optim.Optimizer,
 
             for xb,yb in progress_bar(data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
-                loss = loss_batch(model, xb, yb, loss_fn, opt, cb_handler)[0]
+                loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)[0]
                 if cb_handler.on_batch_end(loss): break
 
             if hasattr(data,'valid_dl') and data.valid_dl is not None:
-                val_metrics = validate(model, data.valid_dl, loss_fn=loss_fn,
+                val_metrics = validate(model, data.valid_dl, loss_func=loss_func,
                                        cb_handler=cb_handler, metrics=metrics,pbar=pbar)
             else: val_metrics=None
             if cb_handler.on_epoch_end(val_metrics): break
@@ -93,11 +93,11 @@ def fit(epochs:int, model:Model, loss_fn:LossFunction, opt:optim.Optimizer,
 
 @dataclass
 class Learner():
-    "Train `model` using `data` to minimize `loss_fn` with optimizer `opt_fn`."
+    "Train `model` using `data` to minimize `loss_func` with optimizer `opt_func`."
     data:DataBunch
     model:nn.Module
-    opt_fn:Callable=AdamW
-    loss_fn:Callable=F.cross_entropy
+    opt_func:Callable=AdamW
+    loss_func:Callable=None
     metrics:Collection[Callable]=None
     true_wd:bool=True
     bn_wd:bool=True
@@ -113,6 +113,7 @@ class Learner():
         self.path = Path(ifnone(self.path, self.data.path))
         (self.path/self.model_dir).mkdir(parents=True, exist_ok=True)
         self.model = self.model.to(self.data.device)
+        self.loss_func = ifnone(self.loss_func, self.data.loss_func)
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
@@ -134,12 +135,12 @@ class Learner():
         if wd is None: wd = self.wd
         self.create_opt(lr, wd)
         callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
-        fit(epochs, self.model, self.loss_fn, opt=self.opt, data=self.data, metrics=self.metrics,
+        fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
             callbacks=self.callbacks+callbacks)
 
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
         "Create optimizer with `lr` learning rate and `wd` weight decay."
-        self.opt = OptimWrapper.create(self.opt_fn, lr, self.layer_groups, wd=wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+        self.opt = OptimWrapper.create(self.opt_func, lr, self.layer_groups, wd=wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
 
     def split(self, split_on:SplitFuncOrIdxList)->None:
         "Split the model at `split_on`."

@@ -15,11 +15,11 @@ class OptimWrapper():
         self.wd = wd
 
     @classmethod
-    def create(cls, opt_fn:Union[type,Callable], lr:Union[float,Tuple,List],
+    def create(cls, opt_func:Union[type,Callable], lr:Union[float,Tuple,List],
                layer_groups:ModuleList, **kwargs:Any)->optim.Optimizer:
-        "Create an optim.Optimizer from `opt_fn` with `lr`. Set lr on `layer_groups`."
+        "Create an optim.Optimizer from `opt_func` with `lr`. Set lr on `layer_groups`."
         split_groups = split_bn_bias(layer_groups)
-        opt = opt_fn([{'params': trainable_params(l), 'lr':0} for l in split_groups])
+        opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
         opt = cls(opt, **kwargs)
         opt.lr = listify(lr, layer_groups)
         return opt
