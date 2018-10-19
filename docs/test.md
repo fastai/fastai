@@ -76,12 +76,21 @@ To run all the tests:
    ```
    make test
    ```
-
-or
-
+or:
 
    ```
    python setup.py test
+   ```
+or just:
+
+   ```
+   pytest
+   ```
+
+To skip the integration tests in order to do quick testing while you work:
+
+   ```
+   pytest --skipint
    ```
 
 To run an individual test file:
