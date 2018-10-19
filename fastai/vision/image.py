@@ -364,6 +364,7 @@ def open_mask(fn:PathOrStr, div=False)->ImageSegment:
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None)->plt.Axes:
+    "Display `Image` in notebook"
     if ax is None: fig,ax = plt.subplots(figsize=figsize)
     ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)
     if hide_axis: ax.axis('off')

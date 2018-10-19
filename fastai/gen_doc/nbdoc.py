@@ -270,16 +270,17 @@ def fn_name(ft)->str:
     elif hasattr(ft,'_name') and ft._name: return ft._name
     #elif hasattr(ft,'__class__'): return ft.__class__.__name__
     elif hasattr(ft,'__origin__'): return str(ft.__origin__).split('.')[-1]
-    else:                         return str(ft).split('.')[-1]
+    else:                          return str(ft).split('.')[-1]
 
 def get_fn_link(ft) -> str:
-    "Return function link to notebook documentation of `ft`."
-    strip_name = strip_fastai(get_module_name(ft))
+    "Return function link to notebook documentation of `ft`. Private functions link to source code"
+    module_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
+    if func_name.startswith('_'): return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
-    return f'{base}/{strip_name}.html#{func_name}'
+    return f'{base}/{module_name}.html#{func_name}'
 
-def get_module_name(ft) -> str: return ft.__name__ if inspect.ismodule(ft) else ft.__module__
+def get_module_name(ft) -> str: return inspect.getmodule(ft).__name__
 
 def get_pytorch_link(ft) -> str:
     "Returns link to pytorch docs of `ft`."
@@ -298,16 +299,17 @@ def get_pytorch_link(ft) -> str:
     fnlink = '.'.join(paths[:(2+offset)]+[name])
     return f'{PYTORCH_DOCS}{doc_path}.html#{fnlink}'
 
-def get_source_link(mod, lineno) -> str:
+def get_source_link(mod, lineno, display_text="[source]") -> str:
     "Returns link to `lineno` in source code of `mod`."
     github_path = mod.__name__.replace('.', '/')
     link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
-    return f'<a href="{link}">[source]</a>'
+    if display_text is None: return link
+    return f'<a href="{link}">{display_text}</a>'
 
-def get_function_source(ft) -> str:
+def get_function_source(ft, **kwargs) -> str:
     "Returns link to `ft` in source code."
     lineno = inspect.getsourcelines(ft)[1]
-    return get_source_link(inspect.getmodule(ft), lineno)
+    return get_source_link(inspect.getmodule(ft), lineno, **kwargs)
 
 def title_md(s:str, title_level:int, markdown=True):
     res = '#' * title_level
