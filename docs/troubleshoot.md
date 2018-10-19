@@ -32,6 +32,24 @@ python -c 'import fastai; fastai.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
+
+
+### Do not mix conda-forge packages
+
+`fastai` depends on a few packages that have a complex dependency tree, and `fastai` has to manage those very carefully, so in the conda-land we rely on the anaconda main channel and test everything against that.
+
+If you install some packages from the `conda-forge` channel you may have problems with `fastai` installation since you may have wrong versions of packages installed.
+
+So see which packages need to come from the main conda channel do:
+
+```
+conda search --info -c fastai "fastai=1.0.7"
+```
+
+Replace `1.0.7` with the version you're trying to install. (Without version it'll show you all versions of `fastai` and its dependencies)
+
+
+
 ### Dedicated environment
 
 `fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
