@@ -8,7 +8,17 @@ Most recent releases are shown at the top. Each release shows:
 
 Note that the top-most release is changes in the unreleased master branch on Github.
 
+<!-- template
 ## 1.0.7dev (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+-->
+
+## 1.0.7 (2018-10-19)
 
 ### New:
 
@@ -40,3 +50,4 @@ Note that the top-most release is changes in the unreleased master branch on Git
 ## 1.0.0 (2018-10-01)
 
 - First release
+
