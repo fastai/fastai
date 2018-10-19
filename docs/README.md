@@ -11,4 +11,4 @@ If you're planning on working on the `fastai` library source code and/or documen
 * [Making a release](release.md)
 * [Abbreviation guide](abbr.md)
 * [Style guide](style.md)
-* [Documentation maintenance](http://docs.fast.ai/gen_doc.html)
+* [Documentation maintenance](http://docs.fast.ai/gen_doc)
