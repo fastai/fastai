@@ -68,7 +68,7 @@ In each case (except for `collab`), the module is organized this way:
     expected = """## Module structure
 In each case (except for [`collab`](/collab.html#collab)), the module is organized this way:
 ### [`transform`](/text.transform.html#text.transform)
-### [`data`](/data.html#data)
+### [`data`](/text.data.html#text.data)
 ### [`models`](/text.models.html#text.models)
 ### [`learner`](/text.learner.html#text.learner)"""
     assert_link(docstr, expected, msg='data, models should link to highest module. transform and learner links to first match')
@@ -78,11 +78,11 @@ def test_link_vision_learner_priority():
     imports = """from fastai.gen_doc.nbdoc import *
     from fastai.vision import *
     from fastai import *
-    from fastai.docs import *"""
+    """
 
     docstr = "Pass in your `data`, calculated `preds`, actual `y`,"
     expected = "Pass in your [`data`](/vision.data.html#vision.data), calculated `preds`, actual `y`,"
-    err_msg = "`data` should link to vision.data instead of text.data. Even though `fastai.docs` is imported into module last (which imports fastai.text last)"
+    err_msg = "`data` should link to vision.data instead of text.data."
     modules = gen_notebooks.get_imported_modules([gen_notebooks.get_code_cell(imports)], nb_module_name='fastai.vision.learner')
     assert_link(docstr, expected, modules=modules, msg=err_msg)
 
