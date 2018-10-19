@@ -19,6 +19,7 @@ Note that the top-most release is changes in the unreleased master branch on Git
 
 ### Changed:
 
+- `data` is now called `basic_data` to avoid weird conflicts when naming our data objects data.
 - All vision models are now in the `models` module, including torchvision models (where tested and supported). So use `models` instead of `tvm` now. If your preferred torchvision model isn't imported, feel free to test it out and tell us on the forum if it works. And if it doesn't, a PR with a test and a fix would be appreciated!
 - `ImageBBox` is now a subclass of `ImagePoints`
 - All metrics are now `Callback`. You can pass a regular function like `accuracy` that will get averaged over batch or a full `Callback` that can do more complex things
