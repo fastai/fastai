@@ -38,7 +38,7 @@ requirements = to_list("""
     requests
     scipy
     spacy==2.0.16
-    regex==2018.8.29
+    regex
     thinc==6.12.0
     cymem==2.0.2
     torchvision-nightly
