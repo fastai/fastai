@@ -278,7 +278,7 @@ def get_fn_link(ft) -> str:
     func_name = strip_fastai(fn_name(ft))
     if func_name.startswith('_'): return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
-    return f'{base}/{module_name}.html#{func_name}'
+    return f'{base}/{module_name}#{func_name}'
 
 def get_module_name(ft) -> str: return inspect.getmodule(ft).__name__
 
@@ -288,18 +288,18 @@ def get_pytorch_link(ft) -> str:
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
         if inspect.ismodule(ft): name = name.replace('.', '-')
-        return f'{PYTORCH_DOCS}{doc_path}.html#{name}'
+        return f'{PYTORCH_DOCS}{doc_path}#{name}'
     if name.startswith('torch.nn') and inspect.ismodule(ft): # nn.functional is special case
         nn_link = name.replace('.', '-')
-        return f'{PYTORCH_DOCS}nn.html#{nn_link}'
+        return f'{PYTORCH_DOCS}nn#{nn_link}'
     paths = get_module_name(ft).split('.')
-    if len(paths) == 1: return f'{PYTORCH_DOCS}{paths[0]}.html#{paths[0]}.{name}'
+    if len(paths) == 1: return f'{PYTORCH_DOCS}{paths[0]}#{paths[0]}.{name}'
 
     offset = 1 if paths[1] == 'utils' else 0 # utils is a pytorch special case
     doc_path = paths[1+offset]
-    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}.html#module-{name}'
+    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}#module-{name}'
     fnlink = '.'.join(paths[:(2+offset)]+[name])
-    return f'{PYTORCH_DOCS}{doc_path}.html#{fnlink}'
+    return f'{PYTORCH_DOCS}{doc_path}#{fnlink}'
 
 def get_source_link(mod, lineno, display_text="[source]") -> str:
     "Returns link to `lineno` in source code of `mod`."
