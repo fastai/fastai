@@ -86,7 +86,10 @@ release-conda: dist-conda ## release conda package
 
 ##@ Combined (pip and conda)
 
+# XXX: until conda-build supports skipping dirs, we have to reduce the size of the
+# checked out directory, otherwise it make take forever to copy the folder
 clean: clean-pypi clean-conda ## clean pip && conda package
+	find ./data -type d -and -not -regex "^./data$$" -prune -exec rm -rf {} \;
 
 dist: clean dist-pypi dist-conda ## build pip && conda package
 
