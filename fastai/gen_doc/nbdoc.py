@@ -296,6 +296,7 @@ def get_pytorch_link(ft) -> str:
 
     offset = 1 if paths[1] == 'utils' else 0 # utils is a pytorch special case
     doc_path = paths[1+offset]
+    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}.html#module-{name}'
     fnlink = '.'.join(paths[:(2+offset)]+[name])
     return f'{PYTORCH_DOCS}{doc_path}.html#{fnlink}'
 
