@@ -23,10 +23,10 @@ entries:
   - folderitems:
     - output: web
       title: Overview
-      external_url: http://docs.fast.ai/gen_doc.html
+      external_url: http://docs.fast.ai/gen_doc
     - output: web
       title: nbdoc library
-      external_url: http://docs.fast.ai/gen_doc.nbdoc.html
+      external_url: http://docs.fast.ai/gen_doc.nbdoc
     output: web
     title: Documentation development
   - folderitems:
