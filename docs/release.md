@@ -684,70 +684,6 @@ Now you need to rebuild the package, and if you changed the `number` to `2`, the
     conda-verify ./conda/
     ```
 
-* To find out the dependencies of the package:
-
-    ```
-    conda search --info -c fastai fastai
-    ```
-
-    Another hacky way to find out what the exact dependencies for a given conda package (added `-c fastai/label/test` to make it check our test package):
-
-    ```
-    conda create --dry-run --json -n dummy fastai -c fastai
-    ```
-
-* Other `conda search` tricks:
-
-  `conda search` outputs results as following:
-
-    ```
-    conda search -c pytorch "pytorch-nightly"
-    Loading channels: done
-    # Name                  Version           Build                   Channel
-    pytorch-nightly 0.5.0.dev20180914 py3.5_cpu_0                     pytorch
-    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda8.0.61_cudnn7.1.2_0   pytorch
-    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.0.176_cudnn7.1.2_0  pytorch
-    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.2.148_cudnn7.1.4_0  pytorch
-    [...]
-    ```
-
-    To narrow the results, e.g. show only python3 cpu builds:
-
-    ```
-    conda search -c pytorch "pytorch-nightly[build=py3*_cpu_0]"
-    ```
-
-    and then feed it to `conda install` with specific `==version=build` after the package name, e.g. `pytorch-nightly==1.0.0.dev20180916=py3.6_cpu_0`
-
-
-    To search for packages for a given system (by default, packages for your current
-platform are shown):
-
-    ```
-    conda search -c pytorch "pytorch-nightly[subdir=osx-64]"
-    ```
-
-    Some of the possible platforms include `linux-32`, `linux-64`, `win-64`, `osx-64`.
-
-    And these can be combined:
-
-    ```
-    conda search -c pytorch "pytorch-nightly[subdir=osx-64, build=py3.7*]"
-    ```
-
-    To search all packages released by user `fastai`:
-
-    ```
-    conda search -c fastai --override
-    ```
-
-    To search all packages released by user `fastai` for a specific platform, e.g. `linux-64`:
-
-    ```
-    conda search -c fastai --override --platform linux-64
-    ```
-
-
 #### Documentation
 
 * To figure out the nuances of the `meta.yaml` recipe writing see this [tutorial](https://conda.io/docs/user-guide/tasks/build-packages/define-metadata.html)
@@ -937,7 +873,125 @@ conda deactivate
 conda env remove -y --name fastai-py3.6
 ```
 
-### pip Dependencies
+### Package Dependencies
+
+We need to make sure that `setup.py` sets identical dependencies to `conda/meta.yml`. It's not always possible but it should be attempted.
+
+To find the dependencies of a given package (including the pinned versions), using `spacy` as an example:
+
+* Conda:
+   ```
+   conda search --info spacy==2.0.16
+   ```
+
+* Pypi:
+
+   Currently it can't be done without first installing the package. And you need to install `pipdeptree` that shows the complete requirements and not just the installed versions.
+
+   ```
+   pip install pipdeptree
+   pip install spacy==2.0.16
+   pipdeptree --packages spacy
+   ```
+
+The following sections go into pip/conda-specific tools and methods for figuring out and resolving dependencies.
+
+#### Conda Dependencies
+
+
+* To find out the dependencies of the package:
+
+    ```
+    conda search --info spacy=2.0.16
+    ```
+
+    Narrow down to a specific platform build:
+
+    ```
+    conda search --info spacy=2.0.16=py37h962f231_0
+    ```
+
+    Also can use a wildcard:
+
+    ```
+    conda search --info spacy=2.0.16=py37*
+    ```
+
+    It supports -c channel, for packages not in a main channel
+
+    ```
+    conda search --info -c fastai fastai=1.0.6
+    ```
+
+    If version is not specified it'll show that information on all the versions it has:
+
+    ```
+    conda search --info -c fastai fastai
+    ```
+
+    Another hacky way to find out what the exact dependencies for a given conda package are:
+
+    ```
+    conda create --dry-run --json -n dummy fastai -c fastai
+    ```
+
+    Add `-c fastai/label/test` to make it check our test package.
+
+* Other `conda search` tricks:
+
+  `conda search` outputs results as following:
+
+    ```
+    conda search -c pytorch "pytorch-nightly"
+    Loading channels: done
+    # Name                  Version           Build                   Channel
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cpu_0                     pytorch
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda8.0.61_cudnn7.1.2_0   pytorch
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.0.176_cudnn7.1.2_0  pytorch
+    pytorch-nightly 0.5.0.dev20180914 py3.5_cuda9.2.148_cudnn7.1.4_0  pytorch
+    [...]
+    ```
+
+    To narrow the results, e.g. show only python3 cpu builds:
+
+    ```
+    conda search -c pytorch "pytorch-nightly[build=py3*_cpu_0]"
+    ```
+
+    and then feed it to `conda install` with specific `==version=build` after the package name, e.g. `pytorch-nightly==1.0.0.dev20180916=py3.6_cpu_0`
+
+
+    To search for packages for a given system (by default, packages for your current
+platform are shown):
+
+    ```
+    conda search -c pytorch "pytorch-nightly[subdir=osx-64]"
+    ```
+
+    Some of the possible platforms include `linux-32`, `linux-64`, `win-64`, `osx-64`.
+
+    And these can be combined:
+
+    ```
+    conda search -c pytorch "pytorch-nightly[subdir=osx-64, build=py3.7*]"
+    ```
+
+    To search all packages released by user `fastai`:
+
+    ```
+    conda search -c fastai --override
+    ```
+
+    To search all packages released by user `fastai` for a specific platform, e.g. `linux-64`:
+
+    ```
+    conda search -c fastai --override --platform linux-64
+    ```
+
+
+
+
+#### PyPI Dependencies
 
 Tools for finding out pip dependencies (direct and reversed).
 
