@@ -2,7 +2,8 @@ import pytest
 from fastai import *
 from fastai.collab import *
 
-#@pytest.mark.slow
+pytestmark = pytest.mark.integration
+
 @pytest.fixture(scope="module")
 def learn():
     ratings = URLs.get_movie_lens()

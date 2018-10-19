@@ -97,6 +97,11 @@ class CrossEntropyFlat(nn.CrossEntropyLoss):
         n,c,*_ = input.shape
         return super().forward(input.view(n, c, -1), target.view(n, -1))
 
+class MSELossFlat(nn.MSELoss):
+    "Same as `nn.MSELoss`, but flattens input and target."
+    def forward(self, input:Tensor, target:Tensor) -> Rank0Tensor:
+        return super().forward(input.view(-1), target.view(-1))
+
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:
     "CNN with `conv2d_relu` layers defined by `actns`, `kernel_szs` and `strides`, plus batchnorm if `bn`."

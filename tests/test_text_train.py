@@ -2,6 +2,8 @@ import pytest
 from fastai import *
 from fastai.text import *
 
+pytestmark = pytest.mark.integration
+
 def read_file(fname):
     tokens = []
     with open(fname, 'r') as f:
@@ -16,7 +18,6 @@ def prep_human_numbers():
     np.save(path/'valid_tok.npy', val_tokens)
     return path
 
-#@pytest.mark.slow
 @pytest.fixture(scope="module")
 def learn():
     path = prep_human_numbers()

@@ -2,7 +2,8 @@ import pytest
 from fastai import *
 from fastai.tabular import *
 
-#@pytest.mark.slow
+pytestmark = pytest.mark.integration
+
 @pytest.fixture(scope="module")
 def learn():
     path = untar_data(URLs.ADULT_SAMPLE)
@@ -15,6 +16,6 @@ def learn():
     learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(3, 1e-2)
     return learn
-    
+
 def test_accuracy(learn):
     assert learn.validate()[1] > 0.75
