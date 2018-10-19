@@ -287,7 +287,8 @@ def get_pytorch_link(ft) -> str:
     name = ft.__name__
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
-        return f'{PYTORCH_DOCS}{doc_path}.html#{ft.__name__}'
+        if inspect.ismodule(ft): name = name.replace('.', '-')
+        return f'{PYTORCH_DOCS}{doc_path}.html#{name}'
     if name.startswith('torch.nn') and inspect.ismodule(ft): # nn.functional is special case
         nn_link = name.replace('.', '-')
         return f'{PYTORCH_DOCS}nn.html#{nn_link}'
@@ -309,7 +310,8 @@ def get_source_link(mod, lineno, display_text="[source]") -> str:
 
 def get_function_source(ft, **kwargs) -> str:
     "Returns link to `ft` in source code."
-    lineno = inspect.getsourcelines(ft)[1]
+    try: lineno = inspect.getsourcelines(ft)[1]
+    except Exception: return ''
     return get_source_link(inspect.getmodule(ft), lineno, **kwargs)
 
 def title_md(s:str, title_level:int, markdown=True):
