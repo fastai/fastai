@@ -44,3 +44,6 @@ def test_preds(learn):
             pass_tst=True
             break
     assert pass_tst
+    
+def test_lrfind(learn):
+    learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)

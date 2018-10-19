@@ -26,7 +26,6 @@ def test_uniqueify():
     assert uniqueify([1,3,5])     == [1,3,5]
     assert uniqueify([1,1,1,3,5]) == [1,3,5]
 
-
 def test_listy():
     assert is_listy([1,1,3,3,5]) == True
     assert is_listy((1,1,3,3,5)) == True
