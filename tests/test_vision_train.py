@@ -37,7 +37,7 @@ def test_1cycle_moms(learn):
 
 def test_preds(learn):
     pass_tst = False
-    for i in range(3):
+    for i in range(10):
         img, label = learn.data.valid_ds[0]
         activ = img.predict(learn)
         if activ[label] > activ[1-label]:
