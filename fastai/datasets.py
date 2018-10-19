@@ -27,7 +27,7 @@ class URLs():
 
     @classmethod
     def get_adult(cls):
-        path = untar_data(cls.ADULT)
+        path = untar_data(cls.ADULT_SAMPLE)
         return pd.read_csv(path/'adult.csv')
 
     @classmethod
@@ -37,18 +37,18 @@ class URLs():
 
     @classmethod
     def get_imdb(cls, classifier=False):
-        path = untar_data(cls.IMDB)
+        path = untar_data(cls.IMDB_SAMPLE)
         data_class = TextClasDataBunch if classifier else TextLMDataBunch
         return data_class.from_csv(path)
 
     @classmethod
     def get_movie_lens(cls):
-        path = untar_data(cls.ML)
+        path = untar_data(cls.ML_SAMPLE)
         return pd.read_csv(path/'ratings.csv')
 
     @classmethod
     def download_wt103_model(cls):
-        path = untar_data(cls.IMDB)
+        path = untar_data(cls.IMDB_SAMPLE)
         model_path = path/'models'
         model_path.mkdir(exist_ok=True)
         url = 'http://files.fast.ai/models/wt103_v1/'
