@@ -2,7 +2,7 @@
 from ..torch_core import *
 from .image import *
 from .transform import *
-from ..data import *
+from ..basic_data import *
 from ..layers import CrossEntropyFlat
 
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',

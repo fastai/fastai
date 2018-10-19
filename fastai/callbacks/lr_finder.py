@@ -1,6 +1,6 @@
 "Tools to help find the optimal learning rate for training"
 from ..torch_core import *
-from ..data import DataBunch
+from ..basic_data import DataBunch
 from ..callback import *
 from ..basic_train import Learner, LearnerCallback
 

@@ -2,7 +2,7 @@ from .basic_train import *
 from .callback import *
 from .callbacks import *
 from .core import *
-from .data import *
+from .basic_data import *
 from .layers import *
 from .metrics import *
 from .torch_core import *

@@ -1,6 +1,6 @@
 "Provides basic training and validation with `Learner`"
 from .torch_core import *
-from .data import *
+from .basic_data import *
 from .callback import *
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train_epoch', 'validate',

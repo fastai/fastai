@@ -1,7 +1,7 @@
 "NLP data loading pipeline. Supports csv, folders, and preprocessed data."
 from ..torch_core import *
 from .transform import *
-from ..data import *
+from ..basic_data import *
 
 __all__ = ['BaseTextDataset', 'LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextDataset', 'TextMtd',
            'pad_collate', 'read_classes', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch']

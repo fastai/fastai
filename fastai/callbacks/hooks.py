@@ -2,7 +2,7 @@
 from ..torch_core import *
 from ..callback import *
 from ..basic_train import *
-from ..data import *
+from ..basic_data import *
 
 __all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'hook_outputs', 
            'model_sizes']

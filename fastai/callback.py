@@ -1,5 +1,5 @@
 "Callbacks provides extensibility to the `basic_train` loop. See `train` for examples of custom callbacks."
-from .data import *
+from .basic_data import *
 from .torch_core import *
 
 __all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',

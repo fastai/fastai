@@ -1,7 +1,7 @@
 "Data loading pipeline for structured data support. Loads from pandas DataFrame"
 from ..torch_core import *
 from .transform import *
-from ..data import *
+from ..basic_data import *
 from ..basic_train import *
 from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
