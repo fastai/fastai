@@ -245,11 +245,11 @@ class CallbackHandler():
         "Epoch is done, process `val_metrics`."
         self.state_dict['last_metrics'] = val_loss
         self.state_dict['epoch'] += 1
-        if np.any(self('epoch_end', False)): return True
-        for met in self.metrics:
-            met.on_epoch_end(**self.state_dict)
-            self.state_dict['last_metrics'].append(met.metric)
-        return False
+        if not self.state_dict['train']:
+            for met in self.metrics:
+                met.on_epoch_end(**self.state_dict)
+                self.state_dict['last_metrics'].append(met.metric)
+        return np.any(self('epoch_end', False))
 
     def on_train_end(self, exception:Union[bool,Exception])->None:
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
