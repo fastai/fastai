@@ -180,6 +180,11 @@ conda install conda
    Alternatively, please consider installing and using the very solid "0.7.x" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
 
 
+## History
+
+A detailed history of changes can be found [here](https://github.com/fastai/fastai/blob/master/CHANGES.md).
+
+
 
 ## Copyright
 

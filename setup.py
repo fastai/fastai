@@ -11,7 +11,6 @@ from setuptools import setup, find_packages
 exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file:   readme = readme_file.read()
-with open('CHANGES.md') as history_file: history = history_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
@@ -110,7 +109,7 @@ setup(
     test_suite = 'tests',
 
     description = "fastai makes deep learning with PyTorch faster, more accurate, and easier",
-    long_description = readme + '\n\n' + history,
+    long_description = readme,
     long_description_content_type = 'text/markdown',
     keywords = 'fastai, deep learning, machine learning',
 
