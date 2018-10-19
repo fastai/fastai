@@ -82,7 +82,7 @@ def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
             if hasattr(data,'valid_dl') and data.valid_dl is not None:
                 val_loss = validate(model, data.valid_dl, loss_func=loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
-            else: val_losses=None
+            else: val_loss=None
             if cb_handler.on_epoch_end(val_loss): break
     except Exception as e:
         exception = e

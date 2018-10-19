@@ -236,7 +236,7 @@ class CallbackHandler():
         "Handle end of processing one batch with `loss`."
         self.state_dict['last_loss'] = loss
         stop = np.any(self('batch_end', not self.state_dict['train']))
-        if self.state_dict['train']: 
+        if self.state_dict['train']:
             self.state_dict['iteration'] += 1
             self.state_dict['num_batch'] += 1
         return stop
@@ -244,12 +244,12 @@ class CallbackHandler():
     def on_epoch_end(self, val_loss:Tensor)->bool:
         "Epoch is done, process `val_metrics`."
         self.state_dict['last_metrics'] = val_loss
+        self.state_dict['epoch'] += 1
+        if np.any(self('epoch_end', False)): return True
         for met in self.metrics:
             met.on_epoch_end(**self.state_dict)
             self.state_dict['last_metrics'].append(met.metric)
-        stop = np.any(self('epoch_end', False))
-        self.state_dict['epoch'] += 1
-        return stop
+        return False
 
     def on_train_end(self, exception:Union[bool,Exception])->None:
         "Handle end of training, `exception` is an `Exception` or False if no exceptions during training."
@@ -258,17 +258,17 @@ class CallbackHandler():
 class AverageMetric(Callback):
     def __init__(self, func):
         self.func, self.name = func, func.__name__
-    
+
     def on_epoch_begin(self, **kwargs):
         self.val, self.count = 0.,0
-    
+
     def on_batch_end(self, last_output, last_target, train, **kwargs):
         self.count += last_target.size(0)
         self.val += last_target.size(0) * self.func(last_output, last_target).detach().item()
-    
+
     def on_epoch_end(self, **kwargs):
         self.metric = self.val/self.count
-        
+
 def annealing_no(start:Number, end:Number, pct:float)->Number:
     "No annealing, always return `start`."
     return start
