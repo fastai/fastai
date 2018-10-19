@@ -13,4 +13,4 @@ def learn():
     return learn
 
 def test_val_loss(learn):
-    assert learn.validate()[0] < 0.72
+    assert learn.validate()[0] < 0.75
