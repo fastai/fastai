@@ -1131,7 +1131,7 @@ And remember to sync the branch with the master changes so that you're testing t
 
 - [pipelines cookbook](https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=vsts)
 
-- azure [installed automatically @github webhooks](https://github.com/fastai/fastai/settings/hooks) these push events:
+- azure installed automatically via github's project webhooks these push events:
 
    * triggers CI build on every push (except when it's only doc change)!:
 
