@@ -20,6 +20,12 @@ of that change.
 ### Fixed:
 -->
 
+## 1.0.10 (2018-10-20))
+
+### Fixed:
+
+- Added missing `pyyaml` dependency
+
 ## 1.0.9 (2018-10-20)
 
 ### New:

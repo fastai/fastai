@@ -43,6 +43,7 @@ requirements = to_list("""
     torchvision-nightly
     traitlets
     typing
+    pyyaml
 """)
 
 # dependencies to skip for now:
