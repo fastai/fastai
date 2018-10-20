@@ -56,10 +56,43 @@ class URLs():
         download_url(f'{url}lstm_wt103.pth', model_path/'lstm_wt103.pth')
         download_url(f'{url}itos_wt103.pkl', model_path/'itos_wt103.pkl')
 
+class Config():
+    "Creates a default config file at `~/.fastai/config.yml`"
+    DEFAULT_CONFIG_PATH = '~/.fastai/config.yml'
+    DEFAULT_CONFIG = {
+        'data_path': '~/.fastai/data'
+    }
 
+    @classmethod
+    def get_key(cls, key): return cls.get().get(key)
+
+    @classmethod
+    def get(cls, fpath=None, create_missing=True):
+        fpath = _expand_path(fpath or cls.DEFAULT_CONFIG_PATH)
+        if not fpath.exists() and create_missing: cls.create(fpath)
+        assert fpath.exists(), f'Could not find config at: {fpath}. Please create'
+        with open(fpath, 'r') as yaml_file:
+            return yaml.load(yaml_file)
+
+    @classmethod
+    def create(cls, fpath):
+        fpath = _expand_path(fpath)
+        assert(fpath.suffix == '.yml')
+        if fpath.exists(): return
+        fpath.parent.mkdir(parents=True, exist_ok=True)
+        with open(fpath, 'w') as yaml_file:
+            yaml.dump(cls.DEFAULT_CONFIG, yaml_file, default_flow_style=False)
+
+def _expand_path(fpath): return Path(fpath).expanduser()
 def _url2name(url): return url.split('/')[-1]
-def _url2path(url): return URLs.DATA/f'{_url2name(url)}'
-def _url2tgz(url): return URLs.DATA/f'{_url2name(url)}.tgz'
+def _url2path(url): return _datapath4file(f'{_url2name(url)}')
+def _url2tgz(url): return _datapath4file(f'{_url2name(url)}.tgz')
+
+def _datapath4file(filename):
+    "Returns URLs.DATA path if file exists. Otherwise returns config path"
+    local_path = URLs.DATA/filename
+    if local_path.exists(): return local_path
+    else: return _expand_path(Config.get_key('data_path'))/filename
 
 def download_data(url:str, fname:PathOrStr=None):
     "Download `url` to destination `fname`"
@@ -72,8 +105,9 @@ def download_data(url:str, fname:PathOrStr=None):
 
 def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None):
     "Download `url` if doesn't exist to `fname` and un-tgz to folder `dest`"
+    default_dest = Path(ifnone(dest, _url2path(url)))
+    if default_dest.exists(): return default_dest
     fname = download_data(url, fname=fname)
-    dest = Path(ifnone(dest, _url2path(url)))
-    if not dest.exists(): tarfile.open(fname, 'r:gz').extractall(dest.parent)
+    dest = ifnone(dest, fname.parent)
+    tarfile.open(fname, 'r:gz').extractall(dest)
     return dest
-
