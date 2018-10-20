@@ -108,6 +108,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None):
     default_dest = Path(ifnone(dest, _url2path(url)))
     if default_dest.exists(): return default_dest
     fname = download_data(url, fname=fname)
-    dest = ifnone(dest, fname.parent)
-    tarfile.open(fname, 'r:gz').extractall(dest)
+    dest = Path(ifnone(dest, fname))
+    tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest
+    
