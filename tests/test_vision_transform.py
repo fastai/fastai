@@ -18,14 +18,14 @@ def test_points_data_aug():
     points = torch.randint(0,64, ((5,2)))
     img = points2pic(points, 64)
     pnts = ImagePoints(FlowField((64,64), points.float()))
-    tfms = get_transforms(max_lighting=0.)
+    tfms = get_transforms()
     tfm_x = apply_tfms(tfms[0], img, size=64, mode='nearest')
     tfm_y = apply_tfms(tfms[0], pnts, do_resolve=False, size=64)
     new_pnts = scale_flow(FlowField(tfm_y.size, tfm_y.data), to_unit=False).flow.round()
     fail = False
     for p in new_pnts.round():
-        if tfm_x.data[0, max(0,int(p[0])-1):min(int(p[0])+2,64), max(0,int(p[1])-1):min(int(p[1])+2,64)].sum() < 1: 
-            return tfm_x, pnts, new_pnts, p
+        if tfm_x.data[0, max(0,int(p[0])-1):min(int(p[0])+2,64), max(0,int(p[1])-1):min(int(p[1])+2,64)].sum() < 0.8: 
+            fail = True
     assert not fail
 
 def test_bbox_data_aug():
@@ -38,11 +38,11 @@ def test_bbox_data_aug():
         pick_box = (corners[2:] - corners[:2]).min() < 2
     img = bbox2pic(corners, 64)
     bbox = ImageBBox.create([list(corners)], 64, 64)
-    tfms = get_transforms(max_lighting=0.)
+    tfms = get_transforms()
     tfm_x = apply_tfms(tfms[0], img, size=64, mode='nearest', padding_mode='zeros')
     tfm_y = apply_tfms(tfms[0], bbox, do_resolve=False, size=64, padding_mode='zeros')
     new_bb = ((tfm_y.data + 1) * 32)
-    mask = tfm_x.data[0].nonzero()
+    mask = (tfm_x.data[0] > 0.5).nonzero()
     if len(mask) == 0:
         assert (new_bb[0][2:] - new_bb[0][:2]).min() < 1
     else:

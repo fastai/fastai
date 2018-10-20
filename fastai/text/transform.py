@@ -15,7 +15,6 @@ class BaseTokenizer():
     def tokenizer(self, t:str) -> List[str]:           return t.split(' ')
     def add_special_cases(self, toks:Collection[str]): pass
 
-#export
 class SpacyTokenizer(BaseTokenizer):
     "Wrapper around a spacy tokenizer to make it a `BaseTokenizer`."
 

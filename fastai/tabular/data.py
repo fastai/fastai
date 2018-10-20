@@ -81,6 +81,7 @@ class TabularDataBunch(DataBunch):
                                              train_ds.cont_names, train_ds.stats, log_output)
         datasets = [train_ds, valid_ds]
         if test_df is not None:
+            if dep_var not in test_df.columns: test_df[dep_var] = 0.
             datasets.append(TabularDataset.from_dataframe(test_df, dep_var, train_ds.tfms, train_ds.cat_names,
                                                       train_ds.cont_names, train_ds.stats, log_output))
         return cls.create(*datasets, path=path, **kwargs)
