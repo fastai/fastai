@@ -398,6 +398,16 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
     python setup.py sdist
     ```
 
+    `MANIFEST.in` is in charge of what source files are included in the package. If you want to include the whole directory `tests`, but not `tests/data` for example, adjust `MANIFEST.in` to have:
+
+    ```
+    recursive-include tests *
+    prune tests/data
+
+    ```
+
+    For more details, see [Creating a Source Distribution](https://docs.python.org/3/distutils/sourcedist.html)
+
 *  Build Built Distribution
 
     It provides metadata + pre-built files.
