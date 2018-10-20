@@ -39,7 +39,7 @@
 
     var get_level = function(ele) { return parseInt(ele.nodeName.replace("H", ""), 10); }
     var highest_level = headers.map(function(_, ele) { return get_level(ele); }).get().sort()[0];
-    var return_to_top = '<i class="glyphicon glyphicon-menu-up back-to-top"></i>';
+    var return_to_top = '<i class="glyphicon glyphicon-upload back-to-top"></i>';
     // other nice icons that can be used instead: glyphicon-upload glyphicon-hand-up glyphicon-chevron-up glyphicon-menu-up glyphicon-triangle-top
     var level = get_level(headers[0]),
       this_level,
