@@ -31,10 +31,22 @@ def test_link_typedef_double_bt():
     expected = "- `ParamList` = `Collection`\[[`nn`](https://pytorch.org/docs/stable/nn#torch-nn).`Parameter`]"
     assert_link(docstr, expected)
 
-def test_link_class_methods():
+def test_link_inner_class_functions():
     docstr = "To train your model in mixed precision you just have to call `Learner.to_fp16`, which converts the model and modifies the existing `Learner` to add `MixedPrecision`."
     expected = "To train your model in mixed precision you just have to call [`Learner.to_fp16`](/train#to_fp16), which converts the model and modifies the existing [`Learner`](/basic_train#Learner) to add [`MixedPrecision`](/callbacks.fp16#MixedPrecision)."
     imports = 'from fastai.callbacks.fp16 import *'
+    assert_link(docstr, expected, nb_cells=[gen_notebooks.get_code_cell(imports)])
+
+def test_class_anchor():
+    docstr = "`DataBunch.create`, `DeviceDataLoader.proc_batch`"
+    expected = "[`DataBunch.create`](/basic_data#DataBunch.create), [`DeviceDataLoader.proc_batch`](/basic_data#DeviceDataLoader.proc_batch)"
+    imports = 'from fastai.basic_train import *'
+    assert_link(docstr, expected, nb_cells=[gen_notebooks.get_code_cell(imports)])
+
+def test_link_class_methods():
+    docstr = "`ImageDataBunch.from_csv`"
+    expected = "[`ImageDataBunch.from_csv`](/vision.data#ImageDataBunch.from_csv)"
+    imports = 'from fastai.vision.data import *'
     assert_link(docstr, expected, nb_cells=[gen_notebooks.get_code_cell(imports)])
 
 def test_respects_import_order():

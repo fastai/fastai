@@ -35,6 +35,7 @@ def is_fastai_class(t): return belongs_to_module(t, MODULE_NAME)
 
 def belongs_to_module(t, module_name):
     "Check if `t` belongs to `module_name`."
+    if hasattr(t, '__func__'): return belongs_to_module(t.__func__, module_name)
     if not inspect.getmodule(t): return False
     return inspect.getmodule(t).__name__.startswith(module_name)
 
@@ -104,7 +105,6 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
     if is_fastai_class(elt): doc += get_function_source(elt)
-    # return link+doc
     md = title_md(link+doc, title_level, markdown=markdown)
     if markdown: display(md)
     else: return md
@@ -156,7 +156,7 @@ def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
     for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
     return re.sub(BT_REGEX, replace_link, docstring)
 
-def find_elt(modvars, keyword, match_last=True):
+def find_elt(modvars, keyword, match_last=False):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
     keyword = strip_fastai(keyword)
     if keyword in modvars: return modvars[keyword]
@@ -278,8 +278,9 @@ def fn_name(ft)->str:
 
 def get_fn_link(ft) -> str:
     "Return function link to notebook documentation of `ft`. Private functions link to source code"
-    module_name = strip_fastai(get_module_name(ft))
+    ft = getattr(ft, '__func__', ft)
     anchor = strip_fastai(get_anchor(ft))
+    module_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
     if func_name.startswith('_'): return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
