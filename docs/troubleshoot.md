@@ -56,7 +56,7 @@ Replace `1.0.7` with the version you're trying to install. (Without version it'l
 
 The following example is for using a conda environment.
 
-First you need to install [miniconda](http://conda.io/docs/install/quick.html) or [anaconda](https://docs.anaconda.com/anaconda/install/). The former comes with bare minimum of packages preinstalled, the latter has hundreds more. If you haven't changed the default configuration, miniconda usually ends up under `~/miniconda3/`, and anaconda under `~/anaconda3/`.
+First you need to install [miniconda](https://conda.io/docs/install/quick.html) or [anaconda](https://docs.anaconda.com/anaconda/install/). The former comes with bare minimum of packages preinstalled, the latter has hundreds more. If you haven't changed the default configuration, miniconda usually ends up under `~/miniconda3/`, and anaconda under `~/anaconda3/`.
 
 Once you have the software installed, here is a quick way to set up a dedicated environment for just `fastai` with `python-3.6` (of course feel free to name it the way you want it to):
 
@@ -233,7 +233,7 @@ Before making a new issue report, please:
 
 3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md). If you improvise and it works that's great, if it fails please RTFM ;)
 
-If you followed the steps in this document and couldn't find a resolution, please post a comment in this [thread](http://forums.fast.ai/t/fastai-v1-install-issues-thread/24111/1).
+If you followed the steps in this document and couldn't find a resolution, please post a comment in this [thread](https://forums.fast.ai/t/fastai-v1-install-issues-thread/24111/1).
 
 
 If the issue is still relevant, make sure to include in your post:

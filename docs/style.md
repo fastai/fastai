@@ -133,7 +133,7 @@ import PIL, os, numpy as np, math, collections, threading
   the definition of a symbol they can jump to the reference/tag, then don't need a list of imports at the top of the
   file. And so forth...
 - Don't use an automatic linter like autopep8 or formatter like yapf. No automatic tool can lay out your code with the care and domain understanding that you can. And it'll break all the care and domain understanding that previous contributors have used in that file!
-- Keep your PRs small, and for anything controversial or tricky discuss it on [the forums](http://forums.fast.ai)
+- Keep your PRs small, and for anything controversial or tricky discuss it on [the forums](https://forums.fast.ai)
   first.
 
 ### Documentation
