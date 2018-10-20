@@ -290,22 +290,26 @@ ul#results-container a:hover {
     margin: 3px;
 }
 
-div#toc ul li {
-    margin: 8px 0px 8px 22px;
-    font-size: 90%;
-    list-style-type: none;
-    //list-style: square;
-}
 div#toc ul {
+    font-size: 90%;
     background-color: whitesmoke;
     padding: 5px;
     border-radius: 5px;
-    max-width: 450px;
+    max-width: 400px;
     color: gray;
     list-style-type: none;
 }
 
+/* when using relative fonts like 0.9em or 90%, remember to then set the nested items to 1em or 100%, otherwise each level will get smaller and smaller and less readable */
+div#toc ul li {
+    margin: 8px 0px 8px 22px;
+    font-size: 100%;
+    list-style-type: none;
+    //list-style: square;
+}
+
 div#toc ul li ul {
+    font-size: 100%;
     padding-left:30px;
     padding-top: 0px;
     padding-bottom: 0px;
