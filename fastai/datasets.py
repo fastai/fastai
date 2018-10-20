@@ -12,7 +12,6 @@ class URLs():
     S3_IMAGELOC = f'{S3}imagelocal/'
     S3_NLP = f'{S3}nlp/'
     S3_COCO = f'{S3}coco/'
-    DATA = Path(__file__).parent/'..'/'data'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
     IMDB_SAMPLE = f'{URL}imdb_sample'
@@ -90,7 +89,7 @@ def _url2tgz(url): return _datapath4file(f'{_url2name(url)}.tgz')
 
 def _datapath4file(filename):
     "Returns URLs.DATA path if file exists. Otherwise returns config path"
-    local_path = URLs.DATA/filename
+    local_path = Path.cwd()/'data'/filename
     if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
     else: return _expand_path(Config.get_key('data_path'))/filename
 
@@ -109,4 +108,3 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None):
     fname = download_data(url, fname=fname)
     if not dest.exists(): tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest
-    
