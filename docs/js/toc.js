@@ -55,7 +55,7 @@
       base_url = base_url.replace(/#.*$/, "");
       this_level = get_level(header);
       if (!settings.noBackToTopLinks && this_level > 1) {
-        $(header).addClass('top-level-header').append(return_to_top);
+        $(header).addClass('top-level-header').after(return_to_top);
       }
       txt = header.textContent.split('¶')[0].split('(')[0];
       if (!txt) {return;}
