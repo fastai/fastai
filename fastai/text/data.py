@@ -233,7 +233,7 @@ class LanguageModelLoader():
         "Split the corpus `data` in batches."
         nb = data.shape[0] // self.bs
         data = np.array(data[:nb*self.bs]).reshape(self.bs, -1).T
-        if self.backwards: data=data[::-1]
+        if self.backwards: data=data[::-1].copy()
         return LongTensor(data)
 
     def get_batch(self, i:int, seq_len:int) -> Tuple[LongTensor, LongTensor]:
