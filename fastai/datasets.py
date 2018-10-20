@@ -7,6 +7,7 @@ __all__ = ['URLs', 'untar_data', 'download_data']
 
 URL = 'http://files.fast.ai/data/examples/'
 class URLs():
+    LOCAL_PATH = Path.cwd()
     S3 = 'https://s3.amazonaws.com/fast-ai-'
     S3_IMAGE = f'{S3}imageclas/'
     S3_IMAGELOC = f'{S3}imagelocal/'
@@ -89,7 +90,7 @@ def _url2tgz(url): return _datapath4file(f'{_url2name(url)}.tgz')
 
 def _datapath4file(filename):
     "Returns URLs.DATA path if file exists. Otherwise returns config path"
-    local_path = Path.cwd()/'data'/filename
+    local_path = URLs.LOCAL_PATH/'data'/filename
     if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
     else: return _expand_path(Config.get_key('data_path'))/filename
 
