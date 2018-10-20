@@ -3,7 +3,7 @@ from fastai import *
 from fastai.vision import *
 from fastai.text import *
 
-__all__ = ['URLs', 'untar_data', 'download_data']
+__all__ = ['URLs', 'untar_data', 'download_data', 'datapath4file']
 
 URL = 'http://files.fast.ai/data/examples/'
 class URLs():
@@ -85,10 +85,10 @@ class Config():
 
 def _expand_path(fpath): return Path(fpath).expanduser()
 def _url2name(url): return url.split('/')[-1]
-def _url2path(url): return _datapath4file(f'{_url2name(url)}')
-def _url2tgz(url): return _datapath4file(f'{_url2name(url)}.tgz')
+def _url2path(url): return datapath4file(f'{_url2name(url)}')
+def _url2tgz(url): return datapath4file(f'{_url2name(url)}.tgz')
 
-def _datapath4file(filename):
+def datapath4file(filename):
     "Returns URLs.DATA path if file exists. Otherwise returns config path"
     local_path = URLs.LOCAL_PATH/'data'/filename
     if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path

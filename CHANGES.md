@@ -26,6 +26,7 @@ Note that the top-most release is changes in the unreleased master branch on Git
 - New function `Image.predict(learn:Learner)` to get the activations of the model in `Learner` for an image
 - New function `Learner.validate` to validate on a given dl (default `valid_dl`), with maybe new metrics or callbacks
 - New function `error_rate` which is just `1-accuracy()`
+- New `~/fastai` home directory, config file `~/.fastai/config.yml`, and default data directory `~/.fastai/data`
 
 ### Changed:
 
@@ -35,6 +36,7 @@ Note that the top-most release is changes in the unreleased master branch on Git
 - All metrics are now `Callback`. You can pass a regular function like `accuracy` that will get averaged over batch or a full `Callback` that can do more complex things
 - All datasets convenience functions and paths are inside the `URLs` class
 - `URLs` that are a sample have name now suffixed with `_SAMPLE`
+- `datasets.untar_data` and `datasets.download_data` will now download to fastai home directory `~/.fastai/data` if the dataset does not already exist locally `./data`.
 
 ### Fixed:
 
