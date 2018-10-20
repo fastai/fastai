@@ -204,18 +204,35 @@ print(sys.modules['fastai'])
 ```
 
 At times a quick hack can be used to get your first notebook working and then sorting out the setup. Say you checked out `fastai` to `/tmp/`:
-
-    cd /tmp/
-    git clone https://github.com/fastai/fastai
-    cd fastai
-
+```
+cd /tmp/
+git clone https://github.com/fastai/fastai
+cd fastai
+```
 So now you know that your *uninstalled* `fastai` is located under `/tmp/fastai/`. Next, put the following on the very top of your notebook:
-
-    import sys
-    sys.path.append("/tmp/fastai")
-    import fastai
-
+```
+import sys
+sys.path.append("/tmp/fastai")
+import fastai
+```
 and it should just work. Now, go and sort out the rest of the installation, so that you don't need to do it for every notebook.
+
+
+
+## Conda environments not showing up in Jupyter Notebook
+
+While normally you shouldn't have this problem, and all the required things should get installed automatically, some users report that their jupyter notebook
+does not recognize newly created environments at times. They reported the following to work:
+
+```
+conda activate fastai-3.6
+conda install jupyter
+conda install nb_conda
+conda install nb_conda_kernels
+conda install ipykernel
+python -m ipykernel install --user --name fastai-3.6 --display-name "Python (fastai-3.6)"
+```
+See also [Kernels for different environments](https://ipython.readthedocs.io/en/stable/install/kernel_install.html#kernels-for-different-environments).
 
 
 ## Support

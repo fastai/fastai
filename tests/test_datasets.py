@@ -22,9 +22,12 @@ def test_get_samples(dataset, tmpdir):
 def test_creates_config():
     DEFAULT_CONFIG_PATH = 'config_test/test.yml'
 
-    config_path = _expand_path(DEFAULT_CONFIG_PATH)
-    clean_path(config_path)
-    assert not config_path.exists(), "config path should not exist"
-    config = Config.get(config_path)
-    assert config_path.exists(), "Config.get should create config if it doesn't exist"
-    
+    try:
+        config_path = _expand_path(DEFAULT_CONFIG_PATH)
+        clean_path(config_path)
+        assert not config_path.exists(), "config path should not exist"
+        config = Config.get(config_path)
+        assert config_path.exists(), "Config.get should create config if it doesn't exist"
+    finally:
+        clean_path(config_path)
+
