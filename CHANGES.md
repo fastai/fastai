@@ -20,6 +20,13 @@ of that change.
 ### Fixed:
 -->
 
+## 1.0.11 (2018-10-20))
+
+### Fixed:
+
+- Added missing `pyyaml` dependency to conda too
+
+
 ## 1.0.10 (2018-10-20))
 
 ### Fixed:

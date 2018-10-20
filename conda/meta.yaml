@@ -68,6 +68,7 @@ requirements:
     - cymem ==2.0.2
     - traitlets
     - typing
+    - pyyaml
 
 # removed these and instead are asking users to install those directly until a proper pytorch-1.0.0 and the corresponding torchvision are released on conda. otherwise can't support these two sets:
 #    - pytorch-nightly

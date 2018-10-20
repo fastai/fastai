@@ -10,3 +10,4 @@ recursive-exclude * *.py[co]
 
 recursive-include docs *.md conf.py Makefile make.bat *.jpg *.png *.gif
 
+prune tests/data
