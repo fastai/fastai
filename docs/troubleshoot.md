@@ -262,7 +262,7 @@ If the issue is still relevant, make sure to include in your post:
 
 If the resulting output is very long, please paste it to https://pastebin.com/ and include a link to your paste
 
-#### Do's and Don'ts:
+### Do's and Don'ts:
 
 * please do not send screenshots with trace/error messages - we can't copy-n-paste from the images, instead paste them verbatim into your post and use the markdown gui menu so that it's code-formatted.
 
@@ -272,6 +272,6 @@ If the resulting output is very long, please paste it to https://pastebin.com/ a
 
     So that the error messages will be in English. You can run `locale` to see which locales you have installed.
 
-#### Bug Reports and PRs
+### Bug Reports and PRs
 
 If you found a bug and know how to fix it please submit a PR with the fix [here](https://github.com/fastai/fastai/pulls). Thank you.
