@@ -26,6 +26,9 @@ of that change.
 
 - Added missing `pyyaml` dependency to conda too
 
+### Changed:
+
+- Use `spacy.blank` instead of `spacy.load` to avoid having to download english model
 
 ## 1.0.10 (2018-10-20))
 
