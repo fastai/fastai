@@ -1,6 +1,5 @@
-from fastai.text.data import LanguageModelLoader, TextDataset, Tokenizer
-import pandas as pd
-import numpy as np
+from fastai import *
+from fastai.text import *
 
 def test_should_load_backwards_lm():
     # GIVEN
