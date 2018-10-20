@@ -24,6 +24,8 @@ of that change.
 
 ### New:
 
+- `EarlyStoppingCallback`, `SaveModelCallback`, `TerminateOnNaNCallback`
+  (initial draft: fredguth)
 - `datapath4file(filename)` returns suitable path to store or find data file
   called `filename`, using config file `~/.fastai/config.yml`, and default data
   directory `~/.fastai/data`, unless `./data` exists and contains that file
