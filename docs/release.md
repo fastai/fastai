@@ -1117,10 +1117,6 @@ Under Project Settings, important things are:
 
 CI Builds are triggered on every `git push` to master (except when it's an obvious document only change commit, like a change to an `.md` file).
 
-To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and enter the commit hash (most likely of the latest commit). This is the way to get occasional CI builds against non-master branches.
-
-
-
 
 #### PR Builds
 
@@ -1133,6 +1129,15 @@ Note, that neither green or red status of the PR guarantees that it's so. Since 
 Currently we don't have the following enforcement enabled ([PR won't be merge-able at github](https://help.github.com/articles/about-required-status-checks/
 ) if the PR's build status is failed.)
 
+
+#### Manual Jobs
+
+To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and in the Commit field either nothing or enter the desired commit hash. This is the way to get occasional CI builds against non-master branches, which is useful when testing a new pipeline.
+
+
+#### Scheduled Jobs
+
+If you want to run a build as a cron-job, rather than it getting triggered by a PR or a push, add the pipeline script as normal, and then go to that build's [Edit], and then [Triggers], disable CI and PR entries and configure a scheduled entry.
 
 
 #### Modifying `azure-pipelines.yml`
@@ -1161,6 +1166,12 @@ And remember to sync the branch with the master changes so that you're testing t
     ```
     https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
     ```
+
+
+#### Multiple Pipelines In The Same Repo
+
+Currently [New] will not let you choose an alternative pipeline. So until this is fixed, let it use the default `azure-pipelines.yml`, Save and then go and Edit it and replace with a different file from the repository (and perhaps switching to a different branch if needed), using [...].
+
 
 
 
