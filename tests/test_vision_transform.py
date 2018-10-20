@@ -48,3 +48,12 @@ def test_bbox_data_aug():
     else:
         img_bb = torch.cat([mask.min(0)[0], mask.max(0)[0]])
         assert (new_bb - img_bb.float()).abs().max() < 2
+        
+def test_mask_data_aug():
+    points = torch.randint(0,2, ((1,64,64))).float()
+    img, mask = Image(points), ImageSegment(points)
+    tfms = get_transforms()
+    tfm_x = apply_tfms(tfms[0], img, size=64, mode='nearest')
+    tfm_y = apply_tfms(tfms[0], mask, do_resolve=False, size=64)
+    new_mask = (tfm_x.data[0] > 0.5)
+    assert (new_mask.float() - tfm_y.data[0].float()).sum() < 1.
