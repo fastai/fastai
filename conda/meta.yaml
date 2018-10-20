@@ -104,7 +104,7 @@ about:
   # - _ is special outside of block code, need to escape otherwise, but can't do that w/o jinja2 regex support since it'll break code blocks - so doing nothing at the moment.
   description: |
     {{ data['long_description'] | replace("\n", "\n    ") | replace("#", '\#')}}
-  doc_url: http://docs.fast.ai/
+  doc_url: https://docs.fast.ai/
   dev_url: {{ data.get('url') }}
 
 extra:

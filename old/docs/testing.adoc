@@ -2,7 +2,7 @@
 
 We chose pytest as a framework since it's more modern, concise, and https://www.slant.co/topics/2621/~python-unit-testing-frameworks[recommended by coders].
 
-We also try to follow this suggestion from the http://docs.python-guide.org/en/latest/writing/tests/[python testing guide]:
+We also try to follow this suggestion from the https://docs.python-guide.org/en/latest/writing/tests/[python testing guide]:
 
 ____
 Use long and descriptive names for testing functions. The style guide here is slightly different than that of running code, where short names are often preferred. The reason is testing functions are never called explicitly. square() or even sqr() is ok in running code, but in testing code you would have names such as test_square_of_number_2(), test_square_negative_number(). These function names are displayed when a test fails, and should be as descriptive as possible.
