@@ -20,7 +20,7 @@ of that change.
 ### Fixed:
 -->
 
-## 1.0.8 (2018-10-20)
+## 1.0.9 (2018-10-20)
 
 ### New:
 
@@ -43,6 +43,10 @@ of that change.
 ### Fixed:
 
 - backwards=True when creating a LanguageModelLoader (mboyanov)
+
+## 1.0.8 (2018-10-20)
+
+- Not released
 
 ## 1.0.7 (2018-10-19)
 
