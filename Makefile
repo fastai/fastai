@@ -53,7 +53,7 @@ dist-pypi: clean-pypi ## build pypi source and wheel package
 	python setup.py bdist_wheel
 	ls -l dist
 
-release-pypi: dist-pypi ## release pypi package
+release-pypi: ## release pypi package
 	@echo "\n\n*** Uploading" dist/* "to pypi\n"
 	twine upload dist/*
 
@@ -78,7 +78,7 @@ dist-conda: clean-conda ## build conda package
 	conda-build ./conda/ -c pytorch -c fastai/label/main --output-folder conda-dist
 	ls -l conda-dist/noarch/*tar.bz2
 
-release-conda: dist-conda ## release conda package
+release-conda: ## release conda package
 	@echo "\n\n*** Uploading" conda-dist/noarch/*tar.bz2 "to fastai@anaconda.org\n"
 	anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
 
@@ -93,7 +93,7 @@ clean: clean-pypi clean-conda ## clean pip && conda package
 
 dist: clean dist-pypi dist-conda ## build pip && conda package
 
-release: dist release-pypi release-conda ## release pip && conda package
+release: release-pypi release-conda ## release pip && conda package
 
 install: clean ## install the package to the active python's site-packages
 	python setup.py install

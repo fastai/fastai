@@ -66,7 +66,7 @@ make master-branch-switch
 make bump && make release-branch-create && make commit-version
 make master-branch-switch && make bump-dev && make commit-dev-cycle-push
 make prev-branch-switch && make test && make commit-tag-push
-make release
+make dist && make release
 ```
 
 Now wait a few minutes for the pypi/conda servers to make the new packages visible to the clients and then:
@@ -169,21 +169,30 @@ The starting point of the workflow is a dev version of the master branch. For th
     make commit-tag-push          # git commit CHANGES.md; git tag; git push
     ```
 
-11. build and upload packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
+11. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
 
     ```
-    make release                  # make dist; make release-pypi; make release-conda
+    make dist                     # make dist-pypi; make dist-conda
     ```
 
+    This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-12. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make release` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
+12. upload packages.
+
+    ```
+    make release                  # make release-pypi; make release-conda
+    ```
+
+    This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
+
+13. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make release` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
 
     ```
     make test-install             # pip install fastai==1.0.6; pip uninstall fastai
                                   # conda install -y -c fastai fastai==1.0.6
     ```
 
-13. if some problems were detected during the release process, or something was committed by mistake into the release brach, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
+14. if some problems were detected during the release process, or something was committed by mistake into the release brach, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
 
     1. check whether anything needs to be backported
 
@@ -194,7 +203,7 @@ The starting point of the workflow is a dev version of the master branch. For th
     If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
 
 
-14. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
+15. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
 
     ```
     make master-branch-switch     # git checkout master
