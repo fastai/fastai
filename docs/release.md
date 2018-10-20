@@ -207,22 +207,22 @@ The starting point of the workflow is a dev version of the master branch. For th
 
 Check whether there any commits besides `fastai/version.py` from the point of branching of release-1.0.6 till its HEAD. If there are then probably there are things to backport.
 
-    ```
-    make backport-check
-    ```
+   ```
+   make backport-check
+   ```
 If the result is "Nothing to backport", you're done. Otherwise proceed to the "Performing Backporting" section below.
 
 If by any chance you switched to the master branch already, this target won't work, since it relies on `fastai/version.py` from the release branch. So you need to do it manually, by either going back to it, if it was the last one:
 
-    ```
-    git checkout -
-    ```
+   ```
+   git checkout -
+   ```
 
 or typing it out:
 
-    ```
-    git checkout release-1.0.6
-    ```
+   ```
+   git checkout release-1.0.6
+   ```
 
 
 
@@ -233,30 +233,30 @@ Normally you should have just one commit where `fastai/version.py` is changed, b
 
 Find what needs to be backported, there are a few ways to approach it:
 
-    * find the revision at which release-$(version) branched off
+* find the revision at which release-$(version) branched off
 
     ```
     git rev-parse --short $(git merge-base master origin/release-1.0.6)
     ```
 
-    * same, but with the long commit revision
+* same, but with the long commit revision
 
     ```
     git merge-base master origin/release-1.0.6
     ```
 
-    * get list of commits between the branching point and the HEAD of the branch
+* get list of commits between the branching point and the HEAD of the branch
 
     ```
     git log  --oneline $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
     ```
 
-    * get the diff of commits between the branching point and the HEAD of the branch
+* get the diff of commits between the branching point and the HEAD of the branch
     ```
-git diff $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
+    git diff $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
     ```
 
-    * alternative GUI way: checking what needs to be backported on github
+* alternative GUI way: checking what needs to be backported on github
 
     If you want to use github presentation, go to the comparison page for the tag of the release https://github.com/fastai/fastai/compare/release-1.0.6 or the same in 3 click if you don't want to manually create it:
 
@@ -266,10 +266,10 @@ git diff $(git merge-base --fork-point master origin/release-1.0.6)..origin/rele
 
 If you are trying to do this process some time after release since you remembered you didn't backport something, do the same as above but first sync your git db:
 
-    ```
-    git fetch --all # update remote info
-    git branch -a   # check which branches are visible
-    ```
+   ```
+   git fetch --all # update remote info
+   git branch -a   # check which branches are visible
+   ```
 
 
 #### Performing Backporting
@@ -278,38 +278,38 @@ Now that you looked at any changes that were applied to the release branch since
 
 First, switch to master:
 
-    ```
-    make master-branch-switch
-    ```
+   ```
+   make master-branch-switch
+   ```
 
 If `make backport-check` gave you the following output:
 
-    ```
-    !!! These commits may need to be backported:
+   ```
+   !!! These commits may need to be backported:
 
-    ab345fe conda build fix
-    62091ed update release
-    ```
+   ab345fe conda build fix
+   62091ed update release
+   ```
 
 and you decided you wanted to backport both changes, then you can do that one by one:
 
-    ```
-    git show 62091ed        # check that this is the right rev
-    git cherry-pick 62091ed # merge it into the current checkout
-    ```
+   ```
+   git show 62091ed        # check that this is the right rev
+   git cherry-pick 62091ed # merge it into the current checkout
+   ```
 
 or if there is a contiguous sequence, you can specify the start and the end (end being on top).
 
-    ```
-    git cherry-pick 62091ed..ab345fe # merge it into the current checkout
-    ```
+   ```
+   git cherry-pick 62091ed..ab345fe # merge it into the current checkout
+   ```
 
 When done, complete the backporting
 
-    ```
-    git commit -m "backporting from release branch to master"
-    git push
-    ```
+   ```
+   git commit -m "backporting from release branch to master"
+   git push
+   ```
 
 
 
