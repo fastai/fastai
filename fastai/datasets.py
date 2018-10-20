@@ -110,5 +110,5 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None):
     fname = download_data(url, fname=fname)
     dest = Path(ifnone(dest, fname))
     tarfile.open(fname, 'r:gz').extractall(dest.parent)
-    return dest
+    return Path(ifnone(dest, _url2path(url)))
     
