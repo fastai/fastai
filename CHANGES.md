@@ -42,6 +42,7 @@ of that change.
 
 ### Fixed:
 
+- add `dep_var` column in `test_df` if it doesn't exists (Kevin Bird)
 - backwards=True when creating a LanguageModelLoader (mboyanov)
 
 ## 1.0.8 (2018-10-20)
