@@ -128,8 +128,8 @@ margin-top: -40px
     background-color: RoyalBlue;
 }
 
-.container #notebook-container{ 
-    width: 100%;        
+.container #notebook-container{
+    width: 100%;
     box-sizing: border-box;
             }
 
@@ -293,25 +293,28 @@ ul#results-container a:hover {
 div#toc ul li {
     margin: 8px 0px 8px 22px;
     font-size: 90%;
-    list-style: square;
+    list-style-type: none;
+    //list-style: square;
 }
 div#toc ul {
     background-color: whitesmoke;
     padding: 5px;
     border-radius: 5px;
-    max-width: 300px;
+    max-width: 400px;
     color: gray;
+    list-style-type: none;
 }
 
 div#toc ul li ul {
-    padding-left:8px;
+    padding-left:30px;
     padding-top: 0px;
     padding-bottom: 0px;
+    list-style-type: none;
 }
 
-div#toc ul li ul li::before {
-    content: "–  ";
-}
+//div#toc ul li ul li::before {
+//    content: "–  ";
+//}
 
 div#toc ul li ul li.hide_content::before {
     content: none;
@@ -1273,4 +1276,3 @@ blockquote code {
 h4 code {
         background-color: white;
 }
-
