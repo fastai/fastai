@@ -917,8 +917,15 @@ The following sections go into pip/conda-specific tools and methods for figuring
 
 #### Conda Dependencies
 
+Here is how you can find out currently installed packages and conda dependencies:
 
-* To find out the dependencies of the package:
+* To find out the currently installed version of a package:
+
+    ```
+    conda list spacy
+    ```
+
+* To find out the dependencies of a package:
 
     ```
     conda search --info spacy=2.0.16
@@ -1012,10 +1019,19 @@ platform are shown):
 
 #### PyPI Dependencies
 
-Tools for finding out pip dependencies (direct and reversed).
+Tools for finding out currently installed packages and pip dependencies (direct and reversed).
 
 
-* `pipdeptree`: `pip install pipdeptree`
+* `pipdeptree`: (`pip install pipdeptree`)
+
+    For a specific package:
+    ```
+    pipdeptree --packages  pillow
+    ```
+    or with more details:
+    ```
+    pip show pillow
+    ```
 
     Print the whole tree of the installed base:
     ```
