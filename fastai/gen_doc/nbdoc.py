@@ -92,7 +92,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
              ignore_warn:bool=False, markdown=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
-    link = f'<a id={get_anchor(elt)}></a>' # Must happen before we extract __func__
+    link = f'<a id={full_name or get_anchor(elt)}></a>' # Must happen before we extract __func__
     elt = getattr(elt, '__func__', elt)
     full_name = full_name or fn_name(elt)
     if inspect.isclass(elt):
