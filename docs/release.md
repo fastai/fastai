@@ -928,19 +928,19 @@ Here is how you can find out currently installed packages and conda dependencies
 * To find out the dependencies of a package:
 
     ```
-    conda search --info spacy=2.0.16
+    conda search --info spacy==2.0.16
     ```
 
     Narrow down to a specific platform build:
 
     ```
-    conda search --info spacy=2.0.16=py37h962f231_0
+    conda search --info spacy==2.0.16=py37h962f231_0
     ```
 
     Also can use a wildcard:
 
     ```
-    conda search --info spacy=2.0.16=py37*
+    conda search --info spacy==2.0.16=py37*
     ```
 
     It supports -c channel, for packages not in a main channel
