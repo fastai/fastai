@@ -291,6 +291,7 @@ def get_module_name(ft) -> str: return inspect.getmodule(ft).__name__
 def get_pytorch_link(ft) -> str:
     "Returns link to pytorch docs of `ft`."
     name = ft.__name__
+    if name == 'device': return f'{PYTORCH_DOCS}tensor_attributes.html#torch-device'
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
         if inspect.ismodule(ft): name = name.replace('.', '-')
