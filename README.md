@@ -29,7 +29,7 @@ If you are using `fastai` for any [course.fast.ai](http://course.fast.ai) course
 
 If your system has a [recent NVIDIA card](https://www.geforce.com/hardware/technology/cuda/supported-gpus) with the correctly configured NVIDIA driver please follow the GPU installation instructions. Otherwise, the CPU-ones.
 
-It's highly recommended you install `fastai` and its dependencies in a virtual environment (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others), so that you don't interfere with system-wide python packages. It's not that you must, but if you experience problems with any dependency packages, please consider using a fresh virtual environment just for `fastai`.
+It's highly recommended you install `fastai` and its dependencies in a virtual environment `([conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others), so that you don't interfere with system-wide python packages. It's not that you must, but if you experience problems with any dependency packages, please consider using a fresh virtual environment just for `fastai`.
 
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
