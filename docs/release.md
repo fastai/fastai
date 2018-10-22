@@ -63,8 +63,11 @@ Here is the quick version that includes all the steps w/o the explanations. If y
 ```
 make tools-update
 make master-branch-switch
-make bump && make release-branch-create && make commit-version
-make master-branch-switch && make bump-dev && make commit-dev-cycle-push
+make bump && make changes-finalize
+make release-branch-create && make commit-version
+make master-branch-switch
+make bump-dev && make changes-dev-cycle
+make commit-dev-cycle-push
 make prev-branch-switch && make test && make commit-tag-push
 make dist && make release
 ```
@@ -131,6 +134,17 @@ The starting point of the workflow is a dev version of the master branch. For th
 
     ```
     make bump                     # 1.0.6.dev0 => 1.0.6
+    ```
+
+The following will fix the version and the date in `CHANGES.md`, you may want to check that it looks tidy.
+
+    ```
+    make changes-finalize         # 1.0.6.dev0 (WIP) => 1.0.6 (date)
+    ```
+
+We are ready to make the new release branch:
+
+    ```
     make release-branch-create    # git checkout -b release-1.0.6
     make commit-version           # git commit fastai/version.py
     ```
@@ -143,7 +157,10 @@ The starting point of the workflow is a dev version of the master branch. For th
     make bump-dev                 # 1.0.6 => 1.0.7.dev0
     ```
 
-    edit CHANGES.md - copy the template and start a new entry for the new version (XXX: could be automated)
+    Insert a new template into `CHANGES.md for the dev cycle with new version number:
+    ```
+    make changes-dev-cycle        # inserts new template + version
+    ```
 
     ```
     make commit-dev-cycle-push    # git commit fastai/version.py CHANGES.md; git push

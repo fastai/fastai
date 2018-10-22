@@ -149,7 +149,7 @@ commit-version: ## commit and tag the release
 	git commit -m "starting release branch: $(version)" $(version_file)
 
 commit-tag-push: ## commit and tag the release
-	@echo "\n\n*** Commit CHANGES"
+	@echo "\n\n*** Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
 	@echo "\n\n*** Tag $(version) version"
@@ -158,16 +158,19 @@ commit-tag-push: ## commit and tag the release
 	@echo "\n\n*** Push all changes"
 	git push --set-upstream origin release-$(version)
 
-# check whether there any commits besides fastai/version.py from the
-# point of branching of release-$(version) till its HEAD. If there are
-# then probably there are things to backport.
+# check whether there any commits besides fastai/version.py and CHANGES.md
+# from the point of branching of release-$(version) till its HEAD. If
+# there are any, then most likely there are things to backport.
 backport-check: ## backport to master check
 	@echo "*** Checking if anything needs to be backported"
 	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base --fork-point master origin/release-$(version))))
-	@echo "*** branching point: $(start_rev)"
-	$(eval log := $(shell git log --oneline $(start_rev)..origin/release-$(version) -- . ":(exclude)fastai/version.py"))
+	@if [ ! -n "$(start_rev)" ]; then\
+		echo "*** failed, check you're on the correct release branch";\
+		exit 1;\
+	fi
+	$(eval log := $(shell git log --oneline $(start_rev)..origin/release-$(version) -- . ":(exclude)fastai/version.py" ":(exclude)CHANGES.md"))
 	@if [ -n "$(log)" ]; then\
-		echo "!!! These commits may need to be backported:\n\n$(log)\n\nuse 'git show <commit>' to review or go to https://github.com/fastai/fastai/compare/release-$(version) to do it visually";\
+		echo "!!! These commits may need to be backported:\n\n$(log)\n\nuse 'git show <commit>' to review or go to https://github.com/fastai/fastai/compare/release-$(version) to do it visually\nFor backporting see: https://docs-dev.fast.ai/release#backporting-release-branch-to-master";\
 	else\
 		echo "Nothing to backport";\
     fi
@@ -185,6 +188,15 @@ test-install: ## test conda/pip package by installing that version them
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
 	conda install -y -c fastai fastai==$(version)
 	@# leave conda package installed: conda uninstall -y fastai
+
+
+##@ CHANGES.md file targets
+
+changes-finalize: ## fix the version and stamp the date
+	perl -pi -e 'use POSIX qw(strftime); BEGIN{$$date=strftime "%Y-%m-%d", localtime};s|^##.*Work In Progress\)|## $(version) ($$date)|' CHANGES.md
+
+changes-dev-cycle: ## insert new template + version
+	perl -0777 -pi -e 's|^(##)|\n\n## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
 
 
 ##@ Version bumping
