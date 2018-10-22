@@ -1,6 +1,9 @@
 # usage: make help
 
-.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi release-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install
+# notes:
+# 'target: | target1 target2' syntax enforces the exact order
+
+.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist release post-release-checks
 
 version_file = fastai/version.py
 version = $(shell python setup.py --version)
@@ -47,13 +50,18 @@ clean-test-pypi: ## remove pypi test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-dist-pypi: clean-pypi ## build pypi source and wheel package
-	@echo "\n\n*** Building pypi packages"
-	python setup.py sdist
+dist-pypi-bdist: ## build pypi wheel package
+	@echo "\n\n*** Building pypi wheel package"
 	python setup.py bdist_wheel
+
+dist-pypi-sdist: ## build pypi source package
+	@echo "\n\n*** Building pypi source package"
+	python setup.py sdist
+
+dist-pypi: | clean-pypi dist-pypi-sdist dist-pypi-bdist ## build pypi source and wheel package
 	ls -l dist
 
-release-pypi: ## release pypi package
+upload-pypi: ## upload pypi package
 	@echo "\n\n*** Uploading" dist/* "to pypi\n"
 	twine upload dist/*
 
@@ -72,13 +80,13 @@ clean-pyc-conda: ## remove conda python file artifacts
 
 clean-test-conda: ## remove conda test and coverage artifacts
 
-dist-conda: clean-conda ## build conda package
+dist-conda: | clean-conda dist-pypi-sdist ## build conda package
 	@echo "\n\n*** Building conda package"
 	mkdir "conda-dist"
 	conda-build ./conda/ -c pytorch -c fastai/label/main --output-folder conda-dist
 	ls -l conda-dist/noarch/*tar.bz2
 
-release-conda: ## release conda package
+upload-conda: ## upload conda package
 	@echo "\n\n*** Uploading" conda-dist/noarch/*tar.bz2 "to fastai@anaconda.org\n"
 	anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
 
@@ -86,14 +94,13 @@ release-conda: ## release conda package
 
 ##@ Combined (pip and conda)
 
-# XXX: until conda-build supports skipping dirs, we have to reduce the size of the
-# checked out directory, otherwise it make take forever to copy the folder
+# currently, no longer needed as we now rely on sdist's tarball for conda source, which doesn't have any data in it already
+# find ./data -type d -and -not -regex "^./data$$" -prune -exec rm -rf {} \;
 clean: clean-pypi clean-conda ## clean pip && conda package
-	find ./data -type d -and -not -regex "^./data$$" -prune -exec rm -rf {} \;
 
 dist: clean dist-pypi dist-conda ## build pip && conda package
 
-release: release-pypi release-conda ## release pip && conda package
+upload: upload-pypi upload-conda ## upload pip && conda package
 
 install: clean ## install the package to the active python's site-packages
 	python setup.py install
@@ -105,6 +112,10 @@ tools-update: ## install/update build tools
 	@echo "\n\n*** Updating build tools"
 	conda install -y conda-verify conda-build anaconda-client
 	pip install -U twine
+
+release: | tools-update master-branch-switch bump changes-finalize release-branch-create commit-version master-branch-switch bump-dev changes-dev-cycle commit-dev-cycle-push prev-branch-switch test commit-tag-push dist upload ## do it all (other than testing)
+
+post-release-checks: | test-install backport-check master-branch-switch ## do post release checks
 
 
 ##@ git helpers

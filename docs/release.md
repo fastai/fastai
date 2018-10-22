@@ -58,6 +58,14 @@ You can skip this step if you have done it once already on the system you're mak
 
 ## Quick Release Process
 
+
+Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
+
+```
+make release
+make post-release-checks
+```
+
 Here is the quick version that includes all the steps w/o the explanations. If you're unfamiliar with this process use the next section instead.
 
 ```
@@ -69,7 +77,7 @@ make master-branch-switch
 make bump-dev && make changes-dev-cycle
 make commit-dev-cycle-push
 make prev-branch-switch && make test && make commit-tag-push
-make dist && make release
+make dist && make upload
 ```
 
 Now wait a few minutes for the pypi/conda servers to make the new packages visible to the clients and then:
@@ -197,12 +205,12 @@ We are ready to make the new release branch:
 12. upload packages.
 
     ```
-    make release                  # make release-pypi; make release-conda
+    make upload                  # make upload-pypi; make upload-conda
     ```
 
     This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-13. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make release` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
+13. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make upload` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
 
     ```
     make test-install             # pip install fastai==1.0.6; pip uninstall fastai
@@ -382,7 +390,7 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
 2. Publish:
 
     ```
-    make release-pypi
+    make upload-pypi
     ```
 
     Note: PyPI won't allow re-uploading the same package filename, even if it's a minor fix. If you delete the file from pypi or test.pypi it still won't let you do it. So either a patch-level version needs to be bumped (A.B.C++) or some [post release string added](https://www.python.org/dev/peps/pep-0440/#post-releases) in `version.py`.
@@ -545,7 +553,7 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 2. Upload
 
     ```
-    make release-conda
+    make upload-conda
 
     ```
 
@@ -562,6 +570,9 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 #### More Detailed Version
 
 `conda-build` uses a build recipe `conda/meta.yaml`.
+
+Note, that `conda-build` recipe now relies on `sdist` generated tarball, so you need to run: `python setup.py sdist` or `make dist-pypi-sdist` if you plan on using the raw `conda-build` commands. Otherwise, `make dist-conda` already does it all for you. Basically it expects the clean tarball with source under `./dist/`.
+
 
 1. Check that it's valid:
 

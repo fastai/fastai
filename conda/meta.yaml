@@ -16,9 +16,11 @@ package:
 
 source:
   # Source from a local path
-  path: ..
+  # path: ..
 
   # Source from tarball
+  # note: must 'make dist-pypi' or `python setup.py sdist` before running conda-build as we now rely on MANIFEST.IN to only pick desired files and avoid copying data folders and alike - and its puts its clean tarball under /dist/:
+  url: ../dist/{{ data.name }}-{{ data.version }}.tar.gz
   # url: https://pypi.python.org/packages/source/fastai/fastai/fastai-1.0.0b.tar.gz
   # sha1: f0a2c9a30073449cfb7d171c57552f3109d93894
 
