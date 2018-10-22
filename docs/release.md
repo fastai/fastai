@@ -594,6 +594,12 @@ Note, that `conda-build` recipe now relies on `sdist` generated tarball, so you 
 
     it indicates that these packages are not in the specified via `-c` and user-pre-configured conda channels. Follow the instructions in the section `Dealing with Missing Conda Packages` and then come back to the current section and try to build again.
 
+    Note, that `conda-build` recipe now relies on tarball produced by `dist-pypi-sdist` target (it happens internally if you rely on `Makefile`, but if you do it without using `make`, then make sure you built the `sdist` tarball first, which is done by:
+
+    ```
+    python setup.py sdist
+    ```
+    which generates `dist/fastai-$version.tar.gz`, and this is what `conda-build` recipe needs. It's important to remember that if you change any files, you must rebuild the tarball, otherwise `conda-build` will be using the outdated files. If you do `make dist-conda` then it'll be taken care of automatically.
 
 
 
