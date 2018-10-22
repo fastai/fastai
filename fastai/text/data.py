@@ -371,11 +371,8 @@ class TextLMDataBunch(TextDataBunch):
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
-    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, bs=64, pad_idx=1, pad_first=True) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
-        bs = kwargs.pop('bs') if 'bs' in kwargs else 64
-        pad_idx = kwargs.pop('pad_idx') if 'pad_idx' in kwargs else 1
-        pad_first = kwargs.pop('pad_first') if 'pad_first' in kwargs else True
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
         train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn)
