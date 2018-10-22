@@ -74,13 +74,13 @@ def format_ft_def(func, full_name:str=None)->str:
     f_name = f"`class` {name}" if inspect.isclass(func) else name
     return f'{f_name}\n> {name}{arg_str}'
 
-def get_enum_doc(elt, full_name:str) -> str:
+def get_enum_doc(elt, full_name:str)->str:
     "Formatted enum documentation."
     vals = ', '.join(elt.__members__.keys())
     doc = f'{code_esc(full_name)}\n`Enum` = [{vals}]'
     return doc
 
-def get_cls_doc(elt, full_name:str) -> str:
+def get_cls_doc(elt, full_name:str)->str:
     "Class definition."
     parent_class = inspect.getclasstree([elt])[-1][0][1][0]
     doc = format_ft_def(elt, full_name)
@@ -122,7 +122,7 @@ def doc(elt):
     #display(Markdown(md))
 
 
-def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False) -> str:
+def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False)->str:
     "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
     parsed = ""
     doc = parse_docstring(inspect.getdoc(elt))
@@ -150,7 +150,7 @@ def replace_link(m):
 
 # Finds all places with a backtick but only if it hasn't already been linked
 BT_REGEX = re.compile("\[`([^`]*)`\](?:\([^)]*\))|`([^`]*)`") # matches [`key`](link) or `key`
-def link_docstring(modules, docstring:str, overwrite:bool=False) -> str:
+def link_docstring(modules, docstring:str, overwrite:bool=False)->str:
     "Search `docstring` for backticks and attempt to link those functions to respective documentation."
     mods = listify(modules)
     for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
@@ -212,7 +212,7 @@ def get_ft_names(mod, include_inner=False)->List[str]:
             fn_names.extend(get_inner_fts(elt))
     return fn_names
 
-def get_inner_fts(elt) -> List[str]:
+def get_inner_fts(elt)->List[str]:
     "List the inner functions of a class."
     fts = []
     for ft_name in elt.__dict__.keys():
@@ -272,17 +272,17 @@ def fn_name(ft)->str:
     elif hasattr(ft,'__origin__'): return str(ft.__origin__).split('.')[-1]
     else:                          return str(ft).split('.')[-1]
 
-def get_fn_link(ft) -> str:
+def get_fn_link(ft)->str:
     "Return function link to notebook documentation of `ft`. Private functions link to source code"
     module_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
     if func_name.startswith('_'): return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
-    return f'{base}/{module_name}#{func_name}'
+    return f'{base}/{module_name}.html#{func_name}'
 
-def get_module_name(ft) -> str: return inspect.getmodule(ft).__name__
+def get_module_name(ft)->str: return inspect.getmodule(ft).__name__
 
-def get_pytorch_link(ft) -> str:
+def get_pytorch_link(ft)->str:
     "Returns link to pytorch docs of `ft`."
     name = ft.__name__
     if name.startswith('torchvision'):
@@ -301,14 +301,14 @@ def get_pytorch_link(ft) -> str:
     fnlink = '.'.join(paths[:(2+offset)]+[name])
     return f'{PYTORCH_DOCS}{doc_path}#{fnlink}'
 
-def get_source_link(mod, lineno, display_text="[source]") -> str:
+def get_source_link(mod, lineno, display_text="[source]")->str:
     "Returns link to `lineno` in source code of `mod`."
     github_path = mod.__name__.replace('.', '/')
     link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
     if display_text is None: return link
     return f'<a href="{link}">{display_text}</a>'
 
-def get_function_source(ft, **kwargs) -> str:
+def get_function_source(ft, **kwargs)->str:
     "Returns link to `ft` in source code."
     try: lineno = inspect.getsourcelines(ft)[1]
     except Exception: return ''

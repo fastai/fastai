@@ -324,7 +324,6 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             print(f'Executing notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
         elif update_line_num:
-            print(f'Updating line #\'s for {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=update_line_num)
 
         if update_html: convert_nb(doc_path, html_path)
