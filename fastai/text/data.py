@@ -371,13 +371,13 @@ class TextLMDataBunch(TextDataBunch):
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
-    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, bs=64, pad_idx=1, pad_first=True) -> DataBunch:
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, bs=64, pad_idx=1, pad_first=True, **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
-        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn)
+        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn, **kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
-            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=collate_fn))
+            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=collate_fn, **kwargs))
         return cls(*dataloaders, path=path)
