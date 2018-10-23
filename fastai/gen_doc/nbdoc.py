@@ -35,6 +35,7 @@ def is_fastai_class(t): return belongs_to_module(t, MODULE_NAME)
 
 def belongs_to_module(t, module_name):
     "Check if `t` belongs to `module_name`."
+    if hasattr(t, '__func__'): return belongs_to_module(t.__func__, module_name)
     if not inspect.getmodule(t): return False
     return inspect.getmodule(t).__name__.startswith(module_name)
 
@@ -91,20 +92,19 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
              ignore_warn:bool=False, markdown=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
+    link = f'<a id={full_name or get_anchor(elt)}></a>' # Must happen before we extract __func__
     elt = getattr(elt, '__func__', elt)
-    if full_name is None and hasattr(elt, '__name__'): full_name = elt.__name__
+    full_name = full_name or fn_name(elt)
     if inspect.isclass(elt):
         if is_enum(elt.__class__):   doc = get_enum_doc(elt, full_name)
         else:                        doc = get_cls_doc(elt, full_name)
     elif isinstance(elt, Callable):  doc = format_ft_def(elt, full_name)
     else: doc = f'doc definition not supported for {full_name}'
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
-    link = f'<a id={full_name}></a>'
     doc += '\n'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
     if is_fastai_class(elt): doc += get_function_source(elt)
-    # return link+doc
     md = title_md(link+doc, title_level, markdown=markdown)
     if markdown: display(md)
     else: return md
@@ -156,7 +156,7 @@ def link_docstring(modules, docstring:str, overwrite:bool=False)->str:
     for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
     return re.sub(BT_REGEX, replace_link, docstring)
 
-def find_elt(modvars, keyword, match_last=True):
+def find_elt(modvars, keyword, match_last=False):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
     keyword = strip_fastai(keyword)
     if keyword in modvars: return modvars[keyword]
@@ -264,27 +264,34 @@ def show_video_from_youtube(code, start=0):
     url = f'https://www.youtube.com/embed/{code}?start={start}&amp;rel=0&amp;controls=0&amp;showinfo=0'
     return show_video(url)
 
+def get_anchor(fn)->str:
+    if hasattr(fn,'__qualname__'): return fn.__qualname__
+    if inspect.ismethod(fn): return fn_name(fn.__self__) + '.' + fn_name(fn)
+    return fn_name(fn)
+
 def fn_name(ft)->str:
     if ft in _typing_names: return _typing_names[ft]
     if hasattr(ft, '__name__'):   return ft.__name__
     elif hasattr(ft,'_name') and ft._name: return ft._name
-    #elif hasattr(ft,'__class__'): return ft.__class__.__name__
     elif hasattr(ft,'__origin__'): return str(ft.__origin__).split('.')[-1]
     else:                          return str(ft).split('.')[-1]
 
 def get_fn_link(ft)->str:
     "Return function link to notebook documentation of `ft`. Private functions link to source code"
+    ft = getattr(ft, '__func__', ft)
+    anchor = strip_fastai(get_anchor(ft))
     module_name = strip_fastai(get_module_name(ft))
     func_name = strip_fastai(fn_name(ft))
     if func_name.startswith('_'): return get_function_source(ft, display_text=None)
     base = '' if use_relative_links else FASTAI_DOCS
-    return f'{base}/{module_name}.html#{func_name}'
+    return f'{base}/{module_name}.html#{anchor}'
 
 def get_module_name(ft)->str: return inspect.getmodule(ft).__name__
 
 def get_pytorch_link(ft)->str:
     "Returns link to pytorch docs of `ft`."
     name = ft.__name__
+    if name == 'device': return f'{PYTORCH_DOCS}tensor_attributes.html#torch-device'
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
         if inspect.ismodule(ft): name = name.replace('.', '-')

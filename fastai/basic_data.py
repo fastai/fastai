@@ -105,4 +105,4 @@ class DataBunch():
     @property
     def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset
     @property
-    def loss_func(self)->Dataset: return self.train_ds.loss_func
+    def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)

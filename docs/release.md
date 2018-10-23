@@ -58,15 +58,26 @@ You can skip this step if you have done it once already on the system you're mak
 
 ## Quick Release Process
 
+
+Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
+
+```
+make release
+make post-release-checks
+```
+
 Here is the quick version that includes all the steps w/o the explanations. If you're unfamiliar with this process use the next section instead.
 
 ```
 make tools-update
 make master-branch-switch
-make bump && make release-branch-create && make commit-version
-make master-branch-switch && make bump-dev && make commit-dev-cycle-push
+make bump && make changes-finalize
+make release-branch-create && make commit-version
+make master-branch-switch
+make bump-dev && make changes-dev-cycle
+make commit-dev-cycle-push
 make prev-branch-switch && make test && make commit-tag-push
-make dist && make release
+make dist && make upload
 ```
 
 Now wait a few minutes for the pypi/conda servers to make the new packages visible to the clients and then:
@@ -95,26 +106,33 @@ This is a one-step at a time process. If you find any difficulties scroll down t
 The starting point of the workflow is a dev version of the master branch. For this process we will use `1.0.6.dev0` starting point as an example.
 
 
+1. check that `CHANGES.md` looks good, remove any empty sections, but don't modify the line:
 
-1. install the latest tools that will be used during the build
+   ```
+   ## 1.0.12.dev0 (Work In Progress)
+   ```
+
+   The build process relies on this exact format, it will change the version number and replace `Work In Progress` with release data automatically. If you change it manually the automated process will fail. So do not.
+
+2. install the latest tools that will be used during the build
 
     ```
     make tools-update            # update pip/conda build tools
     ```
 
-2. make sure we start with master branch
+3. make sure we start with master branch
 
     ```
     make master-branch-switch    # git checkout master
     ```
 
-3. check-dirty - git cleanup/stash/commit so there is nothing in the way
+4. check-dirty - git cleanup/stash/commit so there is nothing in the way
 
     ```
     make git-not-dirty || echo "Commit changes before proceeding"
     ```
 
-4. pick a starting point
+5. pick a starting point
 
     Normally, `git pull` to HEAD is fine, but it's the best to know which 'stable' <commit sha1> to use as a starting point.
 
@@ -126,16 +144,27 @@ The starting point of the workflow is a dev version of the master branch. For th
     git checkout <commit>
     ```
 
-5. start release-$(version) branch
+6. start release-$(version) branch
 
 
     ```
     make bump                     # 1.0.6.dev0 => 1.0.6
+    ```
+
+The following will fix the version and the date in `CHANGES.md`, you may want to check that it looks tidy.
+
+    ```
+    make changes-finalize         # 1.0.6.dev0 (WIP) => 1.0.6 (date)
+    ```
+
+We are ready to make the new release branch:
+
+    ```
     make release-branch-create    # git checkout -b release-1.0.6
     make commit-version           # git commit fastai/version.py
     ```
 
-6. go back to master and bump it to the next version + .dev0
+1. go back to master and bump it to the next version + .dev0
 
 
     ```
@@ -143,33 +172,36 @@ The starting point of the workflow is a dev version of the master branch. For th
     make bump-dev                 # 1.0.6 => 1.0.7.dev0
     ```
 
-    edit CHANGES.md - copy the template and start a new entry for the new version (XXX: could be automated)
+    Insert a new template into `CHANGES.md for the dev cycle with new version number:
+    ```
+    make changes-dev-cycle        # inserts new template + version
+    ```
 
     ```
     make commit-dev-cycle-push    # git commit fastai/version.py CHANGES.md; git push
     ```
 
-7. now we are no longer concerned with master, all the rest of the work is done on release-$(version) branch (we are using `git checkout -` here (like in `cd -`, since we no longer have the previous version)
+2. now we are no longer concerned with master, all the rest of the work is done on release-$(version) branch (we are using `git checkout -` here (like in `cd -`, since we no longer have the previous version)
 
     ```
     make prev-branch-switch       # git checkout - (i.e. release-1.0.6 branch)
     ```
 
-8. finalize CHANGES.md (remove empty items) - version and date (could be automated)
+3. finalize CHANGES.md (remove empty items) - version and date (could be automated)
 
-9. validate quality
+4. validate quality
 
     ```
     make test                     # py.test tests
     ```
 
-10. git tag with version, commit and push CHANGES.md and version.py
+5. git tag with version, commit and push CHANGES.md and version.py
 
     ```
     make commit-tag-push          # git commit CHANGES.md; git tag; git push
     ```
 
-11. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
+6. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
 
     ```
     make dist                     # make dist-pypi; make dist-conda
@@ -177,22 +209,22 @@ The starting point of the workflow is a dev version of the master branch. For th
 
     This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-12. upload packages.
+7. upload packages.
 
     ```
-    make release                  # make release-pypi; make release-conda
+    make upload                  # make upload-pypi; make upload-conda
     ```
 
     This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-13. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make release` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
+8. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make upload` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
 
     ```
     make test-install             # pip install fastai==1.0.6; pip uninstall fastai
                                   # conda install -y -c fastai fastai==1.0.6
     ```
 
-14. if some problems were detected during the release process, or something was committed by mistake into the release brach, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
+9. if some problems were detected during the release process, or something was committed by mistake into the release brach, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
 
     1. check whether anything needs to be backported
 
@@ -203,7 +235,7 @@ The starting point of the workflow is a dev version of the master branch. For th
     If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
 
 
-15. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
+10. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
 
     ```
     make master-branch-switch     # git checkout master
@@ -257,12 +289,12 @@ Find what needs to be backported, there are a few ways to approach it:
 * get list of commits between the branching point and the HEAD of the branch
 
     ```
-    git log  --oneline $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
+    git log  --oneline $(git merge-base master origin/release-1.0.6)..origin/release-1.0.6
     ```
 
 * get the diff of commits between the branching point and the HEAD of the branch
     ```
-    git diff $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
+    git diff $(git merge-base master origin/release-1.0.6)..origin/release-1.0.6
     ```
 
 * alternative GUI way: checking what needs to be backported on github
@@ -365,7 +397,7 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
 2. Publish:
 
     ```
-    make release-pypi
+    make upload-pypi
     ```
 
     Note: PyPI won't allow re-uploading the same package filename, even if it's a minor fix. If you delete the file from pypi or test.pypi it still won't let you do it. So either a patch-level version needs to be bumped (A.B.C++) or some [post release string added](https://www.python.org/dev/peps/pep-0440/#post-releases) in `version.py`.
@@ -397,6 +429,16 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
     ```
     python setup.py sdist
     ```
+
+    `MANIFEST.in` is in charge of what source files are included in the package. If you want to include the whole directory `tests`, but not `tests/data` for example, adjust `MANIFEST.in` to have:
+
+    ```
+    recursive-include tests *
+    prune tests/data
+
+    ```
+
+    For more details, see [Creating a Source Distribution](https://docs.python.org/3/distutils/sourcedist.html)
 
 *  Build Built Distribution
 
@@ -518,7 +560,7 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 2. Upload
 
     ```
-    make release-conda
+    make upload-conda
 
     ```
 
@@ -535,6 +577,9 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 #### More Detailed Version
 
 `conda-build` uses a build recipe `conda/meta.yaml`.
+
+Note, that `conda-build` recipe now relies on `sdist` generated tarball, so you need to run: `python setup.py sdist` or `make dist-pypi-sdist` if you plan on using the raw `conda-build` commands. Otherwise, `make dist-conda` already does it all for you. Basically it expects the clean tarball with source under `./dist/`.
+
 
 1. Check that it's valid:
 
@@ -556,6 +601,12 @@ To build a Conda package and release it on [anaconda.org](https://anaconda.org/f
 
     it indicates that these packages are not in the specified via `-c` and user-pre-configured conda channels. Follow the instructions in the section `Dealing with Missing Conda Packages` and then come back to the current section and try to build again.
 
+    Note, that `conda-build` recipe now relies on tarball produced by `dist-pypi-sdist` target (it happens internally if you rely on `Makefile`, but if you do it without using `make`, then make sure you built the `sdist` tarball first, which is done by:
+
+    ```
+    python setup.py sdist
+    ```
+    which generates `dist/fastai-$version.tar.gz`, and this is what `conda-build` recipe needs. It's important to remember that if you change any files, you must rebuild the tarball, otherwise `conda-build` will be using the outdated files. If you do `make dist-conda` then it'll be taken care of automatically.
 
 
 
@@ -907,23 +958,36 @@ The following sections go into pip/conda-specific tools and methods for figuring
 
 #### Conda Dependencies
 
+Here is how you can find out currently installed packages and conda dependencies:
 
-* To find out the dependencies of the package:
+* To find out the currently installed version of a package:
 
     ```
-    conda search --info spacy=2.0.16
+    conda list spacy
+    ```
+
+    Same, but do not show pip-only installed packages.
+    ```
+    conda list --no-pip spacy
+    ```
+
+
+* To find out the dependencies of a package:
+
+    ```
+    conda search --info spacy==2.0.16
     ```
 
     Narrow down to a specific platform build:
 
     ```
-    conda search --info spacy=2.0.16=py37h962f231_0
+    conda search --info spacy==2.0.16=py37h962f231_0
     ```
 
     Also can use a wildcard:
 
     ```
-    conda search --info spacy=2.0.16=py37*
+    conda search --info spacy==2.0.16=py37*
     ```
 
     It supports -c channel, for packages not in a main channel
@@ -945,6 +1009,20 @@ The following sections go into pip/conda-specific tools and methods for figuring
     ```
 
     Add `-c fastai/label/test` to make it check our test package.
+
+
+Here is the full Conda packages version specification table:
+
+Constraint type         | Specification       | Result
+------------------------|---------------------|-----------------------------------
+Fuzzy                   |numpy=1.11           |1.11.0, 1.11.1, 1.11.2, 1.11.18 etc.
+Exact                   |numpy==1.11          |1.11.0
+Greater than or equal to|"numpy>=1.11"        |1.11.0 or higher
+OR                      |"numpy=1.11.1|1.11.3"|1.11.1, 1.11.3
+AND                     |"numpy>=1.8,<2"      |1.8, 1.9, not 2.0
+
+
+
 
 * Other `conda search` tricks:
 
@@ -1002,10 +1080,19 @@ platform are shown):
 
 #### PyPI Dependencies
 
-Tools for finding out pip dependencies (direct and reversed).
+Tools for finding out currently installed packages and pip dependencies (direct and reversed).
 
 
-* `pipdeptree`: `pip install pipdeptree`
+* `pipdeptree`: (`pip install pipdeptree`)
+
+    For a specific package:
+    ```
+    pipdeptree --packages  pillow
+    ```
+    or with more details:
+    ```
+    pip show pillow
+    ```
 
     Print the whole tree of the installed base:
     ```
@@ -1107,10 +1194,6 @@ Under Project Settings, important things are:
 
 CI Builds are triggered on every `git push` to master (except when it's an obvious document only change commit, like a change to an `.md` file).
 
-To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and enter the commit hash (most likely of the latest commit). This is the way to get occasional CI builds against non-master branches.
-
-
-
 
 #### PR Builds
 
@@ -1123,6 +1206,15 @@ Note, that neither green or red status of the PR guarantees that it's so. Since 
 Currently we don't have the following enforcement enabled ([PR won't be merge-able at github](https://help.github.com/articles/about-required-status-checks/
 ) if the PR's build status is failed.)
 
+
+#### Manual Jobs
+
+To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and in the Commit field either nothing or enter the desired commit hash. This is the way to get occasional CI builds against non-master branches, which is useful when testing a new pipeline.
+
+
+#### Scheduled Jobs
+
+If you want to run a build as a cron-job, rather than it getting triggered by a PR or a push, add the pipeline script as normal, and then go to that build's [Edit], and then [Triggers], disable CI and PR entries and configure a scheduled entry.
 
 
 #### Modifying `azure-pipelines.yml`
@@ -1151,6 +1243,12 @@ And remember to sync the branch with the master changes so that you're testing t
     ```
     https://dev.azure.com/fastdotai/_apis/public/hooks/externalEvents (pull_request)
     ```
+
+
+#### Multiple Pipelines In The Same Repo
+
+Currently [New] will not let you choose an alternative pipeline. So until this is fixed, let it use the default `azure-pipelines.yml`, Save and then go and Edit it and replace with a different file from the repository (and perhaps switching to a different branch if needed), using [...].
+
 
 
 

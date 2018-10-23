@@ -14,13 +14,13 @@ def read_classes(fname):
 
 class BaseTextDataset():
     "To directly create a text datasets from `ids` and `labels`."
-    def __init__(self, ids:Collection[Collection[int]], labels:Collection[Union[int,float]], vocab_size:int, 
+    def __init__(self, ids:Collection[Collection[int]], labels:Collection[Union[int,float]], vocab_size:int,
                  classes:Classes=None):
         self.ids,self.labels,self.vocab_size,self.classes = ids,labels,vocab_size,classes
-    
+
     def __getitem__(self, idx:int) -> Tuple[Collection[int],Union[int,float]]: return self.ids[idx],self.labels[idx]
     def __len__(self) -> int: return len(self.ids)
-                                      
+
 class TextDataset(BaseTextDataset):
     "Basic dataset for NLP tasks."
 
@@ -42,7 +42,7 @@ class TextDataset(BaseTextDataset):
         if os.path.isfile(self.path/f'{self.name}_lbl.npy'):
             self.labels = np.load(self.path/f'{self.name}_lbl.npy')
         else: self.labels = np.zeros((len(self.ids),), dtype=np.float32 if len(self.label_cols) > 1 else np.int64)
-        self.loss_func = F.cross_entropy if len(self.label_cols) == 1 else F.binary_cross_entropy_with_logits
+        self.loss_func = F.cross_entropy if len(self.label_cols) <= 1 else F.binary_cross_entropy_with_logits
         if classes: self.classes = classes
         elif os.path.isfile(self.path/'classes.txt'): self.classes = read_classes(self.path/'classes.txt')
         else: self.classes = np.unique(self.labels)
@@ -275,17 +275,17 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     "Function that collect samples and adds padding."
     max_len = max([len(s[0]) for s in samples])
     res = torch.zeros(max_len, len(samples)).long() + pad_idx
-    for i,s in enumerate(samples): 
+    for i,s in enumerate(samples):
         if pad_first: res[-len(s[0]):,i] = LongTensor(s[0])
         else:         res[:len(s[0]):,i] = LongTensor(s[0])
-    return res, torch.tensor([s[1] for s in samples]).squeeze()
+    return res, tensor([s[1] for s in samples])
 
 class TextDataBunch(DataBunch):
-    """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or 
+    """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
     `TextClasDataBunch`."""
-    
+
     @classmethod
-    def from_ids(cls, path, trn_ids:Collection[Collection[int]], trn_lbls:Collection[Union[int,float]], 
+    def from_ids(cls, path, trn_ids:Collection[Collection[int]], trn_lbls:Collection[Union[int,float]],
                  val_ids:Collection[Collection[int]], val_lbls:Collection[Union[int,float]], vocab_size:int,
                  tst_ids:Collection[Collection[int]]=None, classes:Classes=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
@@ -294,13 +294,13 @@ class TextDataBunch(DataBunch):
         datasets = [train_ds, BaseTextDataset(val_ids, val_lbls, vocab_size, classes)]
         if tst_ids is not None: datasets.append(BaseTextDataset(tst_ids, np.zeros(len(tst_ids)), vocab_size, classes))
         return cls.create(datasets, path, **kwargs)
-    
+
     @classmethod
     def from_id_files(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                       itos:str='itos.pkl', **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
         path=Path(path)
-        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'id_suff', 'lbl_suff', 'clear_cache']
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'id_suff', 'lbl_suff', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
         train_ds = TextDataset.from_ids(path, train, itos=itos, **txt_kwargs)
         datasets = [train_ds, TextDataset.from_ids(path, valid, itos=itos, **txt_kwargs)]
@@ -312,7 +312,7 @@ class TextDataBunch(DataBunch):
                          vocab:Vocab=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels."
         path=Path(path)
-        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'tok_suff', 'lbl_suff', 'clear_cache']
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'tok_suff', 'lbl_suff', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
         train_ds = TextDataset.from_tokens(path, train, vocab=vocab, **txt_kwargs)
         datasets = [train_ds, TextDataset.from_tokens(path, valid, vocab=train_ds.vocab, **txt_kwargs)]
@@ -325,20 +325,20 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from DataFrames."
         tokenizer = ifnone(tokenizer, Tokenizer())
         path=Path(path)
-        k_names = ['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache']
+        k_names = ['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
         train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
         datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
         if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
         return cls.create(datasets, path, **kwargs)
-    
+
     @classmethod
     def from_csv(cls, path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
                       vocab:Vocab=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
         tokenizer = ifnone(tokenizer, Tokenizer())
         path=Path(path)
-        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache']
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
         train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
         datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
@@ -351,9 +351,10 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from text files in folders."
         tokenizer = ifnone(tokenizer, Tokenizer())
         path=Path(path)
-        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'clear_cache']
+        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
-        train_ds = TextDataset.from_folder(path, tokenizer, train, shuffle=shuffle, vocab=vocab, **txt_kwargs)
+        train_ds = TextDataset.from_folder(path, tokenizer, train, shuffle=shuffle, vocab=vocab,
+                                           classes=txt_kwargs.pop('classes', None), **txt_kwargs)
         datasets = [train_ds, TextDataset.from_folder(path, tokenizer, valid, classes=train_ds.classes,
                                         shuffle=shuffle, vocab=train_ds.vocab, **txt_kwargs)]
         if test: datasets.append(TextDataset.from_one_folder(path, tokenizer=tokenizer, folder=test, classes=train_ds.classes,
@@ -371,16 +372,13 @@ class TextLMDataBunch(TextDataBunch):
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
-    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, bs=64, pad_idx=1, pad_first=True, **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
-        bs = kwargs.pop('bs') if 'bs' in kwargs else 64
-        pad_idx = kwargs.pop('pad_idx') if 'pad_idx' in kwargs else 1
-        pad_first = kwargs.pop('pad_first') if 'pad_first' in kwargs else True
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
-        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn)
+        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn, **kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
-            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=collate_fn))
+            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=collate_fn, **kwargs))
         return cls(*dataloaders, path=path)

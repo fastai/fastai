@@ -29,7 +29,7 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, op
         cb_handler.on_step_end()
         opt.zero_grad()
 
-    return (loss.detach().cpu(),)
+    return (loss.detach().cpu(),) #TODO: change code so that it doesn't return a tuple anymore and check it doesn't break anything
 
 def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
     "Predict the output of the elements in the dataloader."
@@ -47,7 +47,7 @@ def validate(model:Model, dl:DataLoader, loss_func:OptLossFunc=None,
             val_losses.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler))
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
-            if cb_handler and cb_handler.on_batch_end(val_losses[0]): break
+            if cb_handler and cb_handler.on_batch_end(val_losses[-1][0]): break
         nums = np.array(nums, dtype=np.float32)
         if average: return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_losses)]
         else:       return val_losses

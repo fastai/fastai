@@ -10,15 +10,16 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-<!-- template
-## 1.0.7dev (Work In Progress)
+
+
+
+## 1.0.12.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
 ### Fixed:
--->
 
 ## 1.0.12.dev0 (Work In Progress)
 
@@ -30,19 +31,25 @@ of that change.
 - Handle missing `loss_func` attr
 - Pass on the `use_bn` parameter in `get_tabular_learner`
 - Bad handling when final batch has size of 1 
+- rolled back numpy dependency to >=1.12 (anaconda package has a upper pin on it) and to pip>=9.0.1, the old version are buggy but should be ok for fastai
 
-## 1.0.11 (2018-10-20))
+## 1.0.11 (2018-10-20)
 
 ### Fixed:
 
 - Added missing `pyyaml` dependency to conda too
 
+### Changed:
 
-## 1.0.10 (2018-10-20))
+- Use `spacy.blank` instead of `spacy.load` to avoid having to download english model
+
+## 1.0.10 (2018-10-20)
 
 ### Fixed:
 
 - Added missing `pyyaml` dependency
+
+
 
 ## 1.0.9 (2018-10-20)
 
@@ -69,9 +76,13 @@ of that change.
 - add `dep_var` column in `test_df` if it doesn't exists (Kevin Bird)
 - backwards=True when creating a LanguageModelLoader (mboyanov)
 
+
+
 ## 1.0.8 (2018-10-20)
 
 - Not released
+
+
 
 ## 1.0.7 (2018-10-19)
 
@@ -106,7 +117,8 @@ of that change.
 - `fit_one_cycle` doesn't take other callbacks
 - Many broken docs links fixed
 
+
+
 ## 1.0.6 (2018-10-01)
 
 - Last release without CHANGES updates
-
