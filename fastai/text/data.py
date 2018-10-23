@@ -353,7 +353,8 @@ class TextDataBunch(DataBunch):
         path=Path(path)
         k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
-        train_ds = TextDataset.from_folder(path, tokenizer, train, shuffle=shuffle, vocab=vocab, **txt_kwargs)
+        train_ds = TextDataset.from_folder(path, tokenizer, train, shuffle=shuffle, vocab=vocab,
+                                           classes=txt_kwargs.pop('classes', None), **txt_kwargs)
         datasets = [train_ds, TextDataset.from_folder(path, tokenizer, valid, classes=train_ds.classes,
                                         shuffle=shuffle, vocab=train_ds.vocab, **txt_kwargs)]
         if test: datasets.append(TextDataset.from_one_folder(path, tokenizer=tokenizer, folder=test, classes=train_ds.classes,
