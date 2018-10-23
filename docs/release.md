@@ -997,6 +997,20 @@ Here is how you can find out currently installed packages and conda dependencies
 
     Add `-c fastai/label/test` to make it check our test package.
 
+
+Here is the full Conda packages version specification table:
+
+Constraint type         | Specification       | Result
+------------------------|---------------------|-----------------------------------
+Fuzzy                   |numpy=1.11           |1.11.0, 1.11.1, 1.11.2, 1.11.18 etc.
+Exact                   |numpy==1.11          |1.11.0
+Greater than or equal to|"numpy>=1.11"        |1.11.0 or higher
+OR                      |"numpy=1.11.1|1.11.3"|1.11.1, 1.11.3
+AND                     |"numpy>=1.8,<2"      |1.8, 1.9, not 2.0
+
+
+
+
 * Other `conda search` tricks:
 
   `conda search` outputs results as following:

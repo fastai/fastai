@@ -31,7 +31,7 @@ requirements = to_list("""
     matplotlib
     nbconvert
     nbformat
-    numpy>=1.15
+    numpy>=1.12
     pandas
     Pillow
     requests
@@ -70,7 +70,7 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 dev_requirements = { 'dev' : to_list("""
     distro
     jupyter_contrib_nbextensions
-    pip>=18.1
+    pip>=9.0.1
     pipreqs>=0.4.9
     pytest
     wheel>=0.30.0
