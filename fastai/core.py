@@ -47,7 +47,8 @@ def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
 
-def to_int(b):
+def to_int(b:Any)->Union[int,List[int]]:
+    "Convert `b` to an int or list of ints (if `is_listy`); raises exception if not convertible"
     if is_listy(b): return [to_int(x) for x in b]
     else:          return int(b)
 
