@@ -19,7 +19,9 @@ def test_listify(p, q, expected):
 
 def test_ifnone():
     assert ifnone(None, 5) == 5
+    assert ifnone(5, None) == 5
     assert ifnone(1, 5)    == 1
+    assert ifnone(0, 5)    == 0
 
 def test_uniqueify():
     assert uniqueify([1,1,3,3,5]) == [1,3,5]
@@ -27,9 +29,14 @@ def test_uniqueify():
     assert uniqueify([1,1,1,3,5]) == [1,3,5]
 
 def test_listy():
-    assert is_listy([1,1,3,3,5]) == True
-    assert is_listy((1,1,3,3,5)) == True
-    assert is_listy(1)           == False
+    assert is_listy([1,1,3,3,5])      == True
+    assert is_listy((1,1,3,3,5))      == True
+    assert is_listy([1,"2",3,3,5])    == True
+    assert is_listy((1,"2",3,3,5))    == True
+    assert is_listy(1)                == False
+    assert is_listy("2")              == False
+    assert is_listy({1, 2})           == False
+    assert is_listy(set([1,1,3,3,5])) == False
 
 def test_tuple():
     assert is_tuple((1,1,3,3,5)) == True
@@ -38,6 +45,13 @@ def test_tuple():
 
 def test_noop():
     assert noop(1) is 1
+
+def test_to_int():
+    assert to_int(("1","1","3","3","5")) == [1,1,3,3,5]
+    assert to_int([1,"2",3.3,3,5])       == [1,2,3,3,5]
+    assert to_int(1)                     == 1
+    assert to_int(1.2)                   == 1
+    assert to_int("1")                   == 1
 
 def test_partition_functionality():
 
