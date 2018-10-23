@@ -21,6 +21,16 @@ of that change.
 
 ### Fixed:
 
+## 1.0.12.dev0 (Work In Progress)
+
+### Fixed:
+
+- change TextDataBunchClass method [`from_ids_files`, `from_tokens`, `from_df`,
+  `from_csv`, `from_folder`] so that classes argument is passed to the call to TextDataset
+- Strip space from file name when CSV has spaces
+- Handle missing `loss_func` attr
+- Pass on the `use_bn` parameter in `get_tabular_learner`
+- Bad handling when final batch has size of 1 
 - rolled back numpy dependency to >=1.12 (anaconda package has a upper pin on it) and to pip>=9.0.1, the old version are buggy but should be ok for fastai
 
 ## 1.0.11 (2018-10-20)
@@ -32,8 +42,6 @@ of that change.
 ### Changed:
 
 - Use `spacy.blank` instead of `spacy.load` to avoid having to download english model
-
-
 
 ## 1.0.10 (2018-10-20)
 
