@@ -7,23 +7,86 @@ title: Troubleshooting
 
 ### Correctly configured NVIDIA drivers
 
-Please skip this section if  your system doesn't have an NVIDIA GPU.
+Please skip this section if your system doesn't have an NVIDIA GPU.
 
-It doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch-nightly` with `cuda92` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
+This section's main purpose is to help diagnose and solve the problem of getting `False` when running:
+
+```
+import torch
+print(torch.cuda.is_available())
+```
+
+despite having `nvidia-smi` working just fine. Which means that `pytorch` can't find the NVIDIA drivers that match the currently active kernel modules.
+
+note: `pytorch` installs itself as `torch`. So we refer to the project and its packages as `pytorch`, but inside python we use it as `torch`.
+
+This issue could have other manifestations, for example, instead of getting `False`, you may get an error like:
+
+```
+ImportError: libcuda.so.1: cannot open shared object file: No such file or directory
+```
+
+First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch-nightly` with `cuda92` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
 
 The only thing you to need to ensure is that you have a correctly configured NVIDIA driver, which usually you can test by running: `nvidia-smi` in your console.
 
-Please note that some users have **more than one version of NVIDIA driver installed** (e.g. one via `apt` and another from source). It's very likely that `pytorch` may have issues on such system. In such case, please, wipe any remnants of NVIDIA driver on your system, and install one NVIDIA driver of your choice.
+If you have `nvidia-smi` working and `pytorch` still can't recognize your NVIDIA CPU, most likely your system has **more than one version of NVIDIA driver installed** (e.g. one via `apt` and another from source). If that's the case, wipe any remnants of NVIDIA drivers on your system, and install one NVIDIA driver of your choice. The following are just the guidelines, you will need to find your platform-specific commands to do it right.
 
-Once you uninstalled the old drivers, to make sure you don't have any orphaned nvidia drivers on your system, usually it's enough to run:
+1. Purge `nvidia-drivers`:
 
-`find /usr/ | grep libcuda.so`
+   ```
+   sudo apt-get purge nvidia-*
+   ```
 
-or a more sweeping one (if your system updates the `mlocate` `db` regularly)
+   Note, not remove, but purge! purge in addition to removing the package, also removes package-specific configuration and any other files that were created by it.
 
-`locate -e libcuda.so`
+2. Once you uninstalled the old drivers, to make sure you don't have any orphaned nvidia drivers on your system, remaining from manual installs. Usually it's enough to run:
 
-If you get any listing as a result of  running of these commands, that means you still have some orphaned nvidia driver on your system.
+   ```
+   find /usr/ | grep libcuda.so
+   ```
+
+   or a more sweeping one (if your system updates the `mlocate` `db` regularly)
+
+   ```
+   locate -e libcuda.so
+   ```
+
+If you get any listing as a result of running of these commands, that means you still have some orphaned nvidia driver on your system.
+
+3. Next, make sure you clear out any remaining dkms nvidia modules:
+
+   ```
+   dkms status | grep nvidia
+   ```
+
+   If after uninstalling all NVIDIA drivers, you still get the command listing dkms nvidia modules, uninstall those too.
+
+   For example if the output is:
+   ```
+   nvidia-396, 396.44, 4.15.0-34-generic, x86_64: installed
+   nvidia-396, 396.44, 4.15.0-36-generic, x86_64: installed
+   ```
+
+   then run:
+   ```
+   dkms remove nvidia/396.44 --all
+   ```
+
+   Lookup `dkms` manual for the complete details if need be.
+
+4. Install NVIDIA drivers according to your platform's way (**need 396.xx+ driver for `pytorch` built with `cuda92`**)
+
+5. reboot
+
+   Check that your `nvidia-smi` works, and then check that
+
+   ```
+   import torch
+   print(torch.cuda.is_available())
+   ```
+
+   now returns `True`.
 
 Also note that `pytorch` will **silently fallback to CPU** if it reports `torch.cuda.is_available()` as `False`, so the only indicator of something being wrong will be that your notebooks will be running very slowly and you will hear your CPU revving up (if you are using a local system). Run:
 
