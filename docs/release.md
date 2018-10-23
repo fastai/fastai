@@ -66,6 +66,8 @@ make release
 make post-release-checks
 ```
 
+`make test`'s non-deterministic tests may decide to fail right during the release rites. If it happens continue with the targets below, starting at `make test`.
+
 Here is the quick version that includes all the steps w/o the explanations. If you're unfamiliar with this process use the next section instead.
 
 ```
@@ -91,6 +93,7 @@ make backport-check
 If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
 
 
+Finally, don't forget this very important step!
 ```
 make master-branch-switch
 ```

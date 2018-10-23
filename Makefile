@@ -217,6 +217,12 @@ backport-check: ## backport to master check
 ##@ Testing new package installation
 
 test-install: ## test conda/pip package by installing that version them
+	@echo "\n\n*** [$(cur_branch)] Branch check (needing release branch)"
+	@if [ "$(cur_branch)" = "master" ]; then\
+		echo "Error: you are not on the release branch, to switch to it do:\n  git checkout release-1.0.??\nafter adjusting the version number. Also possible that:\n  git checkout - \nwill do the trick, if you just switched from it. And then repeat:\n  make test-install\n";\
+		exit 1;\
+	fi
+
 	@echo "\n\n*** Install/uninstall $(version) pip version"
 	@pip uninstall -y fastai
 	pip install fastai==$(version)
