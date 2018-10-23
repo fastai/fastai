@@ -278,7 +278,7 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     for i,s in enumerate(samples): 
         if pad_first: res[-len(s[0]):,i] = LongTensor(s[0])
         else:         res[:len(s[0]):,i] = LongTensor(s[0])
-    return res, torch.tensor([s[1] for s in samples]).squeeze()
+    return res, tensor([s[1] for s in samples])
 
 class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or 
