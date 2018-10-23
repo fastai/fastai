@@ -174,7 +174,7 @@ commit-tag-push: ## commit and tag the release
 # there are any, then most likely there are things to backport.
 backport-check: ## backport to master check
 	@echo "*** Checking if anything needs to be backported"
-	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base --fork-point master origin/release-$(version))))
+	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base master origin/release-$(version))))
 	@if [ ! -n "$(start_rev)" ]; then\
 		echo "*** failed, check you're on the correct release branch";\
 		exit 1;\
