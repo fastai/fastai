@@ -282,12 +282,12 @@ Find what needs to be backported, there are a few ways to approach it:
 * get list of commits between the branching point and the HEAD of the branch
 
     ```
-    git log  --oneline $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
+    git log  --oneline $(git merge-base master origin/release-1.0.6)..origin/release-1.0.6
     ```
 
 * get the diff of commits between the branching point and the HEAD of the branch
     ```
-    git diff $(git merge-base --fork-point master origin/release-1.0.6)..origin/release-1.0.6
+    git diff $(git merge-base master origin/release-1.0.6)..origin/release-1.0.6
     ```
 
 * alternative GUI way: checking what needs to be backported on github
