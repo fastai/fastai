@@ -185,7 +185,7 @@ commit-tag-push: ## commit and tag the release
 # from the point of branching of release-$(version) till its HEAD. If
 # there are any, then most likely there are things to backport.
 backport-check: ## backport to master check
-	@echo "*** Checking if anything needs to be backported"
+	@echo "*** [$(cur_branch)] Checking if anything needs to be backported"
 	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base master origin/release-$(version))))
 	@if [ ! -n "$(start_rev)" ]; then\
 		echo "*** failed, check you're on the correct release branch";\
@@ -216,11 +216,11 @@ test-install: ## test conda/pip package by installing that version them
 ##@ CHANGES.md file targets
 
 changes-finalize: ## fix the version and stamp the date
-	@echo "\n\n*** Adjust '## version (date)' in CHANGES.md"
+	@echo "\n\n*** [$(cur_branch)] Adjust '## version (date)' in CHANGES.md"
 	perl -pi -e 'use POSIX qw(strftime); BEGIN{$$date=strftime "%Y-%m-%d", localtime};s|^##.*Work In Progress\)|## $(version) ($$date)|' CHANGES.md
 
 changes-dev-cycle: ## insert new template + version
-	@echo "\n\n*** Install new template + version in CHANGES.md"
+	@echo "\n\n*** [$(cur_branch)] Install new template + version in CHANGES.md"
 	perl -0777 -pi -e 's|^(##)|\n\n## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
 
 
@@ -229,26 +229,26 @@ changes-dev-cycle: ## insert new template + version
 # Support semver, but using python's .dev0 instead of -dev0
 
 bump-patch: ## bump patch-level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3, $$4+1); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3, $$4+1); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump: bump-patch ## alias to bump-patch (as it's used often)
 
 bump-minor: ## bump minor-level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3+1, $$4); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3+1, $$4); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-major: ## bump major-level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2+1, $$3, $$4); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2+1, $$3, $$4); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-patch-dev: ## bump patch-level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3, $$4+1, "dev0"); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3, $$4+1, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-dev: bump-patch-dev ## alias to bump-patch-dev (as it's used often)
 
 bump-minor-dev: ## bump minor-level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, $$4, "dev0"); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, $$4, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-major-dev: ## bump major-level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, $$3, $$4, "dev0"); print STDERR "*** Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, $$3, $$4, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 
 ##@ Coverage
