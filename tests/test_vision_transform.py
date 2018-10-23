@@ -57,3 +57,56 @@ def test_mask_data_aug():
     tfm_y = apply_tfms(tfms[0], mask, do_resolve=False, size=64)
     new_mask = (tfm_x.data[0] > 0.5)
     assert (new_mask.float() - tfm_y.data[0].float()).sum() < 1.
+
+def img_test(cs):
+    points = torch.zeros(5,5)
+    if not is_listy(cs[0]): cs = [cs]
+    for c in cs: points[c[0],c[1]] = 1
+    return Image(points[None])
+
+def check_image(x, cs):
+    if not is_listy(cs[0]): cs = [cs]
+    target = torch.zeros(*x.size)
+    for c in cs: target[c[0],c[1]] = 1
+    assert (x.data - target).abs().sum() <5e-7
+
+def check_tfms(img, tfms, targets, **kwargs):
+    for tfm, t in zip(tfms, targets):
+        check_image(apply_tfms(tfm, img, **kwargs), t)
+
+def test_all_warps():
+    signs = [1,1,1,-1,-1,1,-1,-1]
+    inputs = [[0,0], [0,0], [4,0], [4,0], [0,4], [0,4], [4,4], [4,4]]
+    targets = [[0,1], [1,0], [4,1], [3,0], [0,3], [1,4], [4,3], [3,4]]
+    for k, (i,t, s) in enumerate(zip(inputs, targets, signs)):
+        magnitudes = torch.zeros(8)
+        magnitudes[k] = s * 0.5
+        check_image(perspective_warp(img_test(i), magnitude=magnitudes), t)
+        tfm = [skew(magnitude=-0.5)]
+        tfm[0].resolved = {'direction':k, 'magnitude':-0.5}
+        check_image(apply_tfms(tfm, img_test(i), do_resolve=False), t)
+    inputs = [[[0,4], [4,4]], [[0,0], [4,0]], [[4,0], [4,4]], [[0,0], [0,4]]]
+    targets = [[[1,4], [3,4]], [[1,0], [3,0]], [[4,1], [4,3]], [[0,1], [0,3]]]
+    for k, (i,t) in enumerate(zip(inputs, targets)):
+        tfm = [tilt(magnitude=-0.5)]
+        tfm[0].resolved = {'direction':k, 'magnitude':-0.5}
+        check_image(apply_tfms(tfm, img_test(i), do_resolve=False), t)
+        
+def test_all_dihedral():
+    tfm = dihedral()
+    img = img_test([0,1])
+    targets = [[0,1], [4,1], [0,3], [4,3], [1,0], [1,4], [3,0], [3,4]]
+    for k, t in enumerate(targets):
+        tfm.resolved = {'k':k}
+        check_image(apply_tfms(tfm, img, do_resolve=False), t)
+        
+def test_deterministic_transforms():
+    img = img_test([3,3])
+    check_tfms(img, [rotate(degrees=90), rotate(degrees=-90), flip_lr(), flip_affine()], 
+               [[1,3], [3,1], [3,1], [3,1]])
+    check_tfms(img, [zoom(scale=2), squish(scale=0.5), squish(scale=2)], 
+               [[4,4], [3,4], [4,3]], mode='nearest')
+    crops = [crop(size=4, row_pct=r, col_pct=c) for r,c in zip([0.,0.,0.5,0.99,0.99], [0.,0.99,0.5,0.,0.99])]
+    check_tfms(img, crops, [[3,3], [3,2],[2,2],[2,3],[2,2]])
+    pads = [pad(padding=1, mode=mode) for mode in ['zeros', 'border', 'reflection']]
+    check_tfms(img_test([3,4]), pads, [[4,5], [[4,5],[4,6]], [[4,5],[6,5]]])
