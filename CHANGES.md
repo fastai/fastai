@@ -20,6 +20,17 @@ of that change.
 ### Fixed:
 -->
 
+## 1.0.12.dev0 (Work In Progress)
+
+### Fixed:
+
+- change TextDataBunchClass method [`from_ids_files`, `from_tokens`, `from_df`,
+  `from_csv`, `from_folder`] so that classes argument is passed to the call to TextDataset
+- Strip space from file name when CSV has spaces
+- Handle missing `loss_func` attr
+- Pass on the `use_bn` parameter in `get_tabular_learner`
+- Bad handling when final batch has size of 1 
+
 ## 1.0.11 (2018-10-20))
 
 ### Fixed:
