@@ -51,7 +51,6 @@ requirements:
 #
 # note: "module # [py36]" tells conda-build that this requirement is only for python3.6, it's not a comment.
   run:
-    - anaconda >=5.3.0
     - dataclasses # [py36]
     - fastprogress >=0.1.10
     - ipython
