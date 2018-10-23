@@ -98,7 +98,7 @@ Finally, don't forget this very important step!
 make master-branch-switch
 ```
 
-
+And announce the release and its changes in [Developer chat thread](https://forums.fast.ai/t/developer-chat/22363/289).
 
 
 
@@ -244,6 +244,9 @@ We are ready to make the new release branch:
     make master-branch-switch     # git checkout master
     ```
 
+11. announce the release and its changes in [Developer chat thread](https://forums.fast.ai/t/developer-chat/22363/289).
+
+
 
 ### Backporting release Branch To master
 
@@ -354,7 +357,6 @@ When done, complete the backporting
    git commit -m "backporting from release branch to master"
    git push
    ```
-
 
 
 
