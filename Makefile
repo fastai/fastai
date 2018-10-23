@@ -153,7 +153,7 @@ commit-dev-cycle-push: ## commit version and CHANGES and push
 	git commit -m "new dev cycle: $(version)" $(version_file) CHANGES.md
 
 	@echo "\n\n*** Push all changes"
-	git push
+	git push --set-upstream origin release-$(version)
 
 commit-version: ## commit and tag the release
 	@echo "\n\n*** Start release branch: $(version)"
