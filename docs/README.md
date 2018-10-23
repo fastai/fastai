@@ -8,6 +8,8 @@ If you're planning on working on the `fastai` library source code and/or documen
 * [Troubleshooting](troubleshoot.md)
 * [Notes for developers](develop.md)
 * [Writing and running tests](test.md)
+* [GPU Notes](gpu.md)
+* [git notes](git.md)
 * [Making a release](release.md)
 * [Abbreviation guide](abbr.md)
 * [Style guide](style.md)

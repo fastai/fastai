@@ -2,9 +2,9 @@
 title: git Notes
 ---
 
+Chances are that you may need to know some git when using fastai - for example if you want to contribute to the project, or you want to undo some change in your code tree. This document has a variety of useful recipes that might be of help in your work.
+
 ## Revisions
-
-
 
 relative refs
 ```
@@ -15,7 +15,7 @@ master^^ = the first grandparent of master
 ```
 
 
-## Commands
+## Operations
 
 
 ### add
@@ -525,6 +525,248 @@ https://nvie.com/posts/a-successful-git-branching-model/
 ```
 
 
+### reverting/resetting/undoing
+
+lots of scenarios here:
+```
+https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/
+```
+
+
+revert the last commit
+```
+git revert HEAD
+```
+
+
+revert everything from the HEAD back to the commit hash 0766c053
+```
+git revert --no-commit 0766c053..HEAD
+git commit
+```
+this will revert everything from the HEAD back to the commit hash, meaning it will recreate that commit state in the working tree as if every commit since had been walked back. You can then commit the current tree, and it will create a brand new commit essentially equivalent to the commit you "reverted" to.
+
+(the --no-commit flag lets git revert all the commits at once- otherwise you'll be prompted for a message for each commit in the range, littering your history with unnecessary new commits.)
+
+this is a safe and easy way to rollback to a previous state. No history is destroyed, so it can be used for commits that have already been made public.
+
+if merge happened earlier, revert could fail and ask for a specific parent branch via -m flag to specify which mainline to use
+
+for details: http://schacon.github.io/git/howto/revert-a-faulty-merge.txt and https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option
+
+
+revert your repository to a specific revision
+```
+git checkout <rev>
+```
+
+
+revert only parts of your repository to a specific revision
+```
+git checkout <rev> -- dir1 dir2 file1 file2
+```
+
+
+### ignore
+
+to temporarily ignore changes in a certain file, run:
+```
+git update-index --assume-unchanged <file>
+```
+
+track changes again:
+```
+git update-index --no-assume-unchanged <file>
+```
+
+
+### trace and debug
+
+
+
+check which config comes from where
+```
+git config --list --show-origin
+```
+
+
+display git attributes for a specific path
+```
+git check-attr -a dev_nb/001b_fit.ipynb
+```
+
+
+more here: https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git
+
+
+
+trace
+```
+GIT_TRACE=1 git pull origin master
+```
+
+
+very verbose
+```
+set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git pull origin master -v -v; set +x
+```
+
+
+different options:
+```
+    GIT_TRACE for general traces,
+    GIT_TRACE_PACK_ACCESS for tracing of packfile access,
+    GIT_TRACE_PACKET for packet-level tracing for network operations,
+    GIT_TRACE_PERFORMANCE for logging the performance data,
+    GIT_TRACE_SETUP for information about discovering the repository and environment it’s interacting with,
+    GIT_MERGE_VERBOSITY for debugging recursive merge strategy (values: 0-5),
+    GIT_CURL_VERBOSE for logging all curl messages (equivalent to curl -v),
+    GIT_TRACE_SHALLOW for debugging fetching/cloning of shallow repositories.
+
+possible values can include:
+
+    true, 1 or 2 to write to stderr,
+    an absolute path starting with / to trace output to the specified file.
+```
+
+
+### status and information
+
+short form log of events
+```
+git log --oneline
+```
+
+
+show a graph of the tree, showing the branch structure of merges
+```
+git log --graph --decorate --pretty=oneline --abbrev-commit
+```
+add `--all` to show all branches
+
+
+show all the commits in a branch that are not in HEAD. e.g. show all commits that are in master but not merged into the current feature branch yet.
+```
+git log ..master
+```
+
+
+
+### overriding git configuration
+```
+git -c http.proxy=someproxy clone https://github.com/user/repo.git
+git -c user.email=email@domain.fr -c user.name='Your Name'
+```
+
+override git diff:
+```
+git diff --no-ext-diff
+```
+no such option exists for merge drivers.
+
+
+
+## fixing things
+
+
+
+to fix a bad merge
+```
+https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge
+```
+
+
+"fatal: Unknown index entry format 61740000".
+
+
+
+when your index is broken you can normally delete the index file and reset it.
+```
+rm -f .git/index
+git reset
+```
+
+
+or you clone the repo again.
+
+
+
+## merge strategies
+
+
+
+tell git not to merge certain files (i.e. keep the local version) by defining merge filter 'ours'.
+
+https://stackoverflow.com/a/5895890/9201239
+
+
+
+1) add to .gitattributes:
+```
+database.xml merge=ours
+```
+
+
+2) set git merge driver to do nothing but return success
+```
+git config merge.ours.name '"always keep ours" merge driver'
+git config merge.ours.driver 'touch %A'
+git config merge.ours.driver true
+```
+
+
+## workflows
+
+
+working and updating the local checkout with upstream changes https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1
+```
+clone the remote repository
+git checkout -b my_new_feature
+..work and commit some stuff
+git rebase master
+..work and commit some stuff
+git rebase master
+..finish the feature, commit
+git rebase master
+git checkout master
+git merge --squash my_new_feature
+git commit -m "added my_new_feature"
+git branch -D my_new_feature
+```
+
+
+## Aliases
+
+best to add manually with editor, but can use CLI
+```
+.gitconfig
+   [alias]
+```
+
+e.g.
+```
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+```
+
+unstage a file (equivalent of: `git reset HEAD -- fileA`:
+```
+git config --global alias.unstage 'reset HEAD --'
+```
+
+see last commit
+```
+git config --global alias.last 'log -1 HEAD'
+```
+
+use `!` for non-git sub-commands in aliases, e.g.:
+```
+git config --global alias.visual '!gitk'
+```
+
+
 ## git hooks and filters
 
 ### strip output from Jupyter and IPython notebooks
@@ -615,251 +857,9 @@ https://github.com/gistya/expandr
 ```
 
 
-## fixing things
 
 
-
-to fix a bad merge
-```
-https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge
-```
-
-
-"fatal: Unknown index entry format 61740000".
-
-
-
-when your index is broken you can normally delete the index file and reset it.
-```
-rm -f .git/index
-git reset
-```
-
-
-or you clone the repo again.
-
-
-
-## merge strategies
-
-
-
-tell git not to merge certain files (i.e. keep the local version) by defining merge filter 'ours'.
-
-https://stackoverflow.com/a/5895890/9201239
-
-
-
-1) add to .gitattributes:
-```
-database.xml merge=ours
-```
-
-
-2) set git merge driver to do nothing but return success
-```
-git config merge.ours.name '"always keep ours" merge driver'
-git config merge.ours.driver 'touch %A'
-git config merge.ours.driver true
-```
-
-
-## trace and debug
-
-
-
-check which config comes from where
-```
-git config --list --show-origin
-```
-
-
-display git attributes for a specific path
-```
-git check-attr -a dev_nb/001b_fit.ipynb
-```
-
-
-more here: https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git
-
-
-
-trace
-```
-GIT_TRACE=1 git pull origin master
-```
-
-
-very verbose
-```
-set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git pull origin master -v -v; set +x
-```
-
-
-different options:
-```
-    GIT_TRACE for general traces,
-    GIT_TRACE_PACK_ACCESS for tracing of packfile access,
-    GIT_TRACE_PACKET for packet-level tracing for network operations,
-    GIT_TRACE_PERFORMANCE for logging the performance data,
-    GIT_TRACE_SETUP for information about discovering the repository and environment it’s interacting with,
-    GIT_MERGE_VERBOSITY for debugging recursive merge strategy (values: 0-5),
-    GIT_CURL_VERBOSE for logging all curl messages (equivalent to curl -v),
-    GIT_TRACE_SHALLOW for debugging fetching/cloning of shallow repositories.
-
-possible values can include:
-
-    true, 1 or 2 to write to stderr,
-    an absolute path starting with / to trace output to the specified file.
-```
-
-
-## Status And Information
-
-short form log of events
-```
-git log --oneline
-```
-
-
-show a graph of the tree, showing the branch structure of merges
-```
-git log --graph --decorate --pretty=oneline --abbrev-commit
-```
-add `--all` to show all branches
-
-
-show all the commits in a branch that are not in HEAD. e.g. show all commits that are in master but not merged into the current feature branch yet.
-```
-git log ..master
-```
-
-
-## reverting/resetting/undoing
-
-lots of scenarios here:
-```
-https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/
-```
-
-
-revert the last commit
-```
-git revert HEAD
-```
-
-
-revert everything from the HEAD back to the commit hash 0766c053
-```
-git revert --no-commit 0766c053..HEAD
-git commit
-```
-this will revert everything from the HEAD back to the commit hash, meaning it will recreate that commit state in the working tree as if every commit since had been walked back. You can then commit the current tree, and it will create a brand new commit essentially equivalent to the commit you "reverted" to.
-
-(the --no-commit flag lets git revert all the commits at once- otherwise you'll be prompted for a message for each commit in the range, littering your history with unnecessary new commits.)
-
-this is a safe and easy way to rollback to a previous state. No history is destroyed, so it can be used for commits that have already been made public.
-
-if merge happened earlier, revert could fail and ask for a specific parent branch via -m flag to specify which mainline to use
-
-for details: http://schacon.github.io/git/howto/revert-a-faulty-merge.txt and https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option
-
-
-revert your repository to a specific revision
-```
-git checkout <rev>
-```
-
-
-revert only parts of your repository to a specific revision
-```
-git checkout <rev> -- dir1 dir2 file1 file2
-```
-
-
-### ignore
-
-to temporarily ignore changes in a certain file, run:
-```
-git update-index --assume-unchanged <file>
-```
-
-track changes again:
-```
-git update-index --no-assume-unchanged <file>
-```
-
-
-### overriding git configuration
-```
-git -c http.proxy=someproxy clone https://github.com/user/repo.git
-git -c user.email=email@domain.fr -c user.name='Your Name'
-```
-
-override git diff:
-```
-git diff --no-ext-diff
-```
-no such option exists for merge drivers.
-
-
-
-### Workflows
-
-
-working and updating the local checkout with upstream changes https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1
-```
-clone the remote repository
-git checkout -b my_new_feature
-..work and commit some stuff
-git rebase master
-..work and commit some stuff
-git rebase master
-..finish the feature, commit
-git rebase master
-git checkout master
-git merge --squash my_new_feature
-git commit -m "added my_new_feature"
-git branch -D my_new_feature
-```
-
-
-### Aliases
-
-best to add manually with editor, but can use CLI
-```
-.gitconfig
-   [alias]
-```
-
-e.g.
-```
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.st status
-```
-
-unstage a file (equivalent of: `git reset HEAD -- fileA`:
-```
-git config --global alias.unstage 'reset HEAD --'
-```
-
-see last commit
-```
-git config --global alias.last 'log -1 HEAD'
-```
-
-use `!` for non-git sub-commands in aliases, e.g.:
-```
-git config --global alias.visual '!gitk'
-```
-
-
-
-
-
-### GitHub-specific notes
+## GitHub-specific notes
 
 
 
@@ -1001,10 +1001,6 @@ https://github.com/stas00/fastai/tree/branch_name/
 and click [Pull Request] on the right upper corner
 
 
-## Useful Resources
-
-* https://learngitbranching.js.org/ - visual teaching with exercises
-
 
 ## Extra Recipes
 
@@ -1015,3 +1011,8 @@ download a sub-directory from a git tree, e.g. https://github.com/buckyroberts/S
 ```
 svn co https://github.com/buckyroberts/Source-Code-from-Tutorials/trunk/Python
 ```
+
+
+## Useful Resources
+
+* https://learngitbranching.js.org/ - visual teaching with exercises
