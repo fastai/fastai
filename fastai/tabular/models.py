@@ -7,9 +7,9 @@ class TabularModel(nn.Module):
     "Basic model for tabular data."
 
     def __init__(self, emb_szs:ListSizes, n_cont:int, out_sz:int, layers:Collection[int],
-            ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True):
+                 drops:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True):
         super().__init__()
-        ps = ifnone(ps, [0]*len(layers))
+        drops = ifnone(drops, [0] * len(layers))
         self.embeds = nn.ModuleList([get_embedding(ni, nf) for ni,nf in emb_szs])
         self.emb_drop = nn.Dropout(emb_drop)
         self.bn_cont = nn.BatchNorm1d(n_cont)
@@ -18,7 +18,7 @@ class TabularModel(nn.Module):
         sizes = [n_emb + n_cont] + layers + [out_sz]
         actns = [nn.ReLU(inplace=True)] * (len(sizes)-2) + [None]
         layers = []
-        for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:],[0.]+ps,actns)):
+        for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:], [0.] + drops, actns)):
             layers += bn_drop_lin(n_in, n_out, bn=use_bn and i!=0, p=dp, actn=act)
         self.layers = nn.Sequential(*layers)
 
