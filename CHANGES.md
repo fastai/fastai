@@ -10,7 +10,19 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.12.dev0 (Work In Progress)
+
+
+## 1.0.13.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.12 (2018-10-23)
 
 ### Fixed:
 
