@@ -21,7 +21,7 @@ of that change.
 
 ### Fixed:
 
-
+- rolled back numpy dependency to >=1.12 (anaconda package has a upper pin on it)
 
 
 ## 1.0.11 (2018-10-20)

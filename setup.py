@@ -31,7 +31,7 @@ requirements = to_list("""
     matplotlib
     nbconvert
     nbformat
-    numpy>=1.15
+    numpy>=1.12
     pandas
     Pillow
     requests
