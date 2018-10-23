@@ -1,4 +1,6 @@
 // https://github.com/ghiculescu/jekyll-table-of-contents
+// this library modified by fastai to:
+// - update the location.href with the correct anchor when a toc item is clicked on
 (function($){
   $.fn.toc = function(options) {
     var defaults = {
@@ -37,8 +39,8 @@
 
     var get_level = function(ele) { return parseInt(ele.nodeName.replace("H", ""), 10); }
     var highest_level = headers.map(function(_, ele) { return get_level(ele); }).get().sort()[0];
-    var return_to_top = '<i class="icon-arrow-up back-to-top"> </i>';
-
+    //var return_to_top = '<i class="glyphicon glyphicon-upload back-to-top"></i>';
+    // other nice icons that can be used instead: glyphicon-upload glyphicon-hand-up glyphicon-chevron-up glyphicon-menu-up glyphicon-triangle-top
     var level = get_level(headers[0]),
       this_level,
       html = settings.title + " <"+settings.listType+">";
@@ -49,25 +51,27 @@
     })
     .addClass('clickable-header')
     .each(function(_, header) {
+      base_url = window.location.href;
+      base_url = base_url.replace(/#.*$/, "");
       this_level = get_level(header);
-      if (!settings.noBackToTopLinks && this_level === highest_level) {
-        $(header).addClass('top-level-header').after(return_to_top);
-      }
+      //if (!settings.noBackToTopLinks && this_level > 1) {
+      //  $(header).addClass('top-level-header').before(return_to_top);
+      //}
       txt = header.textContent.split('¶')[0].split('(')[0];
       if (!txt) {return;}
       if (this_level === level) // same level as before; same indenting
-        html += "<li><a href='#" + header.id + "'>" + txt + "</a>";
+        html += "<li><a href='" + base_url + "#" + header.id + "'>" + txt + "</a>";
       else if (this_level <= level){ // higher level than before; end parent ol
         for(i = this_level; i < level; i++) {
           html += "</li></"+settings.listType+">"
         }
-        html += "<li><a href='#" + header.id + "'>" + txt + "</a>";
+        html += "<li><a href='" + base_url + "#" + header.id + "'>" + txt + "</a>";
       }
       else if (this_level > level) { // lower level than before; expand the previous to contain a ol
         for(i = this_level; i > level; i--) {
           html += "<"+settings.listType+">"+((i-level == 2) ? "<li class=\"hide_content\">" : "<li>")
         }
-        html += "<a href='#" + header.id + "'>" + txt + "</a>";
+        html += "<a href='" + base_url + "#" + header.id + "'>" + txt + "</a>";
       }
       level = this_level; // update for the next one
     });

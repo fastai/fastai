@@ -2,7 +2,8 @@ import pytest
 from fastai import *
 from fastai.vision import *
 
-#@pytest.mark.slow
+pytestmark = pytest.mark.integration
+
 @pytest.fixture(scope="module")
 def learn():
     path = untar_data(URLs.MNIST_TINY)
@@ -35,3 +36,15 @@ def test_1cycle_moms(learn):
     assert abs(moms[-1]-0.95)<0.01
     assert np.min(moms)==0.85
 
+def test_preds(learn):
+    pass_tst = False
+    for i in range(3):
+        img, label = learn.data.valid_ds[i]
+        activ = img.predict(learn)
+        if activ[label] > activ[1-label]:
+            pass_tst=True
+            break
+    assert pass_tst
+
+def test_lrfind(learn):
+    learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)

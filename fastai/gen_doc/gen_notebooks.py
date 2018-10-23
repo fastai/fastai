@@ -72,11 +72,20 @@ def write_nb(nb, nb_path, mode='w'):
         print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
         json.dump(nb, open(nb_path, mode), indent=1)
 
-def execute_nb(fname, metadata=None, save=True):
+class ExecuteShowDocPreprocessor(ExecutePreprocessor):
+    "An ExecutePreprocessor that only executes show_doc cells"
+    def preprocess_cell(self, cell, resources, index):
+        if 'source' in cell and cell.cell_type == "code":
+            if IMPORT_RE.search(cell['source']) or SHOW_DOC_RE.search(cell['source']):
+                return super().preprocess_cell(cell, resources, index)
+        return cell, resources
+
+def execute_nb(fname, metadata=None, save=True, show_doc_only=False):
     "Execute notebook `fname` with `metadata` for preprocessing."
     # Any module used in the notebook that isn't inside must be in the same directory as this script
     with open(fname) as f: nb = nbformat.read(f, as_version=4)
-    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+    ep_class = ExecuteShowDocPreprocessor if show_doc_only else ExecutePreprocessor
+    ep = ep_class(timeout=600, kernel_name='python3')
     metadata = metadata or {}
     ep.preprocess(nb, metadata)
     if save:
@@ -130,12 +139,13 @@ def read_nb(fname):
     "Read a notebook in `fname` and return its corresponding json"
     with open(fname,'r') as f: return nbformat.reads(f.read(), as_version=4)
 
+SHOW_DOC_RE = re.compile(r"show_doc\(([\w\.]*)")
 def read_nb_content(cells, mod_name):
     "Build a dictionary containing the position of the `cells`."
     doc_fns = {}
     for i, cell in enumerate(cells):
         if cell['cell_type'] == 'code':
-            for match in re.findall(r"show_doc\(([\w\.]*)", cell['source']):
+            for match in SHOW_DOC_RE.findall(cell['source']):
                 doc_fns[match] = i
     return doc_fns
 
@@ -293,7 +303,7 @@ def get_module_from_notebook(doc_path):
     return f'fastai.{Path(doc_path).stem}'
 
 def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=False,
-                     update_nb_links=True, do_execute=False, html_path=None):
+                     update_nb_links=True, do_execute=False, update_line_num=True, html_path=None):
     "`source_path` can be a directory or a file. Assume all modules reside in the fastai directory."
     from .convert2html import convert_nb
     source_path = Path(source_path)
@@ -313,6 +323,10 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         if do_execute:
             print(f'Executing notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
+        elif update_line_num:
+            print(f'Updating line #\'s for {doc_path}. Please wait...')
+            execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=update_line_num)
+
         if update_html: convert_nb(doc_path, html_path)
     elif (source_path.name.startswith('fastai.')):
         # Do module update
@@ -323,8 +337,10 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         if not doc_path.exists():
             print('Notebook does not exist. Creating:', doc_path)
             create_module_page(mod, dest_path)
-        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=False, update_nb_links=update_nb_links, do_execute=do_execute, html_path=html_path)
+        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=update_nb, 
+                         update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
     elif source_path.is_dir():
         for f in Path(source_path).glob('*.ipynb'):
-            update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb, update_nb_links=update_nb_links, do_execute=do_execute, html_path=html_path)
+            update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb, 
+                             update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
     else: print('Could not resolve source file:', source_path)

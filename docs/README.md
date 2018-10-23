@@ -3,7 +3,7 @@ toc: false
 title: Documentation For Developers
 ---
 
-If you're planning on working on the `fastai` library source code and/or documentation, please make sure to familiarize yourself with the following documents. Note: if you're simply using the library, rather than wanting to modify it, you should refer instead to [docs.fast.ai](http://docs.fast.ai).
+If you're planning on working on the `fastai` library source code and/or documentation, please make sure to familiarize yourself with the following documents. Note: if you're simply using the library, rather than wanting to modify it, you should refer instead to [docs.fast.ai](https://docs.fast.ai).
 
 * [Troubleshooting](troubleshoot.md)
 * [Notes for developers](develop.md)
@@ -11,4 +11,4 @@ If you're planning on working on the `fastai` library source code and/or documen
 * [Making a release](release.md)
 * [Abbreviation guide](abbr.md)
 * [Style guide](style.md)
-* [Documentation maintenance](http://docs.fast.ai/gen_doc.html)
+* [Documentation maintenance](https://docs.fast.ai/gen_doc)

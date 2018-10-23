@@ -98,7 +98,7 @@ If you'd like to follow closely the development of fastai, and you don't like cl
 
 You can subscribe or unsubscribe at any time on your own accord [here](https://groups.google.com/forum/#!forum/fastai-diff).
 
-If you need to comment on any diff you read on that list, click on the link on top of the email and it'll take you to the github page, corresponding to that commit, and you can comment there. Alternatively ask questions on the developer's section of the  [forums](http://forums.fast.ai/c/fastai-dev).
+If you need to comment on any diff you read on that list, click on the link on top of the email and it'll take you to the github page, corresponding to that commit, and you can comment there. Alternatively ask questions on the developer's section of the  [forums](https://forums.fast.ai/c/fastai-dev).
 
 Make sure you use a descent email client, surely don't read it on google groups or gmail, you need to have a client that can properly render fixed fonts and not use a variable fonts which look horrible with diffs. For example it works well in [Thunderbird](https://www.thunderbird.net/).
 

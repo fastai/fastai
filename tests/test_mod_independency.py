@@ -1,6 +1,14 @@
 # this test checks that the core fastai library doesn't depend on 'extras_require'
 # package requirements from setup.py, which won't be installed by default
 
+# XXX: the approach taken by this test to trace 'import' calls
+# currently has a fault in it, as it'll detect `try: import foo` as a
+# requirement, while it is not. Even if there is a way to detect a
+# `try` context, it would be useless since the import call may come
+# deep inside a stack frame and even this test itself is running
+# inside `try` context. So it's possible that we might need to ditch
+# it. It might be useful as an advisory rather than a real test.
+
 import os, sys, re
 from pathlib import Path
 
@@ -85,7 +93,9 @@ def test_setup_parser():
 
 # fastai must not depend on 'extras_require' package requirements from setup.py,
 # which won't be installed by default
-unwanted_deps = [(re.split(r'[>=<]+',x))[0] for x in data['extras_require']['dev']]
+extras_require = [(re.split(r'[>=<]+',x))[0] for x in data['extras_require']['dev']]
+exceptions = ['pytest'] # see the top for the reason for exceptions
+unwanted_deps = [x for x in extras_require if x not in exceptions]
 #print(unwanted_deps)
 
 class CheckDependencyImporter(object):

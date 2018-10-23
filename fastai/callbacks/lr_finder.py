@@ -1,6 +1,6 @@
 "Tools to help find the optimal learning rate for training"
 from ..torch_core import *
-from ..data import DataBunch
+from ..basic_data import DataBunch
 from ..callback import *
 from ..basic_train import Learner, LearnerCallback
 
@@ -9,7 +9,7 @@ __all__ = ['LRFinder']
 class LRFinder(LearnerCallback):
     """Causes `learn` to go on a mock training from `start_lr` to `end_lr` for `num_it` iterations.
        Training is interrupted if the loss diverges. Weights changes are reverted after run complete."""
-    def __init__(self, learn:Learner, start_lr:float=1e-5, end_lr:float=10, num_it:int=100):
+    def __init__(self, learn:Learner, start_lr:float=1e-7, end_lr:float=10, num_it:int=100):
         "Initialize schedule of learning rates"
         super().__init__(learn)
         self.data = learn.data

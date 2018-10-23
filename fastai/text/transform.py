@@ -11,18 +11,15 @@ TK_UP,TK_REP,TK_WREP = 'xxup','xxrep','xxwrep'
 
 class BaseTokenizer():
     "Basic class for a tokenizer function."
-    def __init__(self, lang:str):
-        self.lang = lang
+    def __init__(self, lang:str):                      self.lang = lang
+    def tokenizer(self, t:str) -> List[str]:           return t.split(' ')
+    def add_special_cases(self, toks:Collection[str]): pass
 
-    def tokenizer(self, t:str) -> List[str]:            raise NotImplementedError
-    def add_special_cases(self, toks:Collection[str]):  raise NotImplementedError
-
-#export
 class SpacyTokenizer(BaseTokenizer):
     "Wrapper around a spacy tokenizer to make it a `BaseTokenizer`."
 
     def __init__(self, lang:str):
-        self.tok = spacy.load(lang)
+        self.tok = spacy.blank(lang)
 
     def tokenizer(self, t:str) -> List[str]:
         return [t.text for t in self.tok.tokenizer(t)]

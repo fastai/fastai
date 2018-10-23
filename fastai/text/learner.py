@@ -2,7 +2,7 @@
 from ..torch_core import *
 from ..basic_train import *
 from ..callbacks import *
-from ..data import *
+from ..basic_data import *
 from ..metrics import accuracy
 from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier

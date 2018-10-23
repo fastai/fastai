@@ -14,7 +14,7 @@ https://github.com/fastai/fastai/blob/master/docs/style.md) first. (Note that we
 
 * Sign the [Contributor License Agreement](https://www.clahub.com/agreements/fastai/fastai).
 * Open a new GitHub pull request with the patch.
-* Ensure that your PR includes [tests](http://docs-dev.fast.ai/test.html) that fail without your patch, and pass with it.
+* Ensure that your PR includes [tests](https://docs-dev.fast.ai/test) that fail without your patch, and pass with it.
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 * Before submitting, please be sure you abide by our [coding style](https://github.com/fastai/fastai/blob/master/docs/style.md) and [the guide on abbreviations](https://github.com/fastai/fastai/blob/master/docs/abbr.md) and clean-up your code accordingly.
 
@@ -23,11 +23,11 @@ https://github.com/fastai/fastai/blob/master/docs/style.md) first. (Note that we
 * You can suggest your change on the [fastai forum](http://forums.fast.ai/) to see if others are interested or want to help. [This topic](http://forums.fast.ai/t/fastai-v1-adding-features/23041/8) lists the features that will be added to fastai in the foreseeable future. Be sure to read it too!
 * Before implementing a non-trivial new feature, first create a notebook version of your new feature, like those in [dev_nb](https://github.com/fastai/fastai_old/tree/master/dev_nb). It should show step-by-step what your code is doing, and why, with the result of each step. Try to simplify the code as much as possible. When you're happy with it, let us know on the forum (include a link to a gist with your notebook.)
 * Once your approach has been discussed and confirmed on the forum, you are welcome to push a PR, including a complete description of the new feature and an example of how it's use. Be sure to document your code and read the [doc on code style](https://github.com/fastai/fastai/blob/master/docs/style.md) and [the one on abbreviations](https://github.com/fastai/fastai/blob/master/docs/abbr.md).
-* Ensure that your PR includes [tests](http://docs-dev.fast.ai/test.html) that exercise not only your feature, but also any other code that might be impacted. Currently we have poor test coverage of existing features, so often you'll need to add tests of existing code. Your help here is much appreciated!
+* Ensure that your PR includes [tests](https://docs-dev.fast.ai/test) that exercise not only your feature, but also any other code that might be impacted. Currently we have poor test coverage of existing features, so often you'll need to add tests of existing code. Your help here is much appreciated!
 
 ## How to submit notebook PRs?
 
-* If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to `nbstripout` the notebooks, as explained [here](http://docs-dev.fast.ai/develop).
+* If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to `nbstripout` the notebooks, as explained [here](https://docs-dev.fast.ai/develop).
 
 ## Do you have questions about the source code?
 

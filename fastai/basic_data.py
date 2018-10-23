@@ -104,3 +104,5 @@ class DataBunch():
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
     @property
     def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset
+    @property
+    def loss_func(self)->Dataset: return self.train_ds.loss_func

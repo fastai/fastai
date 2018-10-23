@@ -16,12 +16,12 @@ def test_path_can_be_str_type(path):
 
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
-    for i in range(5): x,y = next(iter(data.train_dl))
+    for i in range(2): x,y = next(iter(data.train_dl))
 
 def test_multi_iter(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
-    for i in range(5): x,y = data.train_dl.one_batch()
+    for i in range(2): x,y = data.train_dl.one_batch()
 
 def test_clean_tear_down(path):
     docstr = "test DataLoader iter doesn't get stuck"

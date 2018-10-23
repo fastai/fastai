@@ -76,12 +76,27 @@ To run all the tests:
    ```
    make test
    ```
-
-or
-
+or:
 
    ```
    python setup.py test
+   ```
+or just:
+
+   ```
+   pytest
+   ```
+
+To skip the integration tests in order to do quick testing while you work:
+
+   ```
+   pytest --skipint
+   ```
+
+If you need to skip a certain test module temporarily you can either tell `pytest` which tests to run explicitly, so for example to skip any test modules that contain the string `link`, you could run:
+
+   ```
+   pytest `ls -1 tests/*py | grep -v link`
    ```
 
 To run an individual test file:
