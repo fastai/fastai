@@ -114,7 +114,22 @@ tools-update: ## install/update build tools
 	conda install -y conda-verify conda-build anaconda-client
 	pip install -U twine
 
-release: | tools-update master-branch-switch bump changes-finalize release-branch-create commit-version master-branch-switch bump-dev changes-dev-cycle commit-dev-cycle-push prev-branch-switch test commit-tag-push dist upload ## do it all (other than testing)
+release: ## do it all (other than testing)
+	${MAKE} tools-update
+	${MAKE} master-branch-switch
+	${MAKE} bump
+	${MAKE} changes-finalize
+	${MAKE} release-branch-create
+	${MAKE} commit-version
+	${MAKE} master-branch-switch
+	${MAKE} bump-dev
+	${MAKE} changes-dev-cycle
+	${MAKE} commit-dev-cycle-push
+	${MAKE} prev-branch-switch
+	${MAKE} test
+	${MAKE} commit-tag-push
+	${MAKE} dist
+	${MAKE} upload
 
 post-release-checks: | test-install backport-check master-branch-switch ## do post release checks
 
