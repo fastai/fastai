@@ -7,6 +7,7 @@
 
 version_file = fastai/version.py
 version = $(shell python setup.py --version)
+cur_branch = $(shell git branch | sed -n '/\* /s///p')
 
 .DEFAULT_GOAL := help
 
@@ -122,6 +123,7 @@ post-release-checks: | test-install backport-check master-branch-switch ## do po
 
 git-pull: ## git pull
 	@echo "\n\n*** Making sure we have the latest checkout"
+	git checkout master
 	git pull
 	git status
 
@@ -133,40 +135,50 @@ git-not-dirty:
     fi
 
 prev-branch-switch:
-	@echo "*** Switching to prev branch"
+	@echo "*** [$(cur_branch)] Switching to prev branch"
 	git checkout -
+	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
+	@echo "Now on [$(branch)] branch"
 
 release-branch-create:
-	@echo "*** Creating branch release-$(version)"
+	@echo "*** [$(cur_branch)] Creating release-$(version) branch"
 	git checkout -b release-$(version)
+	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
+	@echo "Now on [$(branch)] branch"
 
 release-branch-switch:
-	@echo "*** Switching to branch release-$(version)"
+	@echo "*** [$(cur_branch)] Switching to release-$(version) branch"
 	git checkout release-$(version)
+	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
+	@echo "Now on [$(branch)] branch"
 
 master-branch-switch:
-	@echo "*** Switching to master branch: version $(version)"
+	@echo "*** [$(cur_branch)] Switching to master branch: version $(version)"
 	git checkout master
+	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
+	@echo "Now on [$(branch)] branch"
 
 commit-dev-cycle-push: ## commit version and CHANGES and push
-	@echo "\n\n*** Start new dev cycle: $(version)"
+	@echo "\n\n*** [$(cur_branch)] Start new dev cycle: $(version)"
 	git commit -m "new dev cycle: $(version)" $(version_file) CHANGES.md
 
-	@echo "\n\n*** Push all changes"
-	git push --set-upstream origin release-$(version)
+	@echo "\n\n*** [$(cur_branch)] Push changes"
+	git push
 
 commit-version: ## commit and tag the release
-	@echo "\n\n*** Start release branch: $(version)"
+	@echo "\n\n*** [$(cur_branch)] Start release branch: $(version)"
 	git commit -m "starting release branch: $(version)" $(version_file)
+	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
+	@echo "Now on [$(branch)] branch"
 
 commit-tag-push: ## commit and tag the release
-	@echo "\n\n*** Commit CHANGES.md"
+	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
-	@echo "\n\n*** Tag $(version) version"
+	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"
 	git tag -a $(version) -m "$(version)" && git push --tags
 
-	@echo "\n\n*** Push all changes"
+	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push --set-upstream origin release-$(version)
 
 # check whether there any commits besides fastai/version.py and CHANGES.md
@@ -204,9 +216,11 @@ test-install: ## test conda/pip package by installing that version them
 ##@ CHANGES.md file targets
 
 changes-finalize: ## fix the version and stamp the date
+	@echo "\n\n*** Adjust '## version (date)' in CHANGES.md"
 	perl -pi -e 'use POSIX qw(strftime); BEGIN{$$date=strftime "%Y-%m-%d", localtime};s|^##.*Work In Progress\)|## $(version) ($$date)|' CHANGES.md
 
 changes-dev-cycle: ## insert new template + version
+	@echo "\n\n*** Install new template + version in CHANGES.md"
 	perl -0777 -pi -e 's|^(##)|\n\n## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
 
 
