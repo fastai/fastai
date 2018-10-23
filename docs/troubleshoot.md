@@ -187,28 +187,18 @@ So now you don't need to guess and you know exactly which environment has been a
 
 It's possible that your system is misconfigured and while you think you're using your GPU you could be running on your CPU only.
 
-You can check that by checking the output of `torch.cuda.is_available()` - it should return `True` if `pytorch` sees your GPU(s). You can also see the state of your setup with:
+You can check that by checking the output of `import torch; print(torch.cuda.is_available())` - it should return `True` if `pytorch` sees your GPU(s). You can also see the state of your setup with:
 
 ```
 python -c 'import fastai; fastai.show_install(1)'
 ```
 which will include that check in its report.
 
-But the simplest direct check is to observe the output of `nvidia-smi` while you run your code. If you don't see the process show up when you run the code, then you aren't using your GPU.
+But the simplest direct check is to observe the output of `nvidia-smi` while you run your code. If you don't see the process show up when you run the code, then you aren't using your GPU. The easiest way to watch the updated status is through:
 
-To do that you can poll `nvidia-smi`s output with either:
-
-```
-watch -n 1 nvidia-smi
-```
-
-or alternatively with:
-
-```
-nvidia-smi dmon
-```
-
-The former is useful for watching the processes, the latter provides an easier way to see usage stats as their change.
+   ```
+   watch -n 1 nvidia-smi
+   ```
 
 If you're on a local system, another way to tell you're not using your GPU would be an increased noise from your CPU fan.
 

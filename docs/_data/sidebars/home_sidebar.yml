@@ -4,8 +4,14 @@ entries:
 - folders:
   - folderitems:
     - output: web
-      title: Dev notes
+      title: Dev Notes
       url: develop
+    - output: web
+      title: GPU Notes
+      url: gpu
+    - output: web
+      title: git notes
+      url: git
     - output: web
       title: Testing
       url: test
