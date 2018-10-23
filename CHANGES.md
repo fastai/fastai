@@ -21,8 +21,7 @@ of that change.
 
 ### Fixed:
 
-- rolled back numpy dependency to >=1.12 (anaconda package has a upper pin on it)
-
+- rolled back numpy dependency to >=1.12 (anaconda package has a upper pin on it) and to pip>=9.0.1, the old version are buggy but should be ok for fastai
 
 ## 1.0.11 (2018-10-20)
 
