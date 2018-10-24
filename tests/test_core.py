@@ -108,6 +108,9 @@ def test_arrays_split():
     d = [(array([1, 4]),), (array([5, 2]),)]
     np.testing.assert_array_equal(c,d)
 
+    with pytest.raises(Exception): arrays_split([0,5],[1, 2, 3, 4, 5])
+    with pytest.raises(Exception): arrays_split([0,3],[1, 2, 3, 4, 5], [1, 2, 3, 4])
+
 def test_random_split():
     valid_pct = 0.4
     a = [len(arr) for arr in random_split(valid_pct, [1,2,3,4,5], ['a', 'b', 'c', 'd', 'e'])]
