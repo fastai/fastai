@@ -17,6 +17,8 @@ of that change.
 ### New: 
 
 - pretrained language model is now downloaded directly in the .fastai/models/ folder. Use `pretrained_model=URLs.WT103`
+- add an argument `stop_div` to `Learner.lr_find()` to prevent early stopping, useful for negative losses.
+- add an argument `convert_mode` to `open_mask` and `SegmentationDataset` to choose the PIL conversion mode of the masks.
 
 ### Changed:
 

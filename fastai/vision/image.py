@@ -355,9 +355,9 @@ def open_image(fn:PathOrStr)->Image:
     x = PIL.Image.open(fn).convert('RGB')
     return Image(pil2tensor(x).float().div_(255))
 
-def open_mask(fn:PathOrStr, div=False)->ImageSegment:
+def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageMask` object create from mask in file `fn`. If `div`, divides pixel values by 255."
-    x = PIL.Image.open(fn).convert('L')
+    x = PIL.Image.open(fn).convert(convert_mode)
     mask = pil2tensor(x).float()
     if div: mask.div_(255)
     return ImageSegment(mask)

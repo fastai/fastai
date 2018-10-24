@@ -14,7 +14,7 @@ class Fbeta(Callback):
     def on_epoch_begin(self, **kwargs):
         self.TP, self.pred, self.true = 0, 0, 0
     
-    def on_batch_end(self, last_output, last_target, train, **kwargs):
+    def on_batch_end(self, last_output, last_target, **kwargs):
         if self.sigmoid: last_output = last_output.sigmoid()
         y_pred = (last_output>self.thresh).float()
         y_true = last_target.float()
