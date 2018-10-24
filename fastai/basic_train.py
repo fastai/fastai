@@ -176,6 +176,7 @@ class Learner():
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []))
     
     def validate(self, dl=None, callbacks=None, metrics=None):
+        "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
         metrics = ifnone(metrics, self.metrics)
         cb_handler = CallbackHandler(self.callbacks + ifnone(callbacks, []), metrics)

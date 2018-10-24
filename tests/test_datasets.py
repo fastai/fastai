@@ -9,16 +9,6 @@ def clean_path(path):
     if path.is_file(): path.unlink()
     if path.is_dir(): shutil.rmtree(path)
 
-@pytest.mark.parametrize("dataset", [
-    'adult', 'mnist', 'movie_lens',
-    # 'imdb',  # imdb fails unless 'en' spacy language is available
-])
-
-def test_get_samples(dataset, tmpdir):
-    method = f'get_{dataset}'
-    df = getattr(URLs, method)()
-    assert df is not None
-
 def test_creates_config():
     DEFAULT_CONFIG_PATH = 'config_test/test.yml'
 

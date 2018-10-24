@@ -6,7 +6,8 @@ pytestmark = pytest.mark.integration
 
 @pytest.fixture(scope="module")
 def learn():
-    ratings = URLs.get_movie_lens()
+    path = untar_data(URLs.ML_SAMPLE)
+    ratings = pd.read_csv(path/'ratings.csv')
     ratings.head()
     series2cat(ratings, 'userId','movieId')
     learn = get_collab_learner(ratings, n_factors=50, pct_val=0.2, min_score=0., max_score=5.)

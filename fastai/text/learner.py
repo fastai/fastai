@@ -3,6 +3,7 @@ from ..torch_core import *
 from ..basic_train import *
 from ..callbacks import *
 from ..basic_data import *
+from ..datasets import untar_data
 from ..metrics import accuracy
 from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
@@ -31,14 +32,12 @@ def lm_split(model:Model) -> List[Model]:
     groups.append([model[0].encoder, model[0].encoder_dp, model[1]])
     return groups
 
-
 def rnn_classifier_split(model:Model) -> List[Model]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[model[0].encoder, model[0].encoder_dp]]
     groups += [[rnn, dp] for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
     groups.append([model[1]])
     return groups
-
 
 class RNNLearner(Learner):
     "Basic class for a Learner in RNN."
@@ -61,15 +60,15 @@ class RNNLearner(Learner):
 
     def load_pretrained(self, wgts_fname:str, itos_fname:str):
         "Load a pretrained model and adapts it to the data vocabulary."
-        old_itos = pickle.load(open(self.path/self.model_dir/f'{itos_fname}.pkl', 'rb'))
+        old_itos = pickle.load(open(itos_fname, 'rb'))
         old_stoi = {v:k for k,v in enumerate(old_itos)}
-        wgts = torch.load(self.path/self.model_dir/f'{wgts_fname}.pth', map_location=lambda storage, loc: storage)
+        wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts)
 
     @classmethod
     def language_model(cls, data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
-                       drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False,
+                       drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
                        pretrained_fnames:OptStrTuple=None, **kwargs) -> 'RNNLearner':
         "Create a `Learner` with a language model."
         dps = np.array([0.25, 0.1, 0.2, 0.02, 0.15]) * drop_mult
@@ -77,8 +76,14 @@ class RNNLearner(Learner):
         model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                     weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
         learn = cls(data, model, bptt, split_func=lm_split, **kwargs)
+        if pretrained_model is not None:
+            model_path = untar_data(pretrained_model, data=False)
+            fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+            learn.load_pretrained(*fnames)
+            learn.freeze()
         if pretrained_fnames is not None:
-            learn.load_pretrained(*pretrained_fnames)
+            fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
+            learn.load_pretrained(*fnames)
             learn.freeze()
         return learn
 
