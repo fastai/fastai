@@ -14,9 +14,13 @@ of that change.
 
 ## 1.0.13.dev0 (Work In Progress)
 
-### New:
+### New: 
+
+- pretrained language model is now downloaded directly in the .fastai/models/ folder. Use `pretrained_model=URLs.WT103`
 
 ### Changed:
+
+- `URLs.download_wt103()` has been removed
 
 ### Fixed:
 
