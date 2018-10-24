@@ -4,7 +4,7 @@ from fastai.torch_core import *
 from fastai.callback import *
 from fastai.basic_train import *
 
-__all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback', 'ReduceLROnPlateau' ]
+__all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback', 'ReduceLROnPlateauCallback' ]
 
 class TerminateOnNaNCallback(Callback):
     "A `LearnerCallback` that terminates training if loss is NaN."
