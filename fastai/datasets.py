@@ -82,7 +82,8 @@ def download_data(url:str, fname:PathOrStr=None):
 
 def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True):
     "Download `url` if doesn't exist to `fname` and un-tgz to folder `dest`"
-    dest = Path(ifnone(dest, _url2path(url, data)))
-    fname = download_data(url, fname=fname)
-    if not dest.exists(): tarfile.open(fname, 'r:gz').extractall(dest.parent)
+    dest = Path(ifnone(dest, _url2path(url)))
+    if not dest.exists():
+        fname = download_data(url, fname=fname)
+        tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest

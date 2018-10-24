@@ -69,6 +69,7 @@ def test_nb_module_name_has_highest_priority():
     modules = gen_notebooks.get_imported_modules([], nb_module_name='fastai.tabular.transform')
     assert_link(docstr, expected, modules=modules)
 
+@pytest.mark.skip(reason="need to update")
 def test_application_links_top_level_modules():
     # Snippet taken from applications.ipynb
     docstr = """## Module structure
