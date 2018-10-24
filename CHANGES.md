@@ -24,8 +24,6 @@ of that change.
 
 - `URLs.download_wt103()` has been removed
 
-### Fixed:
-
 
 
 ## 1.0.12 (2018-10-23)
