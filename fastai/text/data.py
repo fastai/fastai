@@ -32,6 +32,7 @@ class TextDataset(BaseTextDataset):
         self.label_cols = ifnone(label_cols, list(range(n_labels)))
         self.txt_cols,self.chunksize,self.name,self.df,self.create_mtd = txt_cols,chunksize,name,df,create_mtd
         self.vocab=vocab
+        self.n_labels = n_labels
         os.makedirs(self.path, exist_ok=True)
         if clear_cache: self.clear()
         if not self.check_toks(): self.tokenize()
