@@ -124,6 +124,28 @@ Replace `1.0.7` with the version you're trying to install. (Without version it'l
 
 
 
+### Can't install the latest fastai conda package
+
+Say there is `fastai-1.0.12` out there, but when you run:
+
+```
+conda install -c fastai fastai
+```
+
+It installs only `fastai-1.0.6`.
+
+This means that you previously installed some conda package that for example requires `spacy <=2.0.15`, and now you're trying to install `fastai==1.0.12` which requires  `spacy==2.0.16` there is a conflict, and conda will search older `fastai` packages until it finds one where the dependencies don't conflict. And `fastai-1.0.6` happens to be that.
+
+One solution is to find the package that causes a dependency conflict and update/remove it.  Unfortunately the `conda` client doesn't tell you where the conflict lies and silently downgrades or tells you it can't install it. So there is no easy way to find out which package causes the conflict.
+
+A much simpler solution is to create a fresh conda environment and not install anything there, other than `fastai` and its requirements, and keep it that way. If you do that, you will not have any such conflicts in the future. Of course, you can install other packages into that environment, but keep track of what you install so that you could revert them in the future if such conflict arises again.
+
+And of course it'd be nice if `conda` could just tell the user which package causes the conflict.
+
+
+
+
+
 ### Dedicated environment
 
 `fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
