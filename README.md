@@ -176,6 +176,17 @@ conda install conda
 
    Alternatively, please consider installing and using the very solid "0.7.x" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
 
+4. How do you know which pytorch cuda version build to choose?
+
+   It depends on the version of the installed NVIDIA driver. Here are the requirements:
+
+    | CUDA | NVIDIA |
+    | ---  | ---    |
+    | 8.0  | 361+   |
+    | 9.0  | 384+   |
+    | 9.2  | 396+   |
+
+   So if your NVIDIA driver is less than 384, then you can only use `cuda80`. Of course, you can upgrade your drivers to more recent ones if your card supports it.
 
 ## History
 
