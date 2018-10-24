@@ -114,7 +114,7 @@ class ImageMultiDataset(LabelDataset):
         self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         self.x = np.array(fns)
-        self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64)
+        self.y = [np.array([self.class2idx[o] for o in l if o in self.classes], dtype=np.int64)
                   for l in labels]
         self.loss_func = F.binary_cross_entropy_with_logits
 
