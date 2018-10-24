@@ -168,7 +168,7 @@ class Learner():
         torch.save(self.model.state_dict(), self.path/self.model_dir/f'{name}.pth')
 
     def load(self, name:PathOrStr, device:torch.device=None):
-        "Load model `name` from `self.model_dir` using `device`."
+        "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
 
