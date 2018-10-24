@@ -98,7 +98,6 @@ class SaveModelCallback(TrackerCallback):
 @dataclass
 class ReduceLROnPlateauCallback(TrackerCallback):
     "A `LearnerCallback` that reduces learning rate when a metric has stopped improving."
-    learn:Learner
     patience:int=0
     factor:float=0.2
     min_delta:int=0
@@ -108,15 +107,13 @@ class ReduceLROnPlateauCallback(TrackerCallback):
         if self.operator == np.less:  self.min_delta *= -1
 
     def on_train_begin(self, **kwargs:Any)->None:
-        self.wait = 0
-        self.opt = self.learn.opt
+        self.wait, self.opt = 0, self.learn.opt
         super().on_train_begin(**kwargs)
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
         current = self.get_monitor_value()
         if current is None: return
-        if self.operator(current - self.min_delta, self.best):
-            self.best,self.wait = current,0
+        if self.operator(current - self.min_delta, self.best): self.best,self.wait = current,0
         else:
             self.wait += 1
             if self.wait == self.patience:
