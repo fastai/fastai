@@ -167,9 +167,10 @@ class Learner():
         "Save model with `name` to `self.model_dir`."
         torch.save(self.model.state_dict(), self.path/self.model_dir/f'{name}.pth')
 
-    def load(self, name:PathOrStr):
-        "Load model `name` from `self.model_dir`."
-        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+    def load(self, name:PathOrStr, device:torch.device=None):
+        "Load model `name` from `self.model_dir` using `device`."
+        if device is None: device = self.data.device
+        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
 
     def get_preds(self, is_test:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
