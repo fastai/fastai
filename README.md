@@ -163,7 +163,7 @@ conda install conda
    As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
 
     | Platform | GPU    | CPU    |
-    | ---      | ---    | ---    |
+    |----------|--------|--------|
     | linux    | binary | binary |
     | mac      | source | binary |
     | windows  | source | source |
@@ -178,15 +178,17 @@ conda install conda
 
 4. How do you know which pytorch cuda version build to choose?
 
-   It depends on the version of the installed NVIDIA driver. Here are the requirements:
+   It depends on the version of the installed NVIDIA driver. Here are the requirements for CUDA versions supported by pre-built `pytorch-nightly` releases:
 
-    | CUDA | NVIDIA |
-    | ---  | ---    |
-    | 8.0  | 361+   |
-    | 9.0  | 384+   |
-    | 9.2  | 396+   |
+    | CUDA Toolkit | NVIDIA (Linux x86_64) |
+    |--------------|-----------------------|
+    | CUDA 9.2     | >= 396.26             |
+    | CUDA 9.0     | >= 384.81             |
+    | CUDA 8.0     | >= 367.48             |
 
    So if your NVIDIA driver is less than 384, then you can only use `cuda80`. Of course, you can upgrade your drivers to more recent ones if your card supports it.
+   You can find a complete table with all variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
+
 
 ## History
 

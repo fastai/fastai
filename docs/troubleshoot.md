@@ -95,6 +95,17 @@ python -c 'import fastai; fastai.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
+If you're not sure which nvidia driver to install here is a reference table:
+
+| CUDA Toolkit  | Linux x86_64 | Windows x86_64 |
+|---------------|--------------|----------------|
+| CUDA 10.0.130 | >= 410.48    | >= 411.31      |
+| CUDA 9.2      | >= 396.26    | >= 397.44      |
+| CUDA 9.0      | >= 384.81    | >= 385.54      |
+| CUDA 8.0      | >= 367.48    | >= 369.30      |
+
+You can find a complete table with extra variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
+
 
 
 ### Do not mix conda-forge packages
