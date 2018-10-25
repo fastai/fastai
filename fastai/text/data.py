@@ -6,7 +6,7 @@ from ..basic_data import *
 __all__ = ['BaseTextDataset', 'LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextDataset', 'TextMtd',
            'pad_collate', 'read_classes', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch']
 
-TextMtd = IntEnum('TextMtd', 'DF CSV TOK IDS')
+TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 
 def read_classes(fname):
     with open(fname, 'r') as f:
@@ -26,7 +26,7 @@ class TextDataset(BaseTextDataset):
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
                  name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None,
-                 create_mtd:TextMtd=TextMtd.CSV, classes:Classes=None, clear_cache:bool=False):
+                 create_mtd:TextMtd=TextMtd.DF, classes:Classes=None, clear_cache:bool=False):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
         self.label_cols = ifnone(label_cols, list(range(n_labels)))
@@ -151,15 +151,6 @@ class TextDataset(BaseTextDataset):
         tokenizer = ifnone(tokenizer, Tokenizer())
         chunksize = 1 if (type(df) == DataFrame) else df.chunksize
         return cls(folder, tokenizer, df=df, create_mtd=TextMtd.DF, name=name, chunksize=chunksize, **kwargs)
-
-    @classmethod
-    def from_csv(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', **kwargs) -> 'TextDataset':
-        "Create a dataset from texts in a csv file."
-        tokenizer = ifnone(tokenizer, Tokenizer())
-        orig = [Path(folder)/f'{name}.csv']
-        dest = [Path(folder)/'tmp'/f'{name}.csv']
-        maybe_copy(orig, dest)
-        return cls(folder, tokenizer, name=name, **kwargs)
 
     @classmethod
     def from_one_folder(cls, folder:PathOrStr, classes:Classes, tokenizer:Tokenizer=None, name:str='train',
@@ -327,6 +318,7 @@ class TextDataBunch(DataBunch):
         path=Path(path)
         k_names = ['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
+        print(txt_kwargs, kwargs)
         train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
         datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
         if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
@@ -336,14 +328,11 @@ class TextDataBunch(DataBunch):
     def from_csv(cls, path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
                       vocab:Vocab=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
-        tokenizer = ifnone(tokenizer, Tokenizer())
-        path=Path(path)
-        k_names = ['max_vocab', 'chunksize', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache', 'classes']
-        txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
-        train_ds = TextDataset.from_csv(path, tokenizer, train, vocab=vocab, **txt_kwargs)
-        datasets = [train_ds, TextDataset.from_csv(path, tokenizer, valid, vocab=train_ds.vocab, **txt_kwargs)]
-        if test: datasets.append(TextDataset.from_csv(path, tokenizer, test, vocab=train_ds.vocab, **txt_kwargs))
-        return cls.create(datasets, path, **kwargs)
+        header = 'infer' if 'txt_cols' in kwargs else None
+        train_df = pd.read_csv(os.path.join(path, train+'.csv'), header=header)
+        valid_df = pd.read_csv(os.path.join(path, valid+'.csv'), header=header)
+        test_df = None if test is None else pd.read_csv(os.path.join(test, valid+'.csv'), header=header)
+        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, **kwargs)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, tokenizer:Tokenizer=None, train:str='train', valid:str='valid', test:Optional[str]=None,
