@@ -172,6 +172,11 @@ class Learner():
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
 
+    def pred_batch(self, is_test:bool=False) -> Tuple[Tensors, Tensors, Tensors]:
+        "Return input, target and output of the model on a batch."
+        x,y = next(iter(self.data.holdout(is_test)))
+        return x,y,self.model(*x).detach()
+    
     def get_preds(self, is_test:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []))

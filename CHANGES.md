@@ -14,10 +14,14 @@ of that change.
 
 ### New:
 
+- `lr_find()` prints the next step to type when completed
+
 ### Changed:
 
 - master bar support in `download_url`
+- various fixes to support the latest of `fastprogress`
 - `Learner.normalize()` (without args) stores calculated stats in `Learner.stats`
+- `pred_batch` moved to `basic_train` and fixed for multiple inputs
 
 ### Fixed:
 
