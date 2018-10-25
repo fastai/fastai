@@ -159,7 +159,7 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
     u = u.raw
 
     with open(dest,'wb') as f:
-        pbar = progress_bar(range(file_size), auto_update=False)
+        pbar = progress_bar(range(file_size), auto_update=False, leave=False)
         nbytes,buffer = 0,[1]
         while len(buffer):
             buffer = u.read(8192)

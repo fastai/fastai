@@ -207,8 +207,8 @@ class Recorder(LearnerCallback):
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
-        self.names = ['epoch', 'train loss', 'valid loss'] + metrics_names
-        self.pbar.write('  '.join(self.names))
+        self.names = ['epoch', 'train_loss', 'valid_loss'] + metrics_names
+        self.pbar.write('  '.join(self.names), table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
     def on_batch_begin(self, train, **kwargs:Any)->None:
@@ -242,7 +242,7 @@ class Recorder(LearnerCallback):
             t = str(stat) if isinstance(stat, int) else f'{stat:.6f}'
             t += ' ' * (len(name) - len(t))
             str_stats.append(t)
-        self.pbar.write('  '.join(str_stats))
+        self.pbar.write('  '.join(str_stats), table=True)
         
     def add_metrics(self, metrics):
         self._added_mets = metrics

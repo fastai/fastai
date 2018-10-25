@@ -19,8 +19,9 @@ class LRFinder(LearnerCallback):
         self.valid_dl = learn.data.valid_dl
         self.data.valid_dl = None
 
-    def on_train_begin(self, **kwargs:Any)->None:
+    def on_train_begin(self, pbar, **kwargs:Any)->None:
         "Initialize optimizer and learner hyperparameters."
+        setattr(pbar, 'clean_on_interrupt', True)
         self.learn.save('tmp')
         self.opt = self.learn.opt
         self.opt.lr = self.sched.start
@@ -45,3 +46,4 @@ class LRFinder(LearnerCallback):
         self.data.valid_dl = self.valid_dl
         self.learn.load('tmp')
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
+        print('LR Finder complete, type {learner_name}.recorder.plot() to see the graph.')
