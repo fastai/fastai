@@ -20,8 +20,9 @@ of that change.
 
 ### Changed:
 
-### Fixed:
+- master bar support in `download_url`
 
+### Fixed:
 
 
 ## 1.0.13 (2018-10-24)
@@ -35,7 +36,6 @@ of that change.
 ### Changed:
 
 - `URLs.download_wt103()` has been removed
-
 
 
 ## 1.0.12 (2018-10-23)
