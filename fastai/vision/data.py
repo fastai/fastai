@@ -270,14 +270,18 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
-                              test:Optional[PathOrStr]=None, **kwargs:Any)->'ImageDataBunch':
-        "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders."
+                    test:Optional[PathOrStr]=None, valid_pct=None, **kwargs:Any)->'ImageDataBunch':
+        "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
-        train_ds = ImageClassificationDataset.from_folder(path/train)
-        datasets = [train_ds, ImageClassificationDataset.from_folder(path/valid, classes=train_ds.classes)]
+        if valid_pct is None:
+            train_ds = ImageClassificationDataset.from_folder(path/train)
+            datasets = [train_ds, ImageClassificationDataset.from_folder(path/valid, classes=train_ds.classes)]
+        else: datasets = ImageClassificationDataset.from_folder(path/train, valid_pct=valid_pct)
+
         if test: datasets.append(ImageClassificationDataset.from_single_folder(
             path/test,classes=train_ds.classes))
         return cls.create(*datasets, path=path, **kwargs)
+
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,

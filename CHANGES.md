@@ -19,6 +19,7 @@ of that change.
 
 ### Changed:
 
+- `ImageDataBunch.from_folder` now takes `valid_pct`
 - master bar support in `download_url`
 - various fixes to support the latest of `fastprogress`
 - `Learner.normalize()` (without args) stores calculated stats in `Learner.stats`
