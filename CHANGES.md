@@ -12,14 +12,30 @@ of that change.
 
 
 
-## 1.0.13.dev0 (Work In Progress)
+
+
+## 1.0.14.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
+- master bar support in `download_url`
+
 ### Fixed:
 
+
+## 1.0.13 (2018-10-24)
+
+### New: 
+
+- pretrained language model is now downloaded directly in the .fastai/models/ folder. Use `pretrained_model=URLs.WT103`
+- add an argument `stop_div` to `Learner.lr_find()` to prevent early stopping, useful for negative losses.
+- add an argument `convert_mode` to `open_mask` and `SegmentationDataset` to choose the PIL conversion mode of the masks.
+
+### Changed:
+
+- `URLs.download_wt103()` has been removed
 
 
 ## 1.0.12 (2018-10-23)

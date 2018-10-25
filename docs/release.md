@@ -58,6 +58,17 @@ You can skip this step if you have done it once already on the system you're mak
 
 ## Quick Release Process
 
+No matter which release process you follow, always remember to start with:
+
+```
+git pull
+```
+or:
+```
+git checkout <desired commit>
+```
+
+Otherwise it's very easy to have an outdated checkout and release an outdated version.
 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 

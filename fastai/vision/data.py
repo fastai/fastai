@@ -8,7 +8,7 @@ from ..layers import CrossEntropyFlat
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'get_image_files',
            'ImageDataBunch', 'normalize', 'normalize_funcs',
-           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'channel_view',
+           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'channel_view', 'cifar_stats',
            'cifar_norm', 'cifar_denorm', 'mnist_norm', 'mnist_denorm', 'imagenet_stats', 'imagenet_norm', 'imagenet_denorm']
 
 TfmList = Collection[Transform]
@@ -150,13 +150,13 @@ class ImageMultiDataset(LabelDataset):
 class SegmentationDataset(DatasetBase):
     "A dataset for segmentation task."
     
-    def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False):
+    def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False, convert_mode='L'):
         assert len(x)==len(y)
-        self.x,self.y,self.div = np.array(x),np.array(y),div
+        self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
         self.loss_func = CrossEntropyFlat()
 
     def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
-        return open_image(self.x[i]), open_mask(self.y[i], self.div)
+        return open_image(self.x[i]), open_mask(self.y[i], self.div, self.convert_mode)
 
 @dataclass
 class ObjectDetectDataset(Dataset):

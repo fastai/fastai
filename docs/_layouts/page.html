@@ -40,12 +40,6 @@ layout: default
     {% endunless %}
 
 
-    {% if site.github_editme_path %}
-
-    <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{page.path}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
-
-    {% endif %}
-
    {{content}}
 
     <div class="tags">
@@ -59,6 +53,10 @@ layout: default
         {% endfor %}
         {% endif %}
     </div>
+
+    {% if site.github_editme_path %}
+    <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{page.path}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+    {% endif %}
 
 {% include disqus.html %}
 

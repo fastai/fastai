@@ -1,10 +1,8 @@
-import tarfile
-from fastai import *
-from fastai.vision import *
-from fastai.text import *
+from .core import *
 
 __all__ = ['URLs', 'untar_data', 'download_data', 'datapath4file']
 
+MODEL_URL = 'http://files.fast.ai/models/'
 URL = 'http://files.fast.ai/data/examples/'
 class URLs():
     LOCAL_PATH = Path.cwd()
@@ -13,6 +11,7 @@ class URLs():
     S3_IMAGELOC = f'{S3}imagelocal/'
     S3_NLP = f'{S3}nlp/'
     S3_COCO = f'{S3}coco/'
+    S3_MODEL = f'{S3}modelzoo/'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
     IMDB_SAMPLE = f'{URL}imdb_sample'
@@ -21,50 +20,22 @@ class URLs():
     ML_SAMPLE = f'{URL}movie_lens_sample'
     PLANET_SAMPLE = f'{URL}planet_sample'
     CIFAR = f'{URL}cifar10'
+    WT103 = f'{S3_MODEL}wt103'
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
     PETS = f'{S3_IMAGE}oxford-iiit-pet'
     MNIST = f'{S3_IMAGE}mnist_png'
 
-    @classmethod
-    def get_adult(cls):
-        path = untar_data(cls.ADULT_SAMPLE)
-        return pd.read_csv(path/'adult.csv')
-
-    @classmethod
-    def get_mnist(cls):
-        path = untar_data(cls.MNIST_SAMPLE)
-        return ImageDataBunch.from_folder(path)
-
-    @classmethod
-    def get_imdb(cls, classifier=False):
-        path = untar_data(cls.IMDB_SAMPLE)
-        data_class = TextClasDataBunch if classifier else TextLMDataBunch
-        return data_class.from_csv(path)
-
-    @classmethod
-    def get_movie_lens(cls):
-        path = untar_data(cls.ML_SAMPLE)
-        return pd.read_csv(path/'ratings.csv')
-
-    @classmethod
-    def download_wt103_model(cls):
-        path = untar_data(cls.IMDB_SAMPLE)
-        model_path = path/'models'
-        model_path.mkdir(exist_ok=True)
-        url = 'http://files.fast.ai/models/wt103_v1/'
-        download_url(f'{url}lstm_wt103.pth', model_path/'lstm_wt103.pth')
-        download_url(f'{url}itos_wt103.pkl', model_path/'itos_wt103.pkl')
-
 class Config():
     "Creates a default config file at `~/.fastai/config.yml`"
     DEFAULT_CONFIG_PATH = '~/.fastai/config.yml'
     DEFAULT_CONFIG = {
-        'data_path': '~/.fastai/data'
+        'data_path': '~/.fastai/data',
+        'model_path': '~/.fastai/models'
     }
 
     @classmethod
-    def get_key(cls, key): return cls.get().get(key)
+    def get_key(cls, key): return cls.get().get(key, cls.DEFAULT_CONFIG.get(key,None))
 
     @classmethod
     def get(cls, fpath=None, create_missing=True):
@@ -85,8 +56,14 @@ class Config():
 
 def _expand_path(fpath): return Path(fpath).expanduser()
 def _url2name(url): return url.split('/')[-1]
-def _url2path(url): return datapath4file(f'{_url2name(url)}')
+def _url2path(url, data=True): return datapath4file(f'{_url2name(url)}') if data else modelpath4file(f'{_url2name(url)}')
 def _url2tgz(url): return datapath4file(f'{_url2name(url)}.tgz')
+
+def modelpath4file(filename):
+    "Returns URLs.MODEL path if file exists. Otherwise returns config path"
+    local_path = URLs.LOCAL_PATH/'models'/filename
+    if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
+    else: return _expand_path(Config.get_key('model_path'))/filename
 
 def datapath4file(filename):
     "Returns URLs.DATA path if file exists. Otherwise returns config path"
@@ -103,9 +80,10 @@ def download_data(url:str, fname:PathOrStr=None):
         download_url(f'{url}.tgz', fname)
     return fname
 
-def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None):
+def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True):
     "Download `url` if doesn't exist to `fname` and un-tgz to folder `dest`"
     dest = Path(ifnone(dest, _url2path(url)))
-    fname = download_data(url, fname=fname)
-    if not dest.exists(): tarfile.open(fname, 'r:gz').extractall(dest.parent)
+    if not dest.exists():
+        fname = download_data(url, fname=fname)
+        tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest

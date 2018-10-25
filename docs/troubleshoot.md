@@ -95,6 +95,17 @@ python -c 'import fastai; fastai.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
+If you're not sure which nvidia driver to install here is a reference table:
+
+| CUDA Toolkit  | Linux x86_64 | Windows x86_64 |
+|---------------|--------------|----------------|
+| CUDA 10.0.130 | >= 410.48    | >= 411.31      |
+| CUDA 9.2      | >= 396.26    | >= 397.44      |
+| CUDA 9.0      | >= 384.81    | >= 385.54      |
+| CUDA 8.0      | >= 367.48    | >= 369.30      |
+
+You can find a complete table with extra variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
+
 
 
 ### Do not mix conda-forge packages
@@ -110,6 +121,28 @@ conda search --info -c fastai "fastai=1.0.7"
 ```
 
 Replace `1.0.7` with the version you're trying to install. (Without version it'll show you all versions of `fastai` and its dependencies)
+
+
+
+### Can't install the latest fastai conda package
+
+Say there is `fastai-1.0.12` out there, but when you run:
+
+```
+conda install -c fastai fastai
+```
+
+It installs only `fastai-1.0.6`.
+
+This means that you previously installed some conda package that for example requires `spacy <=2.0.15`, and now you're trying to install `fastai==1.0.12` which requires  `spacy==2.0.16` there is a conflict, and conda will search older `fastai` packages until it finds one where the dependencies don't conflict. And `fastai-1.0.6` happens to be that.
+
+One solution is to find the package that causes a dependency conflict and update/remove it.  Unfortunately the `conda` client doesn't tell you where the conflict lies and silently downgrades or tells you it can't install it. So there is no easy way to find out which package causes the conflict.
+
+A much simpler solution is to create a fresh conda environment and not install anything there, other than `fastai` and its requirements, and keep it that way. If you do that, you will not have any such conflicts in the future. Of course, you can install other packages into that environment, but keep track of what you install so that you could revert them in the future if such conflict arises again.
+
+And of course it'd be nice if `conda` could just tell the user which package causes the conflict.
+
+
 
 
 

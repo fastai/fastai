@@ -167,15 +167,17 @@ class Learner():
         "Save model with `name` to `self.model_dir`."
         torch.save(self.model.state_dict(), self.path/self.model_dir/f'{name}.pth')
 
-    def load(self, name:PathOrStr):
-        "Load model `name` from `self.model_dir`."
-        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+    def load(self, name:PathOrStr, device:torch.device=None):
+        "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
+        if device is None: device = self.data.device
+        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
 
     def get_preds(self, is_test:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []))
     
     def validate(self, dl=None, callbacks=None, metrics=None):
+        "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
         metrics = ifnone(metrics, self.metrics)
         cb_handler = CallbackHandler(self.callbacks + ifnone(callbacks, []), metrics)

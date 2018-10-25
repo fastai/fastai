@@ -4,7 +4,7 @@ from fastai.torch_core import *
 from fastai.callback import *
 from fastai.basic_train import *
 
-__all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback']
+__all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback', 'ReduceLROnPlateauCallback' ]
 
 class TerminateOnNaNCallback(Callback):
     "A `LearnerCallback` that terminates training if loss is NaN."
@@ -94,3 +94,29 @@ class SaveModelCallback(TrackerCallback):
 
     def on_train_end(self, **kwargs):
         if self.every=="improvement": self.learn.load(f'{self.name}')
+
+@dataclass
+class ReduceLROnPlateauCallback(TrackerCallback):
+    "A `LearnerCallback` that reduces learning rate when a metric has stopped improving."
+    patience:int=0
+    factor:float=0.2
+    min_delta:int=0
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.operator == np.less:  self.min_delta *= -1
+
+    def on_train_begin(self, **kwargs:Any)->None:
+        self.wait, self.opt = 0, self.learn.opt
+        super().on_train_begin(**kwargs)
+
+    def on_epoch_end(self, epoch, **kwargs:Any)->None:
+        current = self.get_monitor_value()
+        if current is None: return
+        if self.operator(current - self.min_delta, self.best): self.best,self.wait = current,0
+        else:
+            self.wait += 1
+            if self.wait == self.patience:
+                self.opt.lr *= self.factor
+                self.wait == 0
+                print(f'Epoch {epoch}: reducing lr to {self.opt.lr}')

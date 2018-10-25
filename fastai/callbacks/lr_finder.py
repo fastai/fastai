@@ -9,10 +9,10 @@ __all__ = ['LRFinder']
 class LRFinder(LearnerCallback):
     """Causes `learn` to go on a mock training from `start_lr` to `end_lr` for `num_it` iterations.
        Training is interrupted if the loss diverges. Weights changes are reverted after run complete."""
-    def __init__(self, learn:Learner, start_lr:float=1e-7, end_lr:float=10, num_it:int=100):
+    def __init__(self, learn:Learner, start_lr:float=1e-7, end_lr:float=10, num_it:int=100, stop_div:bool=True):
         "Initialize schedule of learning rates"
         super().__init__(learn)
-        self.data = learn.data
+        self.data,self.stop_div = learn.data,stop_div
         self.sched = Stepper((start_lr, end_lr), num_it, annealing_exp)
         #To avoid validating if the train_dl has less than num_it batches, we put aside the valid_dl and remove it
         #during the call to fit.
@@ -30,7 +30,7 @@ class LRFinder(LearnerCallback):
         "Determine if loss has runaway and we should stop."
         if iteration==0 or smooth_loss < self.best_loss: self.best_loss = smooth_loss
         self.opt.lr = self.sched.step()
-        if self.sched.is_done or smooth_loss > 4*self.best_loss:
+        if self.sched.is_done or (self.stop_div and smooth_loss > 4*self.best_loss):
             #We use the smoothed loss to decide on the stopping since it's less shaky.
             self.stop=True
             return True

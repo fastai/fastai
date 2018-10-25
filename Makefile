@@ -143,32 +143,32 @@ git-pull: ## git pull
 	git status
 
 git-not-dirty:
-	@echo "*** Checking that everything is committed"
+	@echo "\n\n*** Checking that everything is committed"
 	@if [ -n "$(git status -s)" ]; then\
 		echo "uncommitted git files";\
 		false;\
     fi
 
 prev-branch-switch:
-	@echo "*** [$(cur_branch)] Switching to prev branch"
+	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
 	git checkout -
 	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
 	@echo "Now on [$(branch)] branch"
 
 release-branch-create:
-	@echo "*** [$(cur_branch)] Creating release-$(version) branch"
+	@echo "\n\n*** [$(cur_branch)] Creating release-$(version) branch"
 	git checkout -b release-$(version)
 	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
 	@echo "Now on [$(branch)] branch"
 
 release-branch-switch:
-	@echo "*** [$(cur_branch)] Switching to release-$(version) branch"
+	@echo "\n\n*** [$(cur_branch)] Switching to release-$(version) branch"
 	git checkout release-$(version)
 	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
 	@echo "Now on [$(branch)] branch"
 
 master-branch-switch:
-	@echo "*** [$(cur_branch)] Switching to master branch: version $(version)"
+	@echo "\n\n*** [$(cur_branch)] Switching to master branch: version $(version)"
 	git checkout master
 	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
 	@echo "Now on [$(branch)] branch"
@@ -200,7 +200,7 @@ commit-tag-push: ## commit and tag the release
 # from the point of branching of release-$(version) till its HEAD. If
 # there are any, then most likely there are things to backport.
 backport-check: ## backport to master check
-	@echo "*** [$(cur_branch)] Checking if anything needs to be backported"
+	@echo "\n\n*** [$(cur_branch)] Checking if anything needs to be backported"
 	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base master origin/release-$(version))))
 	@if [ ! -n "$(start_rev)" ]; then\
 		echo "*** failed, check you're on the correct release branch";\

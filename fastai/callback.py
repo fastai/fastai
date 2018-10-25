@@ -256,6 +256,7 @@ class CallbackHandler():
         self('train_end', exception=exception)
 
 class AverageMetric(Callback):
+    "Wrap a `func` in a callback for metrics computation."
     def __init__(self, func):
         self.func, self.name = func, func.__name__
 

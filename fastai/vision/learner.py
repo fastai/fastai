@@ -72,7 +72,7 @@ class ClassificationInterpretation():
     @classmethod
     def from_learner(cls, learn:Learner, loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=True, tta=False):
         "Factory method to create from a Learner."
-        preds = learn.tta() if tta else learn.get_preds()
+        preds = learn.TTA() if tta else learn.get_preds()
         return cls(learn.data, *preds, loss_class=loss_class, sigmoid=sigmoid)
 
     def top_losses(self, k, largest=True):
