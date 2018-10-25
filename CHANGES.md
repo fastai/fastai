@@ -10,10 +10,6 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-
-
-
-
 ## 1.0.14.dev0 (Work In Progress)
 
 ### New:
@@ -21,6 +17,7 @@ of that change.
 ### Changed:
 
 - master bar support in `download_url`
+- `Learner.normalize()` (without args) stores calculated stats in `Learner.stats`
 
 ### Fixed:
 
