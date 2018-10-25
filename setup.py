@@ -25,7 +25,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
 # XXX: temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
 requirements = to_list("""
-    fastprogress>=0.1.10
+    fastprogress>=0.1.12
     ipython
     jupyter
     matplotlib
