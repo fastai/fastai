@@ -5,11 +5,17 @@
 
 .PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda dist-conda upload-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist upload release
 
+define get_cur_branch
+$(shell git branch | sed -n '/\* /s///p')
+endef
+
+define echo_cur_branch
+@echo Now on [$(call get_cur_branch)] branch
+endef
+
 version_file = fastai/version.py
 version = $(shell python setup.py --version)
-cur_branch = $(shell git branch | sed -n '/\* /s///p')
-
-.DEFAULT_GOAL := help
+cur_branch = $(call get_cur_branch)
 
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
@@ -70,6 +76,8 @@ echo "checking version $$0"
 wait_till_pip_ver_is_available "$$0"
 endef
 export WAIT_TILL_PIP_VER_IS_AVAILABLE_BASH
+
+.DEFAULT_GOAL := help
 
 help: ## this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -203,26 +211,22 @@ git-not-dirty:
 prev-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
 	git checkout -
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 release-branch-create:
 	@echo "\n\n*** [$(cur_branch)] Creating release-$(version) branch"
 	git checkout -b release-$(version)
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 release-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to release-$(version) branch"
 	git checkout release-$(version)
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 master-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to master branch: version $(version)"
 	git checkout master
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 commit-dev-cycle-push: ## commit version and CHANGES and push
 	@echo "\n\n*** [$(cur_branch)] Start new dev cycle: $(version)"
@@ -234,8 +238,7 @@ commit-dev-cycle-push: ## commit version and CHANGES and push
 commit-version: ## commit and tag the release
 	@echo "\n\n*** [$(cur_branch)] Start release branch: $(version)"
 	git commit -m "starting release branch: $(version)" $(version_file)
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 commit-tag-push: ## commit and tag the release
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
