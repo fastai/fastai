@@ -33,9 +33,7 @@ def test_should_load_backwards_lm():
 
 def test_from_csv():
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-    if not os.path.exists(path):
-        os.makedirs(path)
-
+    os.makedirs(path)
     filename = 'text'
     filepath = os.path.join(path, filename+'.csv')
     try:
@@ -48,9 +46,7 @@ def test_from_csv():
 
 def test_from_df():
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-    if not os.path.exists(path):
-        os.makedirs(path)
-
+    os.makedirs(path)
     try:
         df = text_df()
         data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=[0], txt_cols=["text"])
