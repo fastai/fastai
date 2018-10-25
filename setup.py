@@ -49,7 +49,6 @@ requirements = to_list("""
 # dependencies to skip for now:
 #
 # cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
-# fire - will be eliminated shortly
 
 if sys.version_info < (3,7): requirements.append('dataclasses')
 
