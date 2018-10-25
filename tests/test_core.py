@@ -107,3 +107,33 @@ def test_arrays_split():
     c = arrays_split([0,3],[1, 2, 3, 4, 5])
     d = [(array([1, 4]),), (array([5, 2]),)]
     np.testing.assert_array_equal(c,d)
+
+    with pytest.raises(Exception): arrays_split([0,5],[1, 2, 3, 4, 5])
+    with pytest.raises(Exception): arrays_split([0,3],[1, 2, 3, 4, 5], [1, 2, 3, 4])
+
+def test_random_split():
+    valid_pct = 0.4
+    a = [len(arr) for arr in random_split(valid_pct, [1,2,3,4,5], ['a', 'b', 'c', 'd', 'e'])]
+    b = [2, 2]
+    assert a == b
+
+    with pytest.raises(Exception): random_split(1.1, [1,2,3])
+    with pytest.raises(Exception): random_split(0.1, [1,2,3], [1,2,3,4])
+
+def test_camel2snake():
+    a = camel2snake('someString')
+    b = 'some_string'
+    assert a == b
+
+    c = camel2snake('some2String')
+    d = 'some2_string'
+    assert c == d
+
+    e = camel2snake('longStringExmpl')
+    f = 'long_string_exmpl'
+    assert e == f
+
+def test_even_mults():
+    a = even_mults(start=1, stop=8, n=4)
+    b = array([1.,2.,4.,8.])
+    np.testing.assert_array_equal(a,b)
