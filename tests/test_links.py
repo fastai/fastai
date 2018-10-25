@@ -13,7 +13,7 @@ def build_nb_cells(mod_names):
 @pytest.mark.skip(reason="need to update")
 def test_torchvision():
     docstr   = 'Note that `tvm` is the namespace we use for `torchvision.models`.'
-    expected = 'Note that [`tvm`](https://pytorch.org/docs/stable/torchvision/models#torchvision.models) is the namespace we use for `torchvision.models`.'
+    expected = 'Note that [`tvm`](https://pytorch.org/docs/stable/torchvision/models.html#torchvision.models) is the namespace we use for `torchvision.models`.'
     assert_link(docstr, expected, msg='Should match imported aliases')
 
 def test_fastai_prefix():
@@ -23,12 +23,12 @@ def test_fastai_prefix():
 
 def test_link_typedef():
     docstr   = "- `LayerFunc` = `Callable`\[`nn.Module`],`None`]"
-    expected = "- `LayerFunc` = `Callable`\[[`nn.Module`](https://pytorch.org/docs/stable/nn#torch.nn.Module)],`None`]"
+    expected = "- `LayerFunc` = `Callable`\[[`nn.Module`](https://pytorch.org/docs/stable/nn.html#torch.nn.Module)],`None`]"
     assert_link(docstr, expected, modules=[torch], msg='Type definitions to torch formatted incorrectly. See fastai_typing.ipynb')
 
 def test_link_typedef_double_bt():
     docstr   = "- `ParamList` = `Collection`\[`nn`.`Parameter`]"
-    expected = "- `ParamList` = `Collection`\[[`nn`](https://pytorch.org/docs/stable/nn#torch-nn).`Parameter`]"
+    expected = "- `ParamList` = `Collection`\[[`nn`](https://pytorch.org/docs/stable/nn.html#torch-nn).`Parameter`]"
     assert_link(docstr, expected)
 
 def test_link_inner_class_functions():
