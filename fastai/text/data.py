@@ -318,7 +318,6 @@ class TextDataBunch(DataBunch):
         path=Path(path)
         k_names = ['max_vocab', 'min_freq', 'n_labels', 'txt_cols', 'label_cols', 'clear_cache', 'classes']
         txt_kwargs, kwargs = extract_kwargs(k_names, kwargs)
-        print(txt_kwargs, kwargs)
         train_ds = TextDataset.from_df(path, train_df, tokenizer, 'train', vocab=vocab, **txt_kwargs)
         datasets = [train_ds, TextDataset.from_df(path, valid_df, tokenizer, 'valid', vocab=train_ds.vocab, **txt_kwargs)]
         if test_df is not None: datasets.append(TextDataset.from_df(path, test_df, tokenizer, 'test', vocab=train_ds.vocab, **txt_kwargs))
