@@ -72,6 +72,10 @@ class ImageDataset(LabelDataset):
 
     def __getitem__(self,i): return open_image(self.x[i]),self.y[i]
 
+    def remove_element(self, idx=-1):
+        self.x = np.delete(self.x, idx, 0)
+        self.y = np.delete(self.y, idx, 0)
+
 class ImageClassificationDataset(ImageDataset):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Classes]=None):
@@ -264,6 +268,7 @@ class ImageDataBunch(DataBunch):
                      num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                      collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
         "Factory method. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
+        if(len(train_ds.x) % bs == 1 ): train_ds.remove_element()  # a batch with one element fails in batchnorm layer
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
         if ds_tfms: datasets = transform_datasets(*datasets, tfms=ds_tfms, size=size, **kwargs)
