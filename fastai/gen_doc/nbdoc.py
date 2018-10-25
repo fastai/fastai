@@ -105,7 +105,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     doc += f'<div style="float:right">{source}</div></div>\n\n> {args}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
-    if markdown: display(Markdown(doc))
+    if markdown: display(Markdown(link+doc))
     else: return doc
 
 def doc(elt):
