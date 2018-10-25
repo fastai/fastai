@@ -4,12 +4,12 @@ from .image import *
 from .transform import *
 from ..basic_data import *
 from ..layers import CrossEntropyFlat
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
-           'SegmentationDataset', 'denormalize', 'get_annotations', 'get_image_files',
-           'ImageDataBunch', 'normalize', 'normalize_funcs',
-           'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets', 'channel_view', 'cifar_stats',
-           'cifar_norm', 'cifar_denorm', 'mnist_norm', 'mnist_denorm', 'imagenet_stats', 'imagenet_norm', 'imagenet_denorm']
+           'SegmentationDataset', 'denormalize', 'get_annotations', 'get_image_files', 'ImageDataBunch', 'normalize',
+           'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
+           'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
 
 TfmList = Collection[Transform]
 
@@ -109,7 +109,7 @@ class ImageClassificationDataset(ImageDataset):
 
 #Draft, to check
 class ImageMultiDataset(LabelDataset):
-    
+
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Classes]=None):
         self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
@@ -145,7 +145,7 @@ class ImageMultiDataset(LabelDataset):
 
 class SegmentationDataset(DatasetBase):
     "A dataset for segmentation task."
-    
+
     def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False, convert_mode='L'):
         assert len(x)==len(y)
         self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
@@ -234,11 +234,8 @@ def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]
             partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
-cifar_norm,cifar_denorm = normalize_funcs(*cifar_stats)
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-imagenet_norm,imagenet_denorm = normalize_funcs(*imagenet_stats)
 mnist_stats = ([0.15]*3, [0.15]*3)
-mnist_norm,mnist_denorm = normalize_funcs(*mnist_stats)
 
 def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
@@ -359,4 +356,33 @@ class ImageDataBunch(DataBunch):
             y += list(self.test_ds.y)
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
+
+
+def download_image(url,dest):
+    try: r = download_url(url, dest, overwrite=True, show_progress=False)
+    except Exception as e: print(f"Error {url} {e}")
+
+def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000):
+    "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
+    urls = open(urls).read().strip().split("\n")[:max_pics]
+    dest = Path(dest)
+    dest.mkdir(exist_ok=True)
+    with ProcessPoolExecutor(max_workers=8) as ex:
+        futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
+                   for i,url in enumerate(urls)]
+        for f in progress_bar(as_completed(futures), total=len(urls)): pass
+
+def verify_image(file:Path, delete:bool):
+    try: assert open_image(file).shape[0]==3
+    except Exception as e:
+        print(f'{e}')
+        if delete: file.unlink()
+
+def verify_images(path:PathOrStr, delete=True, max_workers:int=4):
+    "Removes broken images or non 3-channel images in `path`"
+    path = Path(path)
+    with ProcessPoolExecutor(max_workers=max_workers) as ex:
+        files = list(path.iterdir())
+        futures = [ex.submit(verify_image, file, delete=delete) for file in files]
+        for f in progress_bar(as_completed(futures), total=len(files)): pass
 

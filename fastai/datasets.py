@@ -1,6 +1,6 @@
 from .core import *
 
-__all__ = ['URLs', 'untar_data', 'download_data', 'datapath4file']
+__all__ = ['URLs', 'untar_data', 'download_data', 'datapath4file', 'url2name']
 
 MODEL_URL = 'http://files.fast.ai/models/'
 URL = 'http://files.fast.ai/data/examples/'
@@ -55,9 +55,11 @@ class Config():
             yaml.dump(cls.DEFAULT_CONFIG, yaml_file, default_flow_style=False)
 
 def _expand_path(fpath): return Path(fpath).expanduser()
-def _url2name(url): return url.split('/')[-1]
-def _url2path(url, data=True): return datapath4file(f'{_url2name(url)}') if data else modelpath4file(f'{_url2name(url)}')
-def _url2tgz(url): return datapath4file(f'{_url2name(url)}.tgz')
+def url2name(url): return url.split('/')[-1]
+def _url2path(url, data=True):
+    name = url2name(url)
+    return datapath4file(name) if data else modelpath4file(name)
+def _url2tgz(url): return datapath4file(f'{url2name(url)}.tgz')
 
 def modelpath4file(filename):
     "Returns URLs.MODEL path if file exists. Otherwise returns config path"

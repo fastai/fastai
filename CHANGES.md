@@ -14,6 +14,9 @@ of that change.
 
 ### New:
 
+- `download_images`: multi-process download of a file or URLs
+- `verify_images`: multi-process verification of directory of images with optional deletion
+
 ### Changed:
 
 - master bar support in `download_url`
@@ -22,6 +25,7 @@ of that change.
 - `pred_batch` moved to `basic_train` and fixed for multiple inputs
 - `lr_find()` prints the next step to type when completed
 - New version of fastprogress used; doesn't require ipywidgets
+- Removed `cifar_norm`,`cifar_denorm`,`imagenet_norm`,`imagenet_denorm`
 
 ### Fixed:
 
