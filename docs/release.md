@@ -82,7 +82,7 @@ Here is the quick version that includes all the steps w/o the explanations. If y
 
 ```
 make tools-update
-make master-branch-switch
+make master-branch-switch && make git-not-dirty
 make bump && make changes-finalize
 make release-branch-create && make commit-version
 make master-branch-switch

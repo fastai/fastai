@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist release
+.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda dist-conda upload-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist upload release
 
 version_file = fastai/version.py
 version = $(shell python setup.py --version)
@@ -74,6 +74,7 @@ export WAIT_TILL_PIP_VER_IS_AVAILABLE_BASH
 help: ## this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
+
 ##@ PyPI
 
 clean-pypi: clean-build-pypi clean-pyc-pypi clean-test-pypi ## remove all build, test, coverage and python artifacts
@@ -143,6 +144,7 @@ upload-conda: ## upload conda package
 
 # currently, no longer needed as we now rely on sdist's tarball for conda source, which doesn't have any data in it already
 # find ./data -type d -and -not -regex "^./data$$" -prune -exec rm -rf {} \;
+
 clean: clean-pypi clean-conda ## clean pip && conda package
 
 dist: clean dist-pypi dist-conda ## build pip && conda package
@@ -163,6 +165,7 @@ tools-update: ## install/update build tools
 release: ## do it all (other than testing)
 	${MAKE} tools-update
 	${MAKE} master-branch-switch
+	${MAKE} git-not-dirty
 	${MAKE} bump
 	${MAKE} changes-finalize
 	${MAKE} release-branch-create
@@ -189,10 +192,12 @@ git-pull: ## git pull
 	git status
 
 git-not-dirty:
-	@echo "\n\n*** Checking that everything is committed"
-	@if [ -n "$(git status -s)" ]; then\
-		echo "uncommitted git files";\
-		false;\
+	@echo "*** Checking that everything is committed"
+	@if [ -n "$(shell git status -s)" ]; then\
+		echo "git status is not clean. You have uncommitted git files";\
+		exit 1;\
+	else\
+		echo "git status is clean";\
     fi
 
 prev-branch-switch:
