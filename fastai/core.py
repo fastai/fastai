@@ -151,7 +151,7 @@ class ItemBase():
     @abstractmethod
     def data(self): pass
 
-def download_url(url:str, dest:str, overwrite:bool=False)->None:
+def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None)->None:
     "Download `url` to `dest` unless is exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
     u = requests.get(url, stream=True)
@@ -159,7 +159,7 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
     u = u.raw
 
     with open(dest,'wb') as f:
-        pbar = progress_bar(range(file_size), auto_update=False)
+        pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
         nbytes,buffer = 0,[1]
         while len(buffer):
             buffer = u.read(8192)
