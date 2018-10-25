@@ -105,7 +105,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     doc += f'<div style="float:right">{source}</div></div>\n\n> {args}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
-    if markdown: display(Markdown(doc))
+    if markdown: display(Markdown(link+doc))
     else: return doc
 
 def doc(elt):
@@ -291,22 +291,24 @@ def get_module_name(ft)->str: return inspect.getmodule(ft).__name__
 def get_pytorch_link(ft)->str:
     "Returns link to pytorch docs of `ft`."
     name = ft.__name__
-    if name == 'device': return f'{PYTORCH_DOCS}tensor_attributes.html#torch-device'
+    ext = '.html'
+    if name == 'device': return f'{PYTORCH_DOCS}tensor_attributes{ext}#torch-device'
+    if name == 'Tensor': return f'{PYTORCH_DOCS}tensors{ext}#torch-tensor'
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
         if inspect.ismodule(ft): name = name.replace('.', '-')
-        return f'{PYTORCH_DOCS}{doc_path}#{name}'
+        return f'{PYTORCH_DOCS}{doc_path}{ext}#{name}'
     if name.startswith('torch.nn') and inspect.ismodule(ft): # nn.functional is special case
         nn_link = name.replace('.', '-')
-        return f'{PYTORCH_DOCS}nn#{nn_link}'
+        return f'{PYTORCH_DOCS}nn{ext}#{nn_link}'
     paths = get_module_name(ft).split('.')
-    if len(paths) == 1: return f'{PYTORCH_DOCS}{paths[0]}#{paths[0]}.{name}'
+    if len(paths) == 1: return f'{PYTORCH_DOCS}{paths[0]}{ext}#{paths[0]}.{name}'
 
     offset = 1 if paths[1] == 'utils' else 0 # utils is a pytorch special case
     doc_path = paths[1+offset]
-    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}#module-{name}'
+    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}{ext}#module-{name}'
     fnlink = '.'.join(paths[:(2+offset)]+[name])
-    return f'{PYTORCH_DOCS}{doc_path}#{fnlink}'
+    return f'{PYTORCH_DOCS}{doc_path}{ext}#{fnlink}'
 
 def get_source_link(mod, lineno, display_text="[source]")->str:
     "Returns link to `lineno` in source code of `mod`."
