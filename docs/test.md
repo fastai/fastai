@@ -409,15 +409,14 @@ More details, example and ways are [here](https://docs.pytest.org/en/latest/skip
 
 ### Getting reproducible results
 
-In order for tests to be reliable the test result should not be random (most of the time).
-
-To get identical reproducable results set, depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
+In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
 
 * torch RNG
 
    ```
    import torch
    torch.manual_seed(42)
+   torch.backends.cudnn.deterministic = True
    ```
 
 * python RNG
