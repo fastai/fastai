@@ -134,17 +134,10 @@ If for any reason you can't use the prepackaged packages and have to build from 
 
 If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please refer to the [troubleshooting document](https://docs-dev.fast.ai/troubleshoot.html).
 
-If you encounter installation problems with conda, make sure you have the latest `conda` client:
-```
-conda update conda
-```
-
-Sometimes you have to run the following instead:
-
+If you encounter installation problems with conda, make sure you have the latest `conda` client (`conda install` will do an update too):
 ```
 conda install conda
 ```
-
 
 ### Is My System Supported?
 

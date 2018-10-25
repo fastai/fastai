@@ -216,6 +216,9 @@ I tweaked the prompt output for this example by adding whitespace to align the e
 
 So now you don't need to guess and you know exactly which environment has been activated if any before you execute any code.
 
+
+
+
 ### Am I using my GPU(s)?
 
 It's possible that your system is misconfigured and while you think you're using your GPU you could be running on your CPU only.
@@ -328,13 +331,13 @@ Before making a new issue report, please:
 1.  Make sure you have the latest `conda` and/or `pip`, depending on the package manager you use:
     ```
     pip install pip -U
-    conda update conda
+    conda install conda
     ```
-    and then check whether the problem you wanted to report still exists.
+    and then repeat the steps and see whether the problem you wanted to report still exists.
 
 2.  Make sure [your platform is supported by the preview build of `pytorch-1.0.0`](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). You may have to build `pytorch` from source if it isn't.
 
-3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md). If you improvise and it works that's great, if it fails please RTFM ;)
+3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md#installation). If you improvise and it works that's great, if it fails please RTFM ;)
 
 If you followed the steps in this document and couldn't find a resolution, please post a comment in this [thread](https://forums.fast.ai/t/fastai-v1-install-issues-thread/24111/1).
 
