@@ -290,6 +290,12 @@ ul#results-container a:hover {
     margin: 3px;
 }
 
+a.source_link {
+    float:right; 
+    font-size:15px; 
+    font-weight:normal;
+}
+
 div#toc ul {
     font-size: 90%;
     background-color: whitesmoke;

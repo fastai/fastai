@@ -91,7 +91,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
              ignore_warn:bool=False, markdown=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
-    link = f'<a id={full_name or get_anchor(elt)}></a>' # Must happen before we extract __func__
+    anchor_id = full_name or get_anchor(elt)
     elt = getattr(elt, '__func__', elt)
     full_name = full_name or fn_name(elt)
     if inspect.isclass(elt):
@@ -99,13 +99,13 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
         else:                        name,args = get_cls_doc(elt, full_name)
     elif isinstance(elt, Callable):  name,args = format_ft_def(elt, full_name)
     else: raise Exception(f'doc definition not supported for {full_name}')
-    source = get_function_source(elt) if is_fastai_class(elt) else ""
+    source_link = get_function_source(elt) if is_fastai_class(elt) else ""
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
-    doc =  f'<div><h{title_level} style="display:inline">{name}</h{title_level}>'
-    doc += f'<div style="float:right">{source}</div></div>\n\n> {args}'
+    doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}</h{title_level}>'
+    doc += f'\n\n> {args}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
-    if markdown: display(Markdown(link+doc))
+    if markdown: display(Markdown(doc))
     else: return doc
 
 def doc(elt):
@@ -315,7 +315,7 @@ def get_source_link(mod, lineno, display_text="[source]")->str:
     github_path = mod.__name__.replace('.', '/')
     link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
     if display_text is None: return link
-    return f'<a href="{link}">{display_text}</a>'
+    return f'<a href="{link}" class="source_link">{display_text}</a>'
 
 def get_function_source(ft, **kwargs)->str:
     "Returns link to `ft` in source code."
