@@ -339,9 +339,9 @@ class ImageDataBunch(DataBunch):
 
     def normalize(self, stats:Collection[Tensor]=None)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
-        stats = ifnone(stats, self.batch_stats())
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
-        self.norm,self.denorm = normalize_funcs(*stats)
+        self.stats = ifnone(stats, self.batch_stats())
+        self.norm,self.denorm = normalize_funcs(*self.stats)
         self.add_tfm(self.norm)
 
     def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(12,15), is_train:bool=True)->None:

@@ -124,6 +124,28 @@ Replace `1.0.7` with the version you're trying to install. (Without version it'l
 
 
 
+### Can't install the latest fastai conda package
+
+Say there is `fastai-1.0.12` out there, but when you run:
+
+```
+conda install -c fastai fastai
+```
+
+It installs only `fastai-1.0.6`.
+
+This means that you previously installed some conda package that for example requires `spacy <=2.0.15`, and now you're trying to install `fastai==1.0.12` which requires  `spacy==2.0.16` there is a conflict, and conda will search older `fastai` packages until it finds one where the dependencies don't conflict. And `fastai-1.0.6` happens to be that.
+
+One solution is to find the package that causes a dependency conflict and update/remove it.  Unfortunately the `conda` client doesn't tell you where the conflict lies and silently downgrades or tells you it can't install it. So there is no easy way to find out which package causes the conflict.
+
+A much simpler solution is to create a fresh conda environment and not install anything there, other than `fastai` and its requirements, and keep it that way. If you do that, you will not have any such conflicts in the future. Of course, you can install other packages into that environment, but keep track of what you install so that you could revert them in the future if such conflict arises again.
+
+And of course it'd be nice if `conda` could just tell the user which package causes the conflict.
+
+
+
+
+
 ### Dedicated environment
 
 `fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
@@ -193,6 +215,9 @@ If you use advanced bash prompt functionality, like with [git-prompt](https://gi
 I tweaked the prompt output for this example by adding whitespace to align the entries to make it easy to see the differences. That leading white space is not there normally. Besides the virtual env, it also shows me which git branch I'm on, and various git status information.
 
 So now you don't need to guess and you know exactly which environment has been activated if any before you execute any code.
+
+
+
 
 ### Am I using my GPU(s)?
 
@@ -306,13 +331,13 @@ Before making a new issue report, please:
 1.  Make sure you have the latest `conda` and/or `pip`, depending on the package manager you use:
     ```
     pip install pip -U
-    conda update conda
+    conda install conda
     ```
-    and then check whether the problem you wanted to report still exists.
+    and then repeat the steps and see whether the problem you wanted to report still exists.
 
 2.  Make sure [your platform is supported by the preview build of `pytorch-1.0.0`](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). You may have to build `pytorch` from source if it isn't.
 
-3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md). If you improvise and it works that's great, if it fails please RTFM ;)
+3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md#installation). If you improvise and it works that's great, if it fails please RTFM ;)
 
 If you followed the steps in this document and couldn't find a resolution, please post a comment in this [thread](https://forums.fast.ai/t/fastai-v1-install-issues-thread/24111/1).
 

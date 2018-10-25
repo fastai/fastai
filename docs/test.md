@@ -2,64 +2,6 @@
 title: Testing fastai
 ---
 
-## Notebook integration tests
-
-Currently most testing is done through integration tests in Jupyter Notebooks.
-
-The two places you should check for notebooks to test your code with are:
-
- - [The fastai examples](https://github.com/fastai/fastai/tree/master/examples)
- - [The fastai_docs notebooks](https://github.com/fastai/fastai_docs/tree/master/docs_src)
-
-In each case, look for notebooks that have names starting with the application you're working on - e.g. 'text' or 'vision'.
-
-### fastai/examples/*ipynb
-
-You can run each of these interactively in jupyter, or as CLI:
-
-```
-jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
-```
-
-This set is examples and there is no pass/fail other than visual observation.
-
-### fastai_docs/docs_src/*ipynb
-
-The `fastai_docs` repo's notebooks can be executed as a test suite:
-
-1. Prep (first time you run it):
-
-   ```
-   python -m spacy download en
-   ```
-
-   You need to have at least 8GB available on your GPU to run all of the tests. So make sure you shutdown any unnecessary jupyter kernels, so that the output of your `nvidia-smi` shows that you have at least 8GB free.
-
-2. Sync both git repos. Remember that these tests from the `fastai_docs` repo, run the code from the `fastai` repo:
-
-   ```
-   cd fastai
-   git pull
-   cd fastai_docs
-   git pull
-   ```
-
-3. Run:
-
-   ```
-   cd fastai_docs
-   cd docs_src
-   ./run_tests.sh
-   ```
-
-   To run a subset:
-
-   ```
-   ./run_tests.sh callback*
-   ```
-
-There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai_docs/blob/master/docs_src/nbval/README.md).
-
 ## Automated tests
 
 At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests.
@@ -72,20 +14,22 @@ The tests have been configured to automatically run against the git checked out 
 
 To run all the tests:
 
+   ```
+   pytest
+   ```
+
+or:
 
    ```
    make test
    ```
+
 or:
 
    ```
    python setup.py test
    ```
-or just:
 
-   ```
-   pytest
-   ```
 
 To skip the integration tests in order to do quick testing while you work:
 
@@ -125,7 +69,14 @@ More ways: https://docs.pytest.org/en/latest/usage.html
 
 For nuances of configuring pytest's repo-wide behavior see [collection](https://docs.pytest.org/en/latest/example/pythoncollection.html).
 
+### Writing tests
 
+When writing tests:
+
+- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
+- Use module scope fixtures to run init code that can be shared amongst tests
+- Avoid pretrained models, since they have to be downloaded from the internet to run the test
+- Create some minimal data for your test, or use data already in repo's data/ directory
 
 ### Clearing state
 
@@ -409,15 +360,14 @@ More details, example and ways are [here](https://docs.pytest.org/en/latest/skip
 
 ### Getting reproducible results
 
-In order for tests to be reliable the test result should not be random (most of the time).
-
-To get identical reproducable results set, depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
+In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
 
 * torch RNG
 
    ```
    import torch
    torch.manual_seed(42)
+   torch.backends.cudnn.deterministic = True
    ```
 
 * python RNG
@@ -425,3 +375,59 @@ To get identical reproducable results set, depending on whether you are using `t
    ```
    random.seed(42)
    ```
+
+## Notebook integration tests
+
+The two places you should check for notebooks to test your code with are:
+
+ - [The fastai examples](https://github.com/fastai/fastai/tree/master/examples)
+ - [The fastai_docs notebooks](https://github.com/fastai/fastai_docs/tree/master/docs_src)
+
+In each case, look for notebooks that have names starting with the application you're working on - e.g. 'text' or 'vision'.
+
+### fastai_docs/docs_src/*ipynb
+
+The `fastai_docs` repo's notebooks can be executed as a test suite:
+
+1. Prep (first time you run it):
+
+   ```
+   python -m spacy download en
+   ```
+
+   You need to have at least 8GB available on your GPU to run all of the tests. So make sure you shutdown any unnecessary jupyter kernels, so that the output of your `nvidia-smi` shows that you have at least 8GB free.
+
+2. Sync both git repos. Remember that these tests from the `fastai_docs` repo, run the code from the `fastai` repo:
+
+   ```
+   cd fastai
+   git pull
+   cd fastai_docs
+   git pull
+   ```
+
+3. Run:
+
+   ```
+   cd fastai_docs
+   cd docs_src
+   ./run_tests.sh
+   ```
+
+   To run a subset:
+
+   ```
+   ./run_tests.sh callback*
+   ```
+
+There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai_docs/blob/master/docs_src/nbval/README.md).
+
+### fastai/examples/*ipynb
+
+You can run each of these interactively in jupyter, or as CLI:
+
+```
+jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+```
+
+This set is examples and there is no pass/fail other than visual observation.

@@ -66,48 +66,47 @@ def format_param(p):
 def format_ft_def(func, full_name:str=None)->str:
     "Format and link `func` definition to show in documentation"
     sig = inspect.signature(func)
-    name = f'`{ifnone(full_name, func.__name__)}`'
+    name = f'<code>{ifnone(full_name, func.__name__)}</code>'
     fmt_params = [format_param(param) for name,param
                   in sig.parameters.items() if name not in ('self','cls')]
     arg_str = f"({', '.join(fmt_params)})"
     if sig.return_annotation and (sig.return_annotation != sig.empty): arg_str += f" → {anno_repr(sig.return_annotation)}"
     if is_fastai_class(type(func)):        arg_str += f" :: {link_type(type(func))}"
-    f_name = f"`class` {name}" if inspect.isclass(func) else name
-    return f'{f_name}\n> {name}{arg_str}'
+    f_name = f"<code>class</code> {name}" if inspect.isclass(func) else name
+    return f'{f_name}',f'{name}{arg_str}'
 
 def get_enum_doc(elt, full_name:str)->str:
     "Formatted enum documentation."
     vals = ', '.join(elt.__members__.keys())
-    doc = f'{code_esc(full_name)}\n`Enum` = [{vals}]'
-    return doc
+    return f'{code_esc(full_name)}',f'<code>Enum</code> = [{vals}]'
 
 def get_cls_doc(elt, full_name:str)->str:
     "Class definition."
     parent_class = inspect.getclasstree([elt])[-1][0][1][0]
-    doc = format_ft_def(elt, full_name)
-    if parent_class != object: doc += f' :: {link_type(parent_class, include_bt=True)}'
-    return doc
+    name,args = format_ft_def(elt, full_name)
+    if parent_class != object: args += f' :: {link_type(parent_class, include_bt=True)}'
+    return name,args
 
 def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=None, title_level=None, alt_doc_string:str='',
              ignore_warn:bool=False, markdown=True):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
-    link = f'<a id={full_name or get_anchor(elt)}></a>' # Must happen before we extract __func__
+    anchor_id = full_name or get_anchor(elt)
     elt = getattr(elt, '__func__', elt)
     full_name = full_name or fn_name(elt)
     if inspect.isclass(elt):
-        if is_enum(elt.__class__):   doc = get_enum_doc(elt, full_name)
-        else:                        doc = get_cls_doc(elt, full_name)
-    elif isinstance(elt, Callable):  doc = format_ft_def(elt, full_name)
-    else: doc = f'doc definition not supported for {full_name}'
+        if is_enum(elt.__class__):   name,args = get_enum_doc(elt, full_name)
+        else:                        name,args = get_cls_doc(elt, full_name)
+    elif isinstance(elt, Callable):  name,args = format_ft_def(elt, full_name)
+    else: raise Exception(f'doc definition not supported for {full_name}')
+    source_link = get_function_source(elt) if is_fastai_class(elt) else ""
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
-    doc += '\n'
+    doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}</h{title_level}>'
+    doc += f'\n\n> {args}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
-    if is_fastai_class(elt): doc += get_function_source(elt)
-    md = title_md(link+doc, title_level, markdown=markdown)
-    if markdown: display(md)
-    else: return md
+    if markdown: display(Markdown(doc))
+    else: return doc
 
 def doc(elt):
     "Show `show_doc` info in preview window along with link to full docs."
@@ -115,7 +114,8 @@ def doc(elt):
     use_relative_links = False
     elt = getattr(elt, '__func__', elt)
     md = show_doc(elt, markdown=False)
-    if is_fastai_class(elt): md += f'\n\n[Show in docs]({get_fn_link(elt)})'
+    if is_fastai_class(elt):
+        md += f'\n\n<a href="{get_fn_link(elt)}" target="_blank" rel="noreferrer noopener">Show in docs</a>'
     output = HTMLExporter().markdown2html(md)
     use_relative_links = True
     page.page({'text/html': output})
@@ -291,29 +291,31 @@ def get_module_name(ft)->str: return inspect.getmodule(ft).__name__
 def get_pytorch_link(ft)->str:
     "Returns link to pytorch docs of `ft`."
     name = ft.__name__
-    if name == 'device': return f'{PYTORCH_DOCS}tensor_attributes.html#torch-device'
+    ext = '.html'
+    if name == 'device': return f'{PYTORCH_DOCS}tensor_attributes{ext}#torch-device'
+    if name == 'Tensor': return f'{PYTORCH_DOCS}tensors{ext}#torch-tensor'
     if name.startswith('torchvision'):
         doc_path = get_module_name(ft).replace('.', '/')
         if inspect.ismodule(ft): name = name.replace('.', '-')
-        return f'{PYTORCH_DOCS}{doc_path}#{name}'
+        return f'{PYTORCH_DOCS}{doc_path}{ext}#{name}'
     if name.startswith('torch.nn') and inspect.ismodule(ft): # nn.functional is special case
         nn_link = name.replace('.', '-')
-        return f'{PYTORCH_DOCS}nn#{nn_link}'
+        return f'{PYTORCH_DOCS}nn{ext}#{nn_link}'
     paths = get_module_name(ft).split('.')
-    if len(paths) == 1: return f'{PYTORCH_DOCS}{paths[0]}#{paths[0]}.{name}'
+    if len(paths) == 1: return f'{PYTORCH_DOCS}{paths[0]}{ext}#{paths[0]}.{name}'
 
     offset = 1 if paths[1] == 'utils' else 0 # utils is a pytorch special case
     doc_path = paths[1+offset]
-    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}#module-{name}'
+    if inspect.ismodule(ft): return f'{PYTORCH_DOCS}{doc_path}{ext}#module-{name}'
     fnlink = '.'.join(paths[:(2+offset)]+[name])
-    return f'{PYTORCH_DOCS}{doc_path}#{fnlink}'
+    return f'{PYTORCH_DOCS}{doc_path}{ext}#{fnlink}'
 
 def get_source_link(mod, lineno, display_text="[source]")->str:
     "Returns link to `lineno` in source code of `mod`."
     github_path = mod.__name__.replace('.', '/')
     link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
     if display_text is None: return link
-    return f'<a href="{link}">{display_text}</a>'
+    return f'<a href="{link}" class="source_link">{display_text}</a>'
 
 def get_function_source(ft, **kwargs)->str:
     "Returns link to `ft` in source code."

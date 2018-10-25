@@ -3,7 +3,7 @@ output: web
 topnav_title: fastai developer docs
 site_title: fastai developer docs
 company_name: fast.ai
-github_editme_path: 
+github_editme_path: fastai/fastai/edit/master/docs/
 disqus_shortname: 
 google_analytics: UA-89522379-3
 host: 127.0.0.1

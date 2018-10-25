@@ -58,12 +58,22 @@ You can skip this step if you have done it once already on the system you're mak
 
 ## Quick Release Process
 
+No matter which release process you follow, always remember to start with:
+
+```
+git pull
+```
+or:
+```
+git checkout <desired commit>
+```
+
+Otherwise it's very easy to have an outdated checkout and release an outdated version.
 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
 ```
 make release
-make post-release-checks
 ```
 
 `make test`'s non-deterministic tests may decide to fail right during the release rites. If it happens continue with the targets below, starting at `make test`.
@@ -72,7 +82,7 @@ Here is the quick version that includes all the steps w/o the explanations. If y
 
 ```
 make tools-update
-make master-branch-switch
+make master-branch-switch && make git-not-dirty
 make bump && make changes-finalize
 make release-branch-create && make commit-version
 make master-branch-switch
@@ -80,23 +90,12 @@ make bump-dev && make changes-dev-cycle
 make commit-dev-cycle-push
 make prev-branch-switch && make test && make commit-tag-push
 make dist && make upload
-```
-
-Now wait a few minutes for the pypi/conda servers to make the new packages visible to the clients and then:
-
-```
 make test-install
 make backport-check
-
+make master-branch-switch
 ```
 
 If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
-
-
-Finally, don't forget this very important step!
-```
-make master-branch-switch
-```
 
 And announce the release and its changes in [Developer chat thread](https://forums.fast.ai/t/developer-chat/22363/289).
 
@@ -220,14 +219,14 @@ We are ready to make the new release branch:
 
     This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-8. test uploads by installing them (telling the installers to install the exact version we uploaded). Allow a few minutes since `make upload` for the servers to update their index. If this target fails because it can't find the newly released package, try again in a few minutes.
+8. test uploads by installing them (telling the installers to install the exact version we uploaded). Following the upload it may take a few minutes for the servers to update their index. This target will wait for each package to become available before it will attempt to install it.
 
     ```
     make test-install             # pip install fastai==1.0.6; pip uninstall fastai
                                   # conda install -y -c fastai fastai==1.0.6
     ```
 
-9. if some problems were detected during the release process, or something was committed by mistake into the release brach, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
+9. if some problems were detected during the release process, or something was committed by mistake into the release branch, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
 
     1. check whether anything needs to be backported
 

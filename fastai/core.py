@@ -68,11 +68,13 @@ def find_classes(folder:Path)->FilePathList:
 
 def arrays_split(mask:NPArrayMask, *arrs:NPArrayableList)->SplitArrayList:
     "Given `arrs` is [a,b,...] and `mask`index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...]."
+    assert all([len(arr)==len(arrs[0]) for arr in arrs]), 'All arrays should have same length'
     mask = array(mask)
     return list(zip(*[(a[mask],a[~mask]) for a in map(np.array, arrs)]))
 
 def random_split(valid_pct:float, *arrs:NPArrayableList)->SplitArrayList:
     "Randomly split `arrs` with `valid_pct` ratio. good for creating validation set."
+    assert (valid_pct>=0 and valid_pct<=1), 'Validation set percentage should be between 0 and 1'
     is_train = np.random.uniform(size=(len(arrs[0]),)) > valid_pct
     return arrays_split(is_train, *arrs)
 
@@ -151,7 +153,7 @@ class ItemBase():
     @abstractmethod
     def data(self): pass
 
-def download_url(url:str, dest:str, overwrite:bool=False)->None:
+def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None)->None:
     "Download `url` to `dest` unless is exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
     u = requests.get(url, stream=True)
@@ -159,7 +161,7 @@ def download_url(url:str, dest:str, overwrite:bool=False)->None:
     u = u.raw
 
     with open(dest,'wb') as f:
-        pbar = progress_bar(range(file_size), auto_update=False, leave=False)
+        pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
         nbytes,buffer = 0,[1]
         while len(buffer):
             buffer = u.read(8192)

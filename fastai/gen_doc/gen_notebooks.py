@@ -324,6 +324,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             print(f'Executing notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
         elif update_line_num:
+            print(f'Updating notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=update_line_num)
 
         if update_html: convert_nb(doc_path, html_path)
@@ -336,10 +337,10 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         if not doc_path.exists():
             print('Notebook does not exist. Creating:', doc_path)
             create_module_page(mod, dest_path)
-        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=update_nb, 
+        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=update_nb,
                          update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
     elif source_path.is_dir():
         for f in Path(source_path).glob('*.ipynb'):
-            update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb, 
+            update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb,
                              update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
     else: print('Could not resolve source file:', source_path)

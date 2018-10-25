@@ -3,13 +3,19 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist release post-release-checks
+.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda dist-conda upload-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist upload release
+
+define get_cur_branch
+$(shell git branch | sed -n '/\* /s///p')
+endef
+
+define echo_cur_branch
+@echo Now on [$(call get_cur_branch)] branch
+endef
 
 version_file = fastai/version.py
 version = $(shell python setup.py --version)
-cur_branch = $(shell git branch | sed -n '/\* /s///p')
-
-.DEFAULT_GOAL := help
+cur_branch = $(call get_cur_branch)
 
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
@@ -25,8 +31,57 @@ export BROWSER_PYSCRIPT
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
 
+define WAIT_TILL_PIP_VER_IS_AVAILABLE_BASH =
+# note that when:
+# bash -c "command" arg1
+# is called, the first argument is actually $0 and not $1 as it's inside bash!
+#
+# is_pip_ver_available "1.0.14"
+# returns (echo's) 1 if yes, 0 otherwise
+#
+# since pip doesn't have a way to check whether a certain version is available,
+# here we are using a hack, calling:
+# pip install fastai==
+# which doesn't find the unspecified version and returns all available
+# versions instead, which is what we search
+function is_pip_ver_available() {
+    local ver="$$0"
+    local out="$$(pip install fastai== |& grep $$ver)"
+    if [[ -n "$$out" ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+function wait_till_pip_ver_is_available() {
+    local ver="$$1"
+    if [[ $$(is_pip_ver_available $$ver) == "1" ]]; then
+        echo "fastai-$$ver is available on pypi"
+        return 0
+    fi
+
+    COUNTER=0
+    echo "waiting for fastai-$$ver package to become visible on pypi:"
+    while [[ $$(is_pip_ver_available $$ver) != "1" ]]; do
+        echo -en "\\rwaiting: $$COUNTER secs"
+        COUNTER=$$[$$COUNTER +5]
+	    sleep 5
+    done
+    echo -e "\rwaited: $$COUNTER secs    "
+    echo -e "fastai-$$ver is now available on pypi"
+}
+
+echo "checking version $$0"
+wait_till_pip_ver_is_available "$$0"
+endef
+export WAIT_TILL_PIP_VER_IS_AVAILABLE_BASH
+
+.DEFAULT_GOAL := help
+
 help: ## this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
 
 ##@ PyPI
 
@@ -97,6 +152,7 @@ upload-conda: ## upload conda package
 
 # currently, no longer needed as we now rely on sdist's tarball for conda source, which doesn't have any data in it already
 # find ./data -type d -and -not -regex "^./data$$" -prune -exec rm -rf {} \;
+
 clean: clean-pypi clean-conda ## clean pip && conda package
 
 dist: clean dist-pypi dist-conda ## build pip && conda package
@@ -117,6 +173,7 @@ tools-update: ## install/update build tools
 release: ## do it all (other than testing)
 	${MAKE} tools-update
 	${MAKE} master-branch-switch
+	${MAKE} git-not-dirty
 	${MAKE} bump
 	${MAKE} changes-finalize
 	${MAKE} release-branch-create
@@ -130,9 +187,9 @@ release: ## do it all (other than testing)
 	${MAKE} commit-tag-push
 	${MAKE} dist
 	${MAKE} upload
-
-post-release-checks: | test-install backport-check master-branch-switch ## do post release checks
-
+	${MAKE} test-install
+	${MAKE} backport-check
+	${MAKE} master-branch-switch
 
 ##@ git helpers
 
@@ -144,34 +201,32 @@ git-pull: ## git pull
 
 git-not-dirty:
 	@echo "*** Checking that everything is committed"
-	@if [ -n "$(git status -s)" ]; then\
-		echo "uncommitted git files";\
-		false;\
+	@if [ -n "$(shell git status -s)" ]; then\
+		echo "git status is not clean. You have uncommitted git files";\
+		exit 1;\
+	else\
+		echo "git status is clean";\
     fi
 
 prev-branch-switch:
-	@echo "*** [$(cur_branch)] Switching to prev branch"
+	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
 	git checkout -
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 release-branch-create:
-	@echo "*** [$(cur_branch)] Creating release-$(version) branch"
+	@echo "\n\n*** [$(cur_branch)] Creating release-$(version) branch"
 	git checkout -b release-$(version)
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 release-branch-switch:
-	@echo "*** [$(cur_branch)] Switching to release-$(version) branch"
+	@echo "\n\n*** [$(cur_branch)] Switching to release-$(version) branch"
 	git checkout release-$(version)
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 master-branch-switch:
-	@echo "*** [$(cur_branch)] Switching to master branch: version $(version)"
+	@echo "\n\n*** [$(cur_branch)] Switching to master branch: version $(version)"
 	git checkout master
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 commit-dev-cycle-push: ## commit version and CHANGES and push
 	@echo "\n\n*** [$(cur_branch)] Start new dev cycle: $(version)"
@@ -183,8 +238,7 @@ commit-dev-cycle-push: ## commit version and CHANGES and push
 commit-version: ## commit and tag the release
 	@echo "\n\n*** [$(cur_branch)] Start release branch: $(version)"
 	git commit -m "starting release branch: $(version)" $(version_file)
-	$(eval branch := $(shell git branch | sed -n '/\* /s///p'))
-	@echo "Now on [$(branch)] branch"
+	$(call echo_cur_branch)
 
 commit-tag-push: ## commit and tag the release
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
@@ -200,7 +254,7 @@ commit-tag-push: ## commit and tag the release
 # from the point of branching of release-$(version) till its HEAD. If
 # there are any, then most likely there are things to backport.
 backport-check: ## backport to master check
-	@echo "*** [$(cur_branch)] Checking if anything needs to be backported"
+	@echo "\n\n*** [$(cur_branch)] Checking if anything needs to be backported"
 	$(eval start_rev := $(shell git rev-parse --short $$(git merge-base master origin/release-$(version))))
 	@if [ ! -n "$(start_rev)" ]; then\
 		echo "*** failed, check you're on the correct release branch";\
@@ -221,15 +275,25 @@ test-install: ## test conda/pip package by installing that version them
 	@if [ "$(cur_branch)" = "master" ]; then\
 		echo "Error: you are not on the release branch, to switch to it do:\n  git checkout release-1.0.??\nafter adjusting the version number. Also possible that:\n  git checkout - \nwill do the trick, if you just switched from it. And then repeat:\n  make test-install\n";\
 		exit 1;\
+	else\
+		echo "You're on the release branch, good";\
 	fi
 
 	@echo "\n\n*** Install/uninstall $(version) pip version"
 	@pip uninstall -y fastai
+
+	@echo "\n\n*** waiting for $(version) pip version to become visible"
+	bash -c "$$WAIT_TILL_PIP_VER_IS_AVAILABLE_BASH" $(version)
+
 	pip install fastai==$(version)
 	pip uninstall -y fastai
 
 	@echo "\n\n*** Install/uninstall $(version) conda version"
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
+
+	@echo "\n\n*** waiting for $(version) conda version to become visible"
+	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v 2>1 >/dev/null`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; print "\n$$p-$$v is now available on conda\n"' $(version)
+
 	conda install -y -c fastai fastai==$(version)
 	@# leave conda package installed: conda uninstall -y fastai
 
