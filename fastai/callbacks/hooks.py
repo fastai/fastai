@@ -57,7 +57,7 @@ class HookCallback(LearnerCallback):
     def on_train_end(self, **kwargs):
         if self.do_remove: self.remove()
 
-    def remove(self): self.hooks.remove
+    def remove(self): self.hooks.remove()
     def __del__(self): self.remove()
 
 class ActivationStats(HookCallback):
