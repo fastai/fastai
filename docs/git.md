@@ -32,9 +32,11 @@ https://github.com/fastai/fastai/tree/master/fastai
                  username reponame        modulename
 ```
 
-#### Step 1. Start With a Synced Fork Checkout
+### Step 1. Start With a Synced Fork Checkout
 
-##### 1a. First time
+#### 1a. First time
+
+If you made the fork of the desired repository already, proceed to section 1b.
 
 If it's your first time, you just need to make a fork of the original repository:
 
@@ -89,7 +91,7 @@ If it's your first time, you just need to make a fork of the original repository
 
    You can now proceed to step 2.
 
-##### 1b. Subsequent times
+#### 1b. Subsequent times
 
 If you make a PR right after you made a fork of the original repository, the two repositories are aligned and you can easily create a PR. If time passes the original repository starts diverging from your fork, so when you work on your PRs you need to keep your master fork in sync with the original repository.
 
@@ -144,7 +146,7 @@ So, let's synchronize the two:
    Now you can work on a new PR.
 
 
-#### Step 2. Create a Branch
+### Step 2. Create a Branch
 
 It's very important that you **always work inside a branch**. If you make any commits into the `master` branch, you will not be able to make more than one PR at the same time, and you will not be able to synchronize your forked `master` branch with the original without doing a reset. If you made a mistake and committed to the `master` branch, it's not the end of the world, it's just that you made your life more complicated. This guide will explain how to deal with this situation.
 
@@ -156,7 +158,7 @@ It's very important that you **always work inside a branch**. If you make any co
    git push --set-upstream origin new-feature-branch
    ```
 
-#### Step 3. Write Your Code and Test it
+### Step 3. Write Your Code and Test it
 
 1. Create new code, fix bugs, add/correct documentation
 
@@ -176,7 +178,7 @@ In the `fastai_docs` repository, if you made changes to the notebooks, run:
    ```
 
 
-#### Step 4. Push Your Changes
+### Step 4. Push Your Changes
 
 1. When you're happy with the results, commit the new code:
 
@@ -199,7 +201,7 @@ In the `fastai_docs` repository, if you made changes to the notebooks, run:
    git push
    ```
 
-#### Step 5. Submit Your PR
+### Step 5. Submit Your PR
 
 1. Go to github and make a new Pull Request:
 
@@ -210,7 +212,7 @@ In the `fastai_docs` repository, if you made changes to the notebooks, run:
 If you work on several unrelated PRs, make different directories for each one, ideally using the same directory name as the branch name, to simplify things.
 
 
-#### How to Keep Your Feature Branch Up-to-date
+### How to Keep Your Feature Branch Up-to-date
 
 If you synced the `master` branch with the original repository and you have feature branches that you're still working on, now you want to update those. For example to update your previously existing branch `my-cool-feature`:
 
@@ -220,7 +222,7 @@ If you synced the `master` branch with the original repository and you have feat
    git checkout my-cool-feature
    ```
 
-#### How to Fix Your Broken master Branch
+### How to Fix Your Broken master Branch
 
 If you haven't been careful to create a branch, and committed to the `master` branch of your forked repository, you no longer will be able to sync it with the original repository, without resetting it. And when you will want to create a branch, it'll have issues during PR, since it will be made against a diverged origin.
 
@@ -237,7 +239,7 @@ A much safer approach is to reset the `HEAD` of your forked `master` with the `H
    git push origin master
    ```
 
-#### Where am I?
+### Where am I?
 
 Now that you have the original repository, the forked repository and its branches how do you know which of the repository and the branch you are currently in?
 
@@ -264,7 +266,7 @@ Now that you have the original repository, the forked repository and its branche
 
 But that's not a very efficient process to constantly ask the system to tell you where you are. Why not make it automatic and integrate this into your bash prompt (assuming that use bash).
 
-##### bash-git-prompt
+#### bash-git-prompt
 
 Enter [`bash-git-prompt`](https://github.com/magicmonty/bash-git-prompt), which not only tells you which virtual environment you are in and which `branch` you're on, but it also provides very useful visual indications on the state of your git checkout - how many files have changed, how many commits are waiting to be pushed, whether there are any upstream changes, and much more.
 
