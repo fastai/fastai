@@ -102,7 +102,7 @@ def even_mults(start:float, stop:float, n:int)->np.ndarray:
     return np.array([start*(step**i) for i in range(n)])
 
 def extract_kwargs(names:Collection[str], kwargs:KWArgs):
-    "Extracts the keys in `names` from the `kwargs`."
+    "Extract the keys in `names` from the `kwargs`."
     new_kwargs = {}
     for arg_name in names:
         if arg_name in kwargs:
