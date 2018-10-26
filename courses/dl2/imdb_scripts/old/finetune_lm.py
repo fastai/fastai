@@ -1,6 +1,6 @@
 import fire
-from fastai.text import *
-from fastai.lm_rnn import *
+from old.fastai.text import *
+from old.fastai.lm_rnn import *
 
 
 class EarlyStopping(Callback):

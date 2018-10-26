@@ -1,6 +1,6 @@
 import fire
-from fastai.text import *
-from fastai.lm_rnn import *
+from old.fastai.text import *
+from old.fastai.lm_rnn import *
 from sklearn.metrics import confusion_matrix
 
 def eval_clas(dir_path, cuda_id, lm_id='', clas_id=None, bs=64, backwards=False,

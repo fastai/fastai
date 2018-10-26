@@ -1,4 +1,4 @@
-from fastai.text import *
+from old.fastai.text import *
 import fire
 
 

@@ -1,5 +1,5 @@
-from fastai.learner import *
-from fastai.text import *
+from old.fastai.text import *
+
 
 def resample_vocab(itos, trn, val, sz):
     freqs = Counter(trn)
