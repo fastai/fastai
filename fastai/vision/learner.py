@@ -70,7 +70,7 @@ class ClassificationInterpretation():
     @classmethod
     def from_learner(cls, learn:Learner, sigmoid:bool=None, tta=False):
         "Factory method to create from a Learner."
-        preds = learn.TTA() if tta else learn.get_preds(with_loss=True)
+        preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 
     def top_losses(self, k, largest=True):
