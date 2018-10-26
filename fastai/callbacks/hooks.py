@@ -9,15 +9,16 @@ __all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'h
 
 class Hook():
     "Create a hook."
-    def __init__(self, m:Model, hook_func:HookFunc, is_forward:bool=True):
-        self.hook_func,self.stored = hook_func,None
+    def __init__(self, m:Model, hook_func:HookFunc, is_forward:bool=True, detach:bool=True):
+        self.hook_func,self.detach,self.stored = hook_func,detach,None
         f = m.register_forward_hook if is_forward else m.register_backward_hook
         self.hook = f(self.hook_fn)
         self.removed = False
 
     def hook_fn(self, module:Model, input:Tensors, output:Tensors):
-        input  = (o.detach() for o in input ) if is_listy(input ) else input.detach()
-        output = (o.detach() for o in output) if is_listy(output) else output.detach()
+        if self.detach:
+            input  = (o.detach() for o in input ) if is_listy(input ) else input.detach()
+            output = (o.detach() for o in output) if is_listy(output) else output.detach()
         self.stored = self.hook_func(module, input, output)
 
     def remove(self):
@@ -27,8 +28,8 @@ class Hook():
 
 class Hooks():
     "Create several hooks."
-    def __init__(self, ms:Collection[Model], hook_func:HookFunc, is_forward:bool=True):
-        self.hooks = [Hook(m, hook_func, is_forward) for m in ms]
+    def __init__(self, ms:Collection[Model], hook_func:HookFunc, is_forward:bool=True, detach:bool=True):
+        self.hooks = [Hook(m, hook_func, is_forward, detach) for m in ms]
 
     def __getitem__(self,i:int) -> Hook: return self.hooks[i]
     def __len__(self) -> int: return len(self.hooks)
