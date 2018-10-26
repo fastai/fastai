@@ -144,3 +144,4 @@ def test_series2cat():
     series2cat(df,*cols)
     for col in cols:
         assert (df[col].dtypes == 'category')
+    assert (df['col3'].dtypes == 'int64')
