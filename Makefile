@@ -292,7 +292,7 @@ test-install: ## test conda/pip package by installing that version them
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
 
 	@echo "\n\n*** waiting for $(version) conda version to become visible"
-	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v 2>1 >/dev/null`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; print "\n$$p-$$v is now available on conda\n"' $(version)
+	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v >/dev/null 2>&1`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; print "\n$$p-$$v is now available on conda\n"' $(version)
 
 	conda install -y -c fastai fastai==$(version)
 	@# leave conda package installed: conda uninstall -y fastai

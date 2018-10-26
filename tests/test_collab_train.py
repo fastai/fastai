@@ -14,5 +14,4 @@ def learn():
     learn.fit_one_cycle(3, 5e-3, wd=0.1)
     return learn
 
-def test_val_loss(learn):
-    assert learn.validate()[0] < 0.75
+def test_val_loss(learn): assert learn.validate()[0] < 0.8

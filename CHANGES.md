@@ -10,18 +10,35 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.14.dev0 (Work In Progress)
+
+
+## 1.0.15.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
+### Fixed:
+
+
+
+## 1.0.14 (2018-10-25)
+
+### New:
+
+- `download_images`: multi-process download of a file or URLs
+- `verify_images`: multi-process verification of directory of images with optional deletion
+
+### Changed:
+
+- `ImageDataBunch.from_folder` now takes `valid_pct`
 - master bar support in `download_url`
 - various fixes to support the latest of `fastprogress`
 - `Learner.normalize()` (without args) stores calculated stats in `Learner.stats`
 - `pred_batch` moved to `basic_train` and fixed for multiple inputs
 - `lr_find()` prints the next step to type when completed
 - New version of fastprogress used; doesn't require ipywidgets
+- Removed `cifar_norm`,`cifar_denorm`,`imagenet_norm`,`imagenet_denorm`
 
 ### Fixed:
 
