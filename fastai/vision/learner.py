@@ -62,18 +62,16 @@ class ConvLearner(Learner):
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, y_pred:Tensor, y_true:Tensor,
-                 loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=None):
+    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, sigmoid:bool=None):
         if sigmoid is not None: warnings.warn("`sigmoid` argument is deprecated, the learner now always return the probabilities")
-        self.data,self.probs,self.y_true,self.loss_class = data,y_pred,y_true,loss_class
-        self.losses = calc_loss(y_pred, y_true, loss_class=loss_class)
+        self.data,self.probs,self.y_true,self.losses = data,probs,y_true,losses
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
-    def from_learner(cls, learn:Learner, loss_class:type=nn.CrossEntropyLoss, sigmoid:bool=None, tta=False):
+    def from_learner(cls, learn:Learner, sigmoid:bool=None, tta=False):
         "Factory method to create from a Learner."
-        preds = learn.TTA() if tta else learn.get_preds()
-        return cls(learn.data, *preds, loss_class=loss_class, sigmoid=sigmoid)
+        preds = learn.TTA() if tta else learn.get_preds(with_loss=True)
+        return cls(learn.data, *preds, sigmoid=sigmoid)
 
     def top_losses(self, k, largest=True):
         "`k` largest(/smallest) losses."

@@ -32,9 +32,10 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, op
     return loss.detach().cpu()
 
 def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None,
-              activ:Model=None) -> List[Tensor]:
+              activ:Model=None, loss_func:OptLossFunc=None) -> List[Tensor]:
     "Predict the output of the elements in the dataloader."
-    res = [torch.cat(o).cpu() for o in zip(*validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False))]
+    res = [torch.cat(o).cpu() for o in zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False))]
+    if loss_func is not None: res.append(loss_func(res[0], res[1], reduction='none'))
     if activ is not None: res[0] = activ(res[0])
     return res
 
@@ -200,10 +201,11 @@ class Learner():
         x,y = next(iter(self.data.holdout(is_test)))
         return x,y,self.model(*x).detach()
     
-    def get_preds(self, is_test:bool=False) -> List[Tensor]:
+    def get_preds(self, is_test:bool=False, with_loss:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
+        lf = self.loss_func if with_loss else None
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []),
-                         activ=loss_func2activ(self.loss_func))
+                         activ=_loss_func2activ(self.loss_func), loss_func=lf)
     
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
