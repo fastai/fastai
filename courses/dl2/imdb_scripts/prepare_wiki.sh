@@ -50,12 +50,3 @@ if [ ! -d "${EXTR_PATH}" ]; then
 else
   echo "${EXTR_PATH} already exists. Skipping extraction."
 fi
-
-OUT_PATH="${WIKI_DIR}/${LANG}"
-read -r -p "Continue to merge Wikipedia articles (y/n)? " choice
-case "$choice" in
-y|Y ) echo "Merging articles from ${EXTR_PATH} to ${OUT_PATH}...";;
-n|N ) echo "Exiting";exit 1;;
-* ) echo "Invalid answer";exit 1;;
-esac
-python merge_wiki.py -i "${EXTR_PATH}" -o "${OUT_PATH}"
