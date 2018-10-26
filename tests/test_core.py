@@ -137,3 +137,10 @@ def test_even_mults():
     a = even_mults(start=1, stop=8, n=4)
     b = array([1.,2.,4.,8.])
     np.testing.assert_array_equal(a,b)
+
+def test_series2cat():
+    df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4], 'col3':[5, 6]})
+    cols = 'col1','col2'
+    series2cat(df,*cols)
+    for col in cols:
+        assert (df[col].dtypes == 'category')
