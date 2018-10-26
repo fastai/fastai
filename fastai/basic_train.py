@@ -29,11 +29,14 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, op
         cb_handler.on_step_end()
         opt.zero_grad()
 
-    return (loss.detach().cpu(),) #TODO: change code so that it doesn't return a tuple anymore and check it doesn't break anything
+    return loss.detach().cpu()
 
-def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
+def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None,
+              activ:Model=None) -> List[Tensor]:
     "Predict the output of the elements in the dataloader."
-    return [torch.cat(o).cpu() for o in zip(*validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False))]
+    res = [torch.cat(o).cpu() for o in zip(*validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False))]
+    if activ is not None: res[0] = activ(res[0])
+    return res
 
 def validate(model:Model, dl:DataLoader, loss_func:OptLossFunc=None,
              cb_handler:Optional[CallbackHandler]=None,
@@ -47,9 +50,9 @@ def validate(model:Model, dl:DataLoader, loss_func:OptLossFunc=None,
             val_losses.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler))
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
-            if cb_handler and cb_handler.on_batch_end(val_losses[-1][0]): break
+            if cb_handler and cb_handler.on_batch_end(val_losses[-1]): break
         nums = np.array(nums, dtype=np.float32)
-        if average: return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_losses)]
+        if average: return (to_np(torch.stack(val_losses)) * nums).sum() / nums.sum()
         else:       return val_losses
 
 def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossFunction)->None:
@@ -76,7 +79,7 @@ def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
 
             for xb,yb in progress_bar(data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
-                loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)[0]
+                loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
             if hasattr(data,'valid_dl') and data.valid_dl is not None:
@@ -88,6 +91,26 @@ def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
         exception = e
         raise e
     finally: cb_handler.on_train_end(exception)
+
+loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': F.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
+    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': F.sigmoid
+}
+
+def _loss_func2activ(loss_func):
+    cls_name = camel2snake(loss_func.__class__.__name__)
+    if cls_name == 'mix_up_loss': 
+        loss_func = loss_func.crit
+        cls_name = camel2snake(loss_func.__class__.__name__)
+    if cls_name in loss_func_name2activ:
+        if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
+        return loss_func_name2activ[cls_name]
+    if hasattr(loss_func, 'func'): 
+        if loss_func.func.__name__ == 'poisson_nll_loss' and (not loss_func.keywords.get('log_input', True)): return
+        loss_func = loss_func.func 
+    if getattr(loss_func,'__name__','') in loss_func_name2activ:
+        return loss_func_name2activ[loss_func.__name__]
+    return
 
 @dataclass
 class Learner():
@@ -179,7 +202,8 @@ class Learner():
     
     def get_preds(self, is_test:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
-        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []))
+        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []),
+                         activ=loss_func2activ(self.loss_func))
     
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
