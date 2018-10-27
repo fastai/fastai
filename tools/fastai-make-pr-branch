@@ -59,7 +59,7 @@ function master_sync() {
     # XXX: this will fail if the user was committing directly to their forked `master` branch is
     cmd="git merge --no-edit upstream/master"
     echo "running: $cmd"
-    eval $cmd || { echo -e >&2 "\nError: $user_name/$repo_name/master can't be merged with orig_user_name/$repo_name/master.\nYou must merge manually, or reset $user_name/$repo_name/master.\nSee:  https://docs-dev.fast.ai/git.html#how-to-reset-your-forked-master-branch\nAborting."; exit 1; }
+    eval $cmd || { git merge --abort; echo -e >&2 "\nError: $user_name/$repo_name/master can't be merged with orig_user_name/$repo_name/master.\nYou must merge manually, or reset $user_name/$repo_name/master.\nSee:  https://docs-dev.fast.ai/git.html#how-to-reset-your-forked-master-branch\nAborting."; exit 1; }
     run "git push"
 
 }
