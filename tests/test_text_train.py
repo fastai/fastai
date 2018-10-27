@@ -28,3 +28,27 @@ def learn():
 
 def test_val_loss(learn):
     assert learn.validate()[1] > 0.3
+
+def text_df(n_labels):
+    data = []
+    texts = ["fast ai is a cool project", "hello world"]
+    for ind, text in enumerate(texts):
+        sample = {}
+        for label in range(n_labels): sample[label] = ind%2
+        sample["text"] = text
+        data.append(sample)
+    df = pd.DataFrame(data)
+    return df
+
+def test_classifier():
+    for n_labels in [1, 8]:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
+        os.makedirs(path)
+        try:
+            df = text_df(n_labels=n_labels)
+            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+            classifier = RNNLearner.classifier(data)
+            layers = [l for l in classifier.layer_groups[-1].modules()]
+            assert layers[-1].out_features == n_labels if n_labels > 1 else n_labels+1
+        finally:
+            shutil.rmtree(path)
