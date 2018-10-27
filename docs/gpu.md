@@ -33,8 +33,13 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
 3. Similar to the above, but shows the stats as a percentage:
 
    ```
+   nvidia-smi dmon -s u
+   ```
+   which shows the essentials (usage and memory). If you would like all of the stats, run it without arguments:
+   ```
    nvidia-smi dmon
    ```
+
 
 ## Accessing NVIDIA GPU Info Programmatically
 
@@ -44,7 +49,7 @@ While watching `nvidia-smi` running in your terminal is handy, sometimes you wan
 
 GPUtil is a wrapper around `nvidia-smi`, and requires the latter to function before it can be used.
 
-Installation: `pip3 install gputil`
+Installation: `pip3 install gputil`.
 
 And here is a usage example:
 
@@ -63,7 +68,7 @@ For more details see: https://github.com/anderskm/gputil
 
 `nvidia-ml-py3` provides Python 3 bindings for nvml c-lib (NVIDIA Management Library), which allows you to query the library directly, without needing to go through `nvidia-smi`.
 
-Installation: `pip3 install nvidia-ml-py3`
+Installation: `pip3 install nvidia-ml-py3`.
 
 And here is a usage example:
 
@@ -79,3 +84,18 @@ print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
 ```
 
 For more details see: https://github.com/nicolargo/nvidia-ml-py3
+
+
+### gpustat
+
+`nvidia-smi` like monitor, but a compact one. It relies on [pynvml](https://pythonhosted.org/nvidia-ml-py/) to talk to the nvml layer.
+
+Installation: `pip3 install gpustat`.
+
+And here is a usage example:
+
+```
+gpustat -cp -i --no-color
+```
+
+For more details see: https://github.com/wookayin/gpustat
