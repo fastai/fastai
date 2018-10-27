@@ -2,7 +2,6 @@ import pytest
 from fastai import *
 from fastai.text import *
 
-@pytest.fixture(scope="module")
 def text_df(n_labels):
     data = []
     texts = ["fast ai is a cool project", "hello world"]
