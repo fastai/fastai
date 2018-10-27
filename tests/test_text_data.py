@@ -8,7 +8,7 @@ def text_df(n_labels):
     texts = ["fast ai is a cool project", "hello world"]
     for ind, text in enumerate(texts):
         sample = {}
-        for label in range(n_labels): sample[label] = ind
+        for label in range(n_labels): sample[label] = ind%2
         sample["text"] = text
         data.append(sample)
     df = pd.DataFrame(data)
