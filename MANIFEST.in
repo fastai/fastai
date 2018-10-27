@@ -3,6 +3,7 @@ include CONTRIBUTING.md
 include HISTORY.md
 include LICENSE
 include README.md
+include fastai/gen_doc/*tpl
 
 recursive-include tests *
 recursive-exclude * __pycache__
