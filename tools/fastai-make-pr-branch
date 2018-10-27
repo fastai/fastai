@@ -48,7 +48,18 @@ function check_curl_is_available {
 function run() {
     local cmd="$@"
     echo "running: $cmd"
-    eval $cmd || exit
+    eval $cmd || exit 1
+}
+
+function master_sync() {
+    run "git fetch upstream"
+    run "git checkout master"
+    # XXX: this will fail if the user was committing directly to their forked `master` branch is
+    cmd="git merge --no-edit upstream/master"
+    echo "running: $cmd"
+    eval $cmd || { echo -e >&2 "\nError: $user_name/$repo_name/master can't be merged with orig_user_name/$repo_name/master.\nYou must merge manually, or reset $user_name/$repo_name/master.\nSee:  https://docs-dev.fast.ai/git.html#how-to-reset-your-forked-master-branch\nAborting."; exit 1; }
+    run "git push"
+
 }
 
 if [[ "$auth" == "ssh" ]]; then
@@ -105,10 +116,7 @@ run "git remote -v"
 # let's sync the forked repo master with the upstream master if it hasn't been just forked
 if [[ "$was_already_forked" -eq 1 ]]; then
     echo -e "\n\n*** Syncing $user_name/master with $orig_user_name/master"
-    run "git fetch upstream"
-    run "git checkout master"
-    run "git merge --no-edit upstream/master"
-    run "git push"
+    master_sync
     echo "Done"
 fi
 
