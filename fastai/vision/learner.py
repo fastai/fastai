@@ -80,7 +80,7 @@ class ClassificationInterpretation():
         return self.losses.topk(k, largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
-        "Show images in `top_losses` along with their loss, label, and prediction."
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
         tl_val,tl_idx = self.top_losses(k,largest)
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))

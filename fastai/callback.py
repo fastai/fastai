@@ -297,7 +297,7 @@ class Stepper():
     "Used to \"step\" from start,end (`vals`) over `n_iter` iterations on a schedule defined by `func`"
     def __init__(self, vals:StartOptEnd, n_iter:int, func:Optional[AnnealFunc]=None):
         self.start,self.end = (vals[0],vals[1]) if is_tuple(vals) else (vals,0)
-        self.n_iter = n_iter
+        self.n_iter = max(1,n_iter)
         if func is None: self.func = annealing_linear if is_tuple(vals) else annealing_no
         else:          self.func = func
         self.n = 0
