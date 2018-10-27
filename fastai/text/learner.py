@@ -97,7 +97,7 @@ class RNNLearner(Learner):
         if ps is None:  ps = [0.1]
         ds = data.train_ds
         vocab_size, lbl = ds.vocab_size, ds.labels[0]
-        n_class = (len(ds.classes) if (not is_listy(lbl) or (len(lbl) == 1))
+        n_class = (len(ds.classes) if (not isinstance(lbl, collections.Iterable) or (len(lbl) == 1))
                    else len(lbl))
         layers = [emb_sz*3] + lin_ftrs + [n_class]
         ps = [dps[4]] + ps

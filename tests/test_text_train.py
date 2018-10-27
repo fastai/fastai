@@ -40,7 +40,7 @@ def text_df(n_labels):
     df = pd.DataFrame(data)
     return df
 
-@pytest.mark.skip(reason="multilabel part of this test will fail without the fix to https://github.com/fastai/fastai/issues/946")
+# @pytest.mark.skip(reason="multilabel part of this test will fail without the fix to https://github.com/fastai/fastai/issues/946")
 def test_classifier():
     for n_labels in [1, 8]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
