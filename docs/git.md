@@ -34,6 +34,8 @@ https://github.com/fastai/fastai/tree/master/fastai
 
 Below you will find detailed 5 steps towards creating a PR.
 
+### Helper Program
+
 There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
 
 ```
