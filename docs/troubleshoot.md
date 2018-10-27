@@ -20,12 +20,6 @@ despite having `nvidia-smi` working just fine. Which means that `pytorch` can't 
 
 note: `pytorch` installs itself as `torch`. So we refer to the project and its packages as `pytorch`, but inside python we use it as `torch`.
 
-This issue could have other manifestations, for example, instead of getting `False`, you may get an error like:
-
-```
-ImportError: libcuda.so.1: cannot open shared object file: No such file or directory
-```
-
 First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch-nightly` with `cuda92` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
 
 The only thing you to need to ensure is that you have a correctly configured NVIDIA driver, which usually you can test by running: `nvidia-smi` in your console.
@@ -105,6 +99,53 @@ If you're not sure which nvidia driver to install here is a reference table:
 | CUDA 8.0      | >= 367.48    | >= 369.30      |
 
 You can find a complete table with extra variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
+
+
+#### libcuda.so.1: cannot open shared object file
+
+The driver issues could have other manifestations, for example, you may get an error like:
+
+```
+ImportError: libcuda.so.1: cannot open shared object file: No such file or directory
+```
+
+While you don't need to install the full CUDA package to use prebuilt `pytorch` packages, `libcuda.so.1` needs to be present on your system. It comes with the properly installed nvidia drivers. For the sake of the example, let's use `nvidia-396`.
+
+If you follow the debian `apt` installation method, `nvidia-396` apt package should have installed `libcuda1-396`, which includes `libcuda1.so.1`. Here is how it should look on the correctly installed system:
+
+
+1. find the apt package the file belongs to - `libcuda1-396`:
+
+   ```
+   $ dpkg -S  libcuda.so.1
+   libcuda1-396: /usr/lib/i386-linux-gnu/libcuda.so.1
+   libcuda1-396: /usr/lib/x86_64-linux-gnu/libcuda.so.1
+   ```
+2. check whether that package is installed - yes it is installed:
+   ```
+   $ apt list libcuda1-396
+   Listing... Done
+   libcuda1-396/unknown,now 396.44-0ubuntu1 amd64 [installed,automatic]
+   ```
+3. which packages depend on that package - `nvidia-396`:
+   ```
+   $ apt-cache rdepends libcuda1-396 | grep nvidia
+     nvidia-396
+   ```
+4. check that the parent apt package `nvidia-396`, needing `libcuda1-396` package is installed - yes:
+   ```
+   $ apt list nvidia-396
+     nvidia-396/unknown,now 396.44-0ubuntu1 amd64 [installed,automatic]
+   ```
+5. conclusion: when installing nvidia drivers with:
+   ```
+   $ apt install nvidia-396
+   ```
+   it automatically installed `libcuda1-396`, which contains `libcuda.so.1`.
+
+In your situation, change `396` to whatever version of the driver you're using.
+
+This should be more or less similar on the recent Ubuntu Linux versions, but could vary on other systems. If it's different on your system, find out which package contains `libcuda.so.1` and install that package.
 
 
 
