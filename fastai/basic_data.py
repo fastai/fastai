@@ -107,7 +107,7 @@ class DataBunch():
     @property
     def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
 
+    @property
     def test_ds(self)->Dataset:
         assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
         return self.test_dl.dl.dataset
-    @property
