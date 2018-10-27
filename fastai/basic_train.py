@@ -35,7 +35,7 @@ def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:O
               activ:Model=None, loss_func:OptLossFunc=None) -> List[Tensor]:
     "Predict the output of the elements in the dataloader."
     res = [torch.cat(o).cpu() for o in zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False))]
-    if loss_func is not None: res.append(loss_func(res[0], res[1], reduction='none'))
+    if loss_func is not None: res.append(calc_loss(res[0], res[1], loss_func))
     if activ is not None: res[0] = activ(res[0])
     return res
 

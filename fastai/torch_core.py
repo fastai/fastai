@@ -191,11 +191,12 @@ def in_channels(m:Model) -> List[int]:
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
-def calc_loss(y_pred:Tensor, y_true:Tensor, loss_class:type=nn.CrossEntropyLoss, bs=64):
+def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
     "Calculate loss between `y_pred` and `y_true` using `loss_class` and `bs`."
-    loss_dl = DataLoader(TensorDataset(as_tensor(y_pred),as_tensor(y_true)), bs)
-    with torch.no_grad():
-        return torch.cat([loss_class(reduction='none')(*b) for b in loss_dl])
+    if hasattr(loss_func, 'reduction'):
+        setattr(loss_func, 'reduction', 'none')
+        return loss_func(y_pred, y_true)
+    else: return loss_func(y_pred, y_true, reduction='none')
 
 def to_np(x): return x.cpu().numpy()
 
