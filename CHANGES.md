@@ -18,8 +18,10 @@ of that change.
 
 ### Changed:
 
-### Fixed:
+- Add `recurse` flag to `get_image_files`
+- `show_xy_images` takes tensors instead of Image
 
+### Fixed:
 
 
 ## 1.0.14 (2018-10-25)

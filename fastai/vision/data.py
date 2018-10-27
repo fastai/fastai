@@ -11,13 +11,11 @@ __all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMul
            'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
            'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
 
-TfmList = Collection[Transform]
-
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
-def get_image_files(c:Path, check_ext:bool=True)->FilePathList:
+def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
-    return [o for o in list(c.iterdir())
+    return [o for o in Path(c).glob('**/*' if recurse else '*')
             if not o.name.startswith('.') and not o.is_dir()
             and (not check_ext or (o.suffix in image_extensions))]
 
@@ -47,10 +45,12 @@ def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figs
     if denorm: x = denorm(x)
     show_images(x,y[:rows*rows].cpu(),rows, classes, figsize)
 
-def show_xy_images(x:Tensor,y:Tensor,rows:int,figsize:tuple=(9,9)):
+def show_xy_images(x:Image,y:Image,rows:int,figsize:tuple=(9,9), alpha:float=0.5):
     "Show a selection of images and targets from a given batch."
     fig, axs = plt.subplots(rows,rows,figsize=figsize)
-    for i, ax in enumerate(axs.flatten()): x[i].show(y=y[i], ax=ax)
+    for i, ax in enumerate(axs.flatten()):
+        show_image(x[i], ax=ax)
+        show_image(y[i], ax=ax, cmap='tab20', alpha=alpha)
     plt.tight_layout()
 
 def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str]=None, figsize:Tuple[int,int]=(9,9))->None:
@@ -146,7 +146,7 @@ class ImageMultiDataset(LabelDataset):
 class SegmentationDataset(DatasetBase):
     "A dataset for segmentation task."
 
-    def __init__(self, x:Collection[PathOrStr], y:Collection[PathOrStr], div=False, convert_mode='L'):
+    def __init__(self, x:FilePathList, y:FilePathList, div=False, convert_mode='L'):
         assert len(x)==len(y)
         self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
         self.loss_func = CrossEntropyFlat()
@@ -191,6 +191,7 @@ class DatasetTfm(Dataset):
         self.y_kwargs = {**self.kwargs, 'do_resolve':False}
 
     def __len__(self)->int: return len(self.ds)
+    def __repr__(self)->str: return f'{self.__class__.__name__}({self.ds})'
 
     def __getitem__(self,idx:int)->Tuple[ItemBase,Any]:
         "Return tfms(x),y."
@@ -202,6 +203,10 @@ class DatasetTfm(Dataset):
     def __getattr__(self,k):
         "Passthrough access to wrapped dataset attributes."
         return getattr(self.ds, k)
+
+def _transform_dataset(self, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any)->DatasetTfm:
+    return DatasetTfm(self, tfms=tfms, tfm_y=tfm_y, **kwargs)
+DatasetBase.transform = _transform_dataset
 
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
                        tfms:Optional[Tuple[TfmList,TfmList]]=None, **kwargs:Any):
@@ -257,7 +262,7 @@ def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
 
 class ImageDataBunch(DataBunch):
     @classmethod
-    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Tfms=None,
+    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Optional[TfmList]=None,
                      num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                      collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
         "Factory method. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."

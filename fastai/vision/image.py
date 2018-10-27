@@ -4,9 +4,10 @@ from ..basic_data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord', 'TfmCrop', 
-           'TfmLighting', 'TfmPixel', 'Tfms', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform', 'logit', 'logit_', 
-           'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image', 'uniform', 'uniform_int', 'CoordFunc']
+__all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
+           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
+           'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
+           'uniform', 'uniform_int', 'CoordFunc', 'TfmList']
 
 def logit(x:Tensor)->Tensor:
     "Logit of `x`, clamped to avoid inf"
@@ -78,7 +79,7 @@ class FlowField():
 CoordFunc = Callable[[FlowField, ArgStar, KWArgs], LogitTensorImage]
 
 class Image(ItemBase):
-    "Support applying transforms to image data in `px`." 
+    "Support applying transforms to image data in `px`."
     def __init__(self, px:Tensor):
         "Create from raw tensor image data `px`."
         self._px = px
@@ -203,7 +204,7 @@ class Image(ItemBase):
         if title: ax.set_title(title)
 
 class ImageSegment(Image):
-    "Support applying transforms to segmentation masks data in `px`."      
+    "Support applying transforms to segmentation masks data in `px`."
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
 
     def refresh(self):
@@ -216,7 +217,7 @@ class ImageSegment(Image):
         return self.px.long()
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-        cmap:str='viridis', alpha:float=0.5):
+        cmap:str='tab20', alpha:float=0.5):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
         if title: ax.set_title(title)
 
@@ -246,7 +247,7 @@ class ImagePoints(Image):
     def device(self)->torch.device: return self._flow.flow.device
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
-    
+
     @property
     def flow(self)->FlowField:
         "Access the flow-field grid after applying queued affine and coord transforms."
@@ -259,10 +260,10 @@ class ImagePoints(Image):
             self.transformed = True
             self.flow_func = []
         return self._flow
-    
+
     @flow.setter
     def flow(self,v:FlowField):  self._flow=v
-    
+
     def coord(self, func:CoordFunc, *args, **kwargs)->'ImagePoints':
         "Put `func` with `args` and `kwargs` in `self.flow_func` for later."
         if 'invert' in kwargs: kwargs['invert'] = True
@@ -277,16 +278,16 @@ class ImagePoints(Image):
         self = func(self, *args, **kwargs)
         self.transformed=True
         return self
-    
+
     def refresh(self) -> 'ImagePoints':
         return self
-    
+
     def resize(self, size:Union[int,TensorImageSize]) -> 'ImagePoints':
         "Resize the image to `size`, size can be a single int."
         if isinstance(size, int): size=(1, size, size)
         self._flow.size = size[1:]
         return self
-    
+
     @property
     def data(self)->Tensor:
         "Return the points associated to this object."
@@ -296,7 +297,7 @@ class ImagePoints(Image):
                 flow = _remove_points_out(flow)
             self.transformed=False
         return flow.flow.flip(1)
-    
+
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True):
         if ax is None: _,ax = plt.subplots(figsize=figsize)
         pnt = scale_flow(FlowField(self.size, self.data), to_unit=False).flow.flip(1)
@@ -309,7 +310,7 @@ class ImageBBox(ImagePoints):
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True, labels:LongTensor=None, pad_idx:int=0):
         super().__init__(flow, scale, y_first)
         self.labels, self.pad_idx = labels, pad_idx
-        
+
     def clone(self) -> 'ImageBBox':
         "Mimic the behavior of torch.clone for `Image` objects."
         flow = FlowField(self.size, self.flow.flow.clone())
@@ -318,7 +319,7 @@ class ImageBBox(ImagePoints):
 
     @classmethod
     def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels:LongTensor=None, pad_idx:int=0)->'ImageBBox':
-        "Create an ImageBBox object from `bboxes`."  
+        "Create an ImageBBox object from `bboxes`."
         bboxes = tensor(bboxes).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
         bl_corners = bboxes[:,1:3].flip(1)
@@ -356,7 +357,7 @@ def open_image(fn:PathOrStr)->Image:
     return Image(pil2tensor(x).float().div_(255))
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
-    "Return `ImageMask` object create from mask in file `fn`. If `div`, divides pixel values by 255."
+    "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
     x = PIL.Image.open(fn).convert(convert_mode)
     mask = pil2tensor(x).float()
     if div: mask.div_(255)
@@ -413,7 +414,6 @@ class Transform():
     def __repr__(self)->str: return f'{self.name} ({self.func.__name__})'
 
 TfmList = Union[Transform, Collection[Transform]]
-Tfms = Optional[TfmList]
 
 @dataclass
 class RandTransform():

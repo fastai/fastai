@@ -81,11 +81,11 @@ class ClassificationInterpretation():
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
         "Show images in `top_losses` along with their loss, label, and prediction."
-        tl = self.top_losses(k,largest)
+        tl_val,tl_idx = self.top_losses(k,largest)
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
         fig,axes = plt.subplots(rows,rows,figsize=figsize)
-        for i,idx in enumerate(self.top_losses(k, largest=largest)[1]):
+        for i,idx in enumerate(tl_idx):
             t=self.data.valid_ds[idx]
             t[0].show(ax=axes.flat[i], title=
                 f'{classes[self.pred_class[idx]]}/{classes[t[1]]} / {self.losses[idx]:.2f} / {self.probs[idx][t[1]]:.2f}')

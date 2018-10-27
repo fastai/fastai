@@ -38,6 +38,8 @@ StrList = Collection[str]
 Tokens = Collection[Collection[str]]
 OptStrList = Optional[StrList]
 
+np.set_printoptions(precision=6, threshold=50, edgeitems=4, linewidth=120)
+
 def num_cpus()->int:
     "Get number of cpus"
     try:                   return len(os.sched_getaffinity(0))
@@ -172,5 +174,5 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
 
-Path.ls = lambda x: [o.name for o in x.iterdir()]
+Path.ls = lambda x: list(x.iterdir())
 

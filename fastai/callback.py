@@ -258,7 +258,9 @@ class CallbackHandler():
 class AverageMetric(Callback):
     "Wrap a `func` in a callback for metrics computation."
     def __init__(self, func):
-        self.func, self.name = func, func.__name__
+        # If it's a partial, use func.func
+        name = getattr(func,'func',func).__name__
+        self.func, self.name = func, name
 
     def on_epoch_begin(self, **kwargs):
         self.val, self.count = 0.,0
