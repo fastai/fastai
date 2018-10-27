@@ -32,6 +32,23 @@ https://github.com/fastai/fastai/tree/master/fastai
                  username reponame        modulename
 ```
 
+Below you will find detailed 5 steps towards creating a PR.
+
+There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
+
+```
+curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch
+chmod a+x fastai-make-pr-branch
+./fastai-make-pr-branch https your-github-username fastai new-feature
+```
+
+For more details run:
+```
+./fastai-make-pr-branch
+```
+
+
+
 ### Step 1. Start With a Synced Fork Checkout
 
 #### 1a. First time
@@ -222,21 +239,27 @@ If you synced the `master` branch with the original repository and you have feat
    git checkout my-cool-feature
    ```
 
-### How to Fix Your Broken master Branch
+### How To Reset Your Forked Master Branch
 
 If you haven't been careful to create a branch, and committed to the `master` branch of your forked repository, you no longer will be able to sync it with the original repository, without resetting it. And when you will want to create a branch, it'll have issues during PR, since it will be made against a diverged origin.
 
-Of course, the brute-force approach is to go to github, delete your fork (which will delete any of the work you have done on this fork, so be very careful if you decided to do that, since there will be no way to recover your data).
+Of course, the brute-force approach is to go to github, delete your fork (which will delete any of the work you have done on this fork, including any branches, so be very careful if you decided to do that, since there will be no way to recover your data).
 
 A much safer approach is to reset the `HEAD` of your forked `master` with the `HEAD` of the original repository:
 
+If you haven't setup up the upstream, do it now:
+   ```
+   git remote add upstream git@github.com:fastai/REPONAME.git
+   ```
+
+and then do the reset:
    ```
    git fetch upstream
    git update-ref refs/heads/master refs/remotes/upstream/master
    git checkout master
    git stash
    git reset --hard upstream/master
-   git push origin master
+   git push origin master --force
    ```
 
 ### Where am I?
