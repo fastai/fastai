@@ -13,6 +13,10 @@ of that change.
 
 ## 1.0.15.dev0 (Work In Progress)
 
+### Breaking changes:
+
+- `ConvLearner` ctor is now called `Learner.create_cnn`
+
 ### New:
 
 - `Learner` objects now determine from the loss function if there is something to add on top of the models to get the true predictions 
