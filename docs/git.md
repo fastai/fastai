@@ -359,6 +359,48 @@ If you're not using `bash` or `fish` shell, search for forks of this idea for ot
 
 
 
+## hub - hub helps you win at git
+
+[`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
+
+Installation:
+
+There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at https://github.com/github/hub/releases/latest, un-archiving the package and running `./install`, for example for the `linux-64` build:
+
+```
+wget https://github.com/github/hub/releases/download/v2.5.1/hub-linux-amd64-2.5.1.tgz
+tar -xvzf hub-linux-amd64-2.5.1.tgz
+cd hub-linux-amd64-2.5.1
+sudo ./install
+```
+
+You can add a prefix to install it to a different location, for example, under your home:
+
+```
+prefix=~ ./install
+```
+
+or say you wanted to install it inside your active conda environment:
+
+```
+prefix=`which conda | sed 's/\/bin\/conda//'` ./install
+```
+
+Either of the these two should give you the location of the your active conda environment:
+```
+which conda | sed 's/\/bin\/conda//'
+conda info | grep 'location' | awk '{print $5}'
+```
+but the first one is more reliable, `conda info`'s output may change down the road.
+
+HELP-WANTED: If you'd like to contribute a little tool, this process could be automated, by getting the json output of all platform-specific urls for the latest binary release:
+
+```
+curl https://api.github.com/repos/github/hub/releases/latest
+```
+identifying user's platform, retrieving the corresponding to that platform package, unarchiving it, identifying the conda base as shown above, and running `install` with that prefix. If you work on it, please write it in python, so that windows users w/o bash could use it too. It'd go into `tools/hub-install` in the `fastai` repo.
+
+
 ## Github Shortcuts
 
 * show commits by author: `?author=github_username`
@@ -382,10 +424,6 @@ If you're not using `bash` or `fish` shell, search for forks of this idea for ot
 * line linking
 
    In any file view, when you click one line or multiple lines by pressing SHIFT, the URL will change to reflect your selections. You can tell others to look at a specific line of code, or a specific chunk of code, using just that link.
-
-* hub
-
-   [`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
 
 * delete a fork
 
