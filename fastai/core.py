@@ -101,7 +101,7 @@ def even_mults(start:float, stop:float, n:int)->np.ndarray:
     return np.array([start*(step**i) for i in range(n)])
 
 def extract_kwargs(names:Collection[str], kwargs:KWArgs):
-    "Extracs the keys in `names` from the `kwargs`."
+    "Extract the keys in `names` from the `kwargs`."
     new_kwargs = {}
     for arg_name in names:
         if arg_name in kwargs:
@@ -128,7 +128,7 @@ def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileRead
     return l
 
 def get_total_length(csv_name:PathOrStr, chunksize:int) -> int:
-    "Read the the total length of a pandas `DataFrame`."
+    "Read the total length of a pandas `DataFrame`."
     dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
     l = 0
     for df in dfs: l+=len(df)
@@ -155,7 +155,7 @@ class ItemBase():
     def data(self): pass
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None, show_progress=True)->None:
-    "Download `url` to `dest` unless is exists and not `overwrite`."
+    "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
     u = requests.get(url, stream=True)
     file_size = int(u.headers["Content-Length"])
