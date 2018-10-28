@@ -175,3 +175,15 @@ def arange_of(x): return np.arange(len(x))
 
 Path.ls = lambda x: list(x.iterdir())
 
+def join_path(fname:PathOrStr, path:PathOrStr='.')->Path:
+    "Return `Path(path)/Path(fname)`, `path` defaults to current dir."
+    return Path(path)/Path(fname)
+
+def join_paths(fnames:FilePathList, path:PathOrStr='.')->Collection[Path]:
+    "Join `path` to every file name in `fnames`."
+    path = Path(path)
+    return [join_path(o,path) for o in fnames]
+
+def loadtxt_str(path:PathOrStr)->np.ndarray:
+    "Return `ndarray` of `str` of lines of text from `path`."
+    return np.loadtxt(str(path), str)
