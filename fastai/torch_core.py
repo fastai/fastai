@@ -9,12 +9,11 @@ IntOrTensor = Union[int,Tensor]
 ItemsList = Collection[Union[Tensor,ItemBase,'ItemsList',float,int]]
 LambdaFunc = Callable[[Tensor],Tensor]
 LayerFunc = Callable[[nn.Module],None]
-Model = nn.Module
 ModuleList = Collection[nn.Module]
 OptOptimizer = Optional[optim.Optimizer]
 ParamList = Collection[nn.Parameter]
 Rank0Tensor = NewType('OneEltTensor', Tensor)
-SplitFunc = Callable[[Model], List[Model]]
+SplitFunc = Callable[[nn.Module], List[nn.Module]]
 SplitFuncOrIdxList = Union[Callable, Collection[ModuleList]]
 TensorOrNumber = Union[Tensor,Number]
 TensorOrNumList = Collection[TensorOrNumber]
@@ -24,7 +23,7 @@ Tensors = Union[Tensor, Collection['Tensors']]
 Weights = Dict[str,Tensor]
 
 AffineFunc = Callable[[KWArgs], AffineMatrix]
-HookFunc = Callable[[Model, Tensors, Tensors], Any]
+HookFunc = Callable[[nn.Module, Tensors, Tensors], Any]
 LogitTensorImage = TensorImage
 LossFunction = Callable[[Tensor, Tensor], Rank0Tensor]
 MetricFunc = Callable[[Tensor,Tensor],TensorOrNumber]
@@ -47,7 +46,7 @@ fastai_types = {
     SplitArrayList:'SplitArrayList', StartOptEnd:'StartOptEnd', StrList:'StrList', Tokens:'Tokens',
     OptStrList:'OptStrList', AffineMatrix:'AffineMatrix', BoolOrTensor:'BoolOrTensor', FloatOrTensor:'FloatOrTensor',
     IntOrTensor:'IntOrTensor', ItemsList:'ItemsList', LambdaFunc:'LambdaFunc',
-    LayerFunc:'LayerFunc', Model:'Model', ModuleList:'ModuleList', OptOptimizer:'OptOptimizer', ParamList:'ParamList',
+    LayerFunc:'LayerFunc', ModuleList:'ModuleList', OptOptimizer:'OptOptimizer', ParamList:'ParamList',
     Rank0Tensor:'Rank0Tensor', SplitFunc:'SplitFunc', SplitFuncOrIdxList:'SplitFuncOrIdxList',
     TensorOrNumber:'TensorOrNumber', TensorOrNumList:'TensorOrNumList', TensorImage:'TensorImage',
     TensorImageSize:'TensorImageSize', Tensors:'Tensors', Weights:'Weights', AffineFunc:'AffineFunc',
@@ -119,6 +118,11 @@ def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
 
+def num_features_model(m:nn.Module)->int:
+    "Return the number of output features for a `model`."
+    for l in reversed(flatten_model(m)):
+        if hasattr(l, 'num_features'): return l.num_features
+
 def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     "Split `model` according to the indices in `idxs`."
     layers = flatten_model(model)
@@ -126,7 +130,7 @@ def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     if idxs[-1] != len(layers): idxs.append(len(layers))
     return [nn.Sequential(*layers[i:j]) for i,j in zip(idxs[:-1],idxs[1:])]
 
-def split_model(model:nn.Module, splits:Collection[Union[Model,ModuleList]], want_idxs:bool=False):
+def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]], want_idxs:bool=False):
     "Split `model` according to the layers in `splits`."
     layers = flatten_model(model)
     splits = listify(splits)
@@ -185,7 +189,7 @@ def apply_init(m, init_func:LayerFunc):
     "Initialize all non-batchnorm layers of `m` with `init_func`."
     apply_leaf(m, partial(cond_init, init_func=init_func))
 
-def in_channels(m:Model) -> List[int]:
+def in_channels(m:nn.Module) -> List[int]:
     "Return the shape of the first weight layer in `m`."
     for l in flatten_model(m):
         if hasattr(l, 'weight'): return l.weight.shape[1]

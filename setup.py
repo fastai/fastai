@@ -67,6 +67,7 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 # some of the listed modules appear in test_requirements as well, explained below.
 #
 dev_requirements = { 'dev' : to_list("""
+    coverage
     distro
     jupyter_contrib_nbextensions
     pip>=9.0.1

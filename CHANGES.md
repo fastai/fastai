@@ -11,11 +11,23 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.15.dev0 (Work In Progress)
+
+
+## 1.0.16.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.15 (2018-10-28)
 
 ### Breaking changes:
 
-- `ConvLearner` ctor is now called `Learner.create_cnn`
+- `ConvLearner` ctor is replaced by a function called `create_cnn`
 
 ### New:
 
@@ -35,6 +47,7 @@ of that change.
 - Make `pred_batch` faster and remove redundent `*`
 - Bug in `Learner.pred_batch`
 - Bug in `model_sizes` (thanks to dienhoa)
+- Bug in `RNNLearner.classifier` when used on a multilabel dataset
 
 ## 1.0.14 (2018-10-25)
 
