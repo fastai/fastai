@@ -7,7 +7,6 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 AnnealFunc = Callable[[Number,Number,float], Number]
 ArgStar = Collection[Any]
 BatchSamples = Collection[Tuple[Collection[int], int]]
-Classes = Collection[Any]
 DataFrameOrChunks = Union[DataFrame, pd.io.parsers.TextFileReader]
 FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]

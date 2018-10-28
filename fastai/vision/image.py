@@ -341,7 +341,7 @@ class ImageBBox(ImagePoints):
         return bboxes if lbls is None else (bboxes, lbls)
 
     def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-        color:str='white', classes:Classes=None):
+        color:str='white', classes:Collection[Any]=None):
         if ax is None: _,ax = plt.subplot(figsize=figsize)
         bboxes, lbls = self._compute_boxes()
         h,w = self.flow.size

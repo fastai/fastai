@@ -15,7 +15,7 @@ def read_classes(fname):
 class BaseTextDataset():
     "To directly create a text datasets from `ids` and `labels`."
     def __init__(self, ids:Collection[Collection[int]], labels:Collection[Union[int,float]], vocab_size:int,
-                 classes:Classes=None):
+                 classes:Collection[Any]=None):
         self.ids,self.labels,self.vocab_size,self.classes = ids,labels,vocab_size,classes
 
     def __getitem__(self, idx:int) -> Tuple[Collection[int],Union[int,float]]: return self.ids[idx],self.labels[idx]
@@ -26,7 +26,7 @@ class TextDataset(BaseTextDataset):
 
     def __init__(self, path:PathOrStr, tokenizer:Tokenizer=None, vocab:Vocab=None, max_vocab:int=60000, chunksize:int=10000,
                  name:str='train', df=None,  min_freq:int=2, n_labels:int=1, txt_cols=None, label_cols=None,
-                 create_mtd:TextMtd=TextMtd.DF, classes:Classes=None, clear_cache:bool=False):
+                 create_mtd:TextMtd=TextMtd.DF, classes:Collection[Any]=None, clear_cache:bool=False):
         self.tokenizer = ifnone(tokenizer, Tokenizer())
         self.path,self.max_vocab,self.min_freq = Path(path)/'tmp',max_vocab,min_freq
         self.label_cols = ifnone(label_cols, list(range(n_labels)))
@@ -153,7 +153,7 @@ class TextDataset(BaseTextDataset):
         return cls(folder, tokenizer, df=df, create_mtd=TextMtd.DF, name=name, chunksize=chunksize, **kwargs)
 
     @classmethod
-    def from_one_folder(cls, folder:PathOrStr, classes:Classes, tokenizer:Tokenizer=None, name:str='train',
+    def from_one_folder(cls, folder:PathOrStr, classes:Collection[Any], tokenizer:Tokenizer=None, name:str='train',
                     shuffle:bool=True, **kwargs) -> 'TextDataset':
         "Create a dataset from one folder, labelled `classes[0]` (used for the test set)."
         tokenizer = ifnone(tokenizer, Tokenizer())
@@ -174,7 +174,7 @@ class TextDataset(BaseTextDataset):
         return cls(folder, tokenizer, name=name, classes=classes, **kwargs)
 
     @classmethod
-    def from_folder(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', classes:Classes=None,
+    def from_folder(cls, folder:PathOrStr, tokenizer:Tokenizer=None, name:str='train', classes:Collection[Any]=None,
                     shuffle:bool=True, **kwargs) -> 'TextDataset':
         "Create a dataset from a folder."
         tokenizer = ifnone(tokenizer, Tokenizer())
@@ -278,7 +278,7 @@ class TextDataBunch(DataBunch):
     @classmethod
     def from_ids(cls, path, trn_ids:Collection[Collection[int]], trn_lbls:Collection[Union[int,float]],
                  val_ids:Collection[Collection[int]], val_lbls:Collection[Union[int,float]], vocab_size:int,
-                 tst_ids:Collection[Collection[int]]=None, classes:Classes=None, **kwargs) -> DataBunch:
+                 tst_ids:Collection[Collection[int]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
         path=Path(path)
         train_ds = BaseTextDataset(trn_ids, trn_lbls, vocab_size, classes)

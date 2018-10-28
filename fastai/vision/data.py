@@ -74,7 +74,7 @@ class ImageDataset(LabelDataset):
 
 class ImageClassificationDataset(ImageDataset):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
-    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Classes]=None):
+    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
         self.classes = ifnone(classes, list(set(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
@@ -88,13 +88,13 @@ class ImageClassificationDataset(ImageDataset):
         return fnames,[label]*len(fnames)
 
     @classmethod
-    def from_single_folder(cls, folder:PathOrStr, classes:Classes, check_ext=True):
+    def from_single_folder(cls, folder:PathOrStr, classes:Collection[Any], check_ext=True):
         "Typically used for test set. label all images in `folder` with `classes[0]`."
         fns,labels = cls._folder_files(folder, classes[0], check_ext=check_ext)
         return cls(fns, labels, classes=classes)
 
     @classmethod
-    def from_folder(cls, folder:Path, classes:Optional[Classes]=None, valid_pct:float=0., check_ext:bool=True
+    def from_folder(cls, folder:Path, classes:Optional[Collection[Any]]=None, valid_pct:float=0., check_ext:bool=True
                    )->Union['ImageClassificationDataset', List['ImageClassificationDataset']]:
         "Dataset of `classes` labeled images in `folder`. Optional `valid_pct` split validation set."
         if classes is None: classes = [cls.name for cls in find_classes(folder)]
@@ -110,7 +110,7 @@ class ImageClassificationDataset(ImageDataset):
 #Draft, to check
 class ImageMultiDataset(LabelDataset):
 
-    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Classes]=None):
+    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
         self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         self.x = np.array(fns)
@@ -128,7 +128,7 @@ class ImageMultiDataset(LabelDataset):
     def __getitem__(self,i:int)->Tuple[Image, np.ndarray]: return open_image(self.x[i]), self.encode(self.y[i])
 
     @classmethod
-    def from_single_folder(cls, folder:PathOrStr, classes:Classes, check_ext=True):
+    def from_single_folder(cls, folder:PathOrStr, classes:Collection[Any], check_ext=True):
         "Typically used for test set; label all images in `folder` with `classes[0]`."
         fnames = get_image_files(folder, check_ext=check_ext)
         labels = [[classes[0]]] * len(fnames)
@@ -136,19 +136,18 @@ class ImageMultiDataset(LabelDataset):
 
     @classmethod
     def from_folder(cls, path:PathOrStr, folder:PathOrStr, fns:pd.Series, labels:ImgLabels, valid_pct:float=0.2,
-        classes:Optional[Classes]=None):
+        classes:Optional[Collection[Any]]=None):
         path = Path(path)
         folder_path = (path/folder).absolute()
         train,valid = random_split(valid_pct, f'{folder_path}/' + fns, labels)
         train_ds = cls(*train, classes=classes)
         return [train_ds,cls(*valid, classes=train_ds.classes)]
 
-class SegmentationDataset(DatasetBase):
+class SegmentationDataset(LabelDataset):
     "A dataset for segmentation task."
-
-    def __init__(self, x:FilePathList, y:FilePathList, div=False, convert_mode='L'):
+    def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div=False, convert_mode='L'):
         assert len(x)==len(y)
-        self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
+        self.x,self.y,self.classes,self.div,self.convert_mode = np.array(x),np.array(y),classes,div,convert_mode
         self.loss_func = CrossEntropyFlat()
 
     def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
@@ -349,6 +348,7 @@ class ImageDataBunch(DataBunch):
         self.stats = ifnone(stats, self.batch_stats())
         self.norm,self.denorm = normalize_funcs(*self.stats)
         self.add_tfm(self.norm)
+        return self
 
     def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(12,15), is_train:bool=True)->None:
         show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes,
