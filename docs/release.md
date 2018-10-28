@@ -1253,7 +1253,11 @@ And remember to sync the branch with the master changes so that you're testing t
 
 Currently [New] will not let you choose an alternative pipeline. So until this is fixed, let it use the default `azure-pipelines.yml`, Save and then go and Edit it and replace with a different file from the repository (and perhaps switching to a different branch if needed), using [...].
 
+#### Support
 
+- General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
+- Task-specific issues: https://github.com/Microsoft/azure-pipelines-tasks/issues/
+- Agent-specific issues: https://github.com/Microsoft/azure-pipelines-agent
 
 
 ## Package Download Statistics
