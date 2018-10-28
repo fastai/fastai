@@ -359,7 +359,9 @@ If you're not using `bash` or `fish` shell, search for forks of this idea for ot
 
 
 
-## hub - hub helps you win at git
+## hub
+
+hub == hub helps you win at git
 
 [`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
 
