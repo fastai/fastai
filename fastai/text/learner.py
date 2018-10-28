@@ -26,13 +26,13 @@ def convert_weights(wgts:Weights, stoi_wgts:Dict[str,int], itos_new:Collection[s
     wgts['1.decoder.bias'] = new_b
     return wgts
 
-def lm_split(model:Model) -> List[Model]:
+def lm_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[rnn, dp] for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
     groups.append([model[0].encoder, model[0].encoder_dp, model[1]])
     return groups
 
-def rnn_classifier_split(model:Model) -> List[Model]:
+def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[model[0].encoder, model[0].encoder_dp]]
     groups += [[rnn, dp] for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
@@ -41,7 +41,7 @@ def rnn_classifier_split(model:Model) -> List[Model]:
 
 class RNNLearner(Learner):
     "Basic class for a Learner in RNN."
-    def __init__(self, data:DataBunch, model:Model, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
+    def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  adjust:bool=False, alpha:float=2., beta:float=1., **kwargs):
         super().__init__(data, model, **kwargs)
         self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta, adjust=adjust))

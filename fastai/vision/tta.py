@@ -28,15 +28,15 @@ def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[L
 
 Learner.tta_only = _tta_only
 
-def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, is_test:bool=False, with_loss:bool=False) -> Tensors:
+def Learner_TTA(learn:Learner, beta:float=0.4, scale:float=1.35, is_test:bool=False, with_loss:bool=False) -> Tensors:
     preds,y = learn.get_preds(is_test)
     all_preds = list(learn.tta_only(scale=scale, is_test=is_test))
     avg_preds = torch.stack(all_preds).mean(0)
     if beta is None: return preds,avg_preds,y
-    else:            
+    else:
         final_preds = preds*beta + avg_preds*(1-beta)
-        if with_loss: 
+        if with_loss:
             return final_preds, y, calc_loss(final_preds, y, learn.loss_func)
         return final_preds, y
 
-Learner.TTA = _TTA
+Learner.TTA = Learner_TTA

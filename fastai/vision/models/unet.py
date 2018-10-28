@@ -33,7 +33,7 @@ class UnetBlock(nn.Module):
 
 class DynamicUnet(nn.Sequential):
     "Create a U-Net from a given architecture."
-    def __init__(self, encoder:Model, n_classes:int):
+    def __init__(self, encoder:nn.Module, n_classes:int):
         imsize = (256,256)
         sfs_szs,x,self.sfs = model_sizes(encoder, size=imsize)
         sfs_idxs = reversed(_get_sfs_idxs(sfs_szs))

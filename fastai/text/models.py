@@ -15,7 +15,7 @@ class RNNDropout(nn.Module):
         super().__init__()
         self.p=p
 
-    def forward(self, x:Tensor) -> Tensor:
+    def forward(self, x:Tensor)->Tensor:
         if not self.training or self.p == 0.: return x
         m = dropout_mask(x.data, (1, x.size(1), x.size(2)), self.p)
         return x * m
@@ -23,7 +23,7 @@ class RNNDropout(nn.Module):
 class WeightDropout(nn.Module):
     "A module that warps another layer in which some weights will be replaced by 0 during training."
 
-    def __init__(self, module:Model, weight_p:float, layer_names:Collection[str]=['weight_hh_l0']):
+    def __init__(self, module:nn.Module, weight_p:float, layer_names:Collection[str]=['weight_hh_l0']):
         super().__init__()
         self.module,self.weight_p,self.layer_names = module,weight_p,layer_names
         for layer in self.layer_names:
@@ -53,13 +53,13 @@ class WeightDropout(nn.Module):
 class EmbeddingDropout(nn.Module):
     "Apply dropout in the embedding layer by zeroing out some elements of the embedding vector."
 
-    def __init__(self, emb:Model, embed_p:float):
+    def __init__(self, emb:nn.Module, embed_p:float):
         super().__init__()
         self.emb,self.embed_p = emb,embed_p
         self.pad_idx = self.emb.padding_idx
         if self.pad_idx is None: self.pad_idx = -1
 
-    def forward(self, words:LongTensor, scale:Optional[float]=None) -> Tensor:
+    def forward(self, words:LongTensor, scale:Optional[float]=None)->Tensor:
         if self.training and self.embed_p != 0:
             size = (self.emb.weight.size(0),1)
             mask = dropout_mask(self.emb.weight.data, size, self.embed_p)
@@ -69,7 +69,7 @@ class EmbeddingDropout(nn.Module):
         return F.embedding(words, masked_embed, self.pad_idx, self.emb.max_norm,
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
-#def _repackage_var(h:Tensors) -> Tensors:
+#def _repackage_var(h:Tensors)->Tensors:
 #    "Detach h from its history."
 #    return h.detach() if type(h) == torch.Tensor else tuple(_repackage_var(v) for v in h)
 
@@ -102,7 +102,7 @@ class RNNCore(nn.Module):
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
-    def forward(self, input:LongTensor) -> Tuple[Tensor,Tensor]:
+    def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
         sl,bs = input.size()
         if bs!=self.bs:
             self.bs=bs
@@ -118,7 +118,7 @@ class RNNCore(nn.Module):
         self.hidden = to_detach(new_hidden)
         return raw_outputs, outputs
 
-    def _one_hidden(self, l:int) -> Tensor:
+    def _one_hidden(self, l:int)->Tensor:
         "Return one hidden state."
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz)//self.ndir
         return self.weights.new(self.ndir, self.bs, nh).zero_()
@@ -135,7 +135,7 @@ class LinearDecoder(nn.Module):
 
     initrange=0.1
 
-    def __init__(self, n_out:int, n_hid:int, output_p:float, tie_encoder:Model=None, bias:bool=True):
+    def __init__(self, n_out:int, n_hid:int, output_p:float, tie_encoder:nn.Module=None, bias:bool=True):
         super().__init__()
         self.decoder = nn.Linear(n_hid, n_out, bias=bias)
         self.decoder.weight.data.uniform_(-self.initrange, self.initrange)
@@ -143,7 +143,7 @@ class LinearDecoder(nn.Module):
         if bias: self.decoder.bias.data.zero_()
         if tie_encoder: self.decoder.weight = tie_encoder.weight
 
-    def forward(self, input:Tuple[Tensor,Tensor]) -> Tuple[Tensor,Tensor,Tensor]:
+    def forward(self, input:Tuple[Tensor,Tensor])->Tuple[Tensor,Tensor,Tensor]:
         raw_outputs, outputs = input
         output = self.output_dp(outputs[-1])
         decoded = self.decoder(output.view(output.size(0)*output.size(1), output.size(2)))
@@ -162,11 +162,11 @@ class MultiBatchRNNCore(RNNCore):
         self.max_seq,self.bptt = max_seq,bptt
         super().__init__(*args, **kwargs)
 
-    def concat(self, arrs:Collection[Tensor]) -> Tensor:
+    def concat(self, arrs:Collection[Tensor])->Tensor:
         "Concatenate the `arrs` along the batch dimension."
         return [torch.cat([l[si] for l in arrs]) for si in range_of(arrs[0])]
 
-    def forward(self, input:LongTensor) -> Tuple[Tensor,Tensor]:
+    def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
         sl,bs = input.size()
         self.reset()
         raw_outputs, outputs = [],[]
@@ -193,7 +193,7 @@ class PoolingLinearClassifier(nn.Module):
         f = F.adaptive_max_pool1d if is_max else F.adaptive_avg_pool1d
         return f(x.permute(1,2,0), (1,)).view(bs,-1)
 
-    def forward(self, input:Tuple[Tensor,Tensor]) -> Tuple[Tensor,Tensor,Tensor]:
+    def forward(self, input:Tuple[Tensor,Tensor])->Tuple[Tensor,Tensor,Tensor]:
         raw_outputs, outputs = input
         output = outputs[-1]
         sl,bs,_ = output.size()
@@ -205,7 +205,7 @@ class PoolingLinearClassifier(nn.Module):
 
 def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int, tie_weights:bool=True,
                        qrnn:bool=False, bias:bool=True, bidir:bool=False, output_p:float=0.4, hidden_p:float=0.2, input_p:float=0.6,
-                       embed_p:float=0.1, weight_p:float=0.5) -> Model:
+                       embed_p:float=0.1, weight_p:float=0.5)->nn.Module:
     "Create a full AWD-LSTM."
     rnn_enc = RNNCore(vocab_sz, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token, qrnn=qrnn, bidir=bidir,
                  hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
@@ -214,7 +214,7 @@ def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_to
 
 def get_rnn_classifier(bptt:int, max_seq:int, n_class:int, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int,
                        pad_token:int, layers:Collection[int], drops:Collection[float], bidir:bool=False, qrnn:bool=False,
-                       hidden_p:float=0.2, input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5) -> Model:
+                       hidden_p:float=0.2, input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5)->nn.Module:
     "Create a RNN classifier model."
     rnn_enc = MultiBatchRNNCore(bptt, max_seq, vocab_sz, emb_sz, n_hid, n_layers, pad_token=pad_token, bidir=bidir,
                       qrnn=qrnn, hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
