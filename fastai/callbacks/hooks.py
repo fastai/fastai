@@ -76,7 +76,7 @@ def model_sizes(m:Model, size:tuple=(256,256), full:bool=True) -> Tuple[Sizes,Te
     "Pass a dummy input through the model to get the various sizes."
     hooks = hook_outputs(m)
     ch_in = in_channels(m)
-    x = torch.zeros(1,ch_in,*size).cuda()
+    x = torch.zeros(1,ch_in,*size).cuda() if next(m.parameters()).is_cuda else torch.zeros(1,ch_in,*size).cpu()
     x = m.eval()(x)
     res = [o.stored.shape for o in hooks]
     if not full: hooks.remove()
