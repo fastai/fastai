@@ -194,8 +194,11 @@ def in_channels(m:Model) -> List[int]:
 def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
     "Calculate loss between `y_pred` and `y_true` using `loss_class` and `bs`."
     if hasattr(loss_func, 'reduction'):
+        old_red = getattr(loss_func, 'reduction')
         setattr(loss_func, 'reduction', 'none')
-        return loss_func(y_pred, y_true)
+        l = loss_func(y_pred, y_true)
+        setattr(loss_func, 'reduction', old_red)
+        return l
     else: return loss_func(y_pred, y_true, reduction='none')
 
 def to_np(x): return x.cpu().numpy()
