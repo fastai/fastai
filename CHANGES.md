@@ -15,15 +15,22 @@ of that change.
 
 ### New:
 
+- `Learner` objects now determine from the loss function if there is something to add on top of the models to get the true predictions 
+
 ### Changed:
 
 - Add `recurse` flag to `get_image_files`
 - `show_xy_images` takes tensors instead of Image
 - Add `classes` to SegmentationDataset
-
+- `get_preds` now return the true probabilities
+- `TTA` averages the probabilities and not the last activations of the model
+- `ClassificationInterpretation` has been changed accordingly and the `sigmoid` argument has been deprecated
+ 
 ### Fixed:
 
 - Make `pred_batch` faster and remove redundent `*`
+- Bug in `Learner.pred_batch`
+- Bug in `model_sizes` (thanks to dienhoa)
 
 ## 1.0.14 (2018-10-25)
 

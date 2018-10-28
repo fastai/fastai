@@ -199,6 +199,7 @@ class Learner():
     def pred_batch(self, is_test:bool=False) -> Tuple[Tensors, Tensors, Tensors]:
         "Return input, target and output of the model on a batch."
         x,y = next(iter(self.data.holdout(is_test)))
+        if not is_listy(x): x = [x]
         return x,y,self.model(*x).detach()
     
     def get_preds(self, is_test:bool=False, with_loss:bool=False) -> List[Tensor]:
