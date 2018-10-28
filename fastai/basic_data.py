@@ -83,7 +83,7 @@ class DataBunch():
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                collate_fn:Callable=data_collate)->'DataBunch':
-        "`DataBunch` factory. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
+        "`DataBunch` factory. `bs` batch size, `tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
         dls = [DataLoader(*o, num_workers=num_workers) for o in
@@ -105,8 +105,9 @@ class DataBunch():
     @property
     def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset
     @property
-    def test_ds(self)->Dataset: 
+    def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
+
+    @property
+    def test_ds(self)->Dataset:
         assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
         return self.test_dl.dl.dataset
-    @property
-    def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)

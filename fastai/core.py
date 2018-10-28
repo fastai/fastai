@@ -7,7 +7,6 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 AnnealFunc = Callable[[Number,Number,float], Number]
 ArgStar = Collection[Any]
 BatchSamples = Collection[Tuple[Collection[int], int]]
-Classes = Collection[Any]
 DataFrameOrChunks = Union[DataFrame, pd.io.parsers.TextFileReader]
 FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]
@@ -37,6 +36,8 @@ StartOptEnd=Union[float,Tuple[float,float]]
 StrList = Collection[str]
 Tokens = Collection[Collection[str]]
 OptStrList = Optional[StrList]
+
+np.set_printoptions(precision=6, threshold=50, edgeitems=4, linewidth=120)
 
 def num_cpus()->int:
     "Get number of cpus"
@@ -172,5 +173,5 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
 
-Path.ls = lambda x: [o.name for o in x.iterdir()]
+Path.ls = lambda x: list(x.iterdir())
 

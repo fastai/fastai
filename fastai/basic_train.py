@@ -9,7 +9,7 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train
 default_lr = slice(3e-3)
 default_wd = 1e-2
 
-def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None, 
+def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
     "Calculate loss and metrics for a batch, call out to callbacks as necessary."
     cb_handler = ifnone(cb_handler, CallbackHandler([], []))
@@ -206,7 +206,7 @@ class Learner():
         lf = self.loss_func if with_loss else None
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf)
-    
+      
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
@@ -274,13 +274,13 @@ class Recorder(LearnerCallback):
             t += ' ' * (len(name) - len(t))
             str_stats.append(t)
         self.pbar.write('  '.join(str_stats), table=True)
-        
+
     def add_metrics(self, metrics):
         self._added_mets = metrics
 
     def add_metric_names(self, names):
         self._added_met_names = names
-        
+
     def plot_lr(self, show_moms=False)->None:
         "Plot learning rate, `show_moms` to include momentum."
         iterations = range_of(self.lrs)

@@ -11,16 +11,19 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
 ## 1.0.15.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
+- Add `recurse` flag to `get_image_files`
+- `show_xy_images` takes tensors instead of Image
+- Add `classes` to SegmentationDataset
+
 ### Fixed:
 
-
+- Make `pred_batch` faster and remove redundent `*`
 
 ## 1.0.14 (2018-10-25)
 

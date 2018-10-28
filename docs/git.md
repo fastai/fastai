@@ -4,6 +4,361 @@ title: git Notes
 
 Chances are that you may need to know some git when using fastai - for example if you want to contribute to the project, or you want to undo some change in your code tree. This document has a variety of useful recipes that might be of help in your work.
 
+
+
+
+## How to Make a Pull Request (PR)
+
+While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
+
+* https://github.com/fastai/fastai
+* https://github.com/fastai/fastai_docs
+* https://github.com/fastai/course-v3
+* https://github.com/fastai/fastprogress
+
+
+The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
+
+The guide is written for those who want to contribute to the `fastai` repository.
+If you'd like to contribute to other `fastai`-project repositories, just replace `fastai` with that other repository name in the instructions below.
+
+For the purpose of these examples, we will clone into a folder `fastai-fork`, to differentiate from `fastai` which you most likely already checked out to install it.
+
+Also don't get confused between the `fastai` github username, the `fastai` repository, and the `fastai` module directory, where the python code resides. The following url shows all three, in the order they have been mentioned:
+
+```
+https://github.com/fastai/fastai/tree/master/fastai
+                     |       |                  |
+                 username reponame        modulename
+```
+
+Below you will find detailed 5 steps towards creating a PR.
+
+### Helper Program
+
+There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
+
+```
+curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch
+chmod a+x fastai-make-pr-branch
+./fastai-make-pr-branch https your-github-username fastai new-feature
+```
+
+For more details run:
+```
+./fastai-make-pr-branch
+```
+
+
+
+### Step 1. Start With a Synced Fork Checkout
+
+#### 1a. First time
+
+If you made the fork of the desired repository already, proceed to section 1b.
+
+If it's your first time, you just need to make a fork of the original repository:
+
+1. Go to https://github.com/fastai/fastai and in the right upper corner click on `[Fork]`. This will generate a fork of this repository, and you will be redirected to
+ github.com/USERNAME/fastai.
+
+2. Clone the main repository fork. Click on `[Clone or download]` button to get the clone url and then clone your repository.
+
+   * Choose the SSH option if you have SSH configured with github and run:
+
+   ```
+   git clone git@github.com:USERNAME/fastai.git fastai-fork
+   ```
+   * otherwise choose the HTTPS option:
+
+   ```
+   git clone https://github.com/USERNAME/fastai.git fastai-fork
+   ```
+
+   Make sure the url has your username in it. If the username is `fastai` you're cloning the original repo and not your fork. This will not do what you need.
+
+   Then move into the newly created directory:
+
+   ```
+   cd fastai-fork
+   ```
+
+   and run the setup tool:
+   ```
+   tools/run-after-git-clone
+   ```
+   for any of the `fastai` project repositories, except `fastprogress` where it doesn't exist.
+
+   Finally, let's setup this fork to track the upstream:
+
+   ```
+   git remote add upstream git@github.com:fastai/fastai.git
+   ```
+
+   You can check your setup:
+   ```
+   git remote -v
+   ```
+
+   It should show:
+   ```
+   origin  git@github.com:USERNAME/fastai.git (fetch)
+   origin  git@github.com:USERNAME/fastai.git (push)
+   upstream        git@github.com:fastai/fastai.git (fetch)
+   upstream        git@github.com:fastai/fastai.git (push)
+   ```
+
+   You can now proceed to step 2.
+
+#### 1b. Subsequent times
+
+If you make a PR right after you made a fork of the original repository, the two repositories are aligned and you can easily create a PR. If time passes the original repository starts diverging from your fork, so when you work on your PRs you need to keep your master fork in sync with the original repository.
+
+You can tell the state of your fork, by going to https://github.com/USERNAME/fastai and seeing something like:
+
+```
+This branch is 331 commits behind fastai:master.
+```
+
+So, let's synchronize the two:
+
+1. Place yourself in the `master` branch of the forked repository:
+
+   * Either you go back to a repository you checked out earlier and switch to the `master` branch:
+
+   ```
+   cd fastai-fork
+   git checkout master
+   ```
+
+   * or you make a new clone
+
+   ```
+   git clone git://github.com/USERNAME/fastai.git fastai-fork
+   cd fastai-fork
+   git remote add upstream git@github.com:fastai/fastai.git
+   ```
+
+   and set things up as before (except for the `fastprogress` repository):
+   ```
+   tools/run-after-git-clone
+   ```
+
+   Use the https version https://github.com/USERNAME/fastai if you don't have ssh configured with github.
+
+2. Sync the forked repository with the original repository:
+
+   ```
+   git fetch upstream
+   git checkout master
+   git merge --no-edit upstream/master
+   git push
+   ```
+
+   Now you can branch off this synced `master` branch.
+
+   Validate that your fork is in sync with the original repository by going to https://github.com/USERNAME/fastai and checking that it says:
+
+   ```
+   This branch is even with fastai:master.
+   ```
+   Now you can work on a new PR.
+
+
+### Step 2. Create a Branch
+
+It's very important that you **always work inside a branch**. If you make any commits into the `master` branch, you will not be able to make more than one PR at the same time, and you will not be able to synchronize your forked `master` branch with the original without doing a reset. If you made a mistake and committed to the `master` branch, it's not the end of the world, it's just that you made your life more complicated. This guide will explain how to deal with this situation.
+
+
+1. Create a branch with any name you want, for example `new-feature-branch`, and switch to it. Then set this branch's upstream, so that you could do `git push` and other git commands without needing to pass any more arguments.
+
+   ```
+   git checkout -b new-feature-branch
+   git push --set-upstream origin new-feature-branch
+   ```
+
+### Step 3. Write Your Code and Test it
+
+1. Create new code, fix bugs, add/correct documentation
+
+2. Test that your changes don't break things
+
+In the `fastai` repository, if you made changes to the libraries under `fastai` or you added/changed anything under `tests`, run:
+
+   ```
+   make test
+   ```
+
+In the `fastai_docs` repository, if you made changes to the notebooks, run:
+
+   ```
+   cd docs_src
+   run_tests.sh
+   ```
+
+
+### Step 4. Push Your Changes
+
+1. When you're happy with the results, commit the new code:
+
+   ```
+   git commit -a
+   ```
+
+   `-a` will automatically commit changes to any of the repository files.
+
+   If you created new files, first tell git to track them:
+
+   ```
+   git add newfile1 newdir2 ...
+   ```
+   and then commit.
+
+2. Finally, push the changes into the branch of your fork:
+
+   ```
+   git push
+   ```
+
+### Step 5. Submit Your PR
+
+1. Go to github and make a new Pull Request:
+
+   Usually, if you go to https://github.com/USERNAME/fastai github will notice that you committed to a new branch and will offer you to make a PR, so you don't need to figure out how to do it.
+
+   If for any reason it's not working, go to https://github.com/USERNAME/fastai/tree/new-feature-branch (replace `new-feature-branch` with the real branch name, and click `[Pull Request]` in the right upper corner.
+
+If you work on several unrelated PRs, make different directories for each one, ideally using the same directory name as the branch name, to simplify things.
+
+
+### How to Keep Your Feature Branch Up-to-date
+
+If you synced the `master` branch with the original repository and you have feature branches that you're still working on, now you want to update those. For example to update your previously existing branch `my-cool-feature`:
+
+   ```
+   git checkout master
+   git pull
+   git checkout my-cool-feature
+   ```
+
+### How To Reset Your Forked Master Branch
+
+If you haven't been careful to create a branch, and committed to the `master` branch of your forked repository, you no longer will be able to sync it with the original repository, without resetting it. And when you will want to create a branch, it'll have issues during PR, since it will be made against a diverged origin.
+
+Of course, the brute-force approach is to go to github, delete your fork (which will delete any of the work you have done on this fork, including any branches, so be very careful if you decided to do that, since there will be no way to recover your data).
+
+A much safer approach is to reset the `HEAD` of your forked `master` with the `HEAD` of the original repository:
+
+If you haven't setup up the upstream, do it now:
+   ```
+   git remote add upstream git@github.com:fastai/REPONAME.git
+   ```
+
+and then do the reset:
+   ```
+   git fetch upstream
+   git update-ref refs/heads/master refs/remotes/upstream/master
+   git checkout master
+   git stash
+   git reset --hard upstream/master
+   git push origin master --force
+   ```
+
+### Where am I?
+
+Now that you have the original repository, the forked repository and its branches how do you know which of the repository and the branch you are currently in?
+
+* Which repository am I in?
+
+   ```
+   git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//'
+   ```
+   e.g.: `stas00/fastai`
+
+* Which branch am I on?
+
+   ```
+   git branch | sed -n '/\* /s///p'
+   ```
+   e.g.: `new-feature-branch7`
+
+* Combined:
+
+   ```
+   echo $(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//')/$(git branch | sed -n '/\* /s///p')
+   ```
+   e.g.: `stas00/fastai/new-feature-branch7`
+
+But that's not a very efficient process to constantly ask the system to tell you where you are. Why not make it automatic and integrate this into your bash prompt (assuming that use bash).
+
+#### bash-git-prompt
+
+Enter [`bash-git-prompt`](https://github.com/magicmonty/bash-git-prompt), which not only tells you which virtual environment you are in and which `branch` you're on, but it also provides very useful visual indications on the state of your git checkout - how many files have changed, how many commits are waiting to be pushed, whether there are any upstream changes, and much more.
+
+This is not finalized yet, but there is a PR that incorporates `username` and `repository` into the prompt too. Until it gets merged into the parent repository, use this [fork](https://github.com/stas00/bash-git-prompt) and change your `bash-git-prompt` theme to include:
+
+   ```
+   GIT_PROMPT_PREFIX="[${Blue}_USERNAME_REPO_|" # start of the git info string
+   ```
+or have a look at this [theme](https://github.com/stas00/bash-git-prompt/blob/master/themes/Single_line_username_repo.bgptheme).
+
+I currently work on 4 different `fastai` project repositories and 4 corresponding forks, and several branches in all of them, so I was very lost until I started using this tool. To give you a visual of various prompts I have as of this writing:
+
+   ```
+   (pytorch-dev) /fastai/ci-experiments [fastai/fastai:ci-experiments|·6]>
+
+   (pytorch-dev) /fastai/linkcheck [fastai/fastai_docs:master]>
+
+   (pytorch-dev) /stas00/fork [stas00/fastai:master|·3]>
+
+   (pytorch-dev) /fastai/wip [fastai/fastai:master|+2?10·3]>
+   ```
+
+The numbers after the branch are modified/untracked/stashed counts. The leading `(pytorch-dev)` is the currently activated conda env name.
+
+If you're not using `bash` or `fish` shell, search for forks of this idea for other shells.
+
+
+
+## Github Shortcuts
+
+* show commits by author: `?author=github_username`
+
+   You can filter commits by author in the commit view by appending param `?author=github_username`.
+
+   For example, the link https://github.com/fastai/fastai/commits/master?author=jph00 shows a list of commits `jph00` commits to the fastai repository.
+
+* show commits by range: `master@{time}..master`
+
+   You can create a compare view in GitHub by using the URL `github.com/user/repo/compare/{range}`. Range can be two SHAs like sha1…sha2 or two branch names like `master…my-branch`. Range is also smart enough to take time into consideration.
+
+   For example, you can filter a list of commits since yesterday by using format like `master@{1.day.ago}…master`. The link https://github.com/fastai/fastai/compare/master@{1.day.ago}…master, for example, gets all commits since yesterday for the `fastai` repository:
+
+* show `.diff` & `.patch`
+
+   Add `.diff` or `.patch` to the URLs of compare view, pull request or commit page to get the diff or patch in text format.
+
+   For example, the link https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch gets the patch for all the commits since yesterday in the `fastai` repository.
+
+* line linking
+
+   In any file view, when you click one line or multiple lines by pressing SHIFT, the URL will change to reflect your selections. You can tell others to look at a specific line of code, or a specific chunk of code, using just that link.
+
+* hub
+
+   [`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
+
+* delete a fork
+
+   1. Go to github.com/USERNAME/FORKED-REPO-NAME/
+   2. Hit Settings
+   3. Scroll down and hit [Delete this repository]
+
+   replace, `USERNAME` with your github username, and `FORKED-REPO-NAME` with the repository name
+
+
+
+
 ## Revisions
 
 relative refs
@@ -408,7 +763,7 @@ branch delete via github - after the branch has been merged into the master upst
 
 or go to https://github.com/stas00/fastai/ (and click [NN branches] above [New pull request] button
 ```
-2. hit the trash button next to the branch to remove
+1. hit the trash button next to the branch to remove
 ```
 
 
@@ -546,7 +901,7 @@ git commit
 ```
 this will revert everything from the HEAD back to the commit hash, meaning it will recreate that commit state in the working tree as if every commit since had been walked back. You can then commit the current tree, and it will create a brand new commit essentially equivalent to the commit you "reverted" to.
 
-(the --no-commit flag lets git revert all the commits at once- otherwise you'll be prompted for a message for each commit in the range, littering your history with unnecessary new commits.)
+(the `--no-commit` flag lets git revert all the commits at once- otherwise you'll be prompted for a message for each commit in the range, littering your history with unnecessary new commits.)
 
 this is a safe and easy way to rollback to a previous state. No history is destroyed, so it can be used for commits that have already been made public.
 
@@ -858,159 +1213,15 @@ https://github.com/gistya/expandr
 
 
 
+## Miscellaneous Recipes
 
-## GitHub-specific notes
+* download a sub-directory from a git tree, e.g. https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python
 
-
-
-### Github shortcuts
-
-* show commits by range: master@{time}..master
-
-   You can create a compare view in GitHub by using the URL github.com/user/repo/compare/{range}. Range can be two SHAs like sha1…sha2 or two branches’ name like master…my-branch. Range is also smart enough to take time into consideration.
-
-   For example, you can filter a list of commits since yesterday by using format like master@{1.day.ago}…master. The link https://github.com/rails/rails/compare/master@{1.day.ago}…master, for example, gets all commits since yesterday for the Rails project:
-
-
-* show commits by author: ?author=github_handle
-
-   You can filter commits by author in the commit view by appending param ?author=github_handle.
-
-   For example, the link https://github.com/dynjs/dynjs/commits/master?author=jingweno shows a list of my commits to the Dynjs project
-
-
-
-* show .diff & .patch
-
-   Add .diff or .patch to the URLs of compare view, pull request or commit page to get the diff or patch in text format.
-
-   For example, the link https://github.com/rails/rails/compare/master@{1.day.ago}…master.patch gets the patch for all the commits since yesterday in the Rails project
-
-* line linking
-
-   In any file view, when you click one line or multiple lines by pressing SHIFT, the URL will change to reflect your selections. This is very handy for sharing the link to a chunk of code with your teammates
-
-* hub
-
-   Hub is the command line GitHub. It provides integration between Git and GitHub in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal. Detail of all other commands is available on its project readme.
-
-
-
-* delete a fork
-
-1. Go to github.com/stas00/[FORKED-REPO]/
-2. Hit Settings
-3. Scroll down and hit [Delete this repository]
-
-
-### sync master fork with master repository
-
-#### Syncing a Fork method
-
-https://help.github.com/articles/syncing-a-fork/
-
-
-step 1. Configuring a remote for a fork
-
-```
-git clone git://github.com/stas00/fastai sync
-
-cd sync
-git remote -v
-git remote add origin   git@github.com:stas00/fastai.git
-git remote add upstream git@github.com:fastai/fastai.git
-git remote -v
-```
-
-
-non-SSH (password auth) version
-
-```
-git clone https://github.com/stas00/fastai sync
-cd sync
-git remote add upstream https://github.com/fastai/fastai.git
-```
-
-step 2. Syncing a fork
-```
-git fetch upstream
-git checkout master
-git merge --no-edit upstream/master
-git push --set-upstream origin master
-```
-
-or one line:
-```
-git fetch upstream; git checkout master; git merge --no-edit upstream/master; git push --set-upstream origin master
-```
-
-
-#### Making a pull request
-
-unless you know how to handle switching branches, it's the easiest to make a new clone for each new branch
-
-1. Sync the forked version with master
-
-see above
-
-2. clone the main repository fork (or if it hasn't been done yet fork it first on github by going to github.com:fastai/fastai)
-
-moreover - make sure that the repository fork is up-to-date by syncing it
-
-```
-git clone git://github.com/stas00/fastai branch_name
-cd branch_name
-git remote rm origin
-git remote add origin git@github.com:stas00/fastai.git
-```
-
-
-3. create a branch
-```
-git checkout -b branch_name
-```
-
-if the master sync has since updated:
-```
-git rebase master
-```
-
-
-4. edit code and commit changes
-
-may validate the changes:
-```
-jsonlint-php lesson7-cifar10.ipynb
-```
-
-commit
-```
-git commit -a
-```
-
-
-5. push the changes into the branch
-```
-git push origin branch_name
-```
-
-
-6. go to github and make pull request
-
-https://github.com/stas00/fastai/tree/branch_name/
-and click [Pull Request] on the right upper corner
-
-
-
-## Extra Recipes
-
-download a sub-directory from a git tree, e.g. https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python
-
-1. replace tree/master => trunk
-2. svn co the new url
-```
-svn co https://github.com/buckyroberts/Source-Code-from-Tutorials/trunk/Python
-```
+   1. replace tree/master => trunk
+   2. svn co the new url
+   ```
+   svn co https://github.com/buckyroberts/Source-Code-from-Tutorials/trunk/Python
+   ```
 
 
 ## Useful Resources
