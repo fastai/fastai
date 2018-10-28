@@ -15,7 +15,7 @@ of that change.
 
 ### Breaking changes:
 
-- `ConvLearner` ctor is now called `create_cnn`
+- `ConvLearner` ctor is replaced by a function called `create_cnn`
 
 ### New:
 
