@@ -7,7 +7,7 @@ import PIL
 __all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
            'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
            'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
-           'uniform', 'uniform_int', 'CoordFunc', 'TfmList']
+           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'save_image']
 
 def logit(x:Tensor)->Tensor:
     "Logit of `x`, clamped to avoid inf"
@@ -370,6 +370,10 @@ def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=
     ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)
     if hide_axis: ax.axis('off')
     return ax
+
+def save_image(fn:PathOrStr, img:Image):
+    x = image2np(img.data*255).astype(np.uint8)
+    PIL.Image.fromarray(x).save(fn)
 
 def scale_flow(flow, to_unit=True):
     "Scale the coords in `flow` to -1/1 or the image size depending on `to_unit`."
