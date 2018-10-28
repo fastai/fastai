@@ -18,4 +18,4 @@ def learn():
     return learn
 
 def test_accuracy(learn):
-    assert learn.validate()[1] > 0.75
+    assert learn.validate()[1] > 0.7
