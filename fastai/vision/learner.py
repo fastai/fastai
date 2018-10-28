@@ -7,7 +7,23 @@ from . import models
 from ..callback import *
 from ..layers import *
 
-__all__ = ['create_body', 'create_head', 'num_features', 'ClassificationInterpretation']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
+# By default split models between first and second layer
+def _default_split(m:nn.Module): return (m[1],)
+# Split a resnet style model
+def _resnet_split(m:nn.Module): return (m[0][6],m[1])
+
+_default_meta = {'cut':-1, 'split':_default_split}
+_resnet_meta  = {'cut':-2, 'split':_resnet_split }
+
+model_meta = {
+    models.resnet18 :{**_resnet_meta}, models.resnet34: {**_resnet_meta},
+    models.resnet50 :{**_resnet_meta}, models.resnet101:{**_resnet_meta},
+    models.resnet152:{**_resnet_meta}}
+
+def cnn_config(arch):
+    torch.backends.cudnn.benchmark = True
+    return model_meta.get(arch, _default_meta)
 
 def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
     "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
@@ -26,31 +42,14 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
         layers += bn_drop_lin(ni,no,True,p,actn)
     return nn.Sequential(*layers)
 
-# By default split models between first and second layer
-def _default_split(m:nn.Module): return (m[1],)
-# Split a resnet style model
-def _resnet_split(m:nn.Module): return (m[0][6],m[1])
 
-_default_meta = {'cut':-1, 'split':_default_split}
-_resnet_meta  = {'cut':-2, 'split':_resnet_split }
-
-model_meta = {
-    models.resnet18 :{**_resnet_meta}, models.resnet34: {**_resnet_meta},
-    models.resnet50 :{**_resnet_meta}, models.resnet101:{**_resnet_meta},
-    models.resnet152:{**_resnet_meta}}
-
-def cnn_config(arch):
-    torch.backends.cudnn.benchmark = True
-    return model_meta.get(arch, _default_meta)
-
-@classmethod
-def Learner_create_cnn(cls, data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
+def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None, **kwargs:Any)->None:
     "Build convnet style learners."
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), ifnone(cut,meta['cut']))
-    nf = num_features(body) * 2
+    nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
     model = nn.Sequential(body, head)
     learn = Learner(data, model, **kwargs)
@@ -59,7 +58,6 @@ def Learner_create_cnn(cls, data:DataBunch, arch:Callable, cut:Union[int,Callabl
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
 
-Learner.create_cnn = Learner_create_cnn
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
@@ -123,11 +121,12 @@ class ClassificationInterpretation():
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
 
-def _predict(img, learn):
+def Image_predict(img, learn):
     img = apply_tfms(learn.data.valid_ds.tfms, img, **learn.data.valid_ds.kwargs)
     ds = TensorDataset(img.data[None], torch.zeros(1))
     dl = DeviceDataLoader.create(ds, bs=1, shuffle=False, device=learn.data.device, tfms=learn.data.valid_dl.tfms,
                                  num_workers=0)
     return get_preds(learn.model, dl, cb_handler=CallbackHandler(learn.callbacks, []))[0][0]
 
-Image.predict = _predict
+Image.predict = Image_predict
+

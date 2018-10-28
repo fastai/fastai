@@ -15,7 +15,7 @@ of that change.
 
 ### Breaking changes:
 
-- `ConvLearner` ctor is now called `Learner.create_cnn`
+- `ConvLearner` ctor is now called `create_cnn`
 
 ### New:
 

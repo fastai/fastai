@@ -118,7 +118,7 @@ def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
 
-def num_features(m:nn.Module)->int:
+def num_features_model(m:nn.Module)->int:
     "Return the number of output features for a `model`."
     for l in reversed(flatten_model(m)):
         if hasattr(l, 'num_features'): return l.num_features
