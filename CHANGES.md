@@ -47,6 +47,7 @@ of that change.
 - Make `pred_batch` faster and remove redundent `*`
 - Bug in `Learner.pred_batch`
 - Bug in `model_sizes` (thanks to dienhoa)
+- Bug in `RNNLearner.classifier` when used on a multilabel dataset
 
 ## 1.0.14 (2018-10-25)
 
