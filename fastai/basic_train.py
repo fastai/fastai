@@ -100,15 +100,15 @@ loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_lo
 
 def _loss_func2activ(loss_func):
     cls_name = camel2snake(loss_func.__class__.__name__)
-    if cls_name == 'mix_up_loss': 
+    if cls_name == 'mix_up_loss':
         loss_func = loss_func.crit
         cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name in loss_func_name2activ:
         if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
         return loss_func_name2activ[cls_name]
-    if hasattr(loss_func, 'func'): 
+    if hasattr(loss_func, 'func'):
         if loss_func.func.__name__ == 'poisson_nll_loss' and (not loss_func.keywords.get('log_input', True)): return
-        loss_func = loss_func.func 
+        loss_func = loss_func.func
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
         return loss_func_name2activ[loss_func.__name__]
     return
@@ -201,13 +201,13 @@ class Learner():
         x,y = next(iter(self.data.holdout(is_test)))
         if not is_listy(x): x = [x]
         return x,y,self.model(*x).detach()
-    
+
     def get_preds(self, is_test:bool=False, with_loss:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
         lf = self.loss_func if with_loss else None
         return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf)
-      
+
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
