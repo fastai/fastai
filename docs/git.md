@@ -16,6 +16,7 @@ While this guide is mostly suitable for creating PRs for any github project, it 
 * https://github.com/fastai/course-v3
 * https://github.com/fastai/fastprogress
 
+If you already know how to make PRs, you only need to read: the "Step 3" and "Step 5" sections, since they are unique requirements for the fastai project.
 
 The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
 
@@ -177,27 +178,64 @@ It's very important that you **always work inside a branch**. If you make any co
    git push --set-upstream origin new-feature-branch
    ```
 
-### Step 3. Write Your Code and Test it
+### Step 3. Prepare Your Checkout
 
-1. Create new code, fix bugs, add/correct documentation
+1. Install the prerequisites.
 
-2. Test that your changes don't break things
+   No matter which repository you contribute to, unless you have already done so install the developer prerequisites:
 
-In the `fastai` repository, if you made changes to the libraries under `fastai` or you added/changed anything under `tests`, run:
+   Use an existing checkout, or:
+   ```
+   git clone https://github.com/fastai/fastai
+   cd fastai
+   ```
+   and install the dev prerequisites:
+   ```
+   pip install -e .[dev]
+   ```
+
+2. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
+
+   Move into the root of the repository where your PR branch is and run:
+
+   ```
+   tools/run-after-git-clone
+   ```
+
+### Step 4. Write Your Code
+
+This is where the magic happens.
+
+Create new code, fix bugs, add/correct documentation.
+
+
+### Step 5. Test Your Changes
+
+Test that your changes don't break things. Choose one according to which project you are creating PR for:
+
+* `fastai`
+
+   In the `fastai` repository, if you made changes to the libraries under `fastai` or you added/changed anything under `tests`, move into the root of the repository and run:
 
    ```
    make test
    ```
+   or if you don't have `make`, just:
+   ```
+   pytest
+   ```
 
-In the `fastai_docs` repository, if you made changes to the notebooks, run:
+* `fastai_dos`
+
+   In the `fastai_docs` repository, if you made changes to the notebooks, run:
 
    ```
    cd docs_src
    run_tests.sh
    ```
+   You will need at least 8GB free GPU RAM to run these tests.
 
-
-### Step 4. Push Your Changes
+### Step 6. Push Your Changes
 
 1. When you're happy with the results, commit the new code:
 
@@ -220,7 +258,7 @@ In the `fastai_docs` repository, if you made changes to the notebooks, run:
    git push
    ```
 
-### Step 5. Submit Your PR
+### Step 7. Submit Your PR
 
 1. Go to github and make a new Pull Request:
 
