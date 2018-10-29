@@ -297,6 +297,8 @@ class Recorder(LearnerCallback):
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
         _, ax = plt.subplots(1,1)
         ax.plot(lrs, losses)
+        ax.set_ylabel("Loss")
+        ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
 
     def plot_losses(self)->None:
