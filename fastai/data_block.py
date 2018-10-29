@@ -139,7 +139,11 @@ class SplitData():
     
     def datasets(self, dataset_cls:type, **kwargs):
         "Create datasets from the underlying data using `dataset_cls`."
-        dss = [dataset_cls(*o.items.T, **kwargs) for o in self.lists]
+        dss = [dataset_cls(*self.lists[0].items.T, **kwargs) for o in self.lists]
+        kwg_cls = kwargs.pop(classes) if 'classes' in kwargs else None
+        if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
+        if kwg_cls is not None: kwargs['classes'] = kwg_cls
+        dss = [dataset_cls(*self.lists[1].items.T, **kwargs) for o in self.lists]
         return SplitDatasets(self.path, *dss)
 
 @dataclass
