@@ -118,6 +118,64 @@ Other than the normal switching environments with restarts:
 You can install [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels), which provides a separate jupyter kernel for each conda environment, along with the appropriate code to handle their setup. This makes switching conda environments as simple as switching jupyter kernel (e.g. from the kernel menu). And you don't need to worry which environment you started `jupyter notebook` from - just choose the right environment from the notebook.
 
 
+
+## Stripping Out Jupyter Notebooks
+
+Our setup on all `fastai` projects requires that `*.ipynb` notebooks get stripped during the commit, which is accomplished by `fastai-nbstripout` which runs as a filter during `git commit`. Therefore, when you clone any of the `fastai` projects that contain jupyter notebooks you must always run:
+
+```
+tools/run-after-git-clone
+```
+which registers the filters. This needs to be done once per `git clone`.
+
+Unfortunately, we can't enforce this, because github doesn't allow server-side hooks.
+
+So it's your responsibility to watch the status of your commits at the commits page:
+
+* https://github.com/fastai/fastai_docs/commits/master
+* https://github.com/fastai/fastai/commits/master
+* https://github.com/fastai/course-v3/commits
+
+Alternatively, you can watch CI builds for the project you committed to:
+
+* https://dev.azure.com/fastdotai/fastai/_build?definitionId=7
+
+It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
+
+Should you make the mistake and commit some unstripped out notebooks, here is how you fix it:
+
+1. disable the filter
+
+   ```
+   tools/trust-origin-git-config -d
+   ```
+
+2. strip out the notebook
+
+   ```
+   tools/fastai-nbstripout -d path/to/notebooks
+   ```
+   with an exception of `fastai_docs/dev_nb/*ipynb` notebooks, which need to be stripped with:
+   ```
+   tools/fastai-nbstripout path/to/notebooks
+   ```
+   without any arguments `outputs` are stripped, `-d` doesn't strip out the `outputs`.
+
+3. commit
+
+   ```
+   git commit path/to/notebooks
+   git push
+   ```
+
+4. re-enable the filter (very important!)
+
+   ```
+   tools/trust-origin-git-config
+   ```
+
+
+
 ## Full Diffs Mailing List
 
 If you'd like to follow closely the development of fastai, and you don't like clicking around github, we have a read-only full diffs mailing list that is open to all.
