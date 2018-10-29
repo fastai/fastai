@@ -170,6 +170,19 @@ class ObjectDetectDataset(Dataset):
             return cls(*train), cls(*valid)
         return cls(imgs, bbs, cats)
 
+def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tuple[LongTensor, LongTensor]]:
+    "Function that collect samples and adds padding."
+    max_len = max([len(s[1].data[1]) for s in samples])
+    bboxes = torch.zeros(len(samples), max_len, 4)
+    labels = torch.zeros(len(samples), max_len).long() + pad_idx
+    imgs = []
+    for i,s in enumerate(samples):
+        imgs.append(s[0].data[None])
+        bbs, lbls = s[1].data
+        bboxes[i,-len(lbls):] = bbs
+        labels[i,-len(lbls):] = lbls
+    return torch.cat(imgs,0), (bboxes,labels)
+    
 class DatasetTfm(Dataset):
     "`Dataset` that applies a list of transforms to every item drawn."
     def __init__(self, ds:Dataset, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any):
