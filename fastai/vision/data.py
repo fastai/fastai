@@ -363,6 +363,10 @@ class ImageDataBunch(DataBunch):
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
 
+    @staticmethod
+    def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
+        return SplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+
 
 def download_image(url,dest):
     try: r = download_url(url, dest, overwrite=True, show_progress=False)
@@ -393,13 +397,13 @@ def verify_images(path:PathOrStr, delete=True, max_workers:int=4):
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 @classmethod
-def _filelist_from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
+def InputList_filelist_from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
-InputList.from_folder = _filelist_from_folder
+InputList.from_folder = InputList_filelist_from_folder
 
-def _split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwargs)->'SplitDatasets':
+def SplitDatasets_split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwargs)->'SplitDatasets':
     "Apply `tfms` to the underlying datasets."
     assert not isinstance(sdata.train_ds, DatasetTfm)
     sdata.train_ds = DatasetTfm(sdata.train_ds, tfms[0],  **kwargs)
@@ -408,11 +412,12 @@ def _split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwargs)->'SplitDa
         sdata.test_ds = DatasetTfm(sdata.test_ds, tfms[1],  **kwargs)
     return sdata
 
-SplitDatasets.transform = _split_data_transform
+SplitDatasets.transform = SplitDatasets_split_data_transform
 
-def _split_data_databunch(sdata:SplitDatasets, path:PathOrStr=None, **kwargs)->ImageDataBunch:
+def SplitDatasets_split_data_databunch(sdata:SplitDatasets, path:PathOrStr=None, **kwargs)->ImageDataBunch:
     "Create an `ImageDataBunch` from self, `path` will override `self.path`."
     path = Path(ifnone(path, sdata.path))
     return ImageDataBunch.create(*sdata.datasets, path=path, **kwargs)
 
-SplitDatasets.databunch = _split_data_databunch
+SplitDatasets.databunch = SplitDatasets_split_data_databunch
+
