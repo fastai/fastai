@@ -21,7 +21,7 @@ def test_image_data(learn):
     d = img.data
     assert abs(d.max()-1)<0.05
     assert abs(d.min())<0.05
-    assert abs(d.mean()-0.2)<0.1
+    assert abs(d.mean()-0.2)<0.12
     assert abs(d.std()-0.3)<0.1
 
 def test_1cycle_lrs(learn):
