@@ -9,7 +9,7 @@ def image_file(path):
 
 def test_from_folder():
     n_classes = 2
-    for valid_pct in [None, 0.5]:
+    for valid_pct in [None, 0.9]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
         folder_paths = [os.path.join(path, folder) for folder in ['train', 'valid', 'test']]
         class_paths = [os.path.join(folder_paths[0], str(i)) for i in range(n_classes)]
