@@ -87,7 +87,7 @@ class TextDataset(BaseTextDataset):
             df = next(dfs) if (type(dfs) == pd.io.parsers.TextFileReader) else self.df
             lbl_type = np.float32 if len(self.label_cols) > 1 else np.int64
             lbls = df[self.label_cols].values.astype(lbl_type) if (len(self.label_cols) > 0) else []
-            self.txt_cols = ifnone(self.txt_cols, list(range(len(self.label_cols),len(df.columns))))
+            self.txt_cols = ifnone(self.txt_cols, range_of(self.label_cols),len(df.columns))
             texts = f'{FLD} {1} ' + df[self.txt_cols[0]].astype(str)
             for i, col in enumerate(self.txt_cols[1:]):  texts += f' {FLD} {i+2} ' + df[col].astype(str)
             toks = self.tokenizer.process_all(texts)

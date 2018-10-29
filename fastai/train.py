@@ -50,7 +50,7 @@ class ShowGraph(LearnerCallback):
         "If we have metrics plot them in our pbar graph"
         if last_metrics is not None:
             rec = self.learn.recorder
-            iters = list(range(len(rec.losses)))
+            iters = range_of(rec.losses)
             val_iter = np.array(rec.nb_batches).cumsum()
             x_bounds = (0, (n_epochs - len(rec.nb_batches)) * rec.nb_batches[-1] + len(rec.losses))
             y_bounds = (0, max((max(Tensor(rec.losses)), max(Tensor(rec.val_losses)))))

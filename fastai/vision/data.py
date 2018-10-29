@@ -70,7 +70,7 @@ class ImageDataset(LabelDataset):
 class ImageClassificationDataset(ImageDataset):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
-        self.classes = ifnone(classes, list(set(labels)))
+        self.classes = ifnone(classes, uniqueify(labels))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         super().__init__(fns, y)
@@ -103,13 +103,11 @@ class ImageClassificationDataset(ImageDataset):
         return [cls(*a, classes=classes) for a in random_split(valid_pct, fns, labels)]
 
 class ImageMultiDataset(LabelDataset):
-
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
         self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
         self.x = np.array(fns)
-        self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64)
-                  for l in labels]
+        self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in labels]
         self.loss_func = F.binary_cross_entropy_with_logits
 
     def encode(self, x:Collection[int]):
@@ -339,7 +337,8 @@ class ImageDataBunch(DataBunch):
     def normalize(self, stats:Collection[Tensor]=None)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
-        self.stats = ifnone(stats, self.batch_stats())
+        if stats is None: self.stats = self.batch_stats()
+        else:             self.stats = stats
         self.norm,self.denorm = normalize_funcs(*self.stats)
         self.add_tfm(self.norm)
         return self
