@@ -9,12 +9,12 @@ from ..layers import *
 
 __all__ = ['create_body', 'create_head', 'num_features', 'ClassificationInterpretation']
 
-def create_body(model:Model, cut:Optional[int]=None, body_fn:Callable[[Model],Model]=None):
+def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
     "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
     return (nn.Sequential(*list(model.children())[:cut]) if cut
             else body_fn(model) if body_fn else model)
 
-def num_features(m:Model)->int:
+def num_features(m:nn.Module)->int:
     "Return the number of output features for a `model`."
     for l in reversed(flatten_model(m)):
         if hasattr(l, 'num_features'): return l.num_features
@@ -32,9 +32,9 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     return nn.Sequential(*layers)
 
 # By default split models between first and second layer
-def _default_split(m:Model): return (m[1],)
+def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
-def _resnet_split(m:Model): return (m[0][6],m[1])
+def _resnet_split(m:nn.Module): return (m[0][6],m[1])
 
 _default_meta = {'cut':-1, 'split':_default_split}
 _resnet_meta  = {'cut':-2, 'split':_resnet_split }
