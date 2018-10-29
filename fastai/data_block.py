@@ -38,7 +38,7 @@ def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
 class InputList(PathItemList):
     "A list of inputs. Contain methods to get the corresponding labels."
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, recurse=True)->'ImageFileList':
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, recurse=True)->'InputList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 

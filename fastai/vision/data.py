@@ -8,7 +8,7 @@ from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
-           'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'normalize',
+           'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
            'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
 
@@ -396,12 +396,12 @@ def verify_images(path:PathOrStr, delete=True, max_workers:int=4):
         futures = [ex.submit(verify_image, file, delete=delete) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
-@classmethod
-def InputList_filelist_from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
+class ImageFileList(InputList):
+    "A list of inputs. Contain methods to get the corresponding labels."
+    @classmethod
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
-
-InputList.from_folder = InputList_filelist_from_folder
 
 def SplitDatasets_split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwargs)->'SplitDatasets':
     "Apply `tfms` to the underlying datasets."
