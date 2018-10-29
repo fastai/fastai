@@ -2,7 +2,7 @@
 title: Notes For Developers
 ---
 
-### Things to Run After git clone
+## Things to Run After git clone
 
 Make sure you follow this recipe:
 
@@ -19,7 +19,7 @@ Note: windows users, not using bash emulation, will need to invoke the command a
 Note that if you work on `fastai/fastai_docs` repository as well, you need to run that script once too in the directory of that repository upon cloning it.
 
 
-#### after-git-clone #1: a mandatory notebook strip out
+### after-git-clone #1: a mandatory notebook strip out
 
 Currently we only store `source` code cells under git (and a few extra fields for documentation notebooks). If you would like to commit or submit a PR, you need to confirm to that standard.
 
@@ -51,7 +51,7 @@ or alternatively run:
 
 
 
-### Development Editable Install
+## Development Editable Install
 
 For deploying the `fastai` module's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
 
@@ -60,9 +60,10 @@ For deploying the `fastai` module's files, while being able to edit them, make s
    conda uninstall fastai
    ```
 
-And then do an editable install:
+And then do an editable install, from inside the cloned `fastai` directory:
 
    ```
+   cd fastai
    pip install -e .[dev]
    ```
 
@@ -76,8 +77,33 @@ but the former will also install extra dependencies needed only by developers.
 
 Best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
 
+When you'd like to sync your codebase with the `master`, simply go back into the cloned `fastai` directory and update it:
 
-### Switching Conda Environments in Jupyter
+
+   ```
+   git pull
+   ```
+You don't need to do anything else.
+
+## `fastai` Versions and Timeline
+
+The timeline the `fastai` project follows is:
+
+```
+...
+1.0.14
+1.0.15.dev0
+1.0.15
+1.0.16.dev0
+...
+```
+
+So that if your `fastai/version.py` or `fastai.__version__` doesn't include `.dev0` at the end, that means you're using a `fastai` release, which you installed via `pip` or `conda`. If you use a developer install as explained earlier, you will always have `.dev0` in the version number.
+
+When a new release cycle starts it starts with `.dev0` in it, for example, `1.0.15.dev0`. When that cycle is complete and a release is made, it becomes `1.0.15`. Think of `.dev0` as a pre-release.
+
+
+## Switching Conda Environments in Jupyter
 
 Other than the normal switching environments with restarts:
 
@@ -92,7 +118,65 @@ Other than the normal switching environments with restarts:
 You can install [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels), which provides a separate jupyter kernel for each conda environment, along with the appropriate code to handle their setup. This makes switching conda environments as simple as switching jupyter kernel (e.g. from the kernel menu). And you don't need to worry which environment you started `jupyter notebook` from - just choose the right environment from the notebook.
 
 
-### Full Diffs Mailing List
+
+## Stripping Out Jupyter Notebooks
+
+Our setup on all `fastai` projects requires that `*.ipynb` notebooks get stripped during the commit, which is accomplished by `fastai-nbstripout` which runs as a filter during `git commit`. Therefore, when you clone any of the `fastai` projects that contain jupyter notebooks you must always run:
+
+```
+tools/run-after-git-clone
+```
+which registers the filters. This needs to be done once per `git clone`.
+
+Unfortunately, we can't enforce this, because github doesn't allow server-side hooks.
+
+So it's your responsibility to watch the status of your commits at the commits page:
+
+* https://github.com/fastai/fastai_docs/commits/master
+* https://github.com/fastai/fastai/commits/master
+* https://github.com/fastai/course-v3/commits
+
+Alternatively, you can watch CI builds for the project you committed to:
+
+* https://dev.azure.com/fastdotai/fastai/_build?definitionId=7
+
+It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
+
+Should you make the mistake and commit some unstripped out notebooks, here is how you fix it:
+
+1. disable the filter
+
+   ```
+   tools/trust-origin-git-config -d
+   ```
+
+2. strip out the notebook
+
+   ```
+   tools/fastai-nbstripout -d path/to/notebooks
+   ```
+   with an exception of `fastai_docs/dev_nb/*ipynb` notebooks, which need to be stripped with:
+   ```
+   tools/fastai-nbstripout path/to/notebooks
+   ```
+   without any arguments `outputs` are stripped, `-d` doesn't strip out the `outputs`.
+
+3. commit
+
+   ```
+   git commit path/to/notebooks
+   git push
+   ```
+
+4. re-enable the filter (very important!)
+
+   ```
+   tools/trust-origin-git-config
+   ```
+
+
+
+## Full Diffs Mailing List
 
 If you'd like to follow closely the development of fastai, and you don't like clicking around github, we have a read-only full diffs mailing list that is open to all.
 

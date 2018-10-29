@@ -11,19 +11,42 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.15.dev0 (Work In Progress)
+## 1.0.16.dev0 (Work In Progress)
 
 ### New:
+
+- `ImageDataBunch.single_from_classes` to allow single image predictions
+
+### Changed:
+
+### Fixed:
+
+
+## 1.0.15 (2018-10-28)
+
+### Breaking changes:
+
+- `ConvLearner` ctor is replaced by a function called `create_cnn`
+
+### New:
+
+- `Learner` objects now determine from the loss function if there is something to add on top of the models to get the true predictions 
 
 ### Changed:
 
 - Add `recurse` flag to `get_image_files`
 - `show_xy_images` takes tensors instead of Image
 - Add `classes` to SegmentationDataset
-
+- `get_preds` now return the true probabilities
+- `TTA` averages the probabilities and not the last activations of the model
+- `ClassificationInterpretation` has been changed accordingly and the `sigmoid` argument has been deprecated
+ 
 ### Fixed:
 
 - Make `pred_batch` faster and remove redundent `*`
+- Bug in `Learner.pred_batch`
+- Bug in `model_sizes` (thanks to dienhoa)
+- Bug in `RNNLearner.classifier` when used on a multilabel dataset
 
 ## 1.0.14 (2018-10-25)
 

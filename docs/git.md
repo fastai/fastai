@@ -16,6 +16,7 @@ While this guide is mostly suitable for creating PRs for any github project, it 
 * https://github.com/fastai/course-v3
 * https://github.com/fastai/fastprogress
 
+If you already know how to make PRs, you only need to read: the "Step 3" and "Step 5" sections, since they are unique requirements for the fastai project.
 
 The following instructions use `USERNAME` as a github username placeholder. The easiest way to follow this guide is to copy-n-paste the whole section into a file, replace `USERNAME` with your real username and then follow the steps.
 
@@ -49,6 +50,7 @@ For more details run:
 ./fastai-make-pr-branch
 ```
 
+While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the the `fastai` package.
 
 
 ### Step 1. Start With a Synced Fork Checkout
@@ -177,27 +179,64 @@ It's very important that you **always work inside a branch**. If you make any co
    git push --set-upstream origin new-feature-branch
    ```
 
-### Step 3. Write Your Code and Test it
+### Step 3. Prepare Your Checkout
 
-1. Create new code, fix bugs, add/correct documentation
+1. Install the prerequisites.
 
-2. Test that your changes don't break things
+   No matter which repository you contribute to, unless you have already done so install the developer prerequisites:
 
-In the `fastai` repository, if you made changes to the libraries under `fastai` or you added/changed anything under `tests`, run:
+   Use an existing checkout, or:
+   ```
+   git clone https://github.com/fastai/fastai
+   cd fastai
+   ```
+   and install the dev prerequisites:
+   ```
+   pip install -e .[dev]
+   ```
+
+2. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
+
+   Move into the root of the repository where your PR branch is and run:
+
+   ```
+   tools/run-after-git-clone
+   ```
+
+### Step 4. Write Your Code
+
+This is where the magic happens.
+
+Create new code, fix bugs, add/correct documentation.
+
+
+### Step 5. Test Your Changes
+
+Test that your changes don't break things. Choose one according to which project you are creating PR for:
+
+* `fastai`
+
+   In the `fastai` repository, if you made changes to the libraries under `fastai` or you added/changed anything under `tests`, move into the root of the repository and run:
 
    ```
    make test
    ```
+   or if you don't have `make`, just:
+   ```
+   pytest
+   ```
 
-In the `fastai_docs` repository, if you made changes to the notebooks, run:
+* `fastai_dos`
+
+   In the `fastai_docs` repository, if you made changes to the notebooks, run:
 
    ```
    cd docs_src
    run_tests.sh
    ```
+   You will need at least 8GB free GPU RAM to run these tests.
 
-
-### Step 4. Push Your Changes
+### Step 6. Push Your Changes
 
 1. When you're happy with the results, commit the new code:
 
@@ -220,7 +259,7 @@ In the `fastai_docs` repository, if you made changes to the notebooks, run:
    git push
    ```
 
-### Step 5. Submit Your PR
+### Step 7. Submit Your PR
 
 1. Go to github and make a new Pull Request:
 
@@ -320,6 +359,50 @@ If you're not using `bash` or `fish` shell, search for forks of this idea for ot
 
 
 
+## hub
+
+hub == hub helps you win at git
+
+[`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
+
+Installation:
+
+There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at https://github.com/github/hub/releases/latest, un-archiving the package and running `./install`, for example for the `linux-64` build:
+
+```
+wget https://github.com/github/hub/releases/download/v2.5.1/hub-linux-amd64-2.5.1.tgz
+tar -xvzf hub-linux-amd64-2.5.1.tgz
+cd hub-linux-amd64-2.5.1
+sudo ./install
+```
+
+You can add a prefix to install it to a different location, for example, under your home:
+
+```
+prefix=~ ./install
+```
+
+or say you wanted to install it inside your active conda environment:
+
+```
+prefix=`which conda | sed 's/\/bin\/conda//'` ./install
+```
+
+Either of the these two should give you the location of the your active conda environment:
+```
+which conda | sed 's/\/bin\/conda//'
+conda info | grep 'location' | awk '{print $5}'
+```
+but the first one is more reliable, `conda info`'s output may change down the road.
+
+HELP-WANTED: If you'd like to contribute a little tool, this process could be automated, by getting the json output of all platform-specific urls for the latest binary release:
+
+```
+curl https://api.github.com/repos/github/hub/releases/latest
+```
+identifying user's platform, retrieving the corresponding to that platform package, unarchiving it, identifying the conda base as shown above, and running `install` with that prefix. If you work on it, please write it in python, so that windows users w/o bash could use it too. It'd go into `tools/hub-install` in the `fastai` repo.
+
+
 ## Github Shortcuts
 
 * show commits by author: `?author=github_username`
@@ -343,10 +426,6 @@ If you're not using `bash` or `fish` shell, search for forks of this idea for ot
 * line linking
 
    In any file view, when you click one line or multiple lines by pressing SHIFT, the URL will change to reflect your selections. You can tell others to look at a specific line of code, or a specific chunk of code, using just that link.
-
-* hub
-
-   [`hub`](https://github.com/github/hub) is the command line GitHub. It provides integration between git and github in command line. One of the most useful commands is creating pull request by just typing `hub pull-request` in your terminal.
 
 * delete a fork
 

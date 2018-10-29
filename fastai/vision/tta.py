@@ -1,6 +1,7 @@
 "Brings TTA (Test Time Functionality) to the `Learner` class. Use `learner.TTA()` instead"
 from ..torch_core import *
 from ..basic_train import *
+from ..basic_train import _loss_func2activ
 from .transform import *
 
 __all__ = []
@@ -22,16 +23,20 @@ def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[L
             tfm = [*augm_tfm, zoom(scale=scale, **d), crop_pad(**d)]
             if flip: tfm.append(flip_lr(p=1.))
             ds.tfms = tfm
-            yield get_preds(learn.model, dl, pbar=pbar)[0]
+            yield get_preds(learn.model, dl, pbar=pbar, activ=_loss_func2activ(learn.loss_func))[0]
     finally: ds.tfms = old
 
 Learner.tta_only = _tta_only
 
-def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, is_test:bool=False) -> Tensors:
+def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, is_test:bool=False, with_loss:bool=False) -> Tensors:
     preds,y = learn.get_preds(is_test)
     all_preds = list(learn.tta_only(scale=scale, is_test=is_test))
     avg_preds = torch.stack(all_preds).mean(0)
     if beta is None: return preds,avg_preds,y
-    else:            return preds*beta + avg_preds*(1-beta), y
+    else:            
+        final_preds = preds*beta + avg_preds*(1-beta)
+        if with_loss: 
+            return final_preds, y, calc_loss(final_preds, y, learn.loss_func)
+        return final_preds, y
 
 Learner.TTA = _TTA

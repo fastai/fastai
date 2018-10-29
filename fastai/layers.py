@@ -83,7 +83,7 @@ class StdUpsample(nn.Module):
     def forward(self, x:Tensor) -> Tensor:
         return self.bn(F.relu(self.conv(x)))
 
-def std_upsample_head(c, *nfs:Collection[int]) -> Model:
+def std_upsample_head(c, *nfs:Collection[int]) -> nn.Module:
     "Create a sequence of upsample layers."
     return nn.Sequential(
         nn.ReLU(),
@@ -118,7 +118,7 @@ def trunc_normal_(x:Tensor, mean:float=0., std:float=1.) -> Tensor:
     # From https://discuss.pytorch.org/t/implementing-truncated-normal-initializer/4778/12
     return x.normal_().fmod_(2).mul_(std).add_(mean)
 
-def get_embedding(ni:int,nf:int) -> Model:
+def get_embedding(ni:int,nf:int) -> nn.Module:
     "Create an embedding layer."
     emb = nn.Embedding(ni, nf)
     # See https://arxiv.org/abs/1711.09160

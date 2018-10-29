@@ -1211,6 +1211,22 @@ Currently we don't have the following enforcement enabled ([PR won't be merge-ab
 ) if the PR's build status is failed.)
 
 
+#### Path Filters
+
+By default CI runs on any push made, regardless of whether it's a code or a document changed, which is a waste, so it helps to add Include/Exclude path filters.
+
+To do that choose a build setup, go to Edit => Triggers, "Continuous Integration", check the "Override" on the right, and enable "Path filters". Important rules - paths start with `/` and if you include an Exclude filter you must also include an Include filter!!! So for example to exclude anything under /docs from triggering a build, add 2 rules:
+
+Type    | Path specification
+--------|----------------
+Include | /
+Exclude | /docs
+
+Now repeat the same for "Pull request validation".
+
+Choose 'Save', under "Save & Queue".
+
+
 #### Manual Jobs
 
 To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and in the Commit field either nothing or enter the desired commit hash. This is the way to get occasional CI builds against non-master branches, which is useful when testing a new pipeline.
@@ -1253,7 +1269,11 @@ And remember to sync the branch with the master changes so that you're testing t
 
 Currently [New] will not let you choose an alternative pipeline. So until this is fixed, let it use the default `azure-pipelines.yml`, Save and then go and Edit it and replace with a different file from the repository (and perhaps switching to a different branch if needed), using [...].
 
+#### Support
 
+- General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
+- Task-specific issues: https://github.com/Microsoft/azure-pipelines-tasks/issues/
+- Agent-specific issues: https://github.com/Microsoft/azure-pipelines-agent
 
 
 ## Package Download Statistics

@@ -83,14 +83,19 @@ else
     run "curl -u $user_name https://api.github.com/repos/fastai/$repo_name/forks -d ''"
 fi
 
-# support an already existing checkout if it matches the desired parameters
+# support an already existing checkout if it matches the desired parameters, but only if it's not dirty
 clone_is_needed=1
 if [[ -e ".git" ]]; then
    echo "detected current dir to be a git repository"
-   cur_url=$(git config --get remote.origin.url)
-   if [[ "$cur_url" == "$url" ]]; then
-       echo "already on the right repo, going to re-use the current checkout"
-       clone_is_needed=0
+   if [[ -n "$(git status -s)" ]]; then
+       echo "git status is not clean, not going to re-use the current checkout"
+       clone_is_needed=1
+   else
+       cur_url=$(git config --get remote.origin.url)
+       if [[ "$cur_url" == "$url" ]]; then
+           echo "already on the right repo, going to re-use the current checkout"
+           clone_is_needed=0
+       fi
    fi
 fi
 
@@ -144,7 +149,7 @@ run "git push --set-upstream origin $new_branch_name"
 echo -e "\n\n*** Next do: "
 # only suggest to chdir if we made a clone
 echo -e "1. Switch to the working dir:\n"
-if [[ "$clone_was_needed" -eq 1 ]]; then
+if [[ "$clone_is_needed" -eq 1 ]]; then
     echo -e "cd $path\n"
 else
     echo -e "cd .\n"
