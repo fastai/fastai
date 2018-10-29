@@ -404,7 +404,7 @@ class ImageFileList(InputList):
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
 def SplitDatasets_split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwargs)->'SplitDatasets':
-    "Apply `tfms` to the underlying datasets."
+    "Apply `tfms` to the underlying datasets, `kwargs` are passed to `DatasetTfm`."
     assert not isinstance(sdata.train_ds, DatasetTfm)
     sdata.train_ds = DatasetTfm(sdata.train_ds, tfms[0],  **kwargs)
     sdata.valid_ds = DatasetTfm(sdata.valid_ds, tfms[1],  **kwargs)
@@ -412,12 +412,12 @@ def SplitDatasets_split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwar
         sdata.test_ds = DatasetTfm(sdata.test_ds, tfms[1],  **kwargs)
     return sdata
 
-SplitDatasets.transform = SplitDatasets_split_data_transform
+SplitDatasets.img_transform = SplitDatasets_split_data_transform
 
 def SplitDatasets_split_data_databunch(sdata:SplitDatasets, path:PathOrStr=None, **kwargs)->ImageDataBunch:
-    "Create an `ImageDataBunch` from self, `path` will override `self.path`."
+    "Create an `ImageDataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `ImageDataBunch.create`."
     path = Path(ifnone(path, sdata.path))
     return ImageDataBunch.create(*sdata.datasets, path=path, **kwargs)
 
-SplitDatasets.databunch = SplitDatasets_split_data_databunch
+SplitDatasets.img_databunch = SplitDatasets_split_data_databunch
 

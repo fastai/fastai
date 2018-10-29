@@ -42,11 +42,11 @@ class InputList(PathItemList):
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
-    def label_from_func(self, func:Callable)->Collection:
-        "Apply `func` to every input and get its label."
+    def label_from_func(self, func:Callable)->'LabelList':
+        "Apply `func` to every input to get its label."
         return LabelList([(o,func(o)) for o in self.items], self.path)
 
-    def label_from_re(self, pat:str, full_path:bool=False)->Collection:
+    def label_from_re(self, pat:str, full_path:bool=False)->'LabelList':
         """Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name.
         This method is primarly intended for inputs that are filenames, but could work in other settings."""
         pat = re.compile(pat)
@@ -58,7 +58,7 @@ class InputList(PathItemList):
         return self.label_from_func(_inner)
 
     def label_from_df(self, df, fn_col:int=0, label_col:int=1, sep:str=None, folder:PathOrStr='.',
-                      suffix:str=None)->Collection:
+                      suffix:str=None)->'LabelList':
         """Look in `df` for the filenames in `fn_col` to get the corresponding label in `label_col`.
         If a `folder` is specified, filenames are taken in `self.path/folder`. `suffix` is added.
         If `sep` is specified, splits the values in `label_col` accordingly.
@@ -69,7 +69,7 @@ class InputList(PathItemList):
                          self.path)
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
-                       sep:str=None, folder:PathOrStr='.', suffix:str=None)->Collection:
+                       sep:str=None, folder:PathOrStr='.', suffix:str=None)->'LabelList':
         """Look in `self.path/csv_fname` for a csv loaded with an optional `header` containing the filenames in
         `fn_col` to get the corresponding label in `label_col`.
         If a `folder` is specified, filenames are taken in `path/folder`. `suffix` is added.
@@ -78,7 +78,7 @@ class InputList(PathItemList):
         df = pd.read_csv(self.path/csv_fname, header=header)
         return self.label_from_df(df, fn_col, label_col, sep, folder, suffix)
 
-    def label_from_folder(self, classes:Collection[str]=None)->Collection:
+    def label_from_folder(self, classes:Collection[str]=None)->'LabelList':
         """Give a label to each filename depending on its folder. If `classes` are specified, only keep those.
         This method is intended for inputs that are filenames."""
         labels = [fn.parent.parts[-1] for fn in self.items]
@@ -90,7 +90,7 @@ class LabelList(PathItemList):
     @property
     def files(self): return self.items[:,0]
 
-    def split_by_files(self, valid_names:FilePathList)->'SplitData':
+    def split_by_files(self, valid_names:InputList)->'SplitData':
         "Split the data by using the names in `valid_names` for validation."
         valid = [o for o in self.items if o[0] in valid_names]
         train = [o for o in self.items if o[0] not in valid_names]
@@ -138,8 +138,8 @@ class SplitData():
     @property
     def lists(self): return [self.train,self.valid]
 
-    def datasets(self, dataset_cls:type, **kwargs):
-        "Create datasets from the underlying data using `dataset_cls`."
+    def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
+        "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
         dss = [dataset_cls(*self.lists[0].items.T, **kwargs) for o in self.lists]
         kwg_cls = kwargs.pop(classes) if 'classes' in kwargs else None
         if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
@@ -156,26 +156,26 @@ class SplitDatasets():
     test_ds:Optional[Dataset] = None
 
     @property
-    def datasets(self):
+    def datasets(self)->Collection[Dataset]:
         "The underlying datasets of this object."
         return [self.train_ds,self.valid_ds] if self.test_ds is None else [self.train_ds,self.valid_ds, self.test_ds]
 
-    def dataloaders(self, **kwargs):
-        "Create dataloaders with the inner datasets."
+    def dataloaders(self, **kwargs)->Collection[DataLoader]:
+        "Create dataloaders with the inner datasets, pasing the `kwargs`."
         return [DataLoader(o, **kwargs) for o in self.datasets]
 
     @classmethod
-    def from_single(cls, path:PathOrStr, ds:Dataset):
-        "Factory method that uses `ds` for both valid and train"
+    def from_single(cls, path:PathOrStr, ds:Dataset)->'SplitDatasets':
+        "Factory method that uses `ds` for both valid and train, and passes `path`."
         return cls(path, ds, ds)
 
     @classmethod
-    def single_from_classes(cls, path:PathOrStr, classes:Collection[str]):
-        "Factory method that passes a `SingleClassificationDataset` to `from_single`"
+    def single_from_classes(cls, path:PathOrStr, classes:Collection[str])->'SplitDatasets':
+        "Factory method that passes a `SingleClassificationDataset` on `classes` to `from_single`."
         return cls.from_single(path, SingleClassificationDataset(classes))
 
     @classmethod
-    def single_from_c(cls, path:PathOrStr, c:int):
-        "Factory method that passes a `SingleClassificationDataset` to `from_single`"
+    def single_from_c(cls, path:PathOrStr, c:int)->'SplitDatasets':
+        "Factory method that passes a `SingleClassificationDataset` on `c` to `from_single`."
         return cls.from_single(path, SingleItemDataset(c))
 
