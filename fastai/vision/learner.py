@@ -82,6 +82,7 @@ class ClassificationInterpretation():
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
         fig,axes = plt.subplots(rows,rows,figsize=figsize)
+        fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
         for i,idx in enumerate(tl_idx):
             t=self.data.valid_ds[idx]
             t[0].show(ax=axes.flat[i], title=
