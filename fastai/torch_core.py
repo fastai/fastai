@@ -37,7 +37,7 @@ PixelFunc = Callable[[TensorImage, ArgStar, KWArgs], TensorImage]
 LightingFunc = Callable[[LogitTensorImage, ArgStar, KWArgs], LogitTensorImage]
 
 fastai_types = {
-    AnnealFunc:'AnnealFunc', ArgStar:'ArgStar', BatchSamples:'BatchSamples', 
+    AnnealFunc:'AnnealFunc', ArgStar:'ArgStar', BatchSamples:'BatchSamples',
     FilePathList:'FilePathList', Floats:'Floats', ImgLabel:'ImgLabel', ImgLabels:'ImgLabels', KeyFunc:'KeyFunc',
     KWArgs:'KWArgs', ListOrItem:'ListOrItem', ListRules:'ListRules', ListSizes:'ListSizes',
     NPArrayableList:'NPArrayableList', NPArrayList:'NPArrayList', NPArrayMask:'NPArrayMask', NPImage:'NPImage',
@@ -113,10 +113,14 @@ def range_children(m:nn.Module)->Iterator[int]:
     "Return iterator of len of children of `m`."
     return range(num_children(m))
 
-flatten_model=lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
+flatten_model = lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
 def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
+
+def last_layer(m:nn.Module)->nn.Module:
+    "Retrieve last layer in a module `m`."
+    return flatten_model(m)[-1]
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for a `model`."
