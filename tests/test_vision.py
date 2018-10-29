@@ -3,8 +3,12 @@ from fastai import *
 from fastai.vision import *
 
 @pytest.fixture(scope="module")
-def path():
+def path(request):
     path = untar_data(URLs.MNIST_TINY)
+    d = defaults.device
+    defaults.device = torch.device('cpu')
+    def _final(): defaults.device = d
+    request.addfinalizer(_final)
     return path
 
 def test_path_can_be_str_type(path):
