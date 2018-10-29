@@ -7,12 +7,16 @@ from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-__all__ = ['DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
+__all__ = ['get_image_files', 'DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'normalize',
            'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
            'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
+
+def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
+    "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
+    return get_files(c, extensions=image_extensions)
 
 def get_annotations(fname, prefix=None):
     "Open a COCO style json in `fname` and returns the lists of filenames (with `prefix`), bboxes and labels."
