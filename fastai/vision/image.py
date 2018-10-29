@@ -123,6 +123,10 @@ class Image(ItemBase):
             self.sample_kwargs = {}
             self._flow = None
         return self
+    
+    def save(self, fn:PathOrStr):
+        x = image2np(self.data*255).astype(np.uint8)
+        PIL.Image.fromarray(x).save(fn)
 
     @property
     def px(self)->TensorImage:
