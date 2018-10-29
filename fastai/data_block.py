@@ -17,7 +17,7 @@ class ItemList():
     def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}'
 
 class PathItemList(ItemList):
-    "A list with a `path` attribute."
+    "An `ItemList` with a `path` attribute."
     def __init__(self, items:Iterator, path:PathOrStr='.'):
         super().__init__(items)
         self.path = Path(path)
@@ -141,7 +141,7 @@ class SplitData():
     def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
         "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
         dss = [dataset_cls(*self.lists[0].items.T, **kwargs) for o in self.lists]
-        kwg_cls = kwargs.pop(classes) if 'classes' in kwargs else None
+        kwg_cls = kwargs.pop('classes') if 'classes' in kwargs else None
         if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
         if kwg_cls is not None: kwargs['classes'] = kwg_cls
         dss = [dataset_cls(*self.lists[1].items.T, **kwargs) for o in self.lists]
