@@ -125,6 +125,7 @@ class Image(ItemBase):
         return self
     
     def save(self, fn:PathOrStr):
+        "Save the image to `fn`."
         x = image2np(self.data*255).astype(np.uint8)
         PIL.Image.fromarray(x).save(fn)
 
