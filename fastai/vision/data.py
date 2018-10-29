@@ -7,7 +7,7 @@ from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-__all__ = ['get_image_files', 'DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
+__all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
            'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
@@ -63,22 +63,17 @@ def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str]=None
             ax.set_title(title)
     plt.tight_layout()
 
-class ImageDataset(LabelDataset):
-    "Abstract `Dataset` containing images."
-    def __init__(self, fns:FilePathList, y:np.ndarray):
-        self.x = np.array(fns)
-        self.y = np.array(y)
 
-    def __getitem__(self,i): return open_image(self.x[i]),self.y[i]
-
-class ImageClassificationDataset(ImageDataset):
+class ImageClassificationDataset(LabelDataset):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
-        self.classes = ifnone(classes, uniqueify(labels))
-        self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
-        super().__init__(fns, y)
+        self.x  = np.array(fns)
+        if classes is None: classes = uniqueify(labels)
+        super().__init__(classes)
+        self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         self.loss_func = F.cross_entropy
+
+    def __getitem__(self,i): return open_image(self.x[i]),self.y[i]
 
     @staticmethod
     def _folder_files(folder:Path, label:ImgLabel, extensions:Collection[str]=image_extensions)->Tuple[FilePathList,ImgLabels]:
@@ -108,8 +103,8 @@ class ImageClassificationDataset(ImageDataset):
 
 class ImageMultiDataset(LabelDataset):
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
-        self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
-        self.class2idx = {v:k for k,v in enumerate(self.classes)}
+        if classes is None: classes = uniqueify(np.concatenate(labels))
+        super().__init__(classes)
         self.x = np.array(fns)
         self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in labels]
         self.loss_func = F.binary_cross_entropy_with_logits
@@ -143,25 +138,22 @@ class SegmentationDataset(LabelDataset):
     "A dataset for segmentation task."
     def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div=False, convert_mode='L'):
         assert len(x)==len(y)
-        self.x,self.y,self.classes,self.div,self.convert_mode = np.array(x),np.array(y),classes,div,convert_mode
+        super().__init__(classes)
+        self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
         self.loss_func = CrossEntropyFlat()
 
     def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
         return open_image(self.x[i]), open_mask(self.y[i], self.div, self.convert_mode)
 
-@dataclass
 class ObjectDetectDataset(Dataset):
     "A dataset with annotated images."
-    x_fns:Collection[Path]
-    bbs:Collection[Collection[int]]
-    labels:Collection[str]
-    def __post_init__(self):
-        assert len(self.x_fns)==len(self.bbs)
-        assert len(self.x_fns)==len(self.labels)
-        self.classes = set()
-        for x in self.labels: self.classes = self.classes.union(set(x))
-        self.classes = ['background'] + list(self.classes)
-        self.class2idx = {v:k for k,v in enumerate(self.classes)}
+    def __init__(x_fns:Collection[Path], bbs:Collection[Collection[int]], labels:Collection[str]):
+        assert len(x_fns)==len(bbs)==len(labels)
+        classes = set()
+        for x in labels: classes = classes.union(set(x))
+        classes = ['background'] + list(classes)
+        super().__init__(classes)
+        self.x_fns,self.bbs,self.labels = x_fns,bbs,labels
 
     def __repr__(self)->str: return f'{type(self).__name__} of len {len(self.x_fns)}'
     def __len__(self)->int: return len(self.x_fns)
@@ -347,7 +339,7 @@ class ImageDataBunch(DataBunch):
         self.add_tfm(self.norm)
         return self
 
-    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(12,15), is_train:bool=True)->None:
+    def show_batch(self:DataBunch, rows:int=3, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
         show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes,
             denorm=getattr(self,'denorm',None), figsize=figsize, rows=rows)
 

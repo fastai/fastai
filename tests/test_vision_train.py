@@ -16,14 +16,6 @@ def learn():
 def test_accuracy(learn):
     assert accuracy(*learn.get_preds()) > 0.9
 
-def test_image_data(learn):
-    img,label = learn.data.train_ds[0]
-    d = img.data
-    assert abs(d.max()-1)<0.05
-    assert abs(d.min())<0.05
-    assert abs(d.mean()-0.2)<0.12
-    assert abs(d.std()-0.3)<0.1
-
 def test_1cycle_lrs(learn):
     lrs = learn.recorder.lrs
     assert lrs[0]<0.001
