@@ -20,6 +20,7 @@ of that change.
 - `DatasetBase` uses abstract `_get_x` and `_get_y`
 - `batch_size` property in DeviceDataLoader
 - `ClassificationLearner.predict` to get prediction on a single item
+- Monkey-patched torch.Tensor so matplotlib works
 
 ### Changed:
 
