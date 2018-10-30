@@ -18,5 +18,3 @@
 
 And a big thanks to all of our GitHub contributors!
 
-## This includes Daniel Armstrong, one of our newest GitHub contributors!
-
