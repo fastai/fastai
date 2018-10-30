@@ -1,17 +1,24 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
 
-__all__ = ['SingleItemDataset', 'SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
-    def __init__(self, c:int): self.c = c
-    def __len__(self): return len(self.x)
-    #@property
-    #def c(self):
-        #"Number of classes expressed by dataset y variable."
-        #return self.y.shape[-1] if len(self.y.shape)>1 else 1
+    def __init__(self, c:int): self.c,self.item = c,None
+    def __len__(self): return len(getattr(self, 'x', [1]))
+    def set_item(self,item): self.item = item
+    def clear_item(self): self.item = None
     def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
+
+    @abstractmethod
+    def _get_x(self,i): pass
+    @abstractmethod
+    def _get_y(self,i): pass
+
+    def __getitem__(self, i):
+        if self.item is None: return self._get_x(i),self._get_y(i)
+        else: return self.item,0
 
 class LabelDataset(DatasetBase):
     "Base class for fastai datasets that do classification, mapped according to `classes`."
@@ -21,19 +28,7 @@ class LabelDataset(DatasetBase):
         if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
         super().__init__(len(classes))
 
-    #@property
-    #def c(self):
-        #"Number of classes expressed by dataset y variable."
-        #return len(self.classes)
-
-class SingleItemDataset(Dataset):
-    "Dataset that always returns whatever item is passed to `set_item`"
-    def __init__(self, c:int, item:Any=None): self.c,self.item = c,item
-    def set_item(self,item): self.item=item
-    def __len__(self): return 1
-    def __getitem__(self, i): return self.item,0
-
-class SingleClassificationDataset(SingleItemDataset):
+class SingleClassificationDataset(DatasetBase):
     def __init__(self, classes:Collection[str]):
         self.classes = classes
         super().__init__(len(classes))
@@ -51,6 +46,11 @@ class DeviceDataLoader():
 
     def __len__(self)->int: return len(self.dl)
     def __getattr__(self,k:str)->Any: return getattr(self.dl.dataset, k)
+
+    @property
+    def batch_size(self):   return self.dl.batch_size
+    @batch_size.setter
+    def batch_size(self,v): self.dl.batch_size = v
 
     @property
     def num_workers(self):   return self.dl.num_workers

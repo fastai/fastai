@@ -145,7 +145,8 @@ class SplitData():
         if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
         if kwg_cls is not None: kwargs['classes'] = kwg_cls
         dss = [dataset_cls(*self.lists[1].items.T, **kwargs) for o in self.lists]
-        return SplitDatasets(self.path, *dss)
+        cls = getattr(dataset_cls, '__splits_class__', SplitDatasets)
+        return cls(self.path, *dss)
 
 @dataclass
 class SplitDatasets():

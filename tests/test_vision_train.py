@@ -9,7 +9,7 @@ def learn():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
     data.normalize()
-    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=accuracy)
+    learn = ClassificationLearner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=accuracy)
     learn.fit_one_cycle(3)
     return learn
 
@@ -32,11 +32,9 @@ def test_preds(learn):
     pass_tst = False
     for i in range(3):
         img, label = learn.data.valid_ds[i]
-        activ = img.predict(learn)
-        if activ[label] > activ[1-label]:
-            pass_tst=True
-            break
-    assert pass_tst
+        pred_class,pred_idx,outputs = learn.predict(img)
+        if outputs[label] > outputs[1-label]: return
+    assert false, 'Failed to predict correct class'
 
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)
