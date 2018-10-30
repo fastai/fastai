@@ -16,8 +16,16 @@ of that change.
 ### New:
 
 - `ImageDataBunch.single_from_classes` to allow single image predictions
+- `DatasetBase` has `set_item` and `clear_item` to force it to always return `item`
+- `DatasetBase` uses abstract `_get_x` and `_get_y`
+- `batch_size` property in DeviceDataLoader
+- `ClassificationLearner.predict` to get prediction on a single item
+- Monkey-patched torch.Tensor so matplotlib works
 
 ### Changed:
+
+- `validate` now takes optional `n_batch`
+- `create_cnn` now returns a `ClassificationLearner`
 
 ### Fixed:
 

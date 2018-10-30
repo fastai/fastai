@@ -57,7 +57,10 @@ def ifnone(a:Any,b:Any)->Any:
     "`a` if `a` is not None, otherwise `b`."
     return b if a is None else a
 
-def uniqueify(x:Series) -> List[Any]: return list(OrderedDict.fromkeys(x).keys())
+def uniqueify(x:Series)->List:
+    "Return unique values of `x`"
+    return list(OrderedDict.fromkeys(x).keys())
+
 def idx_dict(a): return {v:k for k,v in enumerate(a)}
 
 def find_classes(folder:Path)->FilePathList:
@@ -109,15 +112,15 @@ def extract_kwargs(names:Collection[str], kwargs:KWArgs):
             new_kwargs[arg_name] = arg_val
     return new_kwargs, kwargs
 
-def partition(a:Collection, sz:int) -> List[Collection]:
+def partition(a:Collection, sz:int)->List[Collection]:
     "Split iterables `a` in equal parts of size `sz`"
     return [a[i:i+sz] for i in range(0, len(a), sz)]
 
-def partition_by_cores(a:Collection, n_cpus:int) -> List[Collection]:
+def partition_by_cores(a:Collection, n_cpus:int)->List[Collection]:
     "Split data in `a` equally among `n_cpus` cores"
     return partition(a, len(a)//n_cpus + 1)
 
-def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileReader], chunksize:Optional[int] = None) -> int:
+def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileReader], chunksize:Optional[int] = None)->int:
     "Read the number of chunks in a pandas `DataFrame`."
     if (type(data) == DataFrame):  return 1
     elif (type(data) == pd.io.parsers.TextFileReader):
@@ -127,7 +130,7 @@ def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileRead
     for _ in dfs: l+=1
     return l
 
-def get_total_length(csv_name:PathOrStr, chunksize:int) -> int:
+def get_total_length(csv_name:PathOrStr, chunksize:int)->int:
     "Read the total length of a pandas `DataFrame`."
     dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
     l = 0
@@ -175,3 +178,15 @@ def arange_of(x): return np.arange(len(x))
 
 Path.ls = lambda x: list(x.iterdir())
 
+def join_path(fname:PathOrStr, path:PathOrStr='.')->Path:
+    "Return `Path(path)/Path(fname)`, `path` defaults to current dir."
+    return Path(path)/Path(fname)
+
+def join_paths(fnames:FilePathList, path:PathOrStr='.')->Collection[Path]:
+    "Join `path` to every file name in `fnames`."
+    path = Path(path)
+    return [join_path(o,path) for o in fnames]
+
+def loadtxt_str(path:PathOrStr)->np.ndarray:
+    "Return `ndarray` of `str` of lines of text from `path`."
+    return np.loadtxt(str(path), str)
