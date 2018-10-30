@@ -37,3 +37,12 @@ def test_normalize(path):
     assert abs(x.std()-1) < abs(m-1)
 
     with pytest.raises(Exception): data.normalize()
+
+def test_denormalize(path):
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    original_x, y = data.valid_dl.one_batch()
+    data.normalize()
+    normalized_x, y = data.valid_dl.one_batch()
+    denormalized = denormalize(normalized_x, original_x.mean(), original_x.std())
+    assert round(original_x.mean().item(), 4) == round(denormalized.mean().item(), 4)
+    assert round(original_x.std().item(), 4) == round(denormalized.std().item(), 4)
