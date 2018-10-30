@@ -36,7 +36,8 @@ def get_annotations(fname, prefix=None):
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
 
-def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15))->None:
+
+def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
     b_idx = next(iter(dl.batch_sampler))
     if rows is None: rows = int(math.sqrt(len(b_idx)))
@@ -341,7 +342,7 @@ class ImageDataBunch(DataBunch):
         self.add_tfm(self.norm)
         return self
 
-    def show_batch(self:DataBunch, rows:int=3, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
+    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
         show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes, figsize=figsize, rows=rows)
 
     def labels_to_csv(self, dest:str)->None:
