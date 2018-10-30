@@ -63,12 +63,15 @@ No matter which release process you follow, always remember to start with:
 ```
 git pull
 ```
-or:
+Otherwise it's very easy to have an outdated checkout and release an outdated version.
+
+If however you'd like to make a release not from the `HEAD`, but from a specific commit,
+
 ```
 git checkout <desired commit>
 ```
 
-Otherwise it's very easy to have an outdated checkout and release an outdated version.
+then **do not use the automated process**, since it resets to `master` branch. Use the step-by-step process instead, which is already instrumented for this special case. (But we could change the fully automated release to support this way too if need be).
 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
@@ -76,19 +79,20 @@ Here is the "I'm feeling lucky" version, do not attempt unless you understand th
 make release
 ```
 
-`make test`'s non-deterministic tests may decide to fail right during the release rites. If it happens continue with the targets below, starting at `make test`.
+`make test`'s non-deterministic tests may decide to fail right during the release rites. It has now been moved to the head of the process, so if it fails not due to a bug but due to its unreliability, it won't affect the release process. Just rerun `make release` again.
 
 Here is the quick version that includes all the steps w/o the explanations. If you're unfamiliar with this process use the next section instead.
 
 ```
 make tools-update
 make master-branch-switch && make git-not-dirty
+make test
 make bump && make changes-finalize
 make release-branch-create && make commit-version
 make master-branch-switch
 make bump-dev && make changes-dev-cycle
 make commit-dev-cycle-push
-make prev-branch-switch && make test && make commit-tag-push
+make prev-branch-switch && make commit-tag-push
 make dist && make upload
 make test-install
 make backport-check
@@ -146,7 +150,13 @@ The starting point of the workflow is a dev version of the master branch. For th
     git checkout <commit>
     ```
 
-6. start release-$(version) branch
+6. validate quality
+
+    ```
+    make test                     # py.test tests
+    ```
+
+7. start release-$(version) branch
 
 
     ```
@@ -191,19 +201,14 @@ We are ready to make the new release branch:
 
 3. finalize CHANGES.md (remove empty items) - version and date (could be automated)
 
-4. validate quality
 
-    ```
-    make test                     # py.test tests
-    ```
-
-5. git tag with version, commit and push CHANGES.md and version.py
+4. git tag with version, commit and push CHANGES.md and version.py
 
     ```
     make commit-tag-push          # git commit CHANGES.md; git tag; git push
     ```
 
-6. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
+5. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
 
     ```
     make dist                     # make dist-pypi; make dist-conda
@@ -211,7 +216,7 @@ We are ready to make the new release branch:
 
     This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-7. upload packages.
+6. upload packages.
 
     ```
     make upload                  # make upload-pypi; make upload-conda
@@ -219,14 +224,14 @@ We are ready to make the new release branch:
 
     This target is composed of the two individual targets listed above, so if anything goes wrong you can run them separately.
 
-8. test uploads by installing them (telling the installers to install the exact version we uploaded). Following the upload it may take a few minutes for the servers to update their index. This target will wait for each package to become available before it will attempt to install it.
+7. test uploads by installing them (telling the installers to install the exact version we uploaded). Following the upload it may take a few minutes for the servers to update their index. This target will wait for each package to become available before it will attempt to install it.
 
     ```
     make test-install             # pip install fastai==1.0.6; pip uninstall fastai
                                   # conda install -y -c fastai fastai==1.0.6
     ```
 
-9. if some problems were detected during the release process, or something was committed by mistake into the release branch, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
+8. if some problems were detected during the release process, or something was committed by mistake into the release branch, and as a result changes were made to the release branch, merge those back into the master branch. Except for the version change in `fastaai/version.py`.
 
     1. check whether anything needs to be backported
 
@@ -237,13 +242,13 @@ We are ready to make the new release branch:
     If the `make backport-check` target says you need to backport, proceed to the [backporting section](#backporting-release-branch-to-master). This stage can't be fully automated since it requires you to decide what to backport if anything.
 
 
-10. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
+9. leave this branch to be indefinitely, and switch back to master, so that you won't be mistakenly committing to the release branch when you intended `master`:
 
     ```
     make master-branch-switch     # git checkout master
     ```
 
-11. announce the release and its changes in [Developer chat thread](https://forums.fast.ai/t/developer-chat/22363/289).
+10. announce the release and its changes in [Developer chat thread](https://forums.fast.ai/t/developer-chat/22363/289).
 
 
 
