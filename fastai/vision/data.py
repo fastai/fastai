@@ -3,14 +3,15 @@ from ..torch_core import *
 from .image import *
 from .transform import *
 from ..data_block import *
+from ..data_block import _df_to_fns_labels
 from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
-           'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
-           'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
+           'normalize_funcs', 'show_image_batch', 'transform_datasets',
+           'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -34,33 +35,15 @@ def get_annotations(fname, prefix=None):
             id2images[o['id']] = ifnone(prefix, '') + o['file_name']
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
-
-def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15),
-                     denorm:Callable=None)->None:
+    
+def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15))->None:
     "Show a few images from a batch."
-    x,y = dl.one_batch()
-    if rows is None: rows = int(math.sqrt(len(x)))
-    x = x[:rows*rows].cpu()
-    if denorm: x = denorm(x)
-    show_images(x,y[:rows*rows].cpu(),rows, classes, figsize)
-
-def show_xy_images(x:Image,y:Image,rows:int,figsize:tuple=(9,9), alpha:float=0.5):
-    "Show a selection of images and targets from a given batch."
+    b_idx = next(iter(dl.batch_sampler))
+    if rows is None: rows = int(math.sqrt(len(b_idx)))
     fig, axs = plt.subplots(rows,rows,figsize=figsize)
-    for i, ax in enumerate(axs.flatten()):
-        show_image(x[i], ax=ax)
-        show_image(y[i], ax=ax, cmap='tab20', alpha=alpha)
-    plt.tight_layout()
-
-def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str]=None, figsize:Tuple[int,int]=(9,9))->None:
-    "Plot images (`x[i]`) from `x` titled according to `classes[y[i]]`."
-    fig, axs = plt.subplots(rows,rows,figsize=figsize)
-    for i, ax in enumerate(axs.flatten()):
-        show_image(x[i], ax=ax)
-        if classes is not None:
-            if len(y.size()) == 1: title = classes[y[i]]
-            else:  title = '; '.join([classes[a] for a,t in enumerate(y[i]) if t==1])
-            ax.set_title(title)
+    for i, ax in zip(b_idx[:rows*rows], axs.flatten()):
+        x,y = dl.dataset[i]
+        x.show(ax=ax, y=y, classes=classes)
     plt.tight_layout()
 
 class SplitDatasetsImage(SplitDatasets):
@@ -166,17 +149,17 @@ class SegmentationDataset(ImageDataset):
 
 class ObjectDetectDataset(ImageDataset):
     "A dataset with annotated images."
-    def __init__(x_fns:Collection[Path], bbs:Collection[Collection[int]], labels:Collection[str]):
+    def __init__(self, x_fns:Collection[Path], bbs:Collection[Collection[int]], labels:Collection[str]):
         assert len(x_fns)==len(bbs)==len(labels)
         classes = set()
         for label in labels: classes = classes.union(set(label))
         classes = ['background'] + list(classes)
         super().__init__(classes)
-        self.x,self.bbs,self.labels = x,bbs,labels
+        self.x,self.bbs,self.labels = x_fns,bbs,labels
 
     def _get_y(self,i):
         cats = LongTensor([self.class2idx[l] for l in self.labels[i]])
-        return (ImageBBox.create(self.bbs[i], *x.size, cats))
+        return (ImageBBox.create(self.bbs[i], *self._get_x(i).size, cats))
 
     @classmethod
     def from_json(cls, folder, fname, valid_pct=None):
@@ -265,16 +248,6 @@ def channel_view(x:Tensor)->Tensor:
 def _get_fns(ds, path):
     "List of all file names relative to `path`."
     return [str(fn.relative_to(path)) for fn in ds.x]
-
-def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
-                      label_delim:str=None, suffix:Optional[str]=None):
-    "Get image file names and labels from `df`."
-    if label_delim:
-        df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
-    labels = df.iloc[:,label_col].values
-    fnames = df.iloc[:,fn_col].str.lstrip()
-    if suffix: fnames = fnames.astype(str) + suffix
-    return fnames, labels
 
 class ImageDataBunch(DataBunch):
     @classmethod
@@ -369,8 +342,7 @@ class ImageDataBunch(DataBunch):
         return self
 
     def show_batch(self:DataBunch, rows:int=3, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
-        show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes,
-            denorm=getattr(self,'denorm',None), figsize=figsize, rows=rows)
+        show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes, figsize=figsize, rows=rows)
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
