@@ -177,6 +177,6 @@ class SplitDatasets():
 
     @classmethod
     def single_from_c(cls, path:PathOrStr, c:int)->'SplitDatasets':
-        "Factory method that passes a `SingleClassificationDataset` on `c` to `from_single`."
-        return cls.from_single(path, SingleItemDataset(c))
+        "Factory method that passes a `DatasetBase` on `c` to `from_single`."
+        return cls.from_single(path, DatasetBase(c))
 
