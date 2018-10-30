@@ -79,7 +79,7 @@ class ClassificationInterpretation():
 
     @classmethod
     def from_learner(cls, learn:Learner, sigmoid:bool=None, tta=False):
-        "Factory method to create from a Learner."
+        "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
         preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 

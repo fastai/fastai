@@ -59,3 +59,12 @@ def test_from_df():
             if n_labels > 1: assert len(data.labels[0]) == n_labels
         finally:
             shutil.rmtree(path)
+            
+def test_collate():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    dft = pd.read_csv(path/'train.csv', header=None)
+    dfv = pd.read_csv(path/'valid.csv', header=None)
+    data = TextClasDataBunch.from_df(path, dft, dfv, bs=20)
+    x,y = next(iter(data.train_dl))
+    assert x.size(0) == 1519 and x.size(1) == 10
+    assert x[0,-1] == 1
