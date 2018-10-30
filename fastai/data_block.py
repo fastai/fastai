@@ -65,7 +65,7 @@ class InputList(PathItemList):
         This method is intended for inputs that are filenames."""
         fnames, labels = _df_to_fns_labels(df, fn_col, label_col, sep, suffix)
         fnames = join_paths(fnames, self.path/Path(folder))
-        return LabelList([(fn, np.array(lbl, dtype=np.object)) for fn, lbl in zip(fnames, labels) if fn in self.items],
+        return LabelList([(fn, np.array(lbl, dtype=np.object)) for fn, lbl in zip(fnames, labels)],
                          self.path)
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
