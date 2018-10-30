@@ -21,6 +21,7 @@ of that change.
 - `batch_size` property in DeviceDataLoader
 - `ClassificationLearner.predict` to get prediction on a single item
 - Monkey-patched torch.Tensor so matplotlib works
+- `Learner.create_unet`
 
 ### Changed:
 
