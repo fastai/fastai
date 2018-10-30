@@ -2,11 +2,11 @@
 from .torch_core import *
 from .callback import *
 
-__all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'Fbeta']
+__all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'Fbeta', 'fbeta']
 
 @dataclass
 class Fbeta(Callback):
-    thresh:float=0.5
+    thresh:float=0.2
     beta:float=2
     eps:float=1e-9
     sigmoid:bool=True
@@ -18,9 +18,9 @@ class Fbeta(Callback):
         if self.sigmoid: last_output = last_output.sigmoid()
         y_pred = (last_output>self.thresh).float()
         y_true = last_target.float()
-        self.TP += (y_pred*y_true).sum(dim=0)
-        self.pred += y_pred.sum(dim=0)
-        self.true += y_true.sum(dim=0)
+        self.TP += (y_pred*y_true).sum(dim=1)
+        self.pred += y_pred.sum(dim=1)
+        self.true += y_true.sum(dim=1)
     
     def on_epoch_end(self, **kwargs):
         beta2 = self.beta**2
@@ -29,12 +29,12 @@ class Fbeta(Callback):
         res = (prec*rec)/(prec*beta2+rec+self.eps)*(1+beta2)
         self.metric = res.mean().detach().item()
 
-def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
-    "Compute the f_beta between preds and targets."
+def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True) -> Rank0Tensor:
+    "Computes the f_beta between preds and targets"
     beta2 = beta**2
     if sigmoid: y_pred = y_pred.sigmoid()
     y_pred = (y_pred>thresh).float()
-    y_true = y_true.float()[:,None]
+    y_true = y_true.float()
     TP = (y_pred*y_true).sum(dim=1)
     prec = TP/(y_pred.sum(dim=1)+eps)
     rec = TP/(y_true.sum(dim=1)+eps)
