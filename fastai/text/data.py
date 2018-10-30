@@ -349,6 +349,14 @@ class TextDataBunch(DataBunch):
                                         shuffle=shuffle, vocab=train_ds.vocab, **txt_kwargs))
         return cls.create(datasets, path, **kwargs)
 
+    @classmethod
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
+        "Call's `DataBunch.create` but changes the arguments so it'll work OK"
+        train_ml, valid_ml = datasets[:2]
+        test_ml = None if len(datasets) < 3 else datasets[2]
+        return DataBunch.create(train_ml, valid_ml, test_ml, path=path)
+
+
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
