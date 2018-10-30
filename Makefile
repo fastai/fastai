@@ -174,6 +174,7 @@ release: ## do it all (other than testing)
 	${MAKE} tools-update
 	${MAKE} master-branch-switch
 	${MAKE} git-not-dirty
+	${MAKE} test
 	${MAKE} bump
 	${MAKE} changes-finalize
 	${MAKE} release-branch-create
@@ -183,7 +184,6 @@ release: ## do it all (other than testing)
 	${MAKE} changes-dev-cycle
 	${MAKE} commit-dev-cycle-push
 	${MAKE} prev-branch-switch
-	${MAKE} test
 	${MAKE} commit-tag-push
 	${MAKE} dist
 	${MAKE} upload
