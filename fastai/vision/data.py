@@ -363,15 +363,20 @@ def download_image(url,dest):
     try: r = download_url(url, dest, overwrite=True, show_progress=False)
     except Exception as e: print(f"Error {url} {e}")
 
-def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000):
+def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8):
     "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
     urls = open(urls).read().strip().split("\n")[:max_pics]
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
-    with ProcessPoolExecutor(max_workers=8) as ex:
-        futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
-                   for i,url in enumerate(urls)]
-        for f in progress_bar(as_completed(futures), total=len(urls)): pass
+
+    if max_workers:
+        with ProcessPoolExecutor(max_workers=8) as ex:
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
+                       for i,url in enumerate(urls)]
+            for f in progress_bar(as_completed(futures), total=len(urls)): pass
+    else:
+        for i,url in enumerate(progress_bar(urls)):
+            download_image(url, dest/f"{i:08d}.jpg")
 
 def verify_image(file:Path, delete:bool):
     try: assert open_image(file).shape[0]==3
