@@ -46,10 +46,12 @@ of that change.
 - Monkey-patched torch.utils.data.dataloader.DataLoader to create a passthrough to the dataset
 - `max_workers` for `download_images`
 - Change the arguments of `ObjectDetectDataset` to make it consistent with the rest of the API, changes the return of `get_annotations` to go with it.
+- remove wrong `Fbeta`
 
 ### Fixed:
 
 - remove empty classes in `ImageDataBunch.from_folder`
+- fiw implementation of `fbeta`
 
 ## 1.0.15 (2018-10-28)
 
