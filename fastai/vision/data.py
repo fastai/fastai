@@ -9,7 +9,7 @@ from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
-           'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
+           'SegmentationDataset', 'ImageDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage', 'channel_view',
            'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
 
@@ -20,7 +20,7 @@ def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathLi
     return get_files(c, extensions=image_extensions)
 
 def get_annotations(fname, prefix=None):
-    "Open a COCO style json in `fname` and returns the lists of filenames (with `prefix`), bboxes and labels."
+    "Open a COCO style json in `fname` and returns the lists of filenames (with maybe `prefix`) and labelled bboxes."
     annot_dict = json.load(open(fname))
     id2images, id2bboxes, id2cats = {}, collections.defaultdict(list), collections.defaultdict(list)
     classes = {}
@@ -167,6 +167,8 @@ class ObjectDetectDataset(ImageDataset):
 
     @classmethod
     def from_json(cls, folder, fname, valid_pct=None, classes=None):
+        """Create an `ObjectDetectDataset` by looking at the images in `folder` according to annotations in the json `fname`.
+        If `valid_pct` is passed, split a training and validation set. `classes` is the list of classes."""
         imgs, labelled_bbox = get_annotations(fname, prefix=f'{folder}/')
         if valid_pct:
             train,valid = random_split(valid_pct, imgs, labelled_bbox)
