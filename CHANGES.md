@@ -22,12 +22,15 @@ of that change.
 - `ClassificationLearner.predict` to get prediction on a single item
 - Monkey-patched torch.Tensor so matplotlib works
 - `Learner.create_unet`
+- Data block API
 
 ### Changed:
 
 - `validate` now takes optional `n_batch`
 - `create_cnn` now returns a `ClassificationLearner`
 - `return_path` flag to `Learner.save`
+- `ImageDataBunch.show_batch()` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result.
+- Monkey-patched torch.utils.data.dataloader.DataLoader to create a passthrough to the dataset
 
 ### Fixed:
 
