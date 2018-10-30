@@ -1,6 +1,6 @@
 from .core import *
 
-__all__ = ['URLs', 'untar_data', 'download_data', 'datapath4file', 'url2name']
+__all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'url2name']
 
 MODEL_URL = 'http://files.fast.ai/models/'
 URL = 'http://files.fast.ai/data/examples/'
