@@ -40,7 +40,7 @@ def test_from_csv():
         filepath = os.path.join(path, filename+'.csv')
         try:
             text_csv_file(filepath, n_labels=n_labels)
-            data = TextClasDataBunch.from_csv(path, train=filename, valid=filename, n_labels=n_labels)
+            data = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
             assert len(data.classes) == 2
             assert set(data.classes) == set([True, False])
             if n_labels > 1: assert len(data.labels[0]) == n_labels
@@ -53,7 +53,7 @@ def test_from_df():
         os.makedirs(path)
         try:
             df = text_df(n_labels=n_labels)
-            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
             assert len(data.classes) == 2
             assert set(data.classes) == set([True, False])
             if n_labels > 1: assert len(data.labels[0]) == n_labels
