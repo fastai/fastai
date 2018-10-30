@@ -1,23 +1,26 @@
+from collections import Collection
+from ..core import *
+from pathlib import Path
 from ipywidgets import widgets, Layout
 from IPython.display import clear_output, HTML
-from ..fastai.core import *
 
-__all__ = ['file_deleter']
+__all__ = ['FileDeleter']
 
 # TODO:
 # FINISHED button (be done if I dont want to continue)
 # Grid 5x5
 
-def FileDeleter():
+class FileDeleter():
     "Flag images in `file_paths` for deletion and confirm to delete images, showing `batch_size` at a time."
 
     def __init__(self, file_paths:Collection[PathOrStr], batch_size:int=5):
         self.all_images,self.batch = [],[]
+        self.batch_size = batch_size
         for fp in [o for o in map(Path,file_paths) if o.is_file()]:
             img = self.make_img(fp)
-            delete_btn = self.make_button('Delete', file_path=fp, handler=on_delete)
+            delete_btn = self.make_button('Delete', file_path=fp, handler=self.on_delete)
             self.all_images.append((img, delete_btn, fp))
-        render()
+        self.render()
 
     def make_img(self, file_path, height='250px', width='300px', format='jpg'):
         "Returns an image widget for specified file name."
@@ -30,12 +33,12 @@ def FileDeleter():
         to_remove = []
         for img,delete_btn,fp in self.batch:
             fp = delete_btn.file_path
-            if (delete_btn.flagged_for_delete == True): delete_image(fp)
+            if (delete_btn.flagged_for_delete == True): self.delete_image(fp)
             to_remove.append((img, delete_btn, fp))
         for img, delete_btn, fp in to_remove:
             self.all_images.remove((img, delete_btn, fp))
-        empty_batch()
-        render()
+        self.empty_batch()
+        self.render()
 
     def empty_batch(self): self.batch[:] = []
     def delete_image(self, file_path): os.remove(file_path)
@@ -65,13 +68,12 @@ def FileDeleter():
         if (len(self.all_images) == 0): return display('No images to show :)')
         widgets_to_render = []
         for img, delete_btn, fp in self.all_images[:self.batch_size]:
-            widgets_to_render.append(make_vertical_box([img, delete_btn]))
+            widgets_to_render.append(self.make_vertical_box([img, delete_btn]))
             self.batch.append((img, delete_btn, fp))
-        display(make_horizontal_box(widgets_to_render))
-        display(make_button('Confirm', handler=on_confirm, style="primary"))
+        display(self.make_horizontal_box(widgets_to_render))
+        display(self.make_button('Confirm', handler=self.on_confirm, style="primary"))
 
     # Initial implementation by:
     # Zach Caceres @zachcaceres (https://github.com/zcaceres)
     # Jason Patnick (https://github.com/pattyhendrix)
     # Francisco Ingham @inghamfran (https://github.com/lesscomfortable)
-
