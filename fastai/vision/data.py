@@ -34,7 +34,7 @@ def get_annotations(fname, prefix=None):
         if o['id'] in id2bboxes:
             id2images[o['id']] = ifnone(prefix, '') + o['file_name']
     ids = list(id2images.keys())
-    return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
+    return [id2images[k] for k in ids], [[id2bboxes[k], id2cats[k]] for k in ids]
     
 def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
@@ -151,25 +151,28 @@ class SegmentationDataset(ImageDataset):
 
 class ObjectDetectDataset(ImageDataset):
     "A dataset with annotated images."
-    def __init__(self, x_fns:Collection[Path], bbs:Collection[Collection[int]], labels:Collection[str]):
-        assert len(x_fns)==len(bbs)==len(labels)
-        classes = set()
-        for label in labels: classes = classes.union(set(label))
-        classes = ['background'] + list(classes)
+    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], classes:Collection[str]=None):
+        assert len(x_fns)==len(labelled_bbs)
+        if classes is None:
+            classes = set()
+            for lbl_bb in labelled_bbs: classes = classes.union(set(lbl_bb[1]))
+            classes = ['background'] + list(classes)
         super().__init__(classes)
-        self.x,self.bbs,self.labels = x_fns,bbs,labels
+        self.x,self.labelled_bbs = x_fns,labelled_bbs
 
     def _get_y(self,i):
-        cats = LongTensor([self.class2idx[l] for l in self.labels[i]])
-        return (ImageBBox.create(self.bbs[i], *self._get_x(i).size, cats))
+        #TODO: find a smart way to not reopen the x image.
+        cats = LongTensor([self.class2idx[l] for l in self.labelled_bbs[i][1]])
+        return (ImageBBox.create(self.labelled_bbs[i][0], *self._get_x(i).size, cats))
 
     @classmethod
-    def from_json(cls, folder, fname, valid_pct=None):
-        imgs, bbs, cats = get_annotations(fname, prefix=f'{folder}/')
+    def from_json(cls, folder, fname, valid_pct=None, classes=None):
+        imgs, labelled_bbox = get_annotations(fname, prefix=f'{folder}/')
         if valid_pct:
-            train,valid = random_split(valid_pct, imgs, bbs, cats)
-            return cls(*train), cls(*valid)
-        return cls(imgs, bbs, cats)
+            train,valid = random_split(valid_pct, imgs, labelled_bbox)
+            train_ds = cls(*train, classes=classes)
+            return train_ds, cls(*valid, classes=train_ds.classes)
+        return cls(imgs, labelled_bbox, classes=classes)
 
 def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tuple[LongTensor, LongTensor]]:
     "Function that collect samples and adds padding."
