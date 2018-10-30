@@ -32,9 +32,11 @@ of that change.
 - `return_path` flag to `Learner.save`
 - `ImageDataBunch.show_batch()` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result.
 - Monkey-patched torch.utils.data.dataloader.DataLoader to create a passthrough to the dataset
+- `max_workers` for `download_images`
 
 ### Fixed:
 
+- remove empty classes in `ImageDataBunch.from_folder`
 
 ## 1.0.15 (2018-10-28)
 

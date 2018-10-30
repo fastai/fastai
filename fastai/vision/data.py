@@ -94,10 +94,12 @@ class ImageClassificationDataset(ImageDataset):
         "Dataset of `classes` labeled images in `folder`. Optional `valid_pct` split validation set."
         if classes is None: classes = [cls.name for cls in find_classes(folder)]
 
-        fns,labels = [],[]
+        fns,labels,keep = [],[],{}
         for cl in classes:
             f,l = cls._folder_files(folder/cl, cl, extensions=extensions)
             fns+=f; labels+=l
+            keep[cl] = len(f)
+        classes = [cl for cl in classes if keep[cl]]
 
         if valid_pct==0.: return cls(fns, labels, classes=classes)
         return [cls(*a, classes=classes) for a in random_split(valid_pct, fns, labels)]
