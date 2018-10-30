@@ -28,6 +28,7 @@ requirements = to_list("""
     fastprogress>=0.1.15
     ipython
     jupyter
+    jupyter_client>=5.2.3
     matplotlib
     nbconvert
     nbformat
