@@ -10,7 +10,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
-           'normalize_funcs', 'show_image_batch', 'transform_datasets',
+           'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage',
            'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -35,8 +35,7 @@ def get_annotations(fname, prefix=None):
             id2images[o['id']] = ifnone(prefix, '') + o['file_name']
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
-
-
+    
 def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
     b_idx = next(iter(dl.batch_sampler))
@@ -277,7 +276,6 @@ class ImageDataBunch(DataBunch):
             path/test,classes=datasets[0].classes))
         return cls.create(*datasets, path=path, **kwargs)
 
-
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
             fn_col:int=0, label_col:int=1, test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any)->'ImageDataBunch':
@@ -360,7 +358,6 @@ class ImageDataBunch(DataBunch):
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
         return SplitDatasetsImage.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
-
 
 def download_image(url,dest):
     try: r = download_url(url, dest, overwrite=True, show_progress=False)
