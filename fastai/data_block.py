@@ -140,11 +140,11 @@ class SplitData():
 
     def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
         "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
-        dss = [dataset_cls(*self.lists[0].items.T, **kwargs) for o in self.lists]
+        dss = [dataset_cls(*self.train.items.T, **kwargs)]
         kwg_cls = kwargs.pop('classes') if 'classes' in kwargs else None
         if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
         if kwg_cls is not None: kwargs['classes'] = kwg_cls
-        dss = [dataset_cls(*self.lists[1].items.T, **kwargs) for o in self.lists]
+        dss.append(dataset_cls(*self.valid.items.T, **kwargs))
         cls = getattr(dataset_cls, '__splits_class__', SplitDatasets)
         return cls(self.path, *dss)
 

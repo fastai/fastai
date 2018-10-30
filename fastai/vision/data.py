@@ -35,7 +35,7 @@ def get_annotations(fname, prefix=None):
             id2images[o['id']] = ifnone(prefix, '') + o['file_name']
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
-    
+
 def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15))->None:
     "Show a few images from a batch."
     b_idx = next(iter(dl.batch_sampler))
