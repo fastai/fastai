@@ -13,6 +13,7 @@ class URLs():
     S3_COCO = f'{S3}coco/'
     S3_MODEL = f'{S3}modelzoo/'
     COCO_SAMPLE = f'{S3_COCO}coco_sample'
+    COCO_TINY = f'{URL}coco_tiny'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
     IMDB_SAMPLE = f'{URL}imdb_sample'
@@ -20,12 +21,15 @@ class URLs():
     ADULT_SAMPLE = f'{URL}adult_sample'
     ML_SAMPLE = f'{URL}movie_lens_sample'
     PLANET_SAMPLE = f'{URL}planet_sample'
+    PLANET_TINY = f'{URL}planet_tiny'
     CIFAR = f'{URL}cifar10'
     WT103 = f'{S3_MODEL}wt103'
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
     PETS = f'{S3_IMAGE}oxford-iiit-pet'
     MNIST = f'{S3_IMAGE}mnist_png'
+    CAMVID = f'{S3_IMAGELOC}camvid'
+    CAMVID_TINY = f'{URL}camvid_tiny'
 
 class Config():
     "Creates a default config file at `~/.fastai/config.yml`"
