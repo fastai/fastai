@@ -1,34 +1,32 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
 
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+__all__ = ['SingleItemDataset', 'SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
-    def __init__(self, c:int): self.c,self.item = c,None
-    def __len__(self): return len(getattr(self, 'x', [1]))
-    def set_item(self,item): self.item = item
-    def clear_item(self): self.item = None
+    def __len__(self): return len(self.x)
+    @property
+    def c(self):
+        "Number of classes expressed by dataset y variable."
+        return self.y.shape[-1] if len(self.y.shape)>1 else 1
     def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
 
-    @abstractmethod
-    def _get_x(self,i): pass
-    @abstractmethod
-    def _get_y(self,i): pass
-
-    def __getitem__(self, i):
-        if self.item is None: return self._get_x(i),self._get_y(i)
-        else: return self.item,0
-
 class LabelDataset(DatasetBase):
-    "Base class for fastai datasets that do classification, mapped according to `classes`."
-    def __init__(self, classes:Collection, class2idx:Dict[Any,int]=None):
-        self.classes  = classes
-        self.class2idx = class2idx
-        if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        super().__init__(len(classes))
+    "Base class for fastai datasets that do classification."
+    @property
+    def c(self):
+        "Number of classes expressed by dataset y variable."
+        return len(self.classes)
 
-class SingleClassificationDataset(DatasetBase):
+class SingleItemDataset(Dataset):
+    "Dataset that always returns whatever item is passed to `set_item`"
+    def __init__(self, c:int, item:Any=None): self.c,self.item = c,item
+    def set_item(self,item): self.item=item
+    def __len__(self): return 1
+    def __getitem__(self, i): return self.item,0
+
+class SingleClassificationDataset(SingleItemDataset):
     def __init__(self, classes:Collection[str]):
         self.classes = classes
         super().__init__(len(classes))
@@ -45,12 +43,7 @@ class DeviceDataLoader():
         self.tfms = listify(self.tfms)
 
     def __len__(self)->int: return len(self.dl)
-    def __getattr__(self,k:str)->Any: return getattr(self.dl.dataset, k)
-
-    @property
-    def batch_size(self):   return self.dl.batch_size
-    @batch_size.setter
-    def batch_size(self,v): self.dl.batch_size = v
+    def __getattr__(self,k:str)->Any: return getattr(self.dl, k)
 
     @property
     def num_workers(self):   return self.dl.num_workers
@@ -93,7 +86,6 @@ class DataBunch():
         "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
-        assert not isinstance(train_dl,DeviceDataLoader)
         self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
         self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
         self.test_dl  = DeviceDataLoader(test_dl,  self.device, self.tfms, collate_fn) if test_dl else None
@@ -110,7 +102,7 @@ class DataBunch():
                zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
-    def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
+    def __getattr__(self,k:int)->Any: return getattr(self.train_ds, k)
     def holdout(self, is_test:bool=False)->DeviceDataLoader:
         "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
         return self.test_dl if is_test else self.valid_dl

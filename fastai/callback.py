@@ -168,8 +168,8 @@ def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
 @dataclass
 class CallbackHandler():
     "Manage all of the registered callback objects, smoothing loss by momentum `beta`."
-    callbacks:CallbackList=None
-    metrics:CallbackList=None
+    callbacks:CallbackList
+    metrics:CallbackList
     beta:float=0.98
 
     def __post_init__(self)->None:
