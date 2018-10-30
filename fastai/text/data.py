@@ -330,7 +330,7 @@ class TextDataBunch(DataBunch):
         header = 'infer' if 'txt_cols' in kwargs else None
         train_df = pd.read_csv(os.path.join(path, train+'.csv'), header=header)
         valid_df = pd.read_csv(os.path.join(path, valid+'.csv'), header=header)
-        test_df = None if test is None else pd.read_csv(os.path.join(test, test+'.csv'), header=header)
+        test_df = None if test is None else pd.read_csv(os.path.join(path, test+'.csv'), header=header)
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, **kwargs)
 
     @classmethod
