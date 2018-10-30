@@ -60,7 +60,7 @@ class FileDeleter():
     def make_horizontal_box(self, children): return widgets.HBox(children)
 
     def make_vertical_box(self, children, width='auto', height='300px', overflow_x="hidden"):
-        return widgets.VBox(children, layout=Layout(width=width, height=height, overflow_x="hidden"))
+        return widgets.VBox(children, layout=Layout(width=width, height=height, overflow_x=overflow_x))
 
     def render(self):
         "Re-renders Jupyter cell for a batch of images."

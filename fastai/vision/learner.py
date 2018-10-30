@@ -83,9 +83,9 @@ class ClassificationInterpretation():
         preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 
-    def top_losses(self, k, largest=True):
-        "`k` largest(/smallest) losses."
-        return self.losses.topk(k, largest=largest)
+    def top_losses(self, k:int=None, largest=True):
+        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
+        return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
         "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
