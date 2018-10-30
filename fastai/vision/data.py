@@ -370,7 +370,7 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
     dest.mkdir(exist_ok=True)
 
     if max_workers:
-        with ProcessPoolExecutor(max_workers=8) as ex:
+        with ProcessPoolExecutor(max_workers=max_workers) as ex:
             futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
                        for i,url in enumerate(urls)]
             for f in progress_bar(as_completed(futures), total=len(urls)): pass
