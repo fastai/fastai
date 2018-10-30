@@ -188,9 +188,11 @@ class Learner():
 
     def __del__(self): del(self.model, self.data)
 
-    def save(self, name:PathOrStr):
-        "Save model with `name` to `self.model_dir`."
-        torch.save(self.model.state_dict(), self.path/self.model_dir/f'{name}.pth')
+    def save(self, name:PathOrStr, return_path:bool=False)->Union[None,str]:
+        "Save model with `name` to `self.model_dir`, and return path if `return_path`."
+        path = self.path/self.model_dir/f'{name}.pth'
+        torch.save(self.model.state_dict(), path)
+        if return_path: return path
 
     def load(self, name:PathOrStr, device:torch.device=None):
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."

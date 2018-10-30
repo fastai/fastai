@@ -26,6 +26,7 @@ of that change.
 
 - `validate` now takes optional `n_batch`
 - `create_cnn` now returns a `ClassificationLearner`
+- `return_path` flag to `Learner.save`
 
 ### Fixed:
 
