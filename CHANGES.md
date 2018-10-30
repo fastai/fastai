@@ -23,6 +23,7 @@ of that change.
 - Monkey-patched torch.Tensor so matplotlib works
 - `Learner.create_unet`
 - Data block API
+- Add tiny datasets
 
 ### Changed:
 
