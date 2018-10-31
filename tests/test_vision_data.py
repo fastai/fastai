@@ -40,3 +40,15 @@ def test_from_csv(path):
         mnist_tiny_sanity_test(data)
     finally:
         shutil.rmtree(tmp_path)
+
+def test_from_df(path):
+    files = []
+    for each in ['train', 'valid', 'test']: files += get_files(path/each, recurse=True)
+    tmp_path = path/'tmp'
+    try:
+        os.makedirs(tmp_path)
+        for filepath in files: shutil.copyfile(filepath, tmp_path/filepath.name)
+        data = ImageDataBunch.from_df(tmp_path, df=prep_mnist_tiny_csv_labels(path), size=28)
+        mnist_tiny_sanity_test(data)
+    finally:
+        shutil.rmtree(tmp_path)
