@@ -13,8 +13,20 @@ def learn():
     learn.fit_one_cycle(3)
     return learn
 
+@pytest.fixture(scope="module", params=[5,6])
+def learn_pretrained_resnet(request):
+    path = untar_data(URLs.MNIST_TINY)
+    data = ImageDataBunch.from_folder(path, ds_tfms=get_transforms(), size=224, bs=request.param, num_workers=2)
+    data.normalize()
+    learn = create_cnn(data, models.resnet34, metrics=accuracy)
+    learn.fit_one_cycle(1)
+    return learn
+
 def test_accuracy(learn):
     assert accuracy(*learn.get_preds()) > 0.9
+
+def test_pretrained_resnet(learn_pretrained_resnet):
+    assert accuracy(*learn_pretrained_resnet.get_preds()) > 0.95
 
 def test_1cycle_lrs(learn):
     lrs = learn.recorder.lrs
