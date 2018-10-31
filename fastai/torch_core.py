@@ -61,8 +61,9 @@ _default_device = torch.device('cuda') if torch.cuda.is_available() else torch.d
 defaults = SimpleNamespace(device=_default_device, cpus=_default_cpus)
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
-def tensor(x:Any)->Tensor:
-    "Like `torch.as_tensor`, but handle lists too"
+def tensor(x:Any, *rest)->Tensor:
+    "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly"
+    if len(rest): x = (x,)+rest
     return torch.tensor(x) if is_listy(x) else as_tensor(x)
 
 def np_address(x:np.ndarray)->int:
@@ -209,8 +210,6 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
         return l
     else: return loss_func(y_pred, y_true, reduction='none')
 
-def to_np(x): return x.cpu().numpy()
-
 def model_type(dtype):
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
             torch.int64 if np.issubdtype(dtype, np.integer)
@@ -223,3 +222,14 @@ def np2model_tensor(a):
     return res.type(dtype)
 
 def trange_of(x): return torch.arange(len(x))
+
+def to_np(x): return x.data.cpu().numpy()
+
+# monkey patching to allow matplotlib to plot tensors
+def tensor__array__(self, dtype=None):
+    res = to_np(self)
+    if dtype is None: return res
+    else: return res.astype(dtype, copy=False)
+Tensor.__array__ = tensor__array__
+Tensor.ndim = property(lambda x: len(x.shape))
+

@@ -123,6 +123,11 @@ class Image(ItemBase):
             self.sample_kwargs = {}
             self._flow = None
         return self
+    
+    def save(self, fn:PathOrStr):
+        "Save the image to `fn`."
+        x = image2np(self.data*255).astype(np.uint8)
+        PIL.Image.fromarray(x).save(fn)
 
     @property
     def px(self)->TensorImage:
@@ -198,10 +203,15 @@ class Image(ItemBase):
         return self.px
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-              cmap:str='viridis', y:'Image'=None, **kwargs):
+              cmap:str='viridis', y:'Image'=None, classes:Collection[Any]=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
-        if y is not None: y.show(ax=ax, **kwargs)
-        if title: ax.set_title(title)
+        if y is not None: 
+            if isinstance(y, Image): y.show(ax=ax, classes=classes, **kwargs)
+            else:
+                if not isinstance(y, Iterable): title = ifnone(title, classes[y])
+                else:  title = ifnone(title,'; '.join([classes[a] for a,t in enumerate(y) if t==1]))
+                ax.set_title(title)
+        elif title is not None: ax.set_title(title)
 
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
@@ -217,7 +227,7 @@ class ImageSegment(Image):
         return self.px.long()
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-        cmap:str='tab20', alpha:float=0.5):
+        cmap:str='tab20', alpha:float=0.5, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
         if title: ax.set_title(title)
 
@@ -298,7 +308,7 @@ class ImagePoints(Image):
             self.transformed=False
         return flow.flow.flip(1)
 
-    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True):
+    def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True, **kwargs):
         if ax is None: _,ax = plt.subplots(figsize=figsize)
         pnt = scale_flow(FlowField(self.size, self.data), to_unit=False).flow.flip(1)
         ax.scatter(pnt[:, 0], pnt[:, 1], s=10, marker='.', c='r')
@@ -341,7 +351,7 @@ class ImageBBox(ImagePoints):
         return bboxes if lbls is None else (bboxes, lbls)
 
     def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-        color:str='white', classes:Collection[Any]=None):
+        color:str='white', classes:Collection[Any]=None, **kwargs):
         if ax is None: _,ax = plt.subplot(figsize=figsize)
         bboxes, lbls = self._compute_boxes()
         h,w = self.flow.size

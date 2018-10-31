@@ -187,3 +187,11 @@ class TestMaybeCopy(object):
             _write_file(tmpdir/'file')
             maybe_copy([tmpdir/'file'], [tmpdir/'dir'/'file'])
             assert os.path.exists(tmpdir/'dir'/'file')
+
+def test_get_total_length():
+    with TemporaryDirectory() as tmpdir:
+        path = Path(tmpdir)/'df.csv'
+        pd.DataFrame([0,1,2,3,4]).to_csv(path, header=False)
+        assert get_total_length(path, 1) == 5
+        assert get_total_length(path, 2) == 5
+        assert get_total_length(path, 6) == 5
