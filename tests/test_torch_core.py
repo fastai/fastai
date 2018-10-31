@@ -49,3 +49,12 @@ def test_apply_init():
     apply_init(m,all7)
     assert not conv1_w.equal(m[0][0].weight)
     assert bn1_w.equal(m[0][2].weight)
+
+def test_in_channels():
+    m = simple_cnn(b)
+    assert in_channels(m) == 3
+
+def test_in_channels_no_weights():
+    with pytest.raises(Exception) as e_info:
+        in_channels(nn.Sequential())
+    assert e_info.value.args[0] == 'No weight layer'
