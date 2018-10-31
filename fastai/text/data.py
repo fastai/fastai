@@ -330,7 +330,11 @@ class TextDataBunch(DataBunch):
         header = 'infer' if 'txt_cols' in kwargs else None
         train_df = pd.read_csv(os.path.join(path, train+'.csv'), header=header)
         valid_df = pd.read_csv(os.path.join(path, valid+'.csv'), header=header)
+<<<<<<< HEAD
+        test_df = None if test is None else pd.read_csv(os.path.join(test, valid+'.csv'), header=header)
+=======
         test_df = None if test is None else pd.read_csv(os.path.join(path, test+'.csv'), header=header)
+>>>>>>> upstream/master
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, **kwargs)
 
     @classmethod
@@ -364,9 +368,18 @@ class TextClasDataBunch(TextDataBunch):
         "Function that transform the `datasets` in a `DataBunch` for classification."
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].ids, key=lambda x: len(datasets[0].ids[x]), bs=bs//2)
+<<<<<<< HEAD
+        train_dl = DeviceDataLoader.create(datasets[0], bs//2, sampler=train_sampler, collate_fn=collate_fn, **kwargs)
+        dataloaders = [train_dl]
+        for ds in datasets[1:]:
+            sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
+            dataloaders.append(DeviceDataLoader.create(ds, bs,  sampler=sampler, collate_fn=collate_fn, **kwargs))
+        return cls(*dataloaders, path=path)
+=======
         train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, **kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             sampler = SortSampler(ds.ids, key=lambda x: len(ds.ids[x]))
             dataloaders.append(DataLoader(ds, batch_size=bs,  sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
+>>>>>>> upstream/master

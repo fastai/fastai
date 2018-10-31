@@ -12,7 +12,7 @@ default_wd = 1e-2
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
     "Calculate loss and metrics for a batch, call out to callbacks as necessary."
-    cb_handler = ifnone(cb_handler, CallbackHandler())
+    cb_handler = ifnone(cb_handler, CallbackHandler([], []))
     if not is_listy(xb): xb = [xb]
     if not is_listy(yb): yb = [yb]
     out = model(*xb)
@@ -32,16 +32,16 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
     return loss.detach().cpu()
 
 def get_preds(model:nn.Module, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None,
-              activ:nn.Module=None, loss_func:OptLossFunc=None, n_batch:Optional[int]=None) -> List[Tensor]:
-    "Tuple of predictions and targets, and optional losses (if `loss_func`) using `dl`, max batches `n_batch`."
-    res = [torch.cat(o).cpu() for o in
-           zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False, n_batch=n_batch))]
+              activ:nn.Module=None, loss_func:OptLossFunc=None) -> List[Tensor]:
+    "Predict the output of the elements in the dataloader."
+    res = [torch.cat(o).cpu() for o in zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False))]
     if loss_func is not None: res.append(calc_loss(res[0], res[1], loss_func))
     if activ is not None: res[0] = activ(res[0])
     return res
 
-def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_handler:Optional[CallbackHandler]=None,
-             pbar:Optional[PBar]=None, average=True, n_batch:Optional[int]=None)->Iterator[Tuple[Union[Tensor,int],...]]:
+def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None,
+             cb_handler:Optional[CallbackHandler]=None,
+             pbar:Optional[PBar]=None, average=True)->Iterator[Tuple[Union[Tensor,int],...]]:
     "Calculate loss and metrics for the validation set."
     model.eval()
     with torch.no_grad():
@@ -52,7 +52,6 @@ def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_hand
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
             if cb_handler and cb_handler.on_batch_end(val_losses[-1]): break
-            if n_batch and (len(nums)>=n_batch): break
         nums = np.array(nums, dtype=np.float32)
         if average: return (to_np(torch.stack(val_losses)) * nums).sum() / nums.sum()
         else:       return val_losses
@@ -199,20 +198,17 @@ class Learner():
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
 
-    def get_preds(self, is_test:bool=False, with_loss:bool=False, n_batch:Optional[int]=None) -> List[Tensor]:
+    def pred_batch(self, is_test:bool=False) -> Tuple[Tensors, Tensors, Tensors]:
+        "Return input, target and output of the model on a batch."
+        x,y = next(iter(self.data.holdout(is_test)))
+        if not is_listy(x): x = [x]
+        return x,y,self.model(*x).detach()
+
+    def get_preds(self, is_test:bool=False, with_loss:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
         lf = self.loss_func if with_loss else None
-        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks),
-                         activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch)
-
-    def pred_batch(self, is_test:bool=False) -> List[Tensor]:
-        "Return output of the model on one batch from valid or test set, depending on `is_test`."
-        dl = self.data.holdout(is_test)
-        nw = dl.num_workers
-        dl.num_workers = 0
-        preds,_ = self.get_preds(is_test, with_loss=False, n_batch=1)
-        dl.num_workers = nw
-        return preds[0]
+        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []),
+                         activ=_loss_func2activ(self.loss_func), loss_func=lf)
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."

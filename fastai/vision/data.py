@@ -8,10 +8,17 @@ from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+<<<<<<< HEAD
+__all__ = ['get_image_files', 'DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
+           'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'normalize',
+           'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
+           'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
+=======
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage', 'channel_view',
            'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
+>>>>>>> upstream/master
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -46,35 +53,22 @@ def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figs
         x.show(ax=ax, y=y, classes=classes)
     plt.tight_layout()
 
-class SplitDatasetsImage(SplitDatasets):
-    def transform(self, tfms:TfmList, **kwargs)->'SplitDatasets':
-        "Apply `tfms` to the underlying datasets, `kwargs` are passed to `DatasetTfm`."
-        assert not isinstance(self.train_ds, DatasetTfm)
-        self.train_ds = DatasetTfm(self.train_ds, tfms[0],  **kwargs)
-        self.valid_ds = DatasetTfm(self.valid_ds, tfms[1],  **kwargs)
-        if self.test_ds is not None:
-            self.test_ds = DatasetTfm(self.test_ds, tfms[1],  **kwargs)
-        return self
-
-    def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
-        "Create an `ImageDataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `ImageDataBunch.create`."
-        path = Path(ifnone(path, self.path))
-        return ImageDataBunch.create(*self.datasets, path=path, **kwargs)
-
 class ImageDataset(LabelDataset):
-    __splits_class__ = SplitDatasetsImage
-    def _get_x(self,i): return open_image(self.x[i])
+    "Abstract `Dataset` containing images."
+    def __init__(self, fns:FilePathList, y:np.ndarray):
+        self.x = np.array(fns)
+        self.y = np.array(y)
+
+    def __getitem__(self,i): return open_image(self.x[i]),self.y[i]
 
 class ImageClassificationDataset(ImageDataset):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
-        self.x  = np.array(fns)
-        if classes is None: classes = uniqueify(labels)
-        super().__init__(classes)
-        self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
+        self.classes = ifnone(classes, uniqueify(labels))
+        self.class2idx = {v:k for k,v in enumerate(self.classes)}
+        y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
+        super().__init__(fns, y)
         self.loss_func = F.cross_entropy
-
-    def _get_y(self,i): return self.y[i]
 
     @staticmethod
     def _folder_files(folder:Path, label:ImgLabel, extensions:Collection[str]=image_extensions)->Tuple[FilePathList,ImgLabels]:
@@ -89,7 +83,7 @@ class ImageClassificationDataset(ImageDataset):
         return cls(fns, labels, classes=classes)
 
     @classmethod
-    def from_folder(cls, folder:Path, classes:Optional[Collection[Any]]=None, valid_pct:float=0.,
+    def from_folder(cls, folder:Path, classes:Optional[Collection[Any]]=None, valid_pct:float=0., 
             extensions:Collection[str]=image_extensions)->Union['ImageClassificationDataset', List['ImageClassificationDataset']]:
         "Dataset of `classes` labeled images in `folder`. Optional `valid_pct` split validation set."
         if classes is None: classes = [cls.name for cls in find_classes(folder)]
@@ -104,10 +98,10 @@ class ImageClassificationDataset(ImageDataset):
         if valid_pct==0.: return cls(fns, labels, classes=classes)
         return [cls(*a, classes=classes) for a in random_split(valid_pct, fns, labels)]
 
-class ImageMultiDataset(ImageDataset):
+class ImageMultiDataset(LabelDataset):
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
-        if classes is None: classes = uniqueify(np.concatenate(labels))
-        super().__init__(classes)
+        self.classes = ifnone(classes, uniqueify(np.concatenate(labels)))
+        self.class2idx = {v:k for k,v in enumerate(self.classes)}
         self.x = np.array(fns)
         self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in labels]
         self.loss_func = F.binary_cross_entropy_with_logits
@@ -119,8 +113,7 @@ class ImageMultiDataset(ImageDataset):
         return res
 
     def get_labels(self, idx:int)->ImgLabels: return [self.classes[i] for i in self.y[idx]]
-    def _get_x(self,i): return open_image(self.x[i])
-    def _get_y(self,i): return self.encode(self.y[i])
+    def __getitem__(self,i:int)->Tuple[Image, np.ndarray]: return open_image(self.x[i]), self.encode(self.y[i])
 
     @classmethod
     def from_single_folder(cls, folder:PathOrStr, classes:Collection[Any], extensions=image_extensions):
@@ -138,19 +131,38 @@ class ImageMultiDataset(ImageDataset):
         train_ds = cls(*train, classes=classes)
         return [train_ds,cls(*valid, classes=train_ds.classes)]
 
-class SegmentationDataset(ImageDataset):
+class SegmentationDataset(LabelDataset):
     "A dataset for segmentation task."
     def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div=False, convert_mode='L'):
         assert len(x)==len(y)
-        super().__init__(classes)
-        self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
+        self.x,self.y,self.classes,self.div,self.convert_mode = np.array(x),np.array(y),classes,div,convert_mode
         self.loss_func = CrossEntropyFlat()
 
-    def _get_x(self,i): return open_image(self.x[i])
-    def _get_y(self,i): return open_mask(self.y[i], self.div, self.convert_mode)
+    def __getitem__(self, i:int)->Tuple[Image,ImageSegment]:
+        return open_image(self.x[i]), open_mask(self.y[i], self.div, self.convert_mode)
 
-class ObjectDetectDataset(ImageDataset):
+@dataclass
+class ObjectDetectDataset(Dataset):
     "A dataset with annotated images."
+<<<<<<< HEAD
+    x_fns:Collection[Path]
+    bbs:Collection[Collection[int]]
+    labels:Collection[str]
+    def __post_init__(self):
+        assert len(self.x_fns)==len(self.bbs)
+        assert len(self.x_fns)==len(self.labels)
+        self.classes = set()
+        for x in self.labels: self.classes = self.classes.union(set(x))
+        self.classes = ['background'] + list(self.classes)
+        self.class2idx = {v:k for k,v in enumerate(self.classes)}
+
+    def __repr__(self)->str: return f'{type(self).__name__} of len {len(self.x_fns)}'
+    def __len__(self)->int: return len(self.x_fns)
+    def __getitem__(self, i:int)->Tuple[Image,Tuple[ImageBBox, LongTensor]]:
+        x = open_image(self.x_fns[i])
+        cats = LongTensor([self.class2idx[l] for l in self.labels[i]])
+        return x, (ImageBBox.create(self.bbs[i], *x.size, cats))
+=======
     def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], classes:Collection[str]=None):
         assert len(x_fns)==len(labelled_bbs)
         if classes is None:
@@ -164,6 +176,7 @@ class ObjectDetectDataset(ImageDataset):
         #TODO: find a smart way to not reopen the x image.
         cats = LongTensor([self.class2idx[l] for l in self.labelled_bbs[i][1]])
         return (ImageBBox.create(self.labelled_bbs[i][0], *self._get_x(i).size, cats))
+>>>>>>> upstream/master
 
     @classmethod
     def from_json(cls, folder, fname, valid_pct=None, classes=None):
@@ -175,19 +188,6 @@ class ObjectDetectDataset(ImageDataset):
             train_ds = cls(*train, classes=classes)
             return train_ds, cls(*valid, classes=train_ds.classes)
         return cls(imgs, labelled_bbox, classes=classes)
-
-def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tuple[LongTensor, LongTensor]]:
-    "Function that collect samples and adds padding."
-    max_len = max([len(s[1].data[1]) for s in samples])
-    bboxes = torch.zeros(len(samples), max_len, 4)
-    labels = torch.zeros(len(samples), max_len).long() + pad_idx
-    imgs = []
-    for i,s in enumerate(samples):
-        imgs.append(s[0].data[None])
-        bbs, lbls = s[1].data
-        bboxes[i,-len(lbls):] = bbs
-        labels[i,-len(lbls):] = lbls
-    return torch.cat(imgs,0), (bboxes,labels)
 
 class DatasetTfm(Dataset):
     "`Dataset` that applies a list of transforms to every item drawn."
@@ -256,6 +256,19 @@ def _get_fns(ds, path):
     "List of all file names relative to `path`."
     return [str(fn.relative_to(path)) for fn in ds.x]
 
+<<<<<<< HEAD
+def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
+                      label_delim:str=None, suffix:Optional[str]=None):
+    "Get image file names and labels from `df`."
+    if label_delim:
+        df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
+    labels = df.iloc[:,label_col].values
+    fnames = df.iloc[:,fn_col].map(lambda x: x.lstrip())
+    if suffix: fnames = fnames.astype(str) + suffix
+    return fnames, labels
+
+=======
+>>>>>>> upstream/master
 class ImageDataBunch(DataBunch):
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Optional[TfmList]=None,
@@ -347,8 +360,14 @@ class ImageDataBunch(DataBunch):
         self.add_tfm(self.norm)
         return self
 
+<<<<<<< HEAD
+    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(12,15), is_train:bool=True)->None:
+        show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes,
+            denorm=getattr(self,'denorm',None), figsize=figsize, rows=rows)
+=======
     def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
         show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes, figsize=figsize, rows=rows)
+>>>>>>> upstream/master
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
@@ -364,7 +383,7 @@ class ImageDataBunch(DataBunch):
 
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
-        return SplitDatasetsImage.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+        return SplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
 
 def download_image(url,dest):
     try: r = download_url(url, dest, overwrite=True, show_progress=False)
@@ -399,9 +418,28 @@ def verify_images(path:PathOrStr, delete=True, max_workers:int=4):
         futures = [ex.submit(verify_image, file, delete=delete) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
-class ImageFileList(InputList):
-    "A list of inputs. Contain methods to get the corresponding labels."
-    @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
+@classmethod
+def InputList_filelist_from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
+
+InputList.from_folder = InputList_filelist_from_folder
+
+def SplitDatasets_split_data_transform(sdata:SplitDatasets, tfms:TfmList, **kwargs)->'SplitDatasets':
+    "Apply `tfms` to the underlying datasets."
+    assert not isinstance(sdata.train_ds, DatasetTfm)
+    sdata.train_ds = DatasetTfm(sdata.train_ds, tfms[0],  **kwargs)
+    sdata.valid_ds = DatasetTfm(sdata.valid_ds, tfms[1],  **kwargs)
+    if sdata.test_ds is not None:
+        sdata.test_ds = DatasetTfm(sdata.test_ds, tfms[1],  **kwargs)
+    return sdata
+
+SplitDatasets.transform = SplitDatasets_split_data_transform
+
+def SplitDatasets_split_data_databunch(sdata:SplitDatasets, path:PathOrStr=None, **kwargs)->ImageDataBunch:
+    "Create an `ImageDataBunch` from self, `path` will override `self.path`."
+    path = Path(ifnone(path, sdata.path))
+    return ImageDataBunch.create(*sdata.datasets, path=path, **kwargs)
+
+SplitDatasets.databunch = SplitDatasets_split_data_databunch
+

@@ -12,8 +12,11 @@ class URLs():
     S3_NLP = f'{S3}nlp/'
     S3_COCO = f'{S3}coco/'
     S3_MODEL = f'{S3}modelzoo/'
+<<<<<<< HEAD
+=======
     COCO_SAMPLE = f'{S3_COCO}coco_sample'
     COCO_TINY = f'{URL}coco_tiny'
+>>>>>>> upstream/master
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
     IMDB_SAMPLE = f'{URL}imdb_sample'

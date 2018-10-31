@@ -47,6 +47,11 @@ of that change.
 ### New:
 
 - `ImageDataBunch.single_from_classes` to allow single image predictions
+<<<<<<< HEAD
+
+### Changed:
+
+=======
 - `DatasetBase` has `set_item` and `clear_item` to force it to always return `item`
 - `DatasetBase` uses abstract `_get_x` and `_get_y`
 - `batch_size` property in DeviceDataLoader
@@ -65,6 +70,7 @@ of that change.
 - `max_workers` for `download_images`
 - Change the arguments of `ObjectDetectDataset` to make it consistent with the rest of the API, changes the return of `get_annotations` to go with it.
 
+>>>>>>> upstream/master
 ### Fixed:
 
 - remove empty classes in `ImageDataBunch.from_folder`
