@@ -35,14 +35,14 @@ def test_should_load_backwards_lm():
 def test_from_csv():
     for n_labels in [1, 3]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-        os.makedirs(path)
         filename = 'text'
         filepath = os.path.join(path, filename+'.csv')
         try:
+            os.makedirs(path)
             text_csv_file(filepath, n_labels=n_labels)
             data = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
             assert len(data.classes) == 2
-            assert set(data.classes) == set([True, False])
+            assert set(data.classes) == {True, False}
             if n_labels > 1: assert len(data.labels[0]) == n_labels
         finally:
             shutil.rmtree(path)
@@ -50,16 +50,16 @@ def test_from_csv():
 def test_from_df():
     for n_labels in [1, 3]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-        os.makedirs(path)
         try:
+            os.makedirs(path)
             df = text_df(n_labels=n_labels)
             data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
             assert len(data.classes) == 2
-            assert set(data.classes) == set([True, False])
+            assert set(data.classes) == {True, False}
             if n_labels > 1: assert len(data.labels[0]) == n_labels
         finally:
             shutil.rmtree(path)
-            
+
 def test_collate():
     path = untar_data(URLs.IMDB_SAMPLE)
     dft = pd.read_csv(path/'train.csv', header=None)
