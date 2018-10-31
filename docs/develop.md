@@ -184,11 +184,11 @@ You can subscribe or unsubscribe at any time on your own accord [here](https://g
 
 If you need to comment on any diff you read on that list, click on the link on top of the email and it'll take you to the github page, corresponding to that commit, and you can comment there. Alternatively ask questions on the developer's section of the  [forums](https://forums.fast.ai/c/fastai-dev).
 
-Make sure you use a descent email client, surely don't read it on google groups or gmail, you need to have a client that can properly render fixed fonts and not use a variable fonts which look horrible with diffs. For example it works well in [Thunderbird](https://www.thunderbird.net/).
+Make sure you use a decent email client, surely don't read the emails on google groups or gmail. You need to have a client that can properly render fixed fonts and not use variable fonts that look horrible with diffs. For example, [Thunderbird](https://www.thunderbird.net/) works well.
 
-Chances are that your email client may start putting those into the spam folder, so make sure you tell it it's ham!
+Chances are that your email client may put the emails into your spam folder, so make sure you tell your client they're ham!
 
-You will probably want to filter these emails into a dedicated folder. If so use the `List-ID` email header in the configuration of your email:
+You will probably want to filter these emails into a dedicated folder. If so, use the `List-ID` email header in the configuration of your email:
 
 ```
 List-ID: <fastai-diff.googlegroups.com>
