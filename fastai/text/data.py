@@ -352,9 +352,7 @@ class TextDataBunch(DataBunch):
     @classmethod
     def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
         "Call's `DataBunch.create` but changes the arguments so it'll work OK"
-        train_ml, valid_ml = datasets[:2]
-        test_ml = None if len(datasets) < 3 else datasets[2]
-        return DataBunch.create(train_ml, valid_ml, test_ml, path=path)
+        return DataBunch.create(*datasets, path=path, **kwargs)
 
 
 class TextLMDataBunch(TextDataBunch):
