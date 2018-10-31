@@ -54,6 +54,7 @@ requirements:
     - dataclasses # [py36]
     - fastprogress >=0.1.15
     - ipython
+    - jupyter
     - matplotlib
     - notebook>=5.7.0
     - nbconvert
