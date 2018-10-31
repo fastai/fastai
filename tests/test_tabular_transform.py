@@ -69,8 +69,8 @@ def test_remove_min_variance():
     remove_min_variance_transform.apply_train(train_df)
     remove_min_variance_transform.apply_test(valid_df)
     
-    # Make sure column 'A' is dropped for both train and test set.
-    # Also, column 'B' must not be dropped for the test set even though its
-    # variance in the test set is below the threshold.
+    # Make sure column 'B' is dropped for both train and test set
+    # Also, column 'A' must not be dropped for the test set even though its
+    # variance in the test set is below the threshold
     assert train_df.equals(pd.DataFrame({'A': [0., 1.]}))
     assert valid_df.equals(pd.DataFrame({'A': [0., 0.]}))

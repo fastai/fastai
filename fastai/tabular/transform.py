@@ -65,6 +65,7 @@ class FillMissing(TabularTransform):
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
                 df[name] = df[name].fillna(self.na_dict[name])
 
+@dataclass
 class RemoveMinVariance(TabularTransform):
     "Remove variables below a certain variance threshold."
     min_variance:float=0.00001
