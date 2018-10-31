@@ -60,3 +60,17 @@ def test_fill_missing_returns_correct_medians():
     # Make sure the train median is used in both cases
     assert train_df.equals(expected_filled_train_df)
     assert valid_df.equals(expected_filled_valid_df)
+
+def test_remove_min_variance():
+    train_df = pd.DataFrame({'A': [0., 1.], 'B': [0., 0.]})
+    valid_df = pd.DataFrame({'A': [0., 0.], 'B': [0., 1.]})
+    
+    remove_min_variance_transform = RemoveMinVariance([], ['A', 'B'])
+    remove_min_variance_transform.apply_train(train_df)
+    remove_min_variance_transform.apply_test(valid_df)
+    
+    # Make sure column 'A' is dropped for both train and test set.
+    # Also, column 'B' must not be dropped for the test set even though its
+    # variance in the test set is below the threshold.
+    assert train_df.equals(pd.DataFrame({'A': [0., 1.]}))
+    assert valid_df.equals(pd.DataFrame({'A': [0., 0.]}))

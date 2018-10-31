@@ -1,7 +1,8 @@
 "Cleaning and feature engineering functions for structured data"
 from ..torch_core import *
 
-__all__ = ['Categorify', 'FillMissing', 'FillStrategy', 'TabularTransform']
+__all__ = ['Categorify', 'FillMissing', 'FillStrategy', 'TabularTransform',
+           'RemoveMinVariance']
 
 @dataclass
 class TabularTransform():
@@ -63,3 +64,36 @@ class FillMissing(TabularTransform):
                     df[name+'_na'] = pd.isnull(df[name])
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
                 df[name] = df[name].fillna(self.na_dict[name])
+
+class RemoveMinVariance(TabularTransform):
+    "Remove variables below a certain variance threshold."
+    min_variance:float=0.00001
+    remove_cols:bool=True
+    check_sample:float=1.0
+    verbose:bool=True
+
+    def apply_train(self, df:DataFrame):
+        self.columns_to_drop = []
+        for n in self.cont_names:
+            current_column = df[n]
+            if self.check_sample < 1.0:
+                n_variance = (current_column
+                              .sample(int(len(current_column) * check_sample))
+                              .var())
+            else:
+                n_variance = current_column.var()
+            if n_variance < self.min_variance:
+                if self.verbose:
+                    if self.remove_cols:
+                        print(("Dropping column '%s' since its variance of %0.4f"
+                               + " is below the threshold") % (n, n_variance))
+                    else:
+                        print(("Attention: The variance of column '%s' is %0.4f"
+                               + " and thus below the threshold") % (n, n_variance))
+                if self.remove_cols:
+                    self.columns_to_drop.append(n)
+
+        df.drop(columns=self.columns_to_drop, inplace=True)
+
+    def apply_test(self, df:DataFrame):
+        df.drop(columns=self.columns_to_drop, inplace=True)
