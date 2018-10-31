@@ -65,7 +65,7 @@ class InputList(PathItemList):
         This method is intended for inputs that are filenames."""
         fnames, labels = _df_to_fns_labels(df, fn_col, label_col, sep, suffix)
         fnames = join_paths(fnames, self.path/Path(folder))
-        return LabelList([(fn, np.array(lbl, dtype=np.object)) for fn, lbl in zip(fnames, labels) if fn in self.items],
+        return LabelList([(fn, np.array(lbl, dtype=np.object)) for fn, lbl in zip(fnames, labels)],
                          self.path)
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
@@ -138,6 +138,7 @@ class SplitData():
     @property
     def lists(self): return [self.train,self.valid]
 
+<<<<<<< HEAD
     def datasets(self, dataset_cls:type, **kwargs):
         "Create datasets from the underlying data using `dataset_cls`."
         dss = [dataset_cls(*self.lists[0].items.T, **kwargs) for o in self.lists]
@@ -146,6 +147,17 @@ class SplitData():
         if kwg_cls is not None: kwargs['classes'] = kwg_cls
         dss = [dataset_cls(*self.lists[1].items.T, **kwargs) for o in self.lists]
         return SplitDatasets(self.path, *dss)
+=======
+    def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
+        "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
+        dss = [dataset_cls(*self.train.items.T, **kwargs)]
+        kwg_cls = kwargs.pop('classes') if 'classes' in kwargs else None
+        if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
+        if kwg_cls is not None: kwargs['classes'] = kwg_cls
+        dss.append(dataset_cls(*self.valid.items.T, **kwargs))
+        cls = getattr(dataset_cls, '__splits_class__', SplitDatasets)
+        return cls(self.path, *dss)
+>>>>>>> upstream/master
 
 @dataclass
 class SplitDatasets():
@@ -175,7 +187,13 @@ class SplitDatasets():
         return cls.from_single(path, SingleClassificationDataset(classes))
 
     @classmethod
+<<<<<<< HEAD
     def single_from_c(cls, path:PathOrStr, c:int):
         "Factory method that passes a `SingleClassificationDataset` to `from_single`"
         return cls.from_single(path, SingleItemDataset(c))
+=======
+    def single_from_c(cls, path:PathOrStr, c:int)->'SplitDatasets':
+        "Factory method that passes a `DatasetBase` on `c` to `from_single`."
+        return cls.from_single(path, DatasetBase(c))
+>>>>>>> upstream/master
 

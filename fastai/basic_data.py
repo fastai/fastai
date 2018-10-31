@@ -31,6 +31,9 @@ class SingleClassificationDataset(SingleItemDataset):
         self.classes = classes
         super().__init__(len(classes))
 
+def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
+DataLoader.__getattr__ = DataLoader___getattr__
+
 @dataclass
 class DeviceDataLoader():
     "Bind a `DataLoader` to a `torch.device`."
@@ -44,6 +47,14 @@ class DeviceDataLoader():
 
     def __len__(self)->int: return len(self.dl)
     def __getattr__(self,k:str)->Any: return getattr(self.dl, k)
+<<<<<<< HEAD
+=======
+
+    @property
+    def batch_size(self):   return self.dl.batch_size
+    @batch_size.setter
+    def batch_size(self,v): self.dl.batch_size = v
+>>>>>>> upstream/master
 
     @property
     def num_workers(self):   return self.dl.num_workers

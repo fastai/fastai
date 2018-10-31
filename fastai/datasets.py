@@ -1,6 +1,6 @@
 from .core import *
 
-__all__ = ['URLs', 'untar_data', 'download_data', 'datapath4file', 'url2name']
+__all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'url2name']
 
 MODEL_URL = 'http://files.fast.ai/models/'
 URL = 'http://files.fast.ai/data/examples/'
@@ -12,6 +12,11 @@ class URLs():
     S3_NLP = f'{S3}nlp/'
     S3_COCO = f'{S3}coco/'
     S3_MODEL = f'{S3}modelzoo/'
+<<<<<<< HEAD
+=======
+    COCO_SAMPLE = f'{S3_COCO}coco_sample'
+    COCO_TINY = f'{URL}coco_tiny'
+>>>>>>> upstream/master
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
     IMDB_SAMPLE = f'{URL}imdb_sample'
@@ -19,12 +24,15 @@ class URLs():
     ADULT_SAMPLE = f'{URL}adult_sample'
     ML_SAMPLE = f'{URL}movie_lens_sample'
     PLANET_SAMPLE = f'{URL}planet_sample'
+    PLANET_TINY = f'{URL}planet_tiny'
     CIFAR = f'{URL}cifar10'
     WT103 = f'{S3_MODEL}wt103'
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
     PETS = f'{S3_IMAGE}oxford-iiit-pet'
     MNIST = f'{S3_IMAGE}mnist_png'
+    CAMVID = f'{S3_IMAGELOC}camvid'
+    CAMVID_TINY = f'{URL}camvid_tiny'
 
 class Config():
     "Creates a default config file at `~/.fastai/config.yml`"
@@ -83,7 +91,7 @@ def download_data(url:str, fname:PathOrStr=None):
     return fname
 
 def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True):
-    "Download `url` if doesn't exist to `fname` and un-tgz to folder `dest`"
+    "Download `url` if it doesn't exist to `fname` and un-tgz to folder `dest`"
     dest = Path(ifnone(dest, _url2path(url)))
     if not dest.exists():
         fname = download_data(url, fname=fname)

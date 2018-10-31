@@ -3,14 +3,22 @@ from ..torch_core import *
 from .image import *
 from .transform import *
 from ..data_block import *
+from ..data_block import _df_to_fns_labels
 from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+<<<<<<< HEAD
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageDataset', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'normalize',
            'normalize_funcs', 'show_image_batch', 'show_images', 'show_xy_images', 'transform_datasets',
            'channel_view', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images']
+=======
+__all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
+           'SegmentationDataset', 'ImageDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
+           'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage', 'channel_view',
+           'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
+>>>>>>> upstream/master
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -19,7 +27,7 @@ def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathLi
     return get_files(c, extensions=image_extensions)
 
 def get_annotations(fname, prefix=None):
-    "Open a COCO style json in `fname` and returns the lists of filenames (with `prefix`), bboxes and labels."
+    "Open a COCO style json in `fname` and returns the lists of filenames (with maybe `prefix`) and labelled bboxes."
     annot_dict = json.load(open(fname))
     id2images, id2bboxes, id2cats = {}, collections.defaultdict(list), collections.defaultdict(list)
     classes = {}
@@ -33,34 +41,16 @@ def get_annotations(fname, prefix=None):
         if o['id'] in id2bboxes:
             id2images[o['id']] = ifnone(prefix, '') + o['file_name']
     ids = list(id2images.keys())
-    return [id2images[k] for k in ids], [id2bboxes[k] for k in ids], [id2cats[k] for k in ids]
-
-def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(12,15),
-                     denorm:Callable=None)->None:
+    return [id2images[k] for k in ids], [[id2bboxes[k], id2cats[k]] for k in ids]
+    
+def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
-    x,y = dl.one_batch()
-    if rows is None: rows = int(math.sqrt(len(x)))
-    x = x[:rows*rows].cpu()
-    if denorm: x = denorm(x)
-    show_images(x,y[:rows*rows].cpu(),rows, classes, figsize)
-
-def show_xy_images(x:Image,y:Image,rows:int,figsize:tuple=(9,9), alpha:float=0.5):
-    "Show a selection of images and targets from a given batch."
+    b_idx = next(iter(dl.batch_sampler))
+    if rows is None: rows = int(math.sqrt(len(b_idx)))
     fig, axs = plt.subplots(rows,rows,figsize=figsize)
-    for i, ax in enumerate(axs.flatten()):
-        show_image(x[i], ax=ax)
-        show_image(y[i], ax=ax, cmap='tab20', alpha=alpha)
-    plt.tight_layout()
-
-def show_images(x:Collection[Image],y:int,rows:int, classes:Collection[str]=None, figsize:Tuple[int,int]=(9,9))->None:
-    "Plot images (`x[i]`) from `x` titled according to `classes[y[i]]`."
-    fig, axs = plt.subplots(rows,rows,figsize=figsize)
-    for i, ax in enumerate(axs.flatten()):
-        show_image(x[i], ax=ax)
-        if classes is not None:
-            if len(y.size()) == 1: title = classes[y[i]]
-            else:  title = '; '.join([classes[a] for a,t in enumerate(y[i]) if t==1])
-            ax.set_title(title)
+    for i, ax in zip(b_idx[:rows*rows], axs.flatten()):
+        x,y = dl.dataset[i]
+        x.show(ax=ax, y=y, classes=classes)
     plt.tight_layout()
 
 class ImageDataset(LabelDataset):
@@ -98,10 +88,12 @@ class ImageClassificationDataset(ImageDataset):
         "Dataset of `classes` labeled images in `folder`. Optional `valid_pct` split validation set."
         if classes is None: classes = [cls.name for cls in find_classes(folder)]
 
-        fns,labels = [],[]
+        fns,labels,keep = [],[],{}
         for cl in classes:
             f,l = cls._folder_files(folder/cl, cl, extensions=extensions)
             fns+=f; labels+=l
+            keep[cl] = len(f)
+        classes = [cl for cl in classes if keep[cl]]
 
         if valid_pct==0.: return cls(fns, labels, classes=classes)
         return [cls(*a, classes=classes) for a in random_split(valid_pct, fns, labels)]
@@ -152,6 +144,7 @@ class SegmentationDataset(LabelDataset):
 @dataclass
 class ObjectDetectDataset(Dataset):
     "A dataset with annotated images."
+<<<<<<< HEAD
     x_fns:Collection[Path]
     bbs:Collection[Collection[int]]
     labels:Collection[str]
@@ -169,14 +162,32 @@ class ObjectDetectDataset(Dataset):
         x = open_image(self.x_fns[i])
         cats = LongTensor([self.class2idx[l] for l in self.labels[i]])
         return x, (ImageBBox.create(self.bbs[i], *x.size, cats))
+=======
+    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], classes:Collection[str]=None):
+        assert len(x_fns)==len(labelled_bbs)
+        if classes is None:
+            classes = set()
+            for lbl_bb in labelled_bbs: classes = classes.union(set(lbl_bb[1]))
+            classes = ['background'] + list(classes)
+        super().__init__(classes)
+        self.x,self.labelled_bbs = x_fns,labelled_bbs
+
+    def _get_y(self,i):
+        #TODO: find a smart way to not reopen the x image.
+        cats = LongTensor([self.class2idx[l] for l in self.labelled_bbs[i][1]])
+        return (ImageBBox.create(self.labelled_bbs[i][0], *self._get_x(i).size, cats))
+>>>>>>> upstream/master
 
     @classmethod
-    def from_json(cls, folder, fname, valid_pct=None):
-        imgs, bbs, cats = get_annotations(fname, prefix=f'{folder}/')
+    def from_json(cls, folder, fname, valid_pct=None, classes=None):
+        """Create an `ObjectDetectDataset` by looking at the images in `folder` according to annotations in the json `fname`.
+        If `valid_pct` is passed, split a training and validation set. `classes` is the list of classes."""
+        imgs, labelled_bbox = get_annotations(fname, prefix=f'{folder}/')
         if valid_pct:
-            train,valid = random_split(valid_pct, imgs, bbs, cats)
-            return cls(*train), cls(*valid)
-        return cls(imgs, bbs, cats)
+            train,valid = random_split(valid_pct, imgs, labelled_bbox)
+            train_ds = cls(*train, classes=classes)
+            return train_ds, cls(*valid, classes=train_ds.classes)
+        return cls(imgs, labelled_bbox, classes=classes)
 
 class DatasetTfm(Dataset):
     "`Dataset` that applies a list of transforms to every item drawn."
@@ -245,6 +256,7 @@ def _get_fns(ds, path):
     "List of all file names relative to `path`."
     return [str(fn.relative_to(path)) for fn in ds.x]
 
+<<<<<<< HEAD
 def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
                       label_delim:str=None, suffix:Optional[str]=None):
     "Get image file names and labels from `df`."
@@ -255,6 +267,8 @@ def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
     if suffix: fnames = fnames.astype(str) + suffix
     return fnames, labels
 
+=======
+>>>>>>> upstream/master
 class ImageDataBunch(DataBunch):
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=64, ds_tfms:Optional[TfmList]=None,
@@ -281,7 +295,6 @@ class ImageDataBunch(DataBunch):
         if test: datasets.append(ImageClassificationDataset.from_single_folder(
             path/test,classes=datasets[0].classes))
         return cls.create(*datasets, path=path, **kwargs)
-
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
@@ -347,9 +360,14 @@ class ImageDataBunch(DataBunch):
         self.add_tfm(self.norm)
         return self
 
+<<<<<<< HEAD
     def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(12,15), is_train:bool=True)->None:
         show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes,
             denorm=getattr(self,'denorm',None), figsize=figsize, rows=rows)
+=======
+    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
+        show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes, figsize=figsize, rows=rows)
+>>>>>>> upstream/master
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
@@ -367,20 +385,24 @@ class ImageDataBunch(DataBunch):
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
         return SplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
 
-
 def download_image(url,dest):
     try: r = download_url(url, dest, overwrite=True, show_progress=False)
     except Exception as e: print(f"Error {url} {e}")
 
-def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000):
+def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8):
     "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
     urls = open(urls).read().strip().split("\n")[:max_pics]
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
-    with ProcessPoolExecutor(max_workers=8) as ex:
-        futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
-                   for i,url in enumerate(urls)]
-        for f in progress_bar(as_completed(futures), total=len(urls)): pass
+
+    if max_workers:
+        with ProcessPoolExecutor(max_workers=max_workers) as ex:
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
+                       for i,url in enumerate(urls)]
+            for f in progress_bar(as_completed(futures), total=len(urls)): pass
+    else:
+        for i,url in enumerate(progress_bar(urls)):
+            download_image(url, dest/f"{i:08d}.jpg")
 
 def verify_image(file:Path, delete:bool):
     try: assert open_image(file).shape[0]==3

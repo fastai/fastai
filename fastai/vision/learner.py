@@ -42,6 +42,18 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
         layers += bn_drop_lin(ni,no,True,p,actn)
     return nn.Sequential(*layers)
 
+<<<<<<< HEAD
+=======
+class ClassificationLearner(Learner):
+    def predict(self, img:Image):
+        "Return prect class, label and probabilities for `img`."
+        ds = self.data.valid_ds
+        ds.set_item(img)
+        res = self.pred_batch()
+        ds.clear_item()
+        pred_max = res.argmax()
+        return self.data.classes[pred_max],pred_max,res
+>>>>>>> upstream/master
 
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
@@ -68,13 +80,13 @@ class ClassificationInterpretation():
 
     @classmethod
     def from_learner(cls, learn:Learner, sigmoid:bool=None, tta=False):
-        "Factory method to create from a Learner."
+        "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
         preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 
-    def top_losses(self, k, largest=True):
-        "`k` largest(/smallest) losses."
-        return self.losses.topk(k, largest=largest)
+    def top_losses(self, k:int=None, largest=True):
+        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
+        return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
         "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."

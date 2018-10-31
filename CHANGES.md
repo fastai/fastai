@@ -11,16 +11,69 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.16.dev0 (Work In Progress)
+
+## 1.0.19.dev0 (Work In Progress)
 
 ### New:
-
-- `ImageDataBunch.single_from_classes` to allow single image predictions
 
 ### Changed:
 
 ### Fixed:
 
+
+## 1.0.18 (2018-10-30)
+
+### Fixed:
+
+- Fix jupyter dep version
+
+
+## 1.0.17 (2018-10-30)
+
+### New:
+
+- Add tiny datasets
+
+### Changed:
+
+- remove wrong `Fbeta`
+
+### Fixed:
+
+- fix implementation of `fbeta`
+
+## 1.0.16 (2018-10-30)
+
+### New:
+
+- `ImageDataBunch.single_from_classes` to allow single image predictions
+<<<<<<< HEAD
+
+### Changed:
+
+=======
+- `DatasetBase` has `set_item` and `clear_item` to force it to always return `item`
+- `DatasetBase` uses abstract `_get_x` and `_get_y`
+- `batch_size` property in DeviceDataLoader
+- `ClassificationLearner.predict` to get prediction on a single item
+- Monkey-patched torch.Tensor so matplotlib works
+- `Learner.create_unet`
+- Data block API
+
+### Changed:
+
+- `validate` now takes optional `n_batch`
+- `create_cnn` now returns a `ClassificationLearner`
+- `return_path` flag to `Learner.save`
+- `ImageDataBunch.show_batch()` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result.
+- Monkey-patched torch.utils.data.dataloader.DataLoader to create a passthrough to the dataset
+- `max_workers` for `download_images`
+- Change the arguments of `ObjectDetectDataset` to make it consistent with the rest of the API, changes the return of `get_annotations` to go with it.
+
+>>>>>>> upstream/master
+### Fixed:
+
+- remove empty classes in `ImageDataBunch.from_folder`
 
 ## 1.0.15 (2018-10-28)
 
