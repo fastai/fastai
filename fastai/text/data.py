@@ -160,7 +160,7 @@ class TextDataset(BaseTextDataset):
         path = Path(folder)/'tmp'
         os.makedirs(path, exist_ok=True)
         texts = []
-        for fname in (Path(folder)/name).glob('*.*'):
+        for fname in (Path(folder)/name).glob('*'):
             texts.append(fname.open('r', encoding='utf8').read())
         texts,labels = np.array(texts),np.array([classes[0]] * len(texts))
         if shuffle:
