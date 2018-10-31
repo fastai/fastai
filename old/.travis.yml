@@ -1,0 +1,51 @@
+language: python
+python:
+  # We don't actually use the Travis Python, but this keeps it organized.
+  #  - "2.7"
+  #  - "3.5"
+  - "3.6"
+install:
+  - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+  - conda env update -f environment-cpu.yml
+  - source activate fastai-cpu
+  - pip install -U pytest pytest-cov
+  # for some reason  the pip section is not supported by conda env update for the time being i've paste it here:
+  - pip install testfixtures
+  - pip install opencv-python
+  - pip install graphviz
+  - pip install torchvision>=0.1.9
+  - pip install opencv-python
+  - pip install isoweek
+  - pip install pandas_summary
+  - pip install torchtext
+  - pip install graphviz
+  - pip install sklearn_pandas
+  - pip install feather-format
+  - pip install jupyter_contrib_nbextensions
+  - pip install plotnine
+  - pip install awscli
+  - pip install kaggle-cli
+  - pip install ipywidgets
+  - pip install jupyter_contrib_nbextensions
+  - pip install git+https://github.com/SauceCat/PDPbox.git
+
+  # this libs are required by opencv on ubuntu 16.04
+  - sudo apt install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx
+
+
+script:
+  -  python -m pytest --cov fastai --cov-branch tests

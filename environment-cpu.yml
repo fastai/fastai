@@ -1,3 +1,6 @@
+# use/edit this file only for working with fastai-0.7.x version
+# for fastai-1.0+ edit "setup.py" and use "pip install -e ."
+# or "pip install -e .[dev]" for extra developer requirements
 name: fastai-cpu
 channels:
 - fastai
@@ -22,6 +25,7 @@ dependencies:
 - expat
 - html5lib
 - icu
+- defaults::intel-openmp
 - ipykernel
 - ipython
 - ipython_genutils
@@ -33,13 +37,13 @@ dependencies:
 - jupyter_client
 - jupyter_console
 - jupyter_core
-- conda-forge::jupyter_contrib_nbextensions  
+- conda-forge::jupyter_contrib_nbextensions
 - libiconv
 - libpng
 - libsodium
 - libxml2
 - markupsafe
-- matplotlib
+- matplotlib<=2.2.3
 - mistune
 - mkl
 - nbconvert
@@ -76,7 +80,8 @@ dependencies:
 - six
 - sqlite
 - statsmodels
-- testpath
+- testfixtures
+- testpath>=0.4.2
 - tk
 - tornado<5
 - tqdm
@@ -89,16 +94,18 @@ dependencies:
 - pytorch<0.4
 - bcolz
 - prompt_toolkit
-- pytest
+#- pytest
 - pip:
   - torchvision>=0.1.9
   - opencv-python
   - isoweek
   - pandas_summary
-  - torchtext
+  - torchtext==0.2.3
   - graphviz
   - sklearn_pandas
   - feather-format
-  - plotnine
+#  - plotnine
   - kaggle-cli
   - ipywidgets
+#  - pdpbox<=0.1.0
+  - treeinterpreter
