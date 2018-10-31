@@ -40,7 +40,7 @@ def test_from_csv():
         filepath = os.path.join(path, filename+'.csv')
         try:
             text_csv_file(filepath, n_labels=n_labels)
-            data_bunch = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
+            data_bunch = TextDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
             clas_data_bunch = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
             for data in [data_bunch, clas_data_bunch]:
                 assert len(data.classes) == 2
