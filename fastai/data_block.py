@@ -28,9 +28,9 @@ def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
     """Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`.
     If `label_delim` is specified, splits the values in `label_col` accordingly.
     """
-    if label_delim:
-        df.iloc[:,label_col] = list(csv.reader(df.iloc[:,label_col], delimiter=label_delim))
-    labels = df.iloc[:,label_col].values
+    labels = df.iloc[:,label_col]
+    if label_delim: labels = np.array(list(csv.reader(labels, delimiter=label_delim)))
+    else: labels = labels.values
     fnames = df.iloc[:,fn_col].str.lstrip()
     if suffix: fnames = fnames + suffix
     return fnames.values, labels
