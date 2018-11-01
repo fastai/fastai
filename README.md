@@ -13,7 +13,7 @@ The fastai library simplifies training fast and accurate neural nets using moder
 ```python
 untar_data(MNIST_PATH)
 data = image_data_from_folder(MNIST_PATH)
-learn = ConvLearner(data, tvm.resnet18, metrics=accuracy)
+learn = create_cnn(data, tvm.resnet18, metrics=accuracy)
 learn.fit(1)
 ```
 
@@ -39,7 +39,7 @@ If you experience installation problems, please read about [installation issues]
 
 * GPU
 
-   ```
+   ```bash
    conda install -c pytorch pytorch-nightly cuda92
    conda install -c fastai torchvision-nightly
    conda install -c fastai fastai
@@ -47,25 +47,33 @@ If you experience installation problems, please read about [installation issues]
 
 * CPU
 
-   ```
+   ```bash
    conda install -c pytorch pytorch-nightly-cpu
    conda install -c fastai torchvision-nightly-cpu
    conda install -c fastai fastai
    ```
+
+Note that JPEG decoding can be a bottleneck, particularly if you have a fast CPU. You can optionally install an optimized JPEG decoder as follows (Linux):
+
+```bash
+conda uninstall --force jpeg libtiff -y
+conda install -c conda-forge libjpeg-turbo
+CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall pillow-simd
+```
 
 
 ### PyPI Install
 
 * GPU
 
-   ```
+   ```bash
    pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
    pip install fastai
    ```
 
 * CPU
 
-   ```
+   ```bash
    pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
    pip install fastai
    ```
@@ -79,7 +87,7 @@ NB: this set will also fetch `torchvision-nightly`, which supports `torch-1.x`.
 First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the **same package manager you used to install it**, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
 
 
-```
+```bash
 git clone https://github.com/fastai/fastai
 cd fastai
 tools/run-after-git-clone
@@ -88,14 +96,14 @@ pip install -e .[dev]
 
 You can test that the build works by starting the jupyter notebook:
 
-```
+```bash
 jupyter notebook
 ```
 and executing an example notebook. For example load `examples/tabular.ipynb` and run it.
 
 Alternatively, you can do a quick CLI test:
 
-```
+```bash
 jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
 ```
 
@@ -111,7 +119,7 @@ If for any reason you can't use the prepackaged packages and have to build from 
 
 2. Next, you will also need to build `torchvision` from source:
 
-   ```
+   ```bash
    git clone https://github.com/pytorch/vision
    cd vision
    python setup.py install
@@ -119,7 +127,7 @@ If for any reason you can't use the prepackaged packages and have to build from 
 
 3. When both `pytorch` and `torchvision` are installed, first test that you can load each of these libraries:
 
-   ```
+   ```bash
    import torch
    import torchvision
    ```
@@ -135,7 +143,7 @@ If for any reason you can't use the prepackaged packages and have to build from 
 If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please refer to the [troubleshooting document](https://docs-dev.fast.ai/troubleshoot.html).
 
 If you encounter installation problems with conda, make sure you have the latest `conda` client (`conda install` will do an update too):
-```
+```bash
 conda install conda
 ```
 
