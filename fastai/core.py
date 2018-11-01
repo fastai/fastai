@@ -59,7 +59,7 @@ def ifnone(a:Any,b:Any)->Any:
 
 def uniqueify(x:Series)->List:
     "Return unique values of `x`"
-    return list(OrderedDict.fromkeys(x).keys())
+    return list(OrderedDict.fromkeys(sorted(x)).keys())
 
 def idx_dict(a): return {v:k for k,v in enumerate(a)}
 
