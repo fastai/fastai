@@ -88,7 +88,7 @@ class ClassificationInterpretation():
         return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
         tl_val,tl_idx = self.top_losses(k,largest)
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
@@ -105,7 +105,7 @@ class ClassificationInterpretation():
         cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", **kwargs)->None:
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, **kwargs)->None:
         "Plot the confusion matrix, passing `kawrgs` to `plt.figure`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix()
@@ -119,7 +119,7 @@ class ClassificationInterpretation():
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, cm[i, j], horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+            plt.text(j, i, f'{cm[i, j]:.{norm_dec}f}', horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         plt.tight_layout()
         plt.ylabel('Actual')
