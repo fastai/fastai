@@ -153,7 +153,6 @@ class SegmentationDataset(ImageDataset):
 class SegmentationRLEDataset(ImageDataset):
     "A dataset for segmentation task with run-length encoding mask."
     def __init__(self, x:FilePathList, y:StrList, classes:Collection[Any], shape:Tuple[int, int]):
-
         assert len(x)==len(y)
         super().__init__(classes)
         self.x,self.y,self.shape = np.array(x),np.array(y).astype(str),shape
