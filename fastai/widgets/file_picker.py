@@ -15,7 +15,7 @@ __all__ = ['DatasetFormatter', 'FileDeleter']
 # Grid 5x5
 
 
-# Example use: ds, idxs = Converter().from_toplosses(learn.model, data.valid_ds, data.valid_dl, learn.loss_func)
+# Example use: ds, idxs = DatasetFormatter().from_toplosses(learn.model, data.valid_ds, data.valid_dl, learn.loss_func)
 class DatasetFormatter():
     @classmethod
     def from_toplosses(cls, md, ds, dl, loss_func, n_imgs, **kwargs):
