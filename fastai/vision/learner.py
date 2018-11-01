@@ -47,7 +47,7 @@ class ClassificationLearner(Learner):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.valid_ds
         ds.set_item(img)
-        res = self.pred_batch()
+        res = self.pred_batch()[0]
         ds.clear_item()
         pred_max = res.argmax()
         return self.data.classes[pred_max],pred_max,res
