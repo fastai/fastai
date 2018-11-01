@@ -10,11 +10,12 @@ class DatasetBase(Dataset):
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
     def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
+    def new(self, *args, **kwargs):
+        "Create a new dataset using `self` as a template"
+        return self.__class__(*args, **kwargs)
 
-    @abstractmethod
-    def _get_x(self,i): pass
-    @abstractmethod
-    def _get_y(self,i): pass
+    def _get_x(self,i): return self.x[i]
+    def _get_y(self,i): return self.y[i]
 
     def __getitem__(self, i):
         if self.item is None: return self._get_x(i),self._get_y(i)

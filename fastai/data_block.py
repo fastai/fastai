@@ -68,7 +68,7 @@ class InputList(PathItemList):
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
         inter = pd.merge(df1, df2, how='inner', on=['fnames'])
-        return LabelList([(fn, np.array(lbl, dtype=np.object)) 
+        return LabelList([(fn, np.array(lbl, dtype=np.object))
                       for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)], self.path)
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
@@ -131,24 +131,25 @@ class LabelList(PathItemList):
 
 @dataclass
 class SplitData():
-    "Regroups `train` and `valid` data, inside a `path`."
     path:PathOrStr
     train:LabelList
     valid:LabelList
+    test: LabelList=None
 
     def __post_init__(self): self.path = Path(self.path)
 
     @property
-    def lists(self): return [self.train,self.valid]
+    def lists(self):
+        res = [self.train,self.valid]
+        if self.test is not None: res.append(self.test)
+        return res
 
     def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
-        "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
-        dss = [dataset_cls(*self.train.items.T, **kwargs)]
-        kwg_cls = kwargs.pop('classes') if 'classes' in kwargs else None
-        if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
-        if kwg_cls is not None: kwargs['classes'] = kwg_cls
-        dss.append(dataset_cls(*self.valid.items.T, **kwargs))
-        cls = getattr(dataset_cls, '__splits_class__', SplitDatasets)
+        "Create datasets from the underlying data using `dataset_cls` and passing along the `kwargs`."
+        train = dataset_cls(*self.train.items.T, **kwargs)
+        dss = [train]
+        dss += [train.new(*o.items.T, **kwargs) for o in self.lists[1:]]
+        cls = getattr(train, '__splits_class__', SplitDatasets)
         return cls(self.path, *dss)
 
 @dataclass
@@ -167,7 +168,7 @@ class SplitDatasets():
     def dataloaders(self, **kwargs)->Collection[DataLoader]:
         "Create dataloaders with the inner datasets, pasing the `kwargs`."
         return [DataLoader(o, **kwargs) for o in self.datasets]
-    
+
     @classmethod
     def from_single(cls, path:PathOrStr, ds:Dataset)->'SplitDatasets':
         "Factory method that uses `ds` for both valid and train, and passes `path`."
