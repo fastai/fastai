@@ -284,7 +284,7 @@ class ImageDataBunch(DataBunch):
             datasets = [train_ds, ImageClassificationDataset.from_folder(path/valid, classes=train_ds.classes)]
         else: datasets = ImageClassificationDataset.from_folder(path/train, valid_pct=valid_pct)
 
-        if test: datasets.append(ImageClassificationDataset.from_single_folder(
+        if test: datasets.append(ImageClassificationDataset.from_folder(
             path/test,classes=datasets[0].classes))
         return cls.create(*datasets, path=path, **kwargs)
 
