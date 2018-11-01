@@ -20,6 +20,7 @@ of that change.
 
 ### Fixed:
 
+- `ImageDataBunch.from_df` doesn't change the dataframe.
 
 ## 1.0.18 (2018-10-30)
 
