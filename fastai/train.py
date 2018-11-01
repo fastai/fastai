@@ -6,7 +6,7 @@ from .basic_train import *
 from .vision import models,create_body
 from fastai.vision.learner import cnn_config
 
-__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'mixup']
+__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'mixup', 'Learner']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     return partial(OneCycleScheduler, lr_max=lr_max, **kwargs)
