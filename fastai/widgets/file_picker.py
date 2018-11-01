@@ -59,7 +59,6 @@ class FileDeleter():
         "Handler for Confirm button click. Deletes all flagged images."
         for img_widget,delete_btn,fp in self.batch:
             fp = delete_btn.file_path
-            print('deleting', fp)
             if (delete_btn.flagged_for_delete == True): self.delete_image(fp)
         # Clear current batch from all_imgs
         self.all_images = self.all_images[self.batch_size:]
