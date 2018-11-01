@@ -16,6 +16,9 @@ def learn():
 def test_accuracy(learn):
     assert accuracy(*learn.get_preds()) > 0.9
 
+def test_error_rate(learn):
+    assert error_rate(*learn.get_preds()) < 0.1
+
 def test_1cycle_lrs(learn):
     lrs = learn.recorder.lrs
     assert lrs[0]<0.001
