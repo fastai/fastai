@@ -12,7 +12,7 @@ import PIL
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage', 'channel_view',
-           'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
+           'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate', 'SegmentationRLEDataset']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -149,6 +149,18 @@ class SegmentationDataset(ImageDataset):
 
     def _get_x(self,i): return open_image(self.x[i])
     def _get_y(self,i): return open_mask(self.y[i], self.div, self.convert_mode)
+
+class SegmentationRLEDataset(ImageDataset):
+    "A dataset for segmentation task with run-length encoding mask."
+    def __init__(self, x:FilePathList, y:StrList, classes:Collection[Any], shape:Tuple[int, int]):
+
+        assert len(x)==len(y)
+        super().__init__(classes)
+        self.x,self.y,self.shape = np.array(x),np.array(y).astype(str),shape
+        self.loss_func = CrossEntropyFlat()
+
+    def _get_x(self,i): return open_image(self.x[i])
+    def _get_y(self,i): return open_mask_rle(self.y[i], self.shape)
 
 class ObjectDetectDataset(ImageDataset):
     "A dataset with annotated images."
