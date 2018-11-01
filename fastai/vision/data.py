@@ -7,6 +7,7 @@ from ..data_block import _df_to_fns_labels
 from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from concurrent.futures import ProcessPoolExecutor, as_completed
+import PIL
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
@@ -385,18 +386,43 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
         for i,url in enumerate(progress_bar(urls)):
             download_image(url, dest/f"{i:08d}.jpg")
 
-def verify_image(file:Path, delete:bool):
-    try: assert open_image(file).shape[0]==3
+def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:PathOrStr='.', n_channels:int=3,
+                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, **kwargs):
+    """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
+    If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
+    using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
+    to PIL.Image.save."""
+    try: 
+        img = PIL.Image.open(file)
+        if max_size is None: return
+        max_size = listify(max_size, 2)
+        if img.height > max_size[0] or img.width > max_size[1]:
+            ratio = img.height/img.width
+            new_h = min(max_size[0], int(max_size[1] * ratio))
+            new_w = int(new_h/ratio)
+            img = img.resize((new_w,new_h), resample=interp)
+            os.makedirs(file.parent/Path(dest), exist_ok=True)
+            dest_fname = file.parent/Path(dest)/file.name
+            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
+            img.save(file.parent/Path(dest)/file.name, img_format, **kwargs)
+        img = np.array(img)
+        assert (1 if len(img.shape) == 2 else img.shape[2]) == n_channels
     except Exception as e:
         print(f'{e}')
         if delete: file.unlink()
-
-def verify_images(path:PathOrStr, delete=True, max_workers:int=4):
-    "Removes broken images or non 3-channel images in `path`"
+            
+def verify_images(path:PathOrStr, delete=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None, 
+                  dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, 
+                  **kwargs):
+    """Check if the image in `path` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
+    If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
+    using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
+    to PIL.Image.save. Use `max_workers` CPUs."""
     path = Path(path)
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        files = list(path.iterdir())
-        futures = [ex.submit(verify_image, file, delete=delete) for file in files]
+        files = get_image_files(path)
+        futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                            interp=interp, ext=ext, img_format=img_format, **kwargs) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageFileList(InputList):

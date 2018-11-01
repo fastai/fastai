@@ -18,8 +18,11 @@ of that change.
 
 ### Changed:
 
+- `verify_images` can know resize images on top of checking they're not broken.
+
 ### Fixed:
 
+- `ImageDataBunch.from_df` doesn't change the dataframe.
 
 ## 1.0.18 (2018-10-30)
 
