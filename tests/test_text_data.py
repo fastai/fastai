@@ -40,10 +40,12 @@ def test_from_csv():
         filepath = os.path.join(path, filename+'.csv')
         try:
             text_csv_file(filepath, n_labels=n_labels)
-            data = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
-            assert len(data.classes) == 2
-            assert set(data.classes) == set([True, False])
-            if n_labels > 1: assert len(data.labels[0]) == n_labels
+            data_bunch = TextDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
+            clas_data_bunch = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
+            for data in [data_bunch, clas_data_bunch]:
+                assert len(data.classes) == 2
+                assert set(data.classes) == set([True, False])
+                if n_labels > 1: assert len(data.labels[0]) == n_labels
         finally:
             shutil.rmtree(path)
 
@@ -53,13 +55,15 @@ def test_from_df():
         os.makedirs(path)
         try:
             df = text_df(n_labels=n_labels)
-            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
-            assert len(data.classes) == 2
-            assert set(data.classes) == set([True, False])
-            if n_labels > 1: assert len(data.labels[0]) == n_labels
+            data_bunch = TextDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+            clas_data_bunch = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+            for data in [data_bunch, clas_data_bunch]:
+                assert len(data.classes) == 2
+                assert set(data.classes) == set([True, False])
+                if n_labels > 1: assert len(data.labels[0]) == n_labels
         finally:
             shutil.rmtree(path)
-            
+
 def test_collate():
     path = untar_data(URLs.IMDB_SAMPLE)
     dft = pd.read_csv(path/'train.csv', header=None)
