@@ -1,7 +1,7 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
 
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+__all__ = ['SingleClassificationDataset', 'LabelXYDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
@@ -29,7 +29,14 @@ class LabelDataset(DatasetBase):
         if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
         super().__init__(len(classes))
 
+class LabelXYDataset(LabelDataset):
+    "Minimal `LabelDataset` which returns whatever `x` and `y` you pass in"
+    def __init__(self, x:Collection, y:Collection, classes:Optional[Collection[Any]]=None):
+        super().__init__(classes=classes)
+        self.x,self.y  = np.array(x),np.array(y)
+
 class SingleClassificationDataset(DatasetBase):
+    "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
     def __init__(self, classes:Collection[str]):
         self.classes = classes
         super().__init__(len(classes))
