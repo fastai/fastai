@@ -175,28 +175,28 @@ entries:
   - folderitems:
     - output: web,pdf
       title: Dev Notes
-      url: dev_develop.html.html
+      url: dev_develop.html
     - output: web,pdf
       title: GPU Notes
-      url: dev_gpu.html.html
+      url: dev_gpu.html
     - output: web,pdf
       title: git notes
-      url: dev_git.html.html
+      url: dev_git.html
     - output: web,pdf
       title: Testing
-      url: dev_test.html.html
+      url: dev_test.html
     - output: web,pdf
       title: Style Guide
-      url: dev_style.html.html
+      url: dev_style.html
     - output: web,pdf
       title: Abbreviations
-      url: dev_abbr.html.html
+      url: dev_abbr.html
     - output: web,pdf
       title: Packaging
-      url: dev_release.html.html
+      url: dev_release.html
     - output: web,pdf
       title: Troubleshooting
-      url: dev_troubleshoot.html.html
+      url: dev_troubleshoot.html
     output: web
     title: Library development
   output: web

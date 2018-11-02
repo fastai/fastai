@@ -75,13 +75,13 @@ sidebar_d = {
         'gen_doc.convert2html': 'gen_doc.convert2html',
     },
     'Library development': {
-        "Dev Notes": "dev_develop.html",
-        "GPU Notes": "dev_gpu.html",
-        "git notes": "dev_git.html",
-        "Testing": "dev_test.html",
-        "Style Guide": "dev_style.html",
-        "Abbreviations": "dev_abbr.html",
-        "Packaging": "dev_release.html",
-        "Troubleshooting": "dev_troubleshoot.html"
+        "Dev Notes": "dev_develop",
+        "GPU Notes": "dev_gpu",
+        "git notes": "dev_git",
+        "Testing": "dev_test",
+        "Style Guide": "dev_style",
+        "Abbreviations": "dev_abbr",
+        "Packaging": "dev_release",
+        "Troubleshooting": "dev_troubleshoot"
     }
 }
