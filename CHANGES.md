@@ -16,6 +16,8 @@ of that change.
 
 ### New:
 
+- add an argument `ResizeMtd` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no).
+
 ### Changed:
 
 - `verify_images` can know resize images on top of checking they're not broken.
