@@ -117,7 +117,7 @@ class DataBunch():
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
     def holdout(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
-        "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
+        "Returns correct holdout `Dataset` for validation, training, or test (`ds_type`)."
         if (ds_type == DatasetType.Test): return self.test_dl
         elif (ds_type == DatasetType.Train): return self.train_dl
         return self.valid_dl
