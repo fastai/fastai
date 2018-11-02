@@ -17,6 +17,7 @@ class BaseTextDataset():
     def __init__(self, ids:Collection[Collection[int]], labels:Collection[Union[int,float]], vocab_size:int,
                  classes:Collection[Any]=None):
         self.ids,self.labels,self.vocab_size,self.classes = ids,labels,vocab_size,classes
+        #self.c = len(classes)
 
     def __getitem__(self, idx:int) -> Tuple[Collection[int],Union[int,float]]: return self.ids[idx],self.labels[idx]
     def __len__(self) -> int: return len(self.ids)
@@ -348,6 +349,12 @@ class TextDataBunch(DataBunch):
         if test: datasets.append(TextDataset.from_one_folder(path, tokenizer=tokenizer, folder=test, classes=train_ds.classes,
                                         shuffle=shuffle, vocab=train_ds.vocab, **txt_kwargs))
         return cls.create(datasets, path, **kwargs)
+
+    @classmethod
+    def create(cls, datasets:Collection[TextDataset], path:PathOrStr, **kwargs) -> DataBunch:
+        "Call's `DataBunch.create` but changes the arguments so it'll work OK"
+        return DataBunch.create(*datasets, path=path, **kwargs)
+
 
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."

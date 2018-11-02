@@ -7,7 +7,7 @@ from fastai.basic_train import *
 __all__ = ['TerminateOnNaNCallback', 'EarlyStoppingCallback', 'SaveModelCallback', 'TrackerCallback', 'ReduceLROnPlateauCallback' ]
 
 class TerminateOnNaNCallback(Callback):
-    "A `LearnerCallback` that terminates training if loss is NaN."
+    "A `Callback` that terminates training if loss is NaN."
 
     def __init__(self):
         self.stop = False
@@ -50,7 +50,7 @@ class TrackerCallback(LearnerCallback):
 
 @dataclass
 class EarlyStoppingCallback(TrackerCallback):
-    "A `LearnerCallback` that terminates training when monitored quantity stops improving."
+    "A `TrackerCallback` that terminates training when monitored quantity stops improving."
     min_delta:int=0
     patience:int=0
 
@@ -75,7 +75,7 @@ class EarlyStoppingCallback(TrackerCallback):
 
 @dataclass
 class SaveModelCallback(TrackerCallback):
-    "A `LearnerCallback` that saves the model when monitored quantity is best."
+    "A `TrackerCallback` that saves the model when monitored quantity is best."
     every:str='improvement'
     name:str='bestmodel'
     def __post_init__(self):
@@ -97,7 +97,7 @@ class SaveModelCallback(TrackerCallback):
 
 @dataclass
 class ReduceLROnPlateauCallback(TrackerCallback):
-    "A `LearnerCallback` that reduces learning rate when a metric has stopped improving."
+    "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
     patience:int=0
     factor:float=0.2
     min_delta:int=0

@@ -50,7 +50,7 @@ For more details run:
 ./fastai-make-pr-branch
 ```
 
-While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the the `fastai` package.
+While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the `fastai` package.
 
 
 ### Step 1. Start With a Synced Fork Checkout

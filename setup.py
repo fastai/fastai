@@ -29,6 +29,7 @@ requirements = to_list("""
     ipython
     jupyter
     matplotlib
+    notebook>=5.7.0
     nbconvert
     nbformat
     numpy>=1.12

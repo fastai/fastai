@@ -2,32 +2,7 @@
 from .torch_core import *
 from .callback import *
 
-__all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'Fbeta', 'fbeta']
-
-@dataclass
-class Fbeta(Callback):
-    thresh:float=0.2
-    beta:float=2
-    eps:float=1e-9
-    sigmoid:bool=True
-    
-    def on_epoch_begin(self, **kwargs):
-        self.TP, self.pred, self.true = 0, 0, 0
-    
-    def on_batch_end(self, last_output, last_target, **kwargs):
-        if self.sigmoid: last_output = last_output.sigmoid()
-        y_pred = (last_output>self.thresh).float()
-        y_true = last_target.float()
-        self.TP += (y_pred*y_true).sum(dim=1)
-        self.pred += y_pred.sum(dim=1)
-        self.true += y_true.sum(dim=1)
-    
-    def on_epoch_end(self, **kwargs):
-        beta2 = self.beta**2
-        prec = self.TP/(self.pred+self.eps)
-        rec = self.TP/(self.true+self.eps)
-        res = (prec*rec)/(prec*beta2+rec+self.eps)*(1+beta2)
-        self.metric = res.mean().detach().item()
+__all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta']
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True) -> Rank0Tensor:
     "Computes the f_beta between preds and targets"
@@ -49,7 +24,7 @@ def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool
 def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     "Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems."
     n = targs.shape[0]
-    input = input.argmax(dim=1).view(n,-1)
+    input = input.argmax(dim=-1).view(n,-1)
     targs = targs.view(n,-1)
     intersect = (input*targs).sum().float()
     union = (input+targs).sum().float()
@@ -59,7 +34,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
 def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
     "Compute accuracy with `targs` when `input` is bs * n_classes."
     n = targs.shape[0]
-    input = input.argmax(dim=1).view(n,-1)
+    input = input.argmax(dim=-1).view(n,-1)
     targs = targs.view(n,-1)
     return (input==targs).float().mean()
 

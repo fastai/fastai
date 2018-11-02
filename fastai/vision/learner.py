@@ -47,7 +47,7 @@ class ClassificationLearner(Learner):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.valid_ds
         ds.set_item(img)
-        res = self.pred_batch()
+        res = self.pred_batch()[0]
         ds.clear_item()
         pred_max = res.argmax()
         return self.data.classes[pred_max],pred_max,res
@@ -55,7 +55,7 @@ class ClassificationLearner(Learner):
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                classification:bool=True, **kwargs:Any)->None:
+                classification:bool=True, **kwargs:Any)->ClassificationLearner:
     "Build convnet style learners."
     assert classification, 'Regression CNN not implemented yet, bug us on the forums if you want this!'
     meta = cnn_config(arch)
@@ -83,12 +83,12 @@ class ClassificationInterpretation():
         preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 
-    def top_losses(self, k, largest=True):
-        "`k` largest(/smallest) losses."
-        return self.losses.topk(k, largest=largest)
+    def top_losses(self, k:int=None, largest=True):
+        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
+        return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
         tl_val,tl_idx = self.top_losses(k,largest)
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
@@ -103,13 +103,13 @@ class ClassificationInterpretation():
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
         cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
-
         for pred_class_slice, y_true_slice in self._get_data_in_slices(slice_size or self.y_true.shape[0]):
             cm_slice = ((pred_class_slice==x[:,None]) & (y_true_slice==x[:,None,None])).sum(2)
             torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, slice_size:int=None, **kwargs)->None:
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, 
+                              slice_size:int=None, **kwargs)->None:
         "Plot the confusion matrix, passing `kawrgs` to `plt.figure`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
@@ -123,7 +123,7 @@ class ClassificationInterpretation():
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, cm[i, j], horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+            plt.text(j, i, f'{cm[i, j]:.{norm_dec}f}', horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         plt.tight_layout()
         plt.ylabel('Actual')

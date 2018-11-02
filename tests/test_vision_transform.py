@@ -110,3 +110,10 @@ def test_deterministic_transforms():
     check_tfms(img, crops, [[3,3], [3,2],[2,2],[2,3],[2,2]])
     pads = [pad(padding=1, mode=mode) for mode in ['zeros', 'border', 'reflection']]
     check_tfms(img_test([3,4]), pads, [[4,5], [[4,5],[4,6]], [[4,5],[6,5]]])
+    
+def test_crop_without_size():
+    path = untar_data(URLs.MNIST_TINY)
+    files = get_image_files(path/'train'/'3')
+    img = open_image(files[0])
+    tfms = get_transforms()
+    img = apply_tfms(tfms[0], img)
