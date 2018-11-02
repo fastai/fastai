@@ -211,12 +211,12 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch)
 
-    def pred_batch(self, is_test:bool=False) -> List[Tensor]:
-        "Return output of the model on one batch from valid or test set, depending on `is_test`."
-        dl = self.data.holdout(is_test)
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid) -> List[Tensor]:
+        "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
+        dl = self.data.holdout(ds_type)
         nw = dl.num_workers
         dl.num_workers = 0
-        preds,_ = self.get_preds(is_test, with_loss=False, n_batch=1)
+        preds,_ = self.get_preds(ds_type, with_loss=False, n_batch=1)
         dl.num_workers = nw
         return preds[0]
 
