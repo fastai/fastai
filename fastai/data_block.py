@@ -68,6 +68,7 @@ class InputList(PathItemList):
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
         inter = pd.merge(df1, df2, how='inner', on=['fnames'])
+        lbl = np.array(lbl, dtype=np.object) if suffix else np.array(lbl)
         return LabelList([(fn, np.array(lbl, dtype=np.object))
                       for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)], self.path)
 
@@ -93,6 +94,18 @@ class LabelList(PathItemList):
     @property
     def files(self): return self.items[:,0]
 
+    @classmethod
+    def from_df(cls, path:PathOrStr, df:DataFrame, input_col:int=0, label_cols:Collection[int]=None):
+        label_cols = ifnone(label_cols, [1])
+        inputs = df.iloc[:,input_col].values
+        labels = np.squeeze(df.iloc[:,label_cols].values).astype(np.float32 if len(label_cols) > 1 else np.int64)
+        return LabelList([(i,l) for (i,l) in zip(inputs, labels)], path)
+    
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_col:int=0, label_cols:Collection[int]=None, header:str=None):
+        df = pd.read_csv(path/csv_fname, header=header)
+        return cls.from_df(path, df, input_col, label_cols)
+                          
     def split_by_files(self, valid_names:InputList)->'SplitData':
         "Split the data by using the names in `valid_names` for validation."
         valid = [o for o in self.items if o[0] in valid_names]
