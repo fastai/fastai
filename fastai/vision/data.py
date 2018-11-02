@@ -390,8 +390,8 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
         for i,url in enumerate(progress_bar(urls)):
             download_image(url, dest/f"{i:08d}.jpg")
 
-def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:PathOrStr='.', n_channels:int=3,
-                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, **kwargs):
+def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
+                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=True, **kwargs):
     """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
@@ -399,34 +399,41 @@ def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None
     try:
         img = PIL.Image.open(file)
         if max_size is None: return
+        assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
         max_size = listify(max_size, 2)
         if img.height > max_size[0] or img.width > max_size[1]:
+            dest_fname = dest/file.name
+            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
+            if resume and os.path.isfile(dest_fname): return
             ratio = img.height/img.width
             new_h = min(max_size[0], int(max_size[1] * ratio))
             new_w = int(new_h/ratio)
+            if n_channels == 3: img = img.convert("RGB")
             img = img.resize((new_w,new_h), resample=interp)
-            os.makedirs(file.parent/Path(dest), exist_ok=True)
-            dest_fname = file.parent/Path(dest)/file.name
-            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
-            img.save(file.parent/Path(dest)/file.name, img_format, **kwargs)
+            img.save(dest_fname, img_format, **kwargs)
         img = np.array(img)
-        assert (1 if len(img.shape) == 2 else img.shape[2]) == n_channels
+        img_channels = 1 if len(img.shape) == 2 else img.shape[2]
+        assert img_channels == n_channels, f"Image {file} has {img_channels} instead of {n_channels}"
     except Exception as e:
         print(f'{e}')
         if delete: file.unlink()
 
-def verify_images(path:PathOrStr, delete=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
+def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
                   dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
-                  **kwargs):
-    """Check if the image in `path` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
-    If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
-    using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
-    to PIL.Image.save. Use `max_workers` CPUs."""
+                  resume:bool=True, **kwargs):
+    """Check if the image in `path` exists, can be opened and has `n_channels`.
+    If `n_channels` is 3 – it'll try to convert image to RGB. If `delete`, removes it if it fails.
+    If `resume` – it will skip already existent images in `dest`.  If `max_size` is specifided,
+    image is resized to the same ratio so that both sizes are less than `max_size`, using `interp`.
+    Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are
+    passed to PIL.Image.save. Use `max_workers` CPUs."""
     path = Path(path)
+    dest = path/Path(dest)
+    os.makedirs(dest, exist_ok=True)
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
         files = get_image_files(path)
         futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                            interp=interp, ext=ext, img_format=img_format, **kwargs) for file in files]
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageFileList(InputList):
