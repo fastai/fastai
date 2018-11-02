@@ -13,7 +13,7 @@ The fastai library simplifies training fast and accurate neural nets using moder
 ```python
 untar_data(MNIST_PATH)
 data = image_data_from_folder(MNIST_PATH)
-learn = ConvLearner(data, tvm.resnet18, metrics=accuracy)
+learn = create_cnn(data, tvm.resnet18, metrics=accuracy)
 learn.fit(1)
 ```
 

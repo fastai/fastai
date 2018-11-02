@@ -47,7 +47,7 @@ class ClassificationLearner(Learner):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.valid_ds
         ds.set_item(img)
-        res = self.pred_batch()
+        res = self.pred_batch()[0]
         ds.clear_item()
         pred_max = res.argmax()
         return self.data.classes[pred_max],pred_max,res
@@ -88,7 +88,7 @@ class ClassificationInterpretation():
         return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
 
     def plot_top_losses(self, k, largest=True, figsize=(12,12)):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class."
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
         tl_val,tl_idx = self.top_losses(k,largest)
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
@@ -99,16 +99,20 @@ class ClassificationInterpretation():
             t[0].show(ax=axes.flat[i], title=
                 f'{classes[self.pred_class[idx]]}/{classes[t[1]]} / {self.losses[idx]:.2f} / {self.probs[idx][t[1]]:.2f}')
 
-    def confusion_matrix(self):
+    def confusion_matrix(self, slice_size:int=None):
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
-        cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
+        cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
+        for pred_class_slice, y_true_slice in self._get_data_in_slices(slice_size or self.y_true.shape[0]):
+            cm_slice = ((pred_class_slice==x[:,None]) & (y_true_slice==x[:,None,None])).sum(2)
+            torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", **kwargs)->None:
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, 
+                              slice_size:int=None, **kwargs)->None:
         "Plot the confusion matrix, passing `kawrgs` to `plt.figure`."
         # This function is mainly copied from the sklearn docs
-        cm = self.confusion_matrix()
+        cm = self.confusion_matrix(slice_size=slice_size)
         plt.figure(**kwargs)
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
@@ -119,17 +123,25 @@ class ClassificationInterpretation():
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, cm[i, j], horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+            plt.text(j, i, f'{cm[i, j]:.{norm_dec}f}', horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         plt.tight_layout()
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
 
-    def most_confused(self, min_val:int=1)->Collection[Tuple[str,str,int]]:
+    def most_confused(self, min_val:int=1, slice_size:int=None)->Collection[Tuple[str,str,int]]:
         "Sorted descending list of largest non-diagonal entries of confusion matrix"
-        cm = self.confusion_matrix()
+        cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
         res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
+
+    def _get_data_in_slices(self, slice_size:int):
+        "Slices data into slices of size slice_size."
+        iter_index = 0
+        while self.y_true.shape[0] >= iter_index*slice_size:
+            upper_bound = min(self.y_true.shape[0], (iter_index + 1) * slice_size)
+            yield self.pred_class[iter_index * slice_size:upper_bound], self.y_true[iter_index * slice_size:upper_bound]
+            iter_index +=1
 

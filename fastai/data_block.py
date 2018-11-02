@@ -68,7 +68,8 @@ class InputList(PathItemList):
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
         inter = pd.merge(df1, df2, how='inner', on=['fnames'])
-        return LabelList([(fn, np.array(lbl, dtype=np.object)) 
+        lbl = np.array(lbl, dtype=np.object) if suffix else np.array(lbl)
+        return LabelList([(fn, np.array(lbl, dtype=np.object))
                       for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)], self.path)
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
@@ -93,6 +94,18 @@ class LabelList(PathItemList):
     @property
     def files(self): return self.items[:,0]
 
+    @classmethod
+    def from_df(cls, path:PathOrStr, df:DataFrame, input_col:int=0, label_cols:Collection[int]=None):
+        label_cols = ifnone(label_cols, [1])
+        inputs = df.iloc[:,input_col].values
+        labels = np.squeeze(df.iloc[:,label_cols].values).astype(np.float32 if len(label_cols) > 1 else np.int64)
+        return LabelList([(i,l) for (i,l) in zip(inputs, labels)], path)
+    
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_col:int=0, label_cols:Collection[int]=None, header:str=None):
+        df = pd.read_csv(path/csv_fname, header=header)
+        return cls.from_df(path, df, input_col, label_cols)
+                          
     def split_by_files(self, valid_names:InputList)->'SplitData':
         "Split the data by using the names in `valid_names` for validation."
         valid = [o for o in self.items if o[0] in valid_names]
@@ -131,24 +144,25 @@ class LabelList(PathItemList):
 
 @dataclass
 class SplitData():
-    "Regroups `train` and `valid` data, inside a `path`."
     path:PathOrStr
     train:LabelList
     valid:LabelList
+    test: LabelList=None
 
     def __post_init__(self): self.path = Path(self.path)
 
     @property
-    def lists(self): return [self.train,self.valid]
+    def lists(self):
+        res = [self.train,self.valid]
+        if self.test is not None: res.append(self.test)
+        return res
 
     def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
-        "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
-        dss = [dataset_cls(*self.train.items.T, **kwargs)]
-        kwg_cls = kwargs.pop('classes') if 'classes' in kwargs else None
-        if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
-        if kwg_cls is not None: kwargs['classes'] = kwg_cls
-        dss.append(dataset_cls(*self.valid.items.T, **kwargs))
-        cls = getattr(dataset_cls, '__splits_class__', SplitDatasets)
+        "Create datasets from the underlying data using `dataset_cls` and passing along the `kwargs`."
+        train = dataset_cls(*self.train.items.T, **kwargs)
+        dss = [train]
+        dss += [train.new(*o.items.T, **kwargs) for o in self.lists[1:]]
+        cls = getattr(train, '__splits_class__', SplitDatasets)
         return cls(self.path, *dss)
 
 @dataclass
@@ -164,10 +178,23 @@ class SplitDatasets():
         "The underlying datasets of this object."
         return [self.train_ds,self.valid_ds] if self.test_ds is None else [self.train_ds,self.valid_ds, self.test_ds]
 
+    @datasets.setter
+    def datasets(self,ds)->None:
+        assert (len(ds) == 2 or len(ds) == 3), "You have to pass two or three datasets."
+        self.train_ds,self.valid_ds = ds[:2]
+        if len(ds) == 3: self.test_ds = ds[2]
+    
+    def set_attr(self, **kwargs):
+        dss = self.datasets
+        for key,val in kwargs.items():
+            for ds in dss: ds = setattr(ds, key, val)
+        self.datasets = dss
+        return self
+            
     def dataloaders(self, **kwargs)->Collection[DataLoader]:
         "Create dataloaders with the inner datasets, pasing the `kwargs`."
         return [DataLoader(o, **kwargs) for o in self.datasets]
-    
+
     @classmethod
     def from_single(cls, path:PathOrStr, ds:Dataset)->'SplitDatasets':
         "Factory method that uses `ds` for both valid and train, and passes `path`."

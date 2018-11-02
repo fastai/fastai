@@ -212,7 +212,7 @@ class Learner():
         dl.num_workers = 0
         preds,_ = self.get_preds(is_test, with_loss=False, n_batch=1)
         dl.num_workers = nw
-        return preds[0]
+        return preds
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
