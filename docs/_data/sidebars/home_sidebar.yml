@@ -173,24 +173,30 @@ entries:
     output: web
     title: Doc authoring
   - folderitems:
-    - external_url: https://docs-dev.fast.ai/develop
-      output: web,pdf
-      title: Overview
-    - external_url: https://docs-dev.fast.ai/test
-      output: web,pdf
-      title: Testing
-    - external_url: https://docs-dev.fast.ai/style
-      output: web,pdf
-      title: Style guide
-    - external_url: https://docs-dev.fast.ai/abbr
-      output: web,pdf
-      title: Abbreviation
     - output: web,pdf
-      title: Typing
-      url: fastai_typing.html
-    - external_url: https://docs-dev.fast.ai/release
-      output: web,pdf
-      title: Packaging fastai
+      title: Dev Notes
+      url: dev_develop.html.html
+    - output: web,pdf
+      title: GPU Notes
+      url: dev_gpu.html.html
+    - output: web,pdf
+      title: git notes
+      url: dev_git.html.html
+    - output: web,pdf
+      title: Testing
+      url: dev_test.html.html
+    - output: web,pdf
+      title: Style Guide
+      url: dev_style.html.html
+    - output: web,pdf
+      title: Abbreviations
+      url: dev_abbr.html.html
+    - output: web,pdf
+      title: Packaging
+      url: dev_release.html.html
+    - output: web,pdf
+      title: Troubleshooting
+      url: dev_troubleshoot.html.html
     output: web
     title: Library development
   output: web

@@ -75,11 +75,13 @@ sidebar_d = {
         'gen_doc.convert2html': 'gen_doc.convert2html',
     },
     'Library development': {
-        'Overview': 'https://docs-dev.fast.ai/develop',
-        'Testing': 'https://docs-dev.fast.ai/test',
-        'Style guide': 'https://docs-dev.fast.ai/style',
-        'Abbreviation': 'https://docs-dev.fast.ai/abbr',
-        'Typing': 'fastai_typing',
-        'Packaging fastai': 'https://docs-dev.fast.ai/release'
+        "Dev Notes": "dev_develop.html",
+        "GPU Notes": "dev_gpu.html",
+        "git notes": "dev_git.html",
+        "Testing": "dev_test.html",
+        "Style Guide": "dev_style.html",
+        "Abbreviations": "dev_abbr.html",
+        "Packaging": "dev_release.html",
+        "Troubleshooting": "dev_troubleshoot.html"
     }
 }
