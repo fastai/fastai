@@ -75,7 +75,7 @@ summary: "`Learner` support for computer vision"
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -89,7 +89,7 @@ summary: "`Learner` support for computer vision"
 <span class="n">learner</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -119,7 +119,7 @@ epoch  train_loss  valid_loss  accuracy
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;one_epoch&#39;</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -167,7 +167,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">learner</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -206,7 +206,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;one_epoch&#39;</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -311,7 +311,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">interp</span> <span class="o">=</span> <span class="n">ClassificationInterpretation</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">losses</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -398,7 +398,7 @@ epoch  train_loss  valid_loss  accuracy
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">plot_top_losses</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -478,7 +478,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.plot_confusion_matrix"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L108" class="source_link">[source]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<code>normalize</code>:<code>bool</code>=<code>False</code>, <code>title</code>:<code>str</code>=<code>'Confusion matrix'</code>, <code>cmap</code>:<code>Any</code>=<code>'Blues'</code>, <code>norm_dec</code>:<code>int</code>=<code>2</code>, <code>kwargs</code>)</p>
+<h4 id="ClassificationInterpretation.plot_confusion_matrix"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<code>normalize</code>:<code>bool</code>=<code>False</code>, <code>title</code>:<code>str</code>=<code>'Confusion matrix'</code>, <code>cmap</code>:<code>Any</code>=<code>'Blues'</code>, <code>norm_dec</code>:<code>int</code>=<code>2</code>, <code>slice_size</code>:<code>int</code>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 <p>Plot the confusion matrix, passing <code>kawrgs</code> to <code>plt.figure</code>.</p>
 
@@ -498,7 +498,7 @@ epoch  train_loss  valid_loss  accuracy
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">plot_confusion_matrix</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -530,7 +530,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.confusion_matrix"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L102" class="source_link">[source]</a></h4><blockquote><p><code>confusion_matrix</code>()</p>
+<h4 id="ClassificationInterpretation.confusion_matrix"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L102" class="source_link">[source]</a></h4><blockquote><p><code>confusion_matrix</code>(<code>slice_size</code>:<code>int</code>=<code>None</code>)</p>
 </blockquote>
 <p>Confusion matrix as an <code>np.ndarray</code>.</p>
 
@@ -550,7 +550,7 @@ epoch  train_loss  valid_loss  accuracy
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -574,39 +574,18 @@ epoch  train_loss  valid_loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Working-with-large-dataset">Working with large dataset<a class="anchor-link" href="#Working-with-large-dataset">&#182;</a></h4>
+<h4 id="Working-with-large-datasets">Working with large datasets<a class="anchor-link" href="#Working-with-large-datasets">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>When working with large datasets, memory problem can arise when computing confusion matrix. For example, an error can look like this:</p>
+<p>When working with large datasets, memory problems can arise when computing the confusion matrix. For example, an error can look like this:</p>
 
-</div>
-</div>
-</div>---------------------------------------------------------------------------
-RuntimeError                              Traceback (most recent call last)
-<ipython-input-13-d745160313a7> in <module>()
-----> 1 interp.plot_confusion_matrix(figsize=(12,12), dpi=60)
+<pre><code>RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RAM! at /opt/conda/conda-bld/pytorch-nightly_1540719301766/work/aten/src/TH/THGeneral.cpp:204
 
-~/anaconda3/lib/python3.6/site-packages/fastai/vision/learner.py in plot_confusion_matrix(self, normalize, title, cmap, **kwargs)
-    109         "Plot the confusion matrix, passing `kawrgs` to `plt.figure`."
-    110         # This function is mainly copied from the sklearn docs
---> 111         cm = self.confusion_matrix()
-    112         plt.figure(**kwargs)
-    113         plt.imshow(cm, interpolation='nearest', cmap=cmap)
-
-~/anaconda3/lib/python3.6/site-packages/fastai/vision/learner.py in confusion_matrix(self)
-    103         "Confusion matrix as an `np.ndarray`."
-    104         x=torch.arange(0,self.data.c)
---> 105         cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-    106         return to_np(cm)
-    107 
-
-RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RAM! at /opt/conda/conda-bld/pytorch-nightly_1540719301766/work/aten/src/TH/THGeneral.cpp:204
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this case it is possible to force ClassificationInterpretation class to compute confusion matrix for data slices and then aggregate the result by specifying slice_size parameter.</p>
+</code></pre>
+<p>In this case it is possible to force <a href="/vision.learner.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> to compute the confusion matrix for data slices and then aggregate the result by specifying slice_size parameter.</p>
 
 </div>
 </div>
@@ -619,7 +598,7 @@ RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RA
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -649,7 +628,7 @@ RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RA
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -680,7 +659,7 @@ RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RA
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">interp</span><span class="o">.</span><span class="n">most_confused</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -709,7 +688,7 @@ RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RA
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">ClassificationLearner</span><span class="p">,</span> <span class="n">doc_string</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -727,6 +706,19 @@ RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RA
 
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 
