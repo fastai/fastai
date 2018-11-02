@@ -1,6 +1,7 @@
 "Utility functions to help deal with tensors"
 from .imports.torch import *
 from .core import *
+from numpy import ndarray
 
 AffineMatrix = Tensor
 BoolOrTensor = Union[bool,Tensor]
@@ -10,6 +11,7 @@ ItemsList = Collection[Union[Tensor,ItemBase,'ItemsList',float,int]]
 LambdaFunc = Callable[[Tensor],Tensor]
 LayerFunc = Callable[[nn.Module],None]
 ModuleList = Collection[nn.Module]
+NDArray = ndarray
 OptOptimizer = Optional[optim.Optimizer]
 ParamList = Collection[nn.Parameter]
 Rank0Tensor = NewType('OneEltTensor', Tensor)

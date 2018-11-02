@@ -37,11 +37,24 @@ def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
     "Generate int or tensor `size` of ints between `low` and `high` (included)."
     return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
 
-def pil2tensor(image:NPImage)->TensorImage:
-    "Convert PIL style `image` array to torch style image tensor."
-    arr = ByteTensor(torch.ByteStorage.from_buffer(image.tobytes()))
-    arr = arr.view(image.size[1], image.size[0], -1)
-    return arr.permute(2,0,1)
+def pil2tensor(image:Union[NPImage,NDArray], dtype)->TensorImage:
+    #Convert PIL.Image or numpy.ndarray to a torch tensor formattet for input to a neural network."
+    #image: must be a PIL.image or a numpy array. 
+    #       Grayscale (single channel) convert to the shape: 1, heigh, widt
+    #       rgb converts to a shape of:                      3, width, height
+    #dtype: pytorch support: np.double, np.float, np.float16, np.int64, np.int32, and np.uint8
+    #Usage 1: pil2tensor(Image.open(\"dog.47.jpg\").convert(fmt), dtype).div_(scale)"
+    #         where fmt = RGB, L (=8bit for fx masks) or I (= int for fx 16 bit grayscale)"
+    #         where scale = 255 for rgb, 65535 for grayscale"
+    #         if your data are already at the right scale then no .div is required"
+    #Usage 2: if your image is a simple rgb of grayscale the you can do. The following is slightly faster but more risky"
+    #         pil2tensor(Image.open(\"dog.47.jpg\"), dtype).div_(scale) with scale as above. "
+    #Usage 3: pil2tensor(Image.open(numpy_array,dtype), dtype).div_(scale) if data alredy are in a numpy array"
+    a = np.asarray(image)
+    if a.ndim==2 : a = np.expand_dims(a,2)    
+    a = np.transpose(a, (1, 0, 2))  #transpose width, height to height,width
+    a = np.transpose(a, (2, 1, 0))  #move channels to the first positionf
+    return torch.from_numpy( a.astype(dtype, copy=False) )
 
 def image2np(image:Tensor)->np.ndarray:
     "Convert from torch style `image` to numpy/matplotlib style."
@@ -364,12 +377,12 @@ class ImageBBox(ImagePoints):
 def open_image(fn:PathOrStr)->Image:
     "Return `Image` object created from image in file `fn`."
     x = PIL.Image.open(fn).convert('RGB')
-    return Image(pil2tensor(x).float().div_(255))
+    return Image(pil2tensor(x,np.float).div_(255))
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
     x = PIL.Image.open(fn).convert(convert_mode)
-    mask = pil2tensor(x).float()
+    mask = pil2tensor(x,np.float)
     if div: mask.div_(255)
     return ImageSegment(mask)
 
