@@ -1,7 +1,9 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
 
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset', 'DatasetType']
+
+DatasetType = Enum('Dataset', 'Train Valid Test')
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
