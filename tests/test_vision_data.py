@@ -7,11 +7,6 @@ def path():
     path = untar_data(URLs.MNIST_TINY)
     return path
 
-def prep_mnist_tiny_csv_labels(path):
-    labels_df = pd.read_csv(path/'labels.csv')
-    labels_df['label'] = labels_df['label'].apply(lambda val: '3' if val==0 else '7')
-    return labels_df
-
 def mnist_tiny_sanity_test(data):
     assert data.c == 2
     assert set(map(str, set(data.classes))) == {'3', '7'}
@@ -35,7 +30,7 @@ def test_from_csv(path):
     try:
         os.makedirs(tmp_path)
         for filepath in files: shutil.copyfile(filepath, tmp_path/filepath.name)
-        prep_mnist_tiny_csv_labels(path).to_csv(tmp_path/'labels.csv', index=False)
+        pd.read_csv(path/'labels.csv').to_csv(tmp_path/'labels.csv', index=False)
         data = ImageDataBunch.from_csv(tmp_path, size=28)
         mnist_tiny_sanity_test(data)
     finally:
@@ -48,7 +43,7 @@ def test_from_df(path):
     try:
         os.makedirs(tmp_path)
         for filepath in files: shutil.copyfile(filepath, tmp_path/filepath.name)
-        data = ImageDataBunch.from_df(tmp_path, df=prep_mnist_tiny_csv_labels(path), size=28)
+        data = ImageDataBunch.from_df(tmp_path, df=pd.read_csv(path/'labels.csv'), size=28)
         mnist_tiny_sanity_test(data)
     finally:
         shutil.rmtree(tmp_path)
