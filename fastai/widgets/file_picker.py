@@ -40,12 +40,9 @@ class FileDeleter():
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
         self.all_images,self.batch = [],[]
         self.batch_size = batch_size
-        for i in fns_idxs:
-            path = Path(dataset.x[i])
-            if (path.is_file()):
-                img,_ = dataset[i]
-                self.all_images.append((img._repr_jpeg_(), path))
-                # TODO: SEE IF THIS IS A NEW BOTTLENECK!
+        self.all_images = [(dataset[i][0]._repr_jpeg_(), Path(dataset.x[i]))
+                           for i in fns_idxs if path.is_file()]
+        # TODO: SEE IF THIS IS A NEW BOTTLENECK!
         self.render()
 
     def make_img_widget(self, img, height='250px', width='300px', format='jpg'):
