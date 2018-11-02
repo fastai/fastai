@@ -215,16 +215,25 @@ class DatasetTfm(Dataset):
         "Passthrough access to wrapped dataset attributes."
         return getattr(self.ds, k)
 
+def _add_crop_pad(tfms):
+    tfm_names = [getattr(tfm,'__name__','') for tfm in tfms]
+    return tfms if 'crop_pad' in tfm_names else [crop_pad()] + tfms
+
+def _prep_tfms(tfms, resize_mtd:ResizeMtd=ResizeMtd.CROP):
+    if resize_mtd <= 2: return [_add_crop_pad(tfms[0]), _add_crop_pad(tfms[1])]
+    return tfms
+
 def _transform_dataset(self, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any)->DatasetTfm:
     return DatasetTfm(self, tfms=tfms, tfm_y=tfm_y, **kwargs)
 DatasetBase.transform = _transform_dataset
 
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
-                       tfms:Optional[Tuple[TfmList,TfmList]]=None, **kwargs:Any):
+                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_mtd:ResizeMtd=ResizeMtd.CROP, **kwargs:Any):
     "Create train, valid and maybe test DatasetTfm` using `tfms` = (train_tfms,valid_tfms)."
-    res = [DatasetTfm(train_ds, tfms[0],  **kwargs),
-           DatasetTfm(valid_ds, tfms[1],  **kwargs)]
-    if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1],  **kwargs))
+    tfms = _prep_tfms(ifnone(tfms, [[],[]]), resize_mtd)
+    res = [DatasetTfm(train_ds, tfms[0], resize_mtd=resize_mtd, **kwargs),
+           DatasetTfm(valid_ds, tfms[1], resize_mtd=resize_mtd, **kwargs)]
+    if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1], resize_mtd=resize_mtd, **kwargs))
     return res
 
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
@@ -269,7 +278,7 @@ class ImageDataBunch(DataBunch):
         "Factory method. `bs` batch size, `ds_tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
-        if ds_tfms: datasets = transform_datasets(*datasets, tfms=ds_tfms, size=size, **kwargs)
+        if ds_tfms or size: datasets = transform_datasets(*datasets, tfms=ds_tfms, size=size, **kwargs)
         dls = [DataLoader(*o, num_workers=num_workers) for o in
                zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
