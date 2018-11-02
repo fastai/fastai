@@ -12,21 +12,15 @@ __all__ = ['DatasetFormatter', 'FileDeleter']
 # Grid 5x5
 
 
-# Example use: ds, idxs = DatasetFormatter().from_toplosses(learn.model, data.valid_ds, data.valid_dl, learn.loss_func)
+# Example use: ds, idxs = DatasetFormatter().from_toplosses(learn, ds_type=DatasetType.Valid)
 class DatasetFormatter():
     @classmethod
-    def from_toplosses(cls, md, ds, dl, loss_func, n_imgs, **kwargs):
-        "Formats images with padding for top losses from model `md`, dataset `ds`, `dl`, `loss_func`, with option to limit to `n_imgs` returned."
-        dataset, idxs = cls.get_toploss_paths(md, ds, dl, loss_func, n_imgs)
-        return cls.padded_ds(dataset, **kwargs), idxs
-
-    @staticmethod
-    def get_toploss_paths(md, ds, dl, loss_func, n_imgs=None):
-        "Gets filenames for top losses from model `md`, dataset `ds`, `dl`, `loss_func`, with option to limit to `n_imgs` returned."
+    def from_toplosses(cls, learn, n_imgs, ds_type:DatasetType=DatasetType.Valid, **kwargs):
+        "Formats images with padding for top losses from learner `learn`, using dataset type `ds_type`, with option to limit to `n_imgs` returned."
         if not n_imgs: n_imgs = len(dl)
-        _,_,val_losses = get_preds(md, dl, loss_func=loss_func)
-        _,idxs = topk(val_losses, n_imgs)
-        return ds, idxs
+        _,_,val_losses = learn.get_preds(ds_type)
+        idxs = torch.topk(val_losses, n_imgs)[1]
+        return cls.padded_ds(learn.dl(ds_type), **kwargs), idxs
 
     def padded_ds(ds_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
         "For a Dataset `ds_input`, resize each image in `ds_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
