@@ -46,9 +46,9 @@ sidebar: home_sidebar
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:04
+<pre>Total time: 00:05
 epoch  train_loss  valid_loss  accuracy
-1      0.087469    0.052460    0.984789  (00:04)
+1      0.085461    0.040420    0.986261  (00:05)
 
 </pre>
 </div>
@@ -71,7 +71,7 @@ epoch  train_loss  valid_loss  accuracy
 that means that you can try any of the code you see in any notebook yourself!
 You'll find the notebooks in the <a href="https://github.com/fastai/fastai/tree/master/docs_src">docs_src</a> folder of the
 <a href="https://github.com/fastai/fastai">fastai</a> repo. For instance,
-<a href="https://github.com/fastai/fastai/blob/master/docs_src/index.ipynb">here</a>
+<a href="https://nbviewer.jupyter.org/github/fastai/fastai/blob/master/docs_src/index.ipynb">here</a>
 is the notebook source of what you're reading now.</div>
 </div>
 
@@ -90,23 +90,9 @@ is the notebook source of what you're reading now.</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To install or update fastai, we recommend <code>conda</code>:</p>
-<h3 id="Conda-Install">Conda Install<a class="anchor-link" href="#Conda-Install">&#182;</a></h3><ul>
-<li><p>GPU</p>
 
-<pre><code> conda install -c pytorch pytorch-nightly cuda92
- conda install -c fastai torchvision-nightly
- conda install -c fastai fastai</code></pre>
-</li>
-</ul>
-<ul>
-<li><p>CPU</p>
-
-<pre><code> conda install -c pytorch pytorch-nightly-cpu
- conda install -c fastai torchvision-nightly-cpu
- conda install -c fastai fastai</code></pre>
-</li>
-</ul>
-<p>For troubleshooting and alternative installations, see the <a href="https://github.com/fastai/fastai/blob/master/README.md">fastai readme</a>.</p>
+<pre><code>conda install -c pytorch -c fastai fastai pytorch-nightly cuda92</code></pre>
+<p>For troubleshooting, and alternative installations (including pip and CPU-only options) see the <a href="https://github.com/fastai/fastai/blob/master/README.md">fastai readme</a>.</p>
 
 </div>
 </div>
