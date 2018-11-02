@@ -205,7 +205,7 @@ class Image(ItemBase):
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
               cmap:str='viridis', y:'Image'=None, classes:Collection[Any]=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
-        if y is not None: 
+        if y is not None:
             if isinstance(y, Image): y.show(ax=ax, classes=classes, **kwargs)
             else:
                 if not isinstance(y, Iterable): title = ifnone(title, classes[y])
@@ -228,7 +228,8 @@ class ImageSegment(Image):
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
         cmap:str='tab20', alpha:float=0.5, **kwargs):
-        ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
+        ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
+                        interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
 
 class ImagePoints(Image):
@@ -374,10 +375,10 @@ def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     return ImageSegment(mask)
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
-                alpha:float=None)->plt.Axes:
+                alpha:float=None, **kwargs)->plt.Axes:
     "Display `Image` in notebook"
     if ax is None: fig,ax = plt.subplots(figsize=figsize)
-    ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)
+    ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha, **kwargs)
     if hide_axis: ax.axis('off')
     return ax
 

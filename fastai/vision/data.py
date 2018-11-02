@@ -10,7 +10,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import PIL
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
-           'SegmentationDataset', 'ImageDataset', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
+           'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage', 'channel_view',
            'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
 
@@ -18,7 +18,7 @@ image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith(
 
 def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
-    return get_files(c, extensions=image_extensions)
+    return get_files(c, extensions=image_extensions, recurse=recurse)
 
 def get_annotations(fname, prefix=None):
     "Open a COCO style json in `fname` and returns the lists of filenames (with maybe `prefix`) and labelled bboxes."
@@ -36,7 +36,7 @@ def get_annotations(fname, prefix=None):
             id2images[o['id']] = ifnone(prefix, '') + o['file_name']
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [[id2bboxes[k], id2cats[k]] for k in ids]
-    
+
 def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
     b_idx = next(iter(dl.batch_sampler))
@@ -62,20 +62,27 @@ class SplitDatasetsImage(SplitDatasets):
         path = Path(ifnone(path, self.path))
         return ImageDataBunch.create(*self.datasets, path=path, **kwargs)
 
-class ImageDataset(LabelDataset):
+class ImageClassificationBase(LabelDataset):
     __splits_class__ = SplitDatasetsImage
+
+    def __init__(self, fns:FilePathList, classes:Optional[Collection[Any]]=None):
+        super().__init__(classes=classes)
+        self.x  = np.array(fns)
+
     def _get_x(self,i): return open_image(self.x[i])
 
-class ImageClassificationDataset(ImageDataset):
+    def new(self, *args, classes:Optional[Collection[Any]]=None, **kwargs):
+        if classes is None: classes = self.classes
+        res = self.__class__(*args, classes=classes, **kwargs)
+        return res
+
+class ImageClassificationDataset(ImageClassificationBase):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
-        self.x  = np.array(fns)
         if classes is None: classes = uniqueify(labels)
-        super().__init__(classes)
+        super().__init__(fns, classes)
         self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         self.loss_func = F.cross_entropy
-
-    def _get_y(self,i): return self.y[i]
 
     @staticmethod
     def _folder_files(folder:Path, label:ImgLabel, extensions:Collection[str]=image_extensions)->Tuple[FilePathList,ImgLabels]:
@@ -105,11 +112,10 @@ class ImageClassificationDataset(ImageDataset):
         if valid_pct==0.: return cls(fns, labels, classes=classes)
         return [cls(*a, classes=classes) for a in random_split(valid_pct, fns, labels)]
 
-class ImageMultiDataset(ImageDataset):
+class ImageMultiDataset(ImageClassificationBase):
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
         if classes is None: classes = uniqueify(np.concatenate(labels))
-        super().__init__(classes)
-        self.x = np.array(fns)
+        super().__init__(fns, classes)
         self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in labels]
         self.loss_func = F.binary_cross_entropy_with_logits
 
@@ -120,7 +126,6 @@ class ImageMultiDataset(ImageDataset):
         return res
 
     def get_labels(self, idx:int)->ImgLabels: return [self.classes[i] for i in self.y[idx]]
-    def _get_x(self,i): return open_image(self.x[i])
     def _get_y(self,i): return self.encode(self.y[i])
 
     @classmethod
@@ -139,18 +144,17 @@ class ImageMultiDataset(ImageDataset):
         train_ds = cls(*train, classes=classes)
         return [train_ds,cls(*valid, classes=train_ds.classes)]
 
-class SegmentationDataset(ImageDataset):
+class SegmentationDataset(ImageClassificationBase):
     "A dataset for segmentation task."
     def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div=False, convert_mode='L'):
         assert len(x)==len(y)
-        super().__init__(classes)
-        self.x,self.y,self.div,self.convert_mode = np.array(x),np.array(y),div,convert_mode
+        super().__init__(x, classes)
+        self.y,self.div,self.convert_mode = np.array(y),div,convert_mode
         self.loss_func = CrossEntropyFlat()
 
-    def _get_x(self,i): return open_image(self.x[i])
     def _get_y(self,i): return open_mask(self.y[i], self.div, self.convert_mode)
 
-class ObjectDetectDataset(ImageDataset):
+class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
     def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], classes:Collection[str]=None):
         assert len(x_fns)==len(labelled_bbs)
@@ -158,8 +162,8 @@ class ObjectDetectDataset(ImageDataset):
             classes = set()
             for lbl_bb in labelled_bbs: classes = classes.union(set(lbl_bb[1]))
             classes = ['background'] + list(classes)
-        super().__init__(classes)
-        self.x,self.labelled_bbs = x_fns,labelled_bbs
+        super().__init__(x_fns,classes)
+        self.labelled_bbs = labelled_bbs
 
     def _get_y(self,i):
         #TODO: find a smart way to not reopen the x image.
@@ -392,7 +396,7 @@ def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
     to PIL.Image.save."""
-    try: 
+    try:
         img = PIL.Image.open(file)
         if max_size is None: return
         max_size = listify(max_size, 2)
@@ -410,9 +414,9 @@ def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None
     except Exception as e:
         print(f'{e}')
         if delete: file.unlink()
-            
-def verify_images(path:PathOrStr, delete=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None, 
-                  dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, 
+
+def verify_images(path:PathOrStr, delete=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
+                  dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
                   **kwargs):
     """Check if the image in `path` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
@@ -431,3 +435,4 @@ class ImageFileList(InputList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
+
