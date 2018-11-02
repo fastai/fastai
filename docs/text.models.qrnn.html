@@ -1,0 +1,241 @@
+---
+title: text.models.qrnn
+keywords: 
+sidebar: home_sidebar
+tags: 
+summary: 
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="text.models.qrnn">text.models.qrnn<a class="anchor-link" href="#text.models.qrnn">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Type an introduction of the package here.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3><a id=QRNN></a><em>class</em> <code>QRNN</code></h3>
+<p>(<code>input_size</code>, <code>hidden_size</code>, <code>num_layers</code>=<code>1</code>, <code>bias</code>=<code>True</code>, <code>batch_first</code>=<code>False</code>, <code>dropout</code>=<code>0</code>, <code>bidirectional</code>=<code>False</code>, <code>layers</code>=<code>None</code>, <code>kwargs</code>) :: Inherits (<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/models/qrnn/qrnn.py#L114">[source]</a></div></p>
+<p>Args:
+    input_size: The number of expected features in the input x.
+    hidden_size: The number of features in the hidden state h. If not specified, the input size is used.
+    num_layers: The number of QRNN layers to produce.
+    layers: List of preconstructed QRNN layers to use for the QRNN module (optional).
+    save_prev_x: Whether to store previous inputs for use in future convolutional windows (i.e. for a continuing sequence such as in language modeling). If true, you must call reset to remove cached previous values of x. Default: False.
+    window: Defines the size of the convolutional window (how many previous tokens to look when computing the QRNN values). Supports 1 and 2. Default: 1.
+    zoneout: Whether to apply zoneout (i.e. failing to update elements in the hidden state) to the hidden state updates. Default: 0.
+    output_gate: If True, performs QRNN-fo (applying an output gate to the output). If False, performs QRNN-f. Default: True.
+    use_cuda: If True, uses fast custom CUDA kernel. If False, uses naive for loop. Default: True.</p>
+<p>Inputs: X, hidden</p>
+
+<pre><code>- X (seq_len, batch, input_size): tensor containing the features of the input sequence.
+- hidden (layers, batch, hidden_size): tensor containing the initial hidden state for the QRNN.
+
+</code></pre>
+<p>Outputs: output, h_n</p>
+
+<pre><code>- output (seq_len, batch, hidden_size): tensor containing the output of the QRNN for each timestep.
+- h_n (layers, batch, hidden_size): tensor containing the hidden state for t=seq_len</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://docs.fast.ai/models.qrnn.qrnn#QRNN"><code>QRNN</code></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4><a id=forward></a><code>forward</code>(<code>input</code>, <code>hidden</code>=<code>None</code>)<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/models/qrnn/qrnn.py#L160">[source]</a></div></h4>
+<p>Should be overridden by all subclasses.</p>
+<p>.. note::
+    Although the recipe for forward pass needs to be defined within
+    this function, one should call the :class:<code>Module</code> instance afterwards
+    instead of this since the former takes care of running the
+    registered hooks while the latter silently ignores them.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>QRNN.forward</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4><a id=reset></a><code>reset</code>()<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/models/qrnn/qrnn.py#L156">[source]</a></div></h4>
+<p>If your convolutional window is greater than 1, you must reset at the beginning of each new sequence</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>QRNN.reset</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3><a id=QRNNLayer></a><em>class</em> <code>QRNNLayer</code></h3>
+<p>(<code>input_size</code>, <code>hidden_size</code>=<code>None</code>, <code>save_prev_x</code>=<code>False</code>, <code>zoneout</code>=<code>0</code>, <code>window</code>=<code>1</code>, <code>output_gate</code>=<code>True</code>, <code>use_cuda</code>=<code>True</code>) :: Inherits (<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/models/qrnn/qrnn.py#L11">[source]</a></div></p>
+<p>Args:
+    input_size: The number of expected features in the input x.
+    hidden_size: The number of features in the hidden state h. If not specified, the input size is used.
+    save_prev_x: Whether to store previous inputs for use in future convolutional windows (i.e. for a continuing sequence such as in language modeling). If true, you must call reset to remove cached previous values of x. Default: False.
+    window: Defines the size of the convolutional window (how many previous tokens to look when computing the QRNN values). Supports 1 and 2. Default: 1.
+    zoneout: Whether to apply zoneout (i.e. failing to update elements in the hidden state) to the hidden state updates. Default: 0.
+    output_gate: If True, performs QRNN-fo (applying an output gate to the output). If False, performs QRNN-f. Default: True.
+    use_cuda: If True, uses fast custom CUDA kernel. If False, uses naive for loop. Default: True.</p>
+<p>Inputs: X, hidden</p>
+
+<pre><code>- X (seq_len, batch, input_size): tensor containing the features of the input sequence.
+- hidden (batch, hidden_size): tensor containing the initial hidden state for the QRNN.
+
+</code></pre>
+<p>Outputs: output, h_n</p>
+
+<pre><code>- output (seq_len, batch, hidden_size): tensor containing the output of the QRNN for each timestep.
+- h_n (batch, hidden_size): tensor containing the hidden state for t=seq_len</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://docs.fast.ai/models.qrnn.qrnn#QRNNLayer"><code>QRNNLayer</code></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4><a id=forward></a><code>forward</code>(<code>X</code>, <code>hidden</code>=<code>None</code>)<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/models/qrnn/qrnn.py#L52">[source]</a></div></h4>
+<p>Should be overridden by all subclasses.</p>
+<p>.. note::
+    Although the recipe for forward pass needs to be defined within
+    this function, one should call the :class:<code>Module</code> instance afterwards
+    instead of this since the former takes care of running the
+    registered hooks while the latter silently ignores them.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>QRNNLayer.forward</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4><a id=reset></a><code>reset</code>()<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/models/qrnn/qrnn.py#L48">[source]</a></div></h4>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>QRNNLayer.reset</code></p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

@@ -16,10 +16,16 @@ of that change.
 
 ### New:
 
+- add an argument `ResizeMtd` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no).
+- all the image dataset have an `image_opener` attribute (default `open_image`) that can be changed. The `SegmentationDataset` has a `mask_opener` attribute.
+
 ### Changed:
+
+- `verify_images` can know resize images on top of checking they're not broken.
 
 ### Fixed:
 
+- `ImageDataBunch.from_df` doesn't change the dataframe.
 
 ## 1.0.18 (2018-10-30)
 

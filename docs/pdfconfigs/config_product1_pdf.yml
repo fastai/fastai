@@ -1,0 +1,20 @@
+destination: _site/
+url: "http://127.0.0.1:4011"
+baseurl: "/product1-pdf"
+port: 4011
+output: pdf
+product: product1
+print_title: Product 1 documentation
+print_subtitle: version 1.0
+output: pdf
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page_print"
+      comments: true
+      search: true
+
+pdf_sidebar: product1_sidebar

@@ -1,0 +1,649 @@
+---
+
+title: torch_core
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Basic functions using pytorch"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Torch-Core">Torch Core<a class="anchor-link" href="#Torch-Core">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This module contains all the basic functions we need in other modules of the fastai library (split with <a href="/core.html#core"><code>core</code></a> that contains the ones not requiring pytorch). Its documentation can easily be skipped at a first read, unless you want to know what a given fuction does.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Global-constants">Global constants<a class="anchor-link" href="#Global-constants">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>AdamW = partial(optim.Adam, betas=(0.9,0.99))</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L43">[source]</a></div></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L41">[source]</a></div></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L42">[source]</a></div></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Functions-that-operate-conversions">Functions that operate conversions<a class="anchor-link" href="#Functions-that-operate-conversions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="flatten"><code>flatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L117" class="source_link">[source]</a></h4><blockquote><p><code>flatten</code>(<code>m</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Flattens all the layers of <code>m</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="model2half"><code>model2half</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L177" class="source_link">[source]</a></h4><blockquote><p><code>model2half</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Convert <code>model</code> to half precision except the batchnorm layers.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="requires_grad"><code>requires_grad</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L93" class="source_link">[source]</a></h4><blockquote><p><code>requires_grad</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>b</code>:<code>Optional</code>[<code>bool</code>]=<code>None</code>) → <code>Optional</code>[<code>bool</code>]</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If <code>b</code> is None, returns the <a href="/torch_core.html#requires_grad"><code>requires_grad</code></a> state of the first layer of <code>m</code>. Otherwise, sets <code>requires_grad=b</code> in all children of <code>m</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="tensor"><code>tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>tensor</code>(<code>x</code>:<code>Any</code>, <code>rest</code>) → <code>Tensor</code></p>
+</blockquote>
+<p>Like <code>torch.as_tensor</code>, but handle lists too, and can pass multiple vector elements directly</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ensures <code>x</code> is a torch <code>Tensor</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_data"><code>to_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>to_data</code>(<code>b</code>:<code>ItemsList</code>)</p>
+</blockquote>
+<p>Recursively map lists of items in <code>b</code> to their wrapped data</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_detach"><code>to_detach</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L73" class="source_link">[source]</a></h4><blockquote><p><code>to_detach</code>(<code>b</code>:<code>Tensors</code>)</p>
+</blockquote>
+<p>Recursively detach lists of tensors in <code>b</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_device"><code>to_device</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>to_device</code>(<code>b</code>:<code>Tensors</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>)</p>
+</blockquote>
+<p>Ensure <code>b</code> is on <code>device</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_half"><code>to_half</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L167" class="source_link">[source]</a></h4><blockquote><p><code>to_half</code>(<code>b</code>:<code>Collection</code>[<code>Tensor</code>]) → <code>Collection</code>[<code>Tensor</code>]</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Put the input of the batch <code>b</code> in half precision.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_np"><code>to_np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L226" class="source_link">[source]</a></h4><blockquote><p><code>to_np</code>(<code>x</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Convert <code>x</code> to a numpy array.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Functions-to-deal-with-model-initialization">Functions to deal with model initialization<a class="anchor-link" href="#Functions-to-deal-with-model-initialization">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="apply_init"><code>apply_init</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L193" class="source_link">[source]</a></h4><blockquote><p><code>apply_init</code>(<code>m</code>, <code>init_func</code>:<code>LayerFunc</code>)</p>
+</blockquote>
+<p>Initialize all non-batchnorm layers of <code>m</code> with <code>init_func</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="apply_leaf"><code>apply_leaf</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L187" class="source_link">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>f</code>:<code>LayerFunc</code>)</p>
+</blockquote>
+<p>Apply <code>f</code> to children of <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="cond_init"><code>cond_init</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L181" class="source_link">[source]</a></h4><blockquote><p><code>cond_init</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>init_func</code>:<code>LayerFunc</code>)</p>
+</blockquote>
+<p>Initialize the non-batchnorm layers of <code>m</code> with <code>init_func</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="in_channels"><code>in_channels</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L197" class="source_link">[source]</a></h4><blockquote><p><code>in_channels</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>List</code>[<code>int</code>]</p>
+</blockquote>
+<p>Return the shape of the first weight layer in <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Functions-to-get-information-of-a-model">Functions to get information of a model<a class="anchor-link" href="#Functions-to-get-information-of-a-model">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="children"><code>children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>children</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>ModuleList</code></p>
+</blockquote>
+<p>Get children of module <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="first_layer"><code>first_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L118" class="source_link">[source]</a></h4><blockquote><p><code>first_layer</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Retrieve first layer in a module <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="num_children"><code>num_children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L109" class="source_link">[source]</a></h4><blockquote><p><code>num_children</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>int</code></p>
+</blockquote>
+<p>Get number of children modules in module <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="range_children"><code>range_children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L113" class="source_link">[source]</a></h4><blockquote><p><code>range_children</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Iterator</code>[<code>int</code>]</p>
+</blockquote>
+<p>Return iterator of len of children of <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="trainable_params"><code>trainable_params</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>trainable_params</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>ParamList</code></p>
+</blockquote>
+<p>Return list of trainable params in <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Functions-to-deal-with-BatchNorm-layers">Functions to deal with BatchNorm layers<a class="anchor-link" href="#Functions-to-deal-with-BatchNorm-layers">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="bn2float"><code>bn2float</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L171" class="source_link">[source]</a></h4><blockquote><p><code>bn2float</code>(<code>module</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>If <code>module</code> is batchnorm don't use half precision.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="set_bn_eval"><code>set_bn_eval</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L160" class="source_link">[source]</a></h4><blockquote><p><code>set_bn_eval</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)</p>
+</blockquote>
+<p>Set bn layers in eval mode for all recursive children of <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="split_bn_bias"><code>split_bn_bias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L149" class="source_link">[source]</a></h4><blockquote><p><code>split_bn_bias</code>(<code>layer_groups</code>:<code>ModuleList</code>) → <code>ModuleList</code></p>
+</blockquote>
+<p>Sort each layer in  <code>layer_groups</code> into batchnorm (<code>bn_types</code>) and non-batchnorm groups.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Other-functions">Other functions<a class="anchor-link" href="#Other-functions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="calc_loss"><code>calc_loss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L203" class="source_link">[source]</a></h4><blockquote><p><code>calc_loss</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>loss_func</code>:<code>LossFunction</code>)</p>
+</blockquote>
+<p>Calculate loss between <code>y_pred</code> and <code>y_true</code> using <code>loss_class</code> and <code>bs</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="data_collate"><code>data_collate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>data_collate</code>(<code>batch</code>:<code>ItemsList</code>) → <code>Tensor</code></p>
+</blockquote>
+<p>Convert <code>batch</code> items to tensor data.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="split_model"><code>split_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L138" class="source_link">[source]</a></h4><blockquote><p><code>split_model</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>splits</code>:<code>Collection</code>[<code>Union</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>ModuleList</code>]], <code>want_idxs</code>:<code>bool</code>=<code>False</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Splits the <code>model</code> according to the layer in <code>splits</code>. If <code>splits</code> are layers, the model is split at those (not included) sequentially. If <code>want_idxs</code> is True, the corresponding indexes are returned. If <code>splits</code> are lists of layers, the model is split according to those.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="split_model_idx"><code>split_model_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>split_model_idx</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>idxs</code>:<code>Collection</code>[<code>int</code>]) → <code>ModuleList</code></p>
+</blockquote>
+<p>Split <code>model</code> according to the indices in <code>idxs</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

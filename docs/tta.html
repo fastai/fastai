@@ -1,0 +1,94 @@
+---
+title: tta
+keywords: 
+sidebar: home_sidebar
+tags: 
+summary: "Module brings TTA (Test Time Functionality) to the `Learner` class. Use `learner.TTA()` instead"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="tta">tta<a class="anchor-link" href="#tta">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Type an introduction of the package here.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Global-Variable-Definitions:">Global Variable Definitions:<a class="anchor-link" href="#Global-Variable-Definitions:">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4><a id=get_preds></a><code>get_preds</code></h4>
+<p>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>pbar</code>:<code>None</code>[<code>MasterBar</code>, <code>ProgressBar</code>, <code>NoneType</code>]=<code>None</code>) -&gt; <code>List</code>[<code>Tensor</code>]<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/tta.py#L13">[source]</a></div></p>
+<p>Predicts the output of the elements in the dataloader</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>get_preds</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4><a id=pred_batch></a><code>pred_batch</code></h4>
+<p>(<code>learn</code>:<a href="fastai.basic_train.html#Learner"><code>Learner</code></a>, <code>is_valid</code>:<code>bool</code>=<code>True</code>) -&gt; <code>Tuple</code>[<code>None</code>[<code>Tensor</code>, <code>Collection</code>[<code>str</code>]], <code>None</code>[<code>Tensor</code>, <code>Collection</code>[<code>str</code>]], <code>None</code>[<code>Tensor</code>, <code>Collection</code>[<code>str</code>]]]<div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/tta.py#L7">[source]</a></div></p>
+<p>Returns input, target and output of the model on a batch</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>pred_batch</code></p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

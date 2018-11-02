@@ -7,7 +7,9 @@ import PIL
 __all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
            'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
            'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
-           'uniform', 'uniform_int', 'CoordFunc', 'TfmList']
+           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMtd']
+
+ResizeMtd = IntEnum('ResizeMtd', 'CROP PAD SQUISH NO')
 
 def logit(x:Tensor)->Tensor:
     "Logit of `x`, clamped to avoid inf"
@@ -205,7 +207,7 @@ class Image(ItemBase):
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
               cmap:str='viridis', y:'Image'=None, classes:Collection[Any]=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
-        if y is not None: 
+        if y is not None:
             if isinstance(y, Image): y.show(ax=ax, classes=classes, **kwargs)
             else:
                 if not isinstance(y, Iterable): title = ifnone(title, classes[y])
@@ -228,7 +230,8 @@ class ImageSegment(Image):
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
         cmap:str='tab20', alpha:float=0.5, **kwargs):
-        ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize, alpha=alpha)
+        ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
+                        interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
 
 class ImagePoints(Image):
@@ -373,11 +376,34 @@ def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     if div: mask.div_(255)
     return ImageSegment(mask)
 
+def open_mask_rle(fn:PathOrStr, shape:Tuple[int, int])->ImageSegment:
+    "Return `ImageSegment` object create from run-length encoded string"
+    x = FloatTensor(rle_decode(fn, shape).astype(np.uint8))
+    x = x.view(shape[1], shape[0], -1)
+    return ImageSegment(x.permute(2,0,1))
+
+def rle_encode(img:NPArrayMask)->str:
+    "Return run-length encoding string from an image array"  
+    pixels = np.concatenate([[0], img.flatten() , [0]]) 
+    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1 
+    runs[1::2] -= runs[::2] 
+    return ' '.join(str(x) for x in runs) 
+
+def rle_decode(mask_rle:str, shape:Tuple[int,int])->NPArrayMask:
+    "Return an image array from run-length encoded string"
+    s = mask_rle.split() 
+    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])] 
+    starts -= 1 
+    ends = starts + lengths 
+    img = np.zeros(shape[0]*shape[1], dtype=np.uint) 
+    for low, up in zip(starts, ends): img[low:up] = 1 
+    return img.reshape(shape) 
+
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
-                alpha:float=None)->plt.Axes:
+                alpha:float=None, **kwargs)->plt.Axes:
     "Display `Image` in notebook"
     if ax is None: fig,ax = plt.subplots(figsize=figsize)
-    ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha)
+    ax.imshow(image2np(img.data), cmap=cmap, alpha=alpha, **kwargs)
     if hide_axis: ax.axis('off')
     return ax
 
@@ -543,7 +569,7 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
 
 def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
                xtra:Optional[Dict[Transform,dict]]=None, size:Optional[Union[int,TensorImageSize]]=None,
-               mult:int=32, do_crop:bool=True, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
+               mult:int=32, resize_mtd:ResizeMtd=ResizeMtd.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
     "Apply all `tfms` to `x` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
     if tfms or xtra or size:
         if not xtra: xtra={}
@@ -553,11 +579,15 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
         x.set_sample(padding_mode=padding_mode, **kwargs)
         if size:
             crop_target = _get_crop_target(size, mult=mult)
-            target = _get_resize_target(x, crop_target, do_crop=do_crop)
-            x.resize(target)
+            if resize_mtd <= 2:
+                target = _get_resize_target(x, crop_target, do_crop=(resize_mtd==ResizeMtd.CROP))
+                x.resize(target)
+            elif resize_mtd==ResizeMtd.SQUISH: x.resize((x.shape[0],) + crop_target)
+        else: size = x.size
         size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
         for tfm in tfms:
             if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
-            elif tfm in size_tfms: x = tfm(x, size=size, padding_mode=padding_mode)
+            elif tfm in size_tfms: 
+                if resize_mtd <= 2: x = tfm(x, size=size, padding_mode=padding_mode)
             else: x = tfm(x)
     return x

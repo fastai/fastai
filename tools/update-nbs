@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+# update all notebooks
+# tools/update-nbs
+#
+# update specific notebooks
+# tools/update-nbs docs_src/one.ipynb docs_src/one.ipynb
+#
+# to pass arguments to update_notebooks just use add any of:
+# --update_html --update_nb --update_nb_links --do_execute --update_line_num
+# and that would indicate --arg=True, otherwise the defaults are used
+
+import os, sys
+from pathlib import Path
+from fastai.gen_doc.gen_notebooks import *
+
+# poor man's argparse to quickly pass through the arguments to the function
+files = []
+args = {}
+for arg in sys.argv[1:]:
+    if arg.startswith('--'): args.update({arg.replace('--', ''): True})
+    else: files.append(arg)
+
+# make sure we are under the root of the project
+cur_dir = Path(".").resolve().name
+if (cur_dir == "tools"): os.chdir("..")
+
+# if no files were specified pass the dir instead for all files
+if not files: files.append('docs_src')
+
+succeeded = []
+failed = []
+for file in files:
+    try:
+        update_notebooks(file, None, **args)
+    except Exception as e:
+        print(f"failed to update {file}")
+        print(e)
+        failed.append(file)
+    else:
+        succeeded.append(file)
+
+print("\n*** Summary:")
+if not failed: print("All succeeded")
+else:
+    if succeeded:
+        print("- Succeeded:")
+        print("\n".join(succeeded))
+    print("- Failed:")
+    print("\n".join(failed))
