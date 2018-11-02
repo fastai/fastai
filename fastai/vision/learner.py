@@ -78,9 +78,9 @@ class ClassificationInterpretation():
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
-    def from_learner(cls, learn:Learner, sigmoid:bool=None, tta=False):
+    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, sigmoid:bool=None, tta=False):
         "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
-        preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
+        preds = learn.TTA(with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 
     def top_losses(self, k:int=None, largest=True):
