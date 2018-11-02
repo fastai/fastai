@@ -116,9 +116,12 @@ class DataBunch():
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
-    def holdout(self, is_test:bool=False)->DeviceDataLoader:
+    def holdout(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
         "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
-        return self.test_dl if is_test else self.valid_dl
+        if (ds_type == DatasetType.Valid): return self.valid_dl
+        else if (ds_type == DatasetType.Test): return self.test_dl
+        else if (ds_type == DatasetType.Train): return self.train_dl
+
 
     def add_tfm(self,tfm:Callable)->None:
         self.train_dl.add_tfm(tfm)
