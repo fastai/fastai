@@ -156,7 +156,7 @@ class SplitData():
         res = [self.train,self.valid]
         if self.test is not None: res.append(self.test)
         return res
-    
+
     def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
         "Create datasets from the underlying data using `dataset_cls` and passing along the `kwargs`."
         train = dataset_cls(*self.train.items.T, **kwargs)
@@ -177,7 +177,7 @@ class SplitDatasets():
     def datasets(self)->Collection[Dataset]:
         "The underlying datasets of this object."
         return [self.train_ds,self.valid_ds] if self.test_ds is None else [self.train_ds,self.valid_ds, self.test_ds]
-    
+
     @datasets.setter
     def datasets(self,ds)->None:
         assert (len(ds) == 2 or len(ds) == 3), "You have to pass two or three datasets."
