@@ -211,7 +211,7 @@ class Learner():
 
     def pred_batch(self, ds_type:DatasetType=DatasetType.Valid) -> List[Tensor]:
         "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
-        dl = self.data.dl(ds_type)
+        dl = self.dl(ds_type)
         nw = dl.num_workers
         dl.num_workers = 0
         preds,_ = self.get_preds(ds_type, with_loss=False, n_batch=1)
