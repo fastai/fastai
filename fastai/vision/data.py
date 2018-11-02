@@ -447,3 +447,10 @@ class ImageFileList(InputList):
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
+def split_data_add_test_folder(self, test_folder:str='test', label:Any=None):
+    "Add test set containing items from folder `test_folder` and an arbitrary label"
+    items = ImageFileList.from_folder(self.path/test_folder)
+    return self.add_test(items, label=label)
+
+SplitData.add_test_folder = split_data_add_test_folder
+
