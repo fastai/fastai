@@ -7,7 +7,7 @@ import PIL
 __all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
            'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
            'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
-           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'ResizeMtd']
+           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMtd']
 
 ResizeMtd = IntEnum('ResizeMtd', 'CROP PAD SQUISH NO')
 
@@ -375,6 +375,29 @@ def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     mask = pil2tensor(x).float()
     if div: mask.div_(255)
     return ImageSegment(mask)
+
+def open_mask_rle(fn:PathOrStr, shape:Tuple[int, int])->ImageSegment:
+    "Return `ImageSegment` object create from run-length encoded string"
+    x = FloatTensor(rle_decode(fn, shape).astype(np.uint8))
+    x = x.view(shape[1], shape[0], -1)
+    return ImageSegment(x.permute(2,0,1))
+
+def rle_encode(img:NPArrayMask)->str:
+    "Return run-length encoding string from an image array"  
+    pixels = np.concatenate([[0], img.flatten() , [0]]) 
+    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1 
+    runs[1::2] -= runs[::2] 
+    return ' '.join(str(x) for x in runs) 
+
+def rle_decode(mask_rle:str, shape:Tuple[int,int])->NPArrayMask:
+    "Return an image array from run-length encoded string"
+    s = mask_rle.split() 
+    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])] 
+    starts -= 1 
+    ends = starts + lengths 
+    img = np.zeros(shape[0]*shape[1], dtype=np.uint) 
+    for low, up in zip(starts, ends): img[low:up] = 1 
+    return img.reshape(shape) 
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None, **kwargs)->plt.Axes:
