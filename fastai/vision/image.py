@@ -378,16 +378,13 @@ def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
 
 def open_mask_rle(fn:PathOrStr, shape:Tuple[int, int])->ImageSegment:
     "Return `ImageSegment` object create from run-length encoded string"
-    x = rle_decode(fn, shape).astype(np.uint8)
-    x = FloatTensor(x)
+    x = FloatTensor(rle_decode(fn, shape).astype(np.uint8))
     x = x.view(shape[1], shape[0], -1)
-    mask = x.permute(2,0,1)
-    return ImageSegment(mask)
+    return ImageSegment(x.permute(2,0,1))
 
 def rle_encode(img:NPArrayMask)->str:
     "Return run-length encoding string from an image array"  
-    pixels = img.flatten() 
-    pixels = np.concatenate([[0], pixels, [0]]) 
+    pixels = np.concatenate([[0], img.flatten() , [0]]) 
     runs = np.where(pixels[1:] != pixels[:-1])[0] + 1 
     runs[1::2] -= runs[::2] 
     return ' '.join(str(x) for x in runs) 
@@ -399,8 +396,7 @@ def rle_decode(mask_rle:str, shape:Tuple[int,int])->NPArrayMask:
     starts -= 1 
     ends = starts + lengths 
     img = np.zeros(shape[0]*shape[1], dtype=np.uint) 
-    for low, up in zip(starts, ends): 
-        img[low:up] = 1 
+    for low, up in zip(starts, ends): img[low:up] = 1 
     return img.reshape(shape) 
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
