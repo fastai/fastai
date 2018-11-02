@@ -196,9 +196,7 @@ class Learner():
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid):
         "Return DataLoader for DatasetType `ds_type`."
-        if (ds_type == DatasetType.Test): return self.data.test_dl
-        elif (ds_type == DatasetType.Train): return self.data.train_dl
-        return self.data.valid_dl
+        return self.data.dl(ds_type)
 
     def load(self, name:PathOrStr, device:torch.device=None):
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
@@ -213,7 +211,7 @@ class Learner():
 
     def pred_batch(self, ds_type:DatasetType=DatasetType.Valid) -> List[Tensor]:
         "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
-        dl = self.data.holdout(ds_type)
+        dl = self.data.dl(ds_type)
         nw = dl.num_workers
         dl.num_workers = 0
         preds,_ = self.get_preds(ds_type, with_loss=False, n_batch=1)

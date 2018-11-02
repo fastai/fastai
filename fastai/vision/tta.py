@@ -8,7 +8,7 @@ __all__ = []
 
 def _tta_only(learn:Learner, ds_type:DatasetType=DatasetType.Valid, scale:float=1.35) -> Iterator[List[Tensor]]:
     "Computes the outputs for several augmented inputs for TTA"
-    dl = learn.data.holdout(ds_type)
+    dl = learn.dl(ds_type)
     ds = dl.dataset
     old = ds.tfms
     augm_tfm = [o for o in learn.data.train_ds.tfms if o.tfm not in
