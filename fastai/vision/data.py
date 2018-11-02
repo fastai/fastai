@@ -391,7 +391,7 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
             download_image(url, dest/f"{i:08d}.jpg")
 
 def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
-                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=True, **kwargs):
+                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
     """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
@@ -420,7 +420,7 @@ def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None
 
 def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
                   dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
-                  resume:bool=True, **kwargs):
+                  resume:bool=None, **kwargs):
     """Check if the image in `path` exists, can be opened and has `n_channels`.
     If `n_channels` is 3 – it'll try to convert image to RGB. If `delete`, removes it if it fails.
     If `resume` – it will skip already existent images in `dest`.  If `max_size` is specifided,
@@ -428,6 +428,7 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are
     passed to PIL.Image.save. Use `max_workers` CPUs."""
     path = Path(path)
+    if resume is None and dest == '.': resume=False
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
