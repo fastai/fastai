@@ -1,0 +1,475 @@
+---
+
+title: callbacks.lr_finder
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Implementation of the LR Range test from Leslie Smith"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Learning-Rate-Finder">Learning Rate Finder<a class="anchor-link" href="#Learning-Rate-Finder">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Learning rate finder plots lr vs loss relationship for a <a href="/basic_train.html#Learner"><code>Learner</code></a>. The idea is to reduce the amount of guesswork on picking a good starting learning rate.</p>
+<p><strong>Overview:</strong></p>
+<ol>
+<li>First run lr_find <code>learn.lr_find()</code></li>
+<li>Plot the learning rate vs loss <code>learn.recorder.plot()</code></li>
+<li>Pick a learning rate before it diverges then start training</li>
+</ol>
+<p><strong>Technical Details:</strong> (first <a href="&#39;https://arxiv.org/abs/1506.01186&#39;">described</a> by Leslie Smith)</p>
+<blockquote><p>Train <a href="/basic_train.html#Learner"><code>Learner</code></a> over a few iterations. Start with a very low <code>start_lr</code> and change it at each mini-batch until it reaches a very high <code>end_lr</code>. <a href="/basic_train.html#Recorder"><code>Recorder</code></a> will record the loss at each iteration. Plot those losses against the learning rate to find the optimal value before it diverges.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Choosing-a-good-learning-rate">Choosing a good learning rate<a class="anchor-link" href="#Choosing-a-good-learning-rate">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For a more intuitive explanation, please check out <a href="https://sgugger.github.io/how-do-you-find-a-good-learning-rate.html">Sylvain Gugger's post</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">simple_learner</span><span class="p">():</span> <span class="k">return</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">simple_learner</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First we run this command to launch the search:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="lr_find"><code>lr_find</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>lr_find</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>Floats</code>=<code>1e-07</code>, <code>end_lr</code>:<code>Floats</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Explore lr from <code>start_lr</code> to <code>end_lr</code> over <code>num_it</code> iterations in <code>learn</code>. If <code>stop_div</code>, stops when loss explodes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">(</span><span class="n">stop_div</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_it</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&gt; /home/ubuntu/fastai/fastai/callbacks/lr_finder.py(36)on_batch_end()
+-&gt; self.stop=True
+(Pdb) q
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">BdbQuit</span>                                   Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-5-9b292fda58d4&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>learn<span class="ansi-blue-fg">.</span>lr_find<span class="ansi-blue-fg">(</span>stop_div<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">,</span> num_it<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">200</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/train.py</span> in <span class="ansi-cyan-fg">lr_find</span><span class="ansi-blue-fg">(learn, start_lr, end_lr, num_it, stop_div, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     25</span>     cb <span class="ansi-blue-fg">=</span> LRFinder<span class="ansi-blue-fg">(</span>learn<span class="ansi-blue-fg">,</span> start_lr<span class="ansi-blue-fg">,</span> end_lr<span class="ansi-blue-fg">,</span> num_it<span class="ansi-blue-fg">,</span> stop_div<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     26</span>     a <span class="ansi-blue-fg">=</span> int<span class="ansi-blue-fg">(</span>np<span class="ansi-blue-fg">.</span>ceil<span class="ansi-blue-fg">(</span>num_it<span class="ansi-blue-fg">/</span>len<span class="ansi-blue-fg">(</span>learn<span class="ansi-blue-fg">.</span>data<span class="ansi-blue-fg">.</span>train_dl<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 27</span><span class="ansi-red-fg">     </span>learn<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span>a<span class="ansi-blue-fg">,</span> start_lr<span class="ansi-blue-fg">,</span> callbacks<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span>cb<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     28</span> 
+<span class="ansi-green-intense-fg ansi-bold">     29</span> <span class="ansi-green-fg">def</span> to_fp16<span class="ansi-blue-fg">(</span>learn<span class="ansi-blue-fg">:</span>Learner<span class="ansi-blue-fg">,</span> loss_scale<span class="ansi-blue-fg">:</span>float<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">512.</span><span class="ansi-blue-fg">,</span> flat_master<span class="ansi-blue-fg">:</span>bool<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">-&gt;</span>Learner<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, epochs, lr, wd, callbacks)</span>
+<span class="ansi-green-intense-fg ansi-bold">    135</span>         callbacks <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>cb<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">for</span> cb <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>callback_fns<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">+</span> listify<span class="ansi-blue-fg">(</span>callbacks<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    136</span>         fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
+<span class="ansi-green-fg">--&gt; 137</span><span class="ansi-red-fg">             callbacks=self.callbacks+callbacks)
+</span><span class="ansi-green-intense-fg ansi-bold">    138</span> 
+<span class="ansi-green-intense-fg ansi-bold">    139</span>     <span class="ansi-green-fg">def</span> create_opt<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> lr<span class="ansi-blue-fg">:</span>Floats<span class="ansi-blue-fg">,</span> wd<span class="ansi-blue-fg">:</span>Floats<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0.</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">-&gt;</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(epochs, model, loss_func, opt, data, callbacks, metrics)</span>
+<span class="ansi-green-intense-fg ansi-bold">     78</span>                 xb<span class="ansi-blue-fg">,</span> yb <span class="ansi-blue-fg">=</span> cb_handler<span class="ansi-blue-fg">.</span>on_batch_begin<span class="ansi-blue-fg">(</span>xb<span class="ansi-blue-fg">,</span> yb<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     79</span>                 loss <span class="ansi-blue-fg">=</span> loss_batch<span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">,</span> xb<span class="ansi-blue-fg">,</span> yb<span class="ansi-blue-fg">,</span> loss_func<span class="ansi-blue-fg">,</span> opt<span class="ansi-blue-fg">,</span> cb_handler<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">---&gt; 80</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">if</span> cb_handler<span class="ansi-blue-fg">.</span>on_batch_end<span class="ansi-blue-fg">(</span>loss<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">break</span>
+<span class="ansi-green-intense-fg ansi-bold">     81</span> 
+<span class="ansi-green-intense-fg ansi-bold">     82</span>             <span class="ansi-green-fg">if</span> hasattr<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;valid_dl&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">and</span> data<span class="ansi-blue-fg">.</span>valid_dl <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/basic_train.py</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(epochs, model, loss_func, opt, data, callbacks, metrics)</span>
+<span class="ansi-green-intense-fg ansi-bold">     78</span>                 xb<span class="ansi-blue-fg">,</span> yb <span class="ansi-blue-fg">=</span> cb_handler<span class="ansi-blue-fg">.</span>on_batch_begin<span class="ansi-blue-fg">(</span>xb<span class="ansi-blue-fg">,</span> yb<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     79</span>                 loss <span class="ansi-blue-fg">=</span> loss_batch<span class="ansi-blue-fg">(</span>model<span class="ansi-blue-fg">,</span> xb<span class="ansi-blue-fg">,</span> yb<span class="ansi-blue-fg">,</span> loss_func<span class="ansi-blue-fg">,</span> opt<span class="ansi-blue-fg">,</span> cb_handler<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">---&gt; 80</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">if</span> cb_handler<span class="ansi-blue-fg">.</span>on_batch_end<span class="ansi-blue-fg">(</span>loss<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">break</span>
+<span class="ansi-green-intense-fg ansi-bold">     81</span> 
+<span class="ansi-green-intense-fg ansi-bold">     82</span>             <span class="ansi-green-fg">if</span> hasattr<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#39;valid_dl&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">and</span> data<span class="ansi-blue-fg">.</span>valid_dl <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">on_batch_end</span><span class="ansi-blue-fg">(self, loss)</span>
+<span class="ansi-green-intense-fg ansi-bold">    236</span>         <span class="ansi-blue-fg">&#34;Handle end of processing one batch with `loss`.&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    237</span>         self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;last_loss&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> loss
+<span class="ansi-green-fg">--&gt; 238</span><span class="ansi-red-fg">         </span>stop <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>any<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;batch_end&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-green-fg">not</span> self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;train&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    239</span>         <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;train&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    240</span>             self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;iteration&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">+=</span> <span class="ansi-cyan-fg">1</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">__call__</span><span class="ansi-blue-fg">(self, cb_name, call_mets, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    185</span>         <span class="ansi-blue-fg">&#34;Call through to all of the `CallbakHandler` functions.&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    186</span>         <span class="ansi-green-fg">if</span> call_mets<span class="ansi-blue-fg">:</span> <span class="ansi-blue-fg">[</span>getattr<span class="ansi-blue-fg">(</span>met<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">f&#39;on_{cb_name}&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">for</span> met <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>metrics<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">--&gt; 187</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> <span class="ansi-blue-fg">[</span>getattr<span class="ansi-blue-fg">(</span>cb<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">f&#39;on_{cb_name}&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">for</span> cb <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>callbacks<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    188</span> 
+<span class="ansi-green-intense-fg ansi-bold">    189</span>     <span class="ansi-green-fg">def</span> on_train_begin<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> epochs<span class="ansi-blue-fg">:</span>int<span class="ansi-blue-fg">,</span> pbar<span class="ansi-blue-fg">:</span>PBar<span class="ansi-blue-fg">,</span> metrics<span class="ansi-blue-fg">:</span>MetricFuncList<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">-&gt;</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/callback.py</span> in <span class="ansi-cyan-fg">&lt;listcomp&gt;</span><span class="ansi-blue-fg">(.0)</span>
+<span class="ansi-green-intense-fg ansi-bold">    185</span>         <span class="ansi-blue-fg">&#34;Call through to all of the `CallbakHandler` functions.&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    186</span>         <span class="ansi-green-fg">if</span> call_mets<span class="ansi-blue-fg">:</span> <span class="ansi-blue-fg">[</span>getattr<span class="ansi-blue-fg">(</span>met<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">f&#39;on_{cb_name}&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">for</span> met <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>metrics<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">--&gt; 187</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> <span class="ansi-blue-fg">[</span>getattr<span class="ansi-blue-fg">(</span>cb<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">f&#39;on_{cb_name}&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>state_dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">for</span> cb <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>callbacks<span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    188</span> 
+<span class="ansi-green-intense-fg ansi-bold">    189</span>     <span class="ansi-green-fg">def</span> on_train_begin<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> epochs<span class="ansi-blue-fg">:</span>int<span class="ansi-blue-fg">,</span> pbar<span class="ansi-blue-fg">:</span>PBar<span class="ansi-blue-fg">,</span> metrics<span class="ansi-blue-fg">:</span>MetricFuncList<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">-&gt;</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/callbacks/lr_finder.py</span> in <span class="ansi-cyan-fg">on_batch_end</span><span class="ansi-blue-fg">(self, iteration, smooth_loss, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>             pdb<span class="ansi-blue-fg">.</span>set_trace<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     35</span>             <span class="ansi-red-fg">#We use the smoothed loss to decide on the stopping since it&#39;s less shaky.</span>
+<span class="ansi-green-fg">---&gt; 36</span><span class="ansi-red-fg">             </span>self<span class="ansi-blue-fg">.</span>stop<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span>
+<span class="ansi-green-intense-fg ansi-bold">     37</span>             <span class="ansi-green-fg">return</span> <span class="ansi-green-fg">True</span>
+<span class="ansi-green-intense-fg ansi-bold">     38</span> 
+
+<span class="ansi-green-fg">~/fastai/fastai/callbacks/lr_finder.py</span> in <span class="ansi-cyan-fg">on_batch_end</span><span class="ansi-blue-fg">(self, iteration, smooth_loss, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>             pdb<span class="ansi-blue-fg">.</span>set_trace<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     35</span>             <span class="ansi-red-fg">#We use the smoothed loss to decide on the stopping since it&#39;s less shaky.</span>
+<span class="ansi-green-fg">---&gt; 36</span><span class="ansi-red-fg">             </span>self<span class="ansi-blue-fg">.</span>stop<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span>
+<span class="ansi-green-intense-fg ansi-bold">     37</span>             <span class="ansi-green-fg">return</span> <span class="ansi-green-fg">True</span>
+<span class="ansi-green-intense-fg ansi-bold">     38</span> 
+
+<span class="ansi-green-fg">~/anaconda3/envs/fastai/lib/python3.7/bdb.py</span> in <span class="ansi-cyan-fg">trace_dispatch</span><span class="ansi-blue-fg">(self, frame, event, arg)</span>
+<span class="ansi-green-intense-fg ansi-bold">     86</span>             <span class="ansi-green-fg">return</span> <span class="ansi-red-fg"># None</span>
+<span class="ansi-green-intense-fg ansi-bold">     87</span>         <span class="ansi-green-fg">if</span> event <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;line&#39;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">---&gt; 88</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>dispatch_line<span class="ansi-blue-fg">(</span>frame<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     89</span>         <span class="ansi-green-fg">if</span> event <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;call&#39;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     90</span>             <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>dispatch_call<span class="ansi-blue-fg">(</span>frame<span class="ansi-blue-fg">,</span> arg<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/anaconda3/envs/fastai/lib/python3.7/bdb.py</span> in <span class="ansi-cyan-fg">dispatch_line</span><span class="ansi-blue-fg">(self, frame)</span>
+<span class="ansi-green-intense-fg ansi-bold">    111</span>         <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>stop_here<span class="ansi-blue-fg">(</span>frame<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">or</span> self<span class="ansi-blue-fg">.</span>break_here<span class="ansi-blue-fg">(</span>frame<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    112</span>             self<span class="ansi-blue-fg">.</span>user_line<span class="ansi-blue-fg">(</span>frame<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 113</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>quitting<span class="ansi-blue-fg">:</span> <span class="ansi-green-fg">raise</span> BdbQuit
+<span class="ansi-green-intense-fg ansi-bold">    114</span>         <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>trace_dispatch
+<span class="ansi-green-intense-fg ansi-bold">    115</span> 
+
+<span class="ansi-red-fg">BdbQuit</span>: </pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then we plot the loss versus the learning rates. We're interested in finding a good order of magnitude of learning rate, so we plot with a log scale.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">recorder</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then, we choose a value that is an order of magnitude before the mimum: the minimum value is on the edge diverging so it is too high. An order of magnitude before, a value that's still aggressive (for quicker training) but still safer from exploding. (In this example case 1e-1 is a good choice).</p>
+<p>Let's start training with this optimal value:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">simple_learner</span><span class="p">()</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:04
+epoch  train loss  valid loss  accuracy
+0      0.109441    0.073346    0.973994  (00:02)
+1      0.041229    0.041595    0.984298  (00:02)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Picking the minimum isn't a good idea because training will diverge.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">simple_learner</span><span class="p">()</span>
+<span class="n">simple_learner</span><span class="p">()</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1e-0</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:04
+epoch  train loss  valid loss  accuracy
+0      0.446117    0.478633    0.495584  (00:02)
+1      0.429263    0.431671    0.495584  (00:02)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Picking a value to far below the minimum isn't optimal because training is too slow.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">simple_learner</span><span class="p">()</span>
+<span class="n">simple_learner</span><span class="p">()</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:04
+epoch  train loss  valid loss  accuracy
+0      0.140804    0.103993    0.965162  (00:02)
+1      0.070876    0.058954    0.977429  (00:02)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="LRFinder"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L9" class="source_link">[source]</a></h2><blockquote><p><code>LRFinder</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>float</code>=<code>1e-07</code>, <code>end_lr</code>:<code>float</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Causes <code>learn</code> to go on a mock training from <code>start_lr</code> to <code>end_lr</code> for <code>num_it</code> iterations. Training is interrupted if the loss diverges. Weights changes are reverted after run complete.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Cleanup learn model weights disturbed during LRFind exploration.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>iteration</code>:<code>int</code>, <code>smooth_loss</code>:<code>TensorOrNumber</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Determine if loss has runaway and we should stop.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L22" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>pbar</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Initialize optimizer and learner hyperparameters.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Tell Learner if we need to stop.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

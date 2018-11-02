@@ -1,0 +1,16 @@
+<footer>
+            <div class="row">
+                <div class="col-lg-6 col">
+
+                  {% if site.github_editme_path %}
+                  <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{page.path}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+                  {% endif %}
+
+                </div>
+                <div class="col-lg-6 footer">
+               <p><img src="{{ "images/company_logo.png" }}" alt="Company logo"/></p>
+               &copy;{{ site.time | date: "%Y"  }} {{site.company_name}}. All rights reserved. <br />
+{% if page.last_updated %}<span>Page last updated:</span> {{page.last_updated}}<br/>{% endif %} Site last generated: {{ site.time | date: "%b %-d, %Y"  }} <br />
+                </div>
+            </div>
+</footer>

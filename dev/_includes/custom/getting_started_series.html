@@ -1,0 +1,19 @@
+<div class="seriesContext">
+    <div class="btn-group">
+        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Getting Started <span class="caret"></span></button>
+        <ol class="dropdown-menu">
+            {% assign pages = site.pages | sort:"weight"  %}
+            {% for p in pages %}
+            {% if p.series == "Getting Started" %}
+            {% if p.url == page.url %}
+            <li class="active"> → {{p.title}}</li>
+            {% else %}
+            <li>
+                <a href="{{p.url | remove: "/"}}">{{p.title}}</a>
+            </li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
+</div>
