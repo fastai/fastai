@@ -194,11 +194,19 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
         labels[i,-len(lbls):] = lbls
     return torch.cat(imgs,0), (bboxes,labels)
 
+def _prep_tfm_kwargs(tfms, kwargs):
+    default_rsz = ResizeMtd.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMtd.CROP
+    resize_mtd = getattr(kwargs, 'resize_mtd', default_rsz)
+    if resize_mtd <= 2: tfms = [crop_pad()] + tfms
+    kwargs['resize_mtd'] = resize_mtd
+    return tfms, kwargs
+
 class DatasetTfm(Dataset):
     "`Dataset` that applies a list of transforms to every item drawn."
     def __init__(self, ds:Dataset, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any):
         "this dataset will apply `tfms` to `ds`"
-        self.ds,self.tfms,self.kwargs,self.tfm_y = ds,tfms,kwargs,tfm_y
+        self.ds,self.tfm_y = ds,tfm_y
+        self.tfms,self.kwargs = _prep_tfm_kwargs(tfms,kwargs)
         self.y_kwargs = {**self.kwargs, 'do_resolve':False}
 
     def __len__(self)->int: return len(self.ds)
@@ -215,14 +223,6 @@ class DatasetTfm(Dataset):
         "Passthrough access to wrapped dataset attributes."
         return getattr(self.ds, k)
 
-def _add_crop_pad(tfms):
-    tfm_names = [getattr(tfm,'__name__','') for tfm in tfms]
-    return tfms if 'crop_pad' in tfm_names else [crop_pad()] + tfms
-
-def _prep_tfms(tfms, resize_mtd:ResizeMtd=ResizeMtd.CROP):
-    if resize_mtd <= 2: return [_add_crop_pad(tfms[0]), _add_crop_pad(tfms[1])]
-    return tfms
-
 def _transform_dataset(self, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any)->DatasetTfm:
     return DatasetTfm(self, tfms=tfms, tfm_y=tfm_y, **kwargs)
 DatasetBase.transform = _transform_dataset
@@ -230,9 +230,7 @@ DatasetBase.transform = _transform_dataset
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
                        tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_mtd:ResizeMtd=None, **kwargs:Any):
     "Create train, valid and maybe test DatasetTfm` using `tfms` = (train_tfms,valid_tfms)."
-    default_rsz = ResizeMtd.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMtd.CROP
-    resize_mtd = ifnone(resize_mtd, default_rsz)
-    tfms = _prep_tfms(ifnone(tfms, [[],[]]), resize_mtd)
+    tfms = ifnone(tfms, [[],[]])
     res = [DatasetTfm(train_ds, tfms[0], resize_mtd=resize_mtd, **kwargs),
            DatasetTfm(valid_ds, tfms[1], resize_mtd=resize_mtd, **kwargs)]
     if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1], resize_mtd=resize_mtd, **kwargs))
