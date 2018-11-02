@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+
+# This script facilitates trusting/distrusting of the repo-wide .gitconfig
+#
+# trust:
+#   tools/trust-origin-git-config
+# or
+#   tools/trust-origin-git-config -e
+# which is the same as:
+#   git config --local include.path ../.gitconfig
+#
+# distrust:
+#   tools/trust-origin-git-config -d
+# which is the same as:
+#   git config --local --unset include.path
+#
+# note: windows users, not using bash emulation, will need to invoke this tool as:
+#   python tools\trust-origin-git-config
+
+import sys
+if sys.hexversion < 0x03060000: sys.exit("!!! Please re-run this script with python-3.6 or higher")
+
+import os, argparse, subprocess
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-e', '--enable',  action="store_true", help="Trust repo-wide .gitconfig (default action)")
+parser.add_argument('-d', '--disable', action="store_true", help="Distrust repo-wide .gitconfig")
+parser.add_argument('-t', '--test',    action="store_true", help="Validate repo-wide .gitconfig config")
+args = parser.parse_args()
+
+
+# test exec bit
+def validate_script():
+    filepath = os.path.join('tools', 'fastai-nbstripout')
+
+    # check that we can execute the script
+    cmd = f"{filepath} -h"
+    #print(f"Executing: {cmd}")
+    result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # we don't care for the output, just to see that it works
+    if result.returncode != 0:
+        print(f"Can't execute {filepath}")
+        if result.stderr: print(f"Error: {result.stderr.decode('utf-8')}")
+
+
+def trust_enable():
+    #validate_script()
+
+    cmd = "git config --local include.path ../.gitconfig"
+    print(f"Executing: {cmd}")
+    result = subprocess.run(cmd.split(), shell=False, check=False, stderr=subprocess.PIPE)
+    if result.returncode == 0:
+        print("Success: repo's .gitconfig is now trusted")
+    else:
+        print("Failed to trust repo's .gitconfig")
+        if result.stderr: print(f"Error: {result.stderr.decode('utf-8')}")
+
+
+def trust_disable():
+
+    cmd = "git config --local --unset include.path"
+    print(f"Executing: {cmd}")
+    result = subprocess.run(cmd.split(), shell=False, check=False, stderr=subprocess.PIPE)
+    if result.returncode == 0:
+        print("Success: repo's .gitconfig is now distrusted")
+    else:
+        print("Failed to distrust repo's .gitconfig")
+        if result.stderr: print(f"Error: {result.stderr.decode('utf-8')}")
+
+def trust_test():
+    #validate_script()
+
+    cmd = "git config --list --show-origin"
+    print(f"Executing: {cmd}")
+    result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode == 0:
+        out = result.stdout.decode('utf-8')
+        if ".git/../.gitconfig" in out and "filter.fastai-nbstripout-code" in out:
+            print("Check: repo's .gitconfig is trusted")
+        else:
+            print("Check: repo's .gitconfig is not trusted, re-run with -e option to trust it")
+    else:
+        print(f"Failed to run {cmd}")
+        if result.stderr: print(f"Error: {result.stderr.decode('utf-8')}")
+
+
+
+if args.test:      trust_test()
+elif args.disable: trust_disable()
+else:              trust_enable()

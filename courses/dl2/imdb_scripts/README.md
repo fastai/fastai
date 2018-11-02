@@ -5,6 +5,8 @@
 If you want to train your own language model on a Wikipedia in your chosen language,
 run `prepare_wiki.sh`. The script will ask for a language and will then
 download, extract, and prepare the latest version of Wikipedia for the chosen language.
+Note that for English (due to the size of the English Wikipedia), the extraction process
+takes quite long.
 
 Example command: `bash prepare_wiki.sh`
 
@@ -32,9 +34,12 @@ create_toks.py --dir-path DIR_PATH [--chunksize CHUNKSIZE] [--n-lbls N_LBLS] [--
 - `CHUNKSIZE`: the size of the chunks when reading the files with pandas; use smaller sizes with less RAM
 - `LANG`: the language of your corpus.
 
-`train.csv` and `val.csv` files should be in `DIR_PATH`. The script will then save the
-training and test tokens and labels as arrays to binary files in NumPy format in a `tmp`
-in the above path in the following files:
+The script expects `train.csv` and `val.csv` files to be in `DIR_PATH`. Each file should be in
+CSV format. If the data is labeled, the first column should consist of the label as an integer.
+The remaining columns should consist of text or features, which will be concatenated to form
+each example. If the data is unlabeled, the file should just consist of a single text column.
+The script will then save the training and test tokens and labels as arrays to binary files in NumPy format
+in a `tmp` in the above path in the following files:
 `tok_trn.npy`, `tok_val.npy`, `lbl_trn.npy`, and `lbl_val.npy`.
 In addition, a joined corpus containing white space-separated tokens is produced in `tmp/joined.txt`.
 
@@ -53,7 +58,7 @@ tok2id.py --prefix PREFIX [--max-vocab MAX_VOCAB] [--min-freq MIN_FREQ]
 - `MAX_VOCAB`: the maximum vocabulary size
 - `MIN_FREQ`: the minimum frequency of words that should be kept
 
-### 3. Fine-tune the LM
+### (3a. Pretrain the Wikipedia language model)
 
 Before fine-tuning the language model, you can run `pretrain_lm.py` to create a
 pre-trained language model using WikiText-103 (or whatever base corpus you prefer).
@@ -76,7 +81,9 @@ pretrain_lm.py --dir-path DIR_PATH --cuda-id CUDA_ID [--cl CL] [--bs BS] [--back
 
 You might have to adapt the learning rate and the # of epochs to maximize performance.
 
-Alternately, you can download the pre-trained models [here](http://files.fast.ai/models/wt103/). Before,
+### 3b. Fine-tune the LM
+
+Alternatively, you can download the pre-trained models [here](http://files.fast.ai/models/wt103/). Before,
 create a directory `wt103`. In `wt103`, create a `models` and a `tmp` folder. Save the model files
 in the `models` folder and `itos_wt103.pkl`, the word-to-token mapping, to the `tmp` folder.
 
@@ -172,7 +179,7 @@ eval_clas.py --dir-path DIR_PATH --cuda-id CUDA_ID [--lm-id LM_ID] [--clas-id CL
 
 Run `predict_with_classifier.py` to predict against free text entry.
 
-This requires two files produced during the training process: itos.pkl and the classifier (named clas_1.h5 by default)
+This requires two files produced during the training process: the id-to-token mapping `itos.pkl` and the classifier (named `clas_1.h5` by default)
 
 Example command: `python predict_with_classifier.py trained_models/itos.pkl trained_models/classifier_model.h5`
 

@@ -1,0 +1,119 @@
+# full guide of options:
+# https://conda.io/docs/user-guide/tasks/build-packages/define-metadata.html
+
+# also perhaps we don't need the recipe at all?
+# https://conda.io/docs/user-guide/tasks/build-packages/build-without-recipe.html
+
+# To see what comes out after this template is processed, run:
+#    conda-render ./conda/
+
+{% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
+
+package:
+  name: {{ data.name }}
+  version: "{{ data.version }}"
+#  version: "{{ data.version }}{{"post1"}}"
+
+source:
+  # Source from a local path
+  # path: ..
+
+  # Source from tarball
+  # note: must 'make dist-pypi' or `python setup.py sdist` before running conda-build as we now rely on MANIFEST.IN to only pick desired files and avoid copying data folders and alike - and its puts its clean tarball under /dist/:
+  url: ../dist/{{ data.name }}-{{ data.version }}.tar.gz
+  # url: https://pypi.python.org/packages/source/fastai/fastai/fastai-1.0.0b.tar.gz
+  # sha1: f0a2c9a30073449cfb7d171c57552f3109d93894
+
+  # Source from git
+  # git_rev: v0.13.1
+  # git_url: https://github.com/fastai/fastai.git
+
+build:
+  number: 1
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+# unlike pypi, conda has a slightly different format for required
+# versions, we must use - torch >=0.4.9 (note, there is only one
+# space), for details see:
+# https://conda.io/docs/user-guide/tasks/build-packages/package-spec.html#package-match-specifications
+requirements:
+  build:
+    - conda-build
+    - pytest-runner
+    - python
+
+# skipped requirements:
+# jupyter_contrib_nbextensions - only needed for internal tools - it's not on conda and requires too many of its own dependencies which aren't on conda either
+# XXX: change pytorch-nightly to pytorch >=1.0.0 once it's released on conda
+# XXX: change torchvision-nightly to torchvision >=0.2.2 once 0.2.2 (against pytorch-1.0) is released on conda
+# XXX: temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
+#
+# note: "module # [py36]" tells conda-build that this requirement is only for python3.6, it's not a comment.
+  run:
+    - dataclasses # [py36]
+    - fastprogress >=0.1.15
+    - ipython
+    - jupyter
+    - matplotlib
+    - notebook>=5.7.0
+    - nbconvert
+    - nbformat
+    - numpy >=1.12
+    - pandas
+    - pillow
+    - python
+    - requests
+    - scipy
+    - spacy ==2.0.16
+    - regex ==2018.8.29
+    - thinc ==6.12.0
+    - cymem ==2.0.2
+    - traitlets
+    - typing
+    - pyyaml
+
+# removed these and instead are asking users to install those directly until a proper pytorch-1.0.0 and the corresponding torchvision are released on conda. otherwise can't support these two sets:
+#    - pytorch-nightly
+#    - torchvision-nightly
+#
+#    - pytorch-nightly-cpu
+#    - torchvision-nightly-cpu
+
+# removing until pytorch-1.0.0 release - conda can't handle these dependencies and tries to pull in pytorch-0.4.1 due to torchvision depending on it. yet, pytorch doesn't release torchvision nightly build... no way out
+#    - pytorch >=1.0.0
+
+test:
+  imports:
+# removing the loading test for now, since we temporarily made fastai conda package not depend on torch/torchvision due to dependencies hell - see above.
+#    - fastai
+
+  requires:
+    - python
+    - pytest
+
+about:
+  home: {{ data.get('url') }}
+  license: {{ data['license'] }}
+  license_family: APACHE
+  license_url: https://github.com/fastai/fastai/blob/master/LICENSE
+  license_file: LICENSE
+  summary: {{ data['description'] }}
+  # description needs to have:
+  # - yaml multi-line format, so need to indent the text 4 spaces: replace("\n", "\n    ")
+  # - can't have #, as it thinks it is a comment: replace("#", '\#')
+  #   it won't render headers anyway, it expects underlined header syntax instead:
+  #   HEADER
+  #   ------
+  # - _ is special outside of block code, need to escape otherwise, but can't do that w/o jinja2 regex support since it'll break code blocks - so doing nothing at the moment.
+  description: |
+    {{ data['long_description'] | replace("\n", "\n    ") | replace("#", '\#')}}
+  doc_url: https://docs.fast.ai/
+  dev_url: {{ data.get('url') }}
+
+extra:
+  deploy:
+    - anaconda-client
+    - setuptools >=0.39
+    - twine >=1.12
+  recipe-maintainers: ''

@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+
+# for usage and functionality information run this program w/o arguments
+
+me=$(basename "$0")
+if [[ "$#" -ne 4 ]]; then
+    echo "This program will checkout a forked version of the original repository, sync it with the original, create a new branch and set it up for a PR."
+    echo ""
+    echo "usage:"
+    echo ""
+    echo "$me auth user_name repo_name new_branch_name"
+    echo ""
+    echo "parameters:"
+    echo ""
+    echo "  auth:   ssh or https (use ssh if your github account is setup to use ssh)"
+    echo "  user:   your github username"
+    echo "  repo:   repository name to fork/use"
+    echo "  branch: name of the branch to create"
+    echo ""
+    echo "example:"
+    echo ""
+    echo "$me ssh my-github-username fastai new-feature-branch"
+    echo ""
+    echo "notes:"
+    echo ""
+    echo "- if the original repository has been already forked, it'll be done by the program (it will ask you for your github password)"
+    echo "- if the program is run from a directory that already contains a checked out git repository that matches the parameters, it will re-use it instead of making a new checkout."
+    echo "- if the requested branch already exists it'll reuse it"
+    echo "- if the master is out of sync with the original master it'll sync it first"
+    echo ""
+    exit 0
+fi
+
+auth="$1"
+user_name="$2"
+repo_name="$3"
+new_branch_name="$4"
+
+orig_user_name="fastai"
+path="$repo_name-$new_branch_name"
+
+# abort the script on any failure
+set -e
+
+# check curl is available
+function check_curl_is_available {
+    command -v curl >/dev/null 2>&1 || { echo >&2 "$me requires 'curl' but it's not installed. Aborting."; exit 1; }
+}
+
+function run() {
+    local cmd="$@"
+    echo "running: $cmd"
+    eval $cmd || exit 1
+}
+
+function master_sync() {
+    run "git fetch upstream"
+    run "git checkout master"
+    # XXX: this will fail if the user was committing directly to their forked `master` branch is
+    cmd="git merge --no-edit upstream/master"
+    echo "running: $cmd"
+    eval $cmd || { git merge --abort; echo -e >&2 "\nError: $user_name/$repo_name/master can't be merged with orig_user_name/$repo_name/master.\nYou must merge manually, or reset $user_name/$repo_name/master.\nSee:  https://docs-dev.fast.ai/git.html#how-to-reset-your-forked-master-branch\nAborting."; exit 1; }
+    run "git push"
+
+}
+
+if [[ "$auth" == "ssh" ]]; then
+    prefix="git@github.com:"
+else
+    prefix="https://github.com/"
+fi
+url="$prefix$user_name/$repo_name.git"
+
+# fork the repo if it hasn't been forked yet
+echo -e "\n\n*** Checking if we need to fork"
+was_already_forked=0
+git ls-remote $url >/dev/null 2>&1 && was_already_forked=1
+if [[ "$was_already_forked" -eq 1 ]]; then
+    echo "$url is already forked"
+else
+    echo "$url doesn't exist - need to fork"
+    check_curl_is_available
+    run "curl -u $user_name https://api.github.com/repos/fastai/$repo_name/forks -d ''"
+fi
+
+# support an already existing checkout if it matches the desired parameters, but only if it's not dirty
+clone_is_needed=1
+if [[ -e ".git" ]]; then
+   echo "detected current dir to be a git repository"
+   if [[ -n "$(git status -s)" ]]; then
+       echo "git status is not clean, not going to re-use the current checkout"
+       clone_is_needed=1
+   else
+       cur_url=$(git config --get remote.origin.url)
+       if [[ "$cur_url" == "$url" ]]; then
+           echo "already on the right repo, going to re-use the current checkout"
+           clone_is_needed=0
+       fi
+   fi
+fi
+
+# clone
+if [[ "$clone_is_needed" -eq 1 ]]; then
+    echo -e "\n\n*** Cloning $url to $path"
+    run "git clone $url $path"
+    run "cd $path"
+fi
+
+# not all repos have this tool
+tool="tools/run-after-git-clone"
+if [[ -f $tool ]]; then
+    echo -e "\n\n*** run fastai repository setup"
+    run "python $tool"
+fi
+
+# setup this fork to track the upstream
+echo -e "\n\n*** Setting up this fork to track the upstream"
+orig_repo_url="$prefix$orig_user_name/$repo_name.git"
+run "git remote add upstream $orig_repo_url || echo 'already exists'"
+# show the setup
+run "git remote -v"
+
+# let's sync the forked repo master with the upstream master if it hasn't been just forked
+if [[ "$was_already_forked" -eq 1 ]]; then
+    echo -e "\n\n*** Syncing $user_name/master with $orig_user_name/master"
+    master_sync
+    echo "Done"
+fi
+
+# now create a branch
+echo -e "\n\n*** Creating '$new_branch_name' branch and setting its upstream for an easy push"
+branch_already_exists=0
+git show-branch $new_branch_name >/dev/null 2>&1 && branch_already_exists=1
+if [[ "$branch_already_exists" -eq 1 ]]; then
+    echo "$new_branch_name already exists, switching to it"
+    run "git checkout $new_branch_name"
+else
+    echo "$new_branch_name doesn't yet exist, creating"
+    run "git checkout -b $new_branch_name"
+    echo -e "'$new_branch_name' branch was successfully created"
+fi
+
+# set this branch's upstream, so to enable `git push` and other git
+# commands without needing to pass any more arguments.
+echo -e "\n\n*** Set this $new_branch_name's upstream to simplify push and alikes"
+run "git push --set-upstream origin $new_branch_name"
+
+# give parting instructions
+echo -e "\n\n*** Next do: "
+# only suggest to chdir if we made a clone
+echo -e "1. Switch to the working dir:\n"
+if [[ "$clone_is_needed" -eq 1 ]]; then
+    echo -e "cd $path\n"
+else
+    echo -e "cd .\n"
+fi
+echo -e "2. Validate you're on the right repo/branch:\n"
+echo -e "echo on repo: \$(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//') branch: \$(git branch | sed -n '/\* /s///p')\n\n"
+echo -e "3. And do your work.\n"
+echo -e "4. When you're done:\n"
+echo -e "git add <newfiles> # if you added new files"
+echo -e "git commit -a      # if you want to commit all modified/added files"
+echo -e "git push           # push files into $new_branch_name branch\n"
+echo -e "5. Then go to:\n"
+echo -e "  https://github.com/$user_name/$repo_name/tree/$new_branch_name\n"
+echo "review your changes and when you're happy with what you see, submit your PR."
+echo "While it's very good to review your PR on github before submitting it, if you want to use a CLI solution, there are several solutions to choose from:"
+echo "* https://github.com/github/hub"
+echo "* https://github.com/jd/git-pull-request"
+echo "* https://github.com/jehiah/git-open-pull"
+echo "* https://www.npmjs.com/package/pullr"
