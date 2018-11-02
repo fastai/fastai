@@ -42,7 +42,7 @@ def pil2tensor(image:Union[NPImage,NDArray], dtype)->TensorImage:
     #image: must be a PIL.image or a numpy array. 
     #       Grayscale (single channel) convert to the shape: 1, heigh, widt
     #       rgb converts to a shape of:                      3, width, height
-    #dtype: pytorch support: np.double, np.float, np.float16, np.int64, np.int32, and np.uint8
+    #dtype: pytorch support: np.double, np.float32, np.int64, np.int32, and np.uint8
     #Usage 1: pil2tensor(Image.open(\"dog.47.jpg\").convert(fmt), dtype).div_(scale)"
     #         where fmt = RGB, L (=8bit for fx masks) or I (= int for fx 16 bit grayscale)"
     #         where scale = 255 for rgb, 65535 for grayscale"
@@ -377,12 +377,12 @@ class ImageBBox(ImagePoints):
 def open_image(fn:PathOrStr)->Image:
     "Return `Image` object created from image in file `fn`."
     x = PIL.Image.open(fn).convert('RGB')
-    return Image(pil2tensor(x,np.float).div_(255))
+    return Image(pil2tensor(x,np.float32).div_(255))
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
     x = PIL.Image.open(fn).convert(convert_mode)
-    mask = pil2tensor(x,np.float)
+    mask = pil2tensor(x,np.float32)
     if div: mask.div_(255)
     return ImageSegment(mask)
 
