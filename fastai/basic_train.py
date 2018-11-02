@@ -196,11 +196,9 @@ class Learner():
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid):
         "Return DataLoader for DatasetType `ds_type`."
-        if (ds_type == DatasetType.Valid): return self.data.valid_dl
-        else if (ds_type == DatasetType.Test): return self.data.test_dl
-        else if (ds_type == DatasetType.Train): return self.data.train_dl
-        assert isinstance(ds_type, DatasetType), "You didn't specify a valid dataset type (Train, Valid, Test)"
-        # TODO: check error handling format w/Jeremy
+        if (ds_type == DatasetType.Test): return self.data.test_dl
+        elif (ds_type == DatasetType.Train): return self.data.train_dl
+        return self.data.valid_dl
 
     def load(self, name:PathOrStr, device:torch.device=None):
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
