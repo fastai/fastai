@@ -199,10 +199,10 @@ class Learner():
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
 
-    def get_preds(self, is_test:bool=False, with_loss:bool=False, n_batch:Optional[int]=None) -> List[Tensor]:
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None) -> List[Tensor]:
         "Return predictions and targets on the valid or test set, depending on `is_test`."
         lf = self.loss_func if with_loss else None
-        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks),
+        return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch)
 
     def pred_batch(self, is_test:bool=False) -> List[Tensor]:
