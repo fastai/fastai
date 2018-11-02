@@ -183,7 +183,14 @@ class SplitDatasets():
         assert (len(ds) == 2 or len(ds) == 3), "You have to pass two or three datasets."
         self.train_ds,self.valid_ds = ds[:2]
         if len(ds) == 3: self.test_ds = ds[2]
-
+    
+    def set_attr(self, **kwargs):
+        dss = self.datasets
+        for key,val in kwargs.items():
+            for ds in dss: ds = setattr(ds, key, val)
+        self.datasets = dss
+        return self
+            
     def dataloaders(self, **kwargs)->Collection[DataLoader]:
         "Create dataloaders with the inner datasets, pasing the `kwargs`."
         return [DataLoader(o, **kwargs) for o in self.datasets]

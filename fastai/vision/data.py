@@ -68,8 +68,9 @@ class ImageClassificationBase(LabelDataset):
     def __init__(self, fns:FilePathList, classes:Optional[Collection[Any]]=None):
         super().__init__(classes=classes)
         self.x  = np.array(fns)
+        self.image_opener = open_image
 
-    def _get_x(self,i): return open_image(self.x[i])
+    def _get_x(self,i): return self.image_opener(self.x[i])
 
     def new(self, *args, classes:Optional[Collection[Any]]=None, **kwargs):
         if classes is None: classes = self.classes
@@ -146,13 +147,14 @@ class ImageMultiDataset(ImageClassificationBase):
 
 class SegmentationDataset(ImageClassificationBase):
     "A dataset for segmentation task."
-    def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div=False, convert_mode='L'):
+    def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any]):
         assert len(x)==len(y)
         super().__init__(x, classes)
-        self.y,self.div,self.convert_mode = np.array(y),div,convert_mode
+        self.y = np.array(y)
         self.loss_func = CrossEntropyFlat()
+        self.mask_opener = open_mask
 
-    def _get_y(self,i): return open_mask(self.y[i], self.div, self.convert_mode)
+    def _get_y(self,i): return self.mask_opener(self.y[i])
 
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
