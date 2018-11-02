@@ -228,8 +228,10 @@ def _transform_dataset(self, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any)-
 DatasetBase.transform = _transform_dataset
 
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
-                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_mtd:ResizeMtd=ResizeMtd.CROP, **kwargs:Any):
+                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_mtd:ResizeMtd=None, **kwargs:Any):
     "Create train, valid and maybe test DatasetTfm` using `tfms` = (train_tfms,valid_tfms)."
+    default_rsz = ResizeMtd.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMtd.CROP
+    resize_mtd = ifnone(resize_mtd, default_rsz)
     tfms = _prep_tfms(ifnone(tfms, [[],[]]), resize_mtd)
     res = [DatasetTfm(train_ds, tfms[0], resize_mtd=resize_mtd, **kwargs),
            DatasetTfm(valid_ds, tfms[1], resize_mtd=resize_mtd, **kwargs)]
