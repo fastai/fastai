@@ -197,10 +197,10 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
     return torch.cat(imgs,0), (bboxes,labels)
 
 def _prep_tfm_kwargs(tfms, kwargs):
-    default_rsz = ResizeMtd.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMtd.CROP
-    resize_mtd = getattr(kwargs, 'resize_mtd', default_rsz)
-    if resize_mtd <= 2: tfms = [crop_pad()] + tfms
-    kwargs['resize_mtd'] = resize_mtd
+    default_rsz = ResizeMethod.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMethod.CROP
+    resize_method = getattr(kwargs, 'resize_method', default_rsz)
+    if resize_method <= 2: tfms = [crop_pad()] + tfms
+    kwargs['resize_method'] = resize_method
     return tfms, kwargs
 
 class DatasetTfm(Dataset):
@@ -230,12 +230,12 @@ def _transform_dataset(self, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any)-
 DatasetBase.transform = _transform_dataset
 
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
-                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_mtd:ResizeMtd=None, **kwargs:Any):
+                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_method:ResizeMethod=None, **kwargs:Any):
     "Create train, valid and maybe test DatasetTfm` using `tfms` = (train_tfms,valid_tfms)."
     tfms = ifnone(tfms, [[],[]])
-    res = [DatasetTfm(train_ds, tfms[0], resize_mtd=resize_mtd, **kwargs),
-           DatasetTfm(valid_ds, tfms[1], resize_mtd=resize_mtd, **kwargs)]
-    if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1], resize_mtd=resize_mtd, **kwargs))
+    res = [DatasetTfm(train_ds, tfms[0], resize_method=resize_method, **kwargs),
+           DatasetTfm(valid_ds, tfms[1], resize_method=resize_method, **kwargs)]
+    if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1], resize_method=resize_method, **kwargs))
     return res
 
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
