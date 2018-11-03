@@ -329,7 +329,7 @@ class ImageDataBunch(DataBunch):
                 fn_col=fn_col, label_col=label_col, suffix=suffix, header=header, **kwargs)
 
     @classmethod
-    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:int=0.2, test:str=None, **kwargs):
+    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, test:str=None, **kwargs):
         classes = uniqueify(labels)
         train,valid = random_split(valid_pct, fnames, labels)
         datasets = [ImageClassificationDataset(*train, classes),
@@ -338,12 +338,12 @@ class ImageDataBunch(DataBunch):
         return cls.create(*datasets, path=path, **kwargs)
 
     @classmethod
-    def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:int=0.2, test:str=None, **kwargs):
+    def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, test:str=None, **kwargs):
         labels = [label_func(o) for o in fnames]
         return cls.from_lists(path, fnames, labels, valid_pct=valid_pct, test=test, **kwargs)
 
     @classmethod
-    def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:int=0.2, test:str=None, **kwargs):
+    def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:float=0.2, test:str=None, **kwargs):
         pat = re.compile(pat)
         def _get_label(fn): return pat.search(str(fn)).group(1)
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, test=test, **kwargs)
@@ -446,4 +446,11 @@ class ImageFileList(InputList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
+
+def split_data_add_test_folder(self, test_folder:str='test', label:Any=None):
+    "Add test set containing items from folder `test_folder` and an arbitrary label"
+    items = ImageFileList.from_folder(self.path/test_folder)
+    return self.add_test(items, label=label)
+
+SplitData.add_test_folder = split_data_add_test_folder
 

@@ -4,13 +4,12 @@ from fastai import *
 from fastai.tabular import *
 
 def test_categorify():
-    path = untar_data(URLs.ADULT_SAMPLE)
-    df = pd.read_csv(path / 'adult.csv')
-    cat_names = ['workclass', 'education', 'marital-status', 'occupation',
-                 'relationship', 'race', 'sex', 'native-country']
-    cont_names = [column_name for column_name in df.columns
-                     if column_name not in cat_names]
-    train_df, valid_df = df[:1024].copy(),df[1024:1260].copy()
+    cat_names = ['A']
+    cont_names = ['X']
+    train_df = pd.DataFrame({'A': ['a', 'b'],
+                             'X': [0., 1.]})
+    valid_df = pd.DataFrame({'A': ['b', 'a'],
+                             'X': [1., 0.]})
     original_cont_train_df = train_df[cont_names].copy()
     original_cont_valid_df = valid_df[cont_names].copy()
     
@@ -33,12 +32,9 @@ def test_default_fill_strategy_is_median():
     assert fill_missing_transform.fill_strategy is FillStrategy.MEDIAN
 
 def test_fill_missing_leaves_no_na_values():
-    path = untar_data(URLs.ADULT_SAMPLE)
-    df = pd.read_csv(path / 'adult.csv')
-    cont_names = ['age', 'fnlwgt', 'education-num', 'capital-gain',
-                  'capital-loss', 'hours-per-week']
-    df = df[cont_names]
-    train_df, valid_df = df[:1024].copy(),df[1024:1260].copy()
+    cont_names = ['A']
+    train_df = pd.DataFrame({'A': [0., np.nan, np.nan]})
+    valid_df = pd.DataFrame({'A': [np.nan, 0., np.nan]})
     
     fill_missing_transform = FillMissing([], cont_names)
     fill_missing_transform.apply_train(train_df)

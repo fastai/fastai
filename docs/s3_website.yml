@@ -1,0 +1,52 @@
+# ~/.aws/credentials.
+s3_bucket: docs.fast.ai
+
+# max_age:
+#   "assets/*": 6000
+#   "*": 300
+
+gzip:
+  - .html
+  - .css
+  - .md
+# gzip_zopfli: true
+
+# See http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region for valid endpoints
+# s3_endpoint: ap-northeast-1
+
+# ignore_on_server: that_folder_of_stuff_i_dont_keep_locally
+
+# exclude_from_upload:
+#   - those_folders_of_stuff
+
+s3_reduced_redundancy: true
+
+# cloudfront_distribution_id: your-dist-id
+
+# cloudfront_distribution_config:
+#   default_cache_behavior:
+#     min_ttl: <%= 60 * 60 * 24 %>
+#   aliases:
+#     quantity: 1
+#     items:
+#       - your.website.com
+
+# cloudfront_invalidate_root: true
+
+cloudfront_wildcard_invalidation: true
+
+concurrency_level: 5
+
+# redirects:
+#   index.php: /
+#   about.php: about.html
+#   music-files/promo.mp4: http://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+# routing_rules:
+#   - condition:
+#       key_prefix_equals: blog/some_path
+#     redirect:
+#       host_name: blog.example.com
+#       replace_key_prefix_with: some_new_path/
+#       http_redirect_code: 301
+
