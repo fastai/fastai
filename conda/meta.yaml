@@ -53,12 +53,7 @@ requirements:
   run:
     - dataclasses # [py36]
     - fastprogress >=0.1.15
-    - ipython
-    - jupyter
     - matplotlib
-    - notebook>=5.7.0
-    - nbconvert
-    - nbformat
     - numpy >=1.12
     - pandas
     - pillow
@@ -69,9 +64,16 @@ requirements:
     - regex ==2018.8.29
     - thinc ==6.12.0
     - cymem ==2.0.2
-    - traitlets
     - typing
     - pyyaml
+
+# testing removal of stuff only used for doc() and dev-time
+#- ipython
+#- jupyter
+#- notebook>=5.7.0
+#- nbconvert
+#- nbformat
+#- traitlets
 
 # removed these and instead are asking users to install those directly until a proper pytorch-1.0.0 and the corresponding torchvision are released on conda. otherwise can't support these two sets:
 #    - pytorch-nightly

@@ -22,6 +22,7 @@ of that change.
 
 ### Changed:
 
+- jupyter et al no longer forced dependencies
 - `verify_images` can now resize images on top of checking they're not broken.
 
 ### Fixed:

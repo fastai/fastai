@@ -26,12 +26,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # XXX: temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
 requirements = to_list("""
     fastprogress>=0.1.15
-    ipython
-    jupyter
     matplotlib
-    notebook>=5.7.0
-    nbconvert
-    nbformat
     numpy>=1.12
     pandas
     Pillow
@@ -42,10 +37,10 @@ requirements = to_list("""
     thinc==6.12.0
     cymem==2.0.2
     torchvision-nightly
-    traitlets
     typing
     pyyaml
 """)
+
 
 # dependencies to skip for now:
 #
@@ -75,6 +70,12 @@ dev_requirements = { 'dev' : to_list("""
     pipreqs>=0.4.9
     pytest
     wheel>=0.30.0
+    ipython
+    jupyter
+    notebook>=5.7.0
+    nbconvert
+    nbformat
+    traitlets
 """) }
 
 ### setup dependencies ###
