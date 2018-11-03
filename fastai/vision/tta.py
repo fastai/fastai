@@ -2,6 +2,7 @@
 from ..torch_core import *
 from ..basic_train import *
 from ..basic_train import _loss_func2activ
+from ..basic_data import DatasetType
 from .transform import *
 
 __all__ = []
