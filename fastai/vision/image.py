@@ -579,7 +579,7 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
         x.set_sample(padding_mode=padding_mode, **kwargs)
         if size:
             crop_target = _get_crop_target(size, mult=mult)
-            if resize_method in (ResizeMethod.CROP,ResizeMethod,PAD):
+            if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
                 target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
                 x.resize(target)
             elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
@@ -588,7 +588,7 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
         for tfm in tfms:
             if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
             elif tfm in size_tfms:
-                if resize_method in (ResizeMethod.CROP,ResizeMethod,PAD):
+                if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
                     x = tfm(x, size=size, padding_mode=padding_mode)
             else: x = tfm(x)
     return x
