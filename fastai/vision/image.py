@@ -377,7 +377,7 @@ def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     return ImageSegment(mask)
 
 def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
-    "Return `ImageSegment` object create from run-length encoded string"
+    "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."
     x = FloatTensor(rle_decode(mask_rle, shape).astype(np.uint8))
     x = x.view(shape[1], shape[0], -1)
     return ImageSegment(x.permute(2,0,1))
