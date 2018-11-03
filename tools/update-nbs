@@ -31,20 +31,15 @@ if not files: files.append('docs_src')
 succeeded = []
 failed = []
 for file in files:
-    try:
-        update_notebooks(file, None, **args)
+    try: update_notebooks(file, None, **args)
     except Exception as e:
-        print(f"failed to update {file}")
-        print(e)
+        print(f"failed to update {file}\n{e}")
         failed.append(file)
-    else:
-        succeeded.append(file)
+    else: succeeded.append(file)
 
 print("\n*** Summary:")
 if not failed: print("All succeeded")
 else:
-    if succeeded:
-        print("- Succeeded:")
-        print("\n".join(succeeded))
-    print("- Failed:")
-    print("\n".join(failed))
+    if succeeded: print("- Succeeded:{'\n'.join(succeeded)}")
+    print("- Failed:{'\n'.join(failed)}")
+

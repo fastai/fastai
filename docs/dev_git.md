@@ -12,7 +12,6 @@ Chances are that you may need to know some git when using fastai - for example i
 While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
 
 * https://github.com/fastai/fastai
-* https://github.com/fastai/fastai_docs
 * https://github.com/fastai/course-v3
 * https://github.com/fastai/fastprogress
 
@@ -226,9 +225,9 @@ Test that your changes don't break things. Choose one according to which project
    pytest
    ```
 
-* `fastai_dos`
+* `docs_src`
 
-   In the `fastai_docs` repository, if you made changes to the notebooks, run:
+   In the `docs_src` folder, if you made changes to the notebooks, run:
 
    ```
    cd docs_src
@@ -346,7 +345,7 @@ I currently work on 4 different `fastai` project repositories and 4 correspondin
    ```
    (pytorch-dev) /fastai/ci-experiments [fastai/fastai:ci-experiments|·6]>
 
-   (pytorch-dev) /fastai/linkcheck [fastai/fastai_docs:master]>
+   (pytorch-dev) /fastai/linkcheck [fastai/fastai:master]>
 
    (pytorch-dev) /stas00/fork [stas00/fastai:master|·3]>
 
