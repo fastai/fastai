@@ -306,6 +306,7 @@ class Recorder(LearnerCallback):
         ax.set_ylabel("Loss")
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
+        ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
 
     def plot_losses(self)->None:
         "Plot training and validation losses."

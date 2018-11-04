@@ -16,8 +16,6 @@ Note: windows users, not using bash emulation, will need to invoke the command a
 
     python tools\run-after-git-clone
 
-Note that if you work on `fastai/fastai_docs` repository as well, you need to run that script once too in the directory of that repository upon cloning it.
-
 
 ### after-git-clone #1: a mandatory notebook strip out
 
@@ -132,7 +130,6 @@ Unfortunately, we can't enforce this, because github doesn't allow server-side h
 
 So it's your responsibility to watch the status of your commits at the commits page:
 
-* https://github.com/fastai/fastai_docs/commits/master
 * https://github.com/fastai/fastai/commits/master
 * https://github.com/fastai/course-v3/commits
 

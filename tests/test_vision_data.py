@@ -47,3 +47,12 @@ def test_from_df(path):
         mnist_tiny_sanity_test(data)
     finally:
         shutil.rmtree(tmp_path)
+
+def test_from_df_test_dataset(path):
+    "Check that test dataset is created with from_df."
+    #Actual contents do not matter here.
+    df = pd.DataFrame({'fn': ['a.jpg', 'b.jpg', 'c.jpg'],
+                       'lbl': [0, 1, 2]})
+    data = ImageDataBunch.from_df('.', df, path, test='test')
+    #If the test set is not registered, this will raise an assertion error
+    data.test_ds

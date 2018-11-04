@@ -7,9 +7,9 @@ import PIL
 __all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
            'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
            'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
-           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMtd']
+           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMethod']
 
-ResizeMtd = IntEnum('ResizeMtd', 'CROP PAD SQUISH NO')
+ResizeMethod = IntEnum('ResizeMethod', 'CROP PAD SQUISH NO')
 
 def logit(x:Tensor)->Tensor:
     "Logit of `x`, clamped to avoid inf"
@@ -376,9 +376,9 @@ def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     if div: mask.div_(255)
     return ImageSegment(mask)
 
-def open_mask_rle(fn:PathOrStr, shape:Tuple[int, int])->ImageSegment:
-    "Return `ImageSegment` object create from run-length encoded string"
-    x = FloatTensor(rle_decode(fn, shape).astype(np.uint8))
+def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
+    "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."
+    x = FloatTensor(rle_decode(mask_rle, shape).astype(np.uint8))
     x = x.view(shape[1], shape[0], -1)
     return ImageSegment(x.permute(2,0,1))
 
@@ -569,7 +569,7 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
 
 def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
                xtra:Optional[Dict[Transform,dict]]=None, size:Optional[Union[int,TensorImageSize]]=None,
-               mult:int=32, resize_mtd:ResizeMtd=ResizeMtd.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
+               mult:int=32, resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
     "Apply all `tfms` to `x` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
     if tfms or xtra or size:
         if not xtra: xtra={}
@@ -579,15 +579,16 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
         x.set_sample(padding_mode=padding_mode, **kwargs)
         if size:
             crop_target = _get_crop_target(size, mult=mult)
-            if resize_mtd <= 2:
-                target = _get_resize_target(x, crop_target, do_crop=(resize_mtd==ResizeMtd.CROP))
+            if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+                target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
                 x.resize(target)
-            elif resize_mtd==ResizeMtd.SQUISH: x.resize((x.shape[0],) + crop_target)
+            elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
         else: size = x.size
         size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
         for tfm in tfms:
             if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
-            elif tfm in size_tfms: 
-                if resize_mtd <= 2: x = tfm(x, size=size, padding_mode=padding_mode)
+            elif tfm in size_tfms:
+                if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+                    x = tfm(x, size=size, padding_mode=padding_mode)
             else: x = tfm(x)
     return x

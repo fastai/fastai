@@ -12,16 +12,30 @@ of that change.
 
 
 
-## 1.0.19.dev0 (Work In Progress)
+
+
+## 1.0.20.dev0 (Work In Progress)
 
 ### New:
 
-- add an argument `ResizeMtd` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no).
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.19 (2018-11-03)
+
+### New:
+
+- add an argument `resize_method` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no).
 - all the image dataset have an `image_opener` attribute (default `open_image`) that can be changed. The `SegmentationDataset` has a `mask_opener` attribute.
+- `add_test` and `add_test_folder` in data block API.
 
 ### Changed:
 
-- `verify_images` can know resize images on top of checking they're not broken.
+- jupyter et al no longer forced dependencies
+- `verify_images` can now resize images on top of checking they're not broken.
 
 ### Fixed:
 

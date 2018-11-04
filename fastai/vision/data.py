@@ -197,10 +197,10 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
     return torch.cat(imgs,0), (bboxes,labels)
 
 def _prep_tfm_kwargs(tfms, kwargs):
-    default_rsz = ResizeMtd.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMtd.CROP
-    resize_mtd = getattr(kwargs, 'resize_mtd', default_rsz)
-    if resize_mtd <= 2: tfms = [crop_pad()] + tfms
-    kwargs['resize_mtd'] = resize_mtd
+    default_rsz = ResizeMethod.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMethod.CROP
+    resize_method = getattr(kwargs, 'resize_method', default_rsz)
+    if resize_method <= 2: tfms = [crop_pad()] + tfms
+    kwargs['resize_method'] = resize_method
     return tfms, kwargs
 
 class DatasetTfm(Dataset):
@@ -230,12 +230,12 @@ def _transform_dataset(self, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any)-
 DatasetBase.transform = _transform_dataset
 
 def transform_datasets(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None,
-                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_mtd:ResizeMtd=None, **kwargs:Any):
+                       tfms:Optional[Tuple[TfmList,TfmList]]=None, resize_method:ResizeMethod=None, **kwargs:Any):
     "Create train, valid and maybe test DatasetTfm` using `tfms` = (train_tfms,valid_tfms)."
     tfms = ifnone(tfms, [[],[]])
-    res = [DatasetTfm(train_ds, tfms[0], resize_mtd=resize_mtd, **kwargs),
-           DatasetTfm(valid_ds, tfms[1], resize_mtd=resize_mtd, **kwargs)]
-    if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1], resize_mtd=resize_mtd, **kwargs))
+    res = [DatasetTfm(train_ds, tfms[0], resize_method=resize_method, **kwargs),
+           DatasetTfm(valid_ds, tfms[1], resize_method=resize_method, **kwargs)]
+    if test_ds is not None: res.append(DatasetTfm(test_ds, tfms[1], resize_method=resize_method, **kwargs))
     return res
 
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
@@ -401,8 +401,8 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
         for i,url in enumerate(progress_bar(urls)):
             download_image(url, dest/f"{i:08d}.jpg")
 
-def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:PathOrStr='.', n_channels:int=3,
-                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, **kwargs):
+def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
+                 interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
     """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
@@ -410,34 +410,42 @@ def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None
     try:
         img = PIL.Image.open(file)
         if max_size is None: return
+        assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
         max_size = listify(max_size, 2)
         if img.height > max_size[0] or img.width > max_size[1]:
+            dest_fname = dest/file.name
+            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
+            if resume and os.path.isfile(dest_fname): return
             ratio = img.height/img.width
             new_h = min(max_size[0], int(max_size[1] * ratio))
             new_w = int(new_h/ratio)
+            if n_channels == 3: img = img.convert("RGB")
             img = img.resize((new_w,new_h), resample=interp)
-            os.makedirs(file.parent/Path(dest), exist_ok=True)
-            dest_fname = file.parent/Path(dest)/file.name
-            if ext is not None: dest_fname=dest_fname.with_suffix(ext)
-            img.save(file.parent/Path(dest)/file.name, img_format, **kwargs)
+            img.save(dest_fname, img_format, **kwargs)
         img = np.array(img)
-        assert (1 if len(img.shape) == 2 else img.shape[2]) == n_channels
+        img_channels = 1 if len(img.shape) == 2 else img.shape[2]
+        assert img_channels == n_channels, f"Image {file} has {img_channels} instead of {n_channels}"
     except Exception as e:
         print(f'{e}')
         if delete: file.unlink()
 
-def verify_images(path:PathOrStr, delete=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
+def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
                   dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
-                  **kwargs):
-    """Check if the image in `path` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
-    If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
-    using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
-    to PIL.Image.save. Use `max_workers` CPUs."""
+                  resume:bool=None, **kwargs):
+    """Check if the image in `path` exists, can be opened and has `n_channels`.
+    If `n_channels` is 3 – it'll try to convert image to RGB. If `delete`, removes it if it fails.
+    If `resume` – it will skip already existent images in `dest`.  If `max_size` is specifided,
+    image is resized to the same ratio so that both sizes are less than `max_size`, using `interp`.
+    Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are
+    passed to PIL.Image.save. Use `max_workers` CPUs."""
     path = Path(path)
+    if resume is None and dest == '.': resume=False
+    dest = path/Path(dest)
+    os.makedirs(dest, exist_ok=True)
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
         files = get_image_files(path)
         futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                            interp=interp, ext=ext, img_format=img_format, **kwargs) for file in files]
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageFileList(InputList):
@@ -446,4 +454,11 @@ class ImageFileList(InputList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
+
+def split_data_add_test_folder(self, test_folder:str='test', label:Any=None):
+    "Add test set containing items from folder `test_folder` and an arbitrary label"
+    items = ImageFileList.from_folder(self.path/test_folder)
+    return self.add_test(items, label=label)
+
+SplitData.add_test_folder = split_data_add_test_folder
 

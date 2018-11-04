@@ -381,46 +381,26 @@ In some situations you may want to remove randomness for your tests. To get iden
 The two places you should check for notebooks to test your code with are:
 
  - [The fastai examples](https://github.com/fastai/fastai/tree/master/examples)
- - [The fastai_docs notebooks](https://github.com/fastai/fastai_docs/tree/master/docs_src)
+ - [The docs_src notebooks](https://github.com/fastai/fastai/tree/master/docs_src)
 
 In each case, look for notebooks that have names starting with the application you're working on - e.g. 'text' or 'vision'.
 
-### fastai_docs/docs_src/*ipynb
+### docs_src/*ipynb
 
-The `fastai_docs` repo's notebooks can be executed as a test suite:
+The `docs_src` notebooks can be executed as a test suite: You need to have at least 8GB available on your GPU to run all of the tests. So make sure you shutdown any unnecessary jupyter kernels, so that the output of your `nvidia-smi` shows that you have at least 8GB free.
 
-1. Prep (first time you run it):
+```
+cd docs_src
+./run_tests.sh
+```
 
-   ```
-   python -m spacy download en
-   ```
+To run a subset:
 
-   You need to have at least 8GB available on your GPU to run all of the tests. So make sure you shutdown any unnecessary jupyter kernels, so that the output of your `nvidia-smi` shows that you have at least 8GB free.
+```
+./run_tests.sh callback*
+```
 
-2. Sync both git repos. Remember that these tests from the `fastai_docs` repo, run the code from the `fastai` repo:
-
-   ```
-   cd fastai
-   git pull
-   cd fastai_docs
-   git pull
-   ```
-
-3. Run:
-
-   ```
-   cd fastai_docs
-   cd docs_src
-   ./run_tests.sh
-   ```
-
-   To run a subset:
-
-   ```
-   ./run_tests.sh callback*
-   ```
-
-There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai_docs/blob/master/docs_src/nbval/README.md).
+There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai/blob/master/docs_src/nbval/README.md).
 
 ### fastai/examples/*ipynb
 
@@ -431,3 +411,4 @@ jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook exam
 ```
 
 This set is examples and there is no pass/fail other than visual observation.
+
