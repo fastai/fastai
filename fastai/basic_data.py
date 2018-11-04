@@ -107,7 +107,7 @@ class DataBunch():
         assert not isinstance(train_dl,DeviceDataLoader)
         self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
         self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl,  self.device, self.tfms, collate_fn) if test_dl else None
+        self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
         self.path = Path(path)
 
     @classmethod
