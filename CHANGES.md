@@ -36,6 +36,7 @@ of that change.
 
 - jupyter et al no longer forced dependencies
 - `verify_images` can now resize images on top of checking they're not broken.
+- LR finder plot now uses python scientific notation instead of math superset notation
 
 ### Fixed:
 

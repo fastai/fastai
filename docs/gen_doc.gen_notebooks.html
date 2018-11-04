@@ -18,7 +18,7 @@ summary: "Generation of documentation notebook skeletons from python module"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This module contains the scripts and API to auto-generate or update a documentation notebook skeleton from a given .py file or a full package. It is not expected you'd use this skeleton as your final docs - you should add markdown, examples, etc to it. The skeleton just has a minimal list of exported symbols.</p>
-<p><a href="https://github.com/fastai/fastai_docs/blob/master/docs_src/tools/sgen_notebooks.py"><code>fastai_docs/tools/sgen_notebooks</code></a> contains a command line tool that transforms a given module into a notebook skeleton. It's essentially a wrapper around <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>gen_notebooks.update_notebooks</code></a> The usage is</p>
+<p><a href="https://github.com/fastai/fastai/blob/master/docs_src/tools/sgen_notebooks.py"><code>tools/sgen_notebooks</code></a> contains a command line tool that transforms a given module into a notebook skeleton. It's essentially a wrapper around <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>gen_notebooks.update_notebooks</code></a> The usage is</p>
 
 <pre><code>python -m sgen_notebooks package path_to_result [--update]</code></pre>
 <ul>
@@ -233,16 +233,6 @@ Notebook metadata structure looks like this: <code>'metadata': { 'jekyll': {...}
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">update_notebooks</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -265,8 +255,8 @@ Notebook metadata structure looks like this: <code>'metadata': { 'jekyll': {...}
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As a convenience method, there's <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> to update all notebooks. This snippet does the whole lot for you:</p>
-<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;fastai_docs/docs_src&#39;</span><span class="p">,</span> <span class="n">update_html</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">update_nb</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<p>As a convenience method, this can update all notebooks. This snippet does the whole lot for you:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;docs_src&#39;</span><span class="p">,</span> <span class="n">update_html</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">update_nb</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
 </pre></div>
 <p>This will update all ipynb documentation notebooks specified under source_path</p>
 

@@ -33,7 +33,7 @@ https://docs.fast.ai/dev_style.html) first. (Note that we don't follow PEP8, but
 
 * Please ask it on the [fastai forum](http://forums.fast.ai/) (after searching someone didn't ask the same one before with a quick search). We'd rather have the maximum of discussions there so that the largest number can benefit from it.
 
-
 ## Do you want to contribute to the documentation?
 
-* Head over to the [fastai_docs](https://github.com/fastai/fastai_docs) repo
+* Docs are automatically created from the notebooks in the `docs_src` notebook.
+

@@ -78,7 +78,7 @@ summary: "Documentation modules overview"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If you want to help us and contribute to the docs, you just have to make modifications to the source notebooks, our scripts will then automatically convert them to HTML. There is just one script to run after cloning the fastai_docs repo, to ensure that everything works properly. The rest of this page goes more in depth about all the functionalities this module offers, but if you just want to add a sentence or correct a typo, make a PR with the notebook changed and we'll take care of the rest.</p>
+<p>If you want to help us and contribute to the docs, you just have to make modifications to the source notebooks, our scripts will then automatically convert them to HTML. There is just one script to run after cloning the fastai repo, to ensure that everything works properly. The rest of this page goes more in depth about all the functionalities this module offers, but if you just want to add a sentence or correct a typo, make a PR with the notebook changed and we'll take care of the rest.</p>
 
 </div>
 </div>
@@ -93,8 +93,8 @@ summary: "Documentation modules overview"
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Make sure you follow this recipe:</p>
 
-<pre><code>git clone https://github.com/fastai/fastai_docs
-cd fastai_docs
+<pre><code>git clone https://github.com/fastai/fastai
+cd fastai
 tools/run-after-git-clone
 
 </code></pre>
@@ -106,10 +106,7 @@ tools/run-after-git-clone
 </code></pre>
 <p>On windows as well, the simlink between the imgs folder in docs_src (where the notebooks are) and docs won't work. You will need to remove the borken link in docs_src (called imgs), execute cmd.exe as administrator, then, in the docs_src folder, execute</p>
 
-<pre><code>mklink /d imgs ..\docs\imgs
-
-</code></pre>
-<p>Note that if you work on <code>fastai/fastai</code> repository as well, you need to run that script once too in the directory of that repository upon cloning it.</p>
+<pre><code>mklink /d imgs ..\docs\imgs</code></pre>
 
 </div>
 </div>
@@ -218,7 +215,7 @@ tools/run-after-git-clone
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> can be run from the notebook.</p>
-<p>Default - updates all notebooks in the fastai_docs/docs_src folder:</p>
+<p>Default - updates all notebooks in the fastai/docs_src folder:</p>
 <div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
 </pre></div>
 <p>To update specific python file only:</p>
@@ -226,7 +223,7 @@ tools/run-after-git-clone
 </pre></div>
 <p><code>update_nb=True</code> inserts newly added module methods into the docs that haven't already been documented</p>
 <p>Alternatively, you can update a specific module:</p>
-<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;fastai.gen_doc.gen_notebooks&#39;</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="s1">&#39;fastai_docs/docs_src&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;fastai.gen_doc.gen_notebooks&#39;</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="s1">&#39;fastai/docs_src&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -337,7 +334,7 @@ tools/run-after-git-clone
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Validate-links-and-anchors">Validate links and anchors<a class="anchor-link" href="#Validate-links-and-anchors">&#182;</a></h3><p>After you commit doc changes please validate that all the links and <code>#anchors</code> are correct.</p>
-<p>If it's the first time you are about to run the link checker, install the <a href="https://github.com/fastai/fastai_docs/blob/master/checklink/README.md">prerequisites</a> first.</p>
+<p>If it's the first time you are about to run the link checker, install the <a href="https://github.com/fastai/fastai/blob/master/checklink/README.md">prerequisites</a> first.</p>
 <p>After committing the new changes, first, wait a few minutes for github pages to sync, otherwise you'll be testing an outdated live site.</p>
 <p>Then, do:</p>
 
@@ -345,7 +342,7 @@ tools/run-after-git-clone
 ./checklink-docs.sh</code></pre>
 <p>The script will be silent and only report problems as it finds them.</p>
 <p>Remember, that it's testing the live website, so if you detect problems and make any changes, remember to first commit the changes and wait a few minutes before re-testing.</p>
-<p>You can also test the site locally before committing your changes, please see: <a href="https://github.com/fastai/fastai_docs/blob/master/checklink/README.md">README</a>.</p>
+<p>You can also test the site locally before committing your changes, please see: <a href="https://github.com/fastai/fastai/blob/master/checklink/README.md">README</a>.</p>
 <p>To test the docs-dev.fast.ai site, do:</p>
 
 <pre><code>./checklink-docs-dev.sh</code></pre>
