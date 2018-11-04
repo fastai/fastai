@@ -23,12 +23,10 @@ def test_from_name_re(path):
     assert {0, 1} == set(data.valid_ds.y)
 
 def test_from_df_test_dataset(path):
-    # checks that test dataset is created with from_df
-    # actual contents do not matter here
+    "Check that test dataset is created with from_df." 
+    #Actual contents do not matter here.
     df = pd.DataFrame({'fn': ['a.jpg', 'b.jpg', 'c.jpg'],
                        'lbl': [0, 1, 2]})
     data = ImageDataBunch.from_df('.', df, path, test='test')
-
-    # if the test set is not registered,
-    # this will raise an assertion error
+    #If the test set is not registered, this will raise an assertion error
     data.test_ds
