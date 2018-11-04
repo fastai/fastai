@@ -80,7 +80,7 @@ def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True
     "Build Unet learners."
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
-    model = models.unet.DynamicUnet(body, n_classes=data.c).cuda()
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
     learn = cls(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
