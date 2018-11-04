@@ -1,0 +1,22 @@
+---
+type: title
+search: exclude
+permalink: /titlepage.html/
+---
+<div class="printTitleArea">
+    <div class="printTitle">{{site.print_title}}</div>
+    <div class="printSubtitle">{{site.print_subtitle}}</div>
+    <div class="lastGeneratedDate">Last generated: {{ site.time | date: '%B %d, %Y' }}</div>
+    <hr />
+
+    <div class="printTitleImage">
+        <img src="{{site.url}}/{{site.baseurl}}/images/company_logo_big.png" alt="Company Logo"/>
+    </div>
+
+    <div class="copyrightBoilerplate">
+        <p>&copy; {{ site.time | date: "%Y" }} {{site.company_name}}. This is a boilerplate copyright statement... All rights reserved. No part of this publication may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the publisher, except in the case of brief quotations embodied in critical reviews and certain other noncommercial uses permitted by copyright law.
+        </p>
+
+    </div>
+
+</div>

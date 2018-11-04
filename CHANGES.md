@@ -12,7 +12,9 @@ of that change.
 
 
 
-## 1.0.19.dev0 (Work In Progress)
+
+
+## 1.0.20.dev0 (Work In Progress)
 
 ### New:
 
@@ -20,6 +22,25 @@ of that change.
 
 ### Fixed:
 
+
+
+## 1.0.19 (2018-11-03)
+
+### New:
+
+- add an argument `resize_method` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no).
+- all the image dataset have an `image_opener` attribute (default `open_image`) that can be changed. The `SegmentationDataset` has a `mask_opener` attribute.
+- `add_test` and `add_test_folder` in data block API.
+
+### Changed:
+
+- jupyter et al no longer forced dependencies
+- `verify_images` can now resize images on top of checking they're not broken.
+- LR finder plot now uses python scientific notation instead of math superset notation
+
+### Fixed:
+
+- `ImageDataBunch.from_df` doesn't change the dataframe.
 
 ## 1.0.18 (2018-10-30)
 
