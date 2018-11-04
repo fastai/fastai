@@ -97,7 +97,7 @@ class LabelList(PathItemList):
     def from_df(cls, path:PathOrStr, df:DataFrame, input_col:int=0, label_cols:Collection[int]=None):
         label_cols = ifnone(label_cols, [1])
         inputs = df.iloc[:,input_col].values
-        labels = np.squeeze(df.iloc[:,label_cols].values).astype(np.float32 if len(label_cols) > 1 else np.int64)
+        labels = np.squeeze(df.iloc[:,label_cols].values)
         return LabelList([(i,l) for (i,l) in zip(inputs, labels)], path)
 
     @classmethod

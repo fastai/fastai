@@ -190,3 +190,8 @@ def join_paths(fnames:FilePathList, path:PathOrStr='.')->Collection[Path]:
 def loadtxt_str(path:PathOrStr)->np.ndarray:
     "Return `ndarray` of `str` of lines of text from `path`."
     return np.loadtxt(str(path), str)
+
+def save_texts(fname:PathOrStr, texts:Collection[str]):
+    "Save in `fname` the content of `texts`."
+    with open(fname, 'w') as f:
+        for t in texts: f.write(f'{t}\n')

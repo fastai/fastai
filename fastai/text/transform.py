@@ -105,27 +105,24 @@ class Tokenizer():
 class Vocab():
     "Contain the correspondance between numbers and tokens and numericalize."
 
-    def __init__(self, path:PathOrStr):
-        self.itos = pickle.load(open(Path(path)/'itos.pkl', 'rb'))
+    def __init__(self, itos:Dict[int,str]):
+        self.itos = itos
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
 
     def numericalize(self, t:Collection[str]) -> List[int]:
         "Convert a list of tokens `t` to their ids."
         return [self.stoi[w] for w in t]
 
-    def textify(self, nums:Collection[int]) -> List[str]:
+    def textify(self, nums:Collection[int], sep=' ') -> List[str]:
         "Convert a list of `nums` to their tokens."
-        return ' '.join([self.itos[i] for i in nums])
+        return sep.join([self.itos[i] for i in nums])
 
     @classmethod
-    def create(cls, path:PathOrStr, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
+    def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of tokens."
         freq = Counter(p for o in tokens for p in o)
         itos = [o for o,c in freq.most_common(max_vocab) if c > min_freq]
         itos.insert(0, PAD)
         if UNK in itos: itos.remove(UNK)
         itos.insert(0, UNK)
-        pickle.dump(itos, open(Path(path)/'itos.pkl', 'wb'))
-        h = hashlib.sha1(np.array(itos))
-        with open(Path(path)/'numericalize.log','w') as f: f.write(h.hexdigest())
-        return cls(path)
+        return cls(itos)
