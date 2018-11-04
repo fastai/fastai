@@ -129,7 +129,6 @@ class DataBunch():
                 self.test_dl if ds_type == DatasetType.Test else
                 self.valid_dl)
 
-
     def add_tfm(self,tfm:Callable)->None:
         self.train_dl.add_tfm(tfm)
         self.valid_dl.add_tfm(tfm)

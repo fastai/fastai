@@ -267,7 +267,7 @@ class AverageMetric(Callback):
 
     def on_batch_end(self, last_output, last_target, train, **kwargs):
         self.count += last_target.size(0)
-        self.val += last_target.size(0) * self.func(last_output, last_target).detach().item()
+        self.val += last_target.size(0) * self.func(last_output, last_target).detach()
 
     def on_epoch_end(self, **kwargs):
         self.metric = self.val/self.count
