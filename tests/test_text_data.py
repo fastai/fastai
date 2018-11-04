@@ -32,37 +32,28 @@ def test_should_load_backwards_lm():
     as_text = [text_ds.vocab.itos[x] for x in batch[0]]
     np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
-def test_from_csv():
-    for n_labels in [1, 3]:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-        filename = 'text'
-        filepath = os.path.join(path, filename+'.csv')
-        try:
-            os.makedirs(path)
-            text_csv_file(filepath, n_labels=n_labels)
-            data_bunch = TextDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
-            clas_data_bunch = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
-            for data in [data_bunch, clas_data_bunch]:
-                assert len(data.classes) == 2
-                assert set(data.classes) == {True, False}
-                if n_labels > 1: assert len(data.labels[0]) == n_labels
-        finally:
-            shutil.rmtree(path)
+def test_from_csv_and_from_df():
+    for func in ['from_csv', 'from_df']:
+        for n_labels in [1, 3]:
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
+            try:
+                os.makedirs(path)
+                if func is 'from_csv':
+                    filename = 'text'
+                    text_csv_file(os.path.join(path, filename+'.csv'), n_labels=n_labels)
+                    data_bunch = TextDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
+                    clas_data_bunch = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
+                else:
+                    df = text_df(n_labels=n_labels)
+                    data_bunch = TextDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+                    clas_data_bunch = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
 
-def test_from_df():
-    for n_labels in [1, 3]:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-        try:
-            os.makedirs(path)
-            df = text_df(n_labels=n_labels)
-            data_bunch = TextDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
-            clas_data_bunch = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
-            for data in [data_bunch, clas_data_bunch]:
-                assert len(data.classes) == 2
-                assert set(data.classes) == {True, False}
-                if n_labels > 1: assert len(data.labels[0]) == n_labels
-        finally:
-            shutil.rmtree(path)
+                for data in [data_bunch, clas_data_bunch]:
+                    assert len(data.classes) == 2
+                    assert set(data.classes) == {True, False}
+                    if n_labels > 1: assert len(data.labels[0]) == n_labels
+            finally:
+                shutil.rmtree(path)
 
 def test_collate():
     path = untar_data(URLs.IMDB_SAMPLE)
