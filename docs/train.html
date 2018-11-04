@@ -171,7 +171,7 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TTA"><code>TTA</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/tta.py#L31" class="source_link">[source]</a></h4><blockquote><p><code>TTA</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>beta</code>:<code>float</code>=<code>0.4</code>, <code>scale</code>:<code>float</code>=<code>1.35</code>, <code>is_test</code>:<code>bool</code>=<code>False</code>, <code>with_loss</code>:<code>bool</code>=<code>False</code>) → <code>Tensors</code></p>
+<h4 id="TTA"><code>TTA</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/tta.py#L32" class="source_link">[source]</a></h4><blockquote><p><code>TTA</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>beta</code>:<code>float</code>=<code>0.4</code>, <code>scale</code>:<code>float</code>=<code>1.35</code>, <code>ds_type</code>:<a href="/basic_data.html#Dataset"><code>Dataset</code></a>=<code>&lt;Dataset.Valid: 2&gt;</code>, <code>with_loss</code>:<code>bool</code>=<code>False</code>) → <code>Tensors</code></p>
 </blockquote>
 
 </div>
@@ -184,7 +184,7 @@ summary: "Extensions to Learner that easily implement Callback"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Applies Test Time Augmentation to <code>learn</code> on the validation set or the test test (depending on <code>is_test</code>). We take the average of our regular predictions (with a weight <code>beta</code>) with the average of predictions obtained thourh augmented versions of the training set (with a weight <code>1-beta</code>). The transforms decided for the training set are applied with a few changes <code>scale</code> controls the scale for zoom (which isn't random), the cropping isn't random but we make sure to get the four corners of the image. Flipping isn't random but applied once on each of those corner images (so that makes 8 augmented versions total).</p>
+<p>Applies Test Time Augmentation to <code>learn</code> on the dataset <code>ds_type</code>. We take the average of our regular predictions (with a weight <code>beta</code>) with the average of predictions obtained thourh augmented versions of the training set (with a weight <code>1-beta</code>). The transforms decided for the training set are applied with a few changes <code>scale</code> controls the scale for zoom (which isn't random), the cropping isn't random but we make sure to get the four corners of the image. Flipping isn't random but applied once on each of those corner images (so that makes 8 augmented versions total).</p>
 
 </div>
 </div>
@@ -205,7 +205,7 @@ summary: "Extensions to Learner that easily implement Callback"
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -312,7 +312,7 @@ summary: "Extensions to Learner that easily implement Callback"
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -398,7 +398,7 @@ epoch  train loss  valid loss  accuracy
 <span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
