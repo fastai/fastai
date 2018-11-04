@@ -46,7 +46,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">);</span> <span class="n">path</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -58,63 +58,9 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>PosixPath(&#39;/Users/jeffhale/.fastai/data/mnist_sample&#39;)</pre>
+<pre>PosixPath(&#39;/home/jhoward/.fastai/data/mnist_sample&#39;)</pre>
 </div>
 
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ls</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>applications.ipynb             metrics.ipynb
-basic_data.ipynb               <span class="ansi-blue-fg">nbval</span>/
-basic_train.ipynb              overview.ipynb
-callback.ipynb                 points.pth
-callbacks.fp16.ipynb           pytest.ini
-callbacks.general_sched.ipynb  <span class="ansi-red-fg">run_tests.sh</span>*
-callbacks.hooks.ipynb          <span class="ansi-blue-fg">sidebar</span>/
-callbacks.ipynb                tabular.data.ipynb
-callbacks.lr_finder.ipynb      tabular.ipynb
-callbacks.mixup.ipynb          tabular.models.ipynb
-callbacks.one_cycle.ipynb      tabular.transform.ipynb
-callbacks.rnn.ipynb            text.data.ipynb
-callbacks.tracking.ipynb       text.ipynb
-collab.ipynb                   text.learner.ipynb
-conftest.py                    text.models.ipynb
-core.ipynb                     text.transform.ipynb
-data_block.ipynb               torch_core.ipynb
-datasets.ipynb                 train.ipynb
-fastai_typing.ipynb            training.ipynb
-gen_doc.convert2html.ipynb     <span class="ansi-red-fg">trustnbs.py</span>*
-gen_doc.gen_notebooks.ipynb    vision.data.ipynb
-gen_doc.ipynb                  vision.image.ipynb
-gen_doc.nbdoc.ipynb            vision.ipynb
-<span class="ansi-magenta-fg">imgs</span>@                          vision.learner.ipynb
-index.ipynb                    vision.models.ipynb
-jekyll_metadata.ipynb          vision.models.unet.ipynb
-<span class="ansi-blue-fg">js</span>/                            vision.transform.ipynb
-layers.ipynb
-</pre>
-</div>
 </div>
 
 </div>
@@ -137,7 +83,7 @@ layers.ipynb
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -163,7 +109,7 @@ layers.ipynb
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -207,7 +153,7 @@ layers.ipynb
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;labels.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -292,7 +238,7 @@ layers.ipynb
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -305,7 +251,7 @@ layers.ipynb
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -343,7 +289,7 @@ layers.ipynb
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">planet</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">PLANET_SAMPLE</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -364,7 +310,7 @@ layers.ipynb
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -443,7 +389,7 @@ layers.ipynb
     <span class="n">ds_tfms</span><span class="o">=</span><span class="n">get_transforms</span><span class="p">(</span><span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -460,10 +406,10 @@ layers.ipynb
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">is_train</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">Valid</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -502,7 +448,7 @@ layers.ipynb
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ImageDataBunch"><code>class</code> <code>ImageDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L273" class="source_link">[source]</a></h2><blockquote><p><code>ImageDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="ImageDataBunch"><code>class</code> <code>ImageDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L275" class="source_link">[source]</a></h2><blockquote><p><code>ImageDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -528,7 +474,7 @@ layers.ipynb
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L274" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>, <code>valid_ds</code>, <code>test_ds</code>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>ds_tfms</code>:<code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>], <code>NoneType</code>]=<code>None</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>size</code>:<code>int</code>=<code>None</code>, <code>kwargs</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L276" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>, <code>valid_ds</code>, <code>test_ds</code>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>ds_tfms</code>:<code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>], <code>NoneType</code>]=<code>None</code>, <code>num_workers</code>:<code>int</code>=<code>16</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>size</code>:<code>int</code>=<code>None</code>, <code>kwargs</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Factory method. <code>bs</code> batch size, <code>ds_tfms</code> for <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>tfms</code> for <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>.</p>
 <ul>
@@ -565,7 +511,7 @@ layers.ipynb
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L286" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>train</code>:<code>PathOrStr</code>=<code>'train'</code>, <code>valid</code>:<code>PathOrStr</code>=<code>'valid'</code>, <code>test</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<code>None</code>, <code>valid_pct</code>=<code>None</code>, <code>kwargs</code>:<code>Any</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>train</code>:<code>PathOrStr</code>=<code>'train'</code>, <code>valid</code>:<code>PathOrStr</code>=<code>'valid'</code>, <code>test</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<code>None</code>, <code>valid_pct</code>=<code>None</code>, <code>kwargs</code>:<code>Any</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create from imagenet style dataset in <code>path</code> with <code>train</code>,<code>valid</code>,<code>test</code> subfolders (or provide <code>valid_pct</code>).</p>
 
@@ -604,7 +550,7 @@ layers.ipynb
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -625,7 +571,7 @@ layers.ipynb
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_csv"><code>from_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L319" class="source_link">[source]</a></h4><blockquote><p><code>from_csv</code>(<code>path</code>:<code>PathOrStr</code>, <code>folder</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>sep</code>=<code>None</code>, <code>csv_labels</code>:<code>PathOrStr</code>=<code>'labels.csv'</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>fn_col</code>:<code>int</code>=<code>0</code>, <code>label_col</code>:<code>int</code>=<code>1</code>, <code>test</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<code>None</code>, <code>suffix</code>:<code>str</code>=<code>None</code>, <code>header</code>:<code>Union</code>[<code>int</code>, <code>str</code>, <code>NoneType</code>]=<code>'infer'</code>, <code>kwargs</code>:<code>Any</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.from_csv"><code>from_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L321" class="source_link">[source]</a></h4><blockquote><p><code>from_csv</code>(<code>path</code>:<code>PathOrStr</code>, <code>folder</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>sep</code>=<code>None</code>, <code>csv_labels</code>:<code>PathOrStr</code>=<code>'labels.csv'</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>fn_col</code>:<code>int</code>=<code>0</code>, <code>label_col</code>:<code>int</code>=<code>1</code>, <code>test</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<code>None</code>, <code>suffix</code>:<code>str</code>=<code>None</code>, <code>header</code>:<code>Union</code>[<code>int</code>, <code>str</code>, <code>NoneType</code>]=<code>'infer'</code>, <code>kwargs</code>:<code>Any</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create from a csv file.</p>
 
@@ -653,7 +599,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -667,7 +613,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L300" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>:<code>PathOrStr</code>, <code>df</code>:<code>DataFrame</code>, <code>folder</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>sep</code>=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>fn_col</code>:<code>int</code>=<code>0</code>, <code>label_col</code>:<code>int</code>=<code>1</code>, <code>test</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<code>None</code>, <code>suffix</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>:<code>Any</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L302" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>:<code>PathOrStr</code>, <code>df</code>:<code>DataFrame</code>, <code>folder</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>sep</code>=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>fn_col</code>:<code>int</code>=<code>0</code>, <code>label_col</code>:<code>int</code>=<code>1</code>, <code>test</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<code>None</code>, <code>suffix</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>:<code>Any</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create from a DataFrame.</p>
 
@@ -695,7 +641,7 @@ For example:</p>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -773,7 +719,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -800,7 +746,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_name_re"><code>from_name_re</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L343" class="source_link">[source]</a></h4><blockquote><p><code>from_name_re</code>(<code>path</code>:<code>PathOrStr</code>, <code>fnames</code>:<code>FilePathList</code>, <code>pat</code>:<code>str</code>, <code>valid_pct</code>:<code>int</code>=<code>0.2</code>, <code>test</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="ImageDataBunch.from_name_re"><code>from_name_re</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L345" class="source_link">[source]</a></h4><blockquote><p><code>from_name_re</code>(<code>path</code>:<code>PathOrStr</code>, <code>fnames</code>:<code>FilePathList</code>, <code>pat</code>:<code>str</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>test</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 
 </div>
@@ -827,7 +773,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fn_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">/</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]];</span> <span class="n">fn_paths</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -858,7 +804,7 @@ For example:</p>
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_name_re</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fn_paths</span><span class="p">,</span> <span class="n">pat</span><span class="o">=</span><span class="n">pat</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -871,7 +817,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">classes</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -901,7 +847,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_name_func"><code>from_name_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L338" class="source_link">[source]</a></h4><blockquote><p><code>from_name_func</code>(<code>path</code>:<code>PathOrStr</code>, <code>fnames</code>:<code>FilePathList</code>, <code>label_func</code>:<code>Callable</code>, <code>valid_pct</code>:<code>int</code>=<code>0.2</code>, <code>test</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="ImageDataBunch.from_name_func"><code>from_name_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L340" class="source_link">[source]</a></h4><blockquote><p><code>from_name_func</code>(<code>path</code>:<code>PathOrStr</code>, <code>fnames</code>:<code>FilePathList</code>, <code>label_func</code>:<code>Callable</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>test</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 
 </div>
@@ -930,7 +876,7 @@ For example:</p>
 <span class="n">data</span><span class="o">.</span><span class="n">classes</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -960,7 +906,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_lists"><code>from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L329" class="source_link">[source]</a></h4><blockquote><p><code>from_lists</code>(<code>path</code>:<code>PathOrStr</code>, <code>fnames</code>:<code>FilePathList</code>, <code>labels</code>:<code>StrList</code>, <code>valid_pct</code>:<code>int</code>=<code>0.2</code>, <code>test</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="ImageDataBunch.from_lists"><code>from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L331" class="source_link">[source]</a></h4><blockquote><p><code>from_lists</code>(<code>path</code>:<code>PathOrStr</code>, <code>fnames</code>:<code>FilePathList</code>, <code>labels</code>:<code>StrList</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>test</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 
 </div>
@@ -989,7 +935,7 @@ For example:</p>
 <span class="n">data</span><span class="o">.</span><span class="n">classes</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1025,7 +971,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L364" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>rows</code>:<code>int</code>=<code>None</code>, <code>figsize</code>:<code>Tuple</code>[<code>int</code>, <code>int</code>]=<code>(9, 10)</code>, <code>is_train</code>:<code>bool</code>=<code>True</code>)</p>
+<h4 id="ImageDataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L366" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>rows</code>:<code>int</code>=<code>None</code>, <code>figsize</code>:<code>Tuple</code>[<code>int</code>, <code>int</code>]=<code>(9, 10)</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Valid: 2&gt;</code>)</p>
 </blockquote>
 
 </div>
@@ -1038,7 +984,7 @@ For example:</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <code>rows</code> by <code>rows</code> grid of images from training or validation set (depending on <code>is_train</code>) for a <code>figsize</code> figure. This function works for all type of computer vision data (see <a href="/data_block.html#data_block"><code>data_block</code></a> for more examples).</p>
+<p>Create a <code>rows</code> by <code>rows</code> grid of images from dataset <code>ds_type</code> for a <code>figsize</code> figure. This function works for all type of computer vision data (see <a href="/data_block.html#data_block"><code>data_block</code></a> for more examples).</p>
 <p>Once you have your <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a>, you can have a quick look at your data by using this:</p>
 
 </div>
@@ -1052,7 +998,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1084,7 +1030,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.labels_to_csv"><code>labels_to_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L367" class="source_link">[source]</a></h4><blockquote><p><code>labels_to_csv</code>(<code>dest</code>:<code>str</code>)</p>
+<h4 id="ImageDataBunch.labels_to_csv"><code>labels_to_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L369" class="source_link">[source]</a></h4><blockquote><p><code>labels_to_csv</code>(<code>dest</code>:<code>str</code>)</p>
 </blockquote>
 <p>Save file names and labels in <code>data</code> as CSV to file name <code>dest</code>.</p>
 
@@ -1118,7 +1064,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">CIFAR</span><span class="p">);</span> <span class="n">path</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1148,7 +1094,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="channel_view"><code>channel_view</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L265" class="source_link">[source]</a></h4><blockquote><p><code>channel_view</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="channel_view"><code>channel_view</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L267" class="source_link">[source]</a></h4><blockquote><p><code>channel_view</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Make channel the first axis of <code>x</code> and flatten remaining axes</p>
 
@@ -1168,7 +1114,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ds_tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">valid</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1183,7 +1129,7 @@ For example:</p>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1204,7 +1150,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1217,7 +1163,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1246,7 +1192,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tensor</span> <span class="o">=</span> <span class="n">channel_view</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1259,7 +1205,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">tensor</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1289,7 +1235,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.batch_stats"><code>batch_stats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L349" class="source_link">[source]</a></h4><blockquote><p><code>batch_stats</code>(<code>funcs</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>) → <code>Tensor</code></p>
+<h4 id="ImageDataBunch.batch_stats"><code>batch_stats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L351" class="source_link">[source]</a></h4><blockquote><p><code>batch_stats</code>(<code>funcs</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Grab a batch of data and call reduction function <code>func</code> per channel</p>
 
@@ -1316,7 +1262,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">batch_stats</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1346,7 +1292,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L355" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<code>stats</code>:<code>Collection</code>[<code>Tensor</code>]=<code>None</code>)</p>
+<h4 id="ImageDataBunch.normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L357" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<code>stats</code>:<code>Collection</code>[<code>Tensor</code>]=<code>None</code>)</p>
 </blockquote>
 <p>Add normalize transform using <code>stats</code> (defaults to <code>DataBunch.batch_stats</code>)</p>
 
@@ -1373,7 +1319,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">cifar_stats</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1386,7 +1332,7 @@ For example:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">batch_stats</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1469,7 +1415,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L239" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>FloatTensor</code>, <code>std</code>:<code>FloatTensor</code>) → <code>Tensor</code></p>
+<h4 id="normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L241" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>FloatTensor</code>, <code>std</code>:<code>FloatTensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Normalize <code>x</code> with <code>mean</code> and <code>std</code>.</p>
 
@@ -1490,7 +1436,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="denormalize"><code>denormalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L243" class="source_link">[source]</a></h4><blockquote><p><code>denormalize</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>FloatTensor</code>, <code>std</code>:<code>FloatTensor</code>) → <code>Tensor</code></p>
+<h4 id="denormalize"><code>denormalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L245" class="source_link">[source]</a></h4><blockquote><p><code>denormalize</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>FloatTensor</code>, <code>std</code>:<code>FloatTensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Denormalize <code>x</code> with <code>mean</code> and <code>std</code>.</p>
 
@@ -1511,7 +1457,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="normalize_funcs"><code>normalize_funcs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L255" class="source_link">[source]</a></h4><blockquote><p><code>normalize_funcs</code>(<code>mean</code>:<code>FloatTensor</code>, <code>std</code>:<code>FloatTensor</code>) → <code>Tuple</code>[<code>Callable</code>, <code>Callable</code>]</p>
+<h4 id="normalize_funcs"><code>normalize_funcs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L257" class="source_link">[source]</a></h4><blockquote><p><code>normalize_funcs</code>(<code>mean</code>:<code>FloatTensor</code>, <code>std</code>:<code>FloatTensor</code>) → <code>Tuple</code>[<code>Callable</code>, <code>Callable</code>]</p>
 </blockquote>
 
 </div>
@@ -1548,7 +1494,7 @@ For example:</p>
 <span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1593,7 +1539,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageClassificationDataset"><code>class</code> <code>ImageClassificationDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L79" class="source_link">[source]</a></h3><blockquote><p><code>ImageClassificationDataset</code>(<code>fns</code>:<code>FilePathList</code>, <code>labels</code>:<code>StrList</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
+<h3 id="ImageClassificationDataset"><code>class</code> <code>ImageClassificationDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L80" class="source_link">[source]</a></h3><blockquote><p><code>ImageClassificationDataset</code>(<code>fns</code>:<code>FilePathList</code>, <code>labels</code>:<code>StrList</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
 </blockquote>
 <p><a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> for folders of images in style {folder}/{class}/{images}.</p>
 
@@ -1621,7 +1567,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageClassificationDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L99" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>folder</code>:<code>Path</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.0</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.jpeg', '.rgb', '.tif', '.xpm', '.png', '.pgm', '.bmp', '.ief', '.gif', '.ppm', '.pbm', '.pnm', '.svg', '.jpe', '.tiff', '.xwd', '.ico', '.ras', '.xbm', '.jpg'}</code>) → <code>Union</code>[<code>ImageClassificationDataset</code>, <code>List</code>[<code>ImageClassificationDataset</code>]]</p>
+<h4 id="ImageClassificationDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>folder</code>:<code>Path</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.0</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.jpg', '.jpe', '.jpeg', '.gif', '.ico', '.rgb', '.xbm', '.ppm', '.xwd', '.svg', '.xpm', '.pgm', '.png', '.bmp', '.tiff', '.ras', '.tif', '.pbm', '.ief', '.pnm'}</code>) → <code>Union</code>[<code>ImageClassificationDataset</code>, <code>List</code>[<code>ImageClassificationDataset</code>]]</p>
 </blockquote>
 <p>Dataset of <code>classes</code> labeled images in <code>folder</code>. Optional <code>valid_pct</code> split validation set.</p>
 
@@ -1649,7 +1595,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageClassificationDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L93" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.jpeg', '.rgb', '.tif', '.xpm', '.png', '.pgm', '.bmp', '.ief', '.gif', '.ppm', '.pbm', '.pnm', '.svg', '.jpe', '.tiff', '.xwd', '.ico', '.ras', '.xbm', '.jpg'}</code>)</p>
+<h4 id="ImageClassificationDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L94" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.jpg', '.jpe', '.jpeg', '.gif', '.ico', '.rgb', '.xbm', '.ppm', '.xwd', '.svg', '.xpm', '.pgm', '.png', '.bmp', '.tiff', '.ras', '.tif', '.pbm', '.ief', '.pnm'}</code>)</p>
 </blockquote>
 
 </div>
@@ -1676,7 +1622,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageMultiDataset"><code>class</code> <code>ImageMultiDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L115" class="source_link">[source]</a></h3><blockquote><p><code>ImageMultiDataset</code>(<code>fns</code>:<code>FilePathList</code>, <code>labels</code>:<code>StrList</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
+<h3 id="ImageMultiDataset"><code>class</code> <code>ImageMultiDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L116" class="source_link">[source]</a></h3><blockquote><p><code>ImageMultiDataset</code>(<code>fns</code>:<code>FilePathList</code>, <code>labels</code>:<code>StrList</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1703,7 +1649,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageMultiDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L138" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>folder</code>:<code>PathOrStr</code>, <code>fns</code>:<code>Series</code>, <code>labels</code>:<code>StrList</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>)</p>
+<h4 id="ImageMultiDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L139" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>folder</code>:<code>PathOrStr</code>, <code>fns</code>:<code>Series</code>, <code>labels</code>:<code>StrList</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>)</p>
 </blockquote>
 
 </div>
@@ -1730,7 +1676,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageMultiDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>=<code>{'.jpeg', '.rgb', '.tif', '.xpm', '.png', '.pgm', '.bmp', '.ief', '.gif', '.ppm', '.pbm', '.pnm', '.svg', '.jpe', '.tiff', '.xwd', '.ico', '.ras', '.xbm', '.jpg'}</code>)</p>
+<h4 id="ImageMultiDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>=<code>{'.jpg', '.jpe', '.jpeg', '.gif', '.ico', '.rgb', '.xbm', '.ppm', '.xwd', '.svg', '.xpm', '.pgm', '.png', '.bmp', '.tiff', '.ras', '.tif', '.pbm', '.ief', '.pnm'}</code>)</p>
 </blockquote>
 
 </div>
@@ -1791,7 +1737,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageMultiDataset.get_labels"><code>get_labels</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>get_labels</code>(<code>idx</code>:<code>int</code>) → <code>StrList</code></p>
+<h4 id="ImageMultiDataset.get_labels"><code>get_labels</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L129" class="source_link">[source]</a></h4><blockquote><p><code>get_labels</code>(<code>idx</code>:<code>int</code>) → <code>StrList</code></p>
 </blockquote>
 
 </div>
@@ -1818,7 +1764,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageMultiDataset.encode"><code>encode</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L122" class="source_link">[source]</a></h4><blockquote><p><code>encode</code>(<code>x</code>:<code>Collection</code>[<code>int</code>])</p>
+<h4 id="ImageMultiDataset.encode"><code>encode</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>encode</code>(<code>x</code>:<code>Collection</code>[<code>int</code>])</p>
 </blockquote>
 <p>One-hot encode the target.</p>
 
@@ -1839,7 +1785,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SegmentationDataset"><code>class</code> <code>SegmentationDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L147" class="source_link">[source]</a></h3><blockquote><p><code>SegmentationDataset</code>(<code>x</code>:<code>FilePathList</code>, <code>y</code>:<code>FilePathList</code>, <code>classes</code>:<code>ArgStar</code>, <code>div</code>=<code>False</code>, <code>convert_mode</code>=<code>'L'</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
+<h3 id="SegmentationDataset"><code>class</code> <code>SegmentationDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L148" class="source_link">[source]</a></h3><blockquote><p><code>SegmentationDataset</code>(<code>x</code>:<code>FilePathList</code>, <code>y</code>:<code>FilePathList</code>, <code>classes</code>:<code>ArgStar</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1866,7 +1812,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ObjectDetectDataset"><code>class</code> <code>ObjectDetectDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L157" class="source_link">[source]</a></h3><blockquote><p><code>ObjectDetectDataset</code>(<code>x_fns</code>:<code>FilePathList</code>, <code>labelled_bbs</code>:<code>Collection</code>[<code>Tuple</code>[<code>Collection</code>[<code>int</code>], <code>str</code>]], <code>classes</code>:<code>StrList</code>=<code>None</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
+<h3 id="ObjectDetectDataset"><code>class</code> <code>ObjectDetectDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L159" class="source_link">[source]</a></h3><blockquote><p><code>ObjectDetectDataset</code>(<code>x_fns</code>:<code>FilePathList</code>, <code>labelled_bbs</code>:<code>Collection</code>[<code>Tuple</code>[<code>Collection</code>[<code>int</code>], <code>str</code>]], <code>classes</code>:<code>StrList</code>=<code>None</code>) :: <a href="/vision.data.html#ImageClassificationBase"><code>ImageClassificationBase</code></a></p>
 </blockquote>
 
 </div>
@@ -1893,7 +1839,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ObjectDetectDataset.from_json"><code>from_json</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L173" class="source_link">[source]</a></h4><blockquote><p><code>from_json</code>(<code>folder</code>, <code>fname</code>, <code>valid_pct</code>=<code>None</code>, <code>classes</code>=<code>None</code>)</p>
+<h4 id="ObjectDetectDataset.from_json"><code>from_json</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L175" class="source_link">[source]</a></h4><blockquote><p><code>from_json</code>(<code>folder</code>, <code>fname</code>, <code>valid_pct</code>=<code>None</code>, <code>classes</code>=<code>None</code>)</p>
 </blockquote>
 <p>Create an <a href="/vision.data.html#ObjectDetectDataset"><code>ObjectDetectDataset</code></a> by looking at the images in <code>folder</code> according to annotations in the json <code>fname</code>. If <code>valid_pct</code> is passed, split a training and validation set. <code>classes</code> is the list of classes.</p>
 
@@ -1949,7 +1895,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="DatasetTfm"><code>class</code> <code>DatasetTfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L204" class="source_link">[source]</a></h3><blockquote><p><code>DatasetTfm</code>(<code>ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>tfms</code>:<code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>]]=<code>None</code>, <code>tfm_y</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>:<code>Any</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
+<h3 id="DatasetTfm"><code>class</code> <code>DatasetTfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L206" class="source_link">[source]</a></h3><blockquote><p><code>DatasetTfm</code>(<code>ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>tfms</code>:<code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>]]=<code>None</code>, <code>tfm_y</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>:<code>Any</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
 </blockquote>
 
 </div>
@@ -1983,7 +1929,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="transform_datasets"><code>transform_datasets</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L230" class="source_link">[source]</a></h4><blockquote><p><code>transform_datasets</code>(<code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>]], <code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>]]]]=<code>None</code>, <code>resize_mtd</code>:<a href="/vision.image.html#ResizeMtd"><code>ResizeMtd</code></a>=<code>None</code>, <code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="transform_datasets"><code>transform_datasets</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L232" class="source_link">[source]</a></h4><blockquote><p><code>transform_datasets</code>(<code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>]], <code>Union</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>, <code>Collection</code>[<a href="/vision.image.html#Transform"><code>Transform</code></a>]]]]=<code>None</code>, <code>resize_method</code>:<a href="/vision.image.html#ResizeMethod"><code>ResizeMethod</code></a>=<code>None</code>, <code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 
 </div>
@@ -2120,7 +2066,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageFileList"><code>class</code> <code>ImageFileList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L441" class="source_link">[source]</a></h3><blockquote><p><code>ImageFileList</code>(<code>items</code>:<code>Iterator</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) :: <a href="/data_block.html#InputList"><code>InputList</code></a></p>
+<h3 id="ImageFileList"><code>class</code> <code>ImageFileList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L451" class="source_link">[source]</a></h3><blockquote><p><code>ImageFileList</code>(<code>items</code>:<code>Iterator</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) :: <a href="/data_block.html#InputList"><code>InputList</code></a></p>
 </blockquote>
 
 </div>
@@ -2140,7 +2086,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageFileList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L443" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.jpeg', '.rgb', '.tif', '.xpm', '.png', '.pgm', '.bmp', '.ief', '.gif', '.ppm', '.pbm', '.pnm', '.svg', '.jpe', '.tiff', '.xwd', '.ico', '.ras', '.xbm', '.jpg'}</code>, <code>recurse</code>=<code>True</code>) → <code>ImageFileList</code></p>
+<h4 id="ImageFileList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L453" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.jpg', '.jpe', '.jpeg', '.gif', '.ico', '.rgb', '.xbm', '.ppm', '.xwd', '.svg', '.xpm', '.pgm', '.png', '.bmp', '.tiff', '.ras', '.tif', '.pbm', '.ief', '.pnm'}</code>, <code>recurse</code>=<code>True</code>) → <code>ImageFileList</code></p>
 </blockquote>
 <p>Get the list of files in <code>path</code> that have a suffix in <code>extensions</code>. <code>recurse</code> determines if we search subfolders.</p>
 

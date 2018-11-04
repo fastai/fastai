@@ -10,13 +10,11 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-
-
-
-
 ## 1.0.20.dev0 (Work In Progress)
 
 ### New:
+
+- `DataBunch.dl` replaces the various `holdout`, `is_test`, and `is_train` approaches with a single consistent enum.
 
 ### Changed:
 
