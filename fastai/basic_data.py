@@ -1,7 +1,8 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
 
-__all__ = ['SingleClassificationDataset', 'LabelXYDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+DatasetType = Enum('Dataset', 'Train Valid Test')
+__all__ = ['SingleClassificationDataset', 'LabelXYDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset', 'DatasetType']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
@@ -122,9 +123,12 @@ class DataBunch():
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
-    def holdout(self, is_test:bool=False)->DeviceDataLoader:
-        "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
-        return self.test_dl if is_test else self.valid_dl
+    def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
+        "Returns correct holdout `Dataset` for validation, training, or test (`ds_type`)."
+        return (self.train_dl if ds_type == DatasetType.Train else
+                self.test_dl if ds_type == DatasetType.Test else
+                self.valid_dl)
+
 
     def add_tfm(self,tfm:Callable)->None:
         self.train_dl.add_tfm(tfm)

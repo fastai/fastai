@@ -363,8 +363,8 @@ class ImageDataBunch(DataBunch):
         self.add_tfm(self.norm)
         return self
 
-    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), is_train:bool=True)->None:
-        show_image_batch(self.train_dl if is_train else self.valid_dl, self.classes, figsize=figsize, rows=rows)
+    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), ds_type:DatasetType=DatasetType.Valid)->None:
+        show_image_batch(super().dl(ds_type), self.classes, figsize=figsize, rows=rows)
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."

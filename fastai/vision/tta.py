@@ -2,13 +2,14 @@
 from ..torch_core import *
 from ..basic_train import *
 from ..basic_train import _loss_func2activ
+from ..basic_data import DatasetType
 from .transform import *
 
 __all__ = []
 
-def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[List[Tensor]]:
+def _tta_only(learn:Learner, ds_type:DatasetType=DatasetType.Valid, scale:float=1.35) -> Iterator[List[Tensor]]:
     "Computes the outputs for several augmented inputs for TTA"
-    dl = learn.data.holdout(is_test)
+    dl = learn.dl(ds_type)
     ds = dl.dataset
     old = ds.tfms
     augm_tfm = [o for o in learn.data.train_ds.tfms if o.tfm not in
@@ -28,9 +29,9 @@ def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[L
 
 Learner.tta_only = _tta_only
 
-def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, is_test:bool=False, with_loss:bool=False) -> Tensors:
-    preds,y = learn.get_preds(is_test)
-    all_preds = list(learn.tta_only(scale=scale, is_test=is_test))
+def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False) -> Tensors:
+    preds,y = learn.get_preds(ds_type)
+    all_preds = list(learn.tta_only(scale=scale, ds_type=ds_type))
     avg_preds = torch.stack(all_preds).mean(0)
     if beta is None: return preds,avg_preds,y
     else:            
