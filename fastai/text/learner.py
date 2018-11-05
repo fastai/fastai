@@ -7,7 +7,6 @@ from ..datasets import untar_data
 from ..metrics import accuracy
 from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
-from ..basic_train import _loss_func2activ
 
 __all__ = ['RNNLearner', 'convert_weights', 'lm_split', 'rnn_classifier_split']
 
@@ -69,9 +68,7 @@ class RNNLearner(Learner):
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None, ordered=True) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
-        lf = self.loss_func if with_loss else None
-        preds = get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
-                         activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
+        preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
