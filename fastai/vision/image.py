@@ -39,11 +39,13 @@ def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
     "Generate int or tensor `size` of ints between `low` and `high` (included)."
     return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
 
-def pil2tensor(image:NPImage)->TensorImage:
+def pil2tensor(image:Union[NPImage,NPArray],dtype:np.dtype)->TensorImage:
     "Convert PIL style `image` array to torch style image tensor."
-    arr = ByteTensor(torch.ByteStorage.from_buffer(image.tobytes()))
-    arr = arr.view(image.size[1], image.size[0], -1)
-    return arr.permute(2,0,1)
+    a = np.asarray(image)
+    if a.ndim==2 : a = np.expand_dims(a,2)    
+    a = np.transpose(a, (1, 0, 2))
+    a = np.transpose(a, (2, 1, 0))
+    return torch.from_numpy( a.astype(dtype, copy=False) )
 
 def image2np(image:Tensor)->np.ndarray:
     "Convert from torch style `image` to numpy/matplotlib style."
@@ -367,12 +369,12 @@ class ImageBBox(ImagePoints):
 def open_image(fn:PathOrStr)->Image:
     "Return `Image` object created from image in file `fn`."
     x = PIL.Image.open(fn).convert('RGB')
-    return Image(pil2tensor(x).float().div_(255))
+    return Image(pil2tensor(x,np.float32).div_(255))
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
     x = PIL.Image.open(fn).convert(convert_mode)
-    mask = pil2tensor(x).float()
+    mask = pil2tensor(x,np.float32)
     if div: mask.div_(255)
     return ImageSegment(mask)
 
