@@ -44,7 +44,7 @@ def test_apply_init():
     apply_leaf(m,all2)
     apply_init(m,all7)
     conv1_w = torch.full([6,3,3,3],0.7)
-    bn1_w = torch.full([6,1],0.2)
+    bn1_w = torch.full([6],0.2)
     assert conv1_w.equal(m[0][0].weight), "Expected first colvulition layer's weights to be %r" % conv1_w
     assert bn1_w.equal(m[0][2].weight), "Expected first batch norm layers weights to be %r" % bn1_w
 
