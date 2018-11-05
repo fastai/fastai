@@ -16,6 +16,9 @@ def learn():
 def test_accuracy(learn):
     assert accuracy(*learn.get_preds()) > 0.9
 
+def test_error_rate(learn):
+    assert error_rate(*learn.get_preds()) < 0.1
+
 def test_1cycle_lrs(learn):
     lrs = learn.recorder.lrs
     assert lrs[0]<0.001
@@ -34,7 +37,7 @@ def test_preds(learn):
         img, label = learn.data.valid_ds[i]
         pred_class,pred_idx,outputs = learn.predict(img)
         if outputs[label] > outputs[1-label]: return
-    assert false, 'Failed to predict correct class'
+    assert False, 'Failed to predict correct class'
 
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)

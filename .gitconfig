@@ -23,7 +23,6 @@
 # git config --local include.path ../.gitconfig
 #
 
-
 # code notebooks strip out
 [filter "fastai-nbstripout-code"]
         clean = tools/fastai-nbstripout

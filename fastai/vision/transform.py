@@ -251,7 +251,7 @@ def skew(c, direction:uniform_int, magnitude:uniform=0, invert=False):
 
 def get_transforms(do_flip:bool=True, flip_vert:bool=False, max_rotate:float=10., max_zoom:float=1.1,
                    max_lighting:float=0.2, max_warp:float=0.2, p_affine:float=0.75,
-                   p_lighting:float=0.75, xtra_tfms:float=None)->Collection[Transform]:
+                   p_lighting:float=0.75, xtra_tfms:Optional[Collection[Transform]]=None)->Collection[Transform]:
     "Utility func to easily create a list of flip, rotate, `zoom`, warp, lighting transforms."
     res = [rand_crop()]
     if do_flip:    res.append(dihedral_affine() if flip_vert else flip_affine(p=0.5))
