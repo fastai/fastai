@@ -29,26 +29,24 @@ def test_requires_grad():
 def test_requires_grad_set():
     m = simple_cnn(b)
     requires_grad(m,False)
-    disj = False
-    for p in m.parameters():
-        disj = disj or p.requires_grad
-    assert not disj
+    allF = True
+    for p in m.parameters(): allF=allF and not p.requires_grad
+    assert allF, "requires_grad(m,False) did not set all parameters to False"
     requires_grad(m,True)
-    conj = True
-    for p in m.parameters():
-        conj = conj and p.requires_grad
-    assert conj
+    allT = True
+    for p in m.parameters(): allT=allT and p.requires_grad
+    assert allT, "requires_grad(m,True) did not set all parameters to True"
 
 def test_apply_init():
     m = simple_cnn(b,bn=True)
     all2 = lambda m: nn.init.constant_(m.weight,0.2) if hasattr(m, 'weight') else m
     all7 = lambda m: nn.init.constant_(m,0.7)
     apply_leaf(m,all2)
-    conv1_w = m[0][0].weight.clone()
-    bn1_w = m[0][2].weight.clone()
     apply_init(m,all7)
-    assert not conv1_w.equal(m[0][0].weight)
-    assert bn1_w.equal(m[0][2].weight)
+    conv1_w = torch.full([6,3,3,3],0.7)
+    bn1_w = torch.full([6,1],0.2)
+    assert conv1_w.equal(m[0][0].weight), "Expected first colvulition layer's weights to be %r" % conv1_w
+    assert bn1_w.equal(m[0][2].weight), "Expected first batch norm layers weights to be %r" % bn1_w
 
 def test_in_channels():
     m = simple_cnn(b)
