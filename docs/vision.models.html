@@ -1,0 +1,116 @@
+---
+
+title: vision.models
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Overview of the models used for CV in fastai"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Computer-Vision-models-zoo">Computer Vision models zoo<a class="anchor-link" href="#Computer-Vision-models-zoo">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On top of the models offered by <a href="https://pytorch.org/docs/stable/torchvision/models.html">torchivision</a>, the fastai library has implementations for the following models:</p>
+<ul>
+<li>Darknet architecture, which is the base of <a href="https://pjreddie.com/media/files/papers/YOLOv3.pdf">Yolo v3</a></li>
+<li>Unet architecture based on a pretrained model. The original unet is described <a href="https://arxiv.org/abs/1505.04597">here</a>, the model implementation is detailed in <a href="/vision.models.unet.html#vision.models.unet"><code>models.unet</code></a></li>
+<li>Wide resnets architectures, as introduced in <a href="https://arxiv.org/abs/1605.07146">this article</a>.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Darknet"><code>class</code> <code>Darknet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/darknet.py#L16" class="source_link">[source]</a></h2><blockquote><p><code>Darknet</code>(<code>num_blocks</code>:<code>Collection</code>[<code>int</code>], <code>num_classes</code>:<code>int</code>, <code>nf</code>=<code>32</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a Darknet with blocks of sizes given in <code>num_blocks</code>, ending with <code>num_classes</code> and using <code>nf</code> initial features. Darknet53 uses <code>num_blocks = [1,2,8,8,4]</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="WideResNet"><code>class</code> <code>WideResNet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/wrn.py#L37" class="source_link">[source]</a></h2><blockquote><p><code>WideResNet</code>(<code>num_groups</code>:<code>int</code>, <code>N</code>:<code>int</code>, <code>num_classes</code>:<code>int</code>, <code>k</code>:<code>int</code>=<code>1</code>, <code>drop_p</code>:<code>float</code>=<code>0.0</code>, <code>start_nf</code>:<code>int</code>=<code>16</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a wide resnet with blocks <code>num_groups</code> groups, each containing blocks of size <code>N</code>. <code>k</code> is the width of the resnet, <code>start_nf</code> the initial number of features. Dropout of <code>drop_p</code> is applied at the end of each block.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="wrn_22"><code>wrn_22</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/wrn.py#L54" class="source_link">[source]</a></h4><blockquote><p><code>wrn_22</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Creates a wide resnet for CIFAR-10 with <code>num_groups=3</code>, <code>N=3</code>, <code>k=6</code> and <code>drop_p=0.</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

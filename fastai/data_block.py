@@ -13,7 +13,7 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator): self.items = np.array(list(items))
     def __len__(self)->int: return len(self.items)
-    def __getitem__(self,i:int)->Any: self.items[i]
+    def __getitem__(self,i:int)->Any: return self.items[i]
     def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}'
 
 class PathItemList(ItemList):
@@ -31,7 +31,7 @@ def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
     labels = df.iloc[:,label_col]
     if label_delim: labels = np.array(list(csv.reader(labels, delimiter=label_delim)))
     else: labels = labels.values
-    fnames = df.iloc[:,fn_col].str.lstrip()
+    fnames = df.iloc[:,fn_col] if isinstance(df.iloc[0,fn_col], Path) else df.iloc[:,fn_col].str.lstrip()
     if suffix: fnames = fnames + suffix
     return fnames.values, labels
 
@@ -42,13 +42,15 @@ class InputList(PathItemList):
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
+    def create_label_list(self, items:Iterator)->'LabelList':
+        return LabelList(items, self.path)
+
     def label_from_func(self, func:Callable)->'LabelList':
         "Apply `func` to every input to get its label."
-        return LabelList([(o,func(o)) for o in self.items], self.path)
+        return self.create_label_list([(o,func(o)) for o in self.items])
 
     def label_from_re(self, pat:str, full_path:bool=False)->'LabelList':
-        """Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name.
-        This method is primarly intended for inputs that are filenames, but could work in other settings."""
+        "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
         pat = re.compile(pat)
         def _inner(o):
             s = str(o if full_path else o.name)
@@ -59,40 +61,55 @@ class InputList(PathItemList):
 
     def label_from_df(self, df, fn_col:int=0, label_col:int=1, sep:str=None, folder:PathOrStr='.',
                       suffix:str=None)->'LabelList':
-        """Look in `df` for the filenames in `fn_col` to get the corresponding label in `label_col`.
-        If a `folder` is specified, filenames are taken in `self.path/folder`. `suffix` is added.
-        If `sep` is specified, splits the values in `label_col` accordingly.
-        This method is intended for inputs that are filenames."""
+        "Look in `df` for the filenames in `fn_col` to get the corresponding label in `label_col`."
         fnames, labels = _df_to_fns_labels(df, fn_col, label_col, sep, suffix)
         fnames = join_paths(fnames, self.path/Path(folder))
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
         inter = pd.merge(df1, df2, how='inner', on=['fnames'])
-        return LabelList([(fn, np.array(lbl, dtype=np.object)) 
-                      for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)], self.path)
+        #lbl = np.array(lbl, dtype=np.object) if suffix else np.array(lbl)
+        return self.create_label_list([(fn, np.array(lbl, dtype=np.object))
+                      for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)])
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
                        sep:str=None, folder:PathOrStr='.', suffix:str=None)->'LabelList':
         """Look in `self.path/csv_fname` for a csv loaded with an optional `header` containing the filenames in
-        `fn_col` to get the corresponding label in `label_col`.
-        If a `folder` is specified, filenames are taken in `path/folder`. `suffix` is added.
-        If `sep` is specified, splits the values in `label_col` accordingly.
-        This method is intended for inputs that are filenames."""
+        `fn_col` to get the corresponding label in `label_col`."""
         df = pd.read_csv(self.path/csv_fname, header=header)
         return self.label_from_df(df, fn_col, label_col, sep, folder, suffix)
 
     def label_from_folder(self, classes:Collection[str]=None)->'LabelList':
-        """Give a label to each filename depending on its folder. If `classes` are specified, only keep those.
-        This method is intended for inputs that are filenames."""
+        "Give a label to each filename depending on its folder. If `classes` are specified, only keep those."
         labels = [fn.parent.parts[-1] for fn in self.items]
         if classes is None: classes = uniqueify(labels)
-        return LabelList([(o,lbl) for o, lbl in zip(self.items, labels) if lbl in classes], self.path)
-
+        return self.create_label_list([(o,lbl) for o, lbl in zip(self.items, labels) if lbl in classes])
+    
 class LabelList(PathItemList):
     "A list of inputs and labels. Contain methods to split it in `SplitData`."
+    def __init__(self, items:Iterator, path:PathOrStr='.', parent:InputList=None):
+        super().__init__(items=items, path=path)
+        self.parent = parent
+
     @property
     def files(self): return self.items[:,0]
 
+    @classmethod
+    def from_df(cls, path:PathOrStr, df:DataFrame, input_col:int=0, label_cols:Collection[int]=None):
+        label_cols = ifnone(label_cols, [1])
+        inputs = df.iloc[:,input_col].values
+        labels = np.squeeze(df.iloc[:,label_cols].values).astype(np.float32 if len(label_cols) > 1 else np.int64)
+        return LabelList([(i,l) for (i,l) in zip(inputs, labels)], path)
+
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_col:int=0, label_cols:Collection[int]=None, header:str=None):
+        df = pd.read_csv(path/csv_fname, header=header)
+        return cls.from_df(path, df, input_col, label_cols)
+    
+    @classmethod
+    def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_col:int=0, label_cols:Collection[int]=None, 
+                  header:str=None)->'LabelList':
+        return cls(np.concatenate([cls.from_csv(path, fname, input_col, label_cols).items for fname in csv_fnames]))
+        
     def split_by_files(self, valid_names:InputList)->'SplitData':
         "Split the data by using the names in `valid_names` for validation."
         valid = [o for o in self.items if o[0] in valid_names]
@@ -122,34 +139,50 @@ class LabelList(PathItemList):
         valid = [o for o in self.items if o[0].parent.parts[n] == valid]
         train = [o for o in self.items if o[0].parent.parts[n] == train]
         return SplitData(self.path, LabelList(train), LabelList(valid))
-
+   
     def random_split_by_pct(self, valid_pct:float=0.2)->'SplitData':
         "Split the items randomly by putting `valid_pct` in the validation set."
         rand_idx = np.random.permutation(range(len(self.items)))
         cut = int(valid_pct * len(self.items))
         return self.split_by_idx(rand_idx[:cut])
-
+    
 @dataclass
 class SplitData():
-    "Regroups `train` and `valid` data, inside a `path`."
+    "A `LabelList` for each of `train` and `valid` (optional `test`), and method to get `datasets`"
     path:PathOrStr
     train:LabelList
     valid:LabelList
+    test: LabelList=None
 
     def __post_init__(self): self.path = Path(self.path)
 
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_col:int=0, label_cols:Collection[int]=None, 
+                 valid_col:int=2, header:str=None)->'SplitData':
+        df = pd.read_csv(path/csv_fname, header=header)
+        val_idx = df.iloc[:,valid_col].nonzero()[0]
+        return LabelList.from_df(path, df, input_col, label_cols).split_by_idx(val_idx)
+    
     @property
-    def lists(self): return [self.train,self.valid]
+    def lists(self):
+        res = [self.train,self.valid]
+        if self.test is not None: res.append(self.test)
+        return res
 
     def datasets(self, dataset_cls:type, **kwargs)->'SplitDatasets':
-        "Create datasets from the underlying data using `dataset_cls` and passing the `kwargs`."
-        dss = [dataset_cls(*self.train.items.T, **kwargs)]
-        kwg_cls = kwargs.pop('classes') if 'classes' in kwargs else None
-        if hasattr(dss[0], 'classes'): kwg_cls = dss[0].classes
-        if kwg_cls is not None: kwargs['classes'] = kwg_cls
-        dss.append(dataset_cls(*self.valid.items.T, **kwargs))
-        cls = getattr(dataset_cls, '__splits_class__', SplitDatasets)
+        "Create datasets from the underlying data using `dataset_cls` and passing along the `kwargs`."
+        train = dataset_cls(*self.train.items.T, **kwargs)
+        dss = [train]
+        dss += [train.new(*o.items.T, **kwargs) for o in self.lists[1:]]
+        cls = getattr(train, '__splits_class__', SplitDatasets)
         return cls(self.path, *dss)
+
+    def add_test(self, test:ItemList, label:Any=None):
+        "Add test set containing items from `test` and an arbitrary label"
+        # if no label passed, used label of first training item
+        if label is None: label=self.train[0][1]
+        self.test = LabelList([(o,label) for o in test], self.path)
+        return self
 
 @dataclass
 class SplitDatasets():
@@ -164,10 +197,23 @@ class SplitDatasets():
         "The underlying datasets of this object."
         return [self.train_ds,self.valid_ds] if self.test_ds is None else [self.train_ds,self.valid_ds, self.test_ds]
 
+    @datasets.setter
+    def datasets(self,ds)->None:
+        assert (len(ds) == 2 or len(ds) == 3), "You have to pass two or three datasets."
+        self.train_ds,self.valid_ds = ds[:2]
+        if len(ds) == 3: self.test_ds = ds[2]
+
+    def set_attr(self, **kwargs):
+        dss = self.datasets
+        for key,val in kwargs.items():
+            for ds in dss: ds = setattr(ds, key, val)
+        self.datasets = dss
+        return self
+
     def dataloaders(self, **kwargs)->Collection[DataLoader]:
         "Create dataloaders with the inner datasets, pasing the `kwargs`."
         return [DataLoader(o, **kwargs) for o in self.datasets]
-    
+
     @classmethod
     def from_single(cls, path:PathOrStr, ds:Dataset)->'SplitDatasets':
         "Factory method that uses `ds` for both valid and train, and passes `path`."

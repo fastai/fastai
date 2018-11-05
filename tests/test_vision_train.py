@@ -37,7 +37,7 @@ def test_preds(learn):
         img, label = learn.data.valid_ds[i]
         pred_class,pred_idx,outputs = learn.predict(img)
         if outputs[label] > outputs[1-label]: return
-    assert false, 'Failed to predict correct class'
+    assert False, 'Failed to predict correct class'
 
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)
