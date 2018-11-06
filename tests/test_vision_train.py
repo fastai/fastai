@@ -13,6 +13,29 @@ def learn():
     learn.fit_one_cycle(3)
     return learn
 
+def _run_batch_size_test(bs,nfiles):
+    np.random.seed(0)
+    path = untar_data(URLs.MNIST_TINY)
+    dummy_fnames = [str(x.relative_to(path)) for x in (path / 'train' / '3').glob('**/*.png')]
+    dummy_data = {'fn': dummy_fnames[:nfiles], 'label': ['3'] * (nfiles)}
+    dummy_df = pd.DataFrame(dummy_data)
+    data = ImageDataBunch.from_df(path, dummy_df, size=224, bs=bs, num_workers=2, valid_pct=0.5)
+    data.normalize()
+    learn = create_cnn(data, models.resnet18, metrics=accuracy, pretrained=False)
+    learn.fit_one_cycle(1)
+
+# results in training batches with size 4 and 1
+def test_batch_size_4():
+    bs=4
+    nfiles=6
+    _run_batch_size_test(bs,nfiles)
+
+# results in training batches with size 3 and 2
+def test_batch_size_3():
+    bs=3
+    nfiles=6
+    _run_batch_size_test(bs,nfiles)
+
 def test_accuracy(learn):
     assert accuracy(*learn.get_preds()) > 0.9
 
