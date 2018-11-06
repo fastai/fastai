@@ -286,13 +286,20 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_lm</span> <span class="o">=</span> <span class="n">TextLMDataBunch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="n">data_clas</span> <span class="o">=</span> <span class="n">TextClasDataBunch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="n">data_clas</span> <span class="o">=</span> <span class="n">TextClasDataBunch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that you can load the data with different <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> parameters (batch size, <code>bptt</code>,...)</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -326,9 +333,9 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:18
+<pre>Total time: 00:17
 epoch  train_loss  valid_loss  accuracy
-1      4.747007    4.233099    0.246304  (00:18)
+1      4.745734    4.218480    0.247500  (00:17)
 
 </pre>
 </div>
@@ -364,9 +371,9 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:23
+<pre>Total time: 00:21
 epoch  train_loss  valid_loss  accuracy
-1      4.422249    4.094366    0.260178  (00:23)
+1      4.431404    4.084375    0.260209  (00:21)
 
 </pre>
 </div>
@@ -428,32 +435,12 @@ epoch  train_loss  valid_loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-9-9b8072208218&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> learn <span class="ansi-blue-fg">=</span> text_classifier_learner<span class="ansi-blue-fg">(</span>data_clas<span class="ansi-blue-fg">,</span> drop_mult<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0.5</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>learn<span class="ansi-blue-fg">.</span>load_encoder<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;ft_enc&#39;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      3</span> learn<span class="ansi-blue-fg">.</span>fit_one_cycle<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">1e-2</span><span class="ansi-blue-fg">)</span>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:25
+epoch  train_loss  valid_loss  accuracy
+1      0.645119    0.660906    0.552239  (00:25)
 
-<span class="ansi-green-fg">~/fastai/fastai/text/learner.py</span> in <span class="ansi-cyan-fg">load_encoder</span><span class="ansi-blue-fg">(self, name)</span>
-<span class="ansi-green-intense-fg ansi-bold">     61</span>     <span class="ansi-green-fg">def</span> load_encoder<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> name<span class="ansi-blue-fg">:</span>str<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     62</span>         <span class="ansi-blue-fg">&#34;Load the encoder `name` from the model directory.&#34;</span>
-<span class="ansi-green-fg">---&gt; 63</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>model<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>load_state_dict<span class="ansi-blue-fg">(</span>torch<span class="ansi-blue-fg">.</span>load<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">/</span>self<span class="ansi-blue-fg">.</span>model_dir<span class="ansi-blue-fg">/</span><span class="ansi-blue-fg">f&#39;{name}.pth&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     64</span>         self<span class="ansi-blue-fg">.</span>freeze<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     65</span> 
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.6/site-packages/torch/nn/modules/module.py</span> in <span class="ansi-cyan-fg">load_state_dict</span><span class="ansi-blue-fg">(self, state_dict, strict)</span>
-<span class="ansi-green-intense-fg ansi-bold">    721</span>         <span class="ansi-green-fg">if</span> len<span class="ansi-blue-fg">(</span>error_msgs<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">&gt;</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    722</span>             raise RuntimeError(&#39;Error(s) in loading state_dict for {}:\n\t{}&#39;.format(
-<span class="ansi-green-fg">--&gt; 723</span><span class="ansi-red-fg">                                self.__class__.__name__, &#34;\n\t&#34;.join(error_msgs)))
-</span><span class="ansi-green-intense-fg ansi-bold">    724</span> 
-<span class="ansi-green-intense-fg ansi-bold">    725</span>     <span class="ansi-green-fg">def</span> _named_members<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> get_members_fn<span class="ansi-blue-fg">,</span> prefix<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;&#39;</span><span class="ansi-blue-fg">,</span> recurse<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-red-fg">RuntimeError</span>: Error(s) in loading state_dict for MultiBatchRNNCore:
-	size mismatch for encoder.weight: copying a param with shape torch.Size([6148, 400]) from checkpoint, the shape in current model is torch.Size([6133, 400]).
-	size mismatch for encoder_dp.emb.weight: copying a param with shape torch.Size([6148, 400]) from checkpoint, the shape in current model is torch.Size([6133, 400]).</pre>
+</pre>
 </div>
 </div>
 
@@ -481,6 +468,23 @@ epoch  train_loss  valid_loss  accuracy
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:32
+epoch  train_loss  valid_loss  accuracy
+1      0.637404    0.618768    0.626866  (00:32)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -492,6 +496,23 @@ epoch  train_loss  valid_loss  accuracy
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 01:04
+epoch  train_loss  valid_loss  accuracy
+1      0.598171    0.568904    0.696517  (01:04)
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

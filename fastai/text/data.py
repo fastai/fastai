@@ -320,9 +320,8 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
-                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, **kwargs) -> DataBunch:
+                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
-        header = 'infer' if 'txt_cols' in kwargs else None
         df = pd.read_csv(Path(path)/csv_name, header=header)
         idx = np.random.permutation(len(df))
         cut = int(valid_pct * len(df)) + 1
