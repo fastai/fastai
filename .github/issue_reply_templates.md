@@ -2,7 +2,7 @@
 
 github allows for quick staple replies to the issues. Therefore please "install" the following staple replies to save yourself time, and also so that the answers by different developers are consistent.
 
-Each developer, involved in addressing issues, needs to manually add those one by one to [his github account](https://github.com/settings/replies). Once configured, you will find them in the drop-down menu accessible from the right upper corner of the comment box inside the issue page.
+Each developer, involved in addressing issues, needs to manually add those one by one to [their github account](https://github.com/settings/replies). Once configured, you will find them in the drop-down menu accessible from the right upper corner of the comment box inside the issue page.
 
 Note that these staple replies are global for your github account, and aren't specific to `fastai` repository.
 
@@ -30,8 +30,3 @@ If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to
 
 If you are adding new functionality, please first create a thread on [fastai-dev](https://forums.fast.ai/c/fastai-users/fastai-dev) describing the functionality. Generally it's best to discuss changes to functionality there first, so we can all agree on an approach. Please include a test in your PR that fails without your code, and passes with it, as well as a test of a case that already worked without your code (and still works with it). Currently fastai has poor test coverage, so don't take the current tests as a role model - we're all working to fix it together! When creating your PR, please remove all the text in this template, and add details about your PR.
 
-### fastai_docs Entries
-
-* fastai_docs: sign CLA
-
-Please sign this CLA agreement https://www.clahub.com/agreements/fastai/fastai_docs as explained [here](https://github.com/fastai/fastai_docs/blob/master/CONTRIBUTING.md) before we can proceed. Thank you.

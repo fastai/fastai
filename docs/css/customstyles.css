@@ -291,8 +291,8 @@ ul#results-container a:hover {
 }
 
 a.source_link {
-    float:right; 
-    font-size:15px; 
+    float:right;
+    font-size:15px;
     font-weight:normal;
 }
 
@@ -1285,4 +1285,24 @@ blockquote code {
 }
 h4 code {
         background-color: white;
+}
+
+/* Google Custom Search styling */
+
+#gcs-search-container {
+    width: 340px !important; /* ToDo: define width without using absolute px value */
+    display: inline-block !important;
+}
+
+.gsc-search-box.gsc-search-box-tools table {
+  margin-bottom: 0px !important;
+}
+.gsc-input, .gsc-search-button {
+    padding: 0;
+}
+.gsc-control-cse {
+    padding: 6px !important;
+}
+input.gsc-input {
+    font-size: 12px !important;
 }

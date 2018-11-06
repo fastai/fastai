@@ -1,7 +1,8 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
 
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+DatasetType = Enum('DatasetType', 'Train Valid Test')
+__all__ = ['SingleClassificationDataset', 'LabelXYDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset', 'DatasetType']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
@@ -10,11 +11,12 @@ class DatasetBase(Dataset):
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
     def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
+    def new(self, *args, **kwargs):
+        "Create a new dataset using `self` as a template"
+        return self.__class__(*args, **kwargs)
 
-    @abstractmethod
-    def _get_x(self,i): pass
-    @abstractmethod
-    def _get_y(self,i): pass
+    def _get_x(self,i): return self.x[i]
+    def _get_y(self,i): return self.y[i]
 
     def __getitem__(self, i):
         if self.item is None: return self._get_x(i),self._get_y(i)
@@ -28,7 +30,14 @@ class LabelDataset(DatasetBase):
         if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
         super().__init__(len(classes))
 
+class LabelXYDataset(LabelDataset):
+    "Minimal `LabelDataset` which returns whatever `x` and `y` you pass in"
+    def __init__(self, x:Collection, y:Collection, classes:Optional[Collection[Any]]=None):
+        super().__init__(classes=classes)
+        self.x,self.y  = np.array(x),np.array(y)
+
 class SingleClassificationDataset(DatasetBase):
+    "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
     def __init__(self, classes:Collection[str]):
         self.classes = classes
         super().__init__(len(classes))
@@ -99,7 +108,7 @@ class DataBunch():
         assert not isinstance(train_dl,DeviceDataLoader)
         self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
         self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl,  self.device, self.tfms, collate_fn) if test_dl else None
+        self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
         self.path = Path(path)
 
     @classmethod
@@ -114,9 +123,11 @@ class DataBunch():
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
-    def holdout(self, is_test:bool=False)->DeviceDataLoader:
-        "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
-        return self.test_dl if is_test else self.valid_dl
+    def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
+        "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
+        return (self.train_dl if ds_type == DatasetType.Train else
+                self.test_dl if ds_type == DatasetType.Test else
+                self.valid_dl)
 
     def add_tfm(self,tfm:Callable)->None:
         self.train_dl.add_tfm(tfm)
