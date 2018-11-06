@@ -117,7 +117,7 @@ class ImageRelabeler(ImageCleaner):
         self.render()
 
     def relabel(self, change):
-        "Relabel images by moving from parent dir with old label to parent dir with name new-label"
+        "Relabel images by moving from parent dir with old label `class_old` to parent dir with new label `class_new`"
         class_new,class_old,file_path = change.new,change.old,change.owner.file_path
         fp = Path(file_path)
         parent = fp.parents[1]
