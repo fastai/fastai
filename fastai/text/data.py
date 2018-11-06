@@ -28,7 +28,9 @@ class SplitDatasetsText(SplitDatasets):
         return self
         
     def numericalize(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
-        self.datasets = [ds.numericalize(vocab, max_vocab, min_freq) for ds in self.datasets]
+        dss = self.datasets
+        train_ds = dss[0].numericalize(vocab, max_vocab, min_freq)
+        self.datasets = [train_ds] + [ds.numericalize(train_ds.vocab) for ds in dss[1:]]
         return self
     
     def databunch(self, cls_func, path:PathOrStr=None, **kwargs):
