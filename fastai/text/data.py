@@ -5,15 +5,11 @@ from ..basic_data import *
 from ..data_block import *
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', 'TextDataset', 'TextMtd', 'TextFileList',
-           'pad_collate', 'read_classes', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'SplitDatasetsText',
+           'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'SplitDatasetsText',
            'NumericalizedDataset', 'TokenizedDataset']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = ['.txt']
-
-def read_classes(fname):
-    with open(fname, 'r') as f:
-        return [l[:-1] for l in f.readlines()]
 
 class TextFileList(InputList):
     "A list of inputs. Contain methods to get the corresponding labels."
@@ -24,10 +20,12 @@ class TextFileList(InputList):
     
 class SplitDatasetsText(SplitDatasets):
     def tokenize(self, tokenizer:Tokenizer=None, chunksize:int=10000):
+        "Tokenize `self.datasets` with `tokenizer` by bits of `chunksize`."
         self.datasets = [ds.tokenize(tokenizer, chunksize) for ds in self.datasets]
         return self
         
     def numericalize(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+        "Numericalize `self.datasets` with `vocab` or by creating one on the training set with `max_vocab` and `min_freq`."
         dss = self.datasets
         train_ds = dss[0].numericalize(vocab, max_vocab, min_freq)
         self.datasets = [train_ds] + [ds.numericalize(train_ds.vocab) for ds in dss[1:]]
@@ -260,7 +258,7 @@ class TextDataBunch(DataBunch):
     `TextClasDataBunch`."""
     
     def save(self, cache_name:PathOrStr='tmp'):
-        "Save the `DataBunch` in `cache_name` folder."
+        "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
         cache_path = self.path/cache_name
         pickle.dump(self.train_ds.vocab.itos, open(cache_path/f'itos.pkl', 'wb'))
@@ -283,7 +281,7 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def load(cls, path:PathOrStr, cache_name:PathOrStr='tmp', **kwargs):
-        "Load a `TextDataBunch` from `path`. `kwargs` are passed to the dataloader creation."
+        "Load a `TextDataBunch` from `path/cache_name`. `kwargs` are passed to the dataloader creation."
         cache_path = Path(path)/cache_name
         vocab = Vocab(pickle.load(open(cache_path/f'itos.pkl', 'rb')))
         trn_ids,trn_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')

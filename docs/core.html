@@ -176,60 +176,6 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_chunk_length"><code>get_chunk_length</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>get_chunk_length</code>(<code>data</code>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>DataFrame</code>, <code>TextFileReader</code>], <code>chunksize</code>:<code>Optional</code>[<code>int</code>]=<code>None</code>) → <code>int</code></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Return the number of chunks we will have when opening the <code>DataFrame</code> in <code>csv_name</code> with <code>chunksize</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_total_length"><code>get_total_length</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L134" class="source_link">[source]</a></h4><blockquote><p><code>get_total_length</code>(<code>csv_name</code>:<code>PathOrStr</code>, <code>chunksize</code>:<code>int</code>) → <code>int</code></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Return the total length we will have when opening the <code>DataFrame</code> in <code>csv_name</code> with <code>chunksize</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
 <h4 id="idx_dict"><code>idx_dict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L65" class="source_link">[source]</a></h4><blockquote><p><code>idx_dict</code>(<code>a</code>)</p>
 </blockquote>
 
@@ -328,7 +274,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L148" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<code>df</code>:<code>DataFrame</code>, <code>col_names</code>)</p>
+<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<code>df</code>:<code>DataFrame</code>, <code>col_names</code>)</p>
 </blockquote>
 <p>Categorifies the columns <code>col_names</code> in <code>df</code>.</p>
 
@@ -383,7 +329,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L161" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>)</p>
+<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code>.</p>
 
@@ -425,7 +371,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L182" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
+<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
 </blockquote>
 <p>Return <code>Path(path)/Path(fname)</code>, <code>path</code> defaults to current dir.</p>
 
@@ -446,7 +392,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L186" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
+<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
 </blockquote>
 <p>Join <code>path</code> to every file name in <code>fnames</code>.</p>
 
@@ -467,7 +413,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L191" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
+<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L167" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
 </blockquote>
 <p>Return <code>ndarray</code> of <code>str</code> of lines of text from <code>path</code>.</p>
 
@@ -488,9 +434,9 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="maybe_copy"><code>maybe_copy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>maybe_copy</code>(<code>old_fnames</code>:<code>Collection</code>[<code>PathOrStr</code>], <code>new_fnames</code>:<code>Collection</code>[<code>PathOrStr</code>])</p>
+<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L172" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<code>fname</code>:<code>PathOrStr</code>, <code>texts</code>:<code>StrList</code>)</p>
 </blockquote>
-<p>Copy the <code>old_fnames</code> to <code>new_fnames</code> location if <code>new_fnames</code> don't exist or are less recent.</p>
+<p>Save in <code>fname</code> the content of <code>texts</code>.</p>
 
 </div>
 
@@ -515,7 +461,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L152" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>()</p>
+<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L128" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>()</p>
 </blockquote>
 <p>All transformable dataset items use this type.</p>
 
