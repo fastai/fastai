@@ -14,6 +14,7 @@ __all__ = ['DatasetFormatter', 'ImageDeleter', 'ImageRelabeler']
 # Grid 5x5
 
 # Example use: ds, idxs = DatasetFormatter().from_toplosses(learn, ds_type=DatasetType.Valid)
+# ImageRelabeler(ds, idxs)
 class DatasetFormatter():
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, ds_type:DatasetType=DatasetType.Valid, **kwargs):
@@ -32,8 +33,10 @@ class ImageCleaner():
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
-        self._all_images = [(open_image(dataset.x[i])._repr_jpeg_(), dataset.x[i])
-                           for i in fns_idxs if dataset.x[i].is_file()]
+        self._labels = dataset.classes
+        self._all_images = [(open_image(dataset.x[i])._repr_jpeg_(), dataset.x[i], self._labels[dataset.y[i]])
+                            for i in fns_idxs if dataset.x[i].is_file()]
+
 
     @classmethod
     def make_img_widget(cls, img, height='250px', width='300px', format='jpg'):
@@ -105,36 +108,40 @@ class ImageDeleter(ImageCleaner):
 
 
 class ImageRelabeler(ImageCleaner):
+    "Displays images with their current label and, if labeled incorrectly, allows user to move image to properly labeled folder."
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
         super().__init__(dataset, fns_idxs, batch_size=batch_size)
-        self._all_images = [(img, fp, dataset.y[i]) for i, (img,fp) in enumerate(self._all_images)]
-        self._labels = dataset.classes
         self.render()
 
     def relabel(self, change):
+        "Relabel images by moving from parent dir with old label to parent dir with name new-label"
         class_new,class_old,file_path = change.new,change.old,change.owner.file_path
         fp = Path(file_path)
         parent = fp.parents[1]
+        # TODO: disambiguate relabeling process based on label type (CSV, folders etc.)
         new_filepath = Path(f'{parent}/{class_new}/{fp.name}')
-        print(new_filepath, new_filepath.exists())
-        if not new_filepath.exists():
-            # TODO: how to handle existing files?
-            print('reassigned', file_path, 'from', class_old, 'to', class_new, 'at', new_filepath)
-            Path(file_path).replace(new_filepath)
+        if new_filepath.exists():
+            new_filepath = Path(f'{parent}/{class_new}/{fp.stem}-moved{fp.suffix}')
+        Path(file_path).replace(new_filepath)
+        change.owner.file_path = new_filepath
+
+    def next_batch(self, btn):
+        self._all_images = self._all_images[self._batch_size:]
+        self.empty_batch()
+        self.render()
 
     def render(self):
         "Re-render Jupyter cell for batch of images"
         clear_output()
         if (len(self._all_images) == 0): return display('No images to show :)')
         widgets_to_render = []
-        for (img,fp,labelIdx) in self._all_images[:self._batch_size]:
+        for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
             img_widget = self.make_img_widget(img)
-            human_readable_label = self._labels[labelIdx]
             dropdown = self.make_dropdown_widget(description='Class:', options=self._labels, value=human_readable_label, file_path=fp, handler=self.relabel)
             widgets_to_render.append(self.make_vertical_box([img_widget, dropdown], height='300px'))
             self._batch.append((img_widget, dropdown, fp, human_readable_label))
         display(self.make_horizontal_box(widgets_to_render))
-        display(self.make_button_widget('Confirm', handler=self.relabel, style="primary"))
+        display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
 
 
 
