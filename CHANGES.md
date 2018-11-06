@@ -21,6 +21,7 @@ of that change.
 
 - `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
 - `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.
+- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`.
 
 ### Fixed:
 
