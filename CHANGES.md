@@ -15,12 +15,20 @@ of that change.
 ### New:
 
 - `DataBunch.dl` replaces the various `holdout`, `is_test`, and `is_train` approaches with a single consistent enum.
+- `fastai.text` is fully compatible with the data block API.
 
 ### Changed:
 
+- `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
+- `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.
+- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`.
+
 ### Fixed:
 
-
+- Imports in the file picker widget (thanks to hiromis)
+- Batches of size 1 will be tossed aside during training because of the issue with BatchNorm
+- Confusion matrix show ints if `normalize=False` (default)
+- `RNNLearner.get_preds` return the preds in the right order (thanks to StatisticDean)
 
 ## 1.0.19 (2018-11-03)
 
