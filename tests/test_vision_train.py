@@ -25,7 +25,7 @@ def _run_batch_size_test(bs,nfiles):
     learn.fit_one_cycle(1)
 
 # results in training batches with size 4 and 1
-@pytest.skip
+@pytest.mark.skip
 def test_batch_size_4():
     bs=4
     nfiles=6
