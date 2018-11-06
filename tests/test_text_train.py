@@ -9,7 +9,7 @@ def read_file(fname):
     with open(fname, 'r') as f:
         texts = f.readlines()
     labels = [0] * len(texts)
-    df = pd.DataFrame({0:labels, 1:texts}, columns = [0, 1])
+    df = pd.DataFrame({'labels':labels, 'texts':texts}, columns = ['labels', 'texts'])
     return df
 
 def prep_human_numbers():

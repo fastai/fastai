@@ -12,7 +12,7 @@ FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]
 ImgLabel = str
 ImgLabels = Collection[ImgLabel]
-Ints = Union[int, Collection[int]]
+IntsOrStrs = Union[int, Collection[int], str, Collection[str]]
 KeyFunc = Callable[[int], int]
 KWArgs = Dict[str,Any]
 ListOrItem = Union[Collection[Any],int,float,str]
@@ -197,3 +197,8 @@ def save_texts(fname:PathOrStr, texts:Collection[str]):
     "Save in `fname` the content of `texts`."
     with open(fname, 'w') as f:
         for t in texts: f.write(f'{t}\n')
+            
+def df_names_to_idx(names, df):
+    if not is_listy(names): names = [names]
+    if isinstance(names[0], int): return names
+    return [df.columns.get_loc(c) for c in names]

@@ -121,11 +121,12 @@ class TextDataset(TextBase):
         label_cols = ifnone(label_cols, list(range(n_labels)))
         if classes is None:
             if len(label_cols) == 0:   classes = [0]
-            elif len(label_cols) == 1: classes = df[label_cols[0]].unique()
+            elif len(label_cols) == 1: classes = df.iloc[:,df_names_to_idx(label_cols, df)[0]].unique()
             else:                      classes = label_cols
-        lbls = df[label_cols].values
+        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
         txt_cols = ifnone(txt_cols, list(range(len(label_cols),len(df.columns))))
-        return cls(np.array(df[txt_cols].astype(str)), np.squeeze(lbls), classes, mark_fields)
+        texts = np.squeeze(df.iloc[:,df_names_to_idx(txt_cols, df)].astype(str).values)
+        return cls(texts, labels, classes, mark_fields)
 
     @staticmethod
     def _folder_files(folder:Path, label:str, extensions:Collection[str]=text_extensions)->Tuple[str,str]:

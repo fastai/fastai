@@ -83,7 +83,7 @@ class InputList(PathItemList):
         labels = [fn.parent.parts[-1] for fn in self.items]
         if classes is None: classes = uniqueify(labels)
         return self.create_label_list([(o,lbl) for o, lbl in zip(self.items, labels) if lbl in classes])
-    
+
 class LabelList(PathItemList):
     "A list of inputs and labels. Contain methods to split it in `SplitData`."
     def __init__(self, items:Iterator, path:PathOrStr='.', parent:InputList=None):
@@ -94,18 +94,18 @@ class LabelList(PathItemList):
     def files(self): return self.items[:,0]
 
     @classmethod
-    def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:Ints=0, label_cols:Ints=1):
-        inputs = np.squeeze(df.iloc[:,input_cols].values)
-        labels = np.squeeze(df.iloc[:,label_cols].values)
+    def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1):
+        inputs = np.squeeze(df.iloc[:,df_names_to_idx(input_cols, df)].values)
+        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
         return LabelList([(i,l) for (i,l) in zip(inputs, labels)], path)
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:Ints=0, label_cols:Ints=1, header:str='infer'):
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer'):
         df = pd.read_csv(path/csv_fname, header=header)
         return cls.from_df(path, df, input_col, label_cols)
     
     @classmethod
-    def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:Ints=0, label_cols:Ints=1, 
+    def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, 
                   header:str='infer')->'LabelList':
         return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]))
         
@@ -156,7 +156,7 @@ class SplitData():
     def __post_init__(self): self.path = Path(self.path)
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:Ints=0, label_cols:Ints=1, 
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, 
                  valid_col:int=2, header:str='infer')->'SplitData':
         df = pd.read_csv(path/csv_fname, header=header)
         val_idx = df.iloc[:,valid_col].nonzero()[0]
