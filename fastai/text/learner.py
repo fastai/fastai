@@ -74,7 +74,7 @@ class RNNLearner(Learner):
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     def predict(self, text:str, n_words:int=1, tokenizer:Tokenizer=None):
-        "Return the `n_words` that come after `text`."
+        "Return the `n_words` that come after `text`. `tokenizer` should be the same one used as during training."
         tokenizer = ifnone(tokenizer, Tokenizer())
         tokens = tokenizer.process_all([text])
         ds = self.data.valid_ds
@@ -91,7 +91,7 @@ class LanguageLearner(RNNLearner):
 class TextClassifierLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     def predict(self, text:str, tokenizer:Tokenizer=None):
-        "Return prect class, label and probabilities for `text`."
+        "Return prect class, label and probabilities for `text`. `tokenizer` should be the same one used as during training."
         tokenizer = ifnone(tokenizer, Tokenizer())
         tokens = tokenizer.process_all([text])
         ds = self.data.valid_ds

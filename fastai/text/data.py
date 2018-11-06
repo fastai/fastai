@@ -89,7 +89,7 @@ class TokenizedDataset(TextBase):
         np.save(path/f'name_lbl.npy', self.y)
         np.savetxt(path/'classes.txt', self.classes.as_type(str))
     
-    def numericalize(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+    def numericalize(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2)->'NumericalizedDataset':
         "Numericalize the tokens with `vocab` (if not None) otherwise create one with `max_vocab` and `min_freq` from tokens."
         vocab = ifnone(vocab, Vocab.create(self.x, max_vocab, min_freq))
         ids = np.array([vocab.numericalize(t) for t in self.x])
@@ -138,17 +138,11 @@ class TextDataset(TextBase):
         return texts,[label]*len(texts)
     
     @classmethod
-    def from_filenames(cls, fnames:Collection[PathOrStr], labels:Collection[Any]=None, classes:Collection[Any]=None,
-                    extensions:Collection[str]=text_extensions, mark_fields:bool=True) -> 'TextDataset':
-        texts =[]
-        for f in fnames:
-            with open(f,'r') as f: texts.append(f.readlines())
-        return cls(texts, labels, classes, mark_fields)
-    
-    @classmethod
     def from_folder(cls, path:PathOrStr, classes:Collection[Any]=None, valid_pct:float=0.,
                     extensions:Collection[str]=text_extensions, mark_fields:bool=True) -> 'TextDataset':
-        "Create a `TextDataset` from the text files in a folder."
+        """Create a `TextDataset` by scanning the subfolders in `path` for files with `extensions`. 
+        Only keep those with labels in `classes`. If `valid_pct` is not 0., splits the data randomly in two datasets accordingly.
+        `mark_fields` is passed to the initialization. """
         path = Path(path)
         classes = ifnone(classes, [cls.name for cls in find_classes(path)])
         texts, labels, keep = [], [], {}
@@ -161,14 +155,15 @@ class TextDataset(TextBase):
         return [cls(*a, classes, mark_fields) for a in random_split(valid_pct, texts, labels)]
     
     @classmethod
-    def from_one_folder(cls, path:PathOrStr, classes:Collection[Any], shuffle:bool=True, 
-                         extensions:Collection[str]=text_extensions,  mark_fields:bool=True) -> 'TextDataset':
-        "Create a dataset from one folder, labelled `classes[0]` (used for the test set)."
+    def from_one_folder(cls, path:PathOrStr, classes:Collection[Any], extensions:Collection[str]=text_extensions,  
+                        mark_fields:bool=True) -> 'TextDataset':
+        """Create a `TextDataset` by scanning the subfolders in `path` for files with `extensions`. 
+        Label all of them with `classes[0]`.  `mark_fields` is passed to the initialization. """
         path = Path(path)
         text,labels = self._folder_files(path, classes[0], extensions=extensions)
         return cls(texts, labels, classes, mark_fields)
     
-    def tokenize(self, tokenizer:Tokenizer=None, chunksize:int=10000):
+    def tokenize(self, tokenizer:Tokenizer=None, chunksize:int=10000)->'TokenizedDataset':
         "Tokenize the texts with `tokenizer` by bits of `chunksize`."
         tokenizer = ifnone(tokenizer, Tokenizer())
         tokens = []
@@ -328,7 +323,8 @@ class TextDataBunch(DataBunch):
         header = 'infer' if 'txt_cols' in kwargs else None
         df = pd.read_csv(Path(path)/csv_name, header=header)
         idx = np.random.permutation(len(df))
-        train_df, valid_df = df[int(valid_pct * len(df)):], df[:int(valid_pct * len(df))]
+        cut = int(valid_pct * len(df)) + 1
+        train_df, valid_df = df[cut:], df[:cut]
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, **kwargs)
 
