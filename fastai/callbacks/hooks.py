@@ -84,4 +84,4 @@ def model_sizes(m:nn.Module, size:tuple=(256,256), full:bool=True) -> Tuple[Size
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for a `model`."
-    return model_sizes(tst_model, full=False)[-1][1]
+    return model_sizes(m, full=False)[-1][1]
