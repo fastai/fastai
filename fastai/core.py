@@ -12,6 +12,7 @@ FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]
 ImgLabel = str
 ImgLabels = Collection[ImgLabel]
+Ints = Union[int, Collection[int]]
 KeyFunc = Callable[[int], int]
 KWArgs = Dict[str,Any]
 ListOrItem = Union[Collection[Any],int,float,str]
@@ -189,7 +190,8 @@ def join_paths(fnames:FilePathList, path:PathOrStr='.')->Collection[Path]:
 
 def loadtxt_str(path:PathOrStr)->np.ndarray:
     "Return `ndarray` of `str` of lines of text from `path`."
-    return np.loadtxt(str(path), str)
+    with open(path, 'r') as f: lines = f.readlines()
+    return np.array([l.strip() for l in lines])
 
 def save_texts(fname:PathOrStr, texts:Collection[str]):
     "Save in `fname` the content of `texts`."
