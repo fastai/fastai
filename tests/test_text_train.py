@@ -9,13 +9,13 @@ def read_file(fname):
     with open(fname, 'r') as f:
         texts = f.readlines()
     labels = [0] * len(texts)
-    df = pd.DataFrame({'labels':labels, 'texts':texts}, columns = ['labels', 'texts'])
+    df = pd.DataFrame({0:labels, 1:texts}, columns = [0, 1])
     return df
 
 def prep_human_numbers():
     path = untar_data(URLs.HUMAN_NUMBERS)
     df_trn = read_file(path/'train.txt')
-    df_val = (read_file(path/'valid.txt'))
+    df_val = read_file(path/'valid.txt')
     return path, df_trn, df_val
 
 @pytest.fixture(scope="module")

@@ -4,7 +4,7 @@ from fastai.text import *
 
 def text_df(n_labels):
     data = []
-    texts = ["fast ai is a cool project", "hello world"]
+    texts = ["fast ai is a cool project", "hello world"] * 20
     for ind, text in enumerate(texts):
         sample = {}
         for label in range(n_labels): sample[label] = ind%2
