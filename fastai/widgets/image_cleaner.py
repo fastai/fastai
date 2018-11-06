@@ -73,6 +73,8 @@ class ImageDeleter(ImageCleaner):
 
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
         super().__init__(dataset, fns_idxs, batch_size=batch_size)
+        self._all_images = [(img_fp[0], img_fp[1]) for img_fp in self._all_images]
+        # Override parent's _all_images so we remove label data from tuples. We don't use them in this class.
         self.render()
 
     def on_confirm(self, btn):
@@ -93,6 +95,7 @@ class ImageDeleter(ImageCleaner):
         btn.button_style = "" if btn.flagged_for_delete else "danger"
         btn.flagged_for_delete = not btn.flagged_for_delete
 
+    # TODO: refactor some of this out to parent
     def render(self):
         "Re-renders Jupyter cell for a batch of images."
         clear_output()
@@ -130,6 +133,7 @@ class ImageRelabeler(ImageCleaner):
         self.empty_batch()
         self.render()
 
+    # TODO: refactor some of this out to parent
     def render(self):
         "Re-render Jupyter cell for batch of images"
         clear_output()
@@ -142,8 +146,6 @@ class ImageRelabeler(ImageCleaner):
             self._batch.append((img_widget, dropdown, fp, human_readable_label))
         display(self.make_horizontal_box(widgets_to_render))
         display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
-
-
 
 # Initial implementation by:
 # Zach Caceres @zachcaceres (https://github.com/zcaceres)
