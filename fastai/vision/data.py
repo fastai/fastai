@@ -198,7 +198,7 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
 
 def _prep_tfm_kwargs(tfms, kwargs):
     default_rsz = ResizeMethod.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMethod.CROP
-    resize_method = getattr(kwargs, 'resize_method', default_rsz)
+    resize_method = kwargs.get('resize_method', default_rsz)
     if resize_method <= 2: tfms = [crop_pad()] + tfms
     kwargs['resize_method'] = resize_method
     return tfms, kwargs
