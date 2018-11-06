@@ -118,7 +118,7 @@ class DataBunch():
         "`DataBunch` factory. `bs` batch size, `tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
-        dls = [DataLoader(*o, num_workers=num_workers) for o in
+        dls = [DataLoader(*o, num_workers=num_workers, drop_last=True) for o in
                zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
