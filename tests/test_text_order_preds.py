@@ -4,7 +4,7 @@ from fastai.text import *
 
 def test_order_preds():
     path = untar_data(URLs.IMDB_SAMPLE)
-    data_lm = TextLMDataBunch.from_csv(path)
+    data_lm = TextLMDataBunch.from_csv(path, 'texts.csv')
     data_clas = TextClasDataBunch.from_csv(path, vocab=data_lm.train_ds.vocab)
     learn = RNNLearner.classifier(data_clas)
     preds = learn.get_preds()
