@@ -23,7 +23,7 @@ sidebar_d = {
                 'MixUpCallback': 'callbacks.mixup',
                 'RNNTrainer': 'callbacks.rnn',
                 'GeneralScheduler': 'callbacks.general_sched',
-                'Tracking callbacks': 'callbacks.tracking'
+                'Tracking callbacks': 'callbacks.tracker'
             }
         },
     },
