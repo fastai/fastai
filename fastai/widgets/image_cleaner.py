@@ -37,6 +37,7 @@ class ImageCleaner():
         self._all_images = [(open_image(dataset.x[i])._repr_jpeg_(), dataset.x[i], self._labels[dataset.y[i]])
                             for i in fns_idxs if dataset.x[i].is_file()]
 
+    def empty_batch(self): self._batch[:] = []
 
     @classmethod
     def make_img_widget(cls, img, height='250px', width='300px', format='jpg'):
@@ -84,7 +85,6 @@ class ImageDeleter(ImageCleaner):
         self.empty_batch()
         self.render()
 
-    def empty_batch(self): self._batch[:] = []
     def delete_image(self, file_path): os.remove(file_path)
     # TODO: move to .Trash dir
 
