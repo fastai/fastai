@@ -385,6 +385,27 @@ epoch  train loss  valid loss
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="num_features_model"><code>num_features_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L85" class="source_link">[source]</a></h4><blockquote><p><code>num_features_model</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>int</code></p>
+</blockquote>
+<p>Return the number of output features for a <code>model</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It can be useful to get the size of each layer of a model (e.g. for printing a summary, or for generating cross-connections for a <a href="/vision.models.unet.html#DynamicUnet"><code>DynamicUnet</code></a>), however they depend on the size of the input. This function calculates the layer sizes by passing in a minimal tensor of <code>size</code>.</p>
