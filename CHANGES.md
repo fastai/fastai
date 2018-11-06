@@ -25,7 +25,10 @@ of that change.
 
 ### Fixed:
 
-
+- Imports in the file picker widget (thanks to hiromis)
+- Batches of size 1 will be tossed aside during training because of the issue with BatchNorm
+- Confusion matrix show ints if `normalize=False` (default)
+- `RNNLearner.get_preds` return the preds in the right order (thanks to StatisticDean)
 
 ## 1.0.19 (2018-11-03)
 
