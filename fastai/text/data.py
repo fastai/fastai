@@ -275,8 +275,8 @@ class TextDataBunch(DataBunch):
                  val_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
         train_ds = NumericalizedDataset(vocab, trn_ids, trn_lbls, classes, encode_classes=False)
-        datasets = [train_ds, NumericalizedDataset(vocab, val_ids, val_lbls, classes, encode_classes=False)]
-        if tst_ids is not None: datasets.append(NumericalizedDataset(vocab, tst_ids, None, classes, encode_classes=False))
+        datasets = [train_ds, NumericalizedDataset(vocab, val_ids, val_lbls, train_ds.classes, encode_classes=False)]
+        if tst_ids is not None: datasets.append(NumericalizedDataset(vocab, tst_ids, None, train_ds.classes, encode_classes=False))
         return cls.create(*datasets, path=path, **kwargs)
 
     @classmethod
@@ -297,8 +297,8 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from tokens and labels."
         num_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq'], kwargs)
         train_ds = TokenizedDataset(trn_tok, trn_lbls, classes).numericalize(vocab, **num_kwargs)
-        datasets = [train_ds, TokenizedDataset(val_tok, val_lbls, classes).numericalize(vocab)]
-        if test: datasets.append(TokenizedDataset(tst_tok, [0]*len(tst_tok), classes).numericalize(vocab))
+        datasets = [train_ds, TokenizedDataset(val_tok, val_lbls, train_ds.classes).numericalize(vocab)]
+        if test: datasets.append(TokenizedDataset(tst_tok, [0]*len(tst_tok), train_ds.classes).numericalize(vocab))
         return cls.create(*datasets, path=path, **kwargs)
     
     @classmethod
@@ -311,7 +311,7 @@ class TextDataBunch(DataBunch):
                     .numericalize(vocab, **num_kwargs))]
         dfs = [valid_df] if test_df is None else [valid_df, test_df]
         for df in dfs:
-            datasets.append((TextDataset.from_df(df, classes, **txt_kwargs)
+            datasets.append((TextDataset.from_df(df, datasets[0].classes, **txt_kwargs)
                     .tokenize(tokenizer, **tok_kwargs)
                     .numericalize(datasets[0].vocab, **num_kwargs)))
         return cls.create(*datasets, path=path, **kwargs)
