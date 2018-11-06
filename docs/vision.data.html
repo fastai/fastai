@@ -1567,7 +1567,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageClassificationDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>folder</code>:<code>Path</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.0</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.png', '.bmp', '.pnm', '.ief', '.jpeg', '.gif', '.jpg', '.svg', '.xbm', '.xwd', '.rgb', '.ras', '.pgm', '.tif', '.tiff', '.jpe', '.pbm', '.ppm', '.xpm', '.ico'}</code>) → <code>Union</code>[<code>ImageClassificationDataset</code>, <code>List</code>[<code>ImageClassificationDataset</code>]]</p>
+<h4 id="ImageClassificationDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>folder</code>:<code>Path</code>, <code>classes</code>:<code>Optional</code>[<code>ArgStar</code>]=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.0</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.ief', '.gif', '.pgm', '.tif', '.ras', '.tiff', '.xbm', '.pbm', '.ico', '.xwd', '.jpeg', '.pnm', '.ppm', '.jpg', '.svg', '.xpm', '.png', '.jpe', '.rgb', '.bmp'}</code>) → <code>Union</code>[<code>ImageClassificationDataset</code>, <code>List</code>[<code>ImageClassificationDataset</code>]]</p>
 </blockquote>
 <p>Dataset of <code>classes</code> labeled images in <code>folder</code>. Optional <code>valid_pct</code> split validation set.</p>
 
@@ -1595,7 +1595,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageClassificationDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L94" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.png', '.bmp', '.pnm', '.ief', '.jpeg', '.gif', '.jpg', '.svg', '.xbm', '.xwd', '.rgb', '.ras', '.pgm', '.tif', '.tiff', '.jpe', '.pbm', '.ppm', '.xpm', '.ico'}</code>)</p>
+<h4 id="ImageClassificationDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L94" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.ief', '.gif', '.pgm', '.tif', '.ras', '.tiff', '.xbm', '.pbm', '.ico', '.xwd', '.jpeg', '.pnm', '.ppm', '.jpg', '.svg', '.xpm', '.png', '.jpe', '.rgb', '.bmp'}</code>)</p>
 </blockquote>
 
 </div>
@@ -1676,7 +1676,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageMultiDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>=<code>{'.png', '.bmp', '.pnm', '.ief', '.jpeg', '.gif', '.jpg', '.svg', '.xbm', '.xwd', '.rgb', '.ras', '.pgm', '.tif', '.tiff', '.jpe', '.pbm', '.ppm', '.xpm', '.ico'}</code>)</p>
+<h4 id="ImageMultiDataset.from_single_folder"><code>from_single_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>from_single_folder</code>(<code>folder</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>=<code>{'.ief', '.gif', '.pgm', '.tif', '.ras', '.tiff', '.xbm', '.pbm', '.ico', '.xwd', '.jpeg', '.pnm', '.ppm', '.jpg', '.svg', '.xpm', '.png', '.jpe', '.rgb', '.bmp'}</code>)</p>
 </blockquote>
 
 </div>
@@ -2086,7 +2086,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageFileList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L453" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.png', '.bmp', '.pnm', '.ief', '.jpeg', '.gif', '.jpg', '.svg', '.xbm', '.xwd', '.rgb', '.ras', '.pgm', '.tif', '.tiff', '.jpe', '.pbm', '.ppm', '.xpm', '.ico'}</code>, <code>recurse</code>=<code>True</code>) → <code>ImageFileList</code></p>
+<h4 id="ImageFileList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L453" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>extensions</code>:<code>StrList</code>=<code>{'.ief', '.gif', '.pgm', '.tif', '.ras', '.tiff', '.xbm', '.pbm', '.ico', '.xwd', '.jpeg', '.pnm', '.ppm', '.jpg', '.svg', '.xpm', '.png', '.jpe', '.rgb', '.bmp'}</code>, <code>recurse</code>=<code>True</code>) → <code>ImageFileList</code></p>
 </blockquote>
 <p>Get the list of files in <code>path</code> that have a suffix in <code>extensions</code>. <code>recurse</code> determines if we search subfolders.</p>
 
