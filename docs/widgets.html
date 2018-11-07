@@ -20,7 +20,7 @@ sidebar: home_sidebar
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.gen_doc.nbdoc</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.gen_doc.gen_notebooks</span> <span class="k">import</span> <span class="n">update_notebooks</span>
 <span class="kn">from</span> <span class="nn">fastai</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">fastai.widgets</span> <span class="k">import</span> <span class="n">DatasetFormatter</span><span class="p">,</span> <span class="n">ImageDeleter</span><span class="p">,</span> <span class="n">ImageRelabeler</span>
@@ -76,38 +76,11 @@ sidebar: home_sidebar
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learner</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learner</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
 <span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="n">DatasetFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">from_toplosses</span><span class="p">(</span><span class="n">learner</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">Valid</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">-----------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-19-4f40dcebda0c&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>learner <span class="ansi-blue-fg">=</span> create_cnn<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">,</span> models<span class="ansi-blue-fg">.</span>resnet34<span class="ansi-blue-fg">,</span> metrics<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span>accuracy<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> ds<span class="ansi-blue-fg">,</span> idxs <span class="ansi-blue-fg">=</span> DatasetFormatter<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>from_toplosses<span class="ansi-blue-fg">(</span>learn<span class="ansi-blue-fg">,</span> ds_type<span class="ansi-blue-fg">=</span>DatasetType<span class="ansi-blue-fg">.</span>Valid<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/fastai/fastai/vision/learner.py</span> in <span class="ansi-cyan-fg">create_cnn</span><span class="ansi-blue-fg">(data, arch, cut, pretrained, lin_ftrs, ps, custom_head, split_on, classification, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">     61</span>     <span class="ansi-green-fg">assert</span> classification<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;Regression CNN not implemented yet, bug us on the forums if you want this!&#39;</span>
-<span class="ansi-green-intense-fg ansi-bold">     62</span>     meta <span class="ansi-blue-fg">=</span> cnn_config<span class="ansi-blue-fg">(</span>arch<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 63</span><span class="ansi-red-fg">     </span>body <span class="ansi-blue-fg">=</span> create_body<span class="ansi-blue-fg">(</span>arch<span class="ansi-blue-fg">(</span>pretrained<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> ifnone<span class="ansi-blue-fg">(</span>cut<span class="ansi-blue-fg">,</span>meta<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;cut&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     64</span>     nf <span class="ansi-blue-fg">=</span> num_features_model<span class="ansi-blue-fg">(</span>body<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">*</span> <span class="ansi-cyan-fg">2</span>
-<span class="ansi-green-intense-fg ansi-bold">     65</span>     head <span class="ansi-blue-fg">=</span> custom_head <span class="ansi-green-fg">or</span> create_head<span class="ansi-blue-fg">(</span>nf<span class="ansi-blue-fg">,</span> data<span class="ansi-blue-fg">.</span>c<span class="ansi-blue-fg">,</span> lin_ftrs<span class="ansi-blue-fg">,</span> ps<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">NameError</span>: name &#39;num_features_model&#39; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -142,15 +115,12 @@ sidebar: home_sidebar
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">-----------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-4-d77260229dc5&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>ImageDeleter<span class="ansi-blue-fg">(</span>ds<span class="ansi-blue-fg">,</span> idxs<span class="ansi-blue-fg">)</span>
 
-<span class="ansi-red-fg">NameError</span>: name &#39;ds&#39; is not defined</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;fastai.widgets.image_cleaner.ImageDeleter at 0x1a1d138908&gt;</pre>
 </div>
+
 </div>
 
 </div>
@@ -190,26 +160,17 @@ sidebar: home_sidebar
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">-----------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-20-92785a8bd37c&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>ImageRelabeler<span class="ansi-blue-fg">(</span>ds<span class="ansi-blue-fg">,</span> idxs<span class="ansi-blue-fg">)</span>
 
-<span class="ansi-red-fg">NameError</span>: name &#39;ds&#39; is not defined</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;fastai.widgets.image_cleaner.ImageRelabeler at 0x1a1feefc50&gt;</pre>
 </div>
+
 </div>
 
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-
-</div>
-</div>
 </div>
 </div>
  
