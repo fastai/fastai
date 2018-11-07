@@ -16,6 +16,7 @@ class URLs():
     COCO_TINY = f'{URL}coco_tiny'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
+    IMDB = f'{S3_NLP}imdb'
     IMDB_SAMPLE = f'{URL}imdb_sample'
     HUMAN_NUMBERS = f'{URL}human_numbers'
     ADULT_SAMPLE = f'{URL}adult_sample'

@@ -458,7 +458,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="annealing_cos"><code>annealing_cos</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L284" class="source_link">[source]</a></h4><blockquote><p><code>annealing_cos</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+<h4 id="annealing_cos"><code>annealing_cos</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L285" class="source_link">[source]</a></h4><blockquote><p><code>annealing_cos</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
 </blockquote>
 <p>Cosine anneal from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
 
@@ -479,7 +479,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="annealing_exp"><code>annealing_exp</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L281" class="source_link">[source]</a></h4><blockquote><p><code>annealing_exp</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+<h4 id="annealing_exp"><code>annealing_exp</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>annealing_exp</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
 </blockquote>
 <p>Exponentially anneal from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
 
@@ -500,7 +500,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="annealing_linear"><code>annealing_linear</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L278" class="source_link">[source]</a></h4><blockquote><p><code>annealing_linear</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+<h4 id="annealing_linear"><code>annealing_linear</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L279" class="source_link">[source]</a></h4><blockquote><p><code>annealing_linear</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
 </blockquote>
 <p>Linearly anneal from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
 
@@ -521,7 +521,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="annealing_no"><code>annealing_no</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L275" class="source_link">[source]</a></h4><blockquote><p><code>annealing_no</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+<h4 id="annealing_no"><code>annealing_no</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L276" class="source_link">[source]</a></h4><blockquote><p><code>annealing_no</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
 </blockquote>
 <p>No annealing, always return <code>start</code>.</p>
 
@@ -542,7 +542,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="annealing_poly"><code>annealing_poly</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L292" class="source_link">[source]</a></h4><blockquote><p><code>annealing_poly</code>(<code>degree</code>:<code>Number</code>) → <code>Number</code></p>
+<h4 id="annealing_poly"><code>annealing_poly</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L293" class="source_link">[source]</a></h4><blockquote><p><code>annealing_poly</code>(<code>degree</code>:<code>Number</code>) → <code>Number</code></p>
 </blockquote>
 <p>Anneal polynomically from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
 
@@ -1005,7 +1005,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Stepper"><code>class</code> <code>Stepper</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L296" class="source_link">[source]</a></h2><blockquote><p><code>Stepper</code>(<code>vals</code>:<code>StartOptEnd</code>, <code>n_iter</code>:<code>int</code>, <code>func</code>:<code>Optional</code>[<code>AnnealFunc</code>]=<code>None</code>)</p>
+<h2 id="Stepper"><code>class</code> <code>Stepper</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L297" class="source_link">[source]</a></h2><blockquote><p><code>Stepper</code>(<code>vals</code>:<code>StartOptEnd</code>, <code>n_iter</code>:<code>int</code>, <code>func</code>:<code>Optional</code>[<code>AnnealFunc</code>]=<code>None</code>)</p>
 </blockquote>
 <p>Used to "step" from start,end (<code>vals</code>) over <code>n_iter</code> iterations on a schedule defined by <code>func</code></p>
 
@@ -1033,7 +1033,7 @@ Examples: save log_files, load best model found during training</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Stepper.step"><code>step</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L305" class="source_link">[source]</a></h4><blockquote><p><code>step</code>() → <code>Number</code></p>
+<h4 id="Stepper.step"><code>step</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L306" class="source_link">[source]</a></h4><blockquote><p><code>step</code>() → <code>Number</code></p>
 </blockquote>
 <p>Return next value along annealed schedule.</p>
 

@@ -5,7 +5,7 @@ from ..basic_train import *
 from ..basic_data import *
 
 __all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'hook_outputs', 
-           'model_sizes']
+           'model_sizes', 'num_features_model']
 
 class Hook():
     "Create a hook."
@@ -71,7 +71,7 @@ class ActivationStats(HookCallback):
     def on_batch_end(self, train, **kwargs): 
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
-
+        
 def model_sizes(m:nn.Module, size:tuple=(256,256), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:
     "Pass a dummy input through the model to get the various sizes."
     hooks = hook_outputs(m)
@@ -80,5 +80,8 @@ def model_sizes(m:nn.Module, size:tuple=(256,256), full:bool=True) -> Tuple[Size
     x = m.eval()(x)
     res = [o.stored.shape for o in hooks]
     if not full: hooks.remove()
-    return res,x,hooks if full else res
+    return (res,x,hooks) if full else res
 
+def num_features_model(m:nn.Module)->int:
+    "Return the number of output features for a `model`."
+    return model_sizes(m, full=False)[-1][1]
