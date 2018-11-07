@@ -19,8 +19,8 @@ of that change.
 
 ### Changed:
 
-- `download_url` Now reads the get request with iter_content which is robust to 'content-length' errors.
--
+- `download_url` Now reads the get request with `iter_content` which is robust to 'content-length' errors. (thanks to Francisco Ingham)
+
 ### Fixed:
 - `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
 - `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.

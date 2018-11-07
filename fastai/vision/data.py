@@ -382,11 +382,11 @@ class ImageDataBunch(DataBunch):
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
         return SplitDatasetsImage.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
 
-def download_image(url,dest):
-    try: r = download_url(url, dest, overwrite=True, show_progress=False)
+def download_image(url,dest, timeout=4):
+    try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
     except Exception as e: print(f"Error {url} {e}")
 
-def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8):
+def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8, timeout=4):
     "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
     urls = open(urls).read().strip().split("\n")[:max_pics]
     dest = Path(dest)
@@ -394,12 +394,12 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
     if max_workers:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
-            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg", timeout=timeout)
                        for i,url in enumerate(urls)]
             for f in progress_bar(as_completed(futures), total=len(urls)): pass
     else:
         for i,url in enumerate(progress_bar(urls)):
-            download_image(url, dest/f"{i:08d}.jpg")
+            download_image(url, dest/f"{i:08d}.jpg", timeout=timeout)
 
 def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
