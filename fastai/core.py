@@ -138,9 +138,8 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
     "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
 
-    content_length = False
     u = requests.get(url, stream=True)
-    try: file_size, content_length = int(u.headers["Content-Length"]), True
+    try: file_size = int(u.headers["Content-Length"])
     except:
         print('File downloading without progress bar since file size could not be determined.')
         show_progress = False
