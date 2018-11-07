@@ -394,8 +394,9 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
     if max_workers:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
-            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg")
-                       for i,url in enumerate(urls)]
+            suffixes = [re.findall(r'\.\w+?(?=\?)', url) for url in urls]
+            suffixes = [suffix[0] if len(suffix)>0  else '.jpg' for suffix in suffixes]
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}") for i,url in enumerate(urls)]
             for f in progress_bar(as_completed(futures), total=len(urls)): pass
     else:
         for i,url in enumerate(progress_bar(urls)):
