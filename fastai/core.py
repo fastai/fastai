@@ -134,21 +134,25 @@ class ItemBase():
     @abstractmethod
     def data(self): pass
 
-def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None, show_progress=True)->None:
+def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None, show_progress=True, chunk_size=1024*1024)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
-    u = requests.get(url, stream=True)
-    file_size = int(u.headers["Content-Length"])
-    u = u.raw
 
-    with open(dest,'wb') as f:
-        if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
+    u = requests.get(url, stream=True)
+    try: file_size = int(u.headers["Content-Length"])
+    except:
+        print('File downloading without progress bar since file size could not be determined.')
+        show_progress = False
+
+    with open(dest, 'wb') as f:
         nbytes,buffer = 0,[1]
-        while len(buffer):
-            buffer = u.read(8192)
-            nbytes += len(buffer)
-            if show_progress: pbar.update(nbytes)
-            f.write(buffer)
+        if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
+        for chunk in u.iter_content(chunk_size=chunk_size):
+            if chunk:
+                nbytes += chunk_size
+                if show_progress: pbar.update(nbytes)
+                f.write(chunk)
+                f.flush()
 
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
