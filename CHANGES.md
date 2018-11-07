@@ -16,6 +16,8 @@ of that change.
 
 ### New:
 
+- `CSVLogger` callback (thanks to devorfu)
+
 ### Changed:
 
 ### Fixed:
