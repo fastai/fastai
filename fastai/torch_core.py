@@ -123,11 +123,6 @@ def last_layer(m:nn.Module)->nn.Module:
     "Retrieve last layer in a module `m`."
     return flatten_model(m)[-1]
 
-def num_features_model(m:nn.Module)->int:
-    "Return the number of output features for a `model`."
-    for l in reversed(flatten_model(m)):
-        if hasattr(l, 'num_features'): return l.num_features
-
 def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     "Split `model` according to the indices in `idxs`."
     layers = flatten_model(model)

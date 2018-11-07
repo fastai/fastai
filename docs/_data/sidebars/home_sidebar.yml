@@ -62,7 +62,7 @@ entries:
           url: callbacks.general_sched.html
         - output: web,pdf
           title: Tracking callbacks
-          url: callbacks.tracking.html
+          url: callbacks.tracker.html
         title: callbacks
     output: web
     title: Training

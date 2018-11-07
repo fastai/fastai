@@ -146,7 +146,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>PosixPath(&#39;/home/ubuntu/fastai/fastai/../data/imdb_sample&#39;)</pre>
+<pre>PosixPath(&#39;/home/ubuntu/.fastai/data/imdb_sample&#39;)</pre>
 </div>
 
 </div>
@@ -160,7 +160,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;train.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">example_text</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span> <span class="n">example_text</span>
 </pre></div>
 
@@ -176,7 +176,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;Every once in a long while a movie will come along that will be so awful that I feel compelled to warn people. If I labor all my days and I can save but one soul from watching this movie, how great will be my joy.&lt;br /&gt;&lt;br /&gt;Where to begin my discussion of pain. For starters, there was a musical montage every five minutes. There was no character development. Every character was a stereotype. We had swearing guy, fat guy who eats donuts, goofy foreign guy, etc. The script felt as if it were being written as the movie was being shot. The production value was so incredibly low that it felt like I was watching a junior high video presentation. Have the directors, producers, etc. ever even seen a movie before? Halestorm is getting worse and worse with every new entry. The concept for this movie sounded so funny. How could you go wrong with Gary Coleman and a handful of somewhat legitimate actors. But trust me when I say this, things went wrong, VERY WRONG.&#39;</pre>
+<pre>&#39;This is a extremely well-made film. The acting, script and camera-work are all first-rate. The music is good, too, though it is mostly early in the film, when things are still relatively cheery. There are no really superstars in the cast, though several faces will be familiar. The entire cast does an excellent job with the script.&lt;br /&gt;&lt;br /&gt;But it is hard to watch, because there is no good end to a situation like the one presented. It is now fashionable to blame the British for setting Hindus and Muslims against each other, and then cruelly separating them into two countries. There is some merit in this view, but it\&#39;s also true that no one forced Hindus and Muslims in the region to mistreat each other as they did around the time of partition. It seems more likely that the British simply saw the tensions between the religions and were clever enough to exploit them to their own ends.&lt;br /&gt;&lt;br /&gt;The result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen. But it is never painted as a black-and-white case. There is baseness and nobility on both sides, and also the hope for change in the younger generation.&lt;br /&gt;&lt;br /&gt;There is redemption of a sort, in the end, when Puro has to make a hard choice between a man who has ruined her life, but also truly loved her, and her family which has disowned her, then later come looking for her. But by that point, she has no option that is without great pain for her.&lt;br /&gt;&lt;br /&gt;This film carries the message that both Muslims and Hindus have their grave faults, and also that both can be dignified and caring people. The reality of partition makes that realisation all the more wrenching, since there can never be real reconciliation across the India/Pakistan border. In that sense, it is similar to &#34;Mr &amp; Mrs Iyer&#34;.&lt;br /&gt;&lt;br /&gt;In the end, we were glad to have seen the film, even though the resolution was heartbreaking. If the UK and US could deal with their own histories of racism with this kind of frankness, they would certainly be better off.&#39;</pre>
 </div>
 
 </div>
@@ -207,7 +207,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;every once in a long while a movie will come along that will be so awful that i feel compelled to warn people . if i labor all my days and i can save but one soul from watching this movie , how great will be my joy . \n\n where to begin my discussion of pain . for starters , there was a musical montage every five minutes . there was no character development . every character was a stereotype . we had swearing guy , fat guy who eats donuts , goofy foreign guy , etc . the script felt as if it were being written as the movie was being shot . the production value was so incredibly low that it felt like i was watching a junior high video presentation . have the directors , producers , etc . ever even seen a movie before ? halestorm is getting worse and worse with every new entry . the concept for this movie sounded so funny . how could you go wrong with gary coleman and a handful of somewhat legitimate actors . but trust me when i say this , things went wrong , xxup very xxup wrong .&#39;</pre>
+<pre>&#39;this is a extremely well - made film . the acting , script and camera - work are all first - rate . the music is good , too , though it is mostly early in the film , when things are still relatively cheery . there are no really superstars in the cast , though several faces will be familiar . the entire cast does an excellent job with the script . \n\n but it is hard to watch , because there is no good end to a situation like the one presented . it is now fashionable to blame the british for setting hindus and muslims against each other , and then cruelly separating them into two countries . there is some merit in this view , but it \&#39;s also true that no one forced hindus and muslims in the region to mistreat each other as they did around the time of partition . it seems more likely that the british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . but it is never painted as a black - and - white case . there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n there is redemption of a sort , in the end , when puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . but by that point , she has no option that is without great pain for her . \n\n this film carries the message that both muslims and hindus have their grave faults , and also that both can be dignified and caring people . the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the india / pakistan border . in that sense , it is similar to &#34; mr &amp; mrs iyer &#34; . \n\n in the end , we were glad to have seen the film , even though the resolution was heartbreaking . if the uk and us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
 </div>
 
 </div>
@@ -228,7 +228,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;train.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">texts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span>
 <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">process_all</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
@@ -247,7 +247,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;every once in a long while a movie will come along that will be so awful that i feel compelled to warn people . if i labor all my days and i can save but one soul from watching this movie , how great will be my joy . \n\n where to begin my discussion of pain . for starters , there was a musical montage every five minutes . there was no character development . every character was a stereotype . we had swearing guy , fat guy who eats donuts , goofy foreign guy , etc . the script felt as if it were being written as the movie was being shot . the production value was so incredibly low that it felt like i was watching a junior high video presentation . have the directors , producers , etc . ever even seen a movie before ? halestorm is getting worse and worse with every new entry . the concept for this movie sounded so funny . how could you go wrong with gary coleman and a handful of somewhat legitimate actors . but trust me when i say this , things went wrong , xxup very xxup wrong .&#39;</pre>
+<pre>&#39;this is a extremely well - made film . the acting , script and camera - work are all first - rate . the music is good , too , though it is mostly early in the film , when things are still relatively cheery . there are no really superstars in the cast , though several faces will be familiar . the entire cast does an excellent job with the script . \n\n but it is hard to watch , because there is no good end to a situation like the one presented . it is now fashionable to blame the british for setting hindus and muslims against each other , and then cruelly separating them into two countries . there is some merit in this view , but it \&#39;s also true that no one forced hindus and muslims in the region to mistreat each other as they did around the time of partition . it seems more likely that the british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . but it is never painted as a black - and - white case . there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n there is redemption of a sort , in the end , when puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . but by that point , she has no option that is without great pain for her . \n\n this film carries the message that both muslims and hindus have their grave faults , and also that both can be dignified and caring people . the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the india / pakistan border . in that sense , it is similar to &#34; mr &amp; mrs iyer &#34; . \n\n in the end , we were glad to have seen the film , even though the resolution was heartbreaking . if the uk and us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
 </div>
 
 </div>
@@ -738,7 +738,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vocab"><code>class</code> <code>Vocab</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L105" class="source_link">[source]</a></h2><blockquote><p><code>Vocab</code>(<code>path</code>:<code>PathOrStr</code>)</p>
+<h2 id="Vocab"><code>class</code> <code>Vocab</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L105" class="source_link">[source]</a></h2><blockquote><p><code>Vocab</code>(<code>itos</code>:<code>Dict</code>[<code>int</code>, <code>str</code>])</p>
 </blockquote>
 
 </div>
@@ -751,7 +751,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Contain the correspondance between numbers and tokens and numericalize. <code>path</code> should point to the 'tmp' directory with the token and id files.</p>
+<p>Contain the correspondance between numbers and tokens and numericalize. <code>itos</code> contains the id to token correspondance.</p>
 
 </div>
 </div>
@@ -765,7 +765,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Vocab.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>path</code>:<code>PathOrStr</code>, <code>tokens</code>:<code>Tokens</code>, <code>max_vocab</code>:<code>int</code>, <code>min_freq</code>:<code>int</code>) → <code>Vocab</code></p>
+<h4 id="Vocab.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>tokens</code>:<code>Tokens</code>, <code>max_vocab</code>:<code>int</code>, <code>min_freq</code>:<code>int</code>) → <code>Vocab</code></p>
 </blockquote>
 
 </div>
@@ -778,7 +778,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/text.transform.html#Vocab"><code>Vocab</code></a> dictionary from a set of <code>tokens</code> in <code>path</code>. Only keeps <code>max_vocab</code> tokens, and only if they appear at least <code>min_freq</code> times, set the rest to <code>UNK</code>.</p>
+<p>Create a <a href="/text.transform.html#Vocab"><code>Vocab</code></a> dictionary from a set of <code>tokens</code>. Only keeps <code>max_vocab</code> tokens, and only if they appear at least <code>min_freq</code> times, set the rest to <code>UNK</code>.</p>
 
 </div>
 </div>
@@ -813,7 +813,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Vocab.textify"><code>textify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>textify</code>(<code>nums</code>:<code>Collection</code>[<code>int</code>]) → <code>List</code>[<code>str</code>]</p>
+<h4 id="Vocab.textify"><code>textify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>textify</code>(<code>nums</code>:<code>Collection</code>[<code>int</code>], <code>sep</code>=<code>' '</code>) → <code>List</code>[<code>str</code>]</p>
 </blockquote>
 <p>Convert a list of <code>nums</code> to their tokens.</p>
 
@@ -830,7 +830,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span> <span class="o">=</span> <span class="n">Vocab</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="n">max_vocab</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span> <span class="o">=</span> <span class="n">Vocab</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">max_vocab</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">vocab</span><span class="o">.</span><span class="n">numericalize</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 
@@ -846,7 +846,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[207, 321, 11, 6, 246, 144, 6, 22, 88, 240]</pre>
+<pre>[14, 9, 6, 619, 85, 17, 110, 25, 4, 2]</pre>
 </div>
 
 </div>

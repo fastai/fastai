@@ -74,18 +74,3 @@ class GradientClipping(LearnerCallback):
     def on_backward_end(self, **kwargs):
         if self.clip:  nn.utils.clip_grad_norm_(self.learn.model.parameters(), self.clip)
 
-@classmethod
-def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True,
-             split_on:Optional[SplitFuncOrIdxList]=None, **kwargs:Any)->None:
-    "Build Unet learners."
-    meta = cnn_config(arch)
-    body = create_body(arch(pretrained), meta['cut'])
-    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
-    learn = cls(data, model, **kwargs)
-    learn.split(ifnone(split_on,meta['split']))
-    if pretrained: learn.freeze()
-    apply_init(model[2], nn.init.kaiming_normal_)
-    return learn
-
-Learner.create_unet = Learner_create_unet
-
