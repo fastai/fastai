@@ -72,7 +72,7 @@ class ActivationStats(HookCallback):
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
 
-def model_sizes(m:nn.Module, size:tuple=(256,256), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:
+def model_sizes(m:nn.Module, size:tuple=(64,64), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     hooks = hook_outputs(m)
     ch_in = in_channels(m)
