@@ -58,7 +58,9 @@ class NumericalizedDataset(TextBase):
     def get_text_item(self, idx, sep=' ', max_len:int=None):
         "Return the text in `idx`, tokens separated by `sep` and cutting at `max_len`."
         inp = self.x[idx] if max_len is None else self.x[idx][:max_len]
-        return self.vocab.textify(inp, sep), self.classes[self.y[idx]]
+        if isinstance(self.y[idx], Iterable): title = ';'.join([self.classes[i] for i,v in enumerate(self.y[idx]) if v == 1.])
+        else: title = self.classes[self.y[idx]]
+        return self.vocab.textify(inp, sep), title
     
     def save(self, path:Path, name:str):
         "Save the dataset in `path` with `name`."
@@ -123,7 +125,8 @@ class TextDataset(TextBase):
             if len(label_cols) == 0:   classes = [0]
             elif len(label_cols) == 1: classes = df.iloc[:,df_names_to_idx(label_cols, df)[0]].unique()
             else:                      classes = label_cols
-        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
+        dtype = np.int64 if len(label_cols) <= 1 else np.float32
+        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].astype(dtype).values)
         txt_cols = ifnone(txt_cols, list(range(len(label_cols),len(df.columns))))
         texts = np.squeeze(df.iloc[:,df_names_to_idx(txt_cols, df)].astype(str).values)
         return cls(texts, labels, classes, mark_fields)
@@ -399,6 +402,7 @@ class TextClasDataBunch(TextDataBunch):
         from IPython.display import clear_output, display, HTML
         dl = self.dl(ds_type)
         b_idx = next(iter(dl.batch_sampler))
+        first = dl.get_text_item(0, sep, max_len)
         items = [['text', 'label']]
         for i in b_idx[:rows]:
             items.append(list(dl.get_text_item(i, sep, max_len)))
