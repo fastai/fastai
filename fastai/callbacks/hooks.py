@@ -71,9 +71,9 @@ class ActivationStats(HookCallback):
     def on_batch_end(self, train, **kwargs): 
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
-        
+
 def model_sizes(m:nn.Module, size:tuple=(256,256), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:
-    "Pass a dummy input through the model to get the various sizes."
+    "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     hooks = hook_outputs(m)
     ch_in = in_channels(m)
     x = next(m.parameters()).new(1,ch_in,*size)
@@ -83,5 +83,5 @@ def model_sizes(m:nn.Module, size:tuple=(256,256), full:bool=True) -> Tuple[Size
     return (res,x,hooks) if full else res
 
 def num_features_model(m:nn.Module)->int:
-    "Return the number of output features for a `model`."
+    "Return the number of output features for `model`."
     return model_sizes(m, full=False)[-1][1]
