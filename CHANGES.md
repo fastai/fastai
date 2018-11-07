@@ -10,7 +10,21 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.20.dev0 (Work In Progress)
+
+
+## 1.0.21.dev0 (Work In Progress)
+
+### New:
+
+- `CSVLogger` callback (thanks to devorfu)
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.20 (2018-11-07)
 
 ### New:
 
@@ -19,14 +33,18 @@ of that change.
 
 ### Changed:
 
-- `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
-- `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.
-- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`.
+- `download_url` reads the get request with `iter_content` which is robust to 'content-length' errors. (thanks to Francisco Ingham)
+- `download_url` has a timeout
 
 ### Fixed:
 
-- Imports in the file picker widget (thanks to hiromis)
-- Batches of size 1 will be tossed aside during training because of the issue with BatchNorm
+- `create_cnn` correctly calculates # features in body correctly for more architectures
+- `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
+- `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.
+- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`.
+- `pil2tensor` is faster and works on more image types (thanks to kasparlund)
+- Imports in the file picker widget (thanks to Hiromi)
+- Batches of size 1 will be removed during training because of the issue with BatchNorm1d
 - Confusion matrix show ints if `normalize=False` (default)
 - `RNNLearner.get_preds` return the preds in the right order (thanks to StatisticDean)
 - `num_features_model` now works with any model

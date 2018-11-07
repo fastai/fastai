@@ -134,21 +134,22 @@ class ItemBase():
     @abstractmethod
     def data(self): pass
 
-def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None, show_progress=True)->None:
+def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
+                 show_progress=True, chunk_size=1024*1024, timeout=4)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
-    u = requests.get(url, stream=True)
-    file_size = int(u.headers["Content-Length"])
-    u = u.raw
 
-    with open(dest,'wb') as f:
+    u = requests.get(url, stream=True, timeout=timeout)
+    try: file_size = int(u.headers["Content-Length"])
+    except: show_progress = False
+
+    with open(dest, 'wb') as f:
+        nbytes = 0
         if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
-        nbytes,buffer = 0,[1]
-        while len(buffer):
-            buffer = u.read(8192)
-            nbytes += len(buffer)
+        for chunk in u.iter_content(chunk_size=chunk_size):
+            nbytes += len(chunk)
             if show_progress: pbar.update(nbytes)
-            f.write(buffer)
+            f.write(chunk)
 
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
@@ -173,7 +174,7 @@ def save_texts(fname:PathOrStr, texts:Collection[str]):
     "Save in `fname` the content of `texts`."
     with open(fname, 'w') as f:
         for t in texts: f.write(f'{t}\n')
-            
+
 def df_names_to_idx(names, df):
     if not is_listy(names): names = [names]
     if isinstance(names[0], int): return names
