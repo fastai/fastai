@@ -26,6 +26,7 @@ class CSVLogger(LearnerCallback):
         self.file.write(','.join(self.learn.recorder.names) + '\n')
 
     def on_epoch_end(self, epoch: int, smooth_loss: Tensor, last_metrics: MetricsList, **kwargs: Any) -> bool:
+        last_metrics = ifnone(last_metrics, [])
         stats = [str(stat) if isinstance(stat, int) else f'{stat:.6f}'
                  for name, stat in zip(self.learn.recorder.names, [epoch, smooth_loss] + last_metrics)]
         str_stats = ','.join(stats)
