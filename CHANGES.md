@@ -18,6 +18,8 @@ of that change.
 
 ### Changed:
 
+- `download_url` Now reads the get request with iter_content which is robust to 'content-length' errors.
+-
 ### Fixed:
 
 

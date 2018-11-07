@@ -160,7 +160,13 @@ class ItemBase():
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None, show_progress=True, chunk_size=1024*1024)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
+
+    content_length = False
     u = requests.get(url, stream=True)
+    try: file_size, content_length = int(u.headers["Content-Length"]), True
+    except:
+        print('File downloading without progress bar since file size could not be determined.')
+        show_progress = False
 
     with open(dest, 'wb') as f:
         nbytes,buffer = 0,[1]
