@@ -203,7 +203,7 @@ def _maybe_add_crop_pad(tfms):
 def _prep_tfm_kwargs(tfms, kwargs):
     default_rsz = ResizeMethod.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMethod.CROP
     resize_method = ifnone(kwargs.get('resize_method', default_rsz), default_rsz)
-    if resize_method <= 2: tfms = [crop_pad()] + tfms
+    if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
     kwargs['resize_method'] = resize_method
     return tfms, kwargs
 
