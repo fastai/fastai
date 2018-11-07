@@ -202,6 +202,7 @@ class Learner():
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
+        return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
