@@ -1,10 +1,9 @@
-*** How to maintain https://docs-dev.fast.ai/ ***
+*** How to maintain https://docs.fast.ai/ ***
 
-fastai/docs/ is automatically mapped to https://docs-dev.fast.ai/ so any changes committed to git will instantly appear on https://docs-dev.fast.ai/
+fastai/docs/ is automatically mapped to https://docs.fast.ai/ so any changes committed to git will instantly appear on https://docs.fast.ai/
 
-* When a file is added/removed/renamed adjust:
-  1. docs/_data/sidebars/home_sidebar.yml (sidebar menu)
-  2. docs/README.md
+All the needed information is here:
+https://docs.fast.ai/gen_doc.html#Update-the-documentation-website
 
 * theme/stylesheets:
 
