@@ -12,9 +12,9 @@ entries:
     - external_url: https://github.com/fastai/fastai/blob/master/README.md#installation
       output: web,pdf
       title: Installation
-    - external_url: https://docs-dev.fast.ai/troubleshoot
-      output: web,pdf
+    - output: web,pdf
       title: Troubleshooting
+      url: dev_troubleshoot.html
     output: web
     title: Getting started
   - folderitems:
@@ -197,9 +197,6 @@ entries:
     - output: web,pdf
       title: Packaging
       url: dev_release.html
-    - output: web,pdf
-      title: Troubleshooting
-      url: dev_troubleshoot.html
     output: web
     title: Library development
   output: web
