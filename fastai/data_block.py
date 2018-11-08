@@ -104,7 +104,7 @@ class LabelList(PathItemList):
     def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1):
         inputs = np.squeeze(df.iloc[:,df_names_to_idx(input_cols, df)].values)
         labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
-        return self.__class__([(i,l) for (i,l) in zip(inputs, labels)], path)
+        return cls([(i,l) for (i,l) in zip(inputs, labels)], path)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer'):
