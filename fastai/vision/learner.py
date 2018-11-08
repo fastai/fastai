@@ -91,8 +91,7 @@ class ClassificationInterpretation():
     def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, sigmoid:bool=None):
         if sigmoid is not None: warnings.warn("`sigmoid` argument is deprecated, the learner now always return the probabilities")
         self.data,self.probs,self.y_true,self.losses = data,probs,y_true,losses
-        self.pred_class = self.probs.argmax(dim=1) #The probs is number_of_valdidation_Data_point*(len(classes)) matrix. For each datapoint what ever is the max probability index is being returned 
-
+        self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
     def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, sigmoid:bool=None, tta=False):
@@ -110,12 +109,11 @@ class ClassificationInterpretation():
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
         fig,axes = plt.subplots(rows,rows,figsize=figsize)
-        fig.suptitle('prediction / actual / loss / Predicted Class Prob(PP) / Actual Class probability(AP)', weight='bold', size=14)
+        fig.suptitle('prediction / actual / loss / predicted class prob(PP) / actual class probability(AP)', weight='bold', size=14)
         for i,idx in enumerate(tl_idx):
-            t=self.data.valid_ds[idx] #This is actual data without any prediction. 0 is image 1 is class
+            t=self.data.valid_ds[idx] 
             t[0].show(ax=axes.flat[i], title=
-                f'pred-{classes[self.pred_class[idx]]} /\nAct-{classes[t[1]]} /\nloss-{self.losses[idx]:.2f} / PP:{max(self.probs[idx]):.2f} / AP:{self.probs[idx][t[1]]:.2f}')
-            #here idx represents the index of images and the losses, probs, pred_class holds all the prediction data
+                f'Pred-{classes[self.pred_class[idx]]} /\nAct-{classes[t[1]]} /\nLoss-{self.losses[idx]:.2f} / PP:{max(self.probs[idx]):.2f} / AP:{self.probs[idx][t[1]]:.2f}')
 
     def confusion_matrix(self, slice_size:int=None):
         "Confusion matrix as an `np.ndarray`."
