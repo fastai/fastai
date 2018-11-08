@@ -1,4 +1,8 @@
-# called by tools/make_sidebar.py
+# Usage: After editing this file, next run:
+# 
+# tools/make_sidebar.py
+# git commit docs/_data/sidebars/home_sidebar.yml docs_src/sidebar/sidebar_data.py
+# git push
 
 # This dict defines the structure:
 
