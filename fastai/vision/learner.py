@@ -109,11 +109,11 @@ class ClassificationInterpretation():
         classes = self.data.classes
         rows = math.ceil(math.sqrt(k))
         fig,axes = plt.subplots(rows,rows,figsize=figsize)
-        fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
+        fig.suptitle('prediction / actual / loss / predicted class prob(PP) / actual class probability(AP)', weight='bold', size=14)
         for i,idx in enumerate(tl_idx):
-            t=self.data.valid_ds[idx]
+            t=self.data.valid_ds[idx] 
             t[0].show(ax=axes.flat[i], title=
-                f'{classes[self.pred_class[idx]]}/{classes[t[1]]} / {self.losses[idx]:.2f} / {self.probs[idx][t[1]]:.2f}')
+                f'Pred-{classes[self.pred_class[idx]]} /\nAct-{classes[t[1]]} /\nLoss-{self.losses[idx]:.2f} / PP:{max(self.probs[idx]):.2f} / AP:{self.probs[idx][t[1]]:.2f}')
 
     def confusion_matrix(self, slice_size:int=None):
         "Confusion matrix as an `np.ndarray`."
