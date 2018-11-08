@@ -9,7 +9,7 @@
 sidebar_d = {
     'Getting started': {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
-        'Troubleshooting': '/dev_troubleshoot'
+        'Troubleshooting': '/troubleshoot'
     },
     'Training': {
         'Overview': '/training',
@@ -80,12 +80,12 @@ sidebar_d = {
         'gen_doc.convert2html': '/gen_doc.convert2html',
     },
     'Library development': {
-        'Dev Notes': '/dev_develop',
-        'GPU Notes': '/dev_gpu',
-        'git notes': '/dev_git',
-        'Testing': '/dev_test',
-        'Style Guide': '/dev_style',
-        'Abbreviations': '/dev_abbr',
-        'Packaging': '/dev_release',
+        'Dev Notes': '/dev/develop',
+        'GPU Notes': '/dev/gpu',
+        'git notes': '/dev/git',
+        'Testing': '/dev/test',
+        'Style Guide': '/dev/style',
+        'Abbreviations': '/dev/abbr',
+        'Packaging': '/dev/release',
     }
 }

@@ -12,7 +12,7 @@ entries:
     - external_url: https://github.com/fastai/fastai/blob/master/README.md#installation
       output: web,pdf
       title: Installation
-    - external_url: /dev_troubleshoot
+    - external_url: /troubleshoot
       output: web,pdf
       title: Troubleshooting
     output: web
@@ -176,25 +176,25 @@ entries:
     output: web
     title: Doc authoring
   - folderitems:
-    - external_url: /dev_develop
+    - external_url: /dev/develop
       output: web,pdf
       title: Dev Notes
-    - external_url: /dev_gpu
+    - external_url: /dev/gpu
       output: web,pdf
       title: GPU Notes
-    - external_url: /dev_git
+    - external_url: /dev/git
       output: web,pdf
       title: git notes
-    - external_url: /dev_test
+    - external_url: /dev/test
       output: web,pdf
       title: Testing
-    - external_url: /dev_style
+    - external_url: /dev/style
       output: web,pdf
       title: Style Guide
-    - external_url: /dev_abbr
+    - external_url: /dev/abbr
       output: web,pdf
       title: Abbreviations
-    - external_url: /dev_release
+    - external_url: /dev/release
       output: web,pdf
       title: Packaging
     output: web
