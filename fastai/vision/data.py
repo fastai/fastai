@@ -160,7 +160,7 @@ class SegmentationDataset(ImageClassificationBase):
 
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
-    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], 
+    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]],
                  classes:Collection[str]=None):
         assert len(x_fns)==len(labelled_bbs)
         if classes is None:
@@ -400,7 +400,9 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
     if max_workers:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
-            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg", timeout=timeout)
+            suffixes = [re.findall(r'\.\w+?(?=\?)', url) for url in urls]
+            suffixes = [suffix[0] if len(suffix)>0  else '.jpg' for suffix in suffixes]
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}", timeout=timeout)
                        for i,url in enumerate(urls)]
             for f in progress_bar(as_completed(futures), total=len(urls)): pass
     else:
