@@ -365,7 +365,7 @@ jobs:
       if [ -n "$(git status -uno -s)" ]; then echo "git status is not clean"; false; fi
 
       echo "Trying to strip out notebooks"
-      tools/fastai-nbstripout -d examples/*ipynb
+      tools/fastai-nbstripout -d examples/*ipynb docs_src/*ipynb docs_src/*/*ipynb
 
       echo "Check that strip out was unnecessary"
       git status -s # display the status to see which nbs need cleaning up
