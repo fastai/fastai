@@ -5,7 +5,7 @@
 sidebar_d = {
     'Getting started': {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
-        'Troubleshooting': 'https://docs-dev.fast.ai/troubleshoot',
+        "Troubleshooting": "dev_troubleshoot"
     },
     'Training': {
         'Overview': 'training',
@@ -83,6 +83,5 @@ sidebar_d = {
         "Style Guide": "dev_style",
         "Abbreviations": "dev_abbr",
         "Packaging": "dev_release",
-        "Troubleshooting": "dev_troubleshoot"
     }
 }
