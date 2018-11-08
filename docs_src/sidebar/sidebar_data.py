@@ -42,7 +42,8 @@ sidebar_d = {
                 'vision.image': '/vision.image',
                 'vision.data': '/vision.data',
                 'vision.model overview': '/vision.models',
-                'vision.models.unet': '/vision.models.unet'
+                'vision.models.unet': '/vision.models.unet',
+                'vision.widgets': '/widgets'
             }
         },
         'empty1': {
