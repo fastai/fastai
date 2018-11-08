@@ -3,7 +3,7 @@ from ..torch_core import *
 from .image import *
 from .transform import *
 from ..data_block import *
-from ..data_block import _df_to_fns_labels
+from ..data_block import _extract_input_labels
 from ..basic_data import *
 from ..layers import CrossEntropyFlat
 from .learner import *
@@ -307,10 +307,11 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
-            fn_col:int=0, label_col:int=1, test:Optional[PathOrStr]=None, suffix:str=None, **kwargs:Any)->'ImageDataBunch':
+                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None, 
+                **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
         path = Path(path)
-        fnames, labels = _df_to_fns_labels(df, suffix=suffix, label_delim=sep, fn_col=fn_col, label_col=label_col)
+        fnames, labels = _extract_input_labels(df, suffix=suffix, label_delim=sep, input_cols=fn_col, label_cols=label_col)
         if sep:
             classes = uniqueify(np.concatenate(labels))
             datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct, classes=classes)

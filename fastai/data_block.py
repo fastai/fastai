@@ -23,17 +23,24 @@ class PathItemList(ItemList):
         self.path = Path(path)
     def __repr__(self)->str: return f'{super().__repr__()}\nPath: {self.path}'
 
-def _df_to_fns_labels(df:pd.DataFrame, fn_col:int=0, label_col:int=1,
+def _decode(df):
+    return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
+    
+def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, is_fnames:bool=False,
                       label_delim:str=None, suffix:Optional[str]=None):
     """Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`.
     If `label_delim` is specified, splits the values in `label_col` accordingly.
     """
-    labels = df.iloc[:,label_col]
-    if label_delim: labels = np.array(list(csv.reader(labels, delimiter=label_delim)))
-    else: labels = labels.values
-    fnames = df.iloc[:,fn_col] if isinstance(df.iloc[0,fn_col], Path) else df.iloc[:,fn_col].str.lstrip()
-    if suffix: fnames = fnames + suffix
-    return fnames.values, labels
+    assert label_delim is None or not isinstance(label_cols, Iterable) or len(label_cols) == 1
+    labels = df.iloc[:,df_names_to_idx(label_cols, df)]
+    if label_delim: labels = np.array(list(csv.reader(labels.iloc[:,0], delimiter=label_delim)))
+    else: 
+        if isinstance(label_cols, Iterable) and len(label_cols) > 1: labels = _decode(labels)
+        else: labels = np.squeeze(labels.values)
+    inputs = df.iloc[:,df_names_to_idx(input_cols, df)]
+    if is_fnames and not isinstance(inputs.iloc[0,0], Path): inputs = inputs.iloc[:,0].str.lstrip()
+    if suffix: inputs = inputs + suffix
+    return np.squeeze(inputs.values), labels
 
 class InputList(PathItemList):
     "A list of inputs. Contain methods to get the corresponding labels."
@@ -48,6 +55,9 @@ class InputList(PathItemList):
 
     def create_label_list(self, items:Iterator)->'LabelList':
         return self._pipe(items, self.path)
+    
+    def label_const(self, const:Any=0)->'LabelList':
+        return self.create_label_list([(o,const) for o in self.items])
 
     def label_from_func(self, func:Callable)->'LabelList':
         "Apply `func` to every input to get its label."
@@ -63,10 +73,10 @@ class InputList(PathItemList):
             return res.group(1)
         return self.label_from_func(_inner)
 
-    def label_from_df(self, df, fn_col:int=0, label_col:int=1, sep:str=None, folder:PathOrStr='.',
+    def label_from_df(self, df, fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, sep:str=None, folder:PathOrStr='.',
                       suffix:str=None)->'LabelList':
         "Look in `df` for the filenames in `fn_col` to get the corresponding label in `label_col`."
-        fnames, labels = _df_to_fns_labels(df, fn_col, label_col, sep, suffix)
+        fnames, labels = _extract_input_labels(df, fn_col, label_col, label_delim=sep, suffix=suffix, is_fnames=True)
         fnames = join_paths(fnames, self.path/Path(folder))
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
@@ -74,7 +84,7 @@ class InputList(PathItemList):
         return self.create_label_list([(fn, np.array(lbl, dtype=np.object))
             for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)])
 
-    def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:int=0, label_col:int=1,
+    def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1,
                        sep:str=None, folder:PathOrStr='.', suffix:str=None)->'LabelList':
         """Look in `self.path/csv_fname` for a csv loaded with an optional `header` containing the filenames in
         `fn_col` to get the corresponding label in `label_col`."""
@@ -101,15 +111,15 @@ class LabelList(PathItemList):
     def labels(self): return self.items[:,1]
 
     @classmethod
-    def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1):
-        inputs = np.squeeze(df.iloc[:,df_names_to_idx(input_cols, df)].values)
-        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
+    def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, label_delim:str=None):
+        inputs, labels = _extract_input_labels(df, input_cols, label_cols, label_delim)
         return cls([(i,l) for (i,l) in zip(inputs, labels)], path)
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer'):
+    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer',
+                 label_delim:str=None):
         df = pd.read_csv(path/csv_fname, header=header)
-        return cls.from_df(path, df, input_col, label_cols)
+        return cls.from_df(path, df, input_col, label_cols, label_delim)
 
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,

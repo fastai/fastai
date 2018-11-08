@@ -5,7 +5,7 @@ from ..basic_data import *
 from ..data_block import *
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', 'TextDataset', 'TextMtd', 'TextFileList',
-           'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitDatasets',
+           'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitDatasets', 'FilesTextDataset',
            'NumericalizedDataset', 'TokenizedDataset']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
@@ -30,10 +30,10 @@ class TextLabelList(LabelList):
 class TextSplitData(SplitData):
     def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
         super().__init__(path,train,valid,test)
-        self._pipe = ImageSplitDatasets
+        self._pipe = TextSplitDatasets
 
     def dataset_cls(self):
-        return TextDataset
+        return FilesTextDataset if isinstance(self.train.items[0][0],Path) else TextDataset
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
         "Add test set containing items from folder `test_folder` and an arbitrary label"
@@ -195,6 +195,15 @@ class TextDataset(TextBase):
             tokens += tokenizer.process_all(self.x[i:i+chunksize])
         return TokenizedDataset(tokens, self.y, self.classes, encode_classes=False)
 
+class FilesTextDataset(TextDataset):
+    "Reads the content of `fns` then pass them to a `TextDataSet`."
+    def __init__(self, fns:Collection[str], labels:Collection[Any]=None, classes:Collection[Any]=None,
+                 mark_fields:bool=True, encode_classes:bool=True):
+        texts = []
+        for f in fns:
+            with open(f,'r') as f: texts.append(''.join(f.readlines()))
+        super().__init__(texts, labels, classes, mark_fields, encode_classes)
+    
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
     def __init__(self, dataset:TextDataset, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False, 
