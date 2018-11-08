@@ -125,8 +125,8 @@ class TextDataset(TextBase):
             if len(label_cols) == 0:   classes = [0]
             elif len(label_cols) == 1: classes = df.iloc[:,df_names_to_idx(label_cols, df)[0]].unique()
             else:                      classes = label_cols
-        dtype = np.int64 if len(label_cols) <= 1 else np.float32
-        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].astype(dtype).values)
+        labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
+        if len(label_cols) > 1: labels = labels.astype(np.float32)
         txt_cols = ifnone(txt_cols, list(range(len(label_cols),len(df.columns))))
         texts = np.squeeze(df.iloc[:,df_names_to_idx(txt_cols, df)].astype(str).values)
         return cls(texts, labels, classes, mark_fields)
