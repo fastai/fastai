@@ -7,13 +7,12 @@ TaskType = Enum('TaskType', 'No Single Multi Regression')
 __all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType', 'TaskType']
 
 import pdb
-
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
-    def __init__(self, x:Collection, y:Collection=None, classes:Collection=None, c:Optional[int]=None,
+    def __init__(self, x:Collection=None, y:Collection=None, classes:Collection=None, c:Optional[int]=None,
                  task_type:TaskType=None, class2idx:Dict[Any,int]=None, as_array:bool=True, do_encode_y:bool=True):
         self.c,self.classes,self.class2idx,self.item = c,classes,class2idx,None
-        if as_array: self.x,self.y = np.array(x),(np.array(y) if y is not None else None)
+        if as_array: self.x,self.y = (np.array(x) if x is not None else None),(np.array(y) if y is not None else None)
         self.task_type = ifnone(task_type, self.get_task_type())
         if classes is None and y is not None:
             if self.task_type==TaskType.Single: self.classes=uniqueify(y)
@@ -35,7 +34,7 @@ class DatasetBase(Dataset):
         elif self.task_type==TaskType.Multi: 
             self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
 
-    def __len__(self): return len(getattr(self, 'x', [1]))
+    def __len__(self): return len(self.x) if self.x is not None else 1
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
     def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
@@ -69,7 +68,7 @@ class DatasetBase(Dataset):
 
 class SingleClassificationDataset(DatasetBase):
     "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
-    pass
+    def __init__(self, classes): super().__init__(classes=classes)
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
