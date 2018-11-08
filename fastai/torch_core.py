@@ -10,6 +10,7 @@ ItemsList = Collection[Union[Tensor,ItemBase,'ItemsList',float,int]]
 LambdaFunc = Callable[[Tensor],Tensor]
 LayerFunc = Callable[[nn.Module],None]
 ModuleList = Collection[nn.Module]
+NPArray = np.ndarray
 OptOptimizer = Optional[optim.Optimizer]
 ParamList = Collection[nn.Parameter]
 Rank0Tensor = NewType('OneEltTensor', Tensor)

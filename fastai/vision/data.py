@@ -11,7 +11,7 @@ import PIL
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
-           'normalize_funcs', 'show_image_batch', 'transform_datasets', 'SplitDatasetsImage', 'channel_view',
+           'normalize_funcs', 'show_image_batch', 'transform_datasets', 'ImageSplitDatasets', 'channel_view',
            'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -47,7 +47,7 @@ def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figs
         x.show(ax=ax, y=y, classes=classes)
     plt.tight_layout()
 
-class SplitDatasetsImage(SplitDatasets):
+class ImageSplitDatasets(SplitDatasets):
     def transform(self, tfms:TfmList, **kwargs)->'SplitDatasets':
         "Apply `tfms` to the underlying datasets, `kwargs` are passed to `DatasetTfm`."
         assert not isinstance(self.train_ds, DatasetTfm)
@@ -63,8 +63,6 @@ class SplitDatasetsImage(SplitDatasets):
         return ImageDataBunch.create(*self.datasets, path=path, **kwargs)
 
 class ImageClassificationBase(LabelDataset):
-    __splits_class__ = SplitDatasetsImage
-
     def __init__(self, fns:FilePathList, classes:Optional[Collection[Any]]=None):
         super().__init__(classes=classes)
         self.x  = np.array(fns)
@@ -196,10 +194,14 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
         labels[i,-len(lbls):] = lbls
     return torch.cat(imgs,0), (bboxes,labels)
 
+def _maybe_add_crop_pad(tfms):
+    tfm_names = [tfm.__name__ for tfm in tfms]
+    return [crop_pad()] + tfms if 'crop_pad' not in tfm_names else tfms
+
 def _prep_tfm_kwargs(tfms, kwargs):
     default_rsz = ResizeMethod.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMethod.CROP
     resize_method = ifnone(kwargs.get('resize_method', default_rsz), default_rsz)
-    if resize_method <= 2: tfms = [crop_pad()] + tfms
+    if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
     kwargs['resize_method'] = resize_method
     return tfms, kwargs
 
@@ -380,13 +382,13 @@ class ImageDataBunch(DataBunch):
 
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
-        return SplitDatasetsImage.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+        return ImageSplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
 
-def download_image(url,dest):
-    try: r = download_url(url, dest, overwrite=True, show_progress=False)
+def download_image(url,dest, timeout=4):
+    try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
     except Exception as e: print(f"Error {url} {e}")
 
-def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8):
+def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8, timeout=4):
     "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
     urls = open(urls).read().strip().split("\n")[:max_pics]
     dest = Path(dest)
@@ -396,11 +398,12 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
             suffixes = [re.findall(r'\.\w+?(?=\?)', url) for url in urls]
             suffixes = [suffix[0] if len(suffix)>0  else '.jpg' for suffix in suffixes]
-            futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}") for i,url in enumerate(urls)]
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}", timeout=timeout)
+                       for i,url in enumerate(urls)]
             for f in progress_bar(as_completed(futures), total=len(urls)): pass
     else:
         for i,url in enumerate(progress_bar(urls)):
-            download_image(url, dest/f"{i:08d}.jpg")
+            download_image(url, dest/f"{i:08d}.jpg", timeout=timeout)
 
 def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
@@ -451,14 +454,31 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
 
 class ImageFileList(InputList):
     "A list of inputs. Contain methods to get the corresponding labels."
+    def __init__(self, items:Iterator, path:PathOrStr='.'):
+        super().__init__(items,path)
+        self._pipe=ImageLabelList
+
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
-def split_data_add_test_folder(self, test_folder:str='test', label:Any=None):
-    "Add test set containing items from folder `test_folder` and an arbitrary label"
-    items = ImageFileList.from_folder(self.path/test_folder)
-    return self.add_test(items, label=label)
+class ImageLabelList(LabelList):
+    def __init__(self, items:Iterator, path:PathOrStr='.', parent:InputList=None):
+        super().__init__(items=items, path=path, parent=parent)
+        self._pipe = ImageSplitData
 
-SplitData.add_test_folder = split_data_add_test_folder
+class ImageSplitData(SplitData):
+    def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
+        super().__init__(path,train,valid,test)
+        self._pipe = ImageSplitDatasets
+
+    def dataset_cls(self):
+        is_multi = isinstance(self.train.items[0,1],np.ndarray)
+        return ImageMultiDataset if is_multi else ImageClassificationDataset
+
+    def add_test_folder(self, test_folder:str='test', label:Any=None):
+        "Add test set containing items from folder `test_folder` and an arbitrary label"
+        items = ImageFileList.from_folder(self.path/test_folder)
+        return self.add_test(items, label=label)
+

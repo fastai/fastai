@@ -6,6 +6,7 @@ from .image import *
 from . import models
 from ..callback import *
 from ..layers import *
+from ..callbacks.hooks import num_features_model
 
 __all__ = ['ClassificationLearner', 'create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
 # By default split models between first and second layer
