@@ -13,6 +13,9 @@ class RNNTrainer(Callback):
     alpha:float=0.
     beta:float=0.
     adjust:bool=True
+        
+    def on_epoch_begin(self, **kwargs):
+        self.learn.model.reset()
 
     def on_loss_begin(self, last_output:Tuple[Tensor,Tensor,Tensor], **kwargs):
         #Save the extra outputs for later and only returns the true output.

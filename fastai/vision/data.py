@@ -13,7 +13,7 @@ import PIL
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageDatasetBase', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'transform_datasets', 'ImageSplitDatasets', 'channel_view',
-           'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
+           'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate', 'PointsDataset']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -67,6 +67,7 @@ class ImageDatasetBase(DatasetBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.image_opener = open_image
+        self.learner_type = ImageLearner
 
     def _get_x(self,i): return self.image_opener(self.x[i])
 
@@ -157,7 +158,14 @@ class SegmentationDataset(ImageClassificationBase):
         self.mask_opener = open_mask
 
     def _get_y(self,i,x): return self.mask_opener(self.y[i])
+    
+    def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
+class PointsDataset(ImageDatasetBase):
+    def __init__(self, fns, pts): super().__init__(c=2, x=fns, y=pts)
+    def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
+    def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
+    
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
     def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], 
