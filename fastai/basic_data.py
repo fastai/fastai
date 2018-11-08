@@ -2,11 +2,22 @@
 from .torch_core import *
 
 DatasetType = Enum('DatasetType', 'Train Valid Test')
-__all__ = ['SingleClassificationDataset', 'LabelXYDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset', 'DatasetType']
+__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
-    def __init__(self, c:int): self.c,self.item = c,None
+    def __init__(self, x:Collection, y:Collection=None, classes:Collection=None, c:Optional[int]=None,
+                 class2idx:Dict[Any,int]=None, as_array:bool=True, do_encode_y:bool=True):
+        self.c,self.classes,self.class2idx,self.item = c,classes,class2idx,None
+        if as_array: self.x,self.y = np.array(x),np.array(y)
+        if classes is not None:
+            if not c: self.c = len(classes)
+            if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
+            if y is not None and do_encode_y: self.encode_y()
+
+    def encode_y(self):
+        self.y = np.array([self.class2idx[o] for o in self.y], dtype=np.int64)
+
     def __len__(self): return len(getattr(self, 'x', [1]))
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
@@ -15,32 +26,17 @@ class DatasetBase(Dataset):
         "Create a new dataset using `self` as a template"
         return self.__class__(*args, **kwargs)
 
-    def _get_x(self,i): return self.x[i]
-    def _get_y(self,i): return self.y[i]
+    def _get_x(self,i):   return self.x[i]
+    def _get_y(self,i,x): return self.y[i]
 
     def __getitem__(self, i):
-        if self.item is None: return self._get_x(i),self._get_y(i)
-        else: return self.item,0
-
-class LabelDataset(DatasetBase):
-    "Base class for fastai datasets that do classification, mapped according to `classes`."
-    def __init__(self, classes:Collection, class2idx:Dict[Any,int]=None):
-        self.classes  = classes
-        self.class2idx = class2idx
-        if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        super().__init__(len(classes))
-
-class LabelXYDataset(LabelDataset):
-    "Minimal `LabelDataset` which returns whatever `x` and `y` you pass in"
-    def __init__(self, x:Collection, y:Collection, classes:Optional[Collection[Any]]=None):
-        super().__init__(classes=classes)
-        self.x,self.y  = np.array(x),np.array(y)
+        if self.item is not None: return self.item,0
+        x = self._get_x(i)
+        return x,self._get_y(i,x)
 
 class SingleClassificationDataset(DatasetBase):
     "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
-    def __init__(self, classes:Collection[str]):
-        self.classes = classes
-        super().__init__(len(classes))
+    pass
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__

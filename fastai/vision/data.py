@@ -10,7 +10,7 @@ from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import PIL
 
-__all__ = ['get_image_files', 'DatasetTfm', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
+__all__ = ['get_image_files', 'DatasetTfm', 'ImageDatasetBase', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
            'normalize_funcs', 'show_image_batch', 'transform_datasets', 'ImageSplitDatasets', 'channel_view',
            'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate']
@@ -63,26 +63,27 @@ class ImageSplitDatasets(SplitDatasets):
         path = Path(ifnone(path, self.path))
         return ImageDataBunch.create(*self.datasets, path=path, **kwargs)
 
-class ImageClassificationBase(LabelDataset):
-    def __init__(self, fns:FilePathList, classes:Optional[Collection[Any]]=None):
-        super().__init__(classes=classes)
-        self.x  = np.array(fns)
+class ImageDatasetBase(DatasetBase):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.image_opener = open_image
-        self.learner_type = ClassificationLearner
 
     def _get_x(self,i): return self.image_opener(self.x[i])
 
+class ImageClassificationBase(ImageDatasetBase):
+    def __init__(self, x:Collection, classes:Collection, **kwargs):
+        super().__init__(x=x, classes=classes, **kwargs)
+        self.learner_type = ClassificationLearner
+
     def new(self, *args, classes:Optional[Collection[Any]]=None, **kwargs):
         if classes is None: classes = self.classes
-        res = self.__class__(*args, classes=classes, **kwargs)
-        return res
+        return self.__class__(*args, classes=classes, **kwargs)
 
 class ImageClassificationDataset(ImageClassificationBase):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
         if classes is None: classes = uniqueify(labels)
-        super().__init__(fns, classes)
-        self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
+        super().__init__(x=fns, classes=classes, y=labels)
         self.loss_func = F.cross_entropy
 
     @staticmethod
@@ -116,9 +117,11 @@ class ImageClassificationDataset(ImageClassificationBase):
 class ImageMultiDataset(ImageClassificationBase):
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
         if classes is None: classes = uniqueify(np.concatenate(labels))
-        super().__init__(fns, classes)
-        self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in labels]
+        super().__init__(x=fns, classes=classes, y=labels)
         self.loss_func = F.binary_cross_entropy_with_logits
+
+    def encode_y(self):
+        self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
 
     def encode(self, x:Collection[int]):
         "One-hot encode the target."
@@ -127,7 +130,7 @@ class ImageMultiDataset(ImageClassificationBase):
         return res
 
     def get_labels(self, idx:int)->ImgLabels: return [self.classes[i] for i in self.y[idx]]
-    def _get_y(self,i): return self.encode(self.y[i])
+    def _get_y(self,i,x): return self.encode(self.y[i])
 
     @classmethod
     def from_single_folder(cls, folder:PathOrStr, classes:Collection[Any], extensions=image_extensions):
@@ -149,12 +152,11 @@ class SegmentationDataset(ImageClassificationBase):
     "A dataset for segmentation task."
     def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any]):
         assert len(x)==len(y)
-        super().__init__(x, classes)
-        self.y = np.array(y)
+        super().__init__(x, classes, y=y, do_encode_y=False)
         self.loss_func = CrossEntropyFlat()
         self.mask_opener = open_mask
 
-    def _get_y(self,i): return self.mask_opener(self.y[i])
+    def _get_y(self,i,x): return self.mask_opener(self.y[i])
 
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
@@ -167,10 +169,9 @@ class ObjectDetectDataset(ImageClassificationBase):
         super().__init__(x_fns,classes)
         self.labelled_bbs = labelled_bbs
 
-    def _get_y(self,i):
-        #TODO: find a smart way to not reopen the x image.
+    def _get_y(self,i,x):
         cats = LongTensor([self.class2idx[l] for l in self.labelled_bbs[i][1]])
-        return (ImageBBox.create(self.labelled_bbs[i][0], *self._get_x(i).size, cats))
+        return (ImageBBox.create(self.labelled_bbs[i][0], *x.size, cats))
 
     @classmethod
     def from_json(cls, folder, fname, valid_pct=None, classes=None):

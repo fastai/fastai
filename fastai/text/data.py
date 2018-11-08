@@ -36,13 +36,12 @@ class TextSplitDatasets(SplitDatasets):
         path = Path(ifnone(path, self.path))
         return cls_func.create(*self.datasets, path=path, **kwargs)
 
-class TextBase(LabelDataset):
+class TextBase(DatasetBase):
     __splits_class__ = TextSplitDatasets
     def __init__(self, x:Collection[Any], labels:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  encode_classes:bool=True):
         if classes is None: classes = uniqueify(labels)
-        super().__init__(classes=classes)
-        self.x = np.array(x)
+        super().__init__(classes=classes,x=x)
         if labels is None: self.y = np.zeros(len(x))
         elif encode_classes and len(labels.shape) == 1: self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         else: self.y = labels
