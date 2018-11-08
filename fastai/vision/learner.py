@@ -8,7 +8,7 @@ from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
 
-__all__ = ['ClassificationLearner', 'create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
+__all__ = ['ClassificationLearner', 'create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'ImageLearner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -43,7 +43,22 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
         layers += bn_drop_lin(ni,no,True,p,actn)
     return nn.Sequential(*layers)
 
-class ClassificationLearner(Learner):
+class ImageLearner(Learner):
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, figsize:Tuple[int,int]=None):
+        dl = self.dl(ds_type)
+        preds = self.pred_batch()
+        figsize = ifnone(figsize, (8,3*rows))
+        _,axs = plt.subplots(rows, 2, figsize=figsize)
+        axs[0,0].set_title('Predictions')
+        axs[0,1].set_title('Ground truth')
+        for i in range(rows):
+            x,y = dl.dataset[i]
+            x.show(ax=axs[i,1], y=y) #Doing that first will update x before we pass it to reconstruct_output
+            pred = dl.reconstruct_output(preds[i], x)
+            x.show(ax=axs[i,0], y=pred)
+        plt.tight_layout()
+
+class ClassificationLearner(ImageLearner):
     def predict(self, img:Image):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.valid_ds
@@ -78,7 +93,8 @@ def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
-    learn = cls(data, model, **kwargs)
+    learner_cls = ifnone(data.learner_type(), Learner)
+    learn = learner_cls(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[2], nn.init.kaiming_normal_)
