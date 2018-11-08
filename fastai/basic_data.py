@@ -149,3 +149,6 @@ class DataBunch():
     def test_ds(self)->Dataset:
         assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
         return self.test_dl.dl.dataset
+
+    def learner_type(self)->type: return getattr(self.train_ds, 'learner_type', None)
+

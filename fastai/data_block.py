@@ -104,7 +104,7 @@ class LabelList(PathItemList):
     def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1):
         inputs = np.squeeze(df.iloc[:,df_names_to_idx(input_cols, df)].values)
         labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
-        return LabelList([(i,l) for (i,l) in zip(inputs, labels)], path)
+        return self.__class__([(i,l) for (i,l) in zip(inputs, labels)], path)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer'):
@@ -116,11 +116,19 @@ class LabelList(PathItemList):
                   header:str='infer')->'LabelList':
         return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]))
 
+    def split_by_list(self, train, valid):
+        return self._pipe(self.path, self.__class__(train), self.__class__(valid))
+
+    def split_by_valid_func(self, func:Callable)->'SplitData':
+        "Split the data by result of `func` (which returns `True` for validation set)"
+        mask = np.array([func(o) for o in self.items])
+        return self.split_by_list(self.items[~mask], self.items[mask])
+
     def split_by_files(self, valid_names:InputList)->'SplitData':
         "Split the data by using the names in `valid_names` for validation."
         valid = [o for o in self.items if o[0] in valid_names]
         train = [o for o in self.items if o[0] not in valid_names]
-        return self._pipe(self.path, LabelList(train), LabelList(valid))
+        return self.split_by_list(train, valid)
 
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'SplitData':
         """Split the data by using the file names in `fname` for the validation set. `path` will override `self.path`.
@@ -134,7 +142,7 @@ class LabelList(PathItemList):
         "Split the data according to the indexes in `valid_idx`."
         valid = [o for i,o in enumerate(self.items) if i in valid_idx]
         train = [o for i,o in enumerate(self.items) if i not in valid_idx]
-        return self._pipe(self.path, LabelList(train), LabelList(valid))
+        return self.split_by_list(train, valid)
 
     def split_by_folder(self, train:str='train', valid:str='valid')->'SplitData':
         """Split the data depending on the folder (`train` or `valid`) in which the filenames are.
@@ -144,7 +152,7 @@ class LabelList(PathItemList):
         folder_name = [o[0].parent.parts[n] for o in self.items]
         valid = [o for o in self.items if o[0].parent.parts[n] == valid]
         train = [o for o in self.items if o[0].parent.parts[n] == train]
-        return self._pipe(self.path, LabelList(train), LabelList(valid))
+        return self.split_by_list(train, valid)
 
     def random_split_by_pct(self, valid_pct:float=0.2)->'SplitData':
         "Split the items randomly by putting `valid_pct` in the validation set."
@@ -178,7 +186,7 @@ class SplitData():
 
     def datasets(self, dataset_cls:type=None, **kwargs)->'SplitDatasets':
         "Create datasets from the underlying data using `dataset_cls` and passing along the `kwargs`."
-        dataset_cls = ifnone(dataset_cls, self.dataset_cls())
+        if dataset_cls is None: dataset_cls = self.dataset_cls()
         train = dataset_cls(*self.train.items.T, **kwargs)
         dss = [train]
         dss += [train.new(*o.items.T, **kwargs) for o in self.lists[1:]]

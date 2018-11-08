@@ -56,7 +56,7 @@ class ClassificationLearner(Learner):
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                classification:bool=True, **kwargs:Any)->ClassificationLearner:
+                classification:bool=True, **kwargs:Any)->Learner:
     "Build convnet style learners."
     assert classification, 'Regression CNN not implemented yet, bug us on the forums if you want this!'
     meta = cnn_config(arch)
@@ -64,7 +64,8 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
     model = nn.Sequential(body, head)
-    learn = ClassificationLearner(data, model, **kwargs)
+    learner_cls = ifnone(data.learner_type(), Learner)
+    learn = learner_cls(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)

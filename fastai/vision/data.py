@@ -6,6 +6,7 @@ from ..data_block import *
 from ..data_block import _df_to_fns_labels
 from ..basic_data import *
 from ..layers import CrossEntropyFlat
+from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import PIL
 
@@ -37,7 +38,7 @@ def get_annotations(fname, prefix=None):
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [[id2bboxes[k], id2cats[k]] for k in ids]
 
-def show_image_batch(dl:DataLoader, classes:Collection[str], rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
+def show_image_batch(dl:DataLoader, classes:Collection[str]=None, rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
     b_idx = next(iter(dl.batch_sampler))
     if rows is None: rows = int(math.sqrt(len(b_idx)))
@@ -67,6 +68,7 @@ class ImageClassificationBase(LabelDataset):
         super().__init__(classes=classes)
         self.x  = np.array(fns)
         self.image_opener = open_image
+        self.learner_type = ClassificationLearner
 
     def _get_x(self,i): return self.image_opener(self.x[i])
 
@@ -366,7 +368,7 @@ class ImageDataBunch(DataBunch):
         return self
 
     def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), ds_type:DatasetType=DatasetType.Train)->None:
-        show_image_batch(self.dl(ds_type), self.classes, figsize=figsize, rows=rows)
+        show_image_batch(self.dl(ds_type), getattr(self,'classes',None), figsize=figsize, rows=rows)
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."

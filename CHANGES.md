@@ -11,17 +11,19 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
 ## 1.0.21.dev0 (Work In Progress)
 
 ### New:
 
 - `CSVLogger` callback (thanks to devorfu)
+- Initial support for image regression problems.
+- If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`.
 
 ### Changed:
 
-### Fixed:
+- `datasets()` now can automatically figure out what class to use in many situations
 
+### Fixed:
 
 
 ## 1.0.20 (2018-11-07)
@@ -33,7 +35,7 @@ of that change.
 
 ### Changed:
 
-- `download_url` reads the get request with `iter_content` which is robust to 'content-length' errors. (thanks to Francisco Ingham)
+- `download_url` reads the get request with `iter_content` which is robust to 'content-length' errors. (thanks to Francisco Ingham and Zach Caceres)
 - `download_url` has a timeout
 
 ### Fixed:
