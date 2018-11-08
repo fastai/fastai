@@ -179,3 +179,9 @@ def df_names_to_idx(names, df):
     if not is_listy(names): names = [names]
     if isinstance(names[0], int): return names
     return [df.columns.get_loc(c) for c in names]
+
+def one_hot_encode(y:Collection[int], c:int):
+    "One-hot encode the targets in `y` with `c` classes."
+    res = np.zeros(c, np.float32)
+    res[y] = 1.
+    return res

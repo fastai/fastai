@@ -13,11 +13,33 @@ text_extensions = ['.txt']
 
 class TextFileList(InputList):
     "A list of inputs. Contain methods to get the corresponding labels."
+    def __init__(self, items:Iterator, path:PathOrStr='.'):
+        super().__init__(items,path)
+        self._pipe=TextLabelList
+        
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
 
+class TextLabelList(LabelList):
+    def __init__(self, items:Iterator, path:PathOrStr='.', parent:InputList=None):
+        super().__init__(items=items, path=path, parent=parent)
+        self._pipe = TextSplitData
+
+class TextSplitData(SplitData):
+    def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
+        super().__init__(path,train,valid,test)
+        self._pipe = ImageSplitDatasets
+
+    def dataset_cls(self):
+        return TextDataset
+
+    def add_test_folder(self, test_folder:str='test', label:Any=None):
+        "Add test set containing items from folder `test_folder` and an arbitrary label"
+        items = ImageFileList.from_folder(self.path/test_folder)
+        return self.add_test(items, label=label)
+    
 class TextSplitDatasets(SplitDatasets):
     def tokenize(self, tokenizer:Tokenizer=None, chunksize:int=10000):
         "Tokenize `self.datasets` with `tokenizer` by bits of `chunksize`."

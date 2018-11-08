@@ -10,7 +10,7 @@ def test_splitdata_datasets():
     assert len(sd.valid)==ratio*n, 'Validation set is right size'
     assert set(list(sd.train.files)+list(sd.valid.files))==set(range(n)), 'All items covered'
 
-    sds = sd.datasets(LabelXYDataset, classes=c1)
+    sds = sd.datasets(DatasetBase, classes=c1)
     assert np.array_equal(sds.train_ds.classes, c1), 'train dataset classes correct'
     assert np.array_equal(sds.valid_ds.classes, c1), 'validation dataset classes correct'
 

@@ -18,6 +18,7 @@ of that change.
 - `CSVLogger` callback (thanks to devorfu)
 - Initial support for image regression problems.
 - If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`.
+- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems accross applications.
 
 ### Changed:
 

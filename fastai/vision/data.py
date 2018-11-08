@@ -71,8 +71,8 @@ class ImageDatasetBase(DatasetBase):
     def _get_x(self,i): return self.image_opener(self.x[i])
 
 class ImageClassificationBase(ImageDatasetBase):
-    def __init__(self, x:Collection, classes:Collection, **kwargs):
-        super().__init__(x=x, classes=classes, **kwargs)
+    def __init__(self, x:Collection, y:Collection, classes:Collection=None, **kwargs):
+        super().__init__(x=x, y=y, classes=classes, **kwargs)
         self.learner_type = ClassificationLearner
 
     def new(self, *args, classes:Optional[Collection[Any]]=None, **kwargs):
@@ -81,9 +81,9 @@ class ImageClassificationBase(ImageDatasetBase):
 
 class ImageClassificationDataset(ImageClassificationBase):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
-    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
+    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None, **kwargs):
         if classes is None: classes = uniqueify(labels)
-        super().__init__(x=fns, classes=classes, y=labels)
+        super().__init__(x=fns, classes=classes, y=labels, task_type=TaskType.Single, **kwargs)
         self.loss_func = F.cross_entropy
 
     @staticmethod
@@ -115,9 +115,9 @@ class ImageClassificationDataset(ImageClassificationBase):
         return [cls(*a, classes=classes) for a in random_split(valid_pct, fns, labels)]
 
 class ImageMultiDataset(ImageClassificationBase):
-    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None):
+    def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None, **kwargs):
         if classes is None: classes = uniqueify(np.concatenate(labels))
-        super().__init__(x=fns, classes=classes, y=labels)
+        super().__init__(x=fns, classes=classes, y=labels, task_type=TaskType.Multi, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
 
     def encode_y(self):
@@ -152,7 +152,7 @@ class SegmentationDataset(ImageClassificationBase):
     "A dataset for segmentation task."
     def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any]):
         assert len(x)==len(y)
-        super().__init__(x, classes, y=y, do_encode_y=False)
+        super().__init__(x, y, classes, do_encode_y=False)
         self.loss_func = CrossEntropyFlat()
         self.mask_opener = open_mask
 
@@ -160,13 +160,14 @@ class SegmentationDataset(ImageClassificationBase):
 
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
-    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], classes:Collection[str]=None):
+    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], 
+                 classes:Collection[str]=None):
         assert len(x_fns)==len(labelled_bbs)
         if classes is None:
             classes = set()
             for lbl_bb in labelled_bbs: classes = classes.union(set(lbl_bb[1]))
             classes = ['background'] + list(classes)
-        super().__init__(x_fns,classes)
+        super().__init__(x_fns, labelled_bbs, classes, do_encode_y=False)
         self.labelled_bbs = labelled_bbs
 
     def _get_y(self,i,x):
@@ -475,8 +476,9 @@ class ImageSplitData(SplitData):
         self._pipe = ImageSplitDatasets
 
     def dataset_cls(self):
-        is_multi = isinstance(self.train.items[0,1],np.ndarray)
-        return ImageMultiDataset if is_multi else ImageClassificationDataset
+        return ImageClassificationBase
+        #is_multi = isinstance(self.train.items[0,1],np.ndarray)
+        #return ImageMultiDataset if is_multi else ImageClassificationDataset
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
         "Add test set containing items from folder `test_folder` and an arbitrary label"

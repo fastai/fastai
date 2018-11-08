@@ -1,22 +1,39 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
+from .layers import MSELossFlat
 
 DatasetType = Enum('DatasetType', 'Train Valid Test')
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType']
+TaskType = Enum('TaskType', 'No Single Multi Regression')
+__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType', 'TaskType']
+
+import pdb
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
     def __init__(self, x:Collection, y:Collection=None, classes:Collection=None, c:Optional[int]=None,
-                 class2idx:Dict[Any,int]=None, as_array:bool=True, do_encode_y:bool=True):
+                 task_type:TaskType=None, class2idx:Dict[Any,int]=None, as_array:bool=True, do_encode_y:bool=True):
         self.c,self.classes,self.class2idx,self.item = c,classes,class2idx,None
-        if as_array: self.x,self.y = np.array(x),np.array(y)
-        if classes is not None:
-            if not c: self.c = len(classes)
+        if as_array: self.x,self.y = np.array(x),(np.array(y) if y is not None else None)
+        self.task_type = ifnone(task_type, self.get_task_type())
+        if classes is None and y is not None:
+            if self.task_type==TaskType.Single: self.classes=uniqueify(y)
+            if self.task_type==TaskType.Multi:  self.classes=uniqueify(np.concatenate(y))
+             
+        if self.classes is not None:
+            if not c: 
+                if self.task_type==TaskType.Regression and y is not None: self.c = y.shape[1]
+                else: self.c = len(self.classes)
             if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
             if y is not None and do_encode_y: self.encode_y()
+        if self.task_type==TaskType.Regression: self.loss_func = MSELossFlat()
+        elif self.task_type==TaskType.Single:   self.loss_func = F.cross_entropy
+        elif self.task_type==TaskType.Multi:    self.loss_func = F.binary_cross_entropy_with_logits        
 
     def encode_y(self):
-        self.y = np.array([self.class2idx[o] for o in self.y], dtype=np.int64)
+        if self.task_type==TaskType.Single: 
+            self.y = np.array([self.class2idx[o] for o in self.y], dtype=np.int64)
+        elif self.task_type==TaskType.Multi: 
+            self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
 
     def __len__(self): return len(getattr(self, 'x', [1]))
     def set_item(self,item): self.item = item
@@ -27,12 +44,28 @@ class DatasetBase(Dataset):
         return self.__class__(*args, **kwargs)
 
     def _get_x(self,i):   return self.x[i]
-    def _get_y(self,i,x): return self.y[i]
+    def _get_y(self,i,x): return one_hot_encode(self.y[i],self.c) if self.task_type==TaskType.Multi else self.y[i]
 
     def __getitem__(self, i):
         if self.item is not None: return self.item,0
         x = self._get_x(i)
         return x,self._get_y(i,x)
+    
+    def get_y_repr(self, i):
+        if task_type==TaskType.Single:  return self.classes[y[i]]
+        elif task_type==TaskType.Multi: return '; '.join([self.classes[a] for a in y[i]])
+        else: return y[i]
+        
+    def get_task_type(self):
+        if self.y is None or len(self.y) == 0: return TaskType.No
+        y = self.y[0]
+        if isinstance(y,(int,str)): return TaskType.Single
+        elif isinstance(y, float):  return TaskType.Regression
+        elif isinstance(y, Iterable):
+            return (TaskType.Multi if isinstance(y[0],(int,str)) else
+                    TaskType.Regression if isinstance(y[0],float) else
+                    TaskType.No)
+        else: return TaskType.No
 
 class SingleClassificationDataset(DatasetBase):
     "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
