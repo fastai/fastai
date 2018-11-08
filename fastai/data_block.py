@@ -190,7 +190,8 @@ class SplitData():
         train = dataset_cls(*self.train.items.T, **kwargs)
         dss = [train]
         dss += [train.new(*o.items.T, **kwargs) for o in self.lists[1:]]
-        return self._pipe(self.path, *dss)
+        cls = getattr(train, '__splits_class__', self._pipe)
+        return cls(self.path, *dss)
 
     def add_test(self, test:ItemList, label:Any=None):
         "Add test set containing items from `test` and an arbitrary label"
