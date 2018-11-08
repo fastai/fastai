@@ -1,5 +1,5 @@
 # Usage: After editing this file, next run:
-# 
+#
 # tools/make_sidebar.py
 # git commit docs/_data/sidebars/home_sidebar.yml docs_src/sidebar/sidebar_data.py
 # git push
@@ -9,83 +9,83 @@
 sidebar_d = {
     'Getting started': {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
-        "Troubleshooting": "dev_troubleshoot"
+        'Troubleshooting': '/dev_troubleshoot'
     },
     'Training': {
-        'Overview': 'training',
-        'basic_train': 'basic_train',
-        'train': 'train',
-        'metrics': 'metrics',
-        'callback': 'callback',
+        'Overview': '/training',
+        'basic_train': '/basic_train',
+        'train': '/train',
+        'metrics': '/metrics',
+        'callback': '/callback',
         '': {
             'callbacks': {
-                'Overview': 'callbacks',
-                'HookCallback': 'callbacks.hooks',
-                'MixedPrecision': 'callbacks.fp16',
-                'OneCycleScheduler': 'callbacks.one_cycle',
-                'LRFinder': 'callbacks.lr_finder',
-                'MixUpCallback': 'callbacks.mixup',
-                'RNNTrainer': 'callbacks.rnn',
-                'GeneralScheduler': 'callbacks.general_sched',
-                'CSV Logger': 'callbacks.csv_logger',
-                'Tracking callbacks': 'callbacks.tracker'
+                'Overview': '/callbacks',
+                'HookCallback': '/callbacks.hooks',
+                'MixedPrecision': '/callbacks.fp16',
+                'OneCycleScheduler': '/callbacks.one_cycle',
+                'LRFinder': '/callbacks.lr_finder',
+                'MixUpCallback': '/callbacks.mixup',
+                'RNNTrainer': '/callbacks.rnn',
+                'GeneralScheduler': '/callbacks.general_sched',
+                'CSV Logger': '/callbacks.csv_logger',
+                'Tracking callbacks': '/callbacks.tracker'
             }
         },
     },
     'Applications': {
-        'Overview': 'applications',
+        'Overview': '/applications',
         '': {
             'vision': {
-                'Overview': 'vision',
-                'vision.learner': 'vision.learner',
-                'vision.transform': 'vision.transform',
-                'vision.image': 'vision.image',
-                'vision.data': 'vision.data',
-                'vision.model overview': 'vision.models',
-                'vision.models.unet': 'vision.models.unet'
+                'Overview': '/vision',
+                'vision.learner': '/vision.learner',
+                'vision.transform': '/vision.transform',
+                'vision.image': '/vision.image',
+                'vision.data': '/vision.data',
+                'vision.model overview': '/vision.models',
+                'vision.models.unet': '/vision.models.unet'
             }
         },
         'empty1': {
             'text': {
-                'Overview': 'text',
-                'text.learner': 'text.learner',
-                'text.transform': 'text.transform',
-                'text.data': 'text.data',
-                'text.models': 'text.models'
+                'Overview': '/text',
+                'text.learner': '/text.learner',
+                'text.transform': '/text.transform',
+                'text.data': '/text.data',
+                'text.models': '/text.models'
             },
         },
         'empty2': {
             'tabular': {
-                'Overview': 'tabular',
-                'tabular.transform': 'tabular.transform',
-                'tabular.data': 'tabular.data',
-                'tabular.models': 'tabular.models'
+                'Overview': '/tabular',
+                'tabular.transform': '/tabular.transform',
+                'tabular.data': '/tabular.data',
+                'tabular.models': '/tabular.models'
             },
         },
-        'collab': 'collab',
+        'collab': '/collab',
     },
     'Core': {
-        'Overview': 'overview',
-        'data_block': 'data_block',
-        'basic_data': 'basic_data',
-        'layers': 'layers',
-        'datasets': 'datasets',
-        'core': 'core',
-        'torch_core': 'torch_core',
+        'Overview': '/overview',
+        'data_block': '/data_block',
+        'basic_data': '/basic_data',
+        'layers': '/layers',
+        'datasets': '/datasets',
+        'core': '/core',
+        'torch_core': '/torch_core',
     },
     'Doc authoring': {
-        'Overview': 'gen_doc',
-        'gen_doc.gen_notebooks': 'gen_doc.gen_notebooks',
-        'gen_doc.nbdoc': 'gen_doc.nbdoc',
-        'gen_doc.convert2html': 'gen_doc.convert2html',
+        'Overview': '/gen_doc',
+        'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',
+        'gen_doc.nbdoc': '/gen_doc.nbdoc',
+        'gen_doc.convert2html': '/gen_doc.convert2html',
     },
     'Library development': {
-        "Dev Notes": "dev_develop",
-        "GPU Notes": "dev_gpu",
-        "git notes": "dev_git",
-        "Testing": "dev_test",
-        "Style Guide": "dev_style",
-        "Abbreviations": "dev_abbr",
-        "Packaging": "dev_release",
+        'Dev Notes': '/dev_develop',
+        'GPU Notes': '/dev_gpu',
+        'git notes': '/dev_git',
+        'Testing': '/dev_test',
+        'Style Guide': '/dev_style',
+        'Abbreviations': '/dev_abbr',
+        'Packaging': '/dev_release',
     }
 }

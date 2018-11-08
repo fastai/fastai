@@ -12,191 +12,191 @@ entries:
     - external_url: https://github.com/fastai/fastai/blob/master/README.md#installation
       output: web,pdf
       title: Installation
-    - output: web,pdf
+    - external_url: /dev_troubleshoot
+      output: web,pdf
       title: Troubleshooting
-      url: dev_troubleshoot.html
     output: web
     title: Getting started
   - folderitems:
-    - output: web,pdf
+    - external_url: /training
+      output: web,pdf
       title: Overview
-      url: training.html
-    - output: web,pdf
+    - external_url: /basic_train
+      output: web,pdf
       title: basic_train
-      url: basic_train.html
-    - output: web,pdf
+    - external_url: /train
+      output: web,pdf
       title: train
-      url: train.html
-    - output: web,pdf
+    - external_url: /metrics
+      output: web,pdf
       title: metrics
-      url: metrics.html
-    - output: web,pdf
+    - external_url: /callback
+      output: web,pdf
       title: callback
-      url: callback.html
       subfolders:
       - output: web
         subfolderitems:
-        - output: web,pdf
+        - external_url: /callbacks
+          output: web,pdf
           title: Overview
-          url: callbacks.html
-        - output: web,pdf
+        - external_url: /callbacks.hooks
+          output: web,pdf
           title: HookCallback
-          url: callbacks.hooks.html
-        - output: web,pdf
+        - external_url: /callbacks.fp16
+          output: web,pdf
           title: MixedPrecision
-          url: callbacks.fp16.html
-        - output: web,pdf
+        - external_url: /callbacks.one_cycle
+          output: web,pdf
           title: OneCycleScheduler
-          url: callbacks.one_cycle.html
-        - output: web,pdf
+        - external_url: /callbacks.lr_finder
+          output: web,pdf
           title: LRFinder
-          url: callbacks.lr_finder.html
-        - output: web,pdf
+        - external_url: /callbacks.mixup
+          output: web,pdf
           title: MixUpCallback
-          url: callbacks.mixup.html
-        - output: web,pdf
+        - external_url: /callbacks.rnn
+          output: web,pdf
           title: RNNTrainer
-          url: callbacks.rnn.html
-        - output: web,pdf
+        - external_url: /callbacks.general_sched
+          output: web,pdf
           title: GeneralScheduler
-          url: callbacks.general_sched.html
-        - output: web,pdf
+        - external_url: /callbacks.csv_logger
+          output: web,pdf
           title: CSV Logger
-          url: callbacks.csv_logger.html
-        - output: web,pdf
+        - external_url: /callbacks.tracker
+          output: web,pdf
           title: Tracking callbacks
-          url: callbacks.tracker.html
         title: callbacks
     output: web
     title: Training
   - folderitems:
-    - output: web,pdf
+    - external_url: /applications
+      output: web,pdf
       title: Overview
-      url: applications.html
       subfolders:
       - output: web
         subfolderitems:
-        - output: web,pdf
+        - external_url: /vision
+          output: web,pdf
           title: Overview
-          url: vision.html
-        - output: web,pdf
+        - external_url: /vision.learner
+          output: web,pdf
           title: vision.learner
-          url: vision.learner.html
-        - output: web,pdf
+        - external_url: /vision.transform
+          output: web,pdf
           title: vision.transform
-          url: vision.transform.html
-        - output: web,pdf
+        - external_url: /vision.image
+          output: web,pdf
           title: vision.image
-          url: vision.image.html
-        - output: web,pdf
+        - external_url: /vision.data
+          output: web,pdf
           title: vision.data
-          url: vision.data.html
-        - output: web,pdf
+        - external_url: /vision.models
+          output: web,pdf
           title: vision.model overview
-          url: vision.models.html
-        - output: web,pdf
+        - external_url: /vision.models.unet
+          output: web,pdf
           title: vision.models.unet
-          url: vision.models.unet.html
         title: vision
       - output: web
         subfolderitems:
-        - output: web,pdf
+        - external_url: /text
+          output: web,pdf
           title: Overview
-          url: text.html
-        - output: web,pdf
+        - external_url: /text.learner
+          output: web,pdf
           title: text.learner
-          url: text.learner.html
-        - output: web,pdf
+        - external_url: /text.transform
+          output: web,pdf
           title: text.transform
-          url: text.transform.html
-        - output: web,pdf
+        - external_url: /text.data
+          output: web,pdf
           title: text.data
-          url: text.data.html
-        - output: web,pdf
+        - external_url: /text.models
+          output: web,pdf
           title: text.models
-          url: text.models.html
         title: text
       - output: web
         subfolderitems:
-        - output: web,pdf
+        - external_url: /tabular
+          output: web,pdf
           title: Overview
-          url: tabular.html
-        - output: web,pdf
+        - external_url: /tabular.transform
+          output: web,pdf
           title: tabular.transform
-          url: tabular.transform.html
-        - output: web,pdf
+        - external_url: /tabular.data
+          output: web,pdf
           title: tabular.data
-          url: tabular.data.html
-        - output: web,pdf
+        - external_url: /tabular.models
+          output: web,pdf
           title: tabular.models
-          url: tabular.models.html
         title: tabular
-    - output: web,pdf
+    - external_url: /collab
+      output: web,pdf
       title: collab
-      url: collab.html
     output: web
     title: Applications
   - folderitems:
-    - output: web,pdf
+    - external_url: /overview
+      output: web,pdf
       title: Overview
-      url: overview.html
-    - output: web,pdf
+    - external_url: /data_block
+      output: web,pdf
       title: data_block
-      url: data_block.html
-    - output: web,pdf
+    - external_url: /basic_data
+      output: web,pdf
       title: basic_data
-      url: basic_data.html
-    - output: web,pdf
+    - external_url: /layers
+      output: web,pdf
       title: layers
-      url: layers.html
-    - output: web,pdf
+    - external_url: /datasets
+      output: web,pdf
       title: datasets
-      url: datasets.html
-    - output: web,pdf
+    - external_url: /core
+      output: web,pdf
       title: core
-      url: core.html
-    - output: web,pdf
+    - external_url: /torch_core
+      output: web,pdf
       title: torch_core
-      url: torch_core.html
     output: web
     title: Core
   - folderitems:
-    - output: web,pdf
+    - external_url: /gen_doc
+      output: web,pdf
       title: Overview
-      url: gen_doc.html
-    - output: web,pdf
+    - external_url: /gen_doc.gen_notebooks
+      output: web,pdf
       title: gen_doc.gen_notebooks
-      url: gen_doc.gen_notebooks.html
-    - output: web,pdf
+    - external_url: /gen_doc.nbdoc
+      output: web,pdf
       title: gen_doc.nbdoc
-      url: gen_doc.nbdoc.html
-    - output: web,pdf
+    - external_url: /gen_doc.convert2html
+      output: web,pdf
       title: gen_doc.convert2html
-      url: gen_doc.convert2html.html
     output: web
     title: Doc authoring
   - folderitems:
-    - output: web,pdf
+    - external_url: /dev_develop
+      output: web,pdf
       title: Dev Notes
-      url: dev_develop.html
-    - output: web,pdf
+    - external_url: /dev_gpu
+      output: web,pdf
       title: GPU Notes
-      url: dev_gpu.html
-    - output: web,pdf
+    - external_url: /dev_git
+      output: web,pdf
       title: git notes
-      url: dev_git.html
-    - output: web,pdf
+    - external_url: /dev_test
+      output: web,pdf
       title: Testing
-      url: dev_test.html
-    - output: web,pdf
+    - external_url: /dev_style
+      output: web,pdf
       title: Style Guide
-      url: dev_style.html
-    - output: web,pdf
+    - external_url: /dev_abbr
+      output: web,pdf
       title: Abbreviations
-      url: dev_abbr.html
-    - output: web,pdf
+    - external_url: /dev_release
+      output: web,pdf
       title: Packaging
-      url: dev_release.html
     output: web
     title: Library development
   output: web
