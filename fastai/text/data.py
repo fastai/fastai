@@ -175,11 +175,12 @@ class TextDataset(TextBase):
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
-    def __init__(self, dataset:TextDataset, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False):
+    def __init__(self, dataset:TextDataset, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False, 
+                 max_len:int=25):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
         self.n = len(np.concatenate(dataset.x)) // self.bs
-        self.num_workers = 0
+        self.max_len,self.num_workers = max_len,0
 
     def __iter__(self):
         if getattr(self.dataset, 'item', None) is not None:
@@ -188,10 +189,11 @@ class LanguageModelLoader():
         self.data = self.batchify(np.concatenate([self.dataset.x[i] for i in idx]))
         self.i,self.iter = 0,0
         while self.i < self.n-1 and self.iter<len(self):
-            if self.first and self.i == 0: self.first,seq_len = False,self.bptt + 25
+            if self.first and self.i == 0: self.first,seq_len = False,self.bptt + self.max_len
             else:
                 bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
                 seq_len = max(5, int(np.random.normal(bptt, 5)))
+                seq_len = min(seq_len, self.bptt + self.max_len)
             res = self.get_batch(self.i, seq_len)
             self.i += seq_len
             self.iter += 1
