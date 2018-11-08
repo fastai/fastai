@@ -148,8 +148,8 @@ def test_series2cat():
     assert (df['col3'].dtypes == 'int64')
 
 def test_download_url():
-    for each in [(URLs.MNIST_TINY, 'tgz')]:
-        url = f'{each[0]}.{each[1]}'
+    for link, ext in [(URLs.MNIST_TINY, 'tgz')]:
+        url = f'{link}.{ext}'
         path = URLs.LOCAL_PATH/'data'/'tmp'
         try:
             os.makedirs(path)
