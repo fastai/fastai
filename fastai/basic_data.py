@@ -150,8 +150,9 @@ class DataBunch():
         "`DataBunch` factory. `bs` batch size, `tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
+        val_bs = (bs*3)//2
         dls = [DataLoader(*o, num_workers=num_workers) for o in
-               zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
+               zip(datasets, (bs,val_bs,val_bs), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
