@@ -65,7 +65,7 @@ class TextBase(DatasetBase):
         if classes is None: classes = uniqueify(labels)
         super().__init__(classes=classes,x=x)
         if labels is None: self.y = np.zeros(len(x))
-        elif encode_classes and len(labels.shape) == 1: self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
+        elif encode_classes and is1d(labels): self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         else: self.y = labels
 
 class NumericalizedDataset(TextBase):
@@ -119,7 +119,7 @@ class TokenizedDataset(TextBase):
         return NumericalizedDataset(vocab, ids, self.y, self.classes, encode_classes=False)
 
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
-    if len(texts.shape) == 1: texts = texts[:,None]
+    if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
     text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
     for i in range(1,len(df.columns)):
@@ -168,7 +168,7 @@ class TextDataset(TextBase):
         Only keep those with labels in `classes`. If `valid_pct` is not 0., splits the data randomly in two datasets accordingly.
         `mark_fields` is passed to the initialization. """
         path = Path(path)
-        classes = ifnone(classes, [cls.name for cls in find_classes(path)])
+        if classes is None: classes = [cls.name for cls in find_classes(path)]
         texts, labels, keep = [], [], {}
         for cl in classes:
             t,l = cls._folder_files(path/cl, cl, extensions=extensions)
@@ -365,17 +365,18 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
-                    tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
+                    classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
+        path = Path(path)
         txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
-        train_ds = (TextDataset.from_folder(train, classes, **txt_kwargs)
+        train_ds = (TextDataset.from_folder(path/train, classes, **txt_kwargs)
                     .tokenize(tokenizer, **tok_kwargs)
                     .numericalize(vocab, **num_kwargs))
-        datasets = [train_ds, (TextDataset.from_folder(valid, train_ds.classes, **txt_kwargs)
+        datasets = [train_ds, (TextDataset.from_folder(path/valid, train_ds.classes, **txt_kwargs)
                                .tokenize(tokenizer, **tok_kwargs)
                                .numericalize(train_ds.vocab, **num_kwargs))]
         if test:
-            datasets.append((TextDataset.from_one_folder(valid, train_ds.classes, **txt_kwargs)
+            datasets.append((TextDataset.from_one_folder(path/test, train_ds.classes, **txt_kwargs)
                              .tokenize(tokenizer, **tok_kwargs)
                              .numericalize(train_ds.vocab, **num_kwargs)))
         return cls.create(*datasets, path=path, **kwargs)
