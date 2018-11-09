@@ -36,11 +36,11 @@ def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:I
     if label_delim: labels = np.array(list(csv.reader(labels.iloc[:,0], delimiter=label_delim)))
     else: 
         if isinstance(label_cols, Iterable) and len(label_cols) > 1: labels = _decode(labels)
-        else: labels = np.squeeze(labels.values)
+        else: labels = labels.values if is1d(labels) else np.squeeze(labels.values)
     inputs = df.iloc[:,df_names_to_idx(input_cols, df)]
     if is_fnames and not isinstance(inputs.iloc[0,0], Path): inputs = inputs.iloc[:,0].str.lstrip()
     if suffix: inputs = inputs + suffix
-    return np.squeeze(inputs.values), labels
+    return (inputs.values if is1d(inputs) else np.squeeze(inputs.values)), labels
 
 class InputList(PathItemList):
     "A list of inputs. Contain methods to get the corresponding labels."
@@ -81,7 +81,7 @@ class InputList(PathItemList):
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
         inter = pd.merge(df1, df2, how='inner', on=['fnames'])
-        return self.create_label_list([(fn, np.array(lbl, dtype=np.object))
+        return self.create_label_list([(fn, lbl)
             for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)])
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1,
