@@ -299,10 +299,8 @@ class ImageDataBunch(DataBunch):
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
         if ds_tfms or size: datasets = transform_datasets(*datasets, tfms=ds_tfms, size=size, **kwargs)
-        dls = [DataLoader(*o, num_workers=num_workers) for o in
-               zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
-        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
-       
+        return super().create(*datasets, path=path, bs=bs, device=device, tfms=tfms, collate_fn=collate_fn, num_workers=num_workers)    
+    
     @classmethod
     def create_from_split_ds(cls, dss:ImageSplitDatasets, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
