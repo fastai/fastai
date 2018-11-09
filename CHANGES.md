@@ -11,16 +11,15 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
 ## 1.0.22.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
-### Fixed:
+- We no longer import submodule names automatically with `import *`
 
+### Fixed:
 
 
 ## 1.0.21 (2018-11-08)
@@ -35,8 +34,6 @@ of that change.
 ### Changed:
 
 - `datasets()` now can automatically figure out what class to use in many situations
-
-### Fixed:
 
 
 ## 1.0.20 (2018-11-07)
