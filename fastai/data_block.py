@@ -1,7 +1,7 @@
 from .torch_core import *
 from .basic_data import *
 
-__all__ = ['InputList', 'ItemList', 'LabelList', 'PathItemList', 'SplitData', 'SplitDatasets', 'get_files']
+__all__ = ['InputList', 'ItemList', 'LabelList', 'PathItemList', 'SplitData', 'SplitDatasets', 'get_files', 'create_sdata']
 
 def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
@@ -56,7 +56,19 @@ class InputList(PathItemList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, recurse=True)->'InputList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
-
+    
+    @classmethod
+    def from_df(cls, df:DataFrame, col:IntsOrStrs=0, path:PathOrStr='.')->'InputList':
+        "Get the list of inputs in the `col`of `path/csv_name`."
+        inputs = df.iloc[:,df_names_to_idx(col, df)]
+        return cls(_maybe_squeeze(inputs.values), path)
+    
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_name:str, col:IntsOrStrs=0, header:str='infer')->'InputList':
+        "Get the list of inputs in the `col`of `path/csv_name`."
+        df = pd.read_csv(path/csv_name, header=header)
+        return cls.from_df(df, col, path)
+    
     def create_label_list(self, items:Iterator)->'LabelList':
         return self._pipe(items, self.path)
     
@@ -130,7 +142,7 @@ class LabelList(PathItemList):
         opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.
         """
         df = pd.read_csv(path/csv_fname, header=header)
-        return cls.from_df(path, df, input_col, label_cols, label_delim)
+        return cls.from_df(path, df, input_cols, label_cols, label_delim)
 
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
@@ -138,8 +150,13 @@ class LabelList(PathItemList):
         """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in the csvs in `path/csv_names`
         opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.
         """
-        return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]))
+        return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]), path)
 
+    @classmethod
+    def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
+        "Create a `LabelDataset` in `path` with `inputs` and `labels`."
+        return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
+    
     def split_by_list(self, train, valid):
         return self._pipe(self.path, self.__class__(train), self.__class__(valid))
 
@@ -274,3 +291,9 @@ class SplitDatasets():
         "Factory method that passes a `DatasetBase` on `c` to `from_single`."
         return cls.from_single(path, DatasetBase([0], c=c))
 
+def create_sdata(sdata_cls, path:PathOrStr, train_x:Collection, train_y:Collection, valid_x:Collection, 
+                 valid_y:Collection, test_x:Collection=None):
+    train = LabelList.from_lists(path, train_x, train_y)
+    valid = LabelList.from_lists(path, valid_x, valid_y)
+    test = InputList(test_x, path).label_const(0) if test_x is not None else None
+    return SplitData(path, train, valid, test)

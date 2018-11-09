@@ -142,6 +142,7 @@ class TextDataset(TextBase):
     def from_df(cls, df:DataFrame, classes:Collection[Any]=None, n_labels:int=1, txt_cols:Collection[Union[int,str]]=None,
                 label_cols:Collection[Union[int,str]]=None, mark_fields:bool=True) -> 'TextDataset':
         "Create a `TextDataset` from the texts in a dataframe"
+        warnings.warn("`TextDataset.from_df` is deprecated and will soon be removed. Use the data block API.")
         label_cols = ifnone(label_cols, list(range(n_labels)))
         if classes is None:
             if len(label_cols) == 0:   classes = [0]
@@ -167,6 +168,7 @@ class TextDataset(TextBase):
         """Create a `TextDataset` by scanning the subfolders in `path` for files with `extensions`.
         Only keep those with labels in `classes`. If `valid_pct` is not 0., splits the data randomly in two datasets accordingly.
         `mark_fields` is passed to the initialization. """
+        warnings.warn("`TextDataset.from_folder` is deprecated and will soon be removed. Use the data block API.")
         path = Path(path)
         if classes is None: classes = [cls.name for cls in find_classes(path)]
         texts, labels, keep = [], [], {}
@@ -183,6 +185,7 @@ class TextDataset(TextBase):
                         mark_fields:bool=True) -> 'TextDataset':
         """Create a `TextDataset` by scanning the subfolders in `path` for files with `extensions`.
         Label all of them with `classes[0]`.  `mark_fields` is passed to the initialization. """
+        warnings.warn("`TextDataset.from_one_folder` is deprecated and will soon be removed. Use the data block API.")
         path = Path(path)
         text,labels = self._folder_files(path, classes[0], extensions=extensions)
         return cls(texts, labels, classes, mark_fields)
@@ -284,7 +287,7 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     return res, tensor([s[1] for s in samples])
 
 def _parse_kwargs(kwargs):
-    txt_kwargs, kwargs = extract_kwargs(['n_labels', 'txt_cols', 'label_cols'], kwargs)
+    txt_kwargs, kwargs = extract_kwargs(['txt_cols', 'label_cols', 'label_delim'], kwargs)
     tok_kwargs, kwargs = extract_kwargs(['chunksize'], kwargs)
     num_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq'], kwargs)
     return txt_kwargs, tok_kwargs, num_kwargs, kwargs
@@ -332,25 +335,22 @@ class TextDataBunch(DataBunch):
                  tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels."
         num_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq'], kwargs)
-        train_ds = TokenizedDataset(trn_tok, trn_lbls, classes).numericalize(vocab, **num_kwargs)
-        datasets = [train_ds, TokenizedDataset(val_tok, val_lbls, train_ds.classes).numericalize(vocab)]
-        if test: datasets.append(TokenizedDataset(tst_tok, [0]*len(tst_tok), train_ds.classes).numericalize(vocab))
-        return cls.create(*datasets, path=path, **kwargs)
+        srx = create_sdata(TextSplitData, path, trn_tok, trn_lbls, val_tok, val_lbls, tst_tok)
+        return (src.datasets(TokenizedDataset, classes=classes)
+                   .numericalize(vocab, **num_kwargs)
+                   .databunch(cls, **kwargs))
 
     @classmethod
     def from_df(cls, path:PathOrStr, train_df:DataFrame, valid_df:DataFrame, test_df:Optional[DataFrame]=None,
                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
         txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
-        datasets = [(TextDataset.from_df(train_df, classes, **txt_kwargs)
-                    .tokenize(tokenizer, **tok_kwargs)
-                    .numericalize(vocab, **num_kwargs))]
-        dfs = [valid_df] if test_df is None else [valid_df, test_df]
-        for df in dfs:
-            datasets.append((TextDataset.from_df(df, datasets[0].classes, **txt_kwargs)
-                    .tokenize(tokenizer, **tok_kwargs)
-                    .numericalize(datasets[0].vocab, **num_kwargs)))
-        return cls.create(*datasets, path=path, **kwargs)
+        dfs = [train_df, valid_df] if test_df is None else [train_df, valid_df, test_df]
+        src = TextSplitData(path, *[TextLabelList.from_df(path, df, **txt_kwargs) for df in dfs])
+        return (src.datasets(classes=classes)
+                   .tokenize(tokenizer, **tok_kwargs)
+                   .numericalize(vocab, **num_kwargs)
+                   .databunch(cls, **kwargs))
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
@@ -369,17 +369,12 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path)
         txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
-        train_ds = (TextDataset.from_folder(path/train, classes, **txt_kwargs)
-                    .tokenize(tokenizer, **tok_kwargs)
-                    .numericalize(vocab, **num_kwargs))
-        datasets = [train_ds, (TextDataset.from_folder(path/valid, train_ds.classes, **txt_kwargs)
-                               .tokenize(tokenizer, **tok_kwargs)
-                               .numericalize(train_ds.vocab, **num_kwargs))]
-        if test:
-            datasets.append((TextDataset.from_one_folder(path/test, train_ds.classes, **txt_kwargs)
-                             .tokenize(tokenizer, **tok_kwargs)
-                             .numericalize(train_ds.vocab, **num_kwargs)))
-        return cls.create(*datasets, path=path, **kwargs)
+        src = TextFileList.from_folder(path).label_from_folder(classes).split_by_folder(train,valid)
+        if test is not None: src.add_test_folder(path/test)
+        return (src.datasets(classes=classes)
+                   .tokenize(tokenizer, **tok_kwargs)
+                   .numericalize(vocab, **num_kwargs)
+                   .databunch(cls, **kwargs))
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
