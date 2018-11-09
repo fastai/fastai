@@ -103,16 +103,16 @@ You can find a complete table with extra variations [here](https://docs.nvidia.c
 
 #### libcuda.so.1: cannot open shared object file
 
-The driver issues could have other manifestations, for example, you may get an error like:
+This section is only relevant if you build `pytorch` from source - `pytorch` conda and pip packages link statically to `libcuda` and therefore `libcuda.so.1` is not required to be installed.
+
+If you get an error:
 
 ```
 ImportError: libcuda.so.1: cannot open shared object file: No such file or directory
 ```
+that means you're missing `libcuda.so.1` from your system.
 
-While you don't need to install the full CUDA package to use prebuilt `pytorch` packages, `libcuda.so.1` needs to be present on your system. It comes with the properly installed nvidia drivers. For the sake of the example, let's use `nvidia-396`.
-
-If you follow the debian `apt` installation method, `nvidia-396` apt package should have installed `libcuda1-396`, which includes `libcuda1.so.1`. Here is how it should look on the correctly installed system:
-
+On most Linux systems the `libcuda` package is optional/recommended and doesn't get installed unless explicitly instructed to do so. You need to install the specific version matching the `nvidia` driver. For the sake of this example, let's assume that you installed `nvidia-396` debian package.
 
 1. find the apt package the file belongs to - `libcuda1-396`:
 
@@ -121,32 +121,39 @@ If you follow the debian `apt` installation method, `nvidia-396` apt package sho
    libcuda1-396: /usr/lib/i386-linux-gnu/libcuda.so.1
    libcuda1-396: /usr/lib/x86_64-linux-gnu/libcuda.so.1
    ```
-2. check whether that package is installed - yes it is installed:
+2. check whether that package is installed - no, it is not installed:
    ```
    $ apt list libcuda1-396
    Listing... Done
-   libcuda1-396/unknown,now 396.44-0ubuntu1 amd64 [installed,automatic]
    ```
-3. which packages depend on that package - `nvidia-396`:
+3. let's install it:
+   ```
+   $ apt install libcuda1-396
+   ```
+4. check whether that package is installed - yes, it is installed:
+   ```
+   $ apt list libcuda1-396
+   Listing... Done
+   libcuda1-396/unknown,now 396.44-0ubuntu1 amd64 [installed]
+   ```
+
+Now, you shouldn't have this error anymore when you load `pytorch`.
+
+To check which `nvidia` driver the installed package depends on, run:
    ```
    $ apt-cache rdepends libcuda1-396 | grep nvidia
      nvidia-396
    ```
-4. check that the parent apt package `nvidia-396`, needing `libcuda1-396` package is installed - yes:
+
+To check that `nvidia-396` is installed:
    ```
    $ apt list nvidia-396
      nvidia-396/unknown,now 396.44-0ubuntu1 amd64 [installed,automatic]
    ```
-5. conclusion: when installing nvidia drivers with:
-   ```
-   $ apt install nvidia-396
-   ```
-   it automatically installed `libcuda1-396`, which contains `libcuda.so.1`.
 
 In your situation, change `396` to whatever version of the driver you're using.
 
 This should be more or less similar on the recent Ubuntu Linux versions, but could vary on other systems. If it's different on your system, find out which package contains `libcuda.so.1` and install that package.
-
 
 
 ### Do not mix conda-forge packages

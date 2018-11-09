@@ -15,3 +15,7 @@ from .version import __version__
 # Optional if jupyter is present
 try: from .gen_doc.nbdoc import doc
 except: pass
+
+del(basic_train, callback, callbacks, core, basic_data, data_block, layers, metrics, torch_core, train, datasets,
+    utils, version)
+
