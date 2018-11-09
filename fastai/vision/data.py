@@ -162,7 +162,8 @@ class SegmentationDataset(ImageClassificationBase):
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
 class PointsDataset(ImageDatasetBase):
-    def __init__(self, fns, pts): super().__init__(c=len(pts[0].view(-1)), x=fns, y=pts, task_type=TaskType.Regression)
+    def __init__(self, fns:Collection[Path], pts:Collection[Tensor]): 
+        super().__init__(c=len(pts[0].view(-1)), x=fns, y=pts, task_type=TaskType.Regression)
     def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
     def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
     
@@ -194,7 +195,7 @@ class ObjectDetectDataset(ImageClassificationBase):
         return cls(imgs, labelled_bbox, classes=classes)
 
 def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tuple[LongTensor, LongTensor]]:
-    "Function that collect samples and adds padding."
+    "Function that collect `samples` of labelled bboxes and adds padding with `pad_idx`."
     max_len = max([len(s[1].data[1]) for s in samples])
     bboxes = torch.zeros(len(samples), max_len, 4)
     labels = torch.zeros(len(samples), max_len).long() + pad_idx
@@ -395,6 +396,7 @@ class ImageDataBunch(DataBunch):
 
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
+        "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
         return ImageSplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
 
 def download_image(url,dest, timeout=4):
@@ -490,7 +492,7 @@ class ImageSplitData(SplitData):
         #return ImageMultiDataset if is_multi else ImageClassificationDataset
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from folder `test_folder` and an arbitrary label"
+        "Add test set containing items from folder `test_folder` and an arbitrary `label`."
         items = ImageFileList.from_folder(self.path/test_folder)
         return self.add_test(items, label=label)
 

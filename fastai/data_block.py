@@ -25,7 +25,11 @@ class PathItemList(ItemList):
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
-    
+
+def _maybe_squeeze(arr):
+    "Squeeze array dimensions but avoid squeezing a 1d-array containing a string."
+    return (arr if is1d(arr) else np.squeeze(arr))
+
 def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, is_fnames:bool=False,
                       label_delim:str=None, suffix:Optional[str]=None):
     """Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`.
@@ -36,11 +40,11 @@ def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:I
     if label_delim: labels = np.array(list(csv.reader(labels.iloc[:,0], delimiter=label_delim)))
     else: 
         if isinstance(label_cols, Iterable) and len(label_cols) > 1: labels = _decode(labels)
-        else: labels = labels.values if is1d(labels) else np.squeeze(labels.values)
+        else: labels = _maybe_squeeze(labels.values)
     inputs = df.iloc[:,df_names_to_idx(input_cols, df)]
     if is_fnames and not isinstance(inputs.iloc[0,0], Path): inputs = inputs.iloc[:,0].str.lstrip()
     if suffix: inputs = inputs + suffix
-    return (inputs.values if is1d(inputs) else np.squeeze(inputs.values)), labels
+    return _maybe_squeeze(inputs.values), labels
 
 class InputList(PathItemList):
     "A list of inputs. Contain methods to get the corresponding labels."
@@ -57,6 +61,7 @@ class InputList(PathItemList):
         return self._pipe(items, self.path)
     
     def label_const(self, const:Any=0)->'LabelList':
+        "Label every item with `const`."
         return self.create_label_list([(o,const) for o in self.items])
 
     def label_from_func(self, func:Callable)->'LabelList':
@@ -112,18 +117,27 @@ class LabelList(PathItemList):
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, label_delim:str=None):
-        inputs, labels = _extract_input_labels(df, input_cols, label_cols, label_delim)
+        """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in `df`.
+        If `label_delim` is specified, splits the tags in `label_cols` accordingly.
+        """
+        inputs, labels = _extract_input_labels(df, input_cols, label_cols, label_delim=label_delim)
         return cls([(i,l) for (i,l) in zip(inputs, labels)], path)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer',
                  label_delim:str=None):
+        """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in the csv in `path/csv_name`
+        opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.
+        """
         df = pd.read_csv(path/csv_fname, header=header)
         return cls.from_df(path, df, input_col, label_cols, label_delim)
 
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                   header:str='infer')->'LabelList':
+        """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in the csvs in `path/csv_names`
+        opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.
+        """
         return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]))
 
     def split_by_list(self, train, valid):
@@ -182,6 +196,8 @@ class SplitData():
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                  valid_col:int=2, header:str='infer')->'SplitData':
+        """Create a `SplitData` in `path` from the csv in `path/csv_name` read with `header`. Take the inputs from 
+        `input_cols`, the labels from `label_cols` and split by `valid_col` (`True` indicates valid set)."""
         df = pd.read_csv(path/csv_fname, header=header)
         val_idx = df.iloc[:,valid_col].nonzero()[0]
         return LabelList.from_df(path, df, input_cols, label_cols).split_by_idx(val_idx)
@@ -232,6 +248,7 @@ class SplitDatasets():
         if len(ds) == 3: self.test_ds = ds[2]
 
     def set_attr(self, **kwargs):
+        "Set the attributes in `kwargs` in the underlying datasets."
         dss = self.datasets
         for key,val in kwargs.items():
             for ds in dss: ds = setattr(ds, key, val)

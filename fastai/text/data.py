@@ -36,8 +36,8 @@ class TextSplitData(SplitData):
         return FilesTextDataset if isinstance(self.train.items[0][0],Path) else TextDataset
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from folder `test_folder` and an arbitrary label"
-        items = ImageFileList.from_folder(self.path/test_folder)
+        "Add test set containing items from folder `test_folder` and an arbitrary `label`."
+        items = TextFileList.from_folder(self.path/test_folder)
         return self.add_test(items, label=label)
 
 class TextSplitDatasets(SplitDatasets):
@@ -59,6 +59,7 @@ class TextSplitDatasets(SplitDatasets):
         return cls_func.create(*self.datasets, path=path, **kwargs)
 
 class TextBase(DatasetBase):
+    "Basic dataset for NLP tasks."
     __splits_class__ = TextSplitDatasets
     def __init__(self, x:Collection[Any], labels:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  encode_classes:bool=True):
@@ -144,8 +145,7 @@ class TextDataset(TextBase):
         label_cols = ifnone(label_cols, list(range(n_labels)))
         if classes is None:
             if len(label_cols) == 0:   classes = [0]
-            elif len(label_cols) == 1: classes = df.iloc[:,df_names_to_idx(label_cols, df)[0]].unique()
-            else:                      classes = label_cols
+            elif len(label_cols) > 1:  classes = label_cols
         labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
         if len(label_cols) > 1: labels = labels.astype(np.float32)
         txt_cols = ifnone(txt_cols, list(range(len(label_cols),len(df.columns))))
