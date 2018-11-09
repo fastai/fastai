@@ -103,7 +103,7 @@ You can find a complete table with extra variations [here](https://docs.nvidia.c
 
 #### libcuda.so.1: cannot open shared object file
 
-This section is only relevant if you build `pytorch` from source - `pytorch` conda and pip `pytorch` packages link statically to `libcuda` and therefore `libcuda.so.1` is not required to be installed.
+This section is only relevant if you build `pytorch` from source - `pytorch` conda and pip packages link statically to `libcuda` and therefore `libcuda.so.1` is not required to be installed.
 
 If you get an error:
 
