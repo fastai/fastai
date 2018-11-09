@@ -162,7 +162,7 @@ class SegmentationDataset(ImageClassificationBase):
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
 class PointsDataset(ImageDatasetBase):
-    def __init__(self, fns, pts): super().__init__(c=2, x=fns, y=pts)
+    def __init__(self, fns, pts): super().__init__(c=len(pts[0].view(-1)), x=fns, y=pts, task_type=TaskType.Regression)
     def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
     def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
     
