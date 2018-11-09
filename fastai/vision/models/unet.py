@@ -49,7 +49,7 @@ class DynamicUnet(nn.Sequential):
         ni = sfs_szs[-1][1]
         middle_conv = nn.Sequential(conv2d_relu(ni, ni*2, bn=True), conv2d_relu(ni*2, ni, bn=True))
         x = middle_conv(x)
-        layers = [encoder, nn.ReLU(), middle_conv]
+        layers = [encoder, nn.ReLU(inplace=True), middle_conv]
 
         for idx in sfs_idxs:
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
