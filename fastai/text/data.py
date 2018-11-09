@@ -168,7 +168,8 @@ class TextDataset(TextBase):
         Only keep those with labels in `classes`. If `valid_pct` is not 0., splits the data randomly in two datasets accordingly.
         `mark_fields` is passed to the initialization. """
         path = Path(path)
-        classes = ifnone(classes, [cls.name for cls in find_classes(path)])
+        if classes is None:
+            classes = [cls.name for cls in find_classes(path)]
         texts, labels, keep = [], [], {}
         for cl in classes:
             t,l = cls._folder_files(path/cl, cl, extensions=extensions)
