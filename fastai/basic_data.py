@@ -66,7 +66,7 @@ class DatasetBase(Dataset):
                 i += 1
             if i == len(self.y): return TaskType.No
             return (TaskType.Multi if isinstance(y[0],(int,str,np.int64)) else
-                    TaskType.Regression if isinstance(y[0],float,np.float32) else
+                    TaskType.Regression if isinstance(y[0],(float,np.float32)) else
                     TaskType.No)
         else: return TaskType.No
 
