@@ -3,7 +3,6 @@ from ..torch_core import *
 from .transform import *
 from ..basic_data import *
 from ..data_block import *
-from ..core import is1d
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', 'TextDataset', 'TextMtd', 'TextFileList',
            'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitData', 'TextSplitDatasets', 'FilesTextDataset',
@@ -169,8 +168,7 @@ class TextDataset(TextBase):
         Only keep those with labels in `classes`. If `valid_pct` is not 0., splits the data randomly in two datasets accordingly.
         `mark_fields` is passed to the initialization. """
         path = Path(path)
-        if classes is None:
-            classes = [cls.name for cls in find_classes(path)]
+        if classes is None: classes = [cls.name for cls in find_classes(path)]
         texts, labels, keep = [], [], {}
         for cl in classes:
             t,l = cls._folder_files(path/cl, cl, extensions=extensions)
