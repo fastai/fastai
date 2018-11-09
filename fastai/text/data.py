@@ -3,6 +3,7 @@ from ..torch_core import *
 from .transform import *
 from ..basic_data import *
 from ..data_block import *
+from ..core import is1d
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', 'TextDataset', 'TextMtd', 'TextFileList',
            'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitData', 'TextSplitDatasets', 'FilesTextDataset',
