@@ -5,7 +5,7 @@ from ..basic_data import *
 from ..data_block import *
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', 'TextDataset', 'TextMtd', 'TextFileList',
-           'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitDatasets', 'FilesTextDataset',
+           'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitData', 'TextSplitDatasets', 'FilesTextDataset',
            'NumericalizedDataset', 'TokenizedDataset']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
@@ -16,7 +16,7 @@ class TextFileList(InputList):
     def __init__(self, items:Iterator, path:PathOrStr='.'):
         super().__init__(items,path)
         self._pipe=TextLabelList
-        
+
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, recurse=True)->'ImageFileList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
@@ -39,7 +39,7 @@ class TextSplitData(SplitData):
         "Add test set containing items from folder `test_folder` and an arbitrary label"
         items = ImageFileList.from_folder(self.path/test_folder)
         return self.add_test(items, label=label)
-    
+
 class TextSplitDatasets(SplitDatasets):
     def tokenize(self, tokenizer:Tokenizer=None, chunksize:int=10000):
         "Tokenize `self.datasets` with `tokenizer` by bits of `chunksize`."
@@ -203,10 +203,10 @@ class FilesTextDataset(TextDataset):
         for f in fns:
             with open(f,'r') as f: texts.append(''.join(f.readlines()))
         super().__init__(texts, labels, classes, mark_fields, encode_classes)
-    
+
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
-    def __init__(self, dataset:TextDataset, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False, 
+    def __init__(self, dataset:TextDataset, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False,
                  max_len:int=25):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
@@ -232,7 +232,7 @@ class LanguageModelLoader():
 
     def __len__(self) -> int: return (self.n-1) // self.bptt
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
-    
+
     def batchify(self, data:np.ndarray) -> LongTensor:
         "Split the corpus `data` in batches."
         nb = data.shape[0] // self.bs
