@@ -52,6 +52,7 @@ class ImageSplitDatasets(SplitDatasets):
     def transform(self, tfms:TfmList, **kwargs)->'SplitDatasets':
         "Apply `tfms` to the underlying datasets, `kwargs` are passed to `DatasetTfm`."
         assert not isinstance(self.train_ds, DatasetTfm)
+        tfms = ifnone(tfms, [[],[]])
         self.train_ds = DatasetTfm(self.train_ds, tfms[0],  **kwargs)
         self.valid_ds = DatasetTfm(self.valid_ds, tfms[1],  **kwargs)
         if self.test_ds is not None:
@@ -83,6 +84,7 @@ class ImageClassificationBase(ImageDatasetBase):
 class ImageClassificationDataset(ImageClassificationBase):
     "`Dataset` for folders of images in style {folder}/{class}/{images}."
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None, **kwargs):
+        warnings.warn("`ImageClassificationDataset` is deprecated and will soon be removed. Use the data block API.")
         if classes is None: classes = uniqueify(labels)
         super().__init__(x=fns, classes=classes, y=labels, task_type=TaskType.Single, **kwargs)
         self.loss_func = F.cross_entropy
@@ -117,6 +119,7 @@ class ImageClassificationDataset(ImageClassificationBase):
 
 class ImageMultiDataset(ImageClassificationBase):
     def __init__(self, fns:FilePathList, labels:ImgLabels, classes:Optional[Collection[Any]]=None, **kwargs):
+        warnings.warn("`ImageMultiDataset` is deprecated and will soon be removed. Use the data block API.")
         if classes is None: classes = uniqueify(np.concatenate(labels))
         super().__init__(x=fns, classes=classes, y=labels, task_type=TaskType.Multi, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
@@ -299,20 +302,27 @@ class ImageDataBunch(DataBunch):
         dls = [DataLoader(*o, num_workers=num_workers) for o in
                zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
-
+       
+    @classmethod
+    def create_from_split_ds(cls, dss:ImageSplitDatasets, bs:int=64, ds_tfms:Optional[TfmList]=None,
+                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
+                collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
+        if ds_tfms or size: dss = dss.transform(tfms=ds_tfms, size=size, **kwargs)
+        return dss.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device)
+    
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
-                    test:Optional[PathOrStr]=None, valid_pct=None, **kwargs:Any)->'ImageDataBunch':
+                    test:Optional[PathOrStr]=None, valid_pct=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
-        if valid_pct is None:
-            train_ds = ImageClassificationDataset.from_folder(path/train)
-            datasets = [train_ds, ImageClassificationDataset.from_folder(path/valid, classes=train_ds.classes)]
-        else: datasets = ImageClassificationDataset.from_folder(path/train, valid_pct=valid_pct)
-
-        if test: datasets.append(ImageClassificationDataset.from_single_folder(
-            path/test,classes=datasets[0].classes))
-        return cls.create(*datasets, path=path, **kwargs)
+        train_src = ImageFileList.from_folder(path/train).label_from_folder(classes)
+        if valid_pct is None: 
+            src = ImageSplitData(path, train_src, ImageFileList.from_folder(path/valid).label_from_folder(classes))
+        else: 
+            src = train_src.random_split_by_pct(valid_pct)
+            src.path = path
+        if test is not None: src.add_test_folder(test)
+        return cls.create_from_split_ds(src.datasets(), **kwargs)
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
@@ -320,19 +330,11 @@ class ImageDataBunch(DataBunch):
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
         path = Path(path)
-        fnames, labels = _extract_input_labels(df, suffix=suffix, label_delim=sep, input_cols=fn_col, label_cols=label_col)
-        if sep:
-            classes = uniqueify(np.concatenate(labels))
-            datasets = ImageMultiDataset.from_folder(path, folder, fnames, labels, valid_pct=valid_pct, classes=classes)
-            if test: datasets.append(ImageMultiDataset.from_single_folder(path/test, classes=datasets[0].classes))
-        else:
-            folder_path = (path/folder).absolute()
-            (train_fns,train_lbls), (valid_fns,valid_lbls) = random_split(valid_pct, f'{folder_path}/' + fnames, labels)
-            classes = uniqueify(labels)
-            datasets = [ImageClassificationDataset(train_fns, train_lbls, classes)]
-            datasets.append(ImageClassificationDataset(valid_fns, valid_lbls, classes))
-            if test: datasets.append(ImageClassificationDataset.from_single_folder(Path(path)/test, classes=classes))
-        return cls.create(*datasets, path=path, **kwargs)
+        src = (ImageFileList.from_folder(path/folder)
+                .label_from_df(df, suffix=suffix, sep=sep, fn_col=fn_col, label_col=label_col)
+                .random_split_by_pct(valid_pct))
+        if test is not None: src.add_test_folder(test)
+        return cls.create_from_split_ds(src.datasets(), **kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
@@ -347,11 +349,9 @@ class ImageDataBunch(DataBunch):
     @classmethod
     def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, test:str=None, **kwargs):
         classes = uniqueify(labels)
-        train,valid = random_split(valid_pct, fnames, labels)
-        datasets = [ImageClassificationDataset(*train, classes),
-                    ImageClassificationDataset(*valid, classes)]
-        if test: datasets.append(ImageClassificationDataset.from_single_folder(Path(path)/test, classes=classes))
-        return cls.create(*datasets, path=path, **kwargs)
+        src = ImageLabelList.from_lists(path, fnames, labels).random_split_by_pct(valid_pct)
+        if test is not None: src.add_test_folder(test)
+        return cls.create_from_split_ds(src.datasets(), **kwargs)
 
     @classmethod
     def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, test:str=None, **kwargs):
@@ -494,5 +494,6 @@ class ImageSplitData(SplitData):
     def add_test_folder(self, test_folder:str='test', label:Any=None):
         "Add test set containing items from folder `test_folder` and an arbitrary `label`."
         items = ImageFileList.from_folder(self.path/test_folder)
+        label = ifnone(label, self.train.items[0][1])
         return self.add_test(items, label=label)
 

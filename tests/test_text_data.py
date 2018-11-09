@@ -43,17 +43,19 @@ def test_from_csv_and_from_df():
                 if func is 'from_csv':
                     filename = 'text'
                     text_csv_file(os.path.join(path, filename+'.csv'), n_labels=n_labels)
-                    data_bunch = TextDataBunch.from_csv(path, f'{filename}.csv', test=f'{filename}.csv', n_labels=n_labels)
-                    clas_data_bunch = TextClasDataBunch.from_csv(path, f'{filename}.csv', test=f'{filename}.csv', n_labels=n_labels)
+                    data_bunch = TextDataBunch.from_csv(path, f'{filename}.csv', test=f'{filename}.csv', label_cols=list(range(n_labels)), text_cols=n_labels)
+                    clas_data_bunch = TextClasDataBunch.from_csv(path, f'{filename}.csv', test=f'{filename}.csv', label_cols=list(range(n_labels)), text_cols=n_labels)
                 else:
                     df = text_df(n_labels=n_labels)
-                    data_bunch = TextDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
-                    clas_data_bunch = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+                    data_bunch = TextDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), text_cols=["text"])
+                    clas_data_bunch = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), text_cols=["text"])
 
                 for data in [data_bunch, clas_data_bunch]:
                     assert len(data.classes) == 2 if n_labels==1 else n_labels
-                    assert set(data.classes) == {True, False} if n_labels==1 else [1,2,3]
-                    if n_labels > 1: assert len(data.y[0]) == n_labels
+                    assert set(data.classes) == {0, 1} if n_labels==1 else {'0', '0.1', '0.2'}
+                    if n_labels > 1: 
+                        x,y = data.train_ds[0]
+                        assert len(y) == n_labels
             finally:
                 shutil.rmtree(path)
 

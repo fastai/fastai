@@ -133,7 +133,7 @@ class LabelList(PathItemList):
         If `label_delim` is specified, splits the tags in `label_cols` accordingly.
         """
         inputs, labels = _extract_input_labels(df, input_cols, label_cols, label_delim=label_delim)
-        return cls([(i,l) for (i,l) in zip(inputs, labels)], path)
+        return cls.from_lists(path, inputs, labels)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer',
@@ -155,6 +155,7 @@ class LabelList(PathItemList):
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
         "Create a `LabelDataset` in `path` with `inputs` and `labels`."
+        inputs,labels = np.array(inputs),np.array(labels)
         return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
     
     def split_by_list(self, train, valid):
