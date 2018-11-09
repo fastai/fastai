@@ -79,7 +79,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
     model = nn.Sequential(body, head)
-    learner_cls = ifnone(data.learner_type(), Learner)
+    learner_cls = ifnone(data.learner_type, Learner)
     learn = learner_cls(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
@@ -93,7 +93,7 @@ def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
-    learner_cls = ifnone(data.learner_type(), Learner)
+    learner_cls = ifnone(data.learner_type, Learner)
     learn = learner_cls(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
@@ -135,15 +135,15 @@ class ClassificationInterpretation():
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
         if slice_size is None: cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-        else: 
+        else:
             cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
             for i in range(0, self.y_true.shape[0], slice_size):
-                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None]) 
+                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None])
                             & (self.y_true[i:i+slice_size]==x[:,None,None])).sum(2)
                 torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, 
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2,
                               slice_size:int=None, **kwargs)->None:
         """Plot the confusion matrix, with `title` and using `cmap`. If `normalize`, plots the percentages with
         `norm_dec` digits. `slice_size` can be used to avoid out of memory error if your set is too big.

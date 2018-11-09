@@ -161,18 +161,18 @@ class SegmentationDataset(ImageClassificationBase):
         self.mask_opener = open_mask
 
     def _get_y(self,i,x): return self.mask_opener(self.y[i])
-    
+
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
 class PointsDataset(ImageDatasetBase):
-    def __init__(self, fns:Collection[Path], pts:Collection[Tensor]): 
+    def __init__(self, fns:Collection[Path], pts:Collection[Tensor]):
         super().__init__(c=len(pts[0].view(-1)), x=fns, y=pts, task_type=TaskType.Regression)
     def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
     def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
-    
+
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
-    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], 
+    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]],
                  classes:Collection[str]=None):
         assert len(x_fns)==len(labelled_bbs)
         if classes is None:
@@ -326,7 +326,7 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
-                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None, 
+                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None,
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
         path = Path(path)
@@ -397,7 +397,16 @@ class ImageDataBunch(DataBunch):
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
-        return ImageSplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+        databunch = ImageSplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+        databunch.learner_type = ImageLearner
+        return databunch
+
+    @staticmethod
+    def single_classification_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
+        "Create an empty `ImageDataBunch` in `path` with `classes` for a classification task. Typically used for inference."
+        databunch = ImageSplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+        databunch.learner_type = ClassificationLearner
+        return databunch
 
 def download_image(url,dest, timeout=4):
     try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
