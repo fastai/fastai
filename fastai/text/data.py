@@ -365,7 +365,7 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
-                    tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
+                    classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
         train_ds = (TextDataset.from_folder(train, classes, **txt_kwargs)
