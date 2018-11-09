@@ -313,14 +313,22 @@ class Recorder(LearnerCallback):
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
 
-    def plot_losses(self)->None:
+    def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
+        if last is None:
+            last=len(self.nb_batches)
+        else:
+            assert last<=len(self.nb_batches), "We can only plot up to the last %d epochs. Please adapt 'last' parameter accordingly."%len(self.nb_batches)
         _, ax = plt.subplots(1,1)
-        iterations = range_of(self.losses)
-        ax.plot(iterations, self.losses)
-        val_iter = self.nb_batches
-        val_iter = np.cumsum(val_iter)
-        ax.plot(val_iter, self.val_losses)
+        l_b=np.sum(self.nb_batches[-last:])
+        iterations = range_of(self.losses)[-l_b:]
+        ax.plot(iterations, self.losses[-l_b:], label='Train')
+        val_iter = self.nb_batches[-last:]
+        val_iter = np.cumsum(val_iter)+np.sum(self.nb_batches[:-last])
+        ax.plot(val_iter, self.val_losses[-last:], label='Validation')
+        ax.set_ylabel('Loss')
+        ax.set_xlabel('Batches processed')
+        ax.legend()
 
     def plot_metrics(self)->None:
         "Plot metrics collected during training."
