@@ -190,3 +190,22 @@ You will probably want to filter these emails into a dedicated folder. If so, us
 ```
 List-ID: <fastai-diff.googlegroups.com>
 ```
+
+## Some useful oneliners
+
+To fix links to have `.html` again (both needed):
+
+```
+perl -pi -e 's|href="(/[^"#]+)(#[^"]+)?"|href="$1.html$2"|g' docs/*html docs_src/*ipynb
+perl -pi -e 's{https?://((?:docs|docs-dev|course-v3).fast.ai/)([\w\._-]+)(#[\w-_\.]+)?}{http://$1$2 .html$3}g' docs/*md
+perl -pi -e 's{https?://((?:docs|docs-dev|course-v3).fast.ai/)}{https://$1}g' docs/*md README.md
+```
+
+How to safely and efficiently search/replace files in git repo using CLI. The operation must not touch anything under `.git`:
+```
+find . -type d -name ".git" -prune -o -type f -exec perl -pi -e 's|OLDSTR|NEWSTR|g' {} \;
+```
+but it `touch(1)`es all files which slows down git-side, so we want to do it on files that actually contain the old pattern:
+```
+grep --exclude-dir=.git -lIr "OLDSTR" . | xargs -n1 perl -pi -e 's|OLDSTR|NEWSTR|g'
+```
