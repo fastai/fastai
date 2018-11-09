@@ -368,15 +368,16 @@ class TextDataBunch(DataBunch):
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
+        path = Path(path)
         txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
-        train_ds = (TextDataset.from_folder(train, classes, **txt_kwargs)
+        train_ds = (TextDataset.from_folder(path/train, classes, **txt_kwargs)
                     .tokenize(tokenizer, **tok_kwargs)
                     .numericalize(vocab, **num_kwargs))
-        datasets = [train_ds, (TextDataset.from_folder(valid, train_ds.classes, **txt_kwargs)
+        datasets = [train_ds, (TextDataset.from_folder(path/valid, train_ds.classes, **txt_kwargs)
                                .tokenize(tokenizer, **tok_kwargs)
                                .numericalize(train_ds.vocab, **num_kwargs))]
         if test:
-            datasets.append((TextDataset.from_one_folder(valid, train_ds.classes, **txt_kwargs)
+            datasets.append((TextDataset.from_one_folder(path/test, train_ds.classes, **txt_kwargs)
                              .tokenize(tokenizer, **tok_kwargs)
                              .numericalize(train_ds.vocab, **num_kwargs)))
         return cls.create(*datasets, path=path, **kwargs)
