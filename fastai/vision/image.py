@@ -579,7 +579,7 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
         if do_resolve: _resolve_tfms(tfms)
         x = x.clone()
         x.set_sample(padding_mode=padding_mode, **kwargs)
-        if size:
+        if size is not None:
             crop_target = _get_crop_target(size, mult=mult)
             if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
                 target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
