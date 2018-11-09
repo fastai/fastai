@@ -60,12 +60,7 @@ def ifnone(a:Any,b:Any)->Any:
 
 def is1d(a:Collection)->bool:
     "Returns True if a collection is one dimensional"
-    if hasattr(a, 'shape'):
-        return len(a.shape) == 1
-    else:
-        # We assume that they're passing standard python list, which is always
-        # one dimensional
-        return True
+    return len(a.shape) == 1 if hasattr(a, 'shape') else return True
 
 def uniqueify(x:Series)->List:
     "Return unique values of `x`"
