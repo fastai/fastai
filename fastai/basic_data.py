@@ -57,11 +57,11 @@ class DatasetBase(Dataset):
     def get_task_type(self):
         if self.y is None or len(self.y) == 0: return TaskType.No
         y = self.y[0]
-        if isinstance(y,(int,str)): return TaskType.Single
-        elif isinstance(y, float):  return TaskType.Regression
+        if isinstance(y,(int,str,np.int64)): return TaskType.Single
+        elif isinstance(y, float,np.float32):  return TaskType.Regression
         elif isinstance(y, Iterable):
-            return (TaskType.Multi if isinstance(y[0],(int,str)) else
-                    TaskType.Regression if isinstance(y[0],float) else
+            return (TaskType.Multi if isinstance(y[0],(int,str,np.int64)) else
+                    TaskType.Regression if isinstance(y[0],float,np.float32) else
                     TaskType.No)
         else: return TaskType.No
 
