@@ -29,12 +29,10 @@ def test_requires_grad():
 def test_requires_grad_set():
     m = simple_cnn(b)
     requires_grad(m,False)
-    allF = True
-    for p in m.parameters(): allF=allF and not p.requires_grad
+    allF = np.all([not p.requires_grad for p in m.parameters()])
     assert allF, "requires_grad(m,False) did not set all parameters to False"
     requires_grad(m,True)
-    allT = True
-    for p in m.parameters(): allT=allT and p.requires_grad
+    allT = np.all([p.requires_grad for p in m.parameters()])
     assert allT, "requires_grad(m,True) did not set all parameters to True"
 
 def test_apply_init():
