@@ -58,6 +58,15 @@ def ifnone(a:Any,b:Any)->Any:
     "`a` if `a` is not None, otherwise `b`."
     return b if a is None else a
 
+def is1d(a:Collection)->bool:
+    "Returns True if a collection is one dimensional"
+    if hasattr(a, 'shape'):
+        return len(a.shape) == 1
+    else:
+        # We assume that they're passing standard python list, which is always
+        # one dimensional
+        return True
+
 def uniqueify(x:Series)->List:
     "Return unique values of `x`"
     return list(OrderedDict.fromkeys(x).keys())

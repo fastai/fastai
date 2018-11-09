@@ -3,6 +3,7 @@ from ..torch_core import *
 from .transform import *
 from ..basic_data import *
 from ..data_block import *
+from ..core import is1d
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', 'TextDataset', 'TextMtd', 'TextFileList',
            'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'TextSplitData', 'TextSplitDatasets', 'FilesTextDataset',
@@ -65,7 +66,7 @@ class TextBase(DatasetBase):
         if classes is None: classes = uniqueify(labels)
         super().__init__(classes=classes,x=x)
         if labels is None: self.y = np.zeros(len(x))
-        elif encode_classes and len(labels.shape) == 1: self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
+        elif encode_classes and is1d(labels): self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
         else: self.y = labels
 
 class NumericalizedDataset(TextBase):
@@ -119,7 +120,7 @@ class TokenizedDataset(TextBase):
         return NumericalizedDataset(vocab, ids, self.y, self.classes, encode_classes=False)
 
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
-    if len(texts.shape) == 1: texts = texts[:,None]
+    if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
     text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
     for i in range(1,len(df.columns)):
