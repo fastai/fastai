@@ -50,6 +50,7 @@ of that change.
 ### Changed:
 
 - `datasets()` now can automatically figure out what class to use in many situations
+- `download_images()` now saves images with their original extensions
 
 
 ## 1.0.20 (2018-11-07)
