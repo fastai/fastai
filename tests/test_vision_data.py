@@ -47,3 +47,21 @@ def test_from_df_test_dataset(path):
     data = ImageDataBunch.from_df('.', df, path, test='test')
     #If the test set is not registered, this will raise an assertion error
     data.test_ds
+
+def test_download_images():
+    base_url = 'http://files.fast.ai/data/tst_images/'
+    fnames = ['tst0.jpg', 'tst1.png', 'tst2.tif']
+
+    tmp_path = URLs.LOCAL_PATH/'data'/'tmp'
+    try:
+        os.makedirs(tmp_path)
+        with open(tmp_path/'imgs.txt', 'w') as f:
+            [f.write(f'{base_url}{fname}\n') for fname in fnames]
+        download_images(tmp_path/'imgs.txt', tmp_path)
+        for fname in fnames:
+            ext = fname.split('.')[-1]
+            files = list(tmp_path.glob(f'*.{ext}'))
+            assert len(files) == 1
+            assert os.path.getsize(files[0]) > 0
+    finally:
+        shutil.rmtree(tmp_path)

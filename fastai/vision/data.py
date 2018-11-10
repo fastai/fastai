@@ -158,14 +158,14 @@ class SegmentationDataset(ImageClassificationBase):
         self.mask_opener = open_mask
 
     def _get_y(self,i,x): return self.mask_opener(self.y[i])
-    
+
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
 class PointsDataset(ImageDatasetBase):
     def __init__(self, fns, pts): super().__init__(c=2, x=fns, y=pts)
     def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
     def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
-    
+
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
     def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]],
@@ -315,7 +315,7 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
-                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None, 
+                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None,
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
         path = Path(path)
@@ -409,7 +409,7 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
     if max_workers:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
-            suffixes = [re.findall(r'\.\w+?(?=\?)', url) for url in urls]
+            suffixes = [re.findall(r'\.\w+?(?=(?:\?|$))', url) for url in urls]
             suffixes = [suffix[0] if len(suffix)>0  else '.jpg' for suffix in suffixes]
             futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}", timeout=timeout)
                        for i,url in enumerate(urls)]
