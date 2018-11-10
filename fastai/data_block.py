@@ -1,7 +1,7 @@
 from .torch_core import *
 from .basic_data import *
 
-__all__ = ['InputList', 'ItemList', 'LabelList', 'PathItemList', 'SplitData', 'SplitDatasets', 'get_files']
+__all__ = ['InputList', 'ItemList', 'LabelList', 'PathItemList', 'SplitData', 'SplitDatasets', 'get_files', 'create_sdata']
 
 def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
@@ -25,7 +25,11 @@ class PathItemList(ItemList):
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
-    
+
+def _maybe_squeeze(arr):
+    "Squeeze array dimensions but avoid squeezing a 1d-array containing a string."
+    return (arr if is1d(arr) else np.squeeze(arr))
+
 def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, is_fnames:bool=False,
                       label_delim:str=None, suffix:Optional[str]=None):
     """Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`.
@@ -36,11 +40,11 @@ def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:I
     if label_delim: labels = np.array(list(csv.reader(labels.iloc[:,0], delimiter=label_delim)))
     else: 
         if isinstance(label_cols, Iterable) and len(label_cols) > 1: labels = _decode(labels)
-        else: labels = np.squeeze(labels.values)
+        else: labels = _maybe_squeeze(labels.values)
     inputs = df.iloc[:,df_names_to_idx(input_cols, df)]
     if is_fnames and not isinstance(inputs.iloc[0,0], Path): inputs = inputs.iloc[:,0].str.lstrip()
     if suffix: inputs = inputs + suffix
-    return np.squeeze(inputs.values), labels
+    return _maybe_squeeze(inputs.values), labels
 
 class InputList(PathItemList):
     "A list of inputs. Contain methods to get the corresponding labels."
@@ -52,11 +56,24 @@ class InputList(PathItemList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, recurse=True)->'InputList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions=extensions, recurse=recurse), path)
-
+    
+    @classmethod
+    def from_df(cls, df:DataFrame, col:IntsOrStrs=0, path:PathOrStr='.')->'InputList':
+        "Get the list of inputs in the `col`of `path/csv_name`."
+        inputs = df.iloc[:,df_names_to_idx(col, df)]
+        return cls(_maybe_squeeze(inputs.values), path)
+    
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_name:str, col:IntsOrStrs=0, header:str='infer')->'InputList':
+        "Get the list of inputs in the `col`of `path/csv_name`."
+        df = pd.read_csv(path/csv_name, header=header)
+        return cls.from_df(df, col, path)
+    
     def create_label_list(self, items:Iterator)->'LabelList':
         return self._pipe(items, self.path)
     
     def label_const(self, const:Any=0)->'LabelList':
+        "Label every item with `const`."
         return self.create_label_list([(o,const) for o in self.items])
 
     def label_from_func(self, func:Callable)->'LabelList':
@@ -81,7 +98,7 @@ class InputList(PathItemList):
         df1 = pd.DataFrame({'fnames':fnames, 'labels':labels}, columns=['fnames', 'labels'])
         df2 = pd.DataFrame({'fnames':self.items}, columns=['fnames'])
         inter = pd.merge(df1, df2, how='inner', on=['fnames'])
-        return self.create_label_list([(fn, np.array(lbl, dtype=np.object))
+        return self.create_label_list([(fn, lbl)
             for fn, lbl in zip(inter['fnames'].values, inter['labels'].values)])
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1,
@@ -112,20 +129,35 @@ class LabelList(PathItemList):
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, label_delim:str=None):
-        inputs, labels = _extract_input_labels(df, input_cols, label_cols, label_delim)
-        return cls([(i,l) for (i,l) in zip(inputs, labels)], path)
+        """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in `df`.
+        If `label_delim` is specified, splits the tags in `label_cols` accordingly.
+        """
+        inputs, labels = _extract_input_labels(df, input_cols, label_cols, label_delim=label_delim)
+        return cls.from_lists(path, inputs, labels)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, header:str='infer',
                  label_delim:str=None):
+        """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in the csv in `path/csv_name`
+        opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.
+        """
         df = pd.read_csv(path/csv_fname, header=header)
-        return cls.from_df(path, df, input_col, label_cols, label_delim)
+        return cls.from_df(path, df, input_cols, label_cols, label_delim)
 
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                   header:str='infer')->'LabelList':
-        return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]))
+        """Create a `LabelDataset` in `path` by reading `input_cols` and `label_cols` in the csvs in `path/csv_names`
+        opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.
+        """
+        return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]), path)
 
+    @classmethod
+    def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
+        "Create a `LabelDataset` in `path` with `inputs` and `labels`."
+        inputs,labels = np.array(inputs),np.array(labels)
+        return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
+    
     def split_by_list(self, train, valid):
         return self._pipe(self.path, self.__class__(train), self.__class__(valid))
 
@@ -182,6 +214,8 @@ class SplitData():
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                  valid_col:int=2, header:str='infer')->'SplitData':
+        """Create a `SplitData` in `path` from the csv in `path/csv_name` read with `header`. Take the inputs from 
+        `input_cols`, the labels from `label_cols` and split by `valid_col` (`True` indicates valid set)."""
         df = pd.read_csv(path/csv_fname, header=header)
         val_idx = df.iloc[:,valid_col].nonzero()[0]
         return LabelList.from_df(path, df, input_cols, label_cols).split_by_idx(val_idx)
@@ -232,6 +266,7 @@ class SplitDatasets():
         if len(ds) == 3: self.test_ds = ds[2]
 
     def set_attr(self, **kwargs):
+        "Set the attributes in `kwargs` in the underlying datasets."
         dss = self.datasets
         for key,val in kwargs.items():
             for ds in dss: ds = setattr(ds, key, val)
@@ -257,3 +292,9 @@ class SplitDatasets():
         "Factory method that passes a `DatasetBase` on `c` to `from_single`."
         return cls.from_single(path, DatasetBase([0], c=c))
 
+def create_sdata(sdata_cls, path:PathOrStr, train_x:Collection, train_y:Collection, valid_x:Collection, 
+                 valid_y:Collection, test_x:Collection=None):
+    train = LabelList.from_lists(path, train_x, train_y)
+    valid = LabelList.from_lists(path, valid_x, valid_y)
+    test = InputList(test_x, path).label_const(0) if test_x is not None else None
+    return SplitData(path, train, valid, test)

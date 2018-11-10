@@ -46,7 +46,7 @@ def test_classifier():
         os.makedirs(path)
         try:
             df = text_df(n_labels=n_labels)
-            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
+            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), text_cols=["text"])
             classifier = text_classifier_learner(data)
             assert last_layer(classifier.model).out_features == n_labels if n_labels > 1 else n_labels+1
         finally:

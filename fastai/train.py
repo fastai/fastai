@@ -3,8 +3,6 @@ from .torch_core import *
 from .callbacks import *
 from .basic_data import *
 from .basic_train import *
-from .vision import models,create_body
-from fastai.vision.learner import cnn_config
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'mixup']
 

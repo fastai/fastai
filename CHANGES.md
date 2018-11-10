@@ -11,16 +11,16 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
 ## 1.0.22.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
-### Fixed:
+- We no longer import submodule names automatically with `import *`
+- All the `DataBunch` factory method use the data block API, the factory method of `Datasets` are deprecated and will be removed in a future version.
 
+### Fixed:
 
 
 ## 1.0.21 (2018-11-08)
@@ -36,8 +36,6 @@ of that change.
 
 - `datasets()` now can automatically figure out what class to use in many situations
 - `download_images()` now saves images with their original extensions
-
-### Fixed:
 
 
 ## 1.0.20 (2018-11-07)

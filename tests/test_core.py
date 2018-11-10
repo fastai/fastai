@@ -146,3 +146,15 @@ def test_series2cat():
     for col in cols:
         assert (df[col].dtypes == 'category')
     assert (df['col3'].dtypes == 'int64')
+
+def test_download_url():
+    for link, ext in [(URLs.MNIST_TINY, 'tgz')]:
+        url = f'{link}.{ext}'
+        path = URLs.LOCAL_PATH/'data'/'tmp'
+        try:
+            os.makedirs(path)
+            filepath = path/url2name(url)
+            download_url(url, filepath)
+            assert os.path.getsize(filepath) > 0
+        finally:
+            shutil.rmtree(path)

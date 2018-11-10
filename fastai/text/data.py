@@ -36,8 +36,8 @@ class TextSplitData(SplitData):
         return FilesTextDataset if isinstance(self.train.items[0][0],Path) else TextDataset
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from folder `test_folder` and an arbitrary label"
-        items = ImageFileList.from_folder(self.path/test_folder)
+        "Add test set containing items from folder `test_folder` and an arbitrary `label`."
+        items = TextFileList.from_folder(self.path/test_folder)
         return self.add_test(items, label=label)
 
 class TextSplitDatasets(SplitDatasets):
@@ -59,14 +59,13 @@ class TextSplitDatasets(SplitDatasets):
         return cls_func.create(*self.datasets, path=path, **kwargs)
 
 class TextBase(DatasetBase):
+    "Basic dataset for NLP tasks."
     __splits_class__ = TextSplitDatasets
     def __init__(self, x:Collection[Any], labels:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  encode_classes:bool=True):
-        if classes is None: classes = uniqueify(labels)
-        super().__init__(classes=classes,x=x)
+        super().__init__(x=x)
         if labels is None: self.y = np.zeros(len(x))
-        elif encode_classes and len(labels.shape) == 1: self.y = np.array([self.class2idx[o] for o in labels], dtype=np.int64)
-        else: self.y = labels
+        super().__init__(x, labels, classes, do_encode_y=encode_classes)
 
 class NumericalizedDataset(TextBase):
     "To directly create a text dataset from `ids` and `labels`."
@@ -74,7 +73,6 @@ class NumericalizedDataset(TextBase):
                  classes:Collection[Any]=None, encode_classes:bool=True):
         super().__init__(ids, labels, classes, encode_classes)
         self.vocab, self.vocab_size = vocab, len(vocab.itos)
-        self.loss_func = F.cross_entropy if len(self.y.shape) <= 1 else F.binary_cross_entropy_with_logits
 
     def get_text_item(self, idx, sep=' ', max_len:int=None):
         "Return the text in `idx`, tokens separated by `sep` and cutting at `max_len`."
@@ -119,7 +117,7 @@ class TokenizedDataset(TextBase):
         return NumericalizedDataset(vocab, ids, self.y, self.classes, encode_classes=False)
 
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
-    if len(texts.shape) == 1: texts = texts[:,None]
+    if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
     text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
     for i in range(1,len(df.columns)):
@@ -129,11 +127,7 @@ def _join_texts(texts:Collection[str], mark_fields:bool=True):
 class TextDataset(TextBase):
     "Basic dataset for NLP tasks."
     def __init__(self, texts:Collection[str], labels:Collection[Any]=None, classes:Collection[Any]=None,
-                 mark_fields:bool=True, encode_classes:bool=True, is_fnames:bool=False):
-        if is_fnames:
-            fnames,texts = texts.copy(),[]
-            for f in fnames:
-                with open(f,'r') as f: texts.append(''.join(f.readlines()))
+                 mark_fields:bool=True, encode_classes:bool=True):
         texts = _join_texts(np.array(texts), mark_fields)
         super().__init__(texts, labels, classes, encode_classes)
 
@@ -141,11 +135,11 @@ class TextDataset(TextBase):
     def from_df(cls, df:DataFrame, classes:Collection[Any]=None, n_labels:int=1, txt_cols:Collection[Union[int,str]]=None,
                 label_cols:Collection[Union[int,str]]=None, mark_fields:bool=True) -> 'TextDataset':
         "Create a `TextDataset` from the texts in a dataframe"
+        warnings.warn("`TextDataset.from_df` is deprecated and will soon be removed. Use the data block API.")
         label_cols = ifnone(label_cols, list(range(n_labels)))
         if classes is None:
             if len(label_cols) == 0:   classes = [0]
-            elif len(label_cols) == 1: classes = df.iloc[:,df_names_to_idx(label_cols, df)[0]].unique()
-            else:                      classes = label_cols
+            elif len(label_cols) > 1:  classes = label_cols
         labels = np.squeeze(df.iloc[:,df_names_to_idx(label_cols, df)].values)
         if len(label_cols) > 1: labels = labels.astype(np.float32)
         txt_cols = ifnone(txt_cols, list(range(len(label_cols),len(df.columns))))
@@ -167,8 +161,9 @@ class TextDataset(TextBase):
         """Create a `TextDataset` by scanning the subfolders in `path` for files with `extensions`.
         Only keep those with labels in `classes`. If `valid_pct` is not 0., splits the data randomly in two datasets accordingly.
         `mark_fields` is passed to the initialization. """
+        warnings.warn("`TextDataset.from_folder` is deprecated and will soon be removed. Use the data block API.")
         path = Path(path)
-        classes = ifnone(classes, [cls.name for cls in find_classes(path)])
+        if classes is None: classes = [cls.name for cls in find_classes(path)]
         texts, labels, keep = [], [], {}
         for cl in classes:
             t,l = cls._folder_files(path/cl, cl, extensions=extensions)
@@ -183,6 +178,7 @@ class TextDataset(TextBase):
                         mark_fields:bool=True) -> 'TextDataset':
         """Create a `TextDataset` by scanning the subfolders in `path` for files with `extensions`.
         Label all of them with `classes[0]`.  `mark_fields` is passed to the initialization. """
+        warnings.warn("`TextDataset.from_one_folder` is deprecated and will soon be removed. Use the data block API.")
         path = Path(path)
         text,labels = self._folder_files(path, classes[0], extensions=extensions)
         return cls(texts, labels, classes, mark_fields)
@@ -283,16 +279,17 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
         else:         res[:len(s[0]):,i] = LongTensor(s[0])
     return res, tensor([s[1] for s in samples])
 
-def _parse_kwargs(kwargs):
-    txt_kwargs, kwargs = extract_kwargs(['n_labels', 'txt_cols', 'label_cols'], kwargs)
-    tok_kwargs, kwargs = extract_kwargs(['chunksize'], kwargs)
-    num_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq'], kwargs)
-    return txt_kwargs, tok_kwargs, num_kwargs, kwargs
-
 class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
     `TextClasDataBunch`."""
 
+    @classmethod
+    def create_from_split_ds(cls, dss:TextSplitDatasets, vocab:Vocab=None, tokenizer:Tokenizer=None, 
+                      chunksize:int=10000, max_vocab:int=60000, min_freq:int=2, **kwargs)->'TextDataBunch':
+        return (dss.tokenize(tokenizer, chunksize=chunksize)
+                   .numericalize(vocab, max_vocab=max_vocab, min_freq=min_freq)
+                   .databunch(cls, **kwargs))
+    
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
@@ -332,53 +329,41 @@ class TextDataBunch(DataBunch):
                  tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels."
         num_kwargs, kwargs = extract_kwargs(['max_vocab', 'min_freq'], kwargs)
-        train_ds = TokenizedDataset(trn_tok, trn_lbls, classes).numericalize(vocab, **num_kwargs)
-        datasets = [train_ds, TokenizedDataset(val_tok, val_lbls, train_ds.classes).numericalize(vocab)]
-        if test: datasets.append(TokenizedDataset(tst_tok, [0]*len(tst_tok), train_ds.classes).numericalize(vocab))
-        return cls.create(*datasets, path=path, **kwargs)
+        srx = create_sdata(TextSplitData, path, trn_tok, trn_lbls, val_tok, val_lbls, tst_tok)
+        return (src.datasets(TokenizedDataset, classes=classes)
+                   .numericalize(vocab, **num_kwargs)
+                   .databunch(cls, **kwargs))
 
     @classmethod
     def from_df(cls, path:PathOrStr, train_df:DataFrame, valid_df:DataFrame, test_df:Optional[DataFrame]=None,
-                tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, **kwargs) -> DataBunch:
+                tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1, 
+                label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
-        txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
-        datasets = [(TextDataset.from_df(train_df, classes, **txt_kwargs)
-                    .tokenize(tokenizer, **tok_kwargs)
-                    .numericalize(vocab, **num_kwargs))]
-        dfs = [valid_df] if test_df is None else [valid_df, test_df]
-        for df in dfs:
-            datasets.append((TextDataset.from_df(df, datasets[0].classes, **txt_kwargs)
-                    .tokenize(tokenizer, **tok_kwargs)
-                    .numericalize(datasets[0].vocab, **num_kwargs)))
-        return cls.create(*datasets, path=path, **kwargs)
+        dfs = [train_df, valid_df] if test_df is None else [train_df, valid_df, test_df]
+        src = TextSplitData(path, *[TextLabelList.from_df(path, df, text_cols, label_cols, label_delim) for df in dfs])
+        return cls.create_from_split_ds(src.datasets(classes=classes), **kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
-                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', **kwargs) -> DataBunch:
+                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1, 
+                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
         df = pd.read_csv(Path(path)/csv_name, header=header)
         idx = np.random.permutation(len(df))
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
-        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, **kwargs)
+        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols, 
+                           label_cols, label_delim, **kwargs)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
-                    tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
+                    classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
-        txt_kwargs, tok_kwargs, num_kwargs, kwargs = _parse_kwargs(kwargs)
-        train_ds = (TextDataset.from_folder(train, classes, **txt_kwargs)
-                    .tokenize(tokenizer, **tok_kwargs)
-                    .numericalize(vocab, **num_kwargs))
-        datasets = [train_ds, (TextDataset.from_folder(valid, train_ds.classes, **txt_kwargs)
-                               .tokenize(tokenizer, **tok_kwargs)
-                               .numericalize(train_ds.vocab, **num_kwargs))]
-        if test:
-            datasets.append((TextDataset.from_one_folder(valid, train_ds.classes, **txt_kwargs)
-                             .tokenize(tokenizer, **tok_kwargs)
-                             .numericalize(train_ds.vocab, **num_kwargs)))
-        return cls.create(*datasets, path=path, **kwargs)
+        path = Path(path)
+        src = TextFileList.from_folder(path).label_from_folder(classes).split_by_folder(train,valid)
+        if test is not None: src.add_test_folder(path/test)
+        return cls.create_from_split_ds(src.datasets(classes=classes), **kwargs)
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')

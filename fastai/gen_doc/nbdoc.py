@@ -156,8 +156,17 @@ def link_docstring(modules, docstring:str, overwrite:bool=False)->str:
     for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
     return re.sub(BT_REGEX, replace_link, docstring)
 
+def find_mod(keyword):
+    mod = import_mod(keyword, ignore_errors=True)
+    if mod: return mod
+    if not keyword.startswith('fastai'):
+        return import_mod(f'fastai.{keyword}', ignore_errors=True)
+    return None
+
 def find_elt(modvars, keyword, match_last=False):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
+    #mod = find_mod(keyword)
+    #if mod: return mod
     keyword = strip_fastai(keyword)
     if keyword in modvars: return modvars[keyword]
     comps = keyword.split('.')

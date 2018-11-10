@@ -49,7 +49,7 @@ def learn():
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
     data.normalize()
     learn = ClassificationLearner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
-                                 callback_fns=[CSVLogger])
+                                 callback_fns=[callbacks.CSVLogger])
     buffer = StringIO()
     with redirect_stdout(buffer):
         learn.fit_one_cycle(3)

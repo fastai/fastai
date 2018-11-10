@@ -74,7 +74,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mf">1e4</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mf">1e4</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -89,8 +89,8 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Total time: 00:04
 epoch  train_loss  valid_loss  accuracy
-1      nan         nan         0.495584  (00:02)
-2      nan         nan         0.495584  (00:02)
+1      nan         nan         0.504416  (00:02)
+2      nan         nan         0.504416  (00:02)
 
 </pre>
 </div>
@@ -178,7 +178,7 @@ epoch  train_loss  valid_loss  accuracy
                 background: #F44336;
             }
         </style>
-      <progress value='0' class='progress-bar-interrupted' max='16', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      <progress value='0' class='progress-bar-interrupted' max='22', style='width:300px; height:20px; vertical-align: middle;'></progress>
       Interrupted
     </div>
     
@@ -266,7 +266,7 @@ epoch  train_loss  valid_loss  accuracy
             }
         </style>
       <progress value='3' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      6.00% [3/50 00:07<01:55]
+      6.00% [3/50 00:06<01:49]
     </div>
     
 <table style='width:300px; margin-bottom:10px'>
@@ -278,21 +278,21 @@ epoch  train_loss  valid_loss  accuracy
   </tr>
   <tr>
     <th>1</th>
-    <th>0.692783</th>
-    <th>0.692965</th>
-    <th>0.517664</th>
+    <th>0.692837</th>
+    <th>0.692778</th>
+    <th>0.496565</th>
   </tr>
   <tr>
     <th>2</th>
-    <th>0.692728</th>
-    <th>0.692965</th>
-    <th>0.517664</th>
+    <th>0.692831</th>
+    <th>0.692778</th>
+    <th>0.496565</th>
   </tr>
   <tr>
     <th>3</th>
-    <th>0.692724</th>
-    <th>0.692965</th>
-    <th>0.517664</th>
+    <th>0.692877</th>
+    <th>0.692778</th>
+    <th>0.496565</th>
   </tr>
   <tr>
 
@@ -316,8 +316,8 @@ epoch  train_loss  valid_loss  accuracy
                 background: #F44336;
             }
         </style>
-      <progress value='16' class='' max='16', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [16/16 00:00<00:00]
+      <progress value='22' class='' max='22', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [22/22 00:00<00:00]
     </div>
     
 </div>

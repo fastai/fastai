@@ -104,7 +104,7 @@ tools/run-after-git-clone
 <pre><code>python tools\run-after-git-clone
 
 </code></pre>
-<p>On windows as well, the simlink between the imgs folder in docs_src (where the notebooks are) and docs won't work. You will need to remove the borken link in docs_src (called imgs), execute cmd.exe as administrator, then, in the docs_src folder, execute</p>
+<p>If you're on windows, you also need to convert the Unix symlink between <code>docs_src\imgs</code> and <code>docs\imgs</code>. You will need to (1) remove <code>docs_src\imgs</code>, (2) execute <code>cmd.exe</code> as administrator, and (3) finally, in the <code>docs_src</code> folder, execute:</p>
 
 <pre><code>mklink /d imgs ..\docs\imgs</code></pre>
 
@@ -298,6 +298,7 @@ tools/run-after-git-clone
 <li>check <code>docs/_data/sidebars/home_sidebar.yml</code></li>
 <li><code>git commit docs_src/sidebar/sidebar_data.py docs/_data/sidebars/home_sidebar.yml</code></li>
 </ol>
+<p><a href="https://idratherbewriting.com/documentation-theme-jekyll/#configure-the-sidebar">jekyll sidebar documentation</a>.</p>
 
 </div>
 </div>
@@ -360,7 +361,7 @@ tools/run-after-git-clone
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Preview">Preview<a class="anchor-link" href="#Preview">&#182;</a></h3><p>If you work on markdown (.md) files it helps to be able to validate your changes so that the resulting layout is not broken. <a href="https://github.com/joeyespo/grip">grip</a> seems to work quite well for this purpose (<code>pip install grip</code>). For example:</p>
 
-<pre><code>grip -b docs/release.md</code></pre>
+<pre><code>grip -b docs/dev/release.md</code></pre>
 <p>will open a browser with the rendered markdown as html - it uses github API, so this is exacly how it'll look on github once you commit it. And here is a handy alias:</p>
 
 <pre><code>alias grip='grip -b'</code></pre>
