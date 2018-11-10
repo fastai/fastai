@@ -161,7 +161,7 @@ class SegmentationDataset(ImageClassificationBase):
         self.loss_func = CrossEntropyFlat()
         self.mask_opener,self.div = open_mask,div
 
-    def _get_y(self,i,x): return self.mask_opener(self.y[i], self.div)
+    def _get_y(self,i,x): return self.mask_opener(self.y[i])
 
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
@@ -407,7 +407,9 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
     if max_workers:
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
-            futures = [ex.submit(download_image, url, dest/f"{i:08d}.jpg", timeout=timeout)
+            suffixes = [re.findall(r'\.\w+?(?=(?:\?|$))', url) for url in urls]
+            suffixes = [suffix[0] if len(suffix)>0  else '.jpg' for suffix in suffixes]
+            futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}", timeout=timeout)
                        for i,url in enumerate(urls)]
             for f in progress_bar(as_completed(futures), total=len(urls)): pass
     else:
