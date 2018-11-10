@@ -11,19 +11,19 @@ __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextBase', '
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = ['.txt']
 
-class TextFileList(InputList):
-    "A list of inputs. Contain methods to get the corresponding labels."
-    def __init__(self, items:Iterator, path:PathOrStr='.'):
-        super().__init__(items,path)
-        self._pipe=TextLabelList
+def open_text(fn:PathOrStr):
+    with open(fn,'r') as f: return ''.join(f.readlines())
 
+class TextFileList(ItemList):
+    "A list of inputs. Contain methods to get the corresponding labels."
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, recurse=True)->'ImageFileList':
+    def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_text,
+                    extensions:Collection[str]=text_extensions, recurse=True)->ItemList:
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-        return cls(get_files(path, extensions=extensions, recurse=recurse), path)
+        return super().from_folder(create_func=create_func, path=path, extensions=extensions, recurse=recurse)
 
 class TextLabelList(LabelList):
-    def __init__(self, items:Iterator, path:PathOrStr='.', parent:InputList=None):
+    def __init__(self, items:Iterator, path:PathOrStr='.', parent:ItemList=None):
         super().__init__(items=items, path=path, parent=parent)
         self._pipe = TextSplitData
 

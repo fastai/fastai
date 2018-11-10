@@ -48,6 +48,8 @@ class ItemList():
     def __getitem__(self,idxs:int)->Any:
         if isinstance(idxs, int): return self.create_func(self.items[idxs])
         return self.new(self.items[idxs])
+    
+    def preprocess(self, **kwargs): pass
 
     @classmethod
     def from_folder(cls, path:PathOrStr, create_func:Callable, extensions:Collection[str]=None, recurse=True)->'ItemList':
@@ -56,7 +58,7 @@ class ItemList():
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable, col:IntsOrStrs=0)->'ItemList':
-        "Get the list of inputs in the `col`of `path/csv_name`."
+        "Get the list of inputs in the `col` of `path/csv_name`."
         inputs = df.iloc[:,df_names_to_idx(col, df)]
         res = cls(create_func=create_func, items=_maybe_squeeze(inputs.values), path=path)
         res.df = df
@@ -171,6 +173,10 @@ class LabelList():
         cut = int(valid_pct * len(self.items))
         return self.split_by_idx(rand_idx[:cut])
 
+def _merge_kwargs(new_k, kwargs):
+    for k,v in new_k.items(): kwargs[k] = v
+    return kwargs
+    
 class SplitData():
     "A `LabelList` for each of `train` and `valid` (optional `test`), and method to get `datasets`"
     def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
@@ -188,6 +194,13 @@ class SplitData():
         df = pd.read_csv(path/csv_fname, header=header)
         val_idx = df.iloc[:,valid_col].nonzero()[0]
         return LabelList.from_df(path, df, input_cols, label_cols).split_by_idx(val_idx)
+    
+    def preprocess(self, **kwargs):
+        self.train.x.preprocess(**kwargs)
+        kwargs = _merge_kwargs(getattr(self.train.x, 'preprocess_kwargs', {}), kwargs)
+        for ds in self.lists[1:]: 
+            ds.x.preprocess(**kwargs)
+        return self
 
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
         "Create an `ImageDataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `ImageDataBunch.create`."
