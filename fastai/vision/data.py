@@ -161,18 +161,18 @@ class SegmentationDataset(ImageClassificationBase):
         self.mask_opener = open_mask
 
     def _get_y(self,i,x): return self.mask_opener(self.y[i])
-    
+
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
 class PointsDataset(ImageDatasetBase):
-    def __init__(self, fns:Collection[Path], pts:Collection[Tensor]): 
+    def __init__(self, fns:Collection[Path], pts:Collection[Tensor]):
         super().__init__(c=len(pts[0].view(-1)), x=fns, y=pts, task_type=TaskType.Regression)
     def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
     def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
-    
+
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
-    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]], 
+    def __init__(self, x_fns:Collection[Path], labelled_bbs:Collection[Tuple[Collection[int], str]],
                  classes:Collection[str]=None):
         assert len(x_fns)==len(labelled_bbs)
         if classes is None:
@@ -299,24 +299,24 @@ class ImageDataBunch(DataBunch):
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
         if ds_tfms or size: datasets = transform_datasets(*datasets, tfms=ds_tfms, size=size, **kwargs)
-        return super().create(*datasets, path=path, bs=bs, device=device, tfms=tfms, collate_fn=collate_fn, num_workers=num_workers)    
-    
+        return super().create(*datasets, path=path, bs=bs, device=device, tfms=tfms, collate_fn=collate_fn, num_workers=num_workers)
+
     @classmethod
     def create_from_split_ds(cls, dss:ImageSplitDatasets, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                 collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
         if ds_tfms or size: dss = dss.transform(tfms=ds_tfms, size=size, **kwargs)
         return dss.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device)
-    
+
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
                     test:Optional[PathOrStr]=None, valid_pct=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
         train_src = ImageFileList.from_folder(path/train).label_from_folder(classes)
-        if valid_pct is None: 
+        if valid_pct is None:
             src = ImageSplitData(path, train_src, ImageFileList.from_folder(path/valid).label_from_folder(classes))
-        else: 
+        else:
             src = train_src.random_split_by_pct(valid_pct)
             src.path = path
         if test is not None: src.add_test_folder(test)
@@ -324,7 +324,7 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
-                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None, 
+                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None,
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
         path = Path(path)
