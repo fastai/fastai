@@ -11,17 +11,32 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.22.dev0 (Work In Progress)
+
+
+## 1.0.23.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
+### Fixed:
+
+
+
+## 1.0.22 (2018-11-09)
+
+### Breaking changes:
+
 - We no longer import submodule names automatically with `import *`
+- Callbacks are now inside the `callbacks` namespace if you `from fastai import *`
+
+### Changed:
+
 - All the `DataBunch` factory method use the data block API, the factory method of `Datasets` are deprecated and will be removed in a future version.
 
 ### Fixed:
 
+- `learn.predict` fixed
 
 ## 1.0.21 (2018-11-08)
 
