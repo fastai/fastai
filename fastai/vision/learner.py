@@ -79,7 +79,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
     model = nn.Sequential(body, head)
-    learner_cls = ifnone(data.learner_type(), Learner)
+    learner_cls = ifnone(data.learner_type(), ClassificationLearner)
     learn = learner_cls(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()

@@ -16,21 +16,21 @@ class DatasetBase(Dataset):
         if classes is None and y is not None:
             if self.task_type==TaskType.Single: self.classes=uniqueify(y)
             if self.task_type==TaskType.Multi:  self.classes=uniqueify(np.concatenate(y))
-             
+
         if self.classes is not None:
-            if not c: 
+            if not c:
                 if self.task_type==TaskType.Regression and y is not None: self.c = y.shape[1]
                 else: self.c = len(self.classes)
             if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
             if y is not None and do_encode_y: self.encode_y()
         if self.task_type==TaskType.Regression: self.loss_func = MSELossFlat()
         elif self.task_type==TaskType.Single:   self.loss_func = F.cross_entropy
-        elif self.task_type==TaskType.Multi:    self.loss_func = F.binary_cross_entropy_with_logits        
+        elif self.task_type==TaskType.Multi:    self.loss_func = F.binary_cross_entropy_with_logits
 
     def encode_y(self):
-        if self.task_type==TaskType.Single: 
+        if self.task_type==TaskType.Single:
             self.y = np.array([self.class2idx[o] for o in self.y], dtype=np.int64)
-        elif self.task_type==TaskType.Multi: 
+        elif self.task_type==TaskType.Multi:
             self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
 
     def __len__(self): return len(self.x) if self.x is not None else 1
@@ -48,25 +48,25 @@ class DatasetBase(Dataset):
         if self.item is not None: return self.item,0
         x = self._get_x(i)
         return x,self._get_y(i,x)
-    
+
     def get_y_repr(self, i):
         if task_type==TaskType.Single:  return self.classes[y[i]]
         elif task_type==TaskType.Multi: return '; '.join([self.classes[a] for a in y[i]])
         else: return y[i]
-        
+
     def get_task_type(self):
         if self.y is None or len(self.y) == 0: return TaskType.No
         y = self.y[0]
         if isinstance(y,(int,str,np.int64)): return TaskType.Single
         elif isinstance(y, (float,np.float32)):  return TaskType.Regression
         elif isinstance(y, Iterable):
-            i=0 
+            i=0
             while len(y) == 0 and i < len(self.y):
                 y = self.y[i]
                 i += 1
             if i == len(self.y): return TaskType.No
             return (TaskType.Multi if isinstance(y[0],(int,str,np.int64)) else
-                    TaskType.Regression if isinstance(y[0],float,np.float32) else
+                    TaskType.Regression if isinstance(y[0],(float,np.float32)) else
                     TaskType.No)
         else: return TaskType.No
 
@@ -113,7 +113,7 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        for b in self.dl: 
+        for b in self.dl:
             y = b[1][0] if is_listy(b[1]) else b[1]
             if not self.skip_size1 or y.size(0) != 1:
                 yield self.proc_batch(b)
