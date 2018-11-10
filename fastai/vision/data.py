@@ -154,13 +154,13 @@ class ImageMultiDataset(ImageClassificationBase):
 
 class SegmentationDataset(ImageClassificationBase):
     "A dataset for segmentation task."
-    def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any]):
+    def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div:bool=False):
         assert len(x)==len(y)
         super().__init__(x, y, classes, do_encode_y=False)
         self.loss_func = CrossEntropyFlat()
-        self.mask_opener = open_mask
+        self.mask_opener,self.div = open_mask,div
 
-    def _get_y(self,i,x): return self.mask_opener(self.y[i])
+    def _get_y(self,i,x): return self.mask_opener(self.y[i], self.div)
 
     def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
 
