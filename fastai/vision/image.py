@@ -105,8 +105,8 @@ class Image(ItemBase):
     def shape(self)->Tuple[int,int,int]: return self._px.shape
     @property
     def size(self)->Tuple[int,int]: return self.shape[-2:]
-    @property
-    def device(self)->torch.device: return self._px.device
+    #@property
+    #def device(self)->torch.device: return self._px.device
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.shape)}'
     def _repr_png_(self): return self._repr_image_format('png')
@@ -207,15 +207,24 @@ class Image(ItemBase):
         return self.px
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-              cmap:str='viridis', y:'Image'=None, classes:Collection[Any]=None, **kwargs):
+              cmap:str='viridis', y:'Image'=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None:
-            if isinstance(y, Image): y.show(ax=ax, classes=classes, **kwargs)
+            if isinstance(y, Image): y.show(ax=ax, **kwargs)
             else:
-                if not isinstance(y, Iterable): title = ifnone(title, classes[y])
-                else:  title = ifnone(title,'; '.join([classes[a] for a,t in enumerate(y) if t==1]))
+                if not isinstance(y, Iterable): title = ifnone(title, str(y))
+                # TODO get rid of this!
+                else:  title = ifnone(title,'; '.join([str(a) for a,t in enumerate(y) if t==1]))
                 ax.set_title(title)
         elif title is not None: ax.set_title(title)
+
+    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10))->None:
+        fig, axs = plt.subplots(rows,rows,figsize=figsize)
+        for i, ax in zip(idxs[:rows*rows], axs.flatten()):
+            x,y = ds[i]
+            x.show(ax=ax, y=y)
+        plt.tight_layout()
+
 
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."

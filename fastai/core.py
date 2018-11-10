@@ -131,12 +131,12 @@ def series2cat(df:DataFrame, *col_names):
 
 class ItemBase():
     "All transformable dataset items use this type."
-    @property
-    @abstractmethod
-    def device(self): pass
-    @property
-    @abstractmethod
-    def data(self): pass
+    def __init__(self, data:Any): self.data=data
+    def __repr__(self): return f'{self.__class__.__name__} {self}'
+
+    #@property
+    #@abstractmethod
+    #def device(self): pass
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4)->None:

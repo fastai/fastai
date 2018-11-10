@@ -171,6 +171,13 @@ class DataBunch():
         self.valid_dl.add_tfm(tfm)
         if self.test_dl: self.test_dl.add_tfm(tfm)
 
+    def show_batch(self, rows:int=None, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
+        dl = self.dl(ds_type)
+        b_idx = next(iter(dl.batch_sampler))
+        if rows is None: rows = int(math.sqrt(len(b_idx)))
+        ds = dl.dataset
+        ds[0][0].show_batch(b_idx, rows, ds, **kwargs)
+
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
     @property

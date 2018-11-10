@@ -1,4 +1,4 @@
-"`vision.data` manages data input pipeline - folderstransformbatch input. Includes support for classification, segmentation and bounding boxes"
+"Manages data input pipeline - folderstransformbatch input. Includes support for classification, segmentation and bounding boxes"
 from ..torch_core import *
 from .image import *
 from .transform import *
@@ -11,9 +11,10 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import PIL
 
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageDatasetBase', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
-           'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch', 'ImageFileList', 'normalize',
-           'normalize_funcs', 'show_image_batch', 'transform_datasets', 'ImageSplitDatasets', 'channel_view',
-           'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images', 'verify_images', 'bb_pad_collate', 'PointsDataset']
+           'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch',
+           'ImageItemList', 'normalize', 'normalize_funcs', 'show_image_batch', 'transform_datasets',
+           'ImageSplitDatasets', 'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats',
+           'download_images', 'verify_images', 'bb_pad_collate', 'PointsDataset']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -38,14 +39,14 @@ def get_annotations(fname, prefix=None):
     ids = list(id2images.keys())
     return [id2images[k] for k in ids], [[id2bboxes[k], id2cats[k]] for k in ids]
 
-def show_image_batch(dl:DataLoader, classes:Collection[str]=None, rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
+def show_image_batch(dl:DataLoader, rows:int=None, figsize:Tuple[int,int]=(9,10))->None:
     "Show a few images from a batch."
     b_idx = next(iter(dl.batch_sampler))
     if rows is None: rows = int(math.sqrt(len(b_idx)))
     fig, axs = plt.subplots(rows,rows,figsize=figsize)
     for i, ax in zip(b_idx[:rows*rows], axs.flatten()):
         x,y = dl.dataset[i]
-        x.show(ax=ax, y=y, classes=classes)
+        x.show(ax=ax, y=y)
     plt.tight_layout()
 
 class ImageSplitDatasets(SplitDatasets):
@@ -377,9 +378,6 @@ class ImageDataBunch(DataBunch):
         self.add_tfm(self.norm)
         return self
 
-    def show_batch(self:DataBunch, rows:int=None, figsize:Tuple[int,int]=(9,10), ds_type:DatasetType=DatasetType.Train)->None:
-        show_image_batch(self.dl(ds_type), getattr(self,'classes',None), figsize=figsize, rows=rows)
-
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
         fns = _get_fns(self.train_ds)
@@ -463,32 +461,28 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
                              interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
-class ImageFileList(InputList):
-    "A list of inputs. Contain methods to get the corresponding labels."
-    def __init__(self, items:Iterator, path:PathOrStr='.'):
-        super().__init__(items,path)
-        self._pipe=ImageLabelList
+class ImageItemList(ItemList):
+    @classmethod
+    def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
+                    extensions:Collection[str]=image_extensions, recurse=True)->ItemList:
+        "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
+        return super().from_folder(create_func=create_func, path=path, extensions=extensions, recurse=recurse)
 
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=image_extensions, recurse=True)->'ImageFileList':
-        "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-        return cls(get_files(path, extensions=extensions, recurse=recurse), path)
+    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, col:IntsOrStrs=0,
+                 folder:PathOrStr='.', suffix:str='')->'ItemList':
+        res = super().from_df(df, path=path, create_func=create_func, col=col)
+        res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
+        res.items = np.char.add(f'{res.path}/', res.items)
+        return res
 
-class ImageLabelList(LabelList):
-    def __init__(self, items:Iterator, path:PathOrStr='.', parent:InputList=None):
-        super().__init__(items=items, path=path, parent=parent)
-        self._pipe = ImageSplitData
+    @classmethod
+    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=open_image, col:IntsOrStrs=0, header:str='infer',
+                 folder:PathOrStr='.', suffix:str='')->'ItemList':
+        df = pd.read_csv(path/csv_name, header=header)
+        return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
 
 class ImageSplitData(SplitData):
-    def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
-        super().__init__(path,train,valid,test)
-        self._pipe = ImageSplitDatasets
-
-    def dataset_cls(self):
-        return ImageClassificationBase
-        #is_multi = isinstance(self.train.items[0,1],np.ndarray)
-        #return ImageMultiDataset if is_multi else ImageClassificationDataset
-
     def add_test_folder(self, test_folder:str='test', label:Any=None):
         "Add test set containing items from folder `test_folder` and an arbitrary `label`."
         items = ImageFileList.from_folder(self.path/test_folder)
