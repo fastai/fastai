@@ -73,7 +73,6 @@ class NumericalizedDataset(TextBase):
                  classes:Collection[Any]=None, encode_classes:bool=True):
         super().__init__(ids, labels, classes, encode_classes)
         self.vocab, self.vocab_size = vocab, len(vocab.itos)
-        self.loss_func = F.cross_entropy if len(self.y.shape) <= 1 else F.binary_cross_entropy_with_logits
 
     def get_text_item(self, idx, sep=' ', max_len:int=None):
         "Return the text in `idx`, tokens separated by `sep` and cutting at `max_len`."

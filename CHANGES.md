@@ -18,6 +18,7 @@ of that change.
 ### Changed:
 
 - We no longer import submodule names automatically with `import *`
+- All the `DataBunch` factory method use the data block API, the factory method of `Datasets` are deprecated and will be removed in a future version.
 
 ### Fixed:
 
