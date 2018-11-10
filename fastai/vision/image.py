@@ -211,10 +211,8 @@ class Image(ItemBase):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None:
             if isinstance(y, Image): y.show(ax=ax, **kwargs)
-            else:
-                if not isinstance(y, Iterable): title = ifnone(title, str(y))
-                # TODO get rid of this!
-                else:  title = ifnone(title,'; '.join([str(a) for a,t in enumerate(y) if t==1]))
+            else: 
+                title = ifnone(title, str(y))
                 ax.set_title(title)
         elif title is not None: ax.set_title(title)
 
