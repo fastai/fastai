@@ -144,8 +144,15 @@ class ItemBase():
 class Category(ItemBase):
     def __init__(self, idx, cat): self.data,self.cat = idx,cat
     def __str__(self):  return str(self.cat)
+    @classmethod
+    def create(cls, o:Any, c2i:dict=None): return cls(c2i[o], o) if c2i else cls(o,o)
 
 class MultiCategory(Category):
+    @classmethod
+    def create(cls, o:Collection, c2i:dict=None):
+        o = array(o)
+        return cls(array([c2i[it] for it in o]), o) if c2i else cls(o,o)
+    def __getitem__(self, i): return self.__class__(self.data[i], self.cat[i])
     def __str__(self):  return ';'.join(map(str, self.cat))
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
@@ -201,10 +208,12 @@ def one_hot_encode(y:Collection[int], c:int):
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame], idxs:Collection[int])->Any:
-    return a.iloc[idxs] if isinstance(a,pd.DataFrame) else a[idxs]
+    if a is None: return a
+    return a.iloc[idxs].copy() if isinstance(a,pd.DataFrame) else a[idxs]
 
 def func_args(func)->bool:
     code = func.__code__
     return code.co_varnames[:code.co_argcount]
 
 def has_arg(func, arg)->bool: return arg in func_args(func)
+

@@ -13,8 +13,8 @@ import PIL
 __all__ = ['get_image_files', 'DatasetTfm', 'ImageDatasetBase', 'ImageClassificationDataset', 'ImageMultiDataset', 'ObjectDetectDataset',
            'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageItemList', 'normalize', 'normalize_funcs', 'show_image_batch', 'transform_datasets',
-           'ImageSplitDatasets', 'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats',
-           'download_images', 'verify_images', 'bb_pad_collate', 'PointsDataset']
+           'ImageSplitDatasets', 'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
+           'verify_images', 'bb_pad_collate', 'PointsDataset', 'ObjectCategoryList', 'ObjectItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -184,8 +184,9 @@ class ObjectDetectDataset(ImageClassificationBase):
         self.labelled_bbs = labelled_bbs
 
     def _get_y(self,i,x):
-        cats = LongTensor([self.class2idx[l] for l in self.labelled_bbs[i][1]])
-        return (ImageBBox.create(self.labelled_bbs[i][0], *x.size, cats))
+        bbs,cats = self.labelled_bbs[i]
+        cats = LongTensor([self.class2idx[l] for l in cats])
+        return ImageBBox.create(bbs, *x.size, cats)
 
     @classmethod
     def from_json(cls, folder, fname, valid_pct=None, classes=None):
@@ -461,6 +462,15 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
 
 class ImageItemList(ItemList):
     _bunch = ImageDataBunch
+    def __init__(self, items:Iterator, create_func:Callable=open_image, path:PathOrStr='.',
+                 label_cls:Callable=None, xtra:Any=None):
+        super().__init__(items, create_func=create_func, path=path, label_cls=label_cls, xtra=xtra)
+        self.sizes={}
+
+    def get(self, i):
+        res = super().get(i)
+        self.sizes[i] = res.size
+        return res
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
@@ -481,4 +491,18 @@ class ImageItemList(ItemList):
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
+
+class ObjectCategoryList(CategoryList):
+    def __init__(self, items:Iterator, classes:Collection=None, sep=None):
+        if classes is None:
+            classes = set()
+            for _,c in items: classes = classes.union(set(c))
+            classes = ['background'] + list(classes)
+        super().__init__(items, classes)
+
+    def get(self, i): return ImageBBox.create(*self.x.sizes[i], *self.items[i])
+
+class ObjectItemList(ImageItemList):
+    def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.', **kwargs):
+        super().__init__(items, create_func=create_func, label_cls=ObjectCategoryList, path=path, **kwargs)
 
