@@ -201,7 +201,7 @@ def one_hot_encode(y:Collection[int], c:int):
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame], idxs:Collection[int])->Any:
-    return a.iloc[idxs] if isinstance(a,pd.DataFrame) else a[idxs]
+    return a.iloc[idxs].copy() if isinstance(a,pd.DataFrame) else a[idxs]
 
 def func_args(func)->bool:
     code = func.__code__
