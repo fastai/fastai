@@ -466,9 +466,9 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
 class ImageItemList(ItemList):
     @classmethod
     def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
-                    extensions:Collection[str]=image_extensions, recurse=True)->ItemList:
+                    extensions:Collection[str]=image_extensions, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
-        return super().from_folder(create_func=create_func, path=path, extensions=extensions, recurse=recurse)
+        return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, col:IntsOrStrs=0,

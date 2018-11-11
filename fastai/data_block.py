@@ -39,8 +39,8 @@ class ItemList():
         self._pipe=LabelList
 
     def __len__(self)->int: return len(self.items)
-
     def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}\nPath: {self.path}'
+    def get(self, o)->Any: return o
 
     def new(self, items:Iterator)->'ItemList':
         return self.__class__(items=items, create_func=self.create_func, path=self.path)
@@ -48,13 +48,17 @@ class ItemList():
     def __getitem__(self,idxs:int)->Any:
         if isinstance(idxs, int): return self.create_func(self.items[idxs])
         return self.new(self.items[idxs])
-    
+
     def preprocess(self, **kwargs): pass
 
     @classmethod
-    def from_folder(cls, path:PathOrStr, create_func:Callable, extensions:Collection[str]=None, recurse=True)->'ItemList':
+    def from_folder(cls, path:PathOrStr, create_func:Callable, extensions:Collection[str]=None, recurse=True,
+                    folders=('train','valid'))->'ItemList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-        return cls(create_func=create_func, items=get_files(path, extensions=extensions, recurse=recurse), path=path)
+        path = Path(path)
+        res = []
+        for f in listify(folders): res += get_files(path/f, extensions, recurse=recurse)
+        return cls(res, create_func=create_func, path=path)
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable, col:IntsOrStrs=0)->'ItemList':
@@ -77,25 +81,26 @@ class ItemList():
         opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.  """
         return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]), path)
 
-    def create_label_list(self, labels:Iterator, list_creator:Callable, **kwargs)->'LabelList':
+    def create_label_list(self, labels:Iterator, list_creator:Callable=None, **kwargs)->'LabelList':
+        list_creator = ifnone(list_creator, self.__class__)
         return self._pipe(x=self, y=list_creator(labels, **kwargs))
 
-    def label_from_df(self, list_creator:Callable, cols:IntsOrStrs=1, **kwargs):
+    def label_from_df(self, list_creator:Callable=None, cols:IntsOrStrs=1, **kwargs):
         return self.create_label_list(self.df.iloc[:,cols], list_creator=list_creator, **kwargs)
 
-    def label_const(self, list_creator:Callable, const:Any=0, **kwargs)->'LabelList':
+    def label_const(self, list_creator:Callable=None, const:Any=0, **kwargs)->'LabelList':
         "Label every item with `const`."
         return self.label_from_func(list_creator=list_creator, func=lambda o: const, **kwargs)
 
-    def label_from_func(self, list_creator:Callable, func:Callable, **kwargs)->'LabelList':
+    def label_from_func(self, func:Callable, list_creator:Callable=None, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
         return self.create_label_list([func(o) for o in self.items], list_creator=list_creator, **kwargs)
 
-    def label_from_folder(self, list_creator:Callable, **kwargs)->'LabelList':
+    def label_from_folder(self, list_creator:Callable=None, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(list_creator, func=lambda o: o.parent.name, **kwargs)
+        return self.label_from_func(func=lambda o: o.parent.name, list_creator=list_creator, **kwargs)
 
-    def label_from_re(self, pat:str, full_path:bool=False)->'LabelList':
+    def label_from_re(self, pat:str, list_creator:Callable=None, full_path:bool=False)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
         pat = re.compile(pat)
         def _inner(o):
@@ -103,7 +108,7 @@ class ItemList():
             res = pat.search(s)
             assert res,f'Failed to find "{pat}" in "{s}"'
             return res.group(1)
-        return self.label_from_func(_inner)
+        return self.label_from_func(_inner, list_creator=list_creator)
 
     def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1,
                        sep:str=None, folder:PathOrStr='.', suffix:str=None)->'LabelList':
@@ -119,13 +124,15 @@ class LabelList():
 
     def __len__(self)->int: return len(self.x)
     def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
+    def new(self, x, y)->'LabelList': return self.__class__(x, y)
+
     def __getattr__(self,k:str)->Any:
-        res = getattr(self.y, k, None)
-        return res if res is not None else getattr(self.x, k)
+        res = getattr(self.x, k, None)
+        return res if res is not None else getattr(self.y, k)
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         if isinstance(idxs, int): return self.x[idxs],self.y[idxs]
-        return self.__class__(self.x[idxs], self.y[idxs])
+        return self.new(self.x[idxs], self.y[idxs])
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
@@ -134,8 +141,29 @@ class LabelList():
         return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
 
     def split_by_idxs(self, train_idx, valid_idx):
-        return self._pipe(self.x.path, self[train_idx], self[valid_idx])
+        return self._pipe(self.path, self[train_idx], self[valid_idx])
 
+    def split_by_idx(self, valid_idx:Collection[int])->'SplitData':
+        "Split the data according to the indexes in `valid_idx`."
+        valid = [i for i,o in enumerate(self.items) if i in valid_idx]
+        train = [i for i,o in enumerate(self.items) if i not in valid_idx]
+        return self.split_by_idxs(train, valid)
+
+    def _get_by_folder(self, name):
+        return [i for i in range_of(self.x)
+                if self.x.items[i].relative_to(self.path).parts[0] == name]
+
+    def split_by_folder(self, train:str='train', valid:str='valid')->'SplitData':
+        "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
+        return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
+
+    def random_split_by_pct(self, valid_pct:float=0.2)->'SplitData':
+        "Split the items randomly by putting `valid_pct` in the validation set."
+        rand_idx = np.random.permutation(range_of(self))
+        cut = int(valid_pct * len(self))
+        return self.split_by_idx(rand_idx[:cut])
+
+    # XXX: Following aren't updated for new API
     def split_by_valid_func(self, func:Callable)->'SplitData':
         "Split the data by result of `func` (which returns `True` for validation set)"
         mask = np.array([func(o) for o in self.items])
@@ -149,34 +177,15 @@ class LabelList():
 
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'SplitData':
         "Split the data by using the file names in `fname` for the validation set. `path` will override `self.path`."
-        path = Path(ifnone(path, self.x.path))
-        valid_names = join_paths(loadtxt_str(self.x.path/fname), path)
+        path = Path(ifnone(path, self.path))
+        valid_names = join_paths(loadtxt_str(self.path/fname), path)
         return self.split_by_files(valid_names)
 
-    def split_by_idx(self, valid_idx:Collection[int])->'SplitData':
-        "Split the data according to the indexes in `valid_idx`."
-        valid = [i for i,o in enumerate(self.items) if i in valid_idx]
-        train = [i for i,o in enumerate(self.items) if i not in valid_idx]
-        return self.split_by_idxs(train, valid)
-
-    def _get_by_folder(self, name):
-        return [i for i in range_of(self.x)
-                if self.x.items[i].relative_to(self.x.path).parts[0] == name]
-
-    def split_by_folder(self, train:str='train', valid:str='valid')->'SplitData':
-        "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
-        return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
-
-    def random_split_by_pct(self, valid_pct:float=0.2)->'SplitData':
-        "Split the items randomly by putting `valid_pct` in the validation set."
-        rand_idx = np.random.permutation(range(len(self.x.items)))
-        cut = int(valid_pct * len(self.items))
-        return self.split_by_idx(rand_idx[:cut])
 
 def _merge_kwargs(new_k, kwargs):
     for k,v in new_k.items(): kwargs[k] = v
     return kwargs
-    
+
 class SplitData():
     "A `LabelList` for each of `train` and `valid` (optional `test`), and method to get `datasets`"
     def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
@@ -194,12 +203,11 @@ class SplitData():
         df = pd.read_csv(path/csv_fname, header=header)
         val_idx = df.iloc[:,valid_col].nonzero()[0]
         return LabelList.from_df(path, df, input_cols, label_cols).split_by_idx(val_idx)
-    
+
     def preprocess(self, **kwargs):
         self.train.x.preprocess(**kwargs)
         kwargs = _merge_kwargs(getattr(self.train.x, 'preprocess_kwargs', {}), kwargs)
-        for ds in self.lists[1:]: 
-            ds.x.preprocess(**kwargs)
+        for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
         return self
 
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
@@ -212,17 +220,6 @@ class SplitData():
         res = [self.train,self.valid]
         if self.test is not None: res.append(self.test)
         return res
-
-    def dataset_cls(self): raise Exception('not implemented')
-
-    def datasets(self, dataset_cls:type=None, **kwargs)->'SplitDatasets':
-        "Create datasets from the underlying data using `dataset_cls` and passing along the `kwargs`."
-        if dataset_cls is None: dataset_cls = self.dataset_cls()
-        train = dataset_cls(*self.train.items.T, **kwargs)
-        dss = [train]
-        dss += [train.new(*o.items.T, **kwargs) for o in self.lists[1:]]
-        cls = getattr(train, '__splits_class__', self._pipe)
-        return cls(self.path, *dss)
 
     def add_test(self, test:ItemList, label:Any=None):
         "Add test set containing items from `test` and an arbitrary label"

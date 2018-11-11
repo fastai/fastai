@@ -42,7 +42,7 @@ def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
 def pil2tensor(image:Union[NPImage,NPArray],dtype:np.dtype)->TensorImage:
     "Convert PIL style `image` array to torch style image tensor."
     a = np.asarray(image)
-    if a.ndim==2 : a = np.expand_dims(a,2)    
+    if a.ndim==2 : a = np.expand_dims(a,2)
     a = np.transpose(a, (1, 0, 2))
     a = np.transpose(a, (2, 1, 0))
     return torch.from_numpy( a.astype(dtype, copy=False) )
@@ -105,8 +105,8 @@ class Image(ItemBase):
     def shape(self)->Tuple[int,int,int]: return self._px.shape
     @property
     def size(self)->Tuple[int,int]: return self.shape[-2:]
-    #@property
-    #def device(self)->torch.device: return self._px.device
+    @property
+    def device(self)->torch.device: return self._px.device
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.shape)}'
     def _repr_png_(self): return self._repr_image_format('png')
@@ -127,7 +127,7 @@ class Image(ItemBase):
             self.sample_kwargs = {}
             self._flow = None
         return self
-    
+
     def save(self, fn:PathOrStr):
         "Save the image to `fn`."
         x = image2np(self.data*255).astype(np.uint8)
@@ -207,14 +207,10 @@ class Image(ItemBase):
         return self.px
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-              cmap:str='viridis', y:'Image'=None, **kwargs):
+              cmap:str='viridis', y:Any=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
-        if y is not None:
-            if isinstance(y, Image): y.show(ax=ax, **kwargs)
-            else: 
-                title = ifnone(title, str(y))
-                ax.set_title(title)
-        elif title is not None: ax.set_title(title)
+        if y is not None: y.show(ax=ax, **kwargs)
+        if title is not None: ax.set_title(title)
 
     def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10))->None:
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
@@ -392,21 +388,21 @@ def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     return ImageSegment(x.permute(2,0,1))
 
 def rle_encode(img:NPArrayMask)->str:
-    "Return run-length encoding string from an image array"  
-    pixels = np.concatenate([[0], img.flatten() , [0]]) 
-    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1 
-    runs[1::2] -= runs[::2] 
-    return ' '.join(str(x) for x in runs) 
+    "Return run-length encoding string from an image array"
+    pixels = np.concatenate([[0], img.flatten() , [0]])
+    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1
+    runs[1::2] -= runs[::2]
+    return ' '.join(str(x) for x in runs)
 
 def rle_decode(mask_rle:str, shape:Tuple[int,int])->NPArrayMask:
     "Return an image array from run-length encoded string"
-    s = mask_rle.split() 
-    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])] 
-    starts -= 1 
-    ends = starts + lengths 
-    img = np.zeros(shape[0]*shape[1], dtype=np.uint) 
-    for low, up in zip(starts, ends): img[low:up] = 1 
-    return img.reshape(shape) 
+    s = mask_rle.split()
+    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])]
+    starts -= 1
+    ends = starts + lengths
+    img = np.zeros(shape[0]*shape[1], dtype=np.uint)
+    for low, up in zip(starts, ends): img[low:up] = 1
+    return img.reshape(shape)
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None, **kwargs)->plt.Axes:
@@ -580,24 +576,25 @@ def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
                xtra:Optional[Dict[Transform,dict]]=None, size:Optional[Union[int,TensorImageSize]]=None,
                mult:int=32, resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
     "Apply all `tfms` to `x` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
-    if tfms or xtra or size:
-        if not xtra: xtra={}
-        tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
-        if do_resolve: _resolve_tfms(tfms)
-        x = x.clone()
-        x.set_sample(padding_mode=padding_mode, **kwargs)
-        if size is not None:
-            crop_target = _get_crop_target(size, mult=mult)
+    if not tfms or xtra or size: return x
+    xtra = ifnone(xtra, {})
+    tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
+    if do_resolve: _resolve_tfms(tfms)
+    x = x.clone()
+    x.set_sample(padding_mode=padding_mode, **kwargs)
+    if size is not None:
+        crop_target = _get_crop_target(size, mult=mult)
+        if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+            target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
+            x.resize(target)
+        elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
+    else: size = x.size
+    size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
+    for tfm in tfms:
+        if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
+        elif tfm in size_tfms:
             if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
-                x.resize(target)
-            elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
-        else: size = x.size
-        size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
-        for tfm in tfms:
-            if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
-            elif tfm in size_tfms:
-                if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                    x = tfm(x, size=size, padding_mode=padding_mode)
-            else: x = tfm(x)
+                x = tfm(x, size=size, padding_mode=padding_mode)
+        else: x = tfm(x)
     return x
+

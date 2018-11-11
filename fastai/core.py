@@ -134,6 +134,7 @@ class ItemBase():
     def __init__(self, data:Any): self.data=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
 
+    # TODO confirm can remove this
     #@property
     #@abstractmethod
     #def device(self): pass
