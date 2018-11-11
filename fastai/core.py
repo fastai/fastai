@@ -129,15 +129,24 @@ def series2cat(df:DataFrame, *col_names):
     "Categorifies the columns `col_names` in `df`."
     for c in listify(col_names): df[c] = df[c].astype('category').cat.as_ordered()
 
+
 class ItemBase():
     "All transformable dataset items use this type."
     def __init__(self, data:Any): self.data=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
+    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
 
     # TODO confirm can remove this
     #@property
     #@abstractmethod
     #def device(self): pass
+
+class Category(ItemBase):
+    def __init__(self, idx, cat): self.data,self.cat = idx,cat
+    def __str__(self):  return str(self.cat)
+
+class MultiCategory(Category):
+    def __str__(self):  return ';'.join(map(str, self.cat))
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4)->None:

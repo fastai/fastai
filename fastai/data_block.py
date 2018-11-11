@@ -1,7 +1,7 @@
 from .torch_core import *
 from .basic_data import *
 
-__all__ = ['ItemList', 'LabelList', 'SplitData', 'SplitDatasets', 'get_files', 'create_sdata']
+__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'SplitData', 'SplitDatasets', 'get_files', 'create_sdata']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
@@ -115,6 +115,25 @@ class ItemList():
         "Look in `path/csv_fname` for csv with optional `header` containing filenames in `fn_col` to get label in `label_col`."
         df = pd.read_csv(self.path/csv_fname, header=header)
         return self.label_from_df(df, fn_col, label_col, sep, folder, suffix)
+
+class CategoryList(ItemList):
+    def __init__(self, items:Iterator, classes:Collection=None):
+        super().__init__(items)
+        if classes is None: classes = uniqueify(items)
+        self.classes = classes
+        self.class2idx = {v:k for k,v in enumerate(self.classes)}
+
+    def new(self, items): return self.__class__(items, self.classes)
+    def get(self, o): return Category(self.class2idx[o], o)
+
+class MultiCategoryList(CategoryList):
+    def __init__(self, items:Iterator, classes:Collection=None, sep=None):
+        if sep is not None: items = array(list(csv.reader(items, delimiter=sep)))
+        if classes is None: classes = uniqueify(np.concatenate(items))
+        super().__init__(items, classes)
+
+    def get(self, o): return MultiCategory([self.class2idx[it] for it in o], o)
+
 
 class LabelList():
     "A list of inputs and labels. Contain methods to split it in `SplitData`."
