@@ -107,7 +107,8 @@ class ItemList():
     def label_from_df(self, list_creator:Callable=None, cols:IntsOrStrs=1, sep=None, **kwargs):
         if list_creator is None and self._list is None:
             list_creator = CategoryList if sep is None else MultiCategoryList
-        return self.create_label_list(self.xtra.iloc[:,cols], list_creator=list_creator, sep=sep, **kwargs)
+        labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        return self.create_label_list(labels, list_creator=list_creator, sep=sep, **kwargs)
 
     def label_const(self, const:Any=0, list_creator:Callable=None, **kwargs)->'LabelList':
         "Label every item with `const`."
