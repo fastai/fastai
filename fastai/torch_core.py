@@ -203,8 +203,10 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
         setattr(loss_func, 'reduction', 'none')
         l = loss_func(y_pred, y_true)
         setattr(loss_func, 'reduction', old_red)
-        return l
-    else: return loss_func(y_pred, y_true, reduction='none')
+    else:
+        l = loss_func(y_pred, y_true)
+        setattr(loss_func, 'reduction', 'none')
+    return l
 
 def model_type(dtype):
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
