@@ -1,0 +1,406 @@
+---
+
+title: text.learner
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Easy access of language models and ULMFiT"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="NLP-model-creation-and-training">NLP model creation and training<a class="anchor-link" href="#NLP-model-creation-and-training">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main thing here is <a href="/text.learner.html#RNNLearner"><code>RNNLearner</code></a>. There are also some utility functions to help create and update text models.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Quickly-get-a-learner">Quickly get a learner<a class="anchor-link" href="#Quickly-get-a-learner">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="language_model_learner"><code>language_model_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L117" class="source_link">[source]</a></h4><blockquote><p><code>language_model_learner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>emb_sz</code>:<code>int</code>=<code>400</code>, <code>nh</code>:<code>int</code>=<code>1150</code>, <code>nl</code>:<code>int</code>=<code>3</code>, <code>pad_token</code>:<code>int</code>=<code>1</code>, <code>drop_mult</code>:<code>float</code>=<code>1.0</code>, <code>tie_weights</code>:<code>bool</code>=<code>True</code>, <code>bias</code>:<code>bool</code>=<code>True</code>, <code>qrnn</code>:<code>bool</code>=<code>False</code>, <code>pretrained_model</code>=<code>None</code>, <code>pretrained_fnames</code>:<code>OptStrTuple</code>=<code>None</code>, <code>kwargs</code>) → <code>LanguageLearner</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create an RNNLearner with a language model from <a href="/text.data.html#text.data"><code>data</code></a> of a certain <code>bptt</code>. The model used is an <a href="https://arxiv.org/abs/1708.02182">AWD-LSTM</a> that is built with embeddings of size <code>emb_sz</code>, a hidden size of <code>nh</code>, and <code>nl</code> layers (the <code>vocab_size</code> is inferred from the <a href="/text.data.html#text.data"><code>data</code></a>). All the dropouts are put to values that we found worked pretty well and you can control their strength by adjusting <code>drop_mult</code>. If <code>qrnn</code> is True, the model uses <a href="https://arxiv.org/abs/1611.01576">QRNN cells</a> instead of LSTMs. The flag <code>tied_weights</code> control if we should use the same weights for the encoder and the decoder, the flag <code>bias</code> controls if the last linear layer (the decoder) has bias or not.</p>
+<p>You can specify <code>pretrained_model</code> if you want to use the weights of a pretrained model. If you have your own set of weights and the corrsesponding dictionary, you can pass them in <code>pretrained_fnames</code>. This should be a list of the name of the weight file and the name of the corresponding dictionary. The dictionary is needed because the function will internally convert the embeddings of the pretrained models to match the dictionary of the <a href="/text.data.html#text.data"><code>data</code></a> passed (a word may have a different id for the pretrained model). Those two files should be in the models directory of <code>data.path</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMDB_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">TextLMDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;texts.csv&#39;</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="text_classifier_learner"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>text_classifier_learner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>max_len</code>:<code>int</code>=<code>1400</code>, <code>emb_sz</code>:<code>int</code>=<code>400</code>, <code>nh</code>:<code>int</code>=<code>1150</code>, <code>nl</code>:<code>int</code>=<code>3</code>, <code>lin_ftrs</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>ps</code>:<code>Collection</code>[<code>float</code>]=<code>None</code>, <code>pad_token</code>:<code>int</code>=<code>1</code>, <code>drop_mult</code>:<code>float</code>=<code>1.0</code>, <code>qrnn</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) → <code>TextClassifierLearner</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create an RNNLearner with a classifier model from <a href="/text.data.html#text.data"><code>data</code></a>. The model used is the encoder of an <a href="https://arxiv.org/abs/1708.02182">AWD-LSTM</a> that is built with embeddings of size <code>emb_sz</code>, a hidden size of <code>nh</code>, and <code>nl</code> layers (the <code>vocab_size</code> is inferred from the <a href="/text.data.html#text.data"><code>data</code></a>). All the dropouts are put to values that we found worked pretty well and you can control their strength by adjusting <code>drop_mult</code>. If <code>qrnn</code> is True, the model uses <a href="https://arxiv.org/abs/1611.01576">QRNN cells</a> instead of LSTMs.</p>
+<p>The input texts are fed into that model by bunch of <code>bptt</code> and only the last <code>max_len</code> activations are considerated. This gives us the backbone of our model. The head then consists of:</p>
+<ul>
+<li>a layer that concatenates the final outputs of the RNN with the maximum and average of all the intermediate outputs (on the sequence length dimension),</li>
+<li>blocks of (<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BatchNorm1d"><code>nn.BatchNorm1d</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Dropout"><code>nn.Dropout</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Linear"><code>nn.Linear</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ReLU"><code>nn.ReLU</code></a>) layers.</li>
+</ul>
+<p>The blocks are defined by the <code>lin_ftrs</code> and <code>drops</code> arguments. Specifically, the first block will have a number of inputs inferred from the backbone arch and the last one will have a number of outputs equal to data.c (which contains the number of classes of the data) and the intermediate blocks have a number of inputs/outputs determined by <code>lin_ftrs</code> (of course a block has a number of inputs equal to the number of outputs of the previous block). The dropouts all have a the same value ps if you pass a float, or the corresponding values if you pass a list. Default is to have an intermediate hidden size of 50 (which makes two blocks model_activation -&gt; 50 -&gt; n_classes) with a dropout of 0.1.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMDB_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">TextClasDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;texts.csv&#39;</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RNNLearner"><code>class</code> <code>RNNLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L47" class="source_link">[source]</a></h2><blockquote><p><code>RNNLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>split_func</code>:<code>OptSplitFunc</code>=<code>None</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>adjust</code>:<code>bool</code>=<code>False</code>, <code>alpha</code>:<code>float</code>=<code>2.0</code>, <code>beta</code>:<code>float</code>=<code>1.0</code>, <code>kwargs</code>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Handles the whole creation of a <a href="/basic_train.html#Learner"><code>Learner</code></a> from <code>data</code> and a <code>model</code> with a text data using a certain <code>bptt</code>. The <code>split_func</code> is used to properly split the model in different groups for gradual unfreezing and differential learning rates. Gradient clipping of <code>clip</code> is optionally applied. <code>adjust</code>, <code>alpha</code> and <code>beta</code> are all passed to create an instance of <a href="/callbacks.rnn.html#RNNTrainer"><code>RNNTrainer</code></a>. Can be used for a language model or an RNN classifier. It also handles the conversion of weights from a pretrained model as well as saving or loading the encoder.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Loading-and-saving">Loading and saving<a class="anchor-link" href="#Loading-and-saving">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNLearner.load_encoder"><code>load_encoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L61" class="source_link">[source]</a></h4><blockquote><p><code>load_encoder</code>(<code>name</code>:<code>str</code>)</p>
+</blockquote>
+<p>Load the encoder <code>name</code> from the model directory.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNLearner.save_encoder"><code>save_encoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>save_encoder</code>(<code>name</code>:<code>str</code>)</p>
+</blockquote>
+<p>Save the encoder to <code>name</code> inside the model directory.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNLearner.load_pretrained"><code>load_pretrained</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L66" class="source_link">[source]</a></h4><blockquote><p><code>load_pretrained</code>(<code>wgts_fname</code>:<code>str</code>, <code>itos_fname</code>:<code>str</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Opens the weights in the <code>wgts_fname</code> of <code>self.model_dir</code> and the dictionary in <code>itos_fname</code> then adapts the pretrained weights to the vocabulary of the <code>data</code>. The two files should be in the models directory of the <code>learner.path</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Utility-functions">Utility functions<a class="anchor-link" href="#Utility-functions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="lm_split"><code>lm_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>lm_split</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>List</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]</p>
+</blockquote>
+<p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="rnn_classifier_split"><code>rnn_classifier_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L40" class="source_link">[source]</a></h4><blockquote><p><code>rnn_classifier_split</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>List</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]</p>
+</blockquote>
+<p>Split a RNN <code>model</code> in groups for differential learning rates.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="convert_weights"><code>convert_weights</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L18" class="source_link">[source]</a></h4><blockquote><p><code>convert_weights</code>(<code>wgts</code>:<code>Weights</code>, <code>stoi_wgts</code>:<code>Dict</code>[<code>str</code>, <code>int</code>], <code>itos_new</code>:<code>StrList</code>) → <code>Weights</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Convert the <code>wgts</code> from an dictionary <code>stoi_wgts</code> (mapping of word to id) to a new dictionary <code>itos_new</code> (correspondans id to word).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Get-predictions">Get predictions<a class="anchor-link" href="#Get-predictions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="LanguageLearner"><code>class</code> <code>LanguageLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L85" class="source_link">[source]</a></h3><blockquote><p><code>LanguageLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>split_func</code>:<code>OptSplitFunc</code>=<code>None</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>adjust</code>:<code>bool</code>=<code>False</code>, <code>alpha</code>:<code>float</code>=<code>2.0</code>, <code>beta</code>:<code>float</code>=<code>1.0</code>, <code>kwargs</code>) :: <a href="/text.learner.html#RNNLearner"><code>RNNLearner</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Subclass <a href="/text.learner.html#RNNLearner"><code>RNNLearner</code></a> to have a custom <code>predict</code> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LanguageLearner.predict"><code>predict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>predict</code>(<code>text</code>:<code>str</code>, <code>n_words</code>:<code>int</code>=<code>1</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>)</p>
+</blockquote>
+<p>Return the <code>n_words</code> that come after <code>text</code>. <code>tokenizer</code> should be the same one used as during training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="TextClassifierLearner"><code>class</code> <code>TextClassifierLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L102" class="source_link">[source]</a></h3><blockquote><p><code>TextClassifierLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>split_func</code>:<code>OptSplitFunc</code>=<code>None</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>adjust</code>:<code>bool</code>=<code>False</code>, <code>alpha</code>:<code>float</code>=<code>2.0</code>, <code>beta</code>:<code>float</code>=<code>1.0</code>, <code>kwargs</code>) :: <a href="/text.learner.html#RNNLearner"><code>RNNLearner</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Subclass <a href="/text.learner.html#RNNLearner"><code>RNNLearner</code></a> to have a custom <code>predict</code> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TextClassifierLearner.predict"><code>predict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L104" class="source_link">[source]</a></h4><blockquote><p><code>predict</code>(<code>text</code>:<code>str</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>)</p>
+</blockquote>
+<p>Return prect class, label and probabilities for <code>text</code>. <code>tokenizer</code> should be the same one used as during training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

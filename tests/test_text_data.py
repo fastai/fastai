@@ -4,7 +4,7 @@ from fastai.text import *
 
 def text_df(n_labels):
     data = []
-    texts = ["fast ai is a cool project", "hello world"]
+    texts = ["fast ai is a cool project", "hello world"] * 20
     for ind, text in enumerate(texts):
         sample = {}
         for label in range(n_labels): sample[label] = ind%2
@@ -23,47 +23,46 @@ def text_csv_file(filepath, n_labels):
 def test_should_load_backwards_lm():
     # GIVEN
     df = text_df(n_labels=1)
-    text_ds = TextDataset.from_df('/tmp/', df, label_cols=[0], txt_cols=["text"], min_freq=0, tokenizer=Tokenizer(BaseTokenizer))
+    text_ds = (TextDataset.from_df(df, label_cols=[0], txt_cols=["text"])
+               .tokenize(tokenizer=Tokenizer(BaseTokenizer))
+               .numericalize(min_freq=0))
     # WHEN
     lml = LanguageModelLoader(text_ds, bs=1, backwards=True)
     # THEN
+    lml.data = lml.batchify(np.concatenate(lml.dataset.x))
     batch = lml.get_batch(0, 70)
-
     as_text = [text_ds.vocab.itos[x] for x in batch[0]]
     np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
-def test_from_csv():
-    for n_labels in [1, 3]:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-        os.makedirs(path)
-        filename = 'text'
-        filepath = os.path.join(path, filename+'.csv')
-        try:
-            text_csv_file(filepath, n_labels=n_labels)
-            data = TextClasDataBunch.from_csv(path, train=filename, valid=filename, test=filename, n_labels=n_labels)
-            assert len(data.classes) == 2
-            assert set(data.classes) == set([True, False])
-            if n_labels > 1: assert len(data.labels[0]) == n_labels
-        finally:
-            shutil.rmtree(path)
+def test_from_csv_and_from_df():
+    for func in ['from_csv', 'from_df']:
+        for n_labels in [1, 3]:
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
+            try:
+                os.makedirs(path)
+                if func is 'from_csv':
+                    filename = 'text'
+                    text_csv_file(os.path.join(path, filename+'.csv'), n_labels=n_labels)
+                    data_bunch = TextDataBunch.from_csv(path, f'{filename}.csv', test=f'{filename}.csv', label_cols=list(range(n_labels)), text_cols=n_labels)
+                    clas_data_bunch = TextClasDataBunch.from_csv(path, f'{filename}.csv', test=f'{filename}.csv', label_cols=list(range(n_labels)), text_cols=n_labels)
+                else:
+                    df = text_df(n_labels=n_labels)
+                    data_bunch = TextDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), text_cols=["text"])
+                    clas_data_bunch = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), text_cols=["text"])
 
-def test_from_df():
-    for n_labels in [1, 3]:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
-        os.makedirs(path)
-        try:
-            df = text_df(n_labels=n_labels)
-            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=list(range(n_labels)), txt_cols=["text"])
-            assert len(data.classes) == 2
-            assert set(data.classes) == set([True, False])
-            if n_labels > 1: assert len(data.labels[0]) == n_labels
-        finally:
-            shutil.rmtree(path)
-            
+                for data in [data_bunch, clas_data_bunch]:
+                    assert len(data.classes) == 2 if n_labels==1 else n_labels
+                    assert set(data.classes) == {0, 1} if n_labels==1 else {'0', '0.1', '0.2'}
+                    if n_labels > 1: 
+                        x,y = data.train_ds[0]
+                        assert len(y) == n_labels
+            finally:
+                shutil.rmtree(path)
+
 def test_collate():
     path = untar_data(URLs.IMDB_SAMPLE)
-    dft = pd.read_csv(path/'train.csv', header=None)
-    dfv = pd.read_csv(path/'valid.csv', header=None)
+    df = pd.read_csv(path/'texts.csv', header=None)
+    dft, dfv = df.iloc[:800,:2], df.iloc[800:,:2]
     data = TextClasDataBunch.from_df(path, dft, dfv, bs=20)
     x,y = next(iter(data.train_dl))
     assert x.size(0) == 1519 and x.size(1) == 10

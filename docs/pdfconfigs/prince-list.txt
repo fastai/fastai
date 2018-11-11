@@ -1,0 +1,82 @@
+---
+layout: none
+search: exclude
+---
+
+
+ {% assign sidebar = site.data.sidebars[site.pdf_sidebar].entries %}
+
+   {% for entry in sidebar %}
+
+   {% for folder in entry.folders %}
+      {% if folder.output contains "pdf" %}
+              {% for folderitem in folder.folderitems %}
+                 {% if folderitem.output contains "pdf"  %}
+                    {{site.url}}{{site.baseurl}}{{folderitem.url}}
+                          {% for subfolders in folderitem.subfolders %}
+                             {% if subfolders.output contains "pdf" %}
+                                        {% for subfolderitem in subfolders.subfolderitems %}
+                                           {% if subfolderitem.output contains "pdf" %}
+                                              {{site.url}}{{site.baseurl}}{{subfolderitem.url}}
+                                           {% endif %}
+                                        {% endfor %}
+                             {% endif %}
+                          {% endfor %}
+                {% endif %}
+             {% endfor %}
+      {% endif %}
+  {% endfor %}
+ {% endfor %}
+
+
+
+{% comment %}
+
+ {% assign sidebar = site.data.sidebars[page.sidebar].entries %}
+
+   {% for entry in sidebar %}
+   {% for folder in entry.folders %}
+   {% if folder.output contains "web" %}
+   <li>
+       <a href="#">{{ folder.title }}</a>
+       <ul>
+           {% for folderitem in folder.folderitems %}
+           {% if folderitem.output contains "web" %}
+           {% if folderitem.external_url %}
+           <li><a href="{{folderitem.external_url}}" target="_blank">{{folderitem.title}}</a></li>
+           {% elsif page.url == folderitem.url %}
+           <li class="active"><a href="{{folderitem.url | remove: "/"}}">{{folderitem.title}}</a></li>
+           {% elsif folderitem.type == "empty" %}
+           <li><a href="{{folderitem.url | remove: "/"}}">{{folderitem.title}}</a></li>
+
+           {% else %}
+           <li><a href="{{folderitem.url | remove: "/"}}">{{folderitem.title}}</a></li>
+           {% endif %}
+           {% for subfolders in folderitem.subfolders %}
+           {% if subfolders.output contains "web" %}
+           <li class="subfolders">
+               <a href="#">{{ subfolders.title }}</a>
+               <ul>
+                   {% for subfolderitem in subfolders.subfolderitems %}
+                   {% if subfolderitem.output contains "web" %}
+                   {% if subfolderitem.external_url %}
+                   <li><a href="{{subfolderitem.external_url}}" target="_blank">{{subfolderitem.title}}</a></li>
+                   {% elsif page.url == subfolderitem.url %}
+                   <li class="active"><a href="{{subfolderitem.url | remove: "/"}}">{{subfolderitem.title}}</a></li>
+                   {% else %}
+                   <li><a href="{{subfolderitem.url | remove: "/"}}">{{subfolderitem.title}}</a></li>
+                   {% endif %}
+                   {% endif %}
+                   {% endfor %}
+               </ul>
+           </li>
+           {% endif %}
+           {% endfor %}
+           {% endif %}
+           {% endfor %}
+       </ul>
+    </li>
+      {% endif %}
+       {% endfor %}
+       {% endfor %}
+{% endcomment %}

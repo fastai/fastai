@@ -1,0 +1,34 @@
+# This pipeline is designed to run as a cron-job and not triggered by every build - once a day is probably enough
+
+jobs:
+
+- job: 'docs_websites_linkchecker'
+
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+
+  - script: |
+      echo "Installing prerequisites"
+      sudo apt install w3c-linkchecker
+    displayName: 'Installing prerequisites, prepare for checking'
+    continueOnError: false
+
+    # let this script continue on error since we want to run them all
+  - script: |
+      echo "Testing course-v3"
+      cd tools/checklink/
+      ./checklink-course-v3.sh
+      ./run-checker.sh course-v3
+    displayName: 'link checker for course-v3.fast.ai'
+    continueOnError: true
+
+    # let this last script not continue on error so that the final status will be failed if it fails
+  - script: |
+      echo "Testing docs"
+      cd tools/checklink/
+      ./checklink-docs.sh
+      ./run-checker.sh docs
+    displayName: 'link checker for docs.fast.ai'
+    continueOnError: false

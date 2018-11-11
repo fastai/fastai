@@ -1,0 +1,860 @@
+---
+
+title: text.transform
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "NLP data processing; tokenizes text and creates vocab indexes"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="NLP-Preprocessing">NLP Preprocessing<a class="anchor-link" href="#NLP-Preprocessing">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>text.tranform</code> contains the functions that deal behind the scenes with the two main tasks when preparing texts for modelling: <em>tokenization</em> and <em>numericalization</em>.</p>
+<p><em>Tokenization</em> splits the raw texts into tokens (wich can be words, or punctuation signs...). The most basic way to do this would be to separate according to spaces, but it's possible to be more subtle; for instance, the contractions like "isn't" or "don't" should be split in ["is","n't"] or ["do","n't"]. By default fastai will use the powerful <a href="https://spacy.io/api/tokenizer">spacy tokenizer</a>.</p>
+<p><em>Numericalization</em> is easier as it just consists in attributing a unique id to each token and mapping each of those tokens to their respective ids.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tokenization">Tokenization<a class="anchor-link" href="#Tokenization">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This step is actually divided in two phases: first, we apply a certain list of <code>rules</code> to the raw texts as preprocessing, then we use the tokenizer to split them in lists of tokens. Combining together those <code>rules</code>, the <code>tok_func</code>and the <code>lang</code> to process the texts is the role of the <a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a> class.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Tokenizer"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L74" class="source_link">[source]</a></h2><blockquote><p><code>Tokenizer</code>(<code>tok_func</code>:<code>Callable</code>=<code>'SpacyTokenizer'</code>, <code>lang</code>:<code>str</code>=<code>'en'</code>, <code>rules</code>:<code>ListRules</code>=<code>None</code>, <code>special_cases</code>:<code>StrList</code>=<code>None</code>, <code>n_cpus</code>:<code>int</code>=<code>None</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This class will process texts by appling them the <code>rules</code> then tokenizing them with <code>tok_func(lang)</code>. <code>special_cases</code> are a list of tokens passed as special to the tokenizer and <code>n_cpus</code> is the number of cpus to use for multi-processing (by default, half the cpus available). We don't directly pass a tokenizer for multi-processing purposes: each process needs to initiate a tokenizer of its own. The rules and special_cases default to</p>
+<p><code>default_rules = [fix_html, replace_rep, replace_wrep, deal_caps, spec_add_spaces, rm_useless_spaces]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L78">[source]</a></div></p>
+<p>and</p>
+<p><code>default_spec_tok = [BOS, FLD, UNK, PAD]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L79">[source]</a></div></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Tokenizer.process_text"><code>process_text</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L88" class="source_link">[source]</a></h4><blockquote><p><code>process_text</code>(<code>t</code>:<code>str</code>, <code>tok</code>:<a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>) → <code>List</code>[<code>str</code>]</p>
+</blockquote>
+<p>Processe one text <code>t</code> with tokenizer <code>tok</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Tokenizer.process_all"><code>process_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L99" class="source_link">[source]</a></h4><blockquote><p><code>process_all</code>(<code>texts</code>:<code>StrList</code>) → <code>List</code>[<code>List</code>[<code>str</code>]]</p>
+</blockquote>
+<p>Process a list of <code>texts</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For an example, we're going to grab some IMDB reviews.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMDB_SAMPLE</span><span class="p">)</span>
+<span class="n">path</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>PosixPath(&#39;/home/ubuntu/.fastai/data/imdb_sample&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">example_text</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span> <span class="n">example_text</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;This is a extremely well-made film. The acting, script and camera-work are all first-rate. The music is good, too, though it is mostly early in the film, when things are still relatively cheery. There are no really superstars in the cast, though several faces will be familiar. The entire cast does an excellent job with the script.&lt;br /&gt;&lt;br /&gt;But it is hard to watch, because there is no good end to a situation like the one presented. It is now fashionable to blame the British for setting Hindus and Muslims against each other, and then cruelly separating them into two countries. There is some merit in this view, but it\&#39;s also true that no one forced Hindus and Muslims in the region to mistreat each other as they did around the time of partition. It seems more likely that the British simply saw the tensions between the religions and were clever enough to exploit them to their own ends.&lt;br /&gt;&lt;br /&gt;The result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen. But it is never painted as a black-and-white case. There is baseness and nobility on both sides, and also the hope for change in the younger generation.&lt;br /&gt;&lt;br /&gt;There is redemption of a sort, in the end, when Puro has to make a hard choice between a man who has ruined her life, but also truly loved her, and her family which has disowned her, then later come looking for her. But by that point, she has no option that is without great pain for her.&lt;br /&gt;&lt;br /&gt;This film carries the message that both Muslims and Hindus have their grave faults, and also that both can be dignified and caring people. The reality of partition makes that realisation all the more wrenching, since there can never be real reconciliation across the India/Pakistan border. In that sense, it is similar to &#34;Mr &amp; Mrs Iyer&#34;.&lt;br /&gt;&lt;br /&gt;In the end, we were glad to have seen the film, even though the resolution was heartbreaking. If the UK and US could deal with their own histories of racism with this kind of frankness, they would certainly be better off.&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span>
+<span class="n">tok</span> <span class="o">=</span> <span class="n">SpacyTokenizer</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">)</span>
+<span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">process_text</span><span class="p">(</span><span class="n">example_text</span><span class="p">,</span> <span class="n">tok</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;this is a extremely well - made film . the acting , script and camera - work are all first - rate . the music is good , too , though it is mostly early in the film , when things are still relatively cheery . there are no really superstars in the cast , though several faces will be familiar . the entire cast does an excellent job with the script . \n\n but it is hard to watch , because there is no good end to a situation like the one presented . it is now fashionable to blame the british for setting hindus and muslims against each other , and then cruelly separating them into two countries . there is some merit in this view , but it \&#39;s also true that no one forced hindus and muslims in the region to mistreat each other as they did around the time of partition . it seems more likely that the british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . but it is never painted as a black - and - white case . there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n there is redemption of a sort , in the end , when puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . but by that point , she has no option that is without great pain for her . \n\n this film carries the message that both muslims and hindus have their grave faults , and also that both can be dignified and caring people . the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the india / pakistan border . in that sense , it is similar to &#34; mr &amp; mrs iyer &#34; . \n\n in the end , we were glad to have seen the film , even though the resolution was heartbreaking . if the uk and us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As explained before, the tokenizer split the text according to words/punctuations signs but in a smart manner. The rules (see below) also have modified the text a little bit. We can tokenize a list of texts directly at the same time:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">process_all</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+<span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;this is a extremely well - made film . the acting , script and camera - work are all first - rate . the music is good , too , though it is mostly early in the film , when things are still relatively cheery . there are no really superstars in the cast , though several faces will be familiar . the entire cast does an excellent job with the script . \n\n but it is hard to watch , because there is no good end to a situation like the one presented . it is now fashionable to blame the british for setting hindus and muslims against each other , and then cruelly separating them into two countries . there is some merit in this view , but it \&#39;s also true that no one forced hindus and muslims in the region to mistreat each other as they did around the time of partition . it seems more likely that the british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . but it is never painted as a black - and - white case . there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n there is redemption of a sort , in the end , when puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . but by that point , she has no option that is without great pain for her . \n\n this film carries the message that both muslims and hindus have their grave faults , and also that both can be dignified and caring people . the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the india / pakistan border . in that sense , it is similar to &#34; mr &amp; mrs iyer &#34; . \n\n in the end , we were glad to have seen the film , even though the resolution was heartbreaking . if the uk and us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Customize-the-tokenizer">Customize the tokenizer<a class="anchor-link" href="#Customize-the-tokenizer">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>tok_func</code> must return an instance of <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BaseTokenizer"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L12" class="source_link">[source]</a></h2><blockquote><p><code>BaseTokenizer</code>(<code>lang</code>:<code>str</code>)</p>
+</blockquote>
+<p>Basic class for a tokenizer function.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="BaseTokenizer.tokenizer"><code>tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>tokenizer</code>(<code>t</code>:<code>str</code>) → <code>List</code>[<code>str</code>]</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Take a text <code>t</code> and returns the list of its tokens.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="BaseTokenizer.add_special_cases"><code>add_special_cases</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L16" class="source_link">[source]</a></h4><blockquote><p><code>add_special_cases</code>(<code>toks</code>:<code>StrList</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Record a list of special tokens <code>toks</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The fastai library uses <a href="https://spacy.io/">spacy</a> tokenizers as its default. The following class wraps it as <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SpacyTokenizer"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L18" class="source_link">[source]</a></h2><blockquote><p><code>SpacyTokenizer</code>(<code>lang</code>:<code>str</code>) :: <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a></p>
+</blockquote>
+<p>Wrapper around a spacy tokenizer to make it a <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to use your custom tokenizer, just subclass the <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a> and override its <code>tokenizer</code> and <code>add_spec_cases</code> functions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Rules">Rules<a class="anchor-link" href="#Rules">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Rules are just functions that take a string and return the modified string. This allows you to customize the list of <code>default_rules</code> as you please. Those <code>default_rules</code> are:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="deal_caps"><code>deal_caps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L55" class="source_link">[source]</a></h4><blockquote><p><code>deal_caps</code>(<code>t</code>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In <code>t</code>, if a word is written in all caps, we put it in a lower case and add a special token before. A model will more easily learn this way the meaning of the sentence. The rest of the capitals are removed.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">deal_caps</span><span class="p">(</span><span class="s2">&quot;I&#39;m suddenly SHOUTING FOR NO REASON!&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#34;i&#39;m suddenly  xxup shouting  xxup for no  xxup reason!&#34;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fix_html"><code>fix_html</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L62" class="source_link">[source]</a></h4><blockquote><p><code>fix_html</code>(<code>x</code>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This rules replaces a bunch of HTML characters or norms in plain text ones. For instance <code>&lt;br /&gt;</code> are replaced by <code>\n</code>, <code>&amp;nbsp;</code> by spaces etc...</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fix_html</span><span class="p">(</span><span class="s2">&quot;Some HTML&amp;nbsp;text&lt;br /&gt;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;Some HTML&amp; text\n&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="replace_rep"><code>replace_rep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>replace_rep</code>(<code>t</code>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Whenever a character is repeated more than three times in <code>t</code>, we replace the whole thing by 'TK_REP n char' where n is the number of occurences and char the character.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">replace_rep</span><span class="p">(</span><span class="s2">&quot;I&#39;m so excited!!!!!!!!&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#34;I&#39;m so excited xxrep 8 ! &#34;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="replace_wrep"><code>replace_wrep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L47" class="source_link">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<code>t</code>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Whenever a word is repeated more than four times in <code>t</code>, we replace the whole thing by 'TK_WREP n w' where n is the number of occurences and w the word repeated.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">replace_wrep</span><span class="p">(</span><span class="s2">&quot;I&#39;ve never ever ever ever ever ever ever ever done this.&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#34;I&#39;ve never  xxwrep 7 ever  done this.&#34;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="rm_useless_spaces"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L35" class="source_link">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<code>t</code>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+<p>Remove multiple spaces in <code>t</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rm_useless_spaces</span><span class="p">(</span><span class="s2">&quot;Inconsistent   use  of     spaces.&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;Inconsistent use of spaces.&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="spec_add_spaces"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L31" class="source_link">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<code>t</code>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+<p>Add spaces around / and # in <code>t</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spec_add_spaces</span><span class="p">(</span><span class="s1">&#39;I #like to #put #hashtags #everywhere!&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;I  # like to  # put  # hashtags  # everywhere!&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Numericalization">Numericalization<a class="anchor-link" href="#Numericalization">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To convert our set of tokens to unique ids (and be able to have them go through embeddings), we use the following class:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Vocab"><code>class</code> <code>Vocab</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L105" class="source_link">[source]</a></h2><blockquote><p><code>Vocab</code>(<code>itos</code>:<code>Dict</code>[<code>int</code>, <code>str</code>])</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Contain the correspondance between numbers and tokens and numericalize. <code>itos</code> contains the id to token correspondance.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Vocab.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>tokens</code>:<code>Tokens</code>, <code>max_vocab</code>:<code>int</code>, <code>min_freq</code>:<code>int</code>) → <code>Vocab</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/text.transform.html#Vocab"><code>Vocab</code></a> dictionary from a set of <code>tokens</code>. Only keeps <code>max_vocab</code> tokens, and only if they appear at least <code>min_freq</code> times, set the rest to <code>UNK</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Vocab.numericalize"><code>numericalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L112" class="source_link">[source]</a></h4><blockquote><p><code>numericalize</code>(<code>t</code>:<code>StrList</code>) → <code>List</code>[<code>int</code>]</p>
+</blockquote>
+<p>Convert a list of tokens <code>t</code> to their ids.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Vocab.textify"><code>textify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>textify</code>(<code>nums</code>:<code>Collection</code>[<code>int</code>], <code>sep</code>=<code>' '</code>) → <code>List</code>[<code>str</code>]</p>
+</blockquote>
+<p>Convert a list of <code>nums</code> to their tokens.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab</span> <span class="o">=</span> <span class="n">Vocab</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">max_vocab</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">vocab</span><span class="o">.</span><span class="n">numericalize</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[14, 9, 6, 619, 85, 17, 110, 25, 4, 2]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

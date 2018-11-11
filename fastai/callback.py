@@ -266,8 +266,9 @@ class AverageMetric(Callback):
         self.val, self.count = 0.,0
 
     def on_batch_end(self, last_output, last_target, train, **kwargs):
-        self.count += last_target.size(0)
-        self.val += last_target.size(0) * self.func(last_output, last_target).detach().item()
+        if not is_listy(last_target): last_target=[last_target]
+        self.count += last_target[0].size(0)
+        self.val += last_target[0].size(0) * self.func(last_output, *last_target).detach().cpu()
 
     def on_epoch_end(self, **kwargs):
         self.metric = self.val/self.count

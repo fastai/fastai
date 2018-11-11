@@ -1,0 +1,87 @@
+---
+
+title: gen_doc.convert2html
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Converting the documentation notebooks to HTML pages"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conversion-notebook-to-HTML">Conversion notebook to HTML<a class="anchor-link" href="#Conversion-notebook-to-HTML">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the module to convert a jupyter notebook to an html page. It will normally render everything the way it was in the notebooks, including suppressing the input of the code cells with input cells masked, and converting the links between notebooks in links between the html pages.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Functions">Functions<a class="anchor-link" href="#Functions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="convert_nb"><code>convert_nb</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/convert2html.py#L31" class="source_link">[source]</a></h4><blockquote><p><code>convert_nb</code>(<code>fname</code>, <code>dest_path</code>=<code>'.'</code>)</p>
+</blockquote>
+<p>Convert a notebook <code>fname</code> to html file in <code>dest_path</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="convert_all"><code>convert_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/convert2html.py#L44" class="source_link">[source]</a></h4><blockquote><p><code>convert_all</code>(<code>folder</code>, <code>dest_path</code>=<code>'.'</code>, <code>force_all</code>=<code>False</code>)</p>
+</blockquote>
+<p>Convert modified notebooks in <code>folder</code> to html pages in <code>dest_path</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here's an example to convert all the docs in this folder:</p>
+<div class="highlight"><pre><span></span><span class="n">convert_all</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;../docs&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

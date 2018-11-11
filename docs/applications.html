@@ -1,0 +1,39 @@
+---
+
+title: applications
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Types of problems you can apply the fastai library to"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Application-fields">Application fields<a class="anchor-link" href="#Application-fields">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The fastai library allows you to train a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Model</code></a> on a certain <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> very easily by binding them together inside a <a href="/basic_train.html#Learner"><code>Learner</code></a> object. This module regroups the tools the library provides to help you preprocess and group your data in this format.</p>
+<h2 id="collab"><a href="/collab.html#collab"><code>collab</code></a><a class="anchor-link" href="#collab">&#182;</a></h2><p>This submodule handles the collaborative filtering problems.</p>
+<h2 id="tabular"><a href="/tabular.html#tabular"><code>tabular</code></a><a class="anchor-link" href="#tabular">&#182;</a></h2><p>This sub-package deals with tabular (or structured) data.</p>
+<h2 id="text"><a href="/text.html#text"><code>text</code></a><a class="anchor-link" href="#text">&#182;</a></h2><p>This sub-package contains everything you need for Natural Language Processing.</p>
+<h2 id="vision"><a href="/vision.html#vision"><code>vision</code></a><a class="anchor-link" href="#vision">&#182;</a></h2><p>This sub-package contains the classes that deal with Computer Vision.</p>
+<h2 id="Module-structure">Module structure<a class="anchor-link" href="#Module-structure">&#182;</a></h2><p>In each case (except for <a href="/collab.html#collab"><code>collab</code></a>), the module is organized this way:</p>
+<h3 id="transform"><a href="/tabular.transform.html#tabular.transform"><code>transform</code></a><a class="anchor-link" href="#transform">&#182;</a></h3><p>This sub-module deals with the pre-processing (data augmentation for images, cleaning for tabular data, tokenizing and numericalizing for text).</p>
+<h3 id="data"><a href="/tabular.data.html#tabular.data"><code>data</code></a><a class="anchor-link" href="#data">&#182;</a></h3><p>This sub-module defines the dataset class(es) to deal with this kind of data.</p>
+<h3 id="models"><a href="/tabular.models.html#tabular.models"><code>models</code></a><a class="anchor-link" href="#models">&#182;</a></h3><p>This sub-module defines the specific models used for this kind of data.</p>
+<h3 id="learner"><a href="/text.learner.html#text.learner"><code>learner</code></a><a class="anchor-link" href="#learner">&#182;</a></h3><p>When it exists, this sub-module contains functions will directly bind this data with a suitable model and add the necessary callbacks.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

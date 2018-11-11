@@ -91,6 +91,7 @@ def test_link_vision_learner_priority():
     imports = """from fastai.gen_doc.nbdoc import *
     from fastai.vision import *
     from fastai import *
+    from fastai.vision import data
     """
 
     docstr   = "Pass in your `data`, calculated `preds`, actual `y`,"
@@ -98,3 +99,4 @@ def test_link_vision_learner_priority():
     err_msg = "`data` should link to vision.data instead of text.data."
     modules = gen_notebooks.get_imported_modules([gen_notebooks.get_code_cell(imports)], nb_module_name='fastai.vision.learner')
     assert_link(docstr, expected, modules=modules, msg=err_msg)
+

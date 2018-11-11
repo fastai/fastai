@@ -7,8 +7,13 @@ from ..datasets import untar_data
 from ..metrics import accuracy
 from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
+from .transform import *
 
-__all__ = ['RNNLearner', 'convert_weights', 'lm_split', 'rnn_classifier_split']
+__all__ = ['RNNLearner', 'LanguageLearner', 'TextClassifierLearner', 'RNNLearner', 'convert_weights', 'lm_split', 
+           'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
+
+default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
+                   'classifier': np.array([0.4,0.5,0.05,0.3,0.4])}
 
 def convert_weights(wgts:Weights, stoi_wgts:Dict[str,int], itos_new:Collection[str]) -> Weights:
     "Convert the model weights to go with a new vocabulary."
@@ -65,43 +70,82 @@ class RNNLearner(Learner):
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts)
+        
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None, 
+                  ordered:bool=False) -> List[Tensor]:
+        "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
+        preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
+        if ordered and hasattr(self.dl(ds_type), 'sampler'):
+            sampler = [i for i in self.dl(ds_type).sampler]
+            reverse_sampler = np.argsort(sampler)
+            preds[0] = preds[0][reverse_sampler,:] if preds[0].dim() > 1 else preds[0][reverse_sampler]
+            preds[1] = preds[1][reverse_sampler,:] if preds[1].dim() > 1 else preds[1][reverse_sampler]
+        return(preds)
 
-    @classmethod
-    def language_model(cls, data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
-                       drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
-                       pretrained_fnames:OptStrTuple=None, **kwargs) -> 'RNNLearner':
-        "Create a `Learner` with a language model."
-        dps = np.array([0.25, 0.1, 0.2, 0.02, 0.15]) * drop_mult
-        vocab_size = data.train_ds.vocab_size
-        model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
-                    weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
-        learn = cls(data, model, bptt, split_func=lm_split, **kwargs)
-        if pretrained_model is not None:
-            model_path = untar_data(pretrained_model, data=False)
-            fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
-            learn.load_pretrained(*fnames)
-            learn.freeze()
-        if pretrained_fnames is not None:
-            fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
-            learn.load_pretrained(*fnames)
-            learn.freeze()
-        return learn
+class LanguageLearner(RNNLearner):
+    "Subclass of RNNLearner for predictions."
+    def predict(self, text:str, n_words:int=1, tokenizer:Tokenizer=None):
+        "Return the `n_words` that come after `text`. `tokenizer` should be the same one used as during training."
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        tokens = tokenizer.process_all([text])
+        ds = self.data.valid_ds
+        ids = ds.vocab.numericalize(tokens[0]) 
+        self.model.reset()
+        pbar = master_bar(range(n_words))
+        for _ in pbar:
+            ds.set_item(ids)
+            res = self.pred_batch(pbar=pbar)
+            ids.append(res[-1].argmax())
+        ds.clear_item()
+        return self.data.train_ds.vocab.textify(ids)        
 
-    @classmethod
-    def classifier(cls, data:DataBunch, bptt:int=70, max_len:int=70*20, emb_sz:int=400, nh:int=1150, nl:int=3,
-                   lin_ftrs:Collection[int]=None, ps:Collection[float]=None, pad_token:int=1,
-                   drop_mult:float=1., qrnn:bool=False, **kwargs) -> 'RNNLearner':
-        "Create a RNN classifier."
-        dps = np.array([0.4,0.5,0.05,0.3,0.4]) * drop_mult
-        if lin_ftrs is None: lin_ftrs = [50]
-        if ps is None:  ps = [0.1]
-        ds = data.train_ds
-        vocab_size, lbl = ds.vocab_size, ds.labels[0]
-        n_class = (len(ds.classes) if (not isinstance(lbl, Iterable) or (len(lbl) == 1))
-                   else len(lbl))
-        layers = [emb_sz*3] + lin_ftrs + [n_class]
-        ps = [dps[4]] + ps
-        model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
-                    layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
-        learn = cls(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
-        return learn
+class TextClassifierLearner(RNNLearner):
+    "Subclass of RNNLearner for predictions."
+    def predict(self, text:str, tokenizer:Tokenizer=None):
+        "Return prect class, label and probabilities for `text`. `tokenizer` should be the same one used as during training."
+        tokenizer = ifnone(tokenizer, Tokenizer())
+        tokens = tokenizer.process_all([text])
+        ds = self.data.valid_ds
+        ids = ds.vocab.numericalize(tokens[0]) 
+        self.model.reset()
+        ds.set_item(ids)
+        res = self.pred_batch()[0]
+        ds.clear_item()
+        pred_max = res.argmax()
+        return self.data.train_ds.classes[pred_max],pred_max,res
+    
+def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
+                  drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
+                  pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
+    "Create a `Learner` with a language model."
+    dps = default_dropout['language'] * drop_mult
+    vocab_size = data.train_ds.vocab_size
+    model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
+                weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
+    learn = LanguageLearner(data, model, bptt, split_func=lm_split, **kwargs)
+    if pretrained_model is not None:
+        model_path = untar_data(pretrained_model, data=False)
+        fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        learn.load_pretrained(*fnames)
+        learn.freeze()
+    if pretrained_fnames is not None:
+        fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
+        learn.load_pretrained(*fnames)
+        learn.freeze()
+    return learn
+
+def text_classifier_learner(data:DataBunch, bptt:int=70, max_len:int=70*20, emb_sz:int=400, nh:int=1150, nl:int=3,
+               lin_ftrs:Collection[int]=None, ps:Collection[float]=None, pad_token:int=1,
+               drop_mult:float=1., qrnn:bool=False, **kwargs) -> 'TextClassifierLearner':
+    "Create a RNN classifier."
+    dps = default_dropout['classifier'] * drop_mult
+    if lin_ftrs is None: lin_ftrs = [50]
+    if ps is None:  ps = [0.1]
+    ds = data.train_ds
+    vocab_size, n_class = ds.vocab_size, data.c
+    layers = [emb_sz*3] + lin_ftrs + [n_class]
+    ps = [dps[4]] + ps
+    model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
+                layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
+    learn = TextClassifierLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    return learn

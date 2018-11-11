@@ -1,37 +1,78 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
+from .layers import MSELossFlat
 
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
+DatasetType = Enum('DatasetType', 'Train Valid Test')
+TaskType = Enum('TaskType', 'No Single Multi Regression')
+__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType', 'TaskType']
 
 class DatasetBase(Dataset):
     "Base class for all fastai datasets."
-    def __init__(self, c:int): self.c,self.item = c,None
-    def __len__(self): return len(getattr(self, 'x', [1]))
+    def __init__(self, x:Collection=None, y:Collection=None, classes:Collection=None, c:Optional[int]=None,
+                 task_type:TaskType=None, class2idx:Dict[Any,int]=None, as_array:bool=True, do_encode_y:bool=True):
+        self.c,self.classes,self.class2idx,self.item = c,classes,class2idx,None
+        if as_array: self.x,self.y = (np.array(x) if x is not None else None),(np.array(y) if y is not None else None)
+        self.task_type = ifnone(task_type, self.get_task_type())
+        if classes is None and y is not None:
+            if self.task_type==TaskType.Single: self.classes=uniqueify(y)
+            if self.task_type==TaskType.Multi:  self.classes=uniqueify(np.concatenate(y))
+
+        if self.classes is not None:
+            if not c:
+                if self.task_type==TaskType.Regression and y is not None: self.c = y.shape[1]
+                else: self.c = len(self.classes)
+            if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
+            if y is not None and do_encode_y: self.encode_y()
+        if self.task_type==TaskType.Regression: self.loss_func = MSELossFlat()
+        elif self.task_type==TaskType.Single:   self.loss_func = F.cross_entropy
+        elif self.task_type==TaskType.Multi:    self.loss_func = F.binary_cross_entropy_with_logits
+
+    def encode_y(self):
+        if self.task_type==TaskType.Single:
+            self.y = np.array([self.class2idx[o] for o in self.y], dtype=np.int64)
+        elif self.task_type==TaskType.Multi:
+            self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
+
+    def __len__(self): return len(self.x) if self.x is not None else 1
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
     def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
+    def new(self, *args, **kwargs):
+        "Create a new dataset using `self` as a template"
+        return self.__class__(*args, **kwargs)
 
-    @abstractmethod
-    def _get_x(self,i): pass
-    @abstractmethod
-    def _get_y(self,i): pass
+    def _get_x(self,i):   return self.x[i]
+    def _get_y(self,i,x): return one_hot_encode(self.y[i],self.c) if self.task_type==TaskType.Multi else self.y[i]
 
     def __getitem__(self, i):
-        if self.item is None: return self._get_x(i),self._get_y(i)
-        else: return self.item,0
+        if self.item is not None: return self.item,0
+        x = self._get_x(i)
+        return x,self._get_y(i,x)
 
-class LabelDataset(DatasetBase):
-    "Base class for fastai datasets that do classification, mapped according to `classes`."
-    def __init__(self, classes:Collection, class2idx:Dict[Any,int]=None):
-        self.classes  = classes
-        self.class2idx = class2idx
-        if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        super().__init__(len(classes))
+    def get_y_repr(self, i):
+        if task_type==TaskType.Single:  return self.classes[y[i]]
+        elif task_type==TaskType.Multi: return '; '.join([self.classes[a] for a in y[i]])
+        else: return y[i]
+
+    def get_task_type(self):
+        if self.y is None or len(self.y) == 0: return TaskType.No
+        y = self.y[0]
+        if isinstance(y,(int,str,np.int64)): return TaskType.Single
+        elif isinstance(y, (float,np.float32)):  return TaskType.Regression
+        elif isinstance(y, Iterable):
+            i=0
+            while len(y) == 0 and i < len(self.y):
+                y = self.y[i]
+                i += 1
+            if i == len(self.y) and len(y)==0: return TaskType.No
+            return (TaskType.Multi if isinstance(y[0],(int,str,np.int64)) else
+                    TaskType.Regression if isinstance(y[0],(float,np.float32)) else
+                    TaskType.No)
+        else: return TaskType.No
 
 class SingleClassificationDataset(DatasetBase):
-    def __init__(self, classes:Collection[str]):
-        self.classes = classes
-        super().__init__(len(classes))
+    "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
+    def __init__(self, classes): super().__init__(classes=classes)
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
@@ -43,6 +84,7 @@ class DeviceDataLoader():
     device: torch.device
     tfms: List[Callable]=None
     collate_fn: Callable=data_collate
+    skip_size1:bool=False
     def __post_init__(self):
         self.dl.collate_fn=self.collate_fn
         self.tfms = listify(self.tfms)
@@ -71,7 +113,10 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        for b in self.dl: yield self.proc_batch(b)
+        for b in self.dl:
+            y = b[1][0] if is_listy(b[1]) else b[1]
+            if not self.skip_size1 or y.size(0) != 1:
+                yield self.proc_batch(b)
 
     def one_batch(self)->Collection[Tensor]:
         "Get one batch from the data loader."
@@ -97,9 +142,9 @@ class DataBunch():
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
-        self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
+        self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn, skip_size1=True)
         self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl,  self.device, self.tfms, collate_fn) if test_dl else None
+        self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
         self.path = Path(path)
 
     @classmethod
@@ -109,14 +154,17 @@ class DataBunch():
         "`DataBunch` factory. `bs` batch size, `tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
+        val_bs = (bs*3)//2
         dls = [DataLoader(*o, num_workers=num_workers) for o in
-               zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
+               zip(datasets, (bs,val_bs,val_bs), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
-    def holdout(self, is_test:bool=False)->DeviceDataLoader:
-        "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
-        return self.test_dl if is_test else self.valid_dl
+    def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
+        "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
+        return (self.train_dl if ds_type == DatasetType.Train else
+                self.test_dl if ds_type == DatasetType.Test else
+                self.valid_dl)
 
     def add_tfm(self,tfm:Callable)->None:
         self.train_dl.add_tfm(tfm)
@@ -134,3 +182,6 @@ class DataBunch():
     def test_ds(self)->Dataset:
         assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
         return self.test_dl.dl.dataset
+
+    def learner_type(self)->type: return getattr(self.train_ds, 'learner_type', None)
+

@@ -13,12 +13,12 @@
           {% if folderitem.external_url %}
           <li><a href="{{folderitem.external_url}}" target="_blank">{{folderitem.title}}</a></li>
           {% elsif page.url == folderitem.url %}
-          <li class="active"><a href="{{folderitem.url | remove: "/"}}">{{folderitem.title}}</a></li>
+          <li class="active"><a href="{{folderitem.url}}">{{folderitem.title}}</a></li>
           {% elsif folderitem.type == "empty" %}
-          <li><a href="{{folderitem.url | remove: "/"}}">{{folderitem.title}}</a></li>
+          <li><a href="{{folderitem.url}}">{{folderitem.title}}</a></li>
 
           {% else %}
-          <li><a href="{{folderitem.url | remove: "/"}}">{{folderitem.title}}</a></li>
+          <li><a href="{{folderitem.url}}">{{folderitem.title}}</a></li>
           {% endif %}
           {% for subfolders in folderitem.subfolders %}
           {% if subfolders.output contains "web" %}
@@ -30,9 +30,9 @@
                   {% if subfolderitem.external_url %}
                   <li><a href="{{subfolderitem.external_url}}" target="_blank">{{subfolderitem.title}}</a></li>
                   {% elsif page.url == subfolderitem.url %}
-                  <li class="active"><a href="{{subfolderitem.url | remove: "/"}}">{{subfolderitem.title}}</a></li>
+                  <li class="active"><a href="{{subfolderitem.url}}">{{subfolderitem.title}}</a></li>
                   {% else %}
-                  <li><a href="{{subfolderitem.url | remove: "/"}}">{{subfolderitem.title}}</a></li>
+                  <li><a href="{{subfolderitem.url}}">{{subfolderitem.title}}</a></li>
                   {% endif %}
                   {% endif %}
                   {% endfor %}

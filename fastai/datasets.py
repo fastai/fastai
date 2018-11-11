@@ -16,6 +16,7 @@ class URLs():
     COCO_TINY = f'{URL}coco_tiny'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
+    IMDB = f'{S3_NLP}imdb'
     IMDB_SAMPLE = f'{URL}imdb_sample'
     HUMAN_NUMBERS = f'{URL}human_numbers'
     ADULT_SAMPLE = f'{URL}adult_sample'
@@ -43,12 +44,20 @@ class Config():
     def get_key(cls, key): return cls.get().get(key, cls.DEFAULT_CONFIG.get(key,None))
 
     @classmethod
+    def get_path(cls, path): return _expand_path(cls.get_key(path))
+
+    @classmethod
+    def data_path(cls): return cls.get_path('data_path')
+
+    @classmethod
+    def model_path(cls): return cls.get_path('model_path')
+
+    @classmethod
     def get(cls, fpath=None, create_missing=True):
         fpath = _expand_path(fpath or cls.DEFAULT_CONFIG_PATH)
         if not fpath.exists() and create_missing: cls.create(fpath)
         assert fpath.exists(), f'Could not find config at: {fpath}. Please create'
-        with open(fpath, 'r') as yaml_file:
-            return yaml.load(yaml_file)
+        with open(fpath, 'r') as yaml_file: return yaml.load(yaml_file)
 
     @classmethod
     def create(cls, fpath):
@@ -70,13 +79,13 @@ def modelpath4file(filename):
     "Returns URLs.MODEL path if file exists. Otherwise returns config path"
     local_path = URLs.LOCAL_PATH/'models'/filename
     if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
-    else: return _expand_path(Config.get_key('model_path'))/filename
+    else: return Config.model_path()/filename
 
 def datapath4file(filename):
     "Returns URLs.DATA path if file exists. Otherwise returns config path"
     local_path = URLs.LOCAL_PATH/'data'/filename
     if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
-    else: return _expand_path(Config.get_key('data_path'))/filename
+    else: return Config.data_path()/filename
 
 def download_data(url:str, fname:PathOrStr=None):
     "Download `url` to destination `fname`"
@@ -94,3 +103,4 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True):
         fname = download_data(url, fname=fname)
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest
+

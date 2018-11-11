@@ -34,7 +34,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
 def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
     "Compute accuracy with `targs` when `input` is bs * n_classes."
     n = targs.shape[0]
-    input = input.argmax(dim=1).view(n,-1)
+    input = input.argmax(dim=-1).view(n,-1)
     targs = targs.view(n,-1)
     return (input==targs).float().mean()
 
