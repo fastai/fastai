@@ -62,20 +62,19 @@ class ItemList():
     def preprocess(self, **kwargs): pass
 
     @classmethod
-    def from_folder(cls, path:PathOrStr, create_func:Callable, extensions:Collection[str]=None, recurse=True)->'ItemList':
+    def from_folder(cls, path:PathOrStr, create_func:Callable=None, extensions:Collection[str]=None, recurse=True)->'ItemList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         return cls(get_files(path, extensions, recurse=recurse), create_func=create_func, path=path)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable, col:IntsOrStrs=0)->'ItemList':
+    def from_df(cls, df:DataFrame, path:PathOrStr='.', create_func:Callable=None, col:IntsOrStrs=0)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
         inputs = df.iloc[:,df_names_to_idx(col, df)]
-        res = cls(create_func=create_func, items=_maybe_squeeze(inputs.values), path=path)
-        res.xtra = df
+        res = cls(create_func=create_func, items=_maybe_squeeze(inputs.values), path=path, xtra = df)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable, col:IntsOrStrs=0, header:str='infer')->'ItemList':
+    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=None, col:IntsOrStrs=0, header:str='infer')->'ItemList':
         "Get the list of inputs in the `col`of `path/csv_name`."
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, create_func=create_func, col=col)
