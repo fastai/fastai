@@ -1,6 +1,7 @@
 import pytest
 from fastai import *
 from fastai.text import *
+from fastai.text.inference import LanguageModelPredictor
 
 pytestmark = pytest.mark.integration
 
@@ -51,3 +52,10 @@ def test_classifier():
             assert last_layer(classifier.model).out_features == n_labels if n_labels > 1 else n_labels+1
         finally:
             shutil.rmtree(path)
+
+def test_inference(learn):
+    predictor = LanguageModelPredictor.from_learner(learn)
+    loglikes = predictor.loglikelihood(["fast ai text inference api", "hello world"])
+    assert (loglikes > -10.0).all()
+    ppl = predictor.perplexity(["fast ai text inference api", "hello world"])
+    assert (ppl < 5).all()
