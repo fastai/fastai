@@ -39,7 +39,7 @@ class ItemList():
                  label_cls:Callable=None, split_cls:Callable=None, list_cls:Callable=None, xtra:Any=None):
         self.items,self.create_func,self.path = np.array(list(items)),create_func,Path(path)
         self._label,self._split,self._list,self.xtra = label_cls,split_cls,list_cls,xtra
-        if create_func is None: self.create_func = self.get
+        #if create_func is None: self.create_func = self.get
         if label_cls   is None: self._label = LabelList
         if split_cls   is None: self._split = ItemLists
 
@@ -53,7 +53,7 @@ class ItemList():
     def item(self,idxs:int, x:Any=None)->Any:
         if isinstance(idxs, int):
             items = self.items[idxs]
-            f = self.create_func
+            f = ifnone(self.create_func, self.get)
             return f(items) if (x is None or not has_arg(f, 'x')) else f(items, x=x)
         else:
             xtra = None if self.xtra is None else index_row(self.xtra, idxs)
@@ -182,7 +182,7 @@ class ItemList():
 
 
 class CategoryList(ItemList):
-    def __init__(self, items:Iterator, classes:Collection=None):
+    def __init__(self, items:Iterator, classes:Collection=None, sep=None):
         super().__init__(items)
         if classes is None: classes = uniqueify(items)
         self.classes = classes
@@ -242,7 +242,7 @@ class ItemLists():
 
     def preprocess(self, **kwargs):
         self.train.x.preprocess(**kwargs)
-        kwargs = _merge_kwargs(getattr(self.train.x, 'preprocess_kwargs', {}), kwargs)
+        kwargs = {**kwargs, **getattr(self.train.x, 'preprocess_kwargs', {})}
         for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
         return self
 
@@ -303,10 +303,6 @@ class LabelList(Dataset):
     def transform(self, tfms:TfmList, **kwargs):
         self.tfms,self.tfmargs = tfms,kwargs
         return self
-
-def _merge_kwargs(new_k, kwargs):
-    for k,v in new_k.items(): kwargs[k] = v
-    return kwargs
 
 def create_sdata(sdata_cls, path:PathOrStr, train_x:Collection, train_y:Collection, valid_x:Collection,
                  valid_y:Collection, test_x:Collection=None):

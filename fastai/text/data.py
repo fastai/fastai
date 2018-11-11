@@ -27,7 +27,7 @@ class TextLabelList(LabelList):
         super().__init__(items=items, path=path, parent=parent)
         self._pipe = TextSplitData
 
-class TextSplitData(SplitData):
+class TextSplitData():
     def __init__(self, path:PathOrStr, train:LabelList, valid:LabelList, test:LabelList=None):
         super().__init__(path,train,valid,test)
         self._pipe = TextSplitDatasets
@@ -40,7 +40,7 @@ class TextSplitData(SplitData):
         items = TextFileList.from_folder(self.path/test_folder)
         return self.add_test(items, label=label)
 
-class TextSplitDatasets(SplitDatasets):
+class TextSplitDatasets():
     def tokenize(self, tokenizer:Tokenizer=None, chunksize:int=10000):
         "Tokenize `self.datasets` with `tokenizer` by bits of `chunksize`."
         self.datasets = [ds.tokenize(tokenizer, chunksize) for ds in self.datasets]
