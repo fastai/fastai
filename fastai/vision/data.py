@@ -49,7 +49,7 @@ def show_image_batch(dl:DataLoader, rows:int=None, figsize:Tuple[int,int]=(9,10)
         x.show(ax=ax, y=y)
     plt.tight_layout()
 
-class ImageSplitDatasets(SplitDatasets):
+class ImageSplitDatasets():
     def transform(self, tfms:TfmList, **kwargs)->'SplitDatasets':
         "Apply `tfms` to the underlying datasets, `kwargs` are passed to `DatasetTfm`."
         assert not isinstance(self.train_ds, DatasetTfm)
@@ -228,17 +228,16 @@ class DatasetTfm(Dataset):
         "this dataset will apply `tfms` to `ds`"
         self.ds,self.tfm_y = ds,tfm_y
         self.tfms,self.kwargs = _prep_tfm_kwargs(tfms,kwargs)
-        self.y_kwargs = {**self.kwargs, 'do_resolve':False}
 
     def __len__(self)->int: return len(self.ds)
     def __repr__(self)->str: return f'{self.__class__.__name__}({self.ds})'
 
     def __getitem__(self,idx:int)->Tuple[ItemBase,Any]:
-        "Return tfms(x),y."
+        "Return transformed tuple"
         x,y = self.ds[idx]
-        x = apply_tfms(self.tfms, x, **self.kwargs)
-        if self.tfm_y: y = apply_tfms(self.tfms, y, **self.y_kwargs)
-        return x, y
+        x = x.apply_tfms(self.tfms, **self.kwargs)
+        if self.tfm_y: y = y.apply_tfms(self.tfms, **{**self.kwargs, 'do_resolve':False})
+        return x,y
 
     def __getattr__(self,k):
         "Passthrough access to wrapped dataset attributes."
@@ -306,7 +305,7 @@ class ImageDataBunch(DataBunch):
     def create_from_split_ds(cls, dss:ImageSplitDatasets, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                 collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
-        if ds_tfms or size: dss = dss.transform(tfms=ds_tfms, size=size, **kwargs)
+        dss = dss.transform(tfms=ds_tfms, size=size, **kwargs)
         return dss.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device)
 
     @classmethod
@@ -314,26 +313,23 @@ class ImageDataBunch(DataBunch):
                     test:Optional[PathOrStr]=None, valid_pct=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
-        train_src = ImageFileList.from_folder(path/train).label_from_folder(classes)
-        if valid_pct is None:
-            src = ImageSplitData(path, train_src, ImageFileList.from_folder(path/valid).label_from_folder(classes))
-        else:
-            src = train_src.random_split_by_pct(valid_pct)
-            src.path = path
+        il = ImageItemList.from_folder(path)
+        if valid_pct is None: src = il.split_by_folder(train=train, valid=valid)
+        else: src = il.random_split_by_pct(valid_pct)
+        src = src.label_from_folder(classes=classes)
         if test is not None: src.add_test_folder(test)
-        return cls.create_from_split_ds(src.datasets(), **kwargs)
+        return cls.create_from_split_ds(src, **kwargs)
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None,
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
-        path = Path(path)
-        src = (ImageFileList.from_folder(path/folder)
-                .label_from_df(df, suffix=suffix, sep=sep, fn_col=fn_col, label_col=label_col)
-                .random_split_by_pct(valid_pct))
+        src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, col=fn_col)
+                .random_split_by_pct(valid_pct)
+                .label_from_df(sep=sep, cols=label_col))
         if test is not None: src.add_test_folder(test)
-        return cls.create_from_split_ds(src.datasets(), **kwargs)
+        return cls.create_from_split_ds(src, **kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
@@ -464,6 +460,8 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageItemList(ItemList):
+    _bunch = ImageDataBunch
+
     @classmethod
     def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
                     extensions:Collection[str]=image_extensions, **kwargs)->ItemList:
@@ -483,11 +481,4 @@ class ImageItemList(ItemList):
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
-
-class ImageSplitData(SplitData):
-    def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from folder `test_folder` and an arbitrary `label`."
-        items = ImageFileList.from_folder(self.path/test_folder)
-        label = ifnone(label, self.train.items[0][1])
-        return self.add_test(items, label=label)
 

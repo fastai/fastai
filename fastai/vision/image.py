@@ -5,7 +5,7 @@ from io import BytesIO
 import PIL
 
 __all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
-           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
+           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'log_uniform',
            'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
            'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMethod']
 
@@ -117,6 +117,32 @@ class Image(ItemBase):
             plt.imsave(str_buffer, image2np(self.px), format=format_str)
             return str_buffer.getvalue()
 
+    def apply_tfms(self, tfms:TfmList, do_resolve:bool=True, xtra:Optional[Dict[Callable,dict]]=None,
+                   size:Optional[Union[int,TensorImageSize]]=None, mult:int=32,
+                   resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
+        "Apply all `tfms` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
+        if not (tfms or xtra or size): return self
+        xtra = ifnone(xtra, {})
+        tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
+        if do_resolve: _resolve_tfms(tfms)
+        x = self.clone()
+        x.set_sample(padding_mode=padding_mode, **kwargs)
+        if size is not None:
+            crop_target = _get_crop_target(size, mult=mult)
+            if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+                target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
+                x.resize(target)
+            elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
+        else: size = x.size
+        size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
+        for tfm in tfms:
+            if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
+            elif tfm in size_tfms:
+                if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+                    x = tfm(x, size=size, padding_mode=padding_mode)
+            else: x = tfm(x)
+        return x
+
     def refresh(self)->None:
         "Apply any logit, flow, or affine transfers that have been sent to the `Image`."
         if self._logit_px is not None:
@@ -212,11 +238,11 @@ class Image(ItemBase):
         if y is not None: y.show(ax=ax, **kwargs)
         if title is not None: ax.set_title(title)
 
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10))->None:
+    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
         for i, ax in zip(idxs[:rows*rows], axs.flatten()):
             x,y = ds[i]
-            x.show(ax=ax, y=y)
+            x.show(ax=ax, y=y, **kwargs)
         plt.tight_layout()
 
 
@@ -454,8 +480,6 @@ class Transform():
 
     def __repr__(self)->str: return f'{self.name} ({self.func.__name__})'
 
-TfmList = Union[Transform, Collection[Transform]]
-
 @dataclass
 class RandTransform():
     "Wrap `Transform` to add randomized execution."
@@ -571,30 +595,4 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
     return ch,round(r/ratio),round(c/ratio)
-
-def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
-               xtra:Optional[Dict[Transform,dict]]=None, size:Optional[Union[int,TensorImageSize]]=None,
-               mult:int=32, resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
-    "Apply all `tfms` to `x` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
-    if not tfms or xtra or size: return x
-    xtra = ifnone(xtra, {})
-    tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
-    if do_resolve: _resolve_tfms(tfms)
-    x = x.clone()
-    x.set_sample(padding_mode=padding_mode, **kwargs)
-    if size is not None:
-        crop_target = _get_crop_target(size, mult=mult)
-        if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-            target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
-            x.resize(target)
-        elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
-    else: size = x.size
-    size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
-    for tfm in tfms:
-        if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
-        elif tfm in size_tfms:
-            if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                x = tfm(x, size=size, padding_mode=padding_mode)
-        else: x = tfm(x)
-    return x
 

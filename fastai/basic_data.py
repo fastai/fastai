@@ -147,6 +147,9 @@ class DataBunch():
         self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
         self.path = Path(path)
 
+    def __repr__(self)->str:
+        return f'{self.__class__.__name__};\nTrain: {self.train_ds};\nValid: {self.valid_ds};\nTest: {self.test_ds}'
+
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
@@ -187,8 +190,7 @@ class DataBunch():
 
     @property
     def test_ds(self)->Dataset:
-        assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
-        return self.test_dl.dl.dataset
+        return self.test_dl.dl.dataset if self.test_dl else None
 
     def learner_type(self)->type: return getattr(self.train_ds, 'learner_type', None)
 
