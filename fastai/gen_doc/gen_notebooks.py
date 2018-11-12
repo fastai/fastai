@@ -303,7 +303,7 @@ def get_module_from_notebook(doc_path):
     return f'fastai.{Path(doc_path).stem}'
 
 def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=False,
-                     update_nb_links=True, do_execute=False, update_line_num=True, html_path=None):
+                     update_nb_links=True, update_line_num=True, html_path=None, force=False):
     "`source_path` can be a directory or a file. Assume all modules reside in the fastai directory."
     from .convert2html import convert_nb
     source_path = Path(source_path)
@@ -320,14 +320,17 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             else: update_module_page(mod, dest_path)
         if update_nb_links: link_nb(doc_path)
         generate_missing_metadata(doc_path)
-        if do_execute:
-            print(f'Executing notebook {doc_path}. Please wait...')
-            execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
-        elif update_line_num:
+        if update_line_num:
             print(f'Updating notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=update_line_num)
+        if update_html: 
+            html_fn = html_path/doc_path.with_suffix('.html').name
+            if not force and html_fn.is_file():
+                in_mod  = os.path.getmtime(doc_path)
+                out_mod = os.path.getmtime(html_fn)
+                if in_mod < out_mod: return
+            convert_nb(doc_path, html_path)
 
-        if update_html: convert_nb(doc_path, html_path)
     elif (source_path.name.startswith('fastai.')):
         # Do module update
         assert dest_path is not None, 'To update a module, you must specify a destination folder for where notebook resides'
@@ -338,9 +341,9 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             print('Notebook does not exist. Creating:', doc_path)
             create_module_page(mod, dest_path)
         update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=update_nb,
-                         update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
+                         update_nb_links=update_nb_links, update_line_num=update_line_num, html_path=html_path)
     elif source_path.is_dir():
         for f in Path(source_path).glob('*.ipynb'):
             update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb,
-                             update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
+                             update_nb_links=update_nb_links, update_line_num=update_line_num, html_path=html_path)
     else: print('Could not resolve source file:', source_path)
