@@ -31,6 +31,7 @@ class DatasetFormatter():
 
 class ImageCleaner():
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
+        assert(len(dataset) == len(fns_idxs)), 'Check if you pass in the correct dataset'
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
         self._labels = dataset.classes
