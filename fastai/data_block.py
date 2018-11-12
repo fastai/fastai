@@ -56,7 +56,8 @@ class ItemList():
 
     def process(self, processor=None):
         if processor is not None: self.processor = processor
-        self.processor.process(self)
+        if not is_listy(self.processor): self.processor = [self.processor]
+        for p in self.processor: p.process(self)
         return self
 
     def new(self, items:Iterator, create_func:Callable=None, **kwargs)->'ItemList':

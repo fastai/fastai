@@ -27,7 +27,7 @@ def learn():
     return learn
 
 def test_val_loss(learn):
-    assert learn.validate()[1] > 0.2
+    assert learn.validate()[1] > 0.3
 
 def text_df(n_labels):
     data = []
