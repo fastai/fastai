@@ -40,18 +40,21 @@ class ItemList():
         self.items,self.create_func,self.path = np.array(list(items)),create_func,Path(path)
         self._label_cls,self.xtra = label_cls,xtra
         self._label_list,self._split = LabelList,ItemLists
+        self.__post_init__()
 
+    def __post_init__(self): pass
     def __len__(self)->int: return len(self.items)
     def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}\nPath: {self.path}'
     def get(self, i)->Any:
         item = self.items[i]
         return self.create_func(item) if self.create_func else item
 
-    def new(self, items:Iterator, xtra:Any=None)->'ItemList':
-        return self.__class__(items=items, create_func=self.create_func, path=self.path, xtra=xtra)
+    def new(self, items:Iterator, create_func:Callable=None, **kwargs)->'ItemList':
+        create_func = ifnone(create_func, self.create_func)
+        return self.__class__(items=items, create_func=create_func, path=self.path, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
-        if isinstance(idxs, int): return self.get(idxs)
+        if isinstance(try_int(idxs), int): return self.get(idxs)
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
     def preprocess(self, **kwargs): pass
@@ -93,47 +96,6 @@ class ItemList():
             if exclude and     n in exclude: return False
             return True
         return self.filter_by_func(_inner)
-
-    def create_label_list(self, labels:Iterator, label_cls:Callable=None, tfms:TfmList=None, tfm_y:bool=False,
-                          **kwargs)->'LabelList':
-        if label_cls is None: label_cls = self._label_cls
-        if label_cls is None: label_cls = self.__class__
-        return self._label_list(x=self, y=label_cls(labels, **kwargs), tfms=tfms, tfm_y=tfm_y)
-
-    def label_from_df(self, label_cls:Callable=None, cols:IntsOrStrs=1, sep=None, **kwargs):
-        if label_cls is None and self._label_cls is None:
-            label_cls = CategoryList if sep is None else MultiCategoryList
-        labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
-        return self.create_label_list(labels, label_cls=label_cls, sep=sep, **kwargs)
-
-    def label_const(self, const:Any=0, label_cls:Callable=None, **kwargs)->'LabelList':
-        "Label every item with `const`."
-        return self.label_from_func(label_cls=label_cls, func=lambda o: const, **kwargs)
-
-    def label_from_func(self, func:Callable, label_cls:Callable=None, **kwargs)->'LabelList':
-        "Apply `func` to every input to get its label."
-        return self.create_label_list([func(o) for o in self.items], label_cls=label_cls, **kwargs)
-
-    def label_from_folder(self, label_cls:Callable=None, **kwargs)->'LabelList':
-        "Give a label to each filename depending on its folder."
-        if label_cls is None: label_cls=CategoryList
-        return self.label_from_func(func=lambda o: o.parent.name, label_cls=label_cls, **kwargs)
-
-    def label_from_re(self, pat:str, label_cls:Callable=None, full_path:bool=False)->'LabelList':
-        "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
-        pat = re.compile(pat)
-        def _inner(o):
-            s = str(o if full_path else o.name)
-            res = pat.search(s)
-            assert res,f'Failed to find "{pat}" in "{s}"'
-            return res.group(1)
-        return self.label_from_func(_inner, label_cls=label_cls)
-
-    def label_from_csv(self, csv_fname, header:Optional[Union[int,str]]='infer', fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1,
-                       sep:str=None, folder:PathOrStr='.', suffix:str=None)->'LabelList':
-        "Look in `path/csv_fname` for csv with optional `header` containing filenames in `fn_col` to get label in `label_col`."
-        df = pd.read_csv(self.path/csv_fname, header=header)
-        return self.label_from_df(df, fn_col, label_col, sep, folder, suffix)
 
     def split_by_idxs(self, train_idx, valid_idx):
         return self._split(self.path, self[train_idx], self[valid_idx])
@@ -177,6 +139,46 @@ class ItemList():
         valid_names = join_paths(loadtxt_str(self.path/fname), path)
         return self.split_by_files(valid_names)
 
+    def label_cls(self, labels, lc=None):
+        if lc is not None:              return lc
+        if self._label_cls is not None: return self._label_cls
+        it = try_int(index_row(labels,0))
+        if isinstance(it, (str,int)):   return CategoryList
+        if isinstance(it, Collection):  return MultiCategoryList
+        return self.__class__
+
+    def label_from_list(self, labels:Iterator, label_cls:Callable=None, template:Callable=None, **kwargs)->'LabelList':
+        label_cls = self.label_cls(labels, label_cls)
+        y_bld = label_cls if template is None else template.new
+        return self._label_list(x=self, y=y_bld(labels, **kwargs))
+
+    def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
+        labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        return self.label_from_list(labels, sep=sep, **kwargs)
+
+    def label_const(self, const:Any=0, **kwargs)->'LabelList':
+        "Label every item with `const`."
+        return self.label_from_func(func=lambda o: const, **kwargs)
+
+    def label_from_func(self, func:Callable, **kwargs)->'LabelList':
+        "Apply `func` to every input to get its label."
+        return self.label_from_list([func(o) for o in self.items], **kwargs)
+
+    def label_from_folder(self, **kwargs)->'LabelList':
+        "Give a label to each filename depending on its folder."
+        #if label_cls is None and self._label_cls is None: label_cls=CategoryList
+        return self.label_from_func(func=lambda o: o.parent.name, **kwargs)
+
+    def label_from_re(self, pat:str, full_path:bool=False, **kwargs)->'LabelList':
+        "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
+        pat = re.compile(pat)
+        def _inner(o):
+            s = str(o if full_path else o.name)
+            res = pat.search(s)
+            assert res,f'Failed to find "{pat}" in "{s}"'
+            return res.group(1)
+        return self.label_from_func(_inner, **kwargs)
+
 
 class CategoryList(ItemList):
     _item_cls=Category
@@ -185,8 +187,12 @@ class CategoryList(ItemList):
         if classes is None: classes = uniqueify(items)
         self.classes = classes
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
+        self.c = len(classes)
+        self.loss_func = F.cross_entropy
 
-    def new(self, items): return self.__class__(items, self.classes)
+    def new(self, items, classes=None, **kwargs):
+        return self.__class__(items, ifnone(classes, self.classes), **kwargs)
+
     def get(self, i):
         o = super().get(i)
         return self._item_cls.create(o, self.class2idx)
@@ -197,6 +203,7 @@ class MultiCategoryList(CategoryList):
         if sep is not None: items = array(list(csv.reader(items, delimiter=sep)))
         if classes is None: classes = uniqueify(np.concatenate(items))
         super().__init__(items, classes)
+        self.loss_func = F.binary_cross_entropy_with_logits
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"
@@ -213,8 +220,9 @@ class ItemLists():
         assert isinstance(fv, Callable)
         def _inner(*args, **kwargs):
             self.train = ft(*args, **kwargs)
-            self.valid = fv(*args, **kwargs)
-            if isinstance(self.train, LabelList): self.__class__ = LabelLists
+            assert isinstance(self.train, LabelList)
+            self.valid = fv(*args, template=self.train.y, **kwargs)
+            self.__class__ = LabelLists
             return self
         return _inner
 
@@ -243,6 +251,12 @@ class ItemLists():
         self.train.x.preprocess(**kwargs)
         kwargs = {**kwargs, **getattr(self.train.x, 'preprocess_kwargs', {})}
         for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
+        return self
+
+    def _label_from_df(self, label_cls:Callable=None, cols:IntsOrStrs=1, sep=None, **kwargs):
+        self.train = self._label_from_df(self.train, label_cls, cols=cols, sep=sep, **kwargs)
+        self.valid = self._label_from_df(self.valid, label_cls, cols=cols, sep=sep, template=self.train.y, **kwargs)
+        self.__class__ = LabelLists
         return self
 
 
@@ -278,6 +292,9 @@ class LabelList(Dataset):
     def __len__(self)->int: return len(self.x)
     def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
 
+    @property
+    def c(self): return self.y.c
+
     def new(self, x, y)->'LabelList':
         return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, **self.tfmargs)
 
@@ -286,7 +303,7 @@ class LabelList(Dataset):
         return res if res is not None else getattr(self.y, k)
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
-        if isinstance(idxs, int):
+        if isinstance(try_int(idxs), int):
             x = self.x[idxs]
             y = self.y[idxs]
             x = x.apply_tfms(self.tfms, **self.tfmargs)

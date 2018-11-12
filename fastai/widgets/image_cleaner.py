@@ -34,8 +34,8 @@ class ImageCleaner():
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
         self._labels = dataset.classes
-        self._all_images = [(open_image(dataset.x[i])._repr_jpeg_(), dataset.x[i], self._labels[dataset.y[i]])
-                            for i in fns_idxs if dataset.x[i].is_file()]
+        self._all_images = [(open_image(dataset.x.items[i])._repr_jpeg_(), dataset.x.items[i], str(dataset.y[i]))
+                            for i in fns_idxs if dataset.x.items[i].is_file()]
 
     def empty_batch(self): self._batch[:] = []
 

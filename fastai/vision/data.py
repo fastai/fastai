@@ -14,7 +14,8 @@ __all__ = ['get_image_files', 'DatasetTfm', 'ImageDatasetBase', 'ImageClassifica
            'SegmentationDataset', 'ImageClassificationBase', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageItemList', 'normalize', 'normalize_funcs', 'show_image_batch', 'transform_datasets',
            'ImageSplitDatasets', 'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
-           'verify_images', 'bb_pad_collate', 'PointsDataset', 'ObjectCategoryList', 'ObjectItemList']
+           'verify_images', 'bb_pad_collate', 'PointsDataset',
+           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -305,60 +306,57 @@ class ImageDataBunch(DataBunch):
     @classmethod
     def create_from_split_ds(cls, dss:ImageSplitDatasets, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-                collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
+                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
         dss = dss.transform(tfms=ds_tfms, size=size, **kwargs)
+        if test is not None: dss.add_test_folder(test)
         return dss.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
-                    test:Optional[PathOrStr]=None, valid_pct=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
+                    valid_pct=None, classes:Collection=None, **kwargs:Any)->'ImageDataBunch':
         "Create from imagenet style dataset in `path` with `train`,`valid`,`test` subfolders (or provide `valid_pct`)."
         path=Path(path)
         il = ImageItemList.from_folder(path)
         if valid_pct is None: src = il.split_by_folder(train=train, valid=valid)
         else: src = il.random_split_by_pct(valid_pct)
         src = src.label_from_folder(classes=classes)
-        if test is not None: src.add_test_folder(test)
         return cls.create_from_split_ds(src, **kwargs)
 
     @classmethod
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
-                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, test:Optional[PathOrStr]=None, suffix:str=None,
+                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='',
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
         src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, col=fn_col)
                 .random_split_by_pct(valid_pct)
                 .label_from_df(sep=sep, cols=label_col))
-        if test is not None: src.add_test_folder(test)
         return cls.create_from_split_ds(src, **kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
-            fn_col:int=0, label_col:int=1, test:Optional[PathOrStr]=None, suffix:str=None,
+            fn_col:int=0, label_col:int=1, suffix:str='',
             header:Optional[Union[int,str]]='infer', **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file."
         path = Path(path)
         df = pd.read_csv(path/csv_labels, header=header)
-        return cls.from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct, test=test,
+        return cls.from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct,
                 fn_col=fn_col, label_col=label_col, suffix=suffix, header=header, **kwargs)
 
     @classmethod
-    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, test:str=None, **kwargs):
-        classes = uniqueify(labels)
-        src = ImageLabelList.from_lists(path, fnames, labels).random_split_by_pct(valid_pct)
-        if test is not None: src.add_test_folder(test)
-        return cls.create_from_split_ds(src.datasets(), **kwargs)
+    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, **kwargs):
+        src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct).label_from_list(labels)
+        return cls.create_from_split_ds(src, **kwargs)
 
     @classmethod
-    def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, test:str=None, **kwargs):
-        labels = [label_func(o) for o in fnames]
-        return cls.from_lists(path, fnames, labels, valid_pct=valid_pct, test=test, **kwargs)
+    def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, **kwargs):
+        src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct)
+        return cls.create_from_split_ds(src.label_from_func(label_func), **kwargs)
 
     @classmethod
-    def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:float=0.2, test:str=None, **kwargs):
+    def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:float=0.2, **kwargs):
         pat = re.compile(pat)
         def _get_label(fn): return pat.search(str(fn)).group(1)
-        return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, test=test, **kwargs)
+        return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
@@ -462,10 +460,11 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
 
 class ImageItemList(ItemList):
     _bunch = ImageDataBunch
-    def __init__(self, items:Iterator, create_func:Callable=open_image, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None):
-        super().__init__(items, create_func=create_func, path=path, label_cls=label_cls, xtra=xtra)
+
+    def __post_init__(self):
+        super().__post_init__()
         self.sizes={}
+        self.create_func = open_image
 
     def get(self, i):
         res = super().get(i)
@@ -481,6 +480,7 @@ class ImageItemList(ItemList):
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, col:IntsOrStrs=0,
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
+        suffix = suffix or ''
         res = super().from_df(df, path=path, create_func=create_func, col=col)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
         res.items = np.char.add(f'{res.path}/', res.items)
@@ -491,6 +491,7 @@ class ImageItemList(ItemList):
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
+
 
 class ObjectCategoryList(CategoryList):
     def __init__(self, items:Iterator, classes:Collection=None, sep=None):
@@ -503,6 +504,18 @@ class ObjectCategoryList(CategoryList):
     def get(self, i): return ImageBBox.create(*self.x.sizes[i], *self.items[i])
 
 class ObjectItemList(ImageItemList):
-    def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.', **kwargs):
-        super().__init__(items, create_func=create_func, label_cls=ObjectCategoryList, path=path, **kwargs)
+    def __post_init__(self):
+        super().__post_init__()
+        self._label_cls = ObjectCategoryList
+
+class SegmentationLabelList(ImageItemList):
+    def __post_init__(self):
+        super().__post_init__()
+        self.loss_func = CrossEntropyFlat()
+        self.create_func = open_mask
+
+class SegmentationItemList(ImageItemList):
+    def __post_init__(self):
+        super().__post_init__()
+        self._label_cls = SegmentationLabelList
 
