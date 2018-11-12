@@ -7,7 +7,7 @@ from ..vision.image import open_image
 from ipywidgets import widgets, Layout
 from IPython.display import clear_output, HTML
 
-__all__ = ['DatasetFormatter', 'ImageDeleter', 'ImageRelabeler']
+__all__ = ['DatasetFormatter', 'ImageDeleter', 'ImageRelabeler', 'ImageCleaner']
 
 # TODO:
 # FINISHED button (be done if I dont want to continue)
