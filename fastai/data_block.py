@@ -1,7 +1,8 @@
 from .torch_core import *
 from .basic_data import *
 
-__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files', 'create_sdata']
+__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files', 'create_sdata',
+           'PreProcessor']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
@@ -31,14 +32,18 @@ def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)-
             if not o.name.startswith('.') and not o.is_dir()
             and (extensions is None or (o.suffix.lower() in extensions))]
 
+class PreProcessor():
+    def process(self, ds:Collection): pass
+
 class ItemList():
     _bunch = DataBunch
+    _processor = PreProcessor
 
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None):
+                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None):
         self.items,self.create_func,self.path = np.array(list(items)),create_func,Path(path)
-        self._label_cls,self.xtra = label_cls,xtra
+        self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
 
@@ -49,38 +54,41 @@ class ItemList():
         item = self.items[i]
         return self.create_func(item) if self.create_func else item
 
+    def process(self, processor=None):
+        if processor is not None: self.processor = processor
+        self.processor.process(self)
+        return self
+
     def new(self, items:Iterator, create_func:Callable=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
-        return self.__class__(items=items, create_func=create_func, path=self.path, **kwargs)
+        return self.__class__(items=items, create_func=create_func, path=self.path, processor=self.processor, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
-    def preprocess(self, **kwargs): pass
-
     @classmethod
-    def from_folder(cls, path:PathOrStr, create_func:Callable=None, extensions:Collection[str]=None, recurse=True)->'ItemList':
+    def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-        return cls(get_files(path, extensions, recurse=recurse), create_func=create_func, path=path)
+        return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr='.', create_func:Callable=None, col:IntsOrStrs=0)->'ItemList':
+    def from_df(cls, df:DataFrame, path:PathOrStr='.', col:IntsOrStrs=0, **kwargs)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
         inputs = df.iloc[:,df_names_to_idx(col, df)]
-        res = cls(create_func=create_func, items=_maybe_squeeze(inputs.values), path=path, xtra = df)
+        res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, **kwargs)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=None, col:IntsOrStrs=0, header:str='infer')->'ItemList':
+    def from_csv(cls, path:PathOrStr, csv_name:str, col:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
         "Get the list of inputs in the `col`of `path/csv_name`."
         df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, create_func=create_func, col=col)
+        return cls.from_df(df, path=path, col=col, **kwargs)
 
     #Not adapted
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
-                  header:str='infer')->'LabelList':
+                  header:str='infer', **kwargs)->'LabelList':
         """Create in `path` by reading `input_cols` and `label_cols` in the csvs in `path/csv_names`
         opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.  """
         return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]), path)
@@ -190,7 +198,7 @@ class CategoryList(ItemList):
         self.loss_func = F.cross_entropy
 
     def new(self, items, classes=None, **kwargs):
-        return self.__class__(items, ifnone(classes, self.classes), **kwargs)
+        return super().new(items, classes=ifnone(classes, self.classes), **kwargs)
 
     def get(self, i):
         o = super().get(i)
@@ -203,6 +211,7 @@ class MultiCategoryList(CategoryList):
         if classes is None: classes = uniqueify(np.concatenate(items))
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
+
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"
@@ -223,6 +232,7 @@ class ItemLists():
             assert isinstance(self.train, LabelList)
             self.valid = fv(*args, template=self.train.y, **kwargs)
             self.__class__ = LabelLists
+            self.process()
             return self
         return _inner
 
@@ -247,14 +257,17 @@ class ItemLists():
         if self.test: self.test.transform(tfms[1], **kwargs)
         return self
 
-    def preprocess(self, **kwargs):
-        self.train.preprocess(**kwargs)
-        kwargs = {**kwargs, **getattr(self.train, 'preprocess_kwargs', {})}
-        for ds in self.lists[1:]: ds.preprocess(**kwargs)
-        self.valid.pp_kwargs = kwargs
+class LabelLists(ItemLists):
+    def get_processors(self):
+        xp = ifnone(self.train.x.processor, self.train.x._processor())
+        yp = ifnone(self.train.y.processor, self.train.y._processor())
+        return xp,yp
+
+    def process(self):
+        xp,yp = self.get_processors()
+        for ds in self.lists: ds.process(xp, yp)
         return self
 
-class LabelLists(ItemLists):
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
         "Create an `ImageDataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `ImageDataBunch.create`."
         path = Path(ifnone(path, self.path))
@@ -263,11 +276,12 @@ class LabelLists(ItemLists):
     def add_test(self, items:Iterator, label:Any=None):
         "Add test set containing items from `items` and an arbitrary `label`"
         # if no label passed, use label of first training item
-        if label is None: label=self.train[0][1]
+        if label is None: label = str(self.train[0][1])
         v = self.valid
         x = v.x.new(items)
         y = v.y.new([label for _ in range_of(x)])
         self.test = self.valid.new(x, y)
+        self.test.process()
         return self
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
@@ -277,10 +291,9 @@ class LabelLists(ItemLists):
 
 class LabelList(Dataset):
     "A list of inputs and labels. Contain methods to split it in `ItemLists`."
-    def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, pp_kwargs=None, **kwargs):
-        self.x,self.y,self.tfm_y,self.pp_kwargs = x,y,tfm_y,pp_kwargs
+    def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+        self.x,self.y,self.tfm_y = x,y,tfm_y
         self.y.x = x
-        if pp_kwargs is not None: self.x.preprocess(**pp_kwargs)
         self.transform(tfms, **kwargs)
 
     def __len__(self)->int: return len(self.x)
@@ -290,7 +303,7 @@ class LabelList(Dataset):
     def c(self): return self.y.c
 
     def new(self, x, y)->'LabelList':
-        return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, pp_kwargs=self.pp_kwargs, **self.tfmargs)
+        return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, **self.tfmargs)
 
     def __getattr__(self,k:str)->Any:
         res = getattr(self.x, k, None)
@@ -304,6 +317,10 @@ class LabelList(Dataset):
             if self.tfm_y: y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
+
+    def process(self, xp=None, yp=None):
+        self.x.process(xp)
+        self.y.process(yp)
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
