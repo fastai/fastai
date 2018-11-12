@@ -7,7 +7,7 @@ from ..basic_train import *
 from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
 
-__all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'get_tabular_learner']
+__all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor', 'get_tabular_learner']
 
 OptTabTfms = Optional[Collection[TabularTransform]]
 
@@ -60,39 +60,36 @@ class TabularList(ItemList):
         self.cat_names,self.cont_names = cat_names,cont_names
     
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr='.', create_func:Callable=None, cat_names:OptStrList=None, 
-                cont_names:OptStrList=None)->'ItemList':
+    def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, **kwargs)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
-        res = cls(create_func=create_func, items=range(len(df)), path=path, xtra=df,
-                  cat_names=cat_names, cont_names=cont_names)
-        return res
+        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, xtra=df, **kwargs)
     
     def new(self, items:Iterator, **kwargs)->'TabularList':
-        return self.__class__(items=items, cat_names=self.cat_names, cont_names=self.cont_names,
-                              create_func=self.create_func,  **kwargs)
+        return super().new(items=items, cat_names=self.cat_names, cont_names=self.cont_names, **kwargs)
     
     def get(self, o): 
         return TabularLine(self.codes[o], self.conts[o], self.classes, self.col_names)
     
     def get_emb_szs(self, sz_dict): return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
-    
-    def preprocess(self, tfms=None):
-        tfms,new_tfms = ifnone(tfms,[]),[]
-        for tfm in tfms:
-            if isinstance(tfm, TabularTransform): tfm(self.xtra, test=True)
+
+class TabularProcessor:
+    def __init__(self, tfms=None):
+        self.tfms = ifnone(tfms,[])
+        
+    def process(self, ds):
+        for i,tfm in enumerate(self.tfms):
+            if isinstance(tfm, TabularTransform): tfm(ds.xtra, test=True)
             else:
                 #cat and cont names may have been changed by transform (like Fill_NA)
-                tfm = tfm(self.cat_names, self.cont_names)
-                tfm(self.xtra)
-                new_tfms.append(tfm)
-                self.cat_names, self.cont_names = tfm.cat_names, tfm.cont_names
-        self.codes = np.stack([c.cat.codes.values for n,c in self.xtra[self.cat_names].items()], 1).astype(np.int64) + 1
-        self.conts = np.stack([c.astype('float32').values for n,c in self.xtra[self.cont_names].items()], 1)
-        self.classes = {n:c.cat.categories.values for n,c in self.xtra[self.cat_names].items()}
-        self.col_names = list(self.xtra[self.cat_names].columns.values) 
-        self.col_names += list(self.xtra[self.cont_names].columns.values)
-        self.preprocess_kwargs = {'tfms':new_tfms}
-    
+                tfm = tfm(ds.cat_names, ds.cont_names)
+                tfm(ds.xtra)
+                ds.cat_names, ds.cont_names = tfm.cat_names, tfm.cont_names
+                self.tfms[i] = tfm
+        ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
+        ds.conts = np.stack([c.astype('float32').values for n,c in ds.xtra[ds.cont_names].items()], 1)
+        ds.classes = {n:c.cat.categories.values for n,c in ds.xtra[ds.cat_names].items()}
+        ds.col_names = list(ds.xtra[ds.cat_names].columns.values) + list(ds.xtra[ds.cont_names].columns.values)
+        
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
     @classmethod

@@ -3,21 +3,21 @@ from fastai import *
 from fastai.tabular import *
 
 pytestmark = pytest.mark.integration
+path = untar_data(URLs.ADULT_SAMPLE)
 
 @pytest.fixture(scope="module")
 def learn():
-    path = untar_data(URLs.ADULT_SAMPLE)
     df = pd.read_csv(path/'adult.csv')
     tfms = [FillMissing, Categorify, Normalize]
     dep_var = '>=50k'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
     cont_names = ['age', 'fnlwgt', 'education-num']
-    sdata = (TabularList.from_df(df, path, cat_names=cat_names, cont_names=cont_names)
-                        .split_by_idx(list(range(800,1000)))
-                        .label_from_df(cols=dep_var)
-                        .preprocess(tfms=tfms))
-    #TODO: add test set here with df.iloc[800:1000]
-    data = sdata.databunch()
+    test = TabularList.from_df(df.iloc[800:1000].copy(), path=path, cat_names=cat_names, cont_names=cont_names)
+    data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, processor=TabularProcessor(tfms=tfms))
+                           .split_by_idx(list(range(800,1000)))
+                           .label_from_df(cols=dep_var)
+                           .add_test(test, label=0)
+                           .databunch())
     learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(2, 1e-2)
     return learn
@@ -60,5 +60,5 @@ def test_normalize(learn):
         x,y = learn.data.valid_ds[i-800]
         assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
     for i in np.random.randint(800,1000, (20,)):
-        x,y = learn.data.train_ds[i-800]
+        x,y = learn.data.test_ds[i-800]
         assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
