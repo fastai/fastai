@@ -206,14 +206,14 @@ class LanguageModelLoader():
                  max_len:int=25):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
-        self.n = len(np.concatenate(dataset.x)) // self.bs
+        self.n = len(np.concatenate(dataset.x.items)) // self.bs
         self.max_len,self.num_workers = max_len,0
 
     def __iter__(self):
         if getattr(self.dataset, 'item', None) is not None:
             yield LongTensor(getattr(self.dataset, 'item')).unsqueeze(1),LongTensor([0])
         idx = np.random.permutation(len(self.dataset)) if self.shuffle else range(len(self.dataset))
-        self.data = self.batchify(np.concatenate([self.dataset.x[i] for i in idx]))
+        self.data = self.batchify(np.concatenate([self.dataset.x.items[i] for i in idx]))
         self.i,self.iter = 0,0
         while self.i < self.n-1 and self.iter<len(self):
             if self.first and self.i == 0: self.first,seq_len = False,self.bptt + self.max_len

@@ -119,7 +119,7 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
     "Create a `Learner` with a language model."
     dps = default_dropout['language'] * drop_mult
-    vocab_size = data.train_ds.vocab_size
+    vocab_size = len(data.vocab.itos)
     model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                 weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
     learn = LanguageLearner(data, model, bptt, split_func=lm_split, **kwargs)
@@ -142,7 +142,7 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, max_len:int=70*20, emb_
     if lin_ftrs is None: lin_ftrs = [50]
     if ps is None:  ps = [0.1]
     ds = data.train_ds
-    vocab_size, n_class = ds.vocab_size, data.c
+    vocab_size, n_class = len(data.vocab.itos), data.c
     layers = [emb_sz*3] + lin_ftrs + [n_class]
     ps = [dps[4]] + ps
     model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
