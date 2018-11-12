@@ -253,7 +253,6 @@ class ItemLists():
         for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
         return self
 
-
 class LabelLists(ItemLists):
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
         "Create an `ImageDataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `ImageDataBunch.create`."
@@ -261,7 +260,7 @@ class LabelLists(ItemLists):
         return self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, **kwargs)
 
     def add_test(self, items:Iterator, label:Any=None):
-        "Add test set containing items from `items` and an arbitrary label"
+        "Add test set containing items from `items` and an arbitrary `label`"
         # if no label passed, use label of first training item
         if label is None: label=self.train[0][1]
         v = self.valid
@@ -274,7 +273,6 @@ class LabelLists(ItemLists):
         "Add test set containing items from folder `test_folder` and an arbitrary `label`."
         items = self.x.__class__.from_folder(self.path/test_folder)
         return self.add_test(items.items, label=label)
-
 
 class LabelList(Dataset):
     "A list of inputs and labels. Contain methods to split it in `ItemLists`."
