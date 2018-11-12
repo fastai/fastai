@@ -164,13 +164,10 @@ class SegmentationDataset(ImageClassificationBase):
 
     def _get_y(self,i,x): return self.mask_opener(self.y[i])
 
-    def reconstruct_output(self, out, x): return ImageSegment(out.argmax(dim=0)[None])
-
 class PointsDataset(ImageDatasetBase):
     def __init__(self, fns:Collection[Path], pts:Collection[Tensor]):
         super().__init__(c=len(pts[0].view(-1)), x=fns, y=pts, task_type=TaskType.Regression)
     def _get_y(self, i, x): return ImagePoints(FlowField(x.size, self.y[i]), scale=True)
-    def reconstruct_output(self, out, x): return ImagePoints(FlowField(x.size, out[None]), scale=False)
 
 class ObjectDetectDataset(ImageClassificationBase):
     "A dataset with annotated images."
@@ -494,12 +491,12 @@ class ImageItemList(ItemList):
 
 
 class ObjectCategoryList(CategoryList):
-    def __init__(self, items:Iterator, classes:Collection=None, sep=None):
+    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         if classes is None:
             classes = set()
             for _,c in items: classes = classes.union(set(c))
             classes = ['background'] + list(classes)
-        super().__init__(items, classes)
+        super().__init__(items, classes, **kwargs)
 
     def get(self, i): return ImageBBox.create(*self.x.sizes[i], *self.items[i])
 
@@ -509,10 +506,13 @@ class ObjectItemList(ImageItemList):
         self._label_cls = ObjectCategoryList
 
 class SegmentationLabelList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self.loss_func = CrossEntropyFlat()
-        self.create_func = open_mask
+    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
+        super().__init__(items, **kwargs)
+        self.classes,self.loss_func,self.create_func = classes,CrossEntropyFlat(),open_mask
+        self.c = len(self.classes)
+
+    def new(self, items, classes=None, **kwargs):
+        return self.__class__(items, ifnone(classes, self.classes), **kwargs)
 
 class SegmentationItemList(ImageItemList):
     def __post_init__(self):

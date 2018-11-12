@@ -229,6 +229,12 @@ class Learner():
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
 
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, **kwargs):
+        ds = self.dl(ds_type).dataset
+        preds = self.pred_batch(ds_type)
+        xys = [ds[i] for i in range(rows)]
+        xys[0][0].show_results(xys, preds, **kwargs)
+
 @dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."

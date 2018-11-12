@@ -97,14 +97,16 @@ class ItemList():
             return True
         return self.filter_by_func(_inner)
 
+    def split_by_list(self, train, valid):
+        return self._split(self.path, train, valid)
+
     def split_by_idxs(self, train_idx, valid_idx):
-        return self._split(self.path, self[train_idx], self[valid_idx])
+        return self.split_by_list(self[train_idx], self[valid_idx])
 
     def split_by_idx(self, valid_idx:Collection[int])->'ItemLists':
         "Split the data according to the indexes in `valid_idx`."
-        valid = [i for i,o in enumerate(self.items) if i in valid_idx]
-        train = [i for i,o in enumerate(self.items) if i not in valid_idx]
-        return self.split_by_idxs(train, valid)
+        train_idx = [i for i in range_of(self) if i not in valid_idx]
+        return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
         return [i for i in range_of(self)
@@ -121,22 +123,20 @@ class ItemList():
         cut = int(valid_pct * len(self))
         return self.split_by_idx(rand_idx[:cut])
 
-    # XXX: Following aren't updated for new API
     def split_by_valid_func(self, func:Callable)->'ItemLists':
         "Split the data by result of `func` (which returns `True` for validation set)"
-        mask = np.array([func(o) for o in self.items])
-        return self.split_by_list(self.items[~mask], self.items[mask])
+        valid_idx = [i for i,o in enumerate(self.items) if func(o)]
+        return self.split_by_idx(valid_idx)
 
     def split_by_files(self, valid_names:'ItemList')->'ItemLists':
         "Split the data by using the names in `valid_names` for validation."
-        valid = [o for o in self.items if o[0] in valid_names]
-        train = [o for o in self.items if o[0] not in valid_names]
-        return self.split_by_list(train, valid)
+        #valid_idx = [i for i,o in enumerate(self.items) if o[0] in valid_names]
+        return self.split_by_valid_func(lambda o: o.name in valid_names)
 
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'ItemLists':
         "Split the data by using the file names in `fname` for the validation set. `path` will override `self.path`."
         path = Path(ifnone(path, self.path))
-        valid_names = join_paths(loadtxt_str(self.path/fname), path)
+        valid_names = loadtxt_str(self.path/fname)
         return self.split_by_files(valid_names)
 
     def label_cls(self, labels, lc=None):
@@ -166,7 +166,6 @@ class ItemList():
 
     def label_from_folder(self, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        #if label_cls is None and self._label_cls is None: label_cls=CategoryList
         return self.label_from_func(func=lambda o: o.parent.name, **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, **kwargs)->'LabelList':
@@ -182,8 +181,8 @@ class ItemList():
 
 class CategoryList(ItemList):
     _item_cls=Category
-    def __init__(self, items:Iterator, classes:Collection=None, sep=None):
-        super().__init__(items)
+    def __init__(self, items:Iterator, classes:Collection=None, sep=None, **kwargs):
+        super().__init__(items, **kwargs)
         if classes is None: classes = uniqueify(items)
         self.classes = classes
         self.class2idx = {v:k for k,v in enumerate(self.classes)}
@@ -199,16 +198,17 @@ class CategoryList(ItemList):
 
 class MultiCategoryList(CategoryList):
     _item_cls=MultiCategory
-    def __init__(self, items:Iterator, classes:Collection=None, sep=None):
+    def __init__(self, items:Iterator, classes:Collection=None, sep=None, **kwargs):
         if sep is not None: items = array(list(csv.reader(items, delimiter=sep)))
         if classes is None: classes = uniqueify(np.concatenate(items))
-        super().__init__(items, classes)
+        super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):
         self.path,self.train,self.valid,self.test = Path(path),train,valid,test
+        if isinstance(self.train, LabelList): self.__class__ = LabelLists
 
     def __repr__(self)->str:
         return f'{self.__class__.__name__};\nTrain: {self.train};\nValid: {self.valid};\nTest: {self.test}'
@@ -251,12 +251,6 @@ class ItemLists():
         self.train.x.preprocess(**kwargs)
         kwargs = {**kwargs, **getattr(self.train.x, 'preprocess_kwargs', {})}
         for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
-        return self
-
-    def _label_from_df(self, label_cls:Callable=None, cols:IntsOrStrs=1, sep=None, **kwargs):
-        self.train = self._label_from_df(self.train, label_cls, cols=cols, sep=sep, **kwargs)
-        self.valid = self._label_from_df(self.valid, label_cls, cols=cols, sep=sep, template=self.train.y, **kwargs)
-        self.__class__ = LabelLists
         return self
 
 
