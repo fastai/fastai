@@ -42,8 +42,8 @@ class LRFinder(LearnerCallback):
 
     def on_train_end(self, **kwargs:Any)->None:
         "Cleanup learn model weights disturbed during LRFind exploration."
-        # restore the valid_dl we turned of on `__init__`
+        # restore the valid_dl we turned off on `__init__`
         self.data.valid_dl = self.valid_dl
         self.learn.load('tmp')
         if hasattr(self.learn.model, 'reset'): self.learn.model.reset()
-        print('LR Finder complete, type {learner_name}.recorder.plot() to see the graph.')
+        print('LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.')
