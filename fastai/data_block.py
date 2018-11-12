@@ -281,9 +281,9 @@ class LabelLists(ItemLists):
         if label is None: label = str(self.train[0][1])
         labels = [label for _ in range_of(self.valid)]
         if isinstance(items, ItemList): self.test = self.valid.new(items.items, labels, xtra=items.xtra)
-        else: self.test = self.valid.new(items, labels, **kwargs)
+        else: self.test = self.valid.new(items, labels)
         return self
-    
+
     def add_test_folder(self, test_folder:str='test', label:Any=None):
         "Add test set containing items from folder `test_folder` and an arbitrary `label`."
         items = self.x.__class__.from_folder(self.path/test_folder)
