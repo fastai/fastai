@@ -4,8 +4,8 @@ from .transform import *
 from ..basic_data import *
 from ..data_block import *
 
-__all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextFilesList', 'TextList', 'TokenizedTextList',
-           'NumericalizedTextList', 'pad_collate', 'TextDataBunch', 'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text']
+__all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextFilesList', 'TextList', 'pad_collate', 'TextDataBunch',
+           'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = ['.txt']
@@ -254,15 +254,16 @@ class Text(ItemBase):
             items.append([str(txt_x), str(y)])
         display(HTML(_text2html_table(items, [90,10])))
 
-class NumericalizedTextList(ItemList):
+class TextList(ItemList):
     _bunch = TextClasDataBunch
     
-    def __init__(self, items:Iterator, vocab:Vocab=None, create_func:Callable=None, path:PathOrStr='.', xtra=None):
-        super().__init__(items, create_func=create_func, path=path, xtra=xtra)
+    def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
+        super().__init__(items, **kwargs)
+        self.processor = ifnone(self.processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         self.vocab = vocab
         
-    def new(self, items:Iterator, xtra:Any=None)->'NumericalizedTextList':
-        return super().new(items=items, vocab=self.vocab, xtra=xtra)
+    def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
+        return super().new(items=items, vocab=self.vocab, **kwargs)
     
     def get(self, i):
         o = super().get(i)
@@ -272,12 +273,6 @@ class NumericalizedTextList(ItemList):
         self._bunch = TextLMDataBunch
         return self.label_const(0)
     
-class TokenizedTextList(NumericalizedTextList):
-    def preprocess(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
-        self.vocab = ifnone(vocab, Vocab.create(self.items, max_vocab, min_freq))
-        self.preprocess_kwargs = {'vocab': self.vocab}
-        self.items = np.array([self.vocab.numericalize(t) for t in self.items])
-
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
@@ -285,17 +280,26 @@ def _join_texts(texts:Collection[str], mark_fields:bool=True):
     for i in range(1,len(df.columns)):
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
     return text_col.values
-        
-class TextList(TokenizedTextList):
-    def preprocess(self, tokenizer:Tokenizer=None, chunksize:int=10000, vocab:Vocab=None, 
-                   max_vocab:int=60000, min_freq:int=2, mark_fields:bool=True):
-        self.items = _join_texts(self.items, mark_fields)
-        tokenizer = ifnone(tokenizer, Tokenizer())
+
+class TokenizeProcessor(PreProcessor):
+    def __init__(self, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
+        self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
+
+    def process(self, ds):
+        ds.items = _join_texts(ds.items, self.mark_fields) 
         tokens = []
-        for i in progress_bar(range(0,len(self.items),chunksize), leave=False):
-            tokens += tokenizer.process_all(self.items[i:i+chunksize])
-        self.items = tokens
-        super().preprocess(vocab, max_vocab, min_freq)
+        for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
+            tokens += self.tokenizer.process_all(ds.items[i:i+self.chunksize])
+        ds.items = tokens
+        
+class NumericalizeProcessor(PreProcessor):
+    def __init__(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+        self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
+        
+    def process(self, ds):
+        if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+        ds.vocab = self.vocab
+        ds.items = np.array([self.vocab.numericalize(t) for t in ds.items])
     
 class TextFilesList(TextList):
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.'):

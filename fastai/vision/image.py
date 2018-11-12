@@ -396,7 +396,9 @@ class ImageBBox(ImagePoints):
         bboxes = torch.cat([mins, maxes], 1)
         mask = (bboxes[:,2]-bboxes[:,0] > 0) * (bboxes[:,3]-bboxes[:,1] > 0)
         if len(mask) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
-        return bboxes[mask], self.labels[to_np(mask).astype(bool)]
+        res = bboxes[mask]
+        if self.labels is None: return res,None
+        return res, self.labels[to_np(mask).astype(bool)]
 
     @property
     def data(self)->Union[FloatTensor, Tuple[FloatTensor,LongTensor]]:
