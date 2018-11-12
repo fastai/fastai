@@ -208,11 +208,11 @@ def one_hot_encode(y:Collection[int], c:int):
     res[y] = 1.
     return res
 
-def index_row(a:Union[Collection,pd.DataFrame], idxs:Collection[int])->Any:
+def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
     if a is None: return a
     if isinstance(a,(pd.DataFrame,pd.Series)):
         res = a.iloc[idxs]
-        if not is_listy(res): return res.copy()
+        if isinstance(res,(pd.DataFrame,pd.Series)): return res.copy()
         return res
     return a[idxs]
 
