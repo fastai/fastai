@@ -55,6 +55,8 @@ class ImageLearner(Learner):
             x,y = dl.dataset[i]
             x.show(ax=axs[i,1], y=y) #Doing that first will update x before we pass it to reconstruct_output
             pred = dl.reconstruct_output(preds[i], x)
+            if self.data.denorm and self.data.tfm_y and isinstance(pred, Image):
+                pred = Image(self.data.denorm(pred.data))
             x.show(ax=axs[i,0], y=pred)
         plt.tight_layout()
 
