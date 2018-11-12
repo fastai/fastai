@@ -30,6 +30,7 @@ class WeightDropout(nn.Module):
             #Makes a copy of the weights of the selected layers.
             w = getattr(self.module, layer)
             self.register_parameter(f'{layer}_raw', nn.Parameter(w.data))
+        self.reset()
 
     def _setweights(self):
         "Apply dropout to the raw weights."
