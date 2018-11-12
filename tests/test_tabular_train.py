@@ -8,14 +8,42 @@ pytestmark = pytest.mark.integration
 def learn():
     path = untar_data(URLs.ADULT_SAMPLE)
     df = pd.read_csv(path/'adult.csv')
-    tfms = [FillMissing, Categorify]
-    train_df, valid_df = df[:1024].copy(),df[1024:1260].copy()
+    tfms = [FillMissing, Categorify, Normalize]
     dep_var = '>=50k'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
-    data = TabularDataBunch.from_df(path, train_df, valid_df, dep_var, tfms=tfms, cat_names=cat_names)
+    data = TabularDataBunch.from_df(path, df, dep_var, valid_idx=list(range(800,100)), tfms=tfms, cat_names=cat_names)
     learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
-    learn.fit_one_cycle(3, 1e-2)
+    learn.fit_one_cycle(2, 1e-2)
     return learn
 
 def test_accuracy(learn):
     assert learn.validate()[1] > 0.7
+
+def test_same_categories(learn):
+    x_train,y_train = learn.data.train_ds[0]
+    x_valid,y_valid = learn.data.valid_ds[0]
+    x_train.classes.keys() == x_valid.classes.keys()
+    for key in x_train.classes.keys():
+        assert np.all(x_train.classes[key] == x_valid.classes[key])
+        
+def test_same_fill_nan(learn):
+    df = pd.read_csv(path/'adult.csv')
+    nan_idx = np.where(df['education-num'].isnull())
+    val = None
+    for i in nan_idx[0]:
+        x,y = (learn.data.train_ds[i] if i < 800 else learn.data.valid_ds[i-800])
+        j = x.names.index('education-num') - len(x.cats)
+        if val is None: val = x.conts[j]
+        else: assert val == x.conts[j]
+            
+def test_normalize(learn):
+    df = pd.read_csv(path/'adult.csv')
+    train_df = df.iloc[0:800].append(df.iloc[1000:])
+    c = 'age'
+    mean, std = train_df[c].mean(), train_df[c].std()
+    for i in np.random.randint(0,799, (20,)):
+        x,y = learn.data.train_ds[i]
+        assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
+    for i in np.random.randint(800,1000, (20,)):
+        x,y = learn.data.valid_ds[i-800]
+        assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6

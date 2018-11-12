@@ -179,7 +179,6 @@ class ItemList():
             return res.group(1)
         return self.label_from_func(_inner, **kwargs)
 
-
 class CategoryList(ItemList):
     _item_cls=Category
     def __init__(self, items:Iterator, classes:Collection=None, sep=None, **kwargs):

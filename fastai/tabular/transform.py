@@ -1,7 +1,7 @@
 "Cleaning and feature engineering functions for structured data"
 from ..torch_core import *
 
-__all__ = ['Categorify', 'FillMissing', 'FillStrategy', 'TabularTransform']
+__all__ = ['Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularTransform']
 
 @dataclass
 class TabularTransform():
@@ -63,3 +63,16 @@ class FillMissing(TabularTransform):
                     df.loc[:,name+'_na'] = pd.isnull(df[name])
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
                 df.loc[:,name] = df.loc[:,name].fillna(self.na_dict[name])
+                
+class Normalize(TabularTransform):
+    "Transform the categorical variables to that type."
+
+    def apply_train(self, df:DataFrame):
+        self.means,self.stds = {},{}
+        for n in self.cont_names:
+            self.means[n],self.stds[n] = df.loc[:,n].mean(),df.loc[:,n].std()
+            df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])
+
+    def apply_test(self, df:DataFrame):
+        for n in self.cont_names:
+            df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])
