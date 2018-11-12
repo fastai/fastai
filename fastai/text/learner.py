@@ -9,7 +9,7 @@ from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
 from .transform import *
 
-__all__ = ['RNNLearner', 'LanguageLearner', 'TextClassifierLearner', 'RNNLearner', 'convert_weights', 'lm_split', 
+__all__ = ['RNNLearner', 'LanguageLearner', 'TextClassifierLearner', 'RNNLearner', 'convert_weights', 'lm_split',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
 
 default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
@@ -70,8 +70,8 @@ class RNNLearner(Learner):
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts)
-        
-    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None, 
+
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None,
                   ordered:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
@@ -89,7 +89,7 @@ class LanguageLearner(RNNLearner):
         tokenizer = ifnone(tokenizer, Tokenizer())
         tokens = tokenizer.process_all([text])
         ds = self.data.valid_ds
-        ids = ds.vocab.numericalize(tokens[0]) 
+        ids = ds.vocab.numericalize(tokens[0])
         self.model.reset()
         pbar = master_bar(range(n_words))
         for _ in pbar:
@@ -97,7 +97,7 @@ class LanguageLearner(RNNLearner):
             res = self.pred_batch(pbar=pbar)
             ids.append(res[-1].argmax())
         ds.clear_item()
-        return self.data.train_ds.vocab.textify(ids)        
+        return self.data.train_ds.vocab.textify(ids)
 
 class TextClassifierLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
@@ -106,14 +106,14 @@ class TextClassifierLearner(RNNLearner):
         tokenizer = ifnone(tokenizer, Tokenizer())
         tokens = tokenizer.process_all([text])
         ds = self.data.valid_ds
-        ids = ds.vocab.numericalize(tokens[0]) 
+        ids = ds.vocab.numericalize(tokens[0])
         self.model.reset()
         ds.set_item(ids)
         res = self.pred_batch()[0]
         ds.clear_item()
         pred_max = res.argmax()
         return self.data.train_ds.classes[pred_max],pred_max,res
-    
+
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':

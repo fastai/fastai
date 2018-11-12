@@ -219,6 +219,14 @@ class Learner():
         dl.num_workers = nw
         return preds
 
+    def predict(self, img:ItemBase):
+        "Return prect class, label and probabilities for `img`."
+        ds = self.data.valid_ds
+        ds.set_item(img)
+        res = self.pred_batch()[0]
+        ds.clear_item()
+        return res
+
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
