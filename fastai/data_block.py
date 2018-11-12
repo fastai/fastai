@@ -253,6 +253,7 @@ class ItemLists():
         return res
 
     def transform(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+        if not tfms: return self
         self.train.transform(tfms[0], **kwargs)
         self.valid.transform(tfms[1], **kwargs)
         if self.test: self.test.transform(tfms[1], **kwargs)
@@ -317,9 +318,10 @@ class LabelList(Dataset):
         if isinstance(try_int(idxs), int):
             if self.item is None: x,y = self.x[idxs],self.y[idxs]
             else:                 x,y = self.item   ,0
-            x = x.apply_tfms(self.tfms, **self.tfmargs)
-            if self.tfm_y and self.item is None:
-                y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
+            if self.tfms:
+                x = x.apply_tfms(self.tfms, **self.tfmargs)
+                if self.tfm_y and self.item is None:
+                    y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 

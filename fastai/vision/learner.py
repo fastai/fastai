@@ -45,6 +45,7 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
 
 class ClassificationLearner(Learner):
     def predict(self, img:Image):
+        res = super().predict(img)
         pred_max = res.argmax()
         return self.data.classes[pred_max],pred_max,res
 
