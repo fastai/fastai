@@ -11,7 +11,13 @@ def learn():
     tfms = [FillMissing, Categorify, Normalize]
     dep_var = '>=50k'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
-    data = TabularDataBunch.from_df(path, df, dep_var, valid_idx=list(range(800,100)), tfms=tfms, cat_names=cat_names)
+    cont_names = ['age', 'fnlwgt', 'education-num']
+    sdata = (TabularList.from_df(df, path, cat_names=cat_names, cont_names=cont_names)
+                        .split_by_idx(list(range(800,1000)))
+                        .label_from_df(cols=dep_var)
+                        .preprocess(tfms=tfms))
+    #TODO: add test set here with df.iloc[800:1000]
+    data = sdata.databunch()
     learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(2, 1e-2)
     return learn
@@ -22,9 +28,12 @@ def test_accuracy(learn):
 def test_same_categories(learn):
     x_train,y_train = learn.data.train_ds[0]
     x_valid,y_valid = learn.data.valid_ds[0]
-    x_train.classes.keys() == x_valid.classes.keys()
+    x_test,y_test = learn.data.test_ds[0]
+    assert x_train.classes.keys() == x_valid.classes.keys()
+    assert x_train.classes.keys() == x_test.classes.keys()
     for key in x_train.classes.keys():
         assert np.all(x_train.classes[key] == x_valid.classes[key])
+        assert np.all(x_train.classes[key] == x_test.classes[key])
         
 def test_same_fill_nan(learn):
     df = pd.read_csv(path/'adult.csv')
@@ -35,6 +44,9 @@ def test_same_fill_nan(learn):
         j = x.names.index('education-num') - len(x.cats)
         if val is None: val = x.conts[j]
         else: assert val == x.conts[j]
+        if i >= 800:
+            x,y = learn.data.test_ds[i-800]
+            assert val == x.conts[j]
             
 def test_normalize(learn):
     df = pd.read_csv(path/'adult.csv')
@@ -46,4 +58,7 @@ def test_normalize(learn):
         assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
     for i in np.random.randint(800,1000, (20,)):
         x,y = learn.data.valid_ds[i-800]
+        assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
+    for i in np.random.randint(800,1000, (20,)):
+        x,y = learn.data.train_ds[i-800]
         assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
