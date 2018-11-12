@@ -223,11 +223,13 @@ def _prep_tfm_kwargs(tfms, kwargs):
 
 class DatasetTfm(Dataset):
     "`Dataset` that applies a list of transforms to every item drawn."
-    def __init__(self, ds:Dataset, tfms:TfmList=None, tfm_y:bool=False, **kwargs:Any):
+    def __init__(self, ds:Dataset, tfms:TfmList=None, tfm_y:bool=False, y_tfms:TfmList=None, y_kwargs:Dict=None,**kwargs:Any):
         "this dataset will apply `tfms` to `ds`"
         self.ds,self.tfm_y = ds,tfm_y
         self.tfms,self.kwargs = _prep_tfm_kwargs(tfms,kwargs)
-        self.y_kwargs = {**self.kwargs, 'do_resolve':False}
+        if y_kwargs is None: y_kwargs = {}
+        self.y_kwargs = {**self.kwargs, **y_kwargs, 'do_resolve':False}
+        self.y_tfms = y_tfms if y_tfms else tfms
 
     def __len__(self)->int: return len(self.ds)
     def __repr__(self)->str: return f'{self.__class__.__name__}({self.ds})'
@@ -236,7 +238,8 @@ class DatasetTfm(Dataset):
         "Return tfms(x),y."
         x,y = self.ds[idx]
         x = apply_tfms(self.tfms, x, **self.kwargs)
-        if self.tfm_y: y = apply_tfms(self.tfms, y, **self.y_kwargs)
+        if self.tfm_y:
+            y = apply_tfms(self.y_tfms, y, **self.y_kwargs)
         return x, y
 
     def __getattr__(self,k):
@@ -264,18 +267,18 @@ def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Denormalize `x` with `mean` and `std`."
     return x*std[...,None,None] + mean[...,None,None]
 
-def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Tensor,Tensor]:
-    "`b` = `x`,`y` - normalize `x` array of imgs and `do_y` optionally `y`."
+def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, tfm_y:bool=False)->Tuple[Tensor,Tensor]:
+    "`b` = `x`,`y` - normalize `x` array of imgs and `tfm_y` optionally `y`."
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
-    if do_y: y = normalize(y,mean,std)
+    if tfm_y: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]:
-    "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, tfm_y:bool=False)->Tuple[Callable,Callable]:
+    "Create normalize/denormalize func using `mean` and `std`, can specify `tfm_y` and `device`."
     mean,std = tensor(mean),tensor(std)
-    return (partial(_normalize_batch, mean=mean, std=std),
+    return (partial(_normalize_batch, mean=mean, std=std, tfm_y=tfm_y),
             partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
@@ -368,12 +371,13 @@ class ImageDataBunch(DataBunch):
         x = self.valid_dl.one_batch()[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
-    def normalize(self, stats:Collection[Tensor]=None)->None:
+    def normalize(self, stats:Collection[Tensor]=None, tfm_y:bool=False)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
         if stats is None: self.stats = self.batch_stats()
         else:             self.stats = stats
-        self.norm,self.denorm = normalize_funcs(*self.stats)
+        self.tfm_y = tfm_y
+        self.norm,self.denorm = normalize_funcs(*self.stats, tfm_y=tfm_y)
         self.add_tfm(self.norm)
         return self
 
