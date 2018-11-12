@@ -249,9 +249,9 @@ class ItemLists():
         return self
 
     def preprocess(self, **kwargs):
-        self.train.x.preprocess(**kwargs)
-        kwargs = {**kwargs, **getattr(self.train.x, 'preprocess_kwargs', {})}
-        for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
+        self.train.preprocess(**kwargs)
+        kwargs = {**kwargs, **getattr(self.train, 'preprocess_kwargs', {})}
+        for ds in self.lists[1:]: ds.preprocess(**kwargs)
         self.valid.pp_kwargs = kwargs
         return self
 

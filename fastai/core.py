@@ -212,7 +212,7 @@ def index_row(a:Union[Collection,pd.DataFrame], idxs:Collection[int])->Any:
     if a is None: return a
     if isinstance(a,(pd.DataFrame,pd.Series)):
         res = a.iloc[idxs]
-        if is_listy(res): return res.copy()
+        if not is_listy(res): return res.copy()
         return res
     return a[idxs]
 
