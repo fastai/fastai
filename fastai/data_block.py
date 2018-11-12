@@ -291,9 +291,12 @@ class LabelList(Dataset):
     def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
         self.x,self.y,self.tfm_y = x,y,tfm_y
         self.y.x = x
+        self.item=None
         self.transform(tfms, **kwargs)
 
-    def __len__(self)->int: return len(self.x)
+    def __len__(self)->int: return len(self.x) if self.item is None else 1
+    def set_item(self,item): self.item = item
+    def clear_item(self): self.item = None
     def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
 
     @property
@@ -311,10 +314,11 @@ class LabelList(Dataset):
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         if isinstance(try_int(idxs), int):
-            x = self.x[idxs]
-            y = self.y[idxs]
+            if self.item is None: x,y = self.x[idxs],self.y[idxs]
+            else:                 x,y = self.item   ,0
             x = x.apply_tfms(self.tfms, **self.tfmargs)
-            if self.tfm_y: y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
+            if self.tfm_y and self.item is None:
+                y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 

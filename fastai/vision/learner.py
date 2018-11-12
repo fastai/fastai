@@ -45,11 +45,6 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
 
 class ClassificationLearner(Learner):
     def predict(self, img:Image):
-        "Return prect class, label and probabilities for `img`."
-        ds = self.data.valid_ds
-        ds.set_item(img)
-        res = self.pred_batch()[0]
-        ds.clear_item()
         pred_max = res.argmax()
         return self.data.classes[pred_max],pred_max,res
 

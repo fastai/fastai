@@ -2,7 +2,7 @@
 from .torch_core import *
 from .layers import MSELossFlat
 
-DatasetType = Enum('DatasetType', 'Train Valid Test')
+DatasetType = Enum('DatasetType', 'Train Valid Test Single')
 TaskType = Enum('TaskType', 'No Single Multi Regression')
 __all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType', 'TaskType']
 
@@ -142,9 +142,12 @@ class DataBunch():
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
-        self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn, skip_size1=True)
-        self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
+        def _create_dl(dl, **kwargs):
+            return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
+        self.train_dl = _create_dl(train_dl, skip_size1=True)
+        self.valid_dl = _create_dl(valid_dl)
+        self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
+        self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
 
     def __repr__(self)->str:
@@ -167,12 +170,16 @@ class DataBunch():
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
         return (self.train_dl if ds_type == DatasetType.Train else
                 self.test_dl if ds_type == DatasetType.Test else
-                self.valid_dl)
+                self.valid_dl if ds_type == DatasetType.Valid else
+                self.single_dl)
+
+    @property
+    def dls(self):
+        res = [self.train_dl, self.valid_dl, self.single_dl]
+        return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
-        self.train_dl.add_tfm(tfm)
-        self.valid_dl.add_tfm(tfm)
-        if self.test_dl: self.test_dl.add_tfm(tfm)
+        for dl in self.dls: dl.add_tfm(tfm)
 
     def show_batch(self, rows:int=None, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         dl = self.dl(ds_type)
