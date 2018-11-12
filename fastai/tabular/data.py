@@ -54,10 +54,9 @@ class TabularLine(ItemBase):
 
 class TabularList(ItemList):
     def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None, create_func:Callable=None, 
-                 path:PathOrStr='.', xtra=None):
+                 **kwargs):
         #dataframe is in xtra, items is just a range of index
-        assert xtra is not None and len(xtra)==len(items), "Use from_df or from_csv"
-        super().__init__(range(len(items)), create_func=create_func, path=path, xtra=xtra)
+        super().__init__(range(len(items)), create_func=create_func, **kwargs)
         self.cat_names,self.cont_names = cat_names,cont_names
     
     @classmethod
@@ -68,9 +67,9 @@ class TabularList(ItemList):
                   cat_names=cat_names, cont_names=cont_names)
         return res
     
-    def new(self, items:Iterator, xtra:Any=None)->'TabularList':
+    def new(self, items:Iterator, **kwargs)->'TabularList':
         return self.__class__(items=items, cat_names=self.cat_names, cont_names=self.cont_names,
-                              create_func=self.create_func, path=self.path, xtra=xtra)
+                              create_func=self.create_func,  **kwargs)
     
     def get(self, o): 
         return TabularLine(self.codes[o], self.conts[o], self.classes, self.col_names)

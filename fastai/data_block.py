@@ -2,7 +2,7 @@ from .torch_core import *
 from .basic_data import *
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files', 'create_sdata',
-           'PreProcessor']
+           'PreProcessor', 'LabelLists']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
