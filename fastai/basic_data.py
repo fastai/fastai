@@ -190,7 +190,7 @@ class DataBunch():
 
     @property
     def test_ds(self)->Dataset:
-        return self.test_dl.dl.dataset if self.test_dl else None
+        return self.test_dl.dl.dataset if self.test_dl is not None else None
 
     def learner_type(self)->type: return getattr(self.train_ds, 'learner_type', None)
 
