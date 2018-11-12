@@ -119,7 +119,7 @@ class TokenizedDataset(TextBase):
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
+    text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[0]
     for i in range(1,len(df.columns)):
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
     return text_col.values
