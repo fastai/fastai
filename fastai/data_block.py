@@ -279,9 +279,10 @@ class LabelLists(ItemLists):
         # if no label passed, use label of first training item
         if label is None: label = str(self.train[0][1])
         labels = [label for _ in range_of(self.valid)]
-        self.test = self.valid.new(items, labels)
+        if isinstance(items, ItemList): self.test = self.valid.new(items.items, labels, xtra=items.xtra)
+        else: self.test = self.valid.new(items, labels, **kwargs)
         return self
-
+    
     def add_test_folder(self, test_folder:str='test', label:Any=None):
         "Add test set containing items from folder `test_folder` and an arbitrary `label`."
         items = self.x.__class__.from_folder(self.path/test_folder)
@@ -300,11 +301,11 @@ class LabelList(Dataset):
     @property
     def c(self): return self.y.c
 
-    def new(self, x, y)->'LabelList':
+    def new(self, x, y, **kwargs)->'LabelList':
         if isinstance(x, ItemList):
             return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, **self.tfmargs)
         else:
-            return self.new(self.x.new(x), self.y.new(y)).process()
+            return self.new(self.x.new(x, **kwargs), self.y.new(y, **kwargs)).process()
 
     def __getattr__(self,k:str)->Any:
         res = getattr(self.x, k, None)
