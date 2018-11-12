@@ -152,6 +152,18 @@ class ImageMultiDataset(ImageClassificationBase):
         train_ds = cls(*train, classes=classes)
         return [train_ds,cls(*valid, classes=train_ds.classes)]
 
+class ImageToImageDataset(ImageDatasetBase):
+    "A dataset for segmentation task."
+    def __init__(self, x:FilePathList, y:FilePathList, **kwargs):
+        assert len(x)==len(y)
+        super().__init__(x=x, y=y, **kwargs)
+        self.loss_func = F.mse_loss
+
+    def _get_y(self,i,x):  return self.image_opener(self.y[i])
+
+    def reconstruct_output(self, out, x): 
+        return Image(out)
+
 class SegmentationDataset(ImageClassificationBase):
     "A dataset for segmentation task."
     def __init__(self, x:FilePathList, y:FilePathList, classes:Collection[Any], div:bool=False):
