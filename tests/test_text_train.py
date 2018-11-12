@@ -37,7 +37,8 @@ def manual_seed(seed=42):
 def test_val_loss(learn):
     assert learn.validate()[1] > 0.5
 
-@pytest.mark.xfail(reason="bug in the WeightDrop reset / initialisation")
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason="QRNN requires cupy that depends on cuda")
 def test_qrnn_works_with_no_split():
     manual_seed()
     path, df_trn, df_val = prep_human_numbers()
@@ -47,6 +48,8 @@ def test_qrnn_works_with_no_split():
     learn.fit_one_cycle(4, 5e-3)
     assert learn.validate()[1] > 0.5
 
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason="QRNN requires cupy that depends on cuda")
 def test_qrnn_works_if_split_fn_provided():
     manual_seed()
     path, df_trn, df_val = prep_human_numbers()
