@@ -77,6 +77,7 @@ class ItemList():
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, create_func=create_func, col=col)
 
+    #Not adapted
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                   header:str='infer')->'LabelList':
@@ -251,6 +252,7 @@ class ItemLists():
         self.train.x.preprocess(**kwargs)
         kwargs = {**kwargs, **getattr(self.train.x, 'preprocess_kwargs', {})}
         for ds in self.lists[1:]: ds.x.preprocess(**kwargs)
+        self.valid.pp_kwargs = kwargs
         return self
 
 class LabelLists(ItemLists):
@@ -276,9 +278,10 @@ class LabelLists(ItemLists):
 
 class LabelList(Dataset):
     "A list of inputs and labels. Contain methods to split it in `ItemLists`."
-    def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
-        self.x,self.y,self.tfm_y = x,y,tfm_y
+    def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, pp_kwargs=None, **kwargs):
+        self.x,self.y,self.tfm_y,self.pp_kwargs = x,y,tfm_y,pp_kwargs
         self.y.x = x
+        if pp_kwargs is not None: self.x.preprocess(**pp_kwargs)
         self.transform(tfms, **kwargs)
 
     def __len__(self)->int: return len(self.x)
@@ -288,7 +291,7 @@ class LabelList(Dataset):
     def c(self): return self.y.c
 
     def new(self, x, y)->'LabelList':
-        return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, **self.tfmargs)
+        return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, pp_kwargs=self.pp_kwargs, **self.tfmargs)
 
     def __getattr__(self,k:str)->Any:
         res = getattr(self.x, k, None)
