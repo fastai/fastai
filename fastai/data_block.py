@@ -33,7 +33,7 @@ def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)-
             and (extensions is None or (o.suffix.lower() in extensions))]
 
 class PreProcessor():
-    def process(self, ds:Collection): pass
+    def process(self, ds:Collection): return self
 
 class ItemList():
     _bunch = DataBunch
@@ -278,11 +278,8 @@ class LabelLists(ItemLists):
         "Add test set containing items from `items` and an arbitrary `label`"
         # if no label passed, use label of first training item
         if label is None: label = str(self.train[0][1])
-        v = self.valid
-        x = v.x.new(items)
-        y = v.y.new([label for _ in range_of(x)])
-        self.test = self.valid.new(x, y)
-        self.test.process()
+        labels = [label for _ in range_of(self.valid)]
+        self.test = self.valid.new(items, labels)
         return self
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
@@ -304,7 +301,10 @@ class LabelList(Dataset):
     def c(self): return self.y.c
 
     def new(self, x, y)->'LabelList':
-        return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, **self.tfmargs)
+        if isinstance(x, ItemList):
+            return self.__class__(x, y, tfms=self.tfms, tfm_y=self.tfm_y, **self.tfmargs)
+        else:
+            return self.new(self.x.new(x), self.y.new(y)).process()
 
     def __getattr__(self,k:str)->Any:
         res = getattr(self.x, k, None)
@@ -322,6 +322,7 @@ class LabelList(Dataset):
     def process(self, xp=None, yp=None):
         self.x.process(xp)
         self.y.process(yp)
+        return self
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
