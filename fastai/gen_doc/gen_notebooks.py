@@ -302,6 +302,10 @@ def get_module_from_notebook(doc_path):
     "Find module given a source path. Assume it belongs to fastai directory"
     return f'fastai.{Path(doc_path).stem}'
 
+def check_nbconvert_version():
+    import nbconvert
+    assert nbconvert.version_info >= (5,4,0), "Please update nbconvert to >=5.4 for consistent .html output"
+
 def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=False,
                      update_nb_links=True, update_line_num=True, html_path=None, force=False):
     "`source_path` can be a directory or a file. Assume all modules reside in the fastai directory."
@@ -324,6 +328,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
             print(f'Updating notebook {doc_path}. Please wait...')
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=update_line_num)
         if update_html: 
+            check_nbconvert_version()
             html_fn = html_path/doc_path.with_suffix('.html').name
             if not force and html_fn.is_file():
                 in_mod  = os.path.getmtime(doc_path)

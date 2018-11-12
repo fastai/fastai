@@ -73,7 +73,7 @@ dev_requirements = { 'dev' : to_list("""
     ipython
     jupyter
     notebook>=5.7.0
-    nbconvert
+    nbconvert>=5.4
     nbformat
     traitlets
 """) }

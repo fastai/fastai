@@ -19,6 +19,8 @@ of that change.
 
 ### Changed:
 
+- `tools/build-docs` and `tools/update-nbs` scripts combined into one script.
+
 ### Fixed:
 
 
