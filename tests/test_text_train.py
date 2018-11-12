@@ -22,12 +22,39 @@ def prep_human_numbers():
 def learn():
     path, df_trn, df_val = prep_human_numbers()
     data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
-    learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
+    learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1)
     learn.fit_one_cycle(4, 5e-3)
     return learn
 
+def manual_seed(seed=42):
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
 def test_val_loss(learn):
-    assert learn.validate()[1] > 0.2
+    assert learn.validate()[1] > 0.5
+
+@pytest.mark.xfail(reason="bug in the WeightDrop reset / initialisation")
+def test_qrnn_works_with_no_split():
+    manual_seed()
+    path, df_trn, df_val = prep_human_numbers()
+    data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
+    learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1, qrnn=True)
+    learn = LanguageLearner(data, learn.model, bptt=70) #  remove the split_fn
+    learn.fit_one_cycle(4, 5e-3)
+    assert learn.validate()[1] > 0.5
+
+def test_qrnn_works_if_split_fn_provided():
+    manual_seed()
+    path, df_trn, df_val = prep_human_numbers()
+    data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
+    learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1, qrnn=True) # it sets: split_func=lm_split
+    learn.fit_one_cycle(4, 5e-3)
+    assert learn.validate()[1] > 0.5
+
 
 def text_df(n_labels):
     data = []
