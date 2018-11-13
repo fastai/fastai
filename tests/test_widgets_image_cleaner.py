@@ -22,9 +22,8 @@ def test_image_cleaner_index_length_too_short(data):
         assert ImageCleaner(data.valid_ds, np.arange(n+1))
         
 def test_image_cleaner_length_correct(data):
-    with pytest.raises(AssertionError) as e:
-        n = len(data.valid_ds)
-        ImageCleaner(data.valid_ds, np.arange(n))
+    n = len(data.valid_ds)
+    ImageCleaner(data.valid_ds, np.arange(n))
         
 @pytest.mark.xfail(reason = "Expected Fail")                   
 def test_image_cleaner_wrong_input_type(data):
