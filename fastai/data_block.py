@@ -48,7 +48,7 @@ class ItemList():
         self.__post_init__()
 
     def __post_init__(self): pass
-    def __len__(self)->int: return len(self.items)
+    def __len__(self)->int: return len(self.items) or 1
     def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}\nPath: {self.path}'
     def get(self, i)->Any:
         item = self.items[i]
@@ -115,7 +115,7 @@ class ItemList():
 
     def split_by_idx(self, valid_idx:Collection[int])->'ItemLists':
         "Split the data according to the indexes in `valid_idx`."
-        train_idx = [i for i in range_of(self) if i not in valid_idx]
+        train_idx = [i for i in range_of(self.items) if i not in valid_idx]
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):

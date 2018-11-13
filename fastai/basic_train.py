@@ -221,9 +221,9 @@ class Learner():
 
     def predict(self, img:ItemBase):
         "Return prect class, label and probabilities for `img`."
-        ds = self.data.valid_ds
+        ds = self.data.single_dl.dataset
         ds.set_item(img)
-        res = self.pred_batch()[0]
+        res = self.pred_batch(ds_type=DatasetType.Single)[0]
         ds.clear_item()
         return res
 

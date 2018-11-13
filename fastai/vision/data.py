@@ -383,9 +383,10 @@ class ImageDataBunch(DataBunch):
         df.to_csv(dest, index=False)
 
     @staticmethod
-    def single_from_classes(path:Union[Path, str], classes:Collection[str], **kwargs):
+    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
-        return ImageSplitDatasets.single_from_classes(path, classes).transform(**kwargs).databunch(bs=1)
+        sd = ImageItemList([], path=path).split_by_idx([])
+        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
 
 def download_image(url,dest, timeout=4):
     try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
