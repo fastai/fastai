@@ -33,6 +33,8 @@ class DatasetBase(Dataset):
         elif self.task_type==TaskType.Multi:
             self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
 
+
+    def predict(self, res): return res
     def __len__(self): return len(self.x) if self.x is not None else 1
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
@@ -198,6 +200,4 @@ class DataBunch():
     @property
     def test_ds(self)->Dataset:
         return self.test_dl.dl.dataset if self.test_dl is not None else None
-
-    def learner_type(self)->type: return getattr(self.train_ds, 'learner_type', None)
 

@@ -225,7 +225,7 @@ class Learner():
         ds.set_item(img)
         res = self.pred_batch(ds_type=DatasetType.Single)[0]
         ds.clear_item()
-        return res
+        return ds.predict(res)
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."

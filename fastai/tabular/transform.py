@@ -1,10 +1,10 @@
 "Cleaning and feature engineering functions for structured data"
 from ..torch_core import *
 
-__all__ = ['Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularTransform']
+__all__ = ['Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularProc']
 
 @dataclass
-class TabularTransform():
+class TabularProc():
     "A transform for tabular dataframes."
     cat_names:StrList
     cont_names:StrList
@@ -21,7 +21,7 @@ class TabularTransform():
         "Function applied to `df` if it's the test set."
         self.apply_train(df)
 
-class Categorify(TabularTransform):
+class Categorify(TabularProc):
     "Transform the categorical variables to that type."
 
     def apply_train(self, df:DataFrame):
@@ -37,7 +37,7 @@ class Categorify(TabularTransform):
 FillStrategy = IntEnum('FillStrategy', 'MEDIAN COMMON CONSTANT')
 
 @dataclass
-class FillMissing(TabularTransform):
+class FillMissing(TabularProc):
     "Fill the missing values in continuous columns."
     fill_strategy:FillStrategy=FillStrategy.MEDIAN
     add_col:bool=True
@@ -63,8 +63,8 @@ class FillMissing(TabularTransform):
                     df.loc[:,name+'_na'] = pd.isnull(df[name])
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
                 df.loc[:,name] = df.loc[:,name].fillna(self.na_dict[name])
-                
-class Normalize(TabularTransform):
+
+class Normalize(TabularProc):
     "Transform the categorical variables to that type."
 
     def apply_train(self, df:DataFrame):

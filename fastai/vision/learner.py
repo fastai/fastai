@@ -8,7 +8,7 @@ from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
 
-__all__ = ['ClassificationLearner', 'create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -43,12 +43,6 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
         layers += bn_drop_lin(ni,no,True,p,actn)
     return nn.Sequential(*layers)
 
-class ClassificationLearner(Learner):
-    def predict(self, img:Image):
-        res = super().predict(img)
-        pred_max = res.argmax()
-        return self.data.classes[pred_max],pred_max,res
-
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
@@ -60,8 +54,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
     model = nn.Sequential(body, head)
-    learner_cls = ifnone(data.learner_type(), ClassificationLearner)
-    learn = learner_cls(data, model, **kwargs)
+    learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)
@@ -74,8 +67,7 @@ def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
-    learner_cls = ifnone(data.learner_type(), Learner)
-    learn = learner_cls(data, model, **kwargs)
+    learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[2], nn.init.kaiming_normal_)

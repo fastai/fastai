@@ -13,8 +13,7 @@ def _maybe_squeeze(arr):
 
 def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, is_fnames:bool=False,
                       label_delim:str=None, suffix:Optional[str]=None):
-    """Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`.
-    If `label_delim` is specified, splits the values in `label_col` accordingly.  """
+    "Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`."
     assert label_delim is None or not isinstance(label_cols, Iterable) or len(label_cols) == 1
     labels = df.iloc[:,df_names_to_idx(label_cols, df)]
     if label_delim: labels = np.array(list(csv.reader(labels.iloc[:,0], delimiter=label_delim)))
@@ -60,6 +59,10 @@ class ItemList():
         for p in self.processor: p.process(self)
         return self
 
+    def predict(self, res):
+        "Called at the end of `Learn.predict`; override for optional post-processing"
+        return res
+
     def new(self, items:Iterator, create_func:Callable=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
         return self.__class__(items=items, create_func=create_func, path=self.path, processor=self.processor, **kwargs)
@@ -90,8 +93,7 @@ class ItemList():
     @classmethod
     def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                   header:str='infer', **kwargs)->'LabelList':
-        """Create in `path` by reading `input_cols` and `label_cols` in the csvs in `path/csv_names`
-        opened with `header`. If `label_delim` is specified, splits the tags in `label_cols` accordingly.  """
+        "Create in `path` by reading `input_cols` and `label_cols` in csvs in `path/csv_names` opened with `header`."
         return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]), path)
 
     def filter_by_func(self, func:Callable)->'ItemList':
@@ -206,6 +208,10 @@ class CategoryList(ItemList):
         o = super().get(i)
         return self._item_cls.create(o, self.class2idx)
 
+    def predict(self, res):
+        pred_max = res.argmax()
+        return self.classes[pred_max],pred_max,res
+
 class MultiCategoryList(CategoryList):
     _item_cls=MultiCategory
     def __init__(self, items:Iterator, classes:Collection=None, sep=None, **kwargs):
@@ -241,8 +247,7 @@ class ItemLists():
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
                  valid_col:int=2, header:str='infer')->'ItemLists':
-        """Create a `ItemLists` in `path` from the csv in `path/csv_name` read with `header`. Take the inputs from
-        `input_cols`, the labels from `label_cols` and split by `valid_col` (`True` indicates valid set)."""
+        "Create in `path` from csv in `path/csv_name` with `header`. Inputs from `input_cols`, labels `label_cols` split by `valid_col`"
         df = pd.read_csv(path/csv_fname, header=header)
         val_idx = df.iloc[:,valid_col].nonzero()[0]
         return LabelList.from_df(path, df, input_cols, label_cols).split_by_idx(val_idx)

@@ -48,11 +48,10 @@ def learn():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
     data.normalize()
-    learn = ClassificationLearner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
+    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
                                  callback_fns=[callbacks.CSVLogger])
     buffer = StringIO()
-    with redirect_stdout(buffer):
-        learn.fit_one_cycle(3)
+    with redirect_stdout(buffer): learn.fit_one_cycle(3)
     csv_df = learn.csv_logger.read_logged_file()
     recorder_df = create_metrics_dataframe(learn)
     pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=True)

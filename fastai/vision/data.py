@@ -70,14 +70,16 @@ class ImageDatasetBase(DatasetBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.image_opener = open_image
-        self.learner_type = ImageLearner
 
     def _get_x(self,i): return self.image_opener(self.x[i])
 
 class ImageClassificationBase(ImageDatasetBase):
     def __init__(self, x:Collection, y:Collection, classes:Collection=None, **kwargs):
         super().__init__(x=x, y=y, classes=classes, **kwargs)
-        self.learner_type = ClassificationLearner
+
+    def predict(self, res):
+        pred_max = res.argmax()
+        return self.classes[pred_max],pred_max,res
 
     def new(self, *args, classes:Optional[Collection[Any]]=None, **kwargs):
         if classes is None: classes = self.classes
