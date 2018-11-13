@@ -152,7 +152,11 @@ class Category(ItemBase):
     def __str__(self):  return str(self.cat)
     def __int__(self):  return self.data
     @classmethod
-    def create(cls, o:Any, c2i:dict=None): return cls(c2i[o], o) if c2i else cls(o,o)
+    def create(cls, o:Any, c2i:dict=None):
+        if c2i:
+            res = c2i.get(o, None)
+            return None if res is None else cls(res,o)
+        return cls(c2i.get(o, None), o) if c2i else cls(o,o)
 
 class MultiCategory(Category):
     @classmethod

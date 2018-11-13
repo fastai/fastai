@@ -59,7 +59,7 @@ class ItemList():
         if not is_listy(self.processor): self.processor = [self.processor]
         for p in self.processor: p.process(self)
         return self
-    
+
     def process_one(self, item, processor=None):
         if processor is not None: self.processor = processor
         if not is_listy(self.processor): self.processor = [self.processor]
@@ -161,7 +161,7 @@ class ItemList():
     def split_from_df(self, cols:IntsOrStrs=2):
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])[0]
         return self.split_by_idx(valid_idx)
-    
+
     def label_cls(self, labels, lc=None):
         if lc is not None:              return lc
         if self._label_cls is not None: return self._label_cls
@@ -171,8 +171,12 @@ class ItemList():
         return self.__class__
 
     def label_from_list(self, labels:Iterator, label_cls:Callable=None, template:Callable=None, **kwargs)->'LabelList':
+        labels = array(labels, dtype=object)
         label_cls = self.label_cls(labels, label_cls)
         y_bld = label_cls if template is None else template.new
+        y = y_bld(labels, **kwargs)
+        filt = array([o is None for o in y])
+        if filt.sum()<len(labels): self,labels = self[~filt],labels[~filt]
         return self._label_list(x=self, y=y_bld(labels, **kwargs))
 
     def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
