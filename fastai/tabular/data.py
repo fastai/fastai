@@ -71,7 +71,9 @@ class TabularList(ItemList):
     def get(self, o):
         return TabularLine(self.codes[o], self.conts[o], self.classes, self.col_names)
 
-    def get_emb_szs(self, sz_dict): return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
+    def get_emb_szs(self, sz_dict): 
+        "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
+        return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
 
 class TabularProcessor(PreProcessor):
     def __init__(self, procs=None):

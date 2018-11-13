@@ -276,6 +276,7 @@ class TextList(ItemList):
         return Text(o, self.vocab.textify(o))
     
     def label_for_lm(self, **kwargs):
+        "A special labelling method for language models."
         self._bunch = TextLMDataBunch
         return self.label_const(0, label_cls=LMLabel)
     

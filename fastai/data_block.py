@@ -1,7 +1,7 @@
 from .torch_core import *
 from .basic_data import *
 
-__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files', 'create_sdata',
+__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files', 
            'PreProcessor', 'LabelLists']
 
 def _decode(df):
@@ -85,14 +85,14 @@ class ItemList():
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr='.', col:IntsOrStrs=0, **kwargs)->'ItemList':
-        "Get the list of inputs in the `col` of `path/csv_name`."
+        "Create an `ItemList` in `path` from the inputs in the `col` of `df`."
         inputs = df.iloc[:,df_names_to_idx(col, df)]
         res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, **kwargs)
         return res
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name:str, col:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
-        "Get the list of inputs in the `col`of `path/csv_name`."
+        "Create an `ItemList` in `path` from the inputs in the `col` of `path/csv_name` opened with `header`."
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, col=col, **kwargs)
 
@@ -136,7 +136,7 @@ class ItemList():
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
 
     def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
-        "Split the items randomly by putting `valid_pct` in the validation set."
+        "Split the items randomly by putting `valid_pct` in the validation set. Set the `seed` in numpy if passed."
         if seed is not None: np.random.seed(seed)
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
@@ -158,8 +158,9 @@ class ItemList():
         valid_names = loadtxt_str(self.path/fname)
         return self.split_by_files(valid_names)
 
-    def split_from_df(self, cols:IntsOrStrs=2):
-        valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])[0]
+    def split_from_df(self, col:IntsOrStrs=2):
+        "Split the data from the `col` in the dataframe in `self.xtra`."
+        valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
         return self.split_by_idx(valid_idx)
 
     def label_cls(self, labels, lc=None):
@@ -171,6 +172,7 @@ class ItemList():
         return self.__class__
 
     def label_from_list(self, labels:Iterator, label_cls:Callable=None, template:Callable=None, **kwargs)->'LabelList':
+        "Label `self.items` with `labels` using `label_cls` and optionally `template`."
         labels = array(labels, dtype=object)
         label_cls = self.label_cls(labels, label_cls)
         y_bld = label_cls if template is None else template.new
@@ -180,6 +182,7 @@ class ItemList():
         return self._label_list(x=self, y=y_bld(labels, **kwargs))
 
     def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
+        "Label `self.items` from the values in `cols` in `self.xtra`. If `sep` is passed, will split the labels accordingly."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
         label_cls = None if sep is None else MultiCategoryList
         return self.label_from_list(labels, label_cls=label_cls, sep=sep, **kwargs)
@@ -299,7 +302,7 @@ class LabelLists(ItemLists):
         return self
 
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
-        "Create an `ImageDataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `ImageDataBunch.create`."
+        "Create an `DataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `DataBunch.create`."
         path = Path(ifnone(path, self.path))
         return self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, **kwargs)
 
@@ -356,6 +359,7 @@ class LabelList(Dataset):
         else: return self.new(self.x[idxs], self.y[idxs])
 
     def process(self, xp=None, yp=None):
+        "Launch the preprocessing on `xp` and `yp`."
         self.x.process(xp)
         self.y.process(yp)
         return self
@@ -367,14 +371,7 @@ class LabelList(Dataset):
         return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
 
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
+        "Set the `tfms` and `` tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs
         if tfm_y is not None: self.tfm_y=tfm_y
         return self
-
-def create_sdata(sdata_cls, path:PathOrStr, train_x:Collection, train_y:Collection, valid_x:Collection,
-                 valid_y:Collection, test_x:Collection=None):
-    train = LabelList.from_lists(path, train_x, train_y)
-    valid = LabelList.from_lists(path, valid_x, valid_y)
-    test = ItemList(test_x, path).label_const(0) if test_x is not None else None
-    return ItemLists(path, train, valid, test)
-
