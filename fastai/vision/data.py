@@ -5,7 +5,7 @@ from .transform import *
 from ..data_block import *
 from ..data_block import _extract_input_labels
 from ..basic_data import *
-from ..layers import CrossEntropyFlat
+from ..layers import *
 from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import PIL
@@ -15,7 +15,7 @@ __all__ = ['get_image_files', 'DatasetTfm', 'ImageDatasetBase', 'ImageClassifica
            'ImageItemList', 'normalize', 'normalize_funcs', 'show_image_batch', 'transform_datasets',
            'ImageSplitDatasets', 'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'PointsDataset',
-           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList']
+           'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
@@ -499,7 +499,9 @@ class ObjectCategoryList(CategoryList):
             classes = ['background'] + list(classes)
         super().__init__(items, classes, **kwargs)
 
-    def get(self, i): return ImageBBox.create(*self.x.sizes[i], *self.items[i])
+    def get(self, i):
+        o = super().get(i)
+        return ImageBBox.create(*self.x.sizes[i], o)
 
 class ObjectItemList(ImageItemList):
     def __post_init__(self):
@@ -519,4 +521,14 @@ class SegmentationItemList(ImageItemList):
     def __post_init__(self):
         super().__post_init__()
         self._label_cls = SegmentationLabelList
+
+class PointsItemList(ItemList):
+    def __post_init__(self):
+        super().__post_init__()
+        self.c = len(self.items[0].view(-1))
+        self.loss_func = MSELossFlat()
+
+    def get(self, i):
+        o = super().get(i)
+        return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
 
