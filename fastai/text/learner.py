@@ -89,7 +89,7 @@ class LanguageLearner(RNNLearner):
         "Return the `n_words` that come after `text`."
         pbar = master_bar(range(n_words))
         for _ in pbar:
-            res = super().predict(text)[-1]
+            res = super().predict(text, pbar=pbar)[-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(temperature)
