@@ -25,6 +25,7 @@ def learn():
     data = (TextList.from_df(df, path, col='texts')
                 .split_by_idx(list(range(len(df_trn),len(df))))
                 .label_for_lm()
+                .add_test(df['texts'].iloc[:200].values)
                 .databunch())
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
     learn.fit_one_cycle(4, 5e-3)
