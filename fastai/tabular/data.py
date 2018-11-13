@@ -77,6 +77,15 @@ class TabularProcessor(PreProcessor):
     def __init__(self, procs=None):
         self.procs = listify(procs)
 
+    def process_one(self, item):
+        df = pd.DataFrame([item,item])
+        for proc in self.procs: proc(df, test=True)
+        codes = np.stack([c.cat.codes.values for n,c in df[self.cat_names].items()], 1).astype(np.int64) + 1
+        conts = np.stack([c.astype('float32').values for n,c in df[self.cont_names].items()], 1)
+        classes = None
+        col_names = list(df[self.cat_names].columns.values) + list(df[self.cont_names].columns.values)
+        return TabularLine(codes[0], conts[0], classes, col_names)
+        
     def process(self, ds):
         for i,proc in enumerate(self.procs):
             if isinstance(proc, TabularProc): proc(ds.xtra, test=True)
@@ -84,8 +93,9 @@ class TabularProcessor(PreProcessor):
                 #cat and cont names may have been changed by transform (like Fill_NA)
                 proc = proc(ds.cat_names, ds.cont_names)
                 proc(ds.xtra)
-                ds.cat_names, ds.cont_names = proc.cat_names, proc.cont_names
+                ds.cat_names,ds.cont_names = proc.cat_names,proc.cont_names
                 self.procs[i] = proc
+        self.cat_names,self.cont_names = ds.cat_names,ds.cont_names
         ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
         ds.conts = np.stack([c.astype('float32').values for n,c in ds.xtra[ds.cont_names].items()], 1)
         ds.classes = {n:c.cat.categories.values for n,c in ds.xtra[ds.cat_names].items()}
