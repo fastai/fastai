@@ -252,6 +252,14 @@ class ItemLists():
         res = [self.train,self.valid]
         if self.test is not None: res.append(self.test)
         return res
+    
+    def label_from_lists(self, train_labels:Iterator, valid_labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
+        label_cls = self.train.label_cls(train_labels, label_cls)
+        self.train = self.train._label_list(x=self.train, y=label_cls(train_labels, **kwargs))
+        self.valid = self.valid._label_list(x=self.valid, y=self.train.y.new(valid_labels, **kwargs))
+        self.__class__ = LabelLists
+        self.process()
+        return self
 
     def transform(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
         if not tfms: return self
