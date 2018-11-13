@@ -341,7 +341,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from DataFrames."
         dfs = [train_df, valid_df] if test_df is None else [train_df, valid_df, test_df]
         src = TextSplitData(path, *[TextLabelList.from_df(path, df, text_cols, label_cols, label_delim) for df in dfs])
-        return cls.create_from_split_ds(src.datasets(classes=classes), **kwargs)
+        return cls.create_from_split_ds(src.datasets(classes=classes), vocab, **kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
@@ -363,7 +363,7 @@ class TextDataBunch(DataBunch):
         path = Path(path)
         src = TextFileList.from_folder(path).label_from_folder(classes).split_by_folder(train,valid)
         if test is not None: src.add_test_folder(path/test)
-        return cls.create_from_split_ds(src.datasets(classes=classes), **kwargs)
+        return cls.create_from_split_ds(src.datasets(classes=classes), vocab, **kwargs)
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
