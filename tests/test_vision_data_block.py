@@ -17,26 +17,7 @@ def test_multi():
     x,y = data.valid_ds[0]
     assert x.shape[0]==3
     assert data.c==len(y.data)==14
-    assert len(str(y))>2
-
-def test_mnist():
-    path = untar_data(URLs.MNIST_TINY)
-    tfms = get_transforms(do_flip=False)
-    data = (ImageItemList.from_folder(path)
-            .split_by_folder()
-            .label_from_folder()
-            .add_test_folder()
-            .transform(tfms, size=64)
-            .databunch()) 
-
-def test_planet():
-    planet = untar_data(URLs.PLANET_TINY)
-    planet_tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
-    data = (ImageItemList.from_csv(planet, 'labels.csv', folder='train', suffix='.jpg')
-            .random_split_by_pct()
-            .label_from_df(sep=' ')
-            .transform(planet_tfms, size=128)
-            .databunch())                          
+    assert len(str(y))>2         
 
 def test_camvid():
     camvid = untar_data(URLs.CAMVID_TINY)
