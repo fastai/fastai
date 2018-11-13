@@ -257,7 +257,7 @@ class ItemLists():
         res = [self.train,self.valid]
         if self.test is not None: res.append(self.test)
         return res
-    
+
     def label_from_lists(self, train_labels:Iterator, valid_labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
         label_cls = self.train.label_cls(train_labels, label_cls)
         self.train = self.train._label_list(x=self.train, y=label_cls(train_labels, **kwargs))
@@ -315,6 +315,8 @@ class LabelList(Dataset):
     def set_item(self,item): self.item = item
     def clear_item(self): self.item = None
     def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
+    def predict(self, res): return self.y.predict(res)
+
 
     @property
     def c(self): return self.y.c

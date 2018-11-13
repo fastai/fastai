@@ -8,16 +8,16 @@ path = untar_data(URLs.ADULT_SAMPLE)
 @pytest.fixture(scope="module")
 def learn():
     df = pd.read_csv(path/'adult.csv')
-    tfms = [FillMissing, Categorify, Normalize]
+    procs = [FillMissing, Categorify, Normalize]
     dep_var = '>=50k'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
     cont_names = ['age', 'fnlwgt', 'education-num']
     test = TabularList.from_df(df.iloc[800:1000].copy(), path=path, cat_names=cat_names, cont_names=cont_names)
-    data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, processor=TabularProcessor(tfms=tfms))
-                           .split_by_idx(list(range(800,1000)))
-                           .label_from_df(cols=dep_var)
-                           .add_test(test, label=0)
-                           .databunch())
+    data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
+            .split_by_idx(list(range(800,1000)))
+            .label_from_df(cols=dep_var)
+            .add_test(test, label=0)
+            .databunch())
     learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(2, 1e-2)
     return learn
@@ -34,7 +34,7 @@ def test_same_categories(learn):
     for key in x_train.classes.keys():
         assert np.all(x_train.classes[key] == x_valid.classes[key])
         assert np.all(x_train.classes[key] == x_test.classes[key])
-        
+
 def test_same_fill_nan(learn):
     df = pd.read_csv(path/'adult.csv')
     nan_idx = np.where(df['education-num'].isnull())
@@ -47,7 +47,7 @@ def test_same_fill_nan(learn):
         if i >= 800:
             x,y = learn.data.test_ds[i-800]
             assert val == x.conts[j]
-            
+
 def test_normalize(learn):
     df = pd.read_csv(path/'adult.csv')
     train_df = df.iloc[0:800].append(df.iloc[1000:])
