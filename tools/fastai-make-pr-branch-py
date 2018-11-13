@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+"""
+This program will checkout a forked version of the original repository, sync it with the original, create a new branch and set it up for a PR.
+"""
+import argparse
+import sys
+from os.path import basename
+from subprocess import call, PIPE
+
+
+ME = basename(sys.argv[0])
+ORIG_USER_NAME = 'fastai'
+
+
+def main():
+    args = parse_args()
+    check_curl_is_available()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-a', '--auth',
+        metavar='AUTH', choices={'ssh', 'https'},
+        help='ssh or https (use ssh if your github account is setup to use ssh)'
+    )
+    parser.add_argument(
+        '-u', '--user-name',
+        metavar='USER',
+        help='your github username'
+    )
+    parser.add_argument(
+        '-r', '--repo-name',
+        metavar='REPO',
+        help='repository name to fork/use'
+    )
+    parser.add_argument(
+        '-b', '--new-branch-name',
+        metavar='BR',
+        help='name of the branch to create'
+    )
+
+    args = parser.parse_args()
+    args.path = f'{args.repo_name}-{args.new_branch_name}'
+    return args
+
+
+def check_curl_is_available():
+    try:
+        call(['curl'], stdout=PIPE, stderr=PIPE)
+    except FileNotFoundError:
+        print(f"{ME} requires 'curl' but it's not installed. Aborting.")
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
+
+
