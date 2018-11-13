@@ -5,7 +5,8 @@ from ..basic_data import *
 from ..data_block import *
 
 __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextFilesList', 'TextList', 'pad_collate', 'TextDataBunch',
-           'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor']
+           'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
+           'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = ['.txt']
@@ -305,7 +306,17 @@ class NumericalizeProcessor(PreProcessor):
         ds.vocab = self.vocab
         ds.items = np.array([self.vocab.numericalize(t) for t in ds.items])
     
+class OpenFileProcessor(PreProcessor):
+    def process(self, ds):
+        ds.items = np.array([open_text(fn) for fn in ds.items])
+
 class TextFilesList(TextList):
-    def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.'):
-        texts = [open_text(fn) for fn in items]
-        super().__init__(texts, create_func, path)
+    def __init__(self, items:Iterator, vocab:Vocab=None, processor=None, **kwargs):
+        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        super().__init__(items, vocab, processor=processor, **kwargs)
+    
+    @classmethod
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor=None, **kwargs)->ItemList:
+        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
+        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
+

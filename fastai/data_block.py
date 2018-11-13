@@ -151,6 +151,10 @@ class ItemList():
         valid_names = loadtxt_str(self.path/fname)
         return self.split_by_files(valid_names)
 
+    def split_from_df(self, cols:IntsOrStrs=2):
+        valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])[0]
+        return self.split_by_idx(valid_idx)
+    
     def label_cls(self, labels, lc=None):
         if lc is not None:              return lc
         if self._label_cls is not None: return self._label_cls
