@@ -7,7 +7,7 @@ from .layers import *
 __all__ = ['CollabFilteringDataset', 'EmbeddingDotBias', 'get_collab_learner']
 
 @dataclass
-class CollabFilteringDataset(DatasetBase):
+class CollabFilteringDataset(Dataset):
     "Base dataset for collaborative filtering."
     user:Series
     item:Series
