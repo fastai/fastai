@@ -249,8 +249,7 @@ class Text(ItemBase):
         display(HTML(_text2html_table(items, [90,10])))
 
 class LMLabel(CategoryList):
-    def predict(self, res):
-        return torch.multinomial(res, 1).item()
+    def predict(self, res): return res
         
 class TextList(ItemList):
     _bunch = TextClasDataBunch

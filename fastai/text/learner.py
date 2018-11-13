@@ -85,12 +85,16 @@ class RNNLearner(Learner):
 
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
-    def predict(self, text:str, n_words:int=1):
+    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         pbar = master_bar(range(n_words))
         for _ in pbar:
             res = super().predict(text)
-            text += f' {self.data.vocab.itos[res]}'
+            if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
+            if min_p is not None: res[res < min_p] = 0.
+            if temperature != 1.: res.pow_(temperature)
+            idx = torch.multinomial(res, 1).item()
+            text += f' {self.data.vocab.itos[idx]}'
         return text
 
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
