@@ -110,11 +110,10 @@ class TabularDataBunch(DataBunch):
         cat_names = ifnone(cat_names, [])
         cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
         procs = listify(procs)
-        return (TabularList.from_df(df, path, cat_names=cat_names, cont_names=cont_names)
+        return (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                            .split_by_idx(valid_idx)
-                           .label_from_df(cols=dep_var, classes=classes)
-                           .preprocess(procs=procs)
-                           .databunch(**kwargs))
+                           .label_from_df(cols=dep_var, classes=None)
+                           .databunch())
 
 def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
