@@ -235,7 +235,6 @@ class MultiCategoryList(CategoryList):
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
 
-
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):

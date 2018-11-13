@@ -28,7 +28,7 @@ def learn():
                 .add_test(df['texts'].iloc[:200].values)
                 .databunch())
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
-    learn.fit_one_cycle(4, 5e-3)
+    learn.fit_one_cycle(2, 5e-3)
     return learn
 
 def test_val_loss(learn):
