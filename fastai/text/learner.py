@@ -9,7 +9,7 @@ from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
 from .transform import *
 
-__all__ = ['RNNLearner', 'LanguageLearner', 'TextClassifierLearner', 'RNNLearner', 'convert_weights', 'lm_split',
+__all__ = ['RNNLearner', 'LanguageLearner', 'RNNLearner', 'convert_weights', 'lm_split',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
 
 default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
@@ -74,6 +74,7 @@ class RNNLearner(Learner):
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None,
                   ordered:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
+        self.model.reset()
         preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             sampler = [i for i in self.dl(ds_type).sampler]
@@ -84,35 +85,13 @@ class RNNLearner(Learner):
 
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
-    def predict(self, text:str, n_words:int=1, tokenizer:Tokenizer=None):
-        "Return the `n_words` that come after `text`. `tokenizer` should be the same one used as during training."
-        tokenizer = ifnone(tokenizer, Tokenizer())
-        tokens = tokenizer.process_all([text])
-        ds = self.data.valid_ds
-        ids = ds.vocab.numericalize(tokens[0])
-        self.model.reset()
+    def predict(self, text:str, n_words:int=1):
+        "Return the `n_words` that come after `text`."
         pbar = master_bar(range(n_words))
         for _ in pbar:
-            ds.set_item(ids)
-            res = self.pred_batch(pbar=pbar)
-            ids.append(res[-1].argmax())
-        ds.clear_item()
-        return self.data.train_ds.vocab.textify(ids)
-
-class TextClassifierLearner(RNNLearner):
-    "Subclass of RNNLearner for predictions."
-    def predict(self, text:str, tokenizer:Tokenizer=None):
-        "Return prect class, label and probabilities for `text`. `tokenizer` should be the same one used as during training."
-        tokenizer = ifnone(tokenizer, Tokenizer())
-        tokens = tokenizer.process_all([text])
-        ds = self.data.valid_ds
-        ids = ds.vocab.numericalize(tokens[0])
-        self.model.reset()
-        ds.set_item(ids)
-        res = self.pred_batch()[0]
-        ds.clear_item()
-        pred_max = res.argmax()
-        return self.data.train_ds.classes[pred_max],pred_max,res
+            res = super().predict(text)
+            text += f' {self.data.vocab.itos[res]}'
+        return text
 
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
@@ -147,5 +126,5 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, max_len:int=70*20, emb_
     ps = [dps[4]] + ps
     model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
-    learn = TextClassifierLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
     return learn

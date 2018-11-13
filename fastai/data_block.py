@@ -32,6 +32,7 @@ def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)-
             and (extensions is None or (o.suffix.lower() in extensions))]
 
 class PreProcessor():
+    def process_one(self, item):      return item
     def process(self, ds:Collection): return self
 
 class ItemList():
@@ -58,6 +59,12 @@ class ItemList():
         if not is_listy(self.processor): self.processor = [self.processor]
         for p in self.processor: p.process(self)
         return self
+    
+    def process_one(self, item, processor=None):
+        if processor is not None: self.processor = processor
+        if not is_listy(self.processor): self.processor = [self.processor]
+        for p in self.processor: item = p.process_one(item)
+        return item
 
     def predict(self, res):
         "Called at the end of `Learn.predict`; override for optional post-processing"
@@ -316,11 +323,10 @@ class LabelList(Dataset):
         self.transform(tfms, **kwargs)
 
     def __len__(self)->int: return len(self.x) if self.item is None else 1
-    def set_item(self,item): self.item = item
+    def set_item(self,item): self.item = self.x.process_one(item)
     def clear_item(self): self.item = None
     def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
     def predict(self, res): return self.y.predict(res)
-
 
     @property
     def c(self): return self.y.c

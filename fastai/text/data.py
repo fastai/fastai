@@ -83,12 +83,13 @@ class SortishSampler(Sampler):
 
 def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tuple[LongTensor, LongTensor]:
     "Function that collect samples and adds padding."
-    max_len = max([len(s[0].data) for s in samples])
+    samples = to_data(samples)
+    max_len = max([len(s[0]) for s in samples])
     res = torch.zeros(max_len, len(samples)).long() + pad_idx
     for i,s in enumerate(samples):
-        if pad_first: res[-len(s[0].data):,i] = LongTensor(s[0].data)
-        else:         res[:len(s[0].data):,i] = LongTensor(s[0].data)
-    return res, tensor([s[1].data for s in samples])
+        if pad_first: res[-len(s[0]):,i] = LongTensor(s[0])
+        else:         res[:len(s[0]):,i] = LongTensor(s[0])
+    return res, tensor([s[1] for s in samples])
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000, 
                    min_freq:int=2, mark_fields:bool=True, **kwargs):
@@ -170,7 +171,7 @@ class TextDataBunch(DataBunch):
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols, 
                            label_cols, label_delim, **kwargs)
 
-    @classmethod
+    @classmethod#TODO: rewrite with new API
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
@@ -182,6 +183,7 @@ class TextDataBunch(DataBunch):
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
 
+#TODO: refactor common bit wht tabular method of the same name
 def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
     html_code = f"<table>"
     for w in widths: html_code += f"  <col width='{w}%'>"
@@ -233,19 +235,6 @@ class TextClasDataBunch(TextDataBunch):
 def open_text(fn:PathOrStr):
     with open(fn,'r') as f: return ''.join(f.readlines())
 
-def _treat_html(o:str)->str:
-    return o.replace('\n','\\n')
-
-#TODO: refactor common bit wht tabular method of the same name
-def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
-    html_code = f"<table>"
-    for w in widths: html_code += f"  <col width='{w}%'>"
-    for line in items:
-        html_code += "  <tr>\n"
-        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
-        html_code += "\n  </tr>\n"
-    return html_code + "</table>\n"
-
 class Text(ItemBase):
     def __init__(self, ids, text): self.data,self.text = ids,text
     def __str__(self):  return str(self.text)
@@ -259,6 +248,10 @@ class Text(ItemBase):
             items.append([str(txt_x), str(y)])
         display(HTML(_text2html_table(items, [90,10])))
 
+class LMLabel(CategoryList):
+    def predict(self, res):
+        return res.argmax()
+        
 class TextList(ItemList):
     _bunch = TextClasDataBunch
     
@@ -276,9 +269,10 @@ class TextList(ItemList):
     
     def label_for_lm(self, **kwargs):
         self._bunch = TextLMDataBunch
-        return self.label_const(0)
+        return self.label_const(0, label_cls=LMLabel)
     
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
+    if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
     text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
@@ -290,6 +284,7 @@ class TokenizeProcessor(PreProcessor):
     def __init__(self, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
+    def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields) 
         tokens = []
@@ -300,13 +295,16 @@ class TokenizeProcessor(PreProcessor):
 class NumericalizeProcessor(PreProcessor):
     def __init__(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
-        
+    
+    def process_one(self,item): return LongTensor(self.vocab.numericalize(item))
     def process(self, ds):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         ds.items = np.array([self.vocab.numericalize(t) for t in ds.items])
     
 class OpenFileProcessor(PreProcessor):
+    def process_one(self,item):
+        return open_text(item) if isinstance(item, Path) else item
     def process(self, ds):
         ds.items = np.array([open_text(fn) for fn in ds.items])
 
