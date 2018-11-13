@@ -44,11 +44,18 @@ def no_bar():
     fastprogress.NO_BAR = False
 
 @pytest.fixture(scope="module")
-def learn():
+def mnist_tiny():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
     data.normalize()
-    learn = ClassificationLearner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
+    return data
+
+@pytest.fixture(scope="module")
+def learn(mnist_tiny):
+    # path = untar_data(URLs.MNIST_TINY)
+    # data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
+    # data.normalize()
+    learn = ClassificationLearner(mnist_tiny, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
                                  callback_fns=[callbacks.CSVLogger])
     buffer = StringIO()
     with redirect_stdout(buffer):
@@ -88,3 +95,8 @@ def test_preds(learn):
 
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)
+
+@pytest.mark.parametrize('arch', [models.resnet18, models.squeezenet1_1])
+def test_models_meta(mnist_tiny, arch):
+    learn = create_cnn(mnist_tiny, arch, metrics=[accuracy, error_rate])
+    learn.fit_one_cycle(1)
