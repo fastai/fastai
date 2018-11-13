@@ -250,7 +250,7 @@ class Text(ItemBase):
 
 class LMLabel(CategoryList):
     def predict(self, res):
-        return np.random.choice(range(len(res)), p=res.cpu().numpy())
+        return torch.multinomial(res, 1).item()
         
 class TextList(ItemList):
     _bunch = TextClasDataBunch
