@@ -113,6 +113,7 @@ class DataBunch():
         for dl in self.dls: dl.add_tfm(tfm)
 
     def show_batch(self, rows:int=None, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
+        "Show a batch of data in `ds_type` on a few `rows`."
         dl = self.dl(ds_type)
         b_idx = next(iter(dl.batch_sampler))
         if rows is None: rows = int(math.sqrt(len(b_idx)))

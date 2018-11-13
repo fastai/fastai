@@ -71,7 +71,9 @@ class TabularList(ItemList):
     def get(self, o):
         return TabularLine(self.codes[o], self.conts[o], self.classes, self.col_names)
 
-    def get_emb_szs(self, sz_dict): return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
+    def get_emb_szs(self, sz_dict): 
+        "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
+        return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
 
 class TabularProcessor(PreProcessor):
     def __init__(self, procs=None):
@@ -110,11 +112,10 @@ class TabularDataBunch(DataBunch):
         cat_names = ifnone(cat_names, [])
         cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
         procs = listify(procs)
-        return (TabularList.from_df(df, path, cat_names=cat_names, cont_names=cont_names)
+        return (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                            .split_by_idx(valid_idx)
-                           .label_from_df(cols=dep_var, classes=classes)
-                           .preprocess(procs=procs)
-                           .databunch(**kwargs))
+                           .label_from_df(cols=dep_var, classes=None)
+                           .databunch())
 
 def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
