@@ -250,7 +250,7 @@ class Text(ItemBase):
 
 class LMLabel(CategoryList):
     def predict(self, res):
-        return res.argmax()
+        return np.random.choice(range(len(res)), p=res.cpu().numpy())
         
 class TextList(ItemList):
     _bunch = TextClasDataBunch
