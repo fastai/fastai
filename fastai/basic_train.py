@@ -219,11 +219,11 @@ class Learner():
         dl.num_workers = nw
         return preds
 
-    def predict(self, img:ItemBase):
+    def predict(self, img:ItemBase, pbar:Optional[PBar]=None):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.single_dl.dataset
         ds.set_item(img)
-        res = self.pred_batch(ds_type=DatasetType.Single)[0]
+        res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
         ds.clear_item()
         return ds.predict(res)
 
