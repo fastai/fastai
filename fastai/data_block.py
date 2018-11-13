@@ -42,7 +42,7 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None):
-        self.items,self.create_func,self.path = np.array(list(items)),create_func,Path(path)
+        self.items,self.create_func,self.path = np.array(list(items), dtype=object),create_func,Path(path)
         self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
