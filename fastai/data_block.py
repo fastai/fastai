@@ -220,7 +220,7 @@ class CategoryList(ItemList):
         return self._item_cls.create(o, self.class2idx)
 
     def predict(self, res):
-        pred_max = res.argmax()
+        pred_max = res[0].argmax()
         return self.classes[pred_max],pred_max,res
 
 class MultiCategoryList(CategoryList):

@@ -223,7 +223,7 @@ class Learner():
         "Return prect class, label and probabilities for `img`."
         ds = self.data.single_dl.dataset
         ds.set_item(img)
-        res = self.pred_batch(ds_type=DatasetType.Single)[0]
+        res = self.pred_batch(ds_type=DatasetType.Single)
         ds.clear_item()
         return ds.predict(res)
 
