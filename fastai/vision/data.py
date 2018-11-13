@@ -19,7 +19,7 @@ image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith(
 
 def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
-    return get_files(c, extensions=image_extensions, recurse=recurse)
+    return get_files(c, extensions=(image_extensions if check_ext else None), recurse=recurse)
 
 def get_annotations(fname, prefix=None):
     "Open a COCO style json in `fname` and returns the lists of filenames (with maybe `prefix`) and labelled bboxes."
