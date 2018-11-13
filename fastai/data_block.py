@@ -164,7 +164,8 @@ class ItemList():
 
     def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
-        return self.label_from_list(labels, sep=sep, **kwargs)
+        label_cls = None if sep is None else MultiCategoryList
+        return self.label_from_list(labels, label_cls=label_cls, sep=sep, **kwargs)
 
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
         "Label every item with `const`."

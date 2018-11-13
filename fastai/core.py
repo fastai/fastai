@@ -132,6 +132,12 @@ def series2cat(df:DataFrame, *col_names):
 
 TfmList = Union[Callable, Collection[Callable]]
 
+def one_hot(x:Collection[int], c:int):
+    "One-hot encode the target."
+    res = np.zeros((c,), np.float32)
+    res[x] = 1.
+    return res
+
 class ItemBase():
     "All transformable dataset items use this type."
     def __init__(self, data:Any): self.data=data
@@ -150,10 +156,11 @@ class Category(ItemBase):
 
 class MultiCategory(Category):
     @classmethod
-    def create(cls, o:Collection, c2i:dict=None):
-        o = array(o)
-        return cls(array([c2i[it] for it in o]), o) if c2i else cls(o,o)
-    def __getitem__(self, i): return self.__class__(self.data[i], self.cat[i])
+    def create(cls, o:Collection, c2i:dict):
+        res = array([c2i[it] for it in o])
+        return cls(one_hot(res, len(c2i)), o)
+
+    def __getitem__(self, i): return Category(self.data[i], self.cat[i])
     def __str__(self):  return ';'.join(map(str, self.cat))
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
