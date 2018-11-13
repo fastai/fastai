@@ -173,19 +173,22 @@ class TextDataBunch(DataBunch):
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols, 
                            label_cols, label_delim, **kwargs)
 
-    @classmethod#TODO: rewrite with new API
+    @classmethod#TODO: test
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path)
-        src = TextFileList.from_folder(path).label_from_folder(classes).split_by_folder(train,valid)
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        src = (TextFilesList.from_folder(path)
+                            .split_by_folder(train=train, valid=valid)
+                            .label_from_folder(classes=classes))
         if test is not None: src.add_test_folder(path/test)
-        return cls.create_from_split_ds(src.datasets(classes=classes), **kwargs)
+        return src.databunch(**kwargs)
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
 
-#TODO: refactor common bit wht tabular method of the same name
+#TODO: refactor common bit with tabular method of the same name
 def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
     html_code = f"<table>"
     for w in widths: html_code += f"  <col width='{w}%'>"
@@ -262,7 +265,11 @@ class TextList(ItemList):
         self.vocab = vocab
         
     def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
-        return super().new(items=items, vocab=self.vocab, **kwargs)
+        #TODO: make that prettier
+        old_bunch = self._bunch
+        new = super().new(items=items, vocab=self.vocab, **kwargs)
+        new._bunch = old_bunch
+        return new
     
     def get(self, i):
         o = super().get(i)
