@@ -176,7 +176,7 @@ class ItemList():
         y_bld = label_cls if template is None else template.new
         y = y_bld(labels, **kwargs)
         filt = array([o is None for o in y])
-        if filt.sum()<len(labels): self,labels = self[~filt],labels[~filt]
+        if filt.sum()>0: self,labels = self[~filt],labels[~filt]
         return self._label_list(x=self, y=y_bld(labels, **kwargs))
 
     def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
