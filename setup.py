@@ -21,9 +21,17 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #   pip install fastai
 #   pip install -e .
 #
-# XXX: require torch>=1.0.0 once it's released, for now get the user to install it explicitly
-# XXX: using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
-# XXX: temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
+# XXX: to fix later in time:
+# - require torch>=1.0.0 once it's released, for now get the user to install it explicitly
+# - using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
+# - temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
+#
+# notes:
+# - bottleneck and numexpr - are performance-improvement extras for numpy
+#
+# dependencies to skip for now:
+# - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
+
 requirements = to_list("""
     fastprogress>=0.1.15
     matplotlib
@@ -43,22 +51,17 @@ requirements = to_list("""
     pyyaml
 """)
 
-
-# dependencies to skip for now:
-#
-# cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
-
 if sys.version_info < (3,7): requirements.append('dataclasses')
 
 ### developer dependencies ###
 #
 # anything else that's not required by a user to run the library, but
-# either an enhancement or developer-build requirement goes here.
+# either is an enhancement or a developer-build requirement goes here.
 #
 # the [dev] feature is documented here:
 # https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 #
-# these get installed with:
+# these, including the normal dependencies, get installed with:
 #
 #   pip install -e .[dev]
 #

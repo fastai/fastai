@@ -27,7 +27,7 @@ class DatasetFormatter():
 
     def padded_ds(ds_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
         "For a Dataset `ds_input`, resize each image in `ds_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
-        return DatasetTfm(ds_input, crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
+        return ds_input.transform([crop_pad()], size=size, do_crop=do_crop, padding_mode=padding_mode)
 
 class ImageCleaner():
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
