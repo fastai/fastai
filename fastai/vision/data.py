@@ -275,6 +275,8 @@ class ImageItemList(ItemList):
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, col:IntsOrStrs=0,
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
+        """Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end.
+        `create_func` is used to open the images."""
         suffix = suffix or ''
         res = super().from_df(df, path=path, create_func=create_func, col=col)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
