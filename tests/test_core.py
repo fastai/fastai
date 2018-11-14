@@ -152,8 +152,7 @@ def test_download_url():
         url = f'{link}.{ext}'
         path = URLs.LOCAL_PATH/'data'/'tmp'
         try:
-            if not os.path.exists(path):
-                os.makedirs(path)
+            os.makedirs(path, exist_ok=True)
             filepath = path/url2name(url)
             download_url(url, filepath)
             assert os.path.getsize(filepath) > 0
