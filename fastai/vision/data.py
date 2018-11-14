@@ -297,8 +297,8 @@ class ObjectCategoryList(CategoryList):
         super().__init__(items, classes, **kwargs)
 
     def get(self, i):
-        o = super().get(i)
-        return ImageBBox.create(*self.x.sizes[i], o)
+        o = self.items[i]
+        return ImageBBox.create(*self.x.sizes[i], *o)
 
 class ObjectItemList(ImageItemList):
     def __post_init__(self):
