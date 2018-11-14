@@ -370,8 +370,8 @@ class ImageBBox(ImagePoints):
                  c2i:dict=None, pad_idx:int=0):
         super().__init__(flow, scale, y_first)
         self.pad_idx = pad_idx
-        if labels is not None and len(labels)>0 and not isinstance(labels[0],Category):
-            labels = array([Category.create(l, c2i) for l in labels])
+        if labels is not None and not isinstance(labels,MultiCategory):
+            labels = MultiCategory.create(labels, c2i)
         self.labels = labels
 
     def clone(self) -> 'ImageBBox':

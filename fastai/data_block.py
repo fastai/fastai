@@ -142,61 +142,7 @@ class ItemList():
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
         return self.split_by_idx(rand_idx[:cut])
-
-
-class PreProcessor():
-    def process_one(self, item):      return item
-    def process(self, ds:Collection): return self
-
-class ItemList():
-    _bunch = DataBunch
-    _processor = PreProcessor
-
-    "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
-    def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None):
-        self.items,self.create_func,self.path = np.array(list(items), dtype=object),create_func,Path(path)
-        self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
-        self._label_list,self._split = LabelList,ItemLists
-        self.__post_init__()
-
-    def __post_init__(self): pass
-    def __len__(self)->int: return len(self.items) or 1
-    def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}\nPath: {self.path}'
-    def get(self, i)->Any:
-        item = self.items[i]
-        return self.create_func(item) if self.create_func else item
-
-    def process(self, processor=None):
-        if processor is not None: self.processor = processor
-        if not is_listy(self.processor): self.processor = [self.processor]
-        for p in self.processor: p.process(self)
-        return self
-
-    def process_one(self, item, processor=None):
-        if processor is not None: self.processor = processor
-        if not is_listy(self.processor): self.processor = [self.processor]
-        for p in self.processor: item = p.process_one(item)
-        return item
-
-    def predict(self, res):
-        "Called at the end of `Learn.predict`; override for optional post-processing"
-        return res
-
-    def new(self, items:Iterator, create_func:Callable=None, **kwargs)->'ItemList':
-        create_func = ifnone(create_func, self.create_func)
-        return self.__class__(items=items, create_func=create_func, path=self.path, processor=self.processor, **kwargs)
-
-    def __getitem__(self,idxs:int)->Any:
-        if isinstance(try_int(idxs), int): return self.get(idxs)
-        else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
-
-    @classmethod
-    def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
-        "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-        return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
-
-    @classmethod
+    
     def split_by_valid_func(self, func:Callable)->'ItemLists':
         "Split the data by result of `func` (which returns `True` for validation set)"
         valid_idx = [i for i,o in enumerate(self.items) if func(o)]
@@ -233,7 +179,7 @@ class ItemList():
         y_bld = label_cls if template is None else template.new
         y = y_bld(labels, **kwargs)
         filt = array([o is None for o in y])
-        if filt.sum()<len(labels): self,labels = self[~filt],labels[~filt]
+        if filt.sum()>0: self,labels = self[~filt],labels[~filt]
         return self._label_list(x=self, y=y_bld(labels, **kwargs))
 
     def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
