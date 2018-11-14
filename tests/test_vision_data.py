@@ -1,6 +1,8 @@
 import pytest
 from fastai import *
 from fastai.vision import *
+from fastai.vision.data import verify_image
+import PIL
 
 @pytest.fixture(scope="module")
 def path():
@@ -46,3 +48,15 @@ def test_download_images():
             assert os.path.getsize(files[0]) > 0
     finally:
         shutil.rmtree(tmp_path)
+
+def test_verify_images(tmp_path):
+    verify_images(path()/'train'/'3', dest=tmp_path, max_size=27, max_workers=4)
+    images = list(tmp_path.iterdir())
+    assert len(images) == 346
+    img = PIL.Image.open(images[0])
+    assert img.height == 27 and img.width == 27
+
+def test_verify_image(tmp_path):
+    verify_image(path()/'train'/'3'/'867.png',False, dest=tmp_path, max_size=27)
+    img = PIL.Image.open(tmp_path/'867.png')
+    assert img.height == 27 and img.width == 27
