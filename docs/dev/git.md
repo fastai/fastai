@@ -331,14 +331,7 @@ But that's not a very efficient process to constantly ask the system to tell you
 
 #### bash-git-prompt
 
-Enter [`bash-git-prompt`](https://github.com/magicmonty/bash-git-prompt), which not only tells you which virtual environment you are in and which `branch` you're on, but it also provides very useful visual indications on the state of your git checkout - how many files have changed, how many commits are waiting to be pushed, whether there are any upstream changes, and much more.
-
-This is not finalized yet, but there is a PR that incorporates `username` and `repository` into the prompt too. Until it gets merged into the parent repository, use this [fork](https://github.com/stas00/bash-git-prompt) and change your `bash-git-prompt` theme to include:
-
-   ```
-   GIT_PROMPT_PREFIX="[${Blue}_USERNAME_REPO_|" # start of the git info string
-   ```
-or have a look at this [theme](https://github.com/stas00/bash-git-prompt/blob/master/themes/Single_line_username_repo.bgptheme).
+Enter [`bash-git-prompt`](https://github.com/magicmonty/bash-git-prompt), which not only tells you which virtual environment you are in and which `username`, `repo`, `branch` you're on, but it also provides very useful visual indications on the state of your git checkout - how many files have changed, how many commits are waiting to be pushed, whether there are any upstream changes, and much more.
 
 I currently work on 4 different `fastai` project repositories and 4 corresponding forks, and several branches in all of them, so I was very lost until I started using this tool. To give you a visual of various prompts I have as of this writing:
 

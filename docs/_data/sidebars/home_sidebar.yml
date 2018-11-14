@@ -12,191 +12,194 @@ entries:
     - external_url: https://github.com/fastai/fastai/blob/master/README.md#installation
       output: web,pdf
       title: Installation
-    - external_url: https://docs-dev.fast.ai/troubleshoot
-      output: web,pdf
+    - output: web,pdf
       title: Troubleshooting
+      url: /troubleshoot.html
     output: web
     title: Getting started
   - folderitems:
     - output: web,pdf
       title: Overview
-      url: training.html
+      url: /training.html
     - output: web,pdf
       title: basic_train
-      url: basic_train.html
+      url: /basic_train.html
     - output: web,pdf
       title: train
-      url: train.html
+      url: /train.html
     - output: web,pdf
       title: metrics
-      url: metrics.html
+      url: /metrics.html
     - output: web,pdf
       title: callback
-      url: callback.html
+      url: /callback.html
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Overview
-          url: callbacks.html
+          url: /callbacks.html
         - output: web,pdf
           title: HookCallback
-          url: callbacks.hooks.html
+          url: /callbacks.hooks.html
         - output: web,pdf
           title: MixedPrecision
-          url: callbacks.fp16.html
+          url: /callbacks.fp16.html
         - output: web,pdf
           title: OneCycleScheduler
-          url: callbacks.one_cycle.html
+          url: /callbacks.one_cycle.html
         - output: web,pdf
           title: LRFinder
-          url: callbacks.lr_finder.html
+          url: /callbacks.lr_finder.html
         - output: web,pdf
           title: MixUpCallback
-          url: callbacks.mixup.html
+          url: /callbacks.mixup.html
         - output: web,pdf
           title: RNNTrainer
-          url: callbacks.rnn.html
+          url: /callbacks.rnn.html
         - output: web,pdf
           title: GeneralScheduler
-          url: callbacks.general_sched.html
+          url: /callbacks.general_sched.html
+        - output: web,pdf
+          title: CSV Logger
+          url: /callbacks.csv_logger.html
         - output: web,pdf
           title: Tracking callbacks
-          url: callbacks.tracking.html
+          url: /callbacks.tracker.html
         title: callbacks
     output: web
     title: Training
   - folderitems:
     - output: web,pdf
       title: Overview
-      url: applications.html
+      url: /applications.html
       subfolders:
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Overview
-          url: vision.html
+          url: /vision.html
         - output: web,pdf
           title: vision.learner
-          url: vision.learner.html
+          url: /vision.learner.html
         - output: web,pdf
           title: vision.transform
-          url: vision.transform.html
+          url: /vision.transform.html
         - output: web,pdf
           title: vision.image
-          url: vision.image.html
+          url: /vision.image.html
         - output: web,pdf
           title: vision.data
-          url: vision.data.html
+          url: /vision.data.html
         - output: web,pdf
           title: vision.model overview
-          url: vision.models.html
+          url: /vision.models.html
         - output: web,pdf
           title: vision.models.unet
-          url: vision.models.unet.html
+          url: /vision.models.unet.html
+        - output: web,pdf
+          title: vision.widgets
+          url: /widgets.html
         title: vision
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Overview
-          url: text.html
+          url: /text.html
         - output: web,pdf
           title: text.learner
-          url: text.learner.html
+          url: /text.learner.html
         - output: web,pdf
           title: text.transform
-          url: text.transform.html
+          url: /text.transform.html
         - output: web,pdf
           title: text.data
-          url: text.data.html
+          url: /text.data.html
         - output: web,pdf
           title: text.models
-          url: text.models.html
+          url: /text.models.html
         title: text
       - output: web
         subfolderitems:
         - output: web,pdf
           title: Overview
-          url: tabular.html
+          url: /tabular.html
         - output: web,pdf
           title: tabular.transform
-          url: tabular.transform.html
+          url: /tabular.transform.html
         - output: web,pdf
           title: tabular.data
-          url: tabular.data.html
+          url: /tabular.data.html
         - output: web,pdf
           title: tabular.models
-          url: tabular.models.html
+          url: /tabular.models.html
         title: tabular
     - output: web,pdf
       title: collab
-      url: collab.html
+      url: /collab.html
     output: web
     title: Applications
   - folderitems:
     - output: web,pdf
       title: Overview
-      url: overview.html
+      url: /overview.html
     - output: web,pdf
       title: data_block
-      url: data_block.html
+      url: /data_block.html
     - output: web,pdf
       title: basic_data
-      url: basic_data.html
+      url: /basic_data.html
     - output: web,pdf
       title: layers
-      url: layers.html
+      url: /layers.html
     - output: web,pdf
       title: datasets
-      url: datasets.html
+      url: /datasets.html
     - output: web,pdf
       title: core
-      url: core.html
+      url: /core.html
     - output: web,pdf
       title: torch_core
-      url: torch_core.html
+      url: /torch_core.html
     output: web
     title: Core
   - folderitems:
     - output: web,pdf
       title: Overview
-      url: gen_doc.html
+      url: /gen_doc.html
     - output: web,pdf
       title: gen_doc.gen_notebooks
-      url: gen_doc.gen_notebooks.html
+      url: /gen_doc.gen_notebooks.html
     - output: web,pdf
       title: gen_doc.nbdoc
-      url: gen_doc.nbdoc.html
+      url: /gen_doc.nbdoc.html
     - output: web,pdf
       title: gen_doc.convert2html
-      url: gen_doc.convert2html.html
+      url: /gen_doc.convert2html.html
     output: web
     title: Doc authoring
   - folderitems:
     - output: web,pdf
       title: Dev Notes
-      url: dev_develop.html
+      url: /dev/develop.html
     - output: web,pdf
       title: GPU Notes
-      url: dev_gpu.html
+      url: /dev/gpu.html
     - output: web,pdf
       title: git notes
-      url: dev_git.html
+      url: /dev/git.html
     - output: web,pdf
       title: Testing
-      url: dev_test.html
+      url: /dev/test.html
     - output: web,pdf
       title: Style Guide
-      url: dev_style.html
+      url: /dev/style.html
     - output: web,pdf
       title: Abbreviations
-      url: dev_abbr.html
+      url: /dev/abbr.html
     - output: web,pdf
       title: Packaging
-      url: dev_release.html
-    - output: web,pdf
-      title: Troubleshooting
-      url: dev_troubleshoot.html
+      url: /dev/release.html
     output: web
     title: Library development
   output: web

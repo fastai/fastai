@@ -218,7 +218,7 @@ class CallbackHandler():
 
     def on_backward_begin(self, loss:Tensor)->None:
         "Handle gradient calculation on `loss`."
-        self.smoothener.add_value(loss.detach())
+        self.smoothener.add_value(loss.detach().cpu())
         self.state_dict['last_loss'], self.state_dict['smooth_loss'] = loss, self.smoothener.smooth
         for cb in self.callbacks:
             a = cb.on_backward_begin(**self.state_dict)
@@ -266,8 +266,9 @@ class AverageMetric(Callback):
         self.val, self.count = 0.,0
 
     def on_batch_end(self, last_output, last_target, train, **kwargs):
-        self.count += last_target.size(0)
-        self.val += last_target.size(0) * self.func(last_output, last_target).detach().item()
+        if not is_listy(last_target): last_target=[last_target]
+        self.count += last_target[0].size(0)
+        self.val += last_target[0].size(0) * self.func(last_output, *last_target).detach().cpu()
 
     def on_epoch_end(self, **kwargs):
         self.metric = self.val/self.count

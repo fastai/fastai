@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# check links and anchors of docs.fast.ai, but locally as fastai_docs/docs/ dir
+# check links and anchors of docs.fast.ai, but locally as fastai/docs/ dir
 
 # make sure to run tools/build-docs
 

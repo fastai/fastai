@@ -147,51 +147,14 @@ def test_series2cat():
         assert (df[col].dtypes == 'category')
     assert (df['col3'].dtypes == 'int64')
 
-def _write_file(path): f = open(path, 'w'); f.write(str(path.name)); f.close()
-class TestMaybeCopy(object):
-    def test_copies_if_does_not_exist(self):
-        with TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            _write_file(tmpdir/'src')
-            maybe_copy([str(tmpdir/'src')], [str(tmpdir/'dst')]) # works with strings
-            assert os.path.exists(tmpdir/'dst')
-        with TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            _write_file(tmpdir/'src')
-            maybe_copy([tmpdir/'src'], [tmpdir/'dst']) # works with Paths
-            assert os.path.exists(tmpdir/'dst')
-
-    def test_copies_if_older(self):
-        with TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            _write_file(tmpdir/'first')
-            _write_file(tmpdir/'second')
-            os.utime(tmpdir/'first', (1,1))
-            os.utime(tmpdir/'second', (2,2))
-            maybe_copy([tmpdir/'second'], [tmpdir/'first'])
-            assert open(tmpdir/'first').read() == 'second'
-
-    def test_does_not_copy_if_newer(self):
-        with TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            _write_file(tmpdir/'first')
-            _write_file(tmpdir/'second')
-            os.utime(tmpdir/'first', (1,1))
-            os.utime(tmpdir/'second', (2,2))
-            maybe_copy([tmpdir/'first'], [tmpdir/'second'])
-            assert open(tmpdir/'second').read() == 'second'
-
-    def test_creates_dst_dir_if_does_not_exist(self):
-        with TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            _write_file(tmpdir/'file')
-            maybe_copy([tmpdir/'file'], [tmpdir/'dir'/'file'])
-            assert os.path.exists(tmpdir/'dir'/'file')
-
-def test_get_total_length():
-    with TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir)/'df.csv'
-        pd.DataFrame([0,1,2,3,4]).to_csv(path, header=False)
-        assert get_total_length(path, 1) == 5
-        assert get_total_length(path, 2) == 5
-        assert get_total_length(path, 6) == 5
+def test_download_url():
+    for link, ext in [(URLs.MNIST_TINY, 'tgz')]:
+        url = f'{link}.{ext}'
+        path = URLs.LOCAL_PATH/'data'/'tmp'
+        try:
+            os.makedirs(path)
+            filepath = path/url2name(url)
+            download_url(url, filepath)
+            assert os.path.getsize(filepath) > 0
+        finally:
+            shutil.rmtree(path)

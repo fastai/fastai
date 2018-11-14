@@ -194,25 +194,38 @@ class Learner():
         torch.save(self.model.state_dict(), path)
         if return_path: return path
 
+    def dl(self, ds_type:DatasetType=DatasetType.Valid):
+        "Return DataLoader for DatasetType `ds_type`."
+        return self.data.dl(ds_type)
+
     def load(self, name:PathOrStr, device:torch.device=None):
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
+        return self
 
-    def get_preds(self, is_test:bool=False, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
-        "Return predictions and targets on the valid or test set, depending on `is_test`."
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
+        "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         lf = self.loss_func if with_loss else None
-        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks),
+        return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, is_test:bool=False, pbar:Optional[PBar]=None) -> List[Tensor]:
-        "Return output of the model on one batch from valid or test set, depending on `is_test`."
-        dl = self.data.holdout(is_test)
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, pbar:Optional[PBar]=None) -> List[Tensor]:
+        "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
+        dl = self.dl(ds_type)
         nw = dl.num_workers
         dl.num_workers = 0
-        preds,_ = self.get_preds(is_test, with_loss=False, n_batch=1, pbar=pbar)
+        preds,_ = self.get_preds(ds_type, with_loss=False, n_batch=1, pbar=pbar)
         dl.num_workers = nw
         return preds
+
+    def predict(self, img:ItemBase, pbar:Optional[PBar]=None):
+        "Return prect class, label and probabilities for `img`."
+        ds = self.data.single_dl.dataset
+        ds.set_item(img)
+        res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        ds.clear_item()
+        return ds.predict(res)
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
@@ -223,6 +236,12 @@ class Learner():
         val_metrics = validate(self.model, dl, self.loss_func, cb_handler)
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
+
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, **kwargs):
+        ds = self.dl(ds_type).dataset
+        preds = self.pred_batch(ds_type)
+        xys = [ds[i] for i in range(rows)]
+        xys[0][0].show_results(xys, preds, **kwargs)
 
 @dataclass
 class LearnerCallback(Callback):

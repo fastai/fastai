@@ -24,7 +24,7 @@ def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool
 def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     "Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems."
     n = targs.shape[0]
-    input = input.argmax(dim=-1).view(n,-1)
+    input = input.argmax(dim=1).view(n,-1)
     targs = targs.view(n,-1)
     intersect = (input*targs).sum().float()
     union = (input+targs).sum().float()

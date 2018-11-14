@@ -1,0 +1,13 @@
+*** How to maintain https://docs.fast.ai/ ***
+
+fastai/docs/ is automatically mapped to https://docs.fast.ai/ so any changes committed to git will instantly appear on https://docs.fast.ai/
+
+All the needed information is here:
+https://docs.fast.ai/gen_doc.html#Update-the-documentation-website
+
+* theme/stylesheets:
+
+- style sheet is assets/css/style.scss
+- supported themes https://pages.github.com/themes/
+- currently using: https://pages-themes.github.io/cayman/ - see that url for extra customizations
+- guide for jekyll themes: https://idratherbewriting.com/documentation-theme-jekyll/

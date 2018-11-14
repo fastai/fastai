@@ -1,45 +1,9 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
+from .layers import MSELossFlat
 
-__all__ = ['SingleClassificationDataset', 'LabelXYDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'LabelDataset']
-
-class DatasetBase(Dataset):
-    "Base class for all fastai datasets."
-    def __init__(self, c:int): self.c,self.item = c,None
-    def __len__(self): return len(getattr(self, 'x', [1]))
-    def set_item(self,item): self.item = item
-    def clear_item(self): self.item = None
-    def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
-    def new(self, *args, **kwargs):
-        "Create a new dataset using `self` as a template"
-        return self.__class__(*args, **kwargs)
-
-    def _get_x(self,i): return self.x[i]
-    def _get_y(self,i): return self.y[i]
-
-    def __getitem__(self, i):
-        if self.item is None: return self._get_x(i),self._get_y(i)
-        else: return self.item,0
-
-class LabelDataset(DatasetBase):
-    "Base class for fastai datasets that do classification, mapped according to `classes`."
-    def __init__(self, classes:Collection, class2idx:Dict[Any,int]=None):
-        self.classes  = classes
-        self.class2idx = class2idx
-        if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        super().__init__(len(classes))
-
-class LabelXYDataset(LabelDataset):
-    "Minimal `LabelDataset` which returns whatever `x` and `y` you pass in"
-    def __init__(self, x:Collection, y:Collection, classes:Optional[Collection[Any]]=None):
-        super().__init__(classes=classes)
-        self.x,self.y  = np.array(x),np.array(y)
-
-class SingleClassificationDataset(DatasetBase):
-    "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
-    def __init__(self, classes:Collection[str]):
-        self.classes = classes
-        super().__init__(len(classes))
+DatasetType = Enum('DatasetType', 'Train Valid Test Single')
+__all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType']
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
@@ -51,6 +15,7 @@ class DeviceDataLoader():
     device: torch.device
     tfms: List[Callable]=None
     collate_fn: Callable=data_collate
+    skip_size1:bool=False
     def __post_init__(self):
         self.dl.collate_fn=self.collate_fn
         self.tfms = listify(self.tfms)
@@ -79,7 +44,10 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        for b in self.dl: yield self.proc_batch(b)
+        for b in self.dl:
+            y = b[1][0] if is_listy(b[1]) else b[1]
+            if not self.skip_size1 or y.size(0) != 1:
+                yield self.proc_batch(b)
 
     def one_batch(self)->Collection[Tensor]:
         "Get one batch from the data loader."
@@ -105,10 +73,16 @@ class DataBunch():
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
-        self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn)
-        self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
+        def _create_dl(dl, **kwargs):
+            return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
+        self.train_dl = _create_dl(train_dl, skip_size1=True)
+        self.valid_dl = _create_dl(valid_dl)
+        self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
+        self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
+
+    def __repr__(self)->str:
+        return f'{self.__class__.__name__};\nTrain: {self.train_ds};\nValid: {self.valid_ds};\nTest: {self.test_ds}'
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
@@ -117,19 +91,34 @@ class DataBunch():
         "`DataBunch` factory. `bs` batch size, `tfms` for `Dataset`, `tfms` for `DataLoader`."
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
+        val_bs = (bs*3)//2
         dls = [DataLoader(*o, num_workers=num_workers) for o in
-               zip(datasets, (bs,bs*2,bs*2), (True,False,False))]
+               zip(datasets, (bs,val_bs,val_bs), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
-    def holdout(self, is_test:bool=False)->DeviceDataLoader:
-        "Returns correct holdout `Dataset` for test vs validation (`is_test`)."
-        return self.test_dl if is_test else self.valid_dl
+    def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
+        "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
+        return (self.train_dl if ds_type == DatasetType.Train else
+                self.test_dl if ds_type == DatasetType.Test else
+                self.valid_dl if ds_type == DatasetType.Valid else
+                self.single_dl)
+
+    @property
+    def dls(self):
+        res = [self.train_dl, self.valid_dl, self.single_dl]
+        return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
-        self.train_dl.add_tfm(tfm)
-        self.valid_dl.add_tfm(tfm)
-        if self.test_dl: self.test_dl.add_tfm(tfm)
+        for dl in self.dls: dl.add_tfm(tfm)
+
+    def show_batch(self, rows:int=None, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
+        "Show a batch of data in `ds_type` on a few `rows`."
+        dl = self.dl(ds_type)
+        b_idx = next(iter(dl.batch_sampler))
+        if rows is None: rows = int(math.sqrt(len(b_idx)))
+        ds = dl.dataset
+        ds[0][0].show_batch(b_idx, rows, ds, **kwargs)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
@@ -140,5 +129,5 @@ class DataBunch():
 
     @property
     def test_ds(self)->Dataset:
-        assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
-        return self.test_dl.dl.dataset
+        return self.test_dl.dl.dataset if self.test_dl is not None else None
+

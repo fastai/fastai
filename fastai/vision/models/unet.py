@@ -17,17 +17,25 @@ class UnetBlock(nn.Module):
         super().__init__()
         self.hook = hook
         ni = up_in_c
-        self.upconv = conv2d_trans(ni, ni//2) # H, W -> 2H, 2W
+        self.upconv = conv2d(ni, ni//2, ks=1) # H, W -> 2H, 2W
+        #self.upconv = conv2d_trans(ni, ni//2, stride=1, ks=1)
         ni = ni//2 + x_in_c
         self.conv1 = conv2d(ni, ni//2)
+        self.bn1 = nn.BatchNorm2d(ni)
         ni = ni//2
         self.conv2 = conv2d(ni, ni)
-        self.bn = nn.BatchNorm2d(ni)
+        self.bn  = nn.BatchNorm2d(ni)
+        self.bn2 = nn.BatchNorm2d(ni)
 
     def forward(self, up_in:Tensor) -> Tensor:
-        up_out = self.upconv(up_in)
-        cat_x = torch.cat([up_out, self.hook.stored], dim=1)
-        x = F.relu(self.conv1(cat_x))
+        #up_out = self.upconv(up_in)
+        s = self.hook.stored
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            up_out = F.interpolate(up_in, s.shape[-2:], mode='bilinear')
+        up_out = self.upconv(up_out)
+        cat_x = self.bn1(F.relu(torch.cat([up_out, s], dim=1)))
+        x = self.bn2(F.relu(self.conv1(cat_x)))
         x = F.relu(self.conv2(x))
         return self.bn(x)
 

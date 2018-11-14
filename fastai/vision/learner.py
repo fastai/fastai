@@ -6,8 +6,9 @@ from .image import *
 from . import models
 from ..callback import *
 from ..layers import *
+from ..callbacks.hooks import num_features_model
 
-__all__ = ['ClassificationLearner', 'create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -42,20 +43,10 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
         layers += bn_drop_lin(ni,no,True,p,actn)
     return nn.Sequential(*layers)
 
-class ClassificationLearner(Learner):
-    def predict(self, img:Image):
-        "Return prect class, label and probabilities for `img`."
-        ds = self.data.valid_ds
-        ds.set_item(img)
-        res = self.pred_batch()[0]
-        ds.clear_item()
-        pred_max = res.argmax()
-        return self.data.classes[pred_max],pred_max,res
-
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                classification:bool=True, **kwargs:Any)->ClassificationLearner:
+                classification:bool=True, **kwargs:Any)->Learner:
     "Build convnet style learners."
     assert classification, 'Regression CNN not implemented yet, bug us on the forums if you want this!'
     meta = cnn_config(arch)
@@ -63,12 +54,26 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
     model = nn.Sequential(body, head)
-    learn = ClassificationLearner(data, model, **kwargs)
+    learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
 
+@classmethod
+def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True,
+             split_on:Optional[SplitFuncOrIdxList]=None, **kwargs:Any)->None:
+    "Build Unet learners."
+    meta = cnn_config(arch)
+    body = create_body(arch(pretrained), meta['cut'])
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
+    learn = Learner(data, model, **kwargs)
+    learn.split(ifnone(split_on,meta['split']))
+    if pretrained: learn.freeze()
+    apply_init(model[2], nn.init.kaiming_normal_)
+    return learn
+
+Learner.create_unet = Learner_create_unet
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
@@ -78,9 +83,9 @@ class ClassificationInterpretation():
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
-    def from_learner(cls, learn:Learner, sigmoid:bool=None, tta=False):
+    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, sigmoid:bool=None, tta=False):
         "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
-        preds = learn.TTA(with_loss=True) if tta else learn.get_preds(with_loss=True)
+        preds = learn.TTA(with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
         return cls(learn.data, *preds, sigmoid=sigmoid)
 
     def top_losses(self, k:int=None, largest=True):
@@ -95,22 +100,29 @@ class ClassificationInterpretation():
         fig,axes = plt.subplots(rows,rows,figsize=figsize)
         fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
         for i,idx in enumerate(tl_idx):
-            t=self.data.valid_ds[idx]
-            t[0].show(ax=axes.flat[i], title=
-                f'{classes[self.pred_class[idx]]}/{classes[t[1]]} / {self.losses[idx]:.2f} / {self.probs[idx][t[1]]:.2f}')
+            im,cl = self.data.valid_ds[idx]
+            cl = int(cl)
+            im.show(ax=axes.flat[i], title=
+                f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
 
     def confusion_matrix(self, slice_size:int=None):
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
-        cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
-        for pred_class_slice, y_true_slice in self._get_data_in_slices(slice_size or self.y_true.shape[0]):
-            cm_slice = ((pred_class_slice==x[:,None]) & (y_true_slice==x[:,None,None])).sum(2)
-            torch.add(cm, cm_slice, out=cm)
+        if slice_size is None: cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
+        else: 
+            cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
+            for i in range(0, self.y_true.shape[0], slice_size):
+                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None]) 
+                            & (self.y_true[i:i+slice_size]==x[:,None,None])).sum(2)
+                torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
     def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, 
                               slice_size:int=None, **kwargs)->None:
-        "Plot the confusion matrix, passing `kawrgs` to `plt.figure`."
+        """Plot the confusion matrix, with `title` and using `cmap`. If `normalize`, plots the percentages with
+        `norm_dec` digits. `slice_size` can be used to avoid out of memory error if your set is too big.
+        `kawrgs` are passed to `plt.figure`.
+        """
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
         plt.figure(**kwargs)
@@ -123,7 +135,8 @@ class ClassificationInterpretation():
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, f'{cm[i, j]:.{norm_dec}f}', horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+            coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
+            plt.text(j, i, coeff, horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         plt.tight_layout()
         plt.ylabel('Actual')
@@ -136,12 +149,3 @@ class ClassificationInterpretation():
         res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
-
-    def _get_data_in_slices(self, slice_size:int):
-        "Slices data into slices of size slice_size."
-        iter_index = 0
-        while self.y_true.shape[0] >= iter_index*slice_size:
-            upper_bound = min(self.y_true.shape[0], (iter_index + 1) * slice_size)
-            yield self.pred_class[iter_index * slice_size:upper_bound], self.y_true[iter_index * slice_size:upper_bound]
-            iter_index +=1
-
