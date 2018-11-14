@@ -91,10 +91,10 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
         else:         res[:len(s[0]):,i] = LongTensor(s[0])
     return res, tensor([s[1] for s in samples])
 
-def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000, 
+def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
                    min_freq:int=2, mark_fields:bool=True, **kwargs):
     return [TokenizeProcessor(tokenizer=tokenizer, chunksize=chunksize, mark_fields=mark_fields),
-            NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)] 
+            NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
 
 class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
@@ -115,7 +115,7 @@ class TextDataBunch(DataBunch):
     @classmethod
     def from_ids(cls, path:PathOrStr, vocab:Vocab, train_ids:Collection[Collection[int]], valid_ids:Collection[Collection[int]],
                  test_ids:Collection[Collection[int]]=None, train_lbls:Collection[Union[int,float]]=None,
-                 valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None, 
+                 valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
         src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
@@ -207,7 +207,7 @@ class TextLMDataBunch(TextDataBunch):
         if test_ds is not None: datasets.append(test_ds)
         dataloaders = [LanguageModelLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
         return cls(*dataloaders, path=path)
-    
+
     #TODO: see if we can get rid of that later
     def show_batch(self, sep=' ', ds_type:DatasetType=DatasetType.Train, rows:int=10, max_len:int=100):
         "Show `rows` texts from a batch of `ds_type`, tokens are joined with `sep`, truncated at `max_len`."
@@ -236,14 +236,14 @@ class TextClasDataBunch(TextDataBunch):
             sampler = SortSampler(ds.x, key=lambda t: len(ds[t][0].data))
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
-        
+
 def open_text(fn:PathOrStr):
     with open(fn,'r') as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
     def __init__(self, ids, text): self.data,self.text = ids,text
     def __str__(self):  return str(self.text)
-    
+
     def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, max_len:int=50)->None:
         from IPython.display import display, HTML
         items = [['text', 'label']]
@@ -255,31 +255,31 @@ class Text(ItemBase):
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
-        
+
 class TextList(ItemList):
     _bunch = TextClasDataBunch
-    
+
     def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
         super().__init__(items, **kwargs)
         self.processor = ifnone(self.processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         self.vocab = vocab
-        
+
     def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
         #TODO: make that prettier
         old_bunch = self._bunch
         new = super().new(items=items, vocab=self.vocab, **kwargs)
         new._bunch = old_bunch
         return new
-    
+
     def get(self, i):
         o = super().get(i)
         return Text(o, self.vocab.textify(o))
-    
+
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
         self._bunch = TextLMDataBunch
         return self.label_const(0, label_cls=LMLabel)
-    
+
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
@@ -295,22 +295,22 @@ class TokenizeProcessor(PreProcessor):
 
     def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
     def process(self, ds):
-        ds.items = _join_texts(ds.items, self.mark_fields) 
+        ds.items = _join_texts(ds.items, self.mark_fields)
         tokens = []
         for i in progress_bar(range(0,len(ds),self.chunksize), leave=False):
             tokens += self.tokenizer.process_all(ds.items[i:i+self.chunksize])
         ds.items = tokens
-        
+
 class NumericalizeProcessor(PreProcessor):
     def __init__(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
-    
+
     def process_one(self,item): return LongTensor(self.vocab.numericalize(item))
     def process(self, ds):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         ds.items = np.array([self.vocab.numericalize(t) for t in ds.items])
-    
+
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
@@ -321,7 +321,7 @@ class TextFilesList(TextList):
     def __init__(self, items:Iterator, vocab:Vocab=None, processor=None, **kwargs):
         processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         super().__init__(items, vocab, processor=processor, **kwargs)
-    
+
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."

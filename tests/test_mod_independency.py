@@ -93,6 +93,7 @@ def test_setup_parser():
 
 # fastai must not depend on 'extras_require' package requirements from setup.py,
 # which won't be installed by default
+if 'extras_require' not in data: data['extras_require']= {'dev':[]}
 extras_require = [(re.split(r'[>=<]+',x))[0] for x in data['extras_require']['dev']]
 exceptions = ['pytest'] # see the top for the reason for exceptions
 unwanted_deps = [x for x in extras_require if x not in exceptions]

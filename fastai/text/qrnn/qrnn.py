@@ -46,6 +46,8 @@ class QRNNLayer(nn.Module):
         self.linear = nn.Linear(self.window * self.input_size, 3 * self.hidden_size if self.output_gate else 2 * self.hidden_size)
 
     def reset(self):
+        for c in self.children():
+            if hasattr(c, 'reset'): c.reset()
         # If you are saving the previous value of x, you should call this when starting with a new state
         self.prevX = None
 
