@@ -1,26 +1,60 @@
 #!/usr/bin/env python
 
-# convert ./docs_src nbs into html under ./docs
-
-# build/rebuild modified nbs:
+# update all notebooks
 # tools/build-docs
 #
-# force rebuild all nbs:
-# tools/build-docs -f
+# update specific notebooks
+# tools/build-docs docs_src/one.ipynb docs_src/two.ipynb
+#
+# To disable a flag, add --no- in front of argument
+# tools/build-docs docs_src/one.ipynb --no-update-html --no-update-line-num
+#
+# To update html only (previous build-docs functionality):
+# tools/build-docs --html-only
+# --html-only is an alias for --no-update-nb-links
 
-from fastai.gen_doc.nbdoc import *
-from fastai.gen_doc.convert2html import *
-
-import argparse, os
+import os, sys, argparse
 from pathlib import Path
+from fastai.gen_doc.gen_notebooks import *
 
+def add_bool_arg(parser, name, default=False, help='', true_aliases=None, false_aliases=None):
+    true_aliases = true_aliases or []
+    false_aliases = false_aliases or []
+    group = parser.add_mutually_exclusive_group(required=False)
+    dest_name = name.replace('-', '_')
+    group.add_argument('--' + name, *true_aliases, dest=dest_name, action='store_true', help=help+(f' (Default)' if default else ''))
+    group.add_argument('--no-' + name, *false_aliases, dest=dest_name, action='store_false', help=help+(f' (Default)' if not default else ''))
+    parser.set_defaults(**{dest_name:default})
+    
 parser = argparse.ArgumentParser(description="Build fastai docs from ipynb files")
-parser.add_argument('-f', '--force_all', action="store_true", help="force all to be rebuilt")
+parser.add_argument('files', type=str, nargs='*')
+parser.add_argument('-f', '--force', action="store_true", help="force html files to be rebuilt")
+add_bool_arg(parser, 'document-new-fns', default=False, help='Scans module and adds any new module functions to documentation notebook')
+add_bool_arg(parser, 'update-html', default=True, help='Update .html files from .ipynb notebooks')
+add_bool_arg(parser, 'update-nb-links', default=True, help='Update documentation links and source code line numbers', false_aliases=['--html-only'])
 args = parser.parse_args()
 
-if Path.cwd().name != 'docs_src': os.chdir('docs_src')
+# make sure we are under the root of the project
+cur_dir = Path(".").resolve().name
+if (cur_dir == "tools"): os.chdir("..")
 
-path_in  = Path('.')
-path_out = path_in/".."/"docs"
+# if no files were specified pass the dir instead for all files
+files = args.files
+del args.files
+if not files: files.append('docs_src')
 
-convert_all(path_in, path_out, args.force_all)
+succeeded = []
+failed = []
+for file in files:
+    try: update_notebooks(file, **vars(args))
+    except Exception as e:
+        print(f"failed to update {file}\n{e}")
+        failed.append(file)
+    else: succeeded.append(file)
+
+print("\n*** Summary:")
+if not failed: print("All succeeded")
+else:
+    if succeeded: print("- Succeeded:{'\n'.join(succeeded)}")
+    print("- Failed:{'\n'.join(failed)}")
+
