@@ -20,6 +20,12 @@
 
 import os, sys, argparse
 from pathlib import Path
+
+# make sure we are under the root of the project
+if (Path(".").resolve().name == "tools"): os.chdir("..")
+# make sure we run against the local git fastai repo
+sys.path.insert(0, str(Path(".").resolve()))
+
 from fastai.gen_doc.gen_notebooks import *
 
 def add_bool_arg(parser, name, default=False, help='', true_aliases=None, false_aliases=None):
@@ -38,10 +44,6 @@ add_bool_arg(parser, 'document-new-fns',   default=False, help='scan module and 
 add_bool_arg(parser, 'update-html',        default=True,  help='update .html files from .ipynb notebooks')
 add_bool_arg(parser, 'update-nb-links',    default=True,  help='update documentation links and source code line numbers', false_aliases=['-l', '--html-only'])
 args = parser.parse_args()
-
-# make sure we are under the root of the project
-cur_dir = Path(".").resolve().name
-if (cur_dir == "tools"): os.chdir("..")
 
 # if no files were specified pass the dir instead for all files
 files = args.files
