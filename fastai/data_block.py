@@ -97,18 +97,13 @@ class ItemList():
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, col=col, **kwargs)
 
-    #Not adapted
-    @classmethod
-    def from_csvs(cls, path:PathOrStr, csv_fnames:Collection[PathOrStr], input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
-                  header:str='infer', **kwargs)->'LabelList':
-        "Create in `path` by reading `input_cols` and `label_cols` in csvs in `path/csv_names` opened with `header`."
-        return cls(np.concatenate([cls.from_csv(path, fname, input_cols, label_cols).items for fname in csv_fnames]), path)
-
     def filter_by_func(self, func:Callable)->'ItemList':
+        "Only keeps elements for which `func` returns `True`."
         self.items = array([o for o in self.items if func(o)])
         return self
 
     def filter_by_folder(self, include=None, exclude=None):
+        "Only keep filenames in `include` folder or reject the ones in `exclude`."
         include,exclude = listify(include),listify(exclude)
         def _inner(o):
             n = o.relative_to(self.path).parts[0]
@@ -118,9 +113,11 @@ class ItemList():
         return self.filter_by_func(_inner)
 
     def split_by_list(self, train, valid):
+        "Split the data between `train` and `valid`."
         return self._split(self.path, train, valid)
 
     def split_by_idxs(self, train_idx, valid_idx):
+        "Split the data between `train_idx` and `valid_idx`."
         return self.split_by_list(self[train_idx], self[valid_idx])
 
     def split_by_idx(self, valid_idx:Collection[int])->'ItemLists':
@@ -263,14 +260,6 @@ class ItemLists():
             return self
         return _inner
 
-    @classmethod
-    def from_csv(cls, path:PathOrStr, csv_fname:PathOrStr, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1,
-                 valid_col:int=2, header:str='infer')->'ItemLists':
-        "Create in `path` from csv in `path/csv_name` with `header`. Inputs from `input_cols`, labels `label_cols` split by `valid_col`"
-        df = pd.read_csv(path/csv_fname, header=header)
-        val_idx = df.iloc[:,valid_col].nonzero()[0]
-        return LabelList.from_df(path, df, input_cols, label_cols).split_by_idx(val_idx)
-
     @property
     def lists(self):
         res = [self.train,self.valid]
@@ -278,6 +267,7 @@ class ItemLists():
         return res
 
     def label_from_lists(self, train_labels:Iterator, valid_labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
+        "Use the labels in `train_labels` and `valid_labels` to label the data. `label_cls` will overwrite the default."
         label_cls = self.train.label_cls(train_labels, label_cls)
         self.train = self.train._label_list(x=self.train, y=label_cls(train_labels, **kwargs))
         self.valid = self.valid._label_list(x=self.valid, y=self.train.y.new(valid_labels, **kwargs))
@@ -286,6 +276,7 @@ class ItemLists():
         return self
 
     def transform(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+        "Set `tfms` to be applied to the train and validation set."
         if not tfms: return self
         self.train.transform(tfms[0], **kwargs)
         self.valid.transform(tfms[1], **kwargs)
@@ -368,7 +359,7 @@ class LabelList(Dataset):
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
-        "Create a `LabelDataset` in `path` with `inputs` and `labels`."
+        "Create a `LabelList` in `path` with `inputs` and `labels`."
         inputs,labels = np.array(inputs),np.array(labels)
         return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
 
