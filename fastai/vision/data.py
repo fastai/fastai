@@ -78,10 +78,10 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     if do_y: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
     mean,std = tensor(mean),tensor(std)
-    return (partial(_normalize_batch, mean=mean, std=std),
+    return (partial(_normalize_batch, mean=mean, std=std, do_y=do_y),
             partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
@@ -158,12 +158,12 @@ class ImageDataBunch(DataBunch):
         x = self.valid_dl.one_batch()[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
-    def normalize(self, stats:Collection[Tensor]=None)->None:
+    def normalize(self, stats:Collection[Tensor]=None, do_y:bool=None)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
         if stats is None: self.stats = self.batch_stats()
         else:             self.stats = stats
-        self.norm,self.denorm = normalize_funcs(*self.stats)
+        self.norm,self.denorm = normalize_funcs(*self.stats, do_y=do_y)
         self.add_tfm(self.norm)
         return self
 

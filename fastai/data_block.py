@@ -346,8 +346,8 @@ class LabelList(Dataset):
             else:                 x,y = self.item   ,0
             if self.tfms:
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
-                if self.tfm_y and self.item is None:
-                    y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
+            if self.tfm_y and self.item is None:
+                y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
@@ -366,5 +366,17 @@ class LabelList(Dataset):
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
         "Set the `tfms` and `` tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs
-        if tfm_y is not None: self.tfm_y=tfm_y
+        if tfm_y is not None:
+            self.tfm_y=tfm_y
+            self.tfms_y=tfms
+        return self
+
+    def transform_labels(self, tfms:TfmList=None, **kwargs):
+        self.tfm_y=True
+        if tfms is None:
+            self.tfms_y = self.tfms
+            self.tfmargs_y = {**self.tfmargs, **kwargs}
+        else:
+            self.tfms_y = tfms
+            self.tfmargs_y = kwargs
         return self
