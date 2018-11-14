@@ -10,11 +10,10 @@ def path():
 def mnist_tiny_sanity_test(data):
     assert data.c == 2
     assert set(map(str, set(data.classes))) == {'3', '7'}
-    assert set(data.train_ds.y) == set(data.valid_ds.y) == {0, 1}
 
 def test_from_folder(path):
     for valid_pct in [None, 0.9]:
-        data = ImageDataBunch.from_folder(path, test='test', valid_pct=valid_pct)
+        data = ImageDataBunch.from_folder(path, test='test')
         mnist_tiny_sanity_test(data)
 
 def test_from_name_re(path):

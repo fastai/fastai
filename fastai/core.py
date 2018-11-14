@@ -129,14 +129,44 @@ def series2cat(df:DataFrame, *col_names):
     "Categorifies the columns `col_names` in `df`."
     for c in listify(col_names): df[c] = df[c].astype('category').cat.as_ordered()
 
+
+TfmList = Union[Callable, Collection[Callable]]
+
+def one_hot(x:Collection[int], c:int):
+    "One-hot encode the target."
+    res = np.zeros((c,), np.float32)
+    res[x] = 1.
+    return res
+
 class ItemBase():
     "All transformable dataset items use this type."
-    @property
-    @abstractmethod
-    def device(self): pass
-    @property
-    @abstractmethod
-    def data(self): pass
+    def __init__(self, data:Any): self.data=data
+    def __repr__(self): return f'{self.__class__.__name__} {self}'
+    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
+    def apply_tfms(self, tfms:Collection, **kwargs):
+        if tfms: raise Exception('Not implemented')
+        return self
+
+class Category(ItemBase):
+    def __init__(self, idx, cat): self.data,self.cat = idx,cat
+    def __str__(self):  return str(self.cat)
+    def __int__(self):  return self.data
+    @classmethod
+    def create(cls, o:Any, c2i:dict=None):
+        if c2i:
+            res = c2i.get(o, None)
+            return None if res is None else cls(res,o)
+        return cls(o,o)
+
+class MultiCategory(Category):
+    @classmethod
+    def create(cls, o:Collection, c2i:dict):
+        if not c2i: return cls(o,o)
+        res = array([c2i[it] for it in o])
+        return cls(one_hot(res, len(c2i)), o)
+
+    def __getitem__(self, i): return Category(self.data[i], self.cat[i])
+    def __str__(self):  return ';'.join(map(str, self.cat))
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4)->None:
@@ -189,3 +219,22 @@ def one_hot_encode(y:Collection[int], c:int):
     res = np.zeros(c, np.float32)
     res[y] = 1.
     return res
+
+def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
+    if a is None: return a
+    if isinstance(a,(pd.DataFrame,pd.Series)):
+        res = a.iloc[idxs]
+        if isinstance(res,(pd.DataFrame,pd.Series)): return res.copy()
+        return res
+    return a[idxs]
+
+def func_args(func)->bool:
+    code = func.__code__
+    return code.co_varnames[:code.co_argcount]
+
+def has_arg(func, arg)->bool: return arg in func_args(func)
+
+def try_int(o:Any)->Any:
+    try: return int(o)
+    except: return o
+
