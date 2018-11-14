@@ -41,28 +41,26 @@ def manual_seed(seed=42):
         torch.backends.cudnn.benchmark = False
 
 def test_val_loss(learn):
-    assert learn.validate()[1] > 0.5
+    assert learn.validate()[1] > 0.3
 
-@pytest.mark.skipif(not torch.cuda.is_available(),
-                    reason="QRNN requires cupy that depends on cuda")
 def test_qrnn_works_with_no_split():
+    gc.collect()
     manual_seed()
     path, df_trn, df_val = prep_human_numbers()
     data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1, qrnn=True)
     learn = LanguageLearner(data, learn.model, bptt=70) #  remove the split_fn
-    learn.fit_one_cycle(4, 5e-3)
-    assert learn.validate()[1] > 0.5
+    learn.fit_one_cycle(2, 5e-3)
+    assert learn.validate()[1] > 0.3
 
-@pytest.mark.skipif(not torch.cuda.is_available(),
-                    reason="QRNN requires cupy that depends on cuda")
 def test_qrnn_works_if_split_fn_provided():
+    gc.collect()
     manual_seed()
     path, df_trn, df_val = prep_human_numbers()
     data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1, qrnn=True) # it sets: split_func=lm_split
-    learn.fit_one_cycle(4, 5e-3)
-    assert learn.validate()[1] > 0.5
+    learn.fit_one_cycle(2, 5e-3)
+    assert learn.validate()[1] > 0.3
 
 def test_vocabs(learn):
     for ds in [learn.data.valid_ds, learn.data.test_ds]:

@@ -1,13 +1,17 @@
 import math
 import torch
 from torch.autograd import Variable
-from cupy.cuda import function
-from cupy.cuda.compiler import _NVRTCProgram
 from collections import namedtuple
 
 ##Adapted from the code here https://github.com/salesforce/pytorch-qrnn, implementation of the QRNN by
 ##Bradbury, James and Merity, Stephen and Xiong, Caiming and Socher, Richard 
 ##https://arxiv.org/abs/1611.01576
+
+try:
+    from cupy.cuda import function
+    from cupy.cuda.compiler import _NVRTCProgram
+except ImportError:
+    print("Cupy not found the code will work only on CPU!")
 
 kernel = '''
 extern "C"
