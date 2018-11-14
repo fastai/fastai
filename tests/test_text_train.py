@@ -31,7 +31,7 @@ def learn():
     learn.fit_one_cycle(2, 5e-3)
     return learn
 
-
+@pytest.mark.skip(reason="only one integration test for text train")
 def manual_seed(seed=42):
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -43,6 +43,7 @@ def manual_seed(seed=42):
 def test_val_loss(learn):
     assert learn.validate()[1] > 0.3
 
+@pytest.mark.skip(reason="only one integration test for text train")
 def test_qrnn_works_with_no_split():
     gc.collect()
     manual_seed()
@@ -53,6 +54,7 @@ def test_qrnn_works_with_no_split():
     learn.fit_one_cycle(2, 5e-3)
     assert learn.validate()[1] > 0.3
 
+@pytest.mark.skip(reason="only one integration test for text train")
 def test_qrnn_works_if_split_fn_provided():
     gc.collect()
     manual_seed()
