@@ -156,11 +156,12 @@ class Category(ItemBase):
         if c2i:
             res = c2i.get(o, None)
             return None if res is None else cls(res,o)
-        return cls(c2i.get(o, None), o) if c2i else cls(o,o)
+        return cls(o,o)
 
 class MultiCategory(Category):
     @classmethod
     def create(cls, o:Collection, c2i:dict):
+        if not c2i: return cls(o,o)
         res = array([c2i[it] for it in o])
         return cls(one_hot(res, len(c2i)), o)
 

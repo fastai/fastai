@@ -2,7 +2,7 @@ from .torch_core import *
 from .basic_data import *
 
 
-__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files', 
+__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files',
            'PreProcessor', 'LabelLists']
 
 def _decode(df):
@@ -142,7 +142,7 @@ class ItemList():
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
         return self.split_by_idx(rand_idx[:cut])
-    
+
     def split_by_valid_func(self, func:Callable)->'ItemLists':
         "Split the data by result of `func` (which returns `True` for validation set)"
         valid_idx = [i for i,o in enumerate(self.items) if func(o)]
@@ -178,9 +178,10 @@ class ItemList():
         label_cls = self.label_cls(labels, label_cls)
         y_bld = label_cls if template is None else template.new
         y = y_bld(labels, **kwargs)
-        filt = array([o is None for o in y])
-        if filt.sum()>0: self,labels = self[~filt],labels[~filt]
-        return self._label_list(x=self, y=y_bld(labels, **kwargs))
+        if self.__class__.__name__.startswith('Text'):
+            filt = array([o is None for o in y])
+            if filt.sum()>0: self,y = self[~filt],y[~filt]
+        return self._label_list(x=self, y=y)
 
     def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`. If `sep` is passed, will split the labels accordingly."
