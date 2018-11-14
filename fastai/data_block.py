@@ -85,17 +85,17 @@ class ItemList():
         return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr='.', col:IntsOrStrs=0, **kwargs)->'ItemList':
-        "Create an `ItemList` in `path` from the inputs in the `col` of `df`."
-        inputs = df.iloc[:,df_names_to_idx(col, df)]
+    def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, **kwargs)->'ItemList':
+        "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
+        inputs = df.iloc[:,df_names_to_idx(cols, df)]
         res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, **kwargs)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, col:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
-        "Create an `ItemList` in `path` from the inputs in the `col` of `path/csv_name` opened with `header`."
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
+        "Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`."
         df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, col=col, **kwargs)
+        return cls.from_df(df, path=path, cols=cols, **kwargs)
 
     #Not adapted
     @classmethod
@@ -160,7 +160,7 @@ class ItemList():
         return self.split_by_files(valid_names)
 
     def split_from_df(self, cols:IntsOrStrs=2):
-        "Split the data from the `col` in the dataframe in `self.xtra`."
+        "Split the data from the `cols` in the dataframe in `self.xtra`."
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])[0]
         return self.split_by_idx(valid_idx)
 
