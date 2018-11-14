@@ -29,6 +29,8 @@ requirements = to_list("""
     matplotlib
     numpy>=1.12
     pandas
+    bottleneck
+    numexpr
     Pillow
     requests
     scipy
