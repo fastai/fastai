@@ -307,15 +307,14 @@ class NumericalizeProcessor(PreProcessor):
 
     def process_one(self,item): return LongTensor(self.vocab.numericalize(item))
     def process(self, ds):
-        if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+        if self.vocab is None: 
+            self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
-        ds.items = np.array([self.vocab.numericalize(t) for t in ds.items])
+        super().process(ds)
 
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
-    def process(self, ds):
-        ds.items = np.array([open_text(fn) for fn in ds.items])
 
 class TextFilesList(TextList):
     def __init__(self, items:Iterator, vocab:Vocab=None, processor=None, **kwargs):

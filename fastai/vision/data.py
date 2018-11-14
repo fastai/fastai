@@ -259,7 +259,7 @@ class ImageItemList(ItemList):
     def __post_init__(self):
         super().__post_init__()
         self.sizes={}
-        self.create_func = open_image
+        self.create_func = ifnone(self.create_func, open_image)
 
     def get(self, i):
         res = super().get(i)

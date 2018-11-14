@@ -34,7 +34,7 @@ def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)-
 
 class PreProcessor():
     def process_one(self, item):      return item
-    def process(self, ds:Collection): return self
+    def process(self, ds:Collection): ds.items = [self.process_one(item) for item in ds.items]
 
 class ItemList():
     _bunch = DataBunch

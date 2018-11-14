@@ -49,14 +49,20 @@ def test_download_images():
     finally:
         shutil.rmtree(tmp_path)
 
-def test_verify_images(tmp_path):
-    verify_images(path()/'train'/'3', dest=tmp_path, max_size=27, max_workers=4)
+def test_verify_images(path):
+    tmp_path = path/'tmp'
+    os.makedirs(tmp_path, exist_ok=True)
+    verify_images(path/'train'/'3', dest=tmp_path, max_size=27, max_workers=4)
     images = list(tmp_path.iterdir())
     assert len(images) == 346
     img = PIL.Image.open(images[0])
     assert img.height == 27 and img.width == 27
+    shutil.rmtree(tmp_path)
 
-def test_verify_image(tmp_path):
-    verify_image(path()/'train'/'3'/'867.png',False, dest=tmp_path, max_size=27)
+def test_verify_image(path):
+    tmp_path = path/'tmp'
+    os.makedirs(tmp_path, exist_ok=True)
+    verify_image(path/'train'/'3'/'867.png',False, dest=tmp_path, max_size=27)
     img = PIL.Image.open(tmp_path/'867.png')
     assert img.height == 27 and img.width == 27
+    shutil.rmtree(tmp_path)
