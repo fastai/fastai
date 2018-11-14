@@ -312,7 +312,7 @@ class LabelLists(ItemLists):
         "Add test set containing items from `items` and an arbitrary `label`"
         # if no label passed, use label of first training item
         if label is None: label = str(self.train[0][1])
-        labels = [label for _ in range_of(self.valid)]
+        labels = [label for _ in range_of(items)]
         if isinstance(items, ItemList): self.test = self.valid.new(items.items, labels, xtra=items.xtra)
         else: self.test = self.valid.new(items, labels)
         return self
