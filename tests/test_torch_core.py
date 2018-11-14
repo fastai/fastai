@@ -1,6 +1,7 @@
 import pytest, torch, fastai
 from fastai.torch_core import *
 from fastai.layers import *
+from math import isclose
 
 a=[1,2,3]
 exp=torch.tensor(a)
@@ -54,3 +55,41 @@ def test_in_channels_no_weights():
     with pytest.raises(Exception) as e_info:
         in_channels(nn.Sequential())
     assert e_info.value.args[0] == 'No weight layer'
+
+def test_range_children():
+    m = simple_cnn(b)
+    assert len(range_children(m)) == 3
+    
+def test_split_model():
+    m = simple_cnn(b)
+    pool = split_model(m,[m[2][0]])[1][0]
+    assert pool == m[2][0], "Did not properly split at adaptive pooling layer"
+
+def test_set_bn_eval():
+    m = simple_cnn(b,bn=True)
+    requires_grad(m,False)
+    set_bn_eval(m)
+    assert m[0][2].training == False, "Batch norm layer not properly set to eval mode"
+
+def test_np2model_tensor():
+    a = np.ones([2,2])
+    t = np2model_tensor(a)
+    assert isinstance(t,torch.FloatTensor)
+
+def test_calc_loss():
+    y_pred = torch.ones([3,8], requires_grad=True)
+    y_true = torch.zeros([3],dtype=torch.long)
+    loss = nn.CrossEntropyLoss()
+    loss = calc_loss(y_pred,y_true,loss)
+    assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss does not seem to be correct"
+    loss = F.cross_entropy
+    loss = calc_loss(y_pred,y_true,loss)
+    assert isclose(loss.sum(),6.23,abs_tol=1e-2), "final loss without reduction does not seem to be correct"
+
+def test_tensor_array_monkey_patch():
+    t = torch.ones(a)
+    t = np.array(t)
+    assert np.all(t == t), "Tensors did not properly convert to numpy arrays"
+    t = torch.ones(a)
+    t = np.array(t,dtype=float)
+    assert np.all(t == t), "Tensors did not properly convert to numpy arrays with a dtype set"
