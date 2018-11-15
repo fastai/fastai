@@ -11,10 +11,13 @@ __all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor',
 
 OptTabTfms = Optional[Collection[TabularProc]]
 
+def emb_sz_rule_(n_cat:int)->int: return min(50, (n_cat//2)+1)
+def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
+
 def def_emb_sz(df, n, sz_dict):
     col = df[n]
     n_cat = len(col.cat.categories)+1  # extra cat for NA
-    sz = sz_dict.get(n, min(50, (n_cat//2)+1))  # rule of thumb
+    sz = sz_dict.get(n, int(emb_sz_rule(n_cat)))  # rule of thumb
     return n_cat,sz
 
 def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
@@ -76,7 +79,7 @@ class TabularList(ItemList):
         conts = [] if self.conts is None else self.conts[o]
         return self._item_cls(codes, conts, self.classes, self.col_names)
 
-    def get_emb_szs(self, sz_dict): 
+    def get_emb_szs(self, sz_dict):
         "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
         return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
 
