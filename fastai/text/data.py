@@ -237,9 +237,9 @@ class TextClasDataBunch(TextDataBunch):
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
 
-def open_text(fn:PathOrStr):
+def open_text(fn:PathOrStr, enc='utf-8'):
     "Read the text in `fn`."
-    with open(fn,'r') as f: return ''.join(f.readlines())
+    with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
     def __init__(self, ids, text): self.data,self.text = ids,text
