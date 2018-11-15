@@ -11,8 +11,8 @@ __all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor',
 
 OptTabTfms = Optional[Collection[TabularProc]]
 
-def emb_sz_rule_(n_cat:int)->int: return min(50, (n_cat//2)+1)
-def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
+def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
+#def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
 
 def def_emb_sz(df, n, sz_dict):
     col = df[n]
@@ -32,7 +32,7 @@ def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])-
 class TabularLine(ItemBase):
     def __init__(self, cats, conts, classes, names):
         self.cats,self.conts,self.classes,self.names = cats,conts,classes,names
-        self.data = [tensor(cats) if len(cats) != 0 else tensor([0]), 
+        self.data = [tensor(cats) if len(cats) != 0 else tensor([0]),
                      tensor(conts) if len(conts) != 0 else tensor([0])]
 
     def __str__(self):
@@ -62,6 +62,8 @@ class TabularList(ItemList):
     def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  processor=None, procs=None, **kwargs):
         #dataframe is in xtra, items is just a range of index
+        if cat_names is None:  cat_names = []
+        if cont_names is None: cont_names = []
         if processor is None: processor=TabularProcessor(procs)
         super().__init__(range_of(items), processor=processor, **kwargs)
         self.cat_names,self.cont_names = cat_names,cont_names
@@ -84,8 +86,7 @@ class TabularList(ItemList):
         return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
 
 class TabularProcessor(PreProcessor):
-    def __init__(self, procs=None):
-        self.procs = listify(procs)
+    def __init__(self, procs=None): self.procs = listify(procs)
 
     def process_one(self, item):
         df = pd.DataFrame([item,item])
@@ -99,7 +100,7 @@ class TabularProcessor(PreProcessor):
         classes = None
         col_names = list(df[self.cat_names].columns.values) + list(df[self.cont_names].columns.values)
         return TabularLine(codes[0], conts[0], classes, col_names)
-        
+
     def process(self, ds):
         for i,proc in enumerate(self.procs):
             if isinstance(proc, TabularProc): proc(ds.xtra, test=True)

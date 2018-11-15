@@ -90,6 +90,7 @@ def random_split(valid_pct:float, *arrs:NPArrayableList)->SplitArrayList:
 def listify(p:OptListOrItem=None, q:OptListOrItem=None):
     "Make `p` same length as `q`"
     if p is None: p=[]
+    elif isinstance(p, str):          p=[p]
     elif not isinstance(p, Iterable): p=[p]
     n = q if type(q)==int else len(p) if q is None else len(q)
     if len(p)==1: p = p * n

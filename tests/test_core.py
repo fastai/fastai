@@ -6,12 +6,15 @@ from tempfile import TemporaryDirectory
 def test_cpus(): assert num_cpus() >= 1
 
 @pytest.mark.parametrize("p, q, expected", [
+    (None, None, []),
+    ('hi', None, ['hi']),
+    ([1,2],None, [1,2]),
     (5  , 1    , [5]),
     (5  , [1,1], [5, 5]),
     ([5], 1    , [5]),
     ([5], [1,1], [5, 5]),
-    ("ab"  , "cd"        , ["a", "b"]),
-    ("ab"  , ["cd", "ef"], ["a", "b"]),
+    ("ab"  , "cd"        , ["ab", "ab"]),
+    ("ab"  , ["cd", "ef"], ["ab", "ab"]),
     (["ab"], "cd"        , ["ab", "ab"]),
     (["ab"], ["cd", "ef"], ["ab", "ab"]),
 ])

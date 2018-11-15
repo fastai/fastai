@@ -6,7 +6,7 @@ from .layers import *
 from .tabular.data import *
 from .tabular.transform import *
 
-__all__ = ['EmbeddingDotBias', 'get_collab_learner']
+__all__ = ['EmbeddingDotBias', 'get_collab_learner', 'CollabLine', 'CollabList']
 
 class CollabLine(TabularLine):
     def __init__(self, cats, conts, classes, names):
@@ -15,9 +15,7 @@ class CollabLine(TabularLine):
 
 class CollabList(TabularList):
     _item_cls = CollabLine
-    
-    
-    
+
 class EmbeddingDotBias(nn.Module):
     "Base model for callaborative filtering."
     def __init__(self, n_factors:int, n_users:int, n_items:int, min_score:float=None, max_score:float=None):
@@ -34,14 +32,14 @@ class EmbeddingDotBias(nn.Module):
         return torch.sigmoid(res) * (self.max_score-self.min_score) + self.min_score
 
 def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user_name:Optional[str]=None,
-          item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None, 
+          item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None,
           metrics=None, min_score:float=None, max_score:float=None, **kwargs) -> Learner:
     "Create a Learner for collaborative filtering."
     user_name = ifnone(user_name,ratings.columns[0])
     item_name = ifnone(item_name,ratings.columns[1])
     rating_name = ifnone(rating_name,ratings.columns[2])
     processor = TabularProcessor(procs=[Categorify])
-    src = (CollabList.from_df(ratings, cat_names=[user_name, item_name], cont_names=[], processor=processor)
+    src = (CollabList.from_df(ratings, cat_names=[user_name, item_name], processor=processor)
                      .random_split_by_pct()
                      .label_from_df(cols=rating_name))
     if test is not None: src.add_test(CollabList.from_df(test, cat_names=[user_name, item_name], cont_names=[]))
