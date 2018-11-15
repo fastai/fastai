@@ -26,11 +26,10 @@ def test_from_csv_and_from_df():
     assert len(data1.classes) == 2
     df_test_collate(data1)
     df = text_df(['neg','pos','neg pos'])
-    data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, 
+    data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
                                   label_cols=0, text_cols=["text"], label_delim=' ')
     assert len(data2.classes) == 2
     x,y = data2.train_ds[0]
-    assert isinstance(y.data, np.ndarray)
     assert len(y.data) == 2
     text_csv_file(path/'tmp.csv', ['neg','pos'])
     data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"])
@@ -40,7 +39,7 @@ def test_from_csv_and_from_df():
 def test_should_load_backwards_lm():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos'])
-    data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"], 
+    data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
                                    bs=1, backwards=True)
     lml = data.train_dl.dl
     lml.data = lml.batchify(np.concatenate([lml.dataset.x.items[i] for i in range(len(lml.dataset))]))

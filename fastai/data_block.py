@@ -2,29 +2,13 @@ from .torch_core import *
 from .basic_data import *
 
 
-__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'LabelList', 'ItemLists', 'get_files',
+__all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
            'PreProcessor', 'LabelLists']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
 
-def _maybe_squeeze(arr):
-    "Squeeze array dimensions but avoid squeezing a 1d-array containing a string."
-    return (arr if is1d(arr) else np.squeeze(arr))
-
-def _extract_input_labels(df:pd.DataFrame, input_cols:IntsOrStrs=0, label_cols:IntsOrStrs=1, is_fnames:bool=False,
-                      label_delim:str=None, suffix:Optional[str]=None):
-    "Get image file names in `fn_col` by adding `suffix` and labels in `label_col` from `df`."
-    assert label_delim is None or not isinstance(label_cols, Iterable) or len(label_cols) == 1
-    labels = df.iloc[:,df_names_to_idx(label_cols, df)]
-    if label_delim: labels = np.array(list(csv.reader(labels.iloc[:,0], delimiter=label_delim)))
-    else:
-        if isinstance(label_cols, Iterable) and len(label_cols) > 1: labels = _decode(labels)
-        else: labels = _maybe_squeeze(labels.values)
-    inputs = df.iloc[:,df_names_to_idx(input_cols, df)]
-    if is_fnames: inputs = inputs.iloc[:,0].str.lstrip()
-    if suffix: inputs = inputs + suffix
-    return _maybe_squeeze(inputs.values), labels
+def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
 def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
@@ -42,8 +26,8 @@ class ItemList():
 
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None):
-        self.items,self.create_func,self.path = np.array(list(items), dtype=object),create_func,Path(path)
+                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, **kwargs):
+        self.items,self.create_func,self.path = array(items, dtype=object),create_func,Path(path)
         self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
@@ -164,30 +148,27 @@ class ItemList():
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
         return self.split_by_idx(valid_idx)
 
-    def label_cls(self, labels, lc=None):
-        if lc is not None:              return lc
+    def label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
+        if label_cls is not None:       return label_cls
         if self._label_cls is not None: return self._label_cls
         it = try_int(index_row(labels,0))
+        if sep is not None:             return MultiCategoryList
         if isinstance(it, (str,int)):   return CategoryList
         if isinstance(it, Collection):  return MultiCategoryList
         return self.__class__
 
-    def label_from_list(self, labels:Iterator, label_cls:Callable=None, template:Callable=None, **kwargs)->'LabelList':
-        "Label `self.items` with `labels` using `label_cls` and optionally `template`."
+    def label_from_list(self, labels:Iterator, **kwargs)->'LabelList':
+        "Label `self.items` with `labels` using `label_cls`"
         labels = array(labels, dtype=object)
-        label_cls = self.label_cls(labels, label_cls)
-        y_bld = label_cls if template is None else template.new
-        y = y_bld(labels, **kwargs)
-        if self.__class__.__name__.startswith('Text'):
-            filt = array([o is None for o in y])
-            if filt.sum()>0: self,y = self[~filt],y[~filt]
-        return self._label_list(x=self, y=y)
+        label_cls = self.label_cls(labels, **kwargs)
+        y = label_cls(labels, **kwargs)
+        res = self._label_list(x=self, y=y)
+        return res
 
-    def label_from_df(self, cols:IntsOrStrs=1, sep=None, **kwargs):
-        "Label `self.items` from the values in `cols` in `self.xtra`. If `sep` is passed, will split the labels accordingly."
+    def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
+        "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
-        label_cls = None if sep is None else MultiCategoryList
-        return self.label_from_list(labels, label_cls=label_cls, sep=sep, **kwargs)
+        return self.label_from_list(labels, **kwargs)
 
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
         "Label every item with `const`."
@@ -211,34 +192,65 @@ class ItemList():
             return res.group(1)
         return self.label_from_func(_inner, **kwargs)
 
-class CategoryList(ItemList):
-    _item_cls=Category
-    def __init__(self, items:Iterator, classes:Collection=None, sep=None, **kwargs):
-        super().__init__(items, **kwargs)
-        if classes is None: classes = uniqueify(items)
+
+class CategoryProcessor(PreProcessor):
+    def __init__(self, classes:Collection=None): self.create_classes(classes)
+
+    def create_classes(self, classes):
         self.classes = classes
-        self.class2idx = {v:k for k,v in enumerate(self.classes)}
-        self.c = len(classes)
-        self.loss_func = F.cross_entropy
+        if classes is not None: self.c2i = {v:k for k,v in enumerate(classes)}
+
+    def generate_classes(self, items): return uniqueify(items)
+    def process_one(self,item): return self.c2i.get(item,None)
+
+    def process(self, ds):
+        if self.classes is None: self.create_classes(self.generate_classes(ds.items))
+        ds.classes = self.classes
+        ds.c2i = self.c2i
+        super().process(ds)
+
+class CategoryListBase(ItemList):
+    @property
+    def c(self): return len(self.classes)
 
     def new(self, items, classes=None, **kwargs):
         return super().new(items, classes=ifnone(classes, self.classes), **kwargs)
 
+class CategoryList(CategoryListBase):
+    _item_cls=Category
+    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, **kwargs):
+        super().__init__(items, processor=processor, **kwargs)
+        if processor is None: self.processor = CategoryProcessor(classes=classes)
+        self.loss_func = F.cross_entropy
+
     def get(self, i):
-        o = super().get(i)
-        return self._item_cls.create(o, self.class2idx)
+        o = self.items[i]
+        return self._item_cls(o, self.classes[o])
 
     def predict(self, res):
         pred_max = res[0].argmax()
         return self.classes[pred_max],pred_max,res[0]
 
-class MultiCategoryList(CategoryList):
+class MultiCategoryProcessor(CategoryProcessor):
+    def process_one(self,item): return [self.c2i.get(o,None) for o in item]
+
+    def generate_classes(self, items):
+        classes = set()
+        for c in items: classes = classes.union(set(c))
+        return list(classes)
+
+class MultiCategoryList(CategoryListBase):
     _item_cls=MultiCategory
-    def __init__(self, items:Iterator, classes:Collection=None, sep=None, **kwargs):
-        if sep is not None: items = array(list(csv.reader(items, delimiter=sep)))
-        if classes is None: classes = uniqueify(np.concatenate(items))
-        super().__init__(items, classes=classes, **kwargs)
+    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, sep:str=None, **kwargs):
+        if sep is not None: items = array(csv.reader(items, delimiter=sep))
+        super().__init__(items, processor=processor, **kwargs)
+        if processor is None: self.processor = MultiCategoryProcessor(classes=classes)
         self.loss_func = F.binary_cross_entropy_with_logits
+
+    def get(self, i):
+        o = self.items[i]
+        return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"
@@ -257,7 +269,7 @@ class ItemLists():
         def _inner(*args, **kwargs):
             self.train = ft(*args, **kwargs)
             assert isinstance(self.train, LabelList)
-            self.valid = fv(*args, template=self.train.y, **kwargs)
+            self.valid = fv(*args, **kwargs)
             self.__class__ = LabelLists
             self.process()
             return self
@@ -365,6 +377,10 @@ class LabelList(Dataset):
         self.x.process(xp)
         self.y.process(yp)
         return self
+
+    def filter_missing_y(self):
+        filt = array([o is None for o in self.y])
+        if filt.sum()>0: self.x,self.y = self.x[~filt],self.y[~filt]
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':

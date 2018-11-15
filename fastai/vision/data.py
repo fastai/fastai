@@ -290,13 +290,18 @@ class ImageItemList(ItemList):
         return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
 
 
-class ObjectCategoryList(CategoryList):
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
-        if classes is None:
-            classes = set()
-            for _,c in items: classes = classes.union(set(c))
-            classes = ['background'] + list(classes)
-        super().__init__(items, classes, **kwargs)
+class ObjectCategoryProcessor(MultiCategoryProcessor):
+    def process_one(self,item): return [self.c2i.get(o,None) for o in item]
+
+    def generate_classes(self, items):
+        classes = super().generate_classes([o[1] for o in items])
+        classes = ['background'] + list(classes)
+        return classes
+
+class ObjectCategoryList(MultiCategoryList):
+    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, **kwargs):
+        super().__init__(items, **kwargs)
+        if processor is None: self.processor = ObjectCategoryProcessor(classes=classes)
 
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i])

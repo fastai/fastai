@@ -132,11 +132,6 @@ def series2cat(df:DataFrame, *col_names):
 
 TfmList = Union[Callable, Collection[Callable]]
 
-def one_hot(x:Collection[int], c:int):
-    "One-hot encode the target."
-    res = np.zeros((c,), np.float32)
-    res[x] = 1.
-    return res
 
 class ItemBase():
     "All transformable dataset items use this type."
@@ -146,28 +141,6 @@ class ItemBase():
     def apply_tfms(self, tfms:Collection, **kwargs):
         if tfms: raise Exception('Not implemented')
         return self
-
-class Category(ItemBase):
-    def __init__(self, idx, cat): self.data,self.cat = idx,cat
-    def __str__(self):  return str(self.cat)
-    def __int__(self):  return self.data
-    @classmethod
-    def create(cls, o:Any, c2i:dict=None):
-        if c2i:
-            res = c2i.get(o, None)
-            return None if res is None else cls(res,o)
-        return cls(o,o)
-
-class MultiCategory(Category):
-    @classmethod
-    def create(cls, o:Collection, c2i:dict):
-        if not c2i: return cls(o,o)
-        res = array([c2i[it] for it in o])
-        return cls(one_hot(res, len(c2i)), o)
-
-    def __getitem__(self, i): return Category(self.data[i], self.cat[i])
-    def __str__(self):  return ';'.join(map(str, self.cat))
-
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
@@ -214,10 +187,10 @@ def df_names_to_idx(names, df):
     if isinstance(names[0], int): return names
     return [df.columns.get_loc(c) for c in names]
 
-def one_hot_encode(y:Collection[int], c:int):
-    "One-hot encode the targets in `y` with `c` classes."
-    res = np.zeros(c, np.float32)
-    res[y] = 1.
+def one_hot(x:Collection[int], c:int):
+    "One-hot encode the target."
+    res = np.zeros((c,), np.float32)
+    res[x] = 1.
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
@@ -237,4 +210,18 @@ def has_arg(func, arg)->bool: return arg in func_args(func)
 def try_int(o:Any)->Any:
     try: return int(o)
     except: return o
+
+def array(a, *args, **kwargs)->np.ndarray:
+    "Same as `np.array` but also handles generators"
+    if not isinstance(a, collections.Sized): a = list(a)
+    return np.array(a, *args, **kwargs)
+
+class Category(ItemBase):
+    def __init__(self,data,obj): self.data,self.obj = data,obj
+    def __int__(self): return self.data
+    def __str__(self): return str(self.obj)
+
+class MultiCategory(ItemBase):
+    def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
+    def __str__(self): return ';'.join([str(o) for o in self.obj])
 

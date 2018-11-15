@@ -307,8 +307,7 @@ class NumericalizeProcessor(PreProcessor):
 
     def process_one(self,item): return LongTensor(self.vocab.numericalize(item))
     def process(self, ds):
-        if self.vocab is None: 
-            self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
+        if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         super().process(ds)
 
@@ -325,4 +324,5 @@ class TextFilesList(TextList):
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
         return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
+
 
