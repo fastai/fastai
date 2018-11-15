@@ -120,7 +120,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from ids, labels and a dictionary."
         src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
                         TextList(valid_ids, vocab, path=path, processor=[]))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls)
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path))
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         return src.databunch(**kwargs)
@@ -143,7 +143,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from tokens and labels."
         processor = _get_processor(tokenizer=None, vocab=vocab, **kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
-                        TextList(valid_df, path=path, processor=processor))
+                        TextList(valid_tok, path=path, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls)
         if test_tok is not None: src.add_test(TextList(tst_tok, path=path))
         return src.databunch(**kwargs)
@@ -314,7 +314,7 @@ class NumericalizeProcessor(PreProcessor):
     def __init__(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
 
-    def process_one(self,item): return LongTensor(self.vocab.numericalize(item))
+    def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
     def process(self, ds):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab

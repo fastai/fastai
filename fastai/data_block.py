@@ -55,9 +55,10 @@ class ItemList():
         "Called at the end of `Learn.predict`; override for optional post-processing"
         return res
 
-    def new(self, items:Iterator, create_func:Callable=None, **kwargs)->'ItemList':
+    def new(self, items:Iterator, create_func:Callable=None, processor:PreProcessor=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
-        return self.__class__(items=items, create_func=create_func, path=self.path, processor=self.processor, **kwargs)
+        processor = ifnone(processor, self.processor)
+        return self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -208,6 +209,10 @@ class CategoryProcessor(PreProcessor):
         super().process(ds)
 
 class CategoryListBase(ItemList):
+    def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
+        self.classes=classes
+        super().__init__(items, **kwargs)
+        
     @property
     def c(self): return len(self.classes)
 
@@ -217,7 +222,7 @@ class CategoryListBase(ItemList):
 class CategoryList(CategoryListBase):
     _item_cls=Category
     def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, **kwargs):
-        super().__init__(items, processor=processor, **kwargs)
+        super().__init__(items, processor=processor, classes=classes, **kwargs)
         if processor is None: self.processor = CategoryProcessor(classes=classes)
         self.loss_func = F.cross_entropy
 
@@ -241,7 +246,7 @@ class MultiCategoryList(CategoryListBase):
     _item_cls=MultiCategory
     def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, sep:str=None, **kwargs):
         if sep is not None: items = array(csv.reader(items, delimiter=sep))
-        super().__init__(items, processor=processor, **kwargs)
+        super().__init__(items, processor=processor, classes=classes, **kwargs)
         if processor is None: self.processor = MultiCategoryProcessor(classes=classes)
         self.loss_func = F.binary_cross_entropy_with_logits
 
