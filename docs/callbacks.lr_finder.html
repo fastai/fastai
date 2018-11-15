@@ -1,0 +1,382 @@
+---
+
+title: callbacks.lr_finder
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Implementation of the LR Range test from Leslie Smith"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Learning-Rate-Finder">Learning Rate Finder<a class="anchor-link" href="#Learning-Rate-Finder">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Learning rate finder plots lr vs loss relationship for a <a href="/basic_train.html#Learner"><code>Learner</code></a>. The idea is to reduce the amount of guesswork on picking a good starting learning rate.</p>
+<p><strong>Overview:</strong></p>
+<ol>
+<li>First run lr_find <code>learn.lr_find()</code></li>
+<li>Plot the learning rate vs loss <code>learn.recorder.plot()</code></li>
+<li>Pick a learning rate before it diverges then start training</li>
+</ol>
+<p><strong>Technical Details:</strong> (first <a href="&#39;https://arxiv.org/abs/1506.01186&#39;">described</a> by Leslie Smith)</p>
+<blockquote><p>Train <a href="/basic_train.html#Learner"><code>Learner</code></a> over a few iterations. Start with a very low <code>start_lr</code> and change it at each mini-batch until it reaches a very high <code>end_lr</code>. <a href="/basic_train.html#Recorder"><code>Recorder</code></a> will record the loss at each iteration. Plot those losses against the learning rate to find the optimal value before it diverges.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Choosing-a-good-learning-rate">Choosing a good learning rate<a class="anchor-link" href="#Choosing-a-good-learning-rate">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For a more intuitive explanation, please check out <a href="https://sgugger.github.io/how-do-you-find-a-good-learning-rate.html">Sylvain Gugger's post</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">simple_learner</span><span class="p">():</span> <span class="k">return</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">simple_learner</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First we run this command to launch the search:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="lr_find"><code>lr_find</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L22" class="source_link">[source]</a></h4><blockquote><p><code>lr_find</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>Floats</code>=<code>1e-07</code>, <code>end_lr</code>:<code>Floats</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Explore lr from <code>start_lr</code> to <code>end_lr</code> over <code>num_it</code> iterations in <code>learn</code>. If <code>stop_div</code>, stops when loss explodes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">(</span><span class="n">stop_div</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_it</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>LR Finder complete, type {learner_name}.recorder.plot() to see the graph.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then we plot the loss versus the learning rates. We're interested in finding a good order of magnitude of learning rate, so we plot with a log scale.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">recorder</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then, we choose a value that is approximately in the middle of the sharpest downward slope. In this case, training with 3e-2 looks like it should work well:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">simple_learner</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">3e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:03
+epoch  train_loss  valid_loss  accuracy
+1      0.070224    0.039051    0.986752  (00:01)
+2      0.038105    0.043696    0.985280  (00:01)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Don't just pick the minimum value from the plot!:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">simple_learner</span><span class="p">()</span>
+<span class="n">simple_learner</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1e-0</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:03
+epoch  train_loss  valid_loss  accuracy
+1      0.724437    0.693147    0.495584  (00:01)
+2      0.693758    0.693147    0.495584  (00:01)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Picking a value before the downward slope results in slow training:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">simple_learner</span><span class="p">()</span>
+<span class="n">simple_learner</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:03
+epoch  train_loss  valid_loss  accuracy
+1      0.184354    0.168152    0.940137  (00:01)
+2      0.146272    0.143661    0.946516  (00:01)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="LRFinder"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L9" class="source_link">[source]</a></h2><blockquote><p><code>LRFinder</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>float</code>=<code>1e-07</code>, <code>end_lr</code>:<code>float</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Causes <code>learn</code> to go on a mock training from <code>start_lr</code> to <code>end_lr</code> for <code>num_it</code> iterations. Training is interrupted if the loss diverges. Weights changes are reverted after run complete.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Cleanup learn model weights disturbed during LRFind exploration.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>iteration</code>:<code>int</code>, <code>smooth_loss</code>:<code>TensorOrNumber</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Determine if loss has runaway and we should stop.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L22" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>pbar</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Initialize optimizer and learner hyperparameters.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="LRFinder.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Tell Learner if we need to stop.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

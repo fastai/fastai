@@ -1,0 +1,20 @@
+#LWP-Cookies-1.0
+Set-Cookie3: session-id=000-0000000-0000000; path="/"; domain=.imdb.com; path_spec; secure; expires="2086-11-24 22:01:52Z"; version=0
+Set-Cookie3: session-id-time=2172250065; path="/"; domain=.imdb.com; path_spec; secure; expires="2086-11-24 22:01:52Z"; version=0
+Set-Cookie3: uu=BCYgIdCB6WwAYu6puD0mdCqFFeHgd3iNEfJCREJ9SWmZM51dcgoQNRcmxeU-iYDaoNRWCKqU7GT_%0D%0AAQ90WRlvSvRZa2_NIUDVDTgKcR3th-QpCgm67xGpxAlsE2CeH9n_kuQa13EpQbFvJk2IzP7SVLBJ%0D%0Acck_7h-J1VuJifzX5MNfIMRvus6LgwvcnCiYMF0imJG8DNWY_bCtDmPUBsu_2aRs5UvZ1ywEI2bS%0D%0Ak11vR2cnbo_rQMHLUSnuebj_izc41OA3J-xcwkSvQHk7-Jkj1EJfWg%0D%0A; path="/"; domain=.imdb.com; path_spec; secure; expires="2086-11-24 22:01:52Z"; version=0
+Set-Cookie3: __cfduid=d37e42c6767bc3baecabbdd73ad0e9c8b1541529833; path="/"; domain=.jupyter.org; path_spec; expires="2019-11-06 18:43:53Z"; HttpOnly; version=0
+Set-Cookie3: __cfduid=d0d81a3cbd5c96eb9f1afa122620e59c01541530081; path="/"; domain=.pnas.org; path_spec; expires="2019-11-06 18:48:01Z"; HttpOnly; version=0
+Set-Cookie3: __cfduid=d0c478e33fda351886786252a201198bb1541530093; path="/"; domain=.thunderbird.net; path_spec; expires="2019-11-06 18:48:13Z"; HttpOnly; version=0
+Set-Cookie3: WMF-Last-Access-Global=06-Nov-2018; path="/"; domain=.wikipedia.org; path_spec; secure; expires="2018-12-08 12:00:00Z"; HttpOnly; version=0
+Set-Cookie3: __cfduid=d19636489e8a5c79f60fbd21814cd70001541529813; path="/"; domain=cdnjs.com; path_spec; expires="2019-11-06 18:43:33Z"; HttpOnly; version=0
+Set-Cookie3: __cfduid=dd6b42855e112364b6b4539d0c478d9c71541530025; path="/"; domain=conda.io; path_spec; expires="2019-11-06 18:47:05Z"; HttpOnly; version=0
+Set-Cookie3: VstsSession=%7B%22PersistentSessionId%22%3A%22f7903545-9273-4bc4-847a-3f7eb003ddae%22%2C%22PendingAuthenticationSessionId%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22CurrentAuthenticationSessionId%22%3A%2200000000-0000-0000-0000-000000000000%22%7D; path="/"; domain=dev.azure.com; path_spec; secure; expires="2023-11-05 18:46:56Z"; HttpOnly; version=0
+Set-Cookie3: X-VSS-UseRequestRouting=True; path="/"; domain=dev.azure.com; path_spec; secure; expires="2018-11-06 19:46:56Z"; HttpOnly; version=0
+Set-Cookie3: WMF-Last-Access=06-Nov-2018; path="/"; domain=en.wikipedia.org; path_spec; secure; expires="2018-12-08 12:00:00Z"; HttpOnly; version=0
+Set-Cookie3: g_session=s%3Aja7dSgA2CZ6lg-2A7VoyowrhvwAWiCse.Tu7OWrG951N0wwfQmQsQBRt45dJDlQsdfgqOALWEeKI; path="/"; domain=gitter.im; path_spec; secure; expires="2018-11-06 22:47:07Z"; HttpOnly; version=0
+Set-Cookie3: __cfduid=dff80172640ac8fa4f5537e62f72581751541529974; path="/"; domain=matplotlib.org; path_spec; secure; expires="2019-11-06 18:46:14Z"; HttpOnly; version=0
+Set-Cookie3: session_id=v8g2w-7FT6UFUbEY-_1MeHUXeDywKgGHV-E9z_bVth8.W-Hhlw.4RaQt7sNoarYH6McoxxPUzD5yLksOGpCQj-8xwTmtMWvZchKih8kHxMLbiF_thPVBF54D83_-BucZurxPnMXyg; path="/"; domain=pypi.org; path_spec; secure; expires="2018-11-07 06:46:47Z"; HttpOnly; SameSite=lax; version=0
+Set-Cookie3: __cfduid=d61dfb9e29bab302c37bf34b6dc26cbe81541529995; path="/"; domain=spacy.io; path_spec; expires="2019-11-06 18:46:35Z"; HttpOnly; version=0
+Set-Cookie3: prov=4ef0ce75-5c23-b55f-b16e-d024a4f1ecfb; path="/"; domain=stackoverflow.com; path_spec; expires="2055-01-01 00:00:00Z"; HttpOnly; version=0
+Set-Cookie3: __cfduid=dd05abcce2ed3445aaa3334173f41c4f31541530085; path="/"; domain=www.jeremyjordan.me; path_spec; expires="2019-11-06 18:48:05Z"; HttpOnly; version=0
+Set-Cookie3: SESSca907012b06f4caa3be4974e15ad114a=rBxX1z2OfeV1bwFdKF4A1r6fp5Mlx-CMynFWdisrjJc; path="/"; domain=www.pnas.org; path_spec; expires="2018-11-29 22:21:24Z"; HttpOnly; version=0

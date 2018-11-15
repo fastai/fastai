@@ -1,0 +1,322 @@
+---
+
+title: basic_data
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Basic classes to contain the data for model training."
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Get-your-data-ready-for-training">Get your data ready for training<a class="anchor-link" href="#Get-your-data-ready-for-training">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This module defines the basic <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> object that is used inside <a href="/basic_train.html#Learner"><code>Learner</code></a> to train a model. This is the generic class, that can take any kind of fastai <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> or <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>. You'll find helpful functions in the data module of every application to directly create this <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for you.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DataBunch"><code>class</code> <code>DataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L67" class="source_link">[source]</a></h2><blockquote><p><code>DataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Bind together a <code>train_dl</code>, a <code>valid_dl</code> and optionally a <code>test_dl</code>, ensures they are on <code>device</code> and apply to them <code>tfms</code> as batch are drawn. <code>path</code> is used internally to store temporary files, <code>collate_fn</code> is passed to the pytorch <code>Dataloader</code> (replacing the one there) to explain how to collate the samples picked for a batch. By default, it applies data to the object sent (see in <a href="/vision.image.html#vision.image"><code>vision.image</code></a> why this can be important).</p>
+<p>An example of <code>tfms</code> to pass is normalization. <code>train_dl</code>, <code>valid_dl</code> and optionally <code>test_dl</code> will be wrapped in <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) → <code>DataBunch</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>train_ds</code>, <code>valid_ds</code> and optionally <code>test_ds</code>, with batch size <code>bs</code> and by using <code>num_workers</code>. <code>tfms</code> and <code>device</code> are passed to the init method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L115" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>rows</code>:<code>int</code>=<code>None</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Train: 1&gt;</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Show a batch of data in <code>ds_type</code> on a few <code>rows</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.dl"><code>dl</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>dl</code>(<code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Valid: 2&gt;</code>) → <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a></p>
+</blockquote>
+<p>Returns appropriate <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> for validation, training, or test (<code>ds_type</code>).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L112" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<code>tfm</code>:<code>Callable</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Adds a transform to all dataloaders.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DeviceDataLoader"><code>class</code> <code>DeviceDataLoader</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L12" class="source_link">[source]</a></h2><blockquote><p><code>DeviceDataLoader</code>(<code>dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>, <code>tfms</code>:<code>List</code>[<code>Callable</code>]=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>skip_size1</code>:<code>bool</code>=<code>False</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Put the batches of <code>dl</code> on <code>device</code> after applying an optional list of <code>tfms</code>. <code>collate_fn</code> will replace the one of <code>dl</code>. All dataloaders of a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> are of this type.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Factory-method">Factory method<a class="anchor-link" href="#Factory-method">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DeviceDataLoader.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L60" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>dataset</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>shuffle</code>:<code>bool</code>=<code>False</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>device(type='cuda')</code>, <code>tfms</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a> on <code>device</code> from a <code>dataset</code> with batch size <code>bs</code>, <code>num_workers</code>processes and a given <code>collate_fn</code>. The dataloader will <code>shuffle</code> the data if that flag is set to True, and <code>tfms</code> are passed to the init method. All <code>kwargs</code> are passed to the pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a> class initialization.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Methods">Methods<a class="anchor-link" href="#Methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DeviceDataLoader.one_batch"><code>one_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>one_batch</code>() → <code>Collection</code>[<code>Tensor</code>]</p>
+</blockquote>
+<p>Get one batch from the data loader.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DeviceDataLoader.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L36" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<code>tfm</code>:<code>Callable</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Add a transform (i.e. same as <code>self.tfms.append(tfm)</code>).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DeviceDataLoader.remove_tfm"><code>remove_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>remove_tfm</code>(<code>tfm</code>:<code>Callable</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Remove a transform.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DatasetType">`DatasetType`</h2><blockquote><p><code>Enum</code> = [Train, Valid, Test, Single]</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Internal enumerator to name the training, validation and test dataset/dataloader.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

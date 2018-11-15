@@ -1,0 +1,54 @@
+digraph G {
+  newrank=true;
+  node [shape=rectangle]
+  graph [compound=true]
+  subgraph cluster_core {
+    label = core
+    color = red
+    node [shape=rectangle]
+    core -> torch_core
+    torch_core -> metrics 
+    torch_core -> layers 
+    torch_core -> data_block
+    data_block -> basic_data
+  }
+  subgraph cluster_train {
+    label = training
+    color = green
+    callback -> basic_train -> callbacks -> train  
+  }
+  subgraph cluster_app {
+    label = applications
+    color = blue
+    {collab} 
+    subgraph cluster_vision {
+      group = ""
+      label = vision
+      vdata [label=data]
+      vtransform [label=transform]
+      vlearn [label=learn]
+      vmodel [label=models]
+      image -> vtransform -> vdata -> vlearn
+      vmodel -> vlearn
+    }
+    subgraph cluster_text {
+      label = text
+      tdata [label=data]
+      ttransform [label=transform]
+      tlearn [label=learn]
+      tmodel [label=models]
+      ttransform -> tdata -> tlearn
+      tmodel -> tlearn
+    }
+    subgraph cluster_tabular {
+      label = tabular
+      udata [label=data]
+      utransform [label=transform]
+      umodel [label=models]
+      utransform -> udata
+      umodel
+    }
+  }
+  core -> callback [ltail=cluster_core, lhead=cluster_train, label="   ", constraint=false, label="                                     "]
+  callback -> collab [ltail=cluster_train, lhead=cluster_app, constraint=false, label="              "]
+}

@@ -1,0 +1,144 @@
+---
+
+title: callbacks.rnn
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Implementation of a callback for RNN training"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Training-tweaks-for-an-RNN">Training tweaks for an RNN<a class="anchor-link" href="#Training-tweaks-for-an-RNN">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This callback regroups a few tweaks to properly train RNNs. They all come from <a href="https://arxiv.org/abs/1708.02182">this article</a> by Stephen Merity et al.</p>
+<p><strong>Adjusting the learning rate to sequence length:</strong> since we're modifying the bptt at each batch, sometimes by a lot (we divide it by 2 randomly), the learning rate has to be adjusted to take this into account, mainly being multiplied by the ratio <code>seq_len/bptt</code>.</p>
+<p><strong>Activation Regularization:</strong> on top of weight decay, we apply another form of regularization that is pretty similar and consists in adding to the loss a scaled factor of the sum of all the squares of the ouputs (with dropout applied) of the various layers of the RNN. Intuitively, weight decay tries to get the network to learn small weights, this is to get the model to learn to produce smaller activations.</p>
+<p><strong>Temporal Activation Regularization:</strong> lastly, we add to the loss a scaled factor of the sum of the squares of the <code>h_(t+1) - h_t</code>, where <code>h_i</code> is the output (before dropout is applied) of one layer of the RNN at the time step i (word i of the sentence). This will encourage the model to produce activations that don’t vary too fast between two consecutive words of the sentence.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="RNNTrainer"><code>class</code> <code>RNNTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L9" class="source_link">[source]</a></h2><blockquote><p><code>RNNTrainer</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>bptt</code>:<code>int</code>, <code>alpha</code>:<code>float</code>=<code>0.0</code>, <code>beta</code>:<code>float</code>=<code>0.0</code>, <code>adjust</code>:<code>bool</code>=<code>True</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> that adds to learner the RNN tweaks for training on data with <code>bptt</code>. <code>alpha</code> is the scale for AR, <code>beta</code> is the scale for TAR. If <code>adjust</code> is False, the learning rate isn't adjusted to the sequence length.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<code>kwargs</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Reset the underlying model before training.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNTrainer.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<code>last_output</code>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <code>kwargs</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The fastai RNNs return <code>last_ouput</code> that are tuples of three elements, the true output (that is returned) and the hidden states before and after dropout (which are saved internally for the next function).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L25" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>:<code>Rank0Tensor</code>, <code>last_input</code>:<code>Tensor</code>, <code>kwargs</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Adjusts the learning rate to the size of <code>last_input</code>. Adds to <code>last_loss</code> the AR and TAR.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

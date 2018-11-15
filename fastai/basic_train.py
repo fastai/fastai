@@ -9,10 +9,10 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train
 default_lr = slice(3e-3)
 default_wd = 1e-2
 
-def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None, 
+def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
     "Calculate loss and metrics for a batch, call out to callbacks as necessary."
-    cb_handler = ifnone(cb_handler, CallbackHandler([], []))
+    cb_handler = ifnone(cb_handler, CallbackHandler())
     if not is_listy(xb): xb = [xb]
     if not is_listy(yb): yb = [yb]
     out = model(*xb)
@@ -29,15 +29,19 @@ def loss_batch(model:Model, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, op
         cb_handler.on_step_end()
         opt.zero_grad()
 
-    return (loss.detach().cpu(),) #TODO: change code so that it doesn't return a tuple anymore and check it doesn't break anything
+    return loss.detach().cpu()
 
-def get_preds(model:Model, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None) -> List[Tensor]:
-    "Predict the output of the elements in the dataloader."
-    return [torch.cat(o).cpu() for o in zip(*validate(model, dl, pbar=pbar, cb_handler=cb_handler, average=False))]
+def get_preds(model:nn.Module, dl:DataLoader, pbar:Optional[PBar]=None, cb_handler:Optional[CallbackHandler]=None,
+              activ:nn.Module=None, loss_func:OptLossFunc=None, n_batch:Optional[int]=None) -> List[Tensor]:
+    "Tuple of predictions and targets, and optional losses (if `loss_func`) using `dl`, max batches `n_batch`."
+    res = [torch.cat(o).cpu() for o in
+           zip(*validate(model, dl, cb_handler=cb_handler, pbar=pbar, average=False, n_batch=n_batch))]
+    if loss_func is not None: res.append(calc_loss(res[0], res[1], loss_func))
+    if activ is not None: res[0] = activ(res[0])
+    return res
 
-def validate(model:Model, dl:DataLoader, loss_func:OptLossFunc=None,
-             cb_handler:Optional[CallbackHandler]=None,
-             pbar:Optional[PBar]=None, average=True)->Iterator[Tuple[Union[Tensor,int],...]]:
+def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_handler:Optional[CallbackHandler]=None,
+             pbar:Optional[PBar]=None, average=True, n_batch:Optional[int]=None)->Iterator[Tuple[Union[Tensor,int],...]]:
     "Calculate loss and metrics for the validation set."
     model.eval()
     with torch.no_grad():
@@ -47,12 +51,13 @@ def validate(model:Model, dl:DataLoader, loss_func:OptLossFunc=None,
             val_losses.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler))
             if not is_listy(yb): yb = [yb]
             nums.append(yb[0].shape[0])
-            if cb_handler and cb_handler.on_batch_end(val_losses[-1][0]): break
+            if cb_handler and cb_handler.on_batch_end(val_losses[-1]): break
+            if n_batch and (len(nums)>=n_batch): break
         nums = np.array(nums, dtype=np.float32)
-        if average: return [(to_np(torch.stack(val)) * nums).sum() / nums.sum() for val in zip(*val_losses)]
+        if average: return (to_np(torch.stack(val_losses)) * nums).sum() / nums.sum()
         else:       return val_losses
 
-def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossFunction)->None:
+def train_epoch(model:nn.Module, dl:DataLoader, opt:optim.Optimizer, loss_func:LossFunction)->None:
     "Simple training of `model` for 1 epoch of `dl` using optim `opt` and loss function `loss_func`."
     model.train()
     for xb,yb in dl:
@@ -61,7 +66,7 @@ def train_epoch(model:Model, dl:DataLoader, opt:optim.Optimizer, loss_func:LossF
         opt.step()
         opt.zero_grad()
 
-def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
+def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer,
         data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss` and `opt`."
     cb_handler = CallbackHandler(callbacks, metrics)
@@ -76,7 +81,7 @@ def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
 
             for xb,yb in progress_bar(data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
-                loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)[0]
+                loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
             if hasattr(data,'valid_dl') and data.valid_dl is not None:
@@ -88,6 +93,26 @@ def fit(epochs:int, model:Model, loss_func:LossFunction, opt:optim.Optimizer,
         exception = e
         raise e
     finally: cb_handler.on_train_end(exception)
+
+loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': F.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
+    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': F.sigmoid
+}
+
+def _loss_func2activ(loss_func):
+    cls_name = camel2snake(loss_func.__class__.__name__)
+    if cls_name == 'mix_up_loss':
+        loss_func = loss_func.crit
+        cls_name = camel2snake(loss_func.__class__.__name__)
+    if cls_name in loss_func_name2activ:
+        if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
+        return loss_func_name2activ[cls_name]
+    if hasattr(loss_func, 'func'):
+        if loss_func.func.__name__ == 'poisson_nll_loss' and (not loss_func.keywords.get('log_input', True)): return
+        loss_func = loss_func.func
+    if getattr(loss_func,'__name__','') in loss_func_name2activ:
+        return loss_func_name2activ[loss_func.__name__]
+    return
 
 @dataclass
 class Learner():
@@ -163,19 +188,45 @@ class Learner():
 
     def __del__(self): del(self.model, self.data)
 
-    def save(self, name:PathOrStr):
-        "Save model with `name` to `self.model_dir`."
-        torch.save(self.model.state_dict(), self.path/self.model_dir/f'{name}.pth')
+    def save(self, name:PathOrStr, return_path:bool=False)->Union[None,str]:
+        "Save model with `name` to `self.model_dir`, and return path if `return_path`."
+        path = self.path/self.model_dir/f'{name}.pth'
+        torch.save(self.model.state_dict(), path)
+        if return_path: return path
+
+    def dl(self, ds_type:DatasetType=DatasetType.Valid):
+        "Return DataLoader for DatasetType `ds_type`."
+        return self.data.dl(ds_type)
 
     def load(self, name:PathOrStr, device:torch.device=None):
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
         if device is None: device = self.data.device
         self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
+        return self
 
-    def get_preds(self, is_test:bool=False) -> List[Tensor]:
-        "Return predictions and targets on the valid or test set, depending on `is_test`."
-        return get_preds(self.model, self.data.holdout(is_test), cb_handler=CallbackHandler(self.callbacks, []))
-    
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
+        "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
+        lf = self.loss_func if with_loss else None
+        return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
+                         activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
+
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, pbar:Optional[PBar]=None) -> List[Tensor]:
+        "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
+        dl = self.dl(ds_type)
+        nw = dl.num_workers
+        dl.num_workers = 0
+        preds,_ = self.get_preds(ds_type, with_loss=False, n_batch=1, pbar=pbar)
+        dl.num_workers = nw
+        return preds
+
+    def predict(self, img:ItemBase, pbar:Optional[PBar]=None):
+        "Return prect class, label and probabilities for `img`."
+        ds = self.data.single_dl.dataset
+        ds.set_item(img)
+        res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        ds.clear_item()
+        return ds.predict(res)
+
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
@@ -185,6 +236,13 @@ class Learner():
         val_metrics = validate(self.model, dl, self.loss_func, cb_handler)
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
+
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, **kwargs):
+        "Show `rows` result of predictions on `ds_type` dataset."
+        ds = self.dl(ds_type).dataset
+        preds = self.pred_batch(ds_type)
+        xys = [ds[i] for i in range(rows)]
+        xys[0][0].show_results(xys, preds, **kwargs)
 
 @dataclass
 class LearnerCallback(Callback):
@@ -207,8 +265,8 @@ class Recorder(LearnerCallback):
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
-        self.names = ['epoch', 'train loss', 'valid loss'] + metrics_names
-        self.pbar.write('  '.join(self.names))
+        self.names = ['epoch', 'train_loss', 'valid_loss'] + metrics_names
+        self.pbar.write('  '.join(self.names), table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
     def on_batch_begin(self, train, **kwargs:Any)->None:
@@ -242,14 +300,14 @@ class Recorder(LearnerCallback):
             t = str(stat) if isinstance(stat, int) else f'{stat:.6f}'
             t += ' ' * (len(name) - len(t))
             str_stats.append(t)
-        self.pbar.write('  '.join(str_stats))
-        
+        self.pbar.write('  '.join(str_stats), table=True)
+
     def add_metrics(self, metrics):
         self._added_mets = metrics
 
     def add_metric_names(self, names):
         self._added_met_names = names
-        
+
     def plot_lr(self, show_moms=False)->None:
         "Plot learning rate, `show_moms` to include momentum."
         iterations = range_of(self.lrs)
@@ -265,7 +323,10 @@ class Recorder(LearnerCallback):
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
         _, ax = plt.subplots(1,1)
         ax.plot(lrs, losses)
+        ax.set_ylabel("Loss")
+        ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
+        ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
 
     def plot_losses(self)->None:
         "Plot training and validation losses."

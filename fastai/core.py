@@ -7,12 +7,12 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 AnnealFunc = Callable[[Number,Number,float], Number]
 ArgStar = Collection[Any]
 BatchSamples = Collection[Tuple[Collection[int], int]]
-Classes = Collection[Any]
 DataFrameOrChunks = Union[DataFrame, pd.io.parsers.TextFileReader]
 FilePathList = Collection[Path]
 Floats = Union[float, Collection[float]]
 ImgLabel = str
 ImgLabels = Collection[ImgLabel]
+IntsOrStrs = Union[int, Collection[int], str, Collection[str]]
 KeyFunc = Callable[[int], int]
 KWArgs = Dict[str,Any]
 ListOrItem = Union[Collection[Any],int,float,str]
@@ -38,6 +38,8 @@ StrList = Collection[str]
 Tokens = Collection[Collection[str]]
 OptStrList = Optional[StrList]
 
+np.set_printoptions(precision=6, threshold=50, edgeitems=4, linewidth=120)
+
 def num_cpus()->int:
     "Get number of cpus"
     try:                   return len(os.sched_getaffinity(0))
@@ -56,7 +58,14 @@ def ifnone(a:Any,b:Any)->Any:
     "`a` if `a` is not None, otherwise `b`."
     return b if a is None else a
 
-def uniqueify(x:Series) -> List[Any]: return list(OrderedDict.fromkeys(x).keys())
+def is1d(a:Collection)->bool:
+    "Returns True if a collection is one dimensional"
+    return len(a.shape) == 1 if hasattr(a, 'shape') else True
+
+def uniqueify(x:Series)->List:
+    "Return unique values of `x`"
+    return list(OrderedDict.fromkeys(x).keys())
+
 def idx_dict(a): return {v:k for k,v in enumerate(a)}
 
 def find_classes(folder:Path)->FilePathList:
@@ -100,7 +109,7 @@ def even_mults(start:float, stop:float, n:int)->np.ndarray:
     return np.array([start*(step**i) for i in range(n)])
 
 def extract_kwargs(names:Collection[str], kwargs:KWArgs):
-    "Extracs the keys in `names` from the `kwargs`."
+    "Extract the keys in `names` from the `kwargs`."
     new_kwargs = {}
     for arg_name in names:
         if arg_name in kwargs:
@@ -108,69 +117,113 @@ def extract_kwargs(names:Collection[str], kwargs:KWArgs):
             new_kwargs[arg_name] = arg_val
     return new_kwargs, kwargs
 
-def partition(a:Collection, sz:int) -> List[Collection]:
+def partition(a:Collection, sz:int)->List[Collection]:
     "Split iterables `a` in equal parts of size `sz`"
     return [a[i:i+sz] for i in range(0, len(a), sz)]
 
-def partition_by_cores(a:Collection, n_cpus:int) -> List[Collection]:
+def partition_by_cores(a:Collection, n_cpus:int)->List[Collection]:
     "Split data in `a` equally among `n_cpus` cores"
     return partition(a, len(a)//n_cpus + 1)
-
-def get_chunk_length(data:Union[PathOrStr, DataFrame, pd.io.parsers.TextFileReader], chunksize:Optional[int] = None) -> int:
-    "Read the number of chunks in a pandas `DataFrame`."
-    if (type(data) == DataFrame):  return 1
-    elif (type(data) == pd.io.parsers.TextFileReader):
-        dfs = pd.read_csv(data.f, header=None, chunksize=data.chunksize)
-    else:  dfs = pd.read_csv(data, header=None, chunksize=chunksize)
-    l = 0
-    for _ in dfs: l+=1
-    return l
-
-def get_total_length(csv_name:PathOrStr, chunksize:int) -> int:
-    "Read the the total length of a pandas `DataFrame`."
-    dfs = pd.read_csv(csv_name, header=None, chunksize=chunksize)
-    l = 0
-    for df in dfs: l+=len(df)
-    return l
-
-def maybe_copy(old_fnames:Collection[PathOrStr], new_fnames:Collection[PathOrStr]):
-    "Copy the `old_fnames` to `new_fnames` location if `new_fnames` don't exist or are less recent."
-    os.makedirs(os.path.dirname(new_fnames[0]), exist_ok=True)
-    for old_fname,new_fname in zip(old_fnames, new_fnames):
-        if not os.path.isfile(new_fname) or os.path.getmtime(new_fname) < os.path.getmtime(old_fname):
-            shutil.copyfile(old_fname, new_fname)
 
 def series2cat(df:DataFrame, *col_names):
     "Categorifies the columns `col_names` in `df`."
     for c in listify(col_names): df[c] = df[c].astype('category').cat.as_ordered()
 
+TfmList = Union[Callable, Collection[Callable]]
+
 class ItemBase():
     "All transformable dataset items use this type."
-    @property
-    @abstractmethod
-    def device(self): pass
-    @property
-    @abstractmethod
-    def data(self): pass
-
-def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None)->None:
-    "Download `url` to `dest` unless is exists and not `overwrite`."
+    def __init__(self, data:Any): self.data=self.obj=data
+    def __repr__(self): return f'{self.__class__.__name__} {self}'
+    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
+    def apply_tfms(self, tfms:Collection, **kwargs):
+        if tfms: raise Exception('Not implemented')
+        return self
+def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
+                 show_progress=True, chunk_size=1024*1024, timeout=4)->None:
+    "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
-    u = requests.get(url, stream=True)
-    file_size = int(u.headers["Content-Length"])
-    u = u.raw
 
-    with open(dest,'wb') as f:
-        pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
-        nbytes,buffer = 0,[1]
-        while len(buffer):
-            buffer = u.read(8192)
-            nbytes += len(buffer)
-            pbar.update(nbytes)
-            f.write(buffer)
+    u = requests.get(url, stream=True, timeout=timeout)
+    try: file_size = int(u.headers["Content-Length"])
+    except: show_progress = False
+
+    with open(dest, 'wb') as f:
+        nbytes = 0
+        if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
+        for chunk in u.iter_content(chunk_size=chunk_size):
+            nbytes += len(chunk)
+            if show_progress: pbar.update(nbytes)
+            f.write(chunk)
 
 def range_of(x): return list(range(len(x)))
 def arange_of(x): return np.arange(len(x))
 
-Path.ls = lambda x: [o.name for o in x.iterdir()]
+Path.ls = lambda x: list(x.iterdir())
+
+def join_path(fname:PathOrStr, path:PathOrStr='.')->Path:
+    "Return `Path(path)/Path(fname)`, `path` defaults to current dir."
+    return Path(path)/Path(fname)
+
+def join_paths(fnames:FilePathList, path:PathOrStr='.')->Collection[Path]:
+    "Join `path` to every file name in `fnames`."
+    path = Path(path)
+    return [join_path(o,path) for o in fnames]
+
+def loadtxt_str(path:PathOrStr)->np.ndarray:
+    "Return `ndarray` of `str` of lines of text from `path`."
+    with open(path, 'r') as f: lines = f.readlines()
+    return np.array([l.strip() for l in lines])
+
+def save_texts(fname:PathOrStr, texts:Collection[str]):
+    "Save in `fname` the content of `texts`."
+    with open(fname, 'w') as f:
+        for t in texts: f.write(f'{t}\n')
+
+def df_names_to_idx(names:IntsOrStrs, df:DataFrame):
+    "Return the column indexes of `names` in `df`."
+    if not is_listy(names): names = [names]
+    if isinstance(names[0], int): return names
+    return [df.columns.get_loc(c) for c in names]
+
+def one_hot(x:Collection[int], c:int):
+    "One-hot encode the target."
+    res = np.zeros((c,), np.float32)
+    res[x] = 1.
+    return res
+
+def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
+    "Return the slice of `a` corresponding to `idxs`."
+    if a is None: return a
+    if isinstance(a,(pd.DataFrame,pd.Series)):
+        res = a.iloc[idxs]
+        if isinstance(res,(pd.DataFrame,pd.Series)): return res.copy()
+        return res
+    return a[idxs]
+
+def func_args(func)->bool:
+    "Return the arguments of `func`."
+    code = func.__code__
+    return code.co_varnames[:code.co_argcount]
+
+def has_arg(func, arg)->bool: return arg in func_args(func)
+
+def try_int(o:Any)->Any:
+    "Try to conver `o` to int, default to `o` if not possible."
+    try: return int(o)
+    except: return o
+
+def array(a, *args, **kwargs)->np.ndarray:
+    "Same as `np.array` but also handles generators"
+    if not isinstance(a, collections.Sized): a = list(a)
+    return np.array(a, *args, **kwargs)
+
+class Category(ItemBase):
+    def __init__(self,data,obj): self.data,self.obj = data,obj
+    def __int__(self): return self.data
+    def __str__(self): return str(self.obj)
+
+class MultiCategory(ItemBase):
+    def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
+    def __str__(self): return ';'.join([str(o) for o in self.obj])
 

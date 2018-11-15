@@ -1,0 +1,319 @@
+---
+
+title: gen_doc.gen_notebooks
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Generation of documentation notebook skeletons from python module"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Notebook-generation">Notebook generation<a class="anchor-link" href="#Notebook-generation">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This module contains the scripts and API to auto-generate or update a documentation notebook skeleton from a given .py file or a full package. It is not expected you'd use this skeleton as your final docs - you should add markdown, examples, etc to it. The skeleton just has a minimal list of exported symbols.</p>
+<p><a href="https://github.com/fastai/fastai/blob/master/docs_src/tools/sgen_notebooks.py"><code>tools/sgen_notebooks</code></a> contains a command line tool that transforms a given module into a notebook skeleton. It's essentially a wrapper around <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>gen_notebooks.update_notebooks</code></a> The usage is</p>
+
+<pre><code>python -m sgen_notebooks package path_to_result [--update]</code></pre>
+<ul>
+<li><strong>package</strong> is the package you want to write the documentation for. Note that if the package isn't installed in your environment, you need to execute the script in a place where package is a directory (or make a simlink to it). The script will search thourgh all the subdirectories to create all the relevant notebooks.</li>
+<li><strong>path_to_result</strong> is a directory where you want those notebooks. The script will auto-execute them, so this directory should contain the file nbdoc.py from this package. If the module you are documenting isn't installed, you will also need to have a simlink to it in your path_to_result folder.</li>
+<li>if the flag <strong>--update</strong> is added, the script will update the notebooks (to reflect the addition of new functions or new arguments).</li>
+</ul>
+<p>Alternatively, you can access the same functionality through the module API, documented below.</p>
+<p><strong>Important note:</strong> The notebooks automatically generated or updated need to be trusted before you can see the results in the output cells. To trust a notebook, click on File, then Trust notebook.</p>
+<p>This module also contains the scripts and API to convert the documentation notebooks into HTML, which is the format used for the final documentation site.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Installation">Installation<a class="anchor-link" href="#Installation">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This package requires:</p>
+<ul>
+<li><a href="https://github.com/jupyter/nbconvert">nbconvert</a>: conda install nbconvert</li>
+<li><a href="https://github.com/ipython-contrib/jupyter_contrib_nbextensions">nb_extensions</a>: conda install -c conda-forge jupyter_contrib_nbextensions</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once nbextensions is installed, your home page of jupyter notebook will look like this:</p>
+<p><img src="imgs/nbext.png" alt="Homepage with nbextension"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Click on the Nbextensions tab then make sure the hide inputs extension is activated:</p>
+<p><img src="imgs/hide_input.png" alt="Activate hidden input"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As its name suggests, this will allow you to hide input cells and only show their results.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Convert-modules-into-notebook-skeleton">Convert modules into notebook skeleton<a class="anchor-link" href="#Convert-modules-into-notebook-skeleton">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first (optional) step is to create a notebook "skeleton" - i.e. a notebook containing all the classes, methods, functions, and other symbols you wish to document. You can create this manually if you prefer, however using the automatic approach can save you some time and ensure you don't miss anything. For the initial skelton, use <a href="/gen_doc.gen_notebooks.html#create_module_page"><code>create_module_page</code></a>, which creates a new module from scratch. To update it later with any newly-added symbols, use <a href="/gen_doc.gen_notebooks.html#update_module_page"><code>update_module_page</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="create_module_page"><code>create_module_page</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/gen_notebooks.py#L97" class="source_link">[source]</a></h4><blockquote><p><code>create_module_page</code>(<code>mod</code>, <code>dest_path</code>, <code>force</code>=<code>False</code>)</p>
+</blockquote>
+<p>Create the documentation notebook for module <code>mod_name</code> in path <code>dest_path</code></p>
+<ul>
+<li><em>mod</em>: the module</li>
+<li><em>dest_path</em>: the folder in which to generate the notebook</li>
+<li><em>force</em>: if False, will raise an exception if the notebook is already present </li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="link_nb"><code>link_nb</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/gen_notebooks.py#L294" class="source_link">[source]</a></h4><blockquote><p><code>link_nb</code>(<code>nb_path</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="update_module_page"><code>update_module_page</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/gen_notebooks.py#L266" class="source_link">[source]</a></h4><blockquote><p><code>update_module_page</code>(<code>mod</code>, <code>dest_path</code>=<code>'.'</code>)</p>
+</blockquote>
+<p>Update the documentation notebook of a given module.</p>
+<ul>
+<li><em>mod</em>: the module</li>
+<li><em>dest_path</em>: the folder in which to generate the notebook </li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All the cells added by a user are conserved, only the cells of new symbols (aka that weren't documented before) will be inserted at the end. You can then move them to wherever you like in the notebook. For instance, to update this module's documentation, simply run:</p>
+
+<pre><code>update_module_page(gen_doc.gen_notebooks, '.')</code></pre>
+<p>You can also generate and update <em>all</em> modules in a package using <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Updating-module-metadata">Updating module metadata<a class="anchor-link" href="#Updating-module-metadata">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Jekyll pulls the documentation title, summary, and keywords from the metadata of each notebook.<br>
+Notebook metadata structure looks like this: <code>'metadata': { 'jekyll': {...} }</code></p>
+<p>To update metadata of these notebooks, run <code>generate_missing_metadata('.')</code>. Then open the notebook <code>jekyll_metadata.ipynb</code> to change the metadata.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="generate_missing_metadata"><code>generate_missing_metadata</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/gen_notebooks.py#L193" class="source_link">[source]</a></h4><blockquote><p><code>generate_missing_metadata</code>(<code>dest_file</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="update_nb_metadata"><code>update_nb_metadata</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/gen_notebooks.py#L208" class="source_link">[source]</a></h4><blockquote><p><code>update_nb_metadata</code>(<code>nb_path</code>=<code>None</code>, <code>title</code>=<code>None</code>, <code>summary</code>=<code>None</code>, <code>keywords</code>=<code>'fastai'</code>, <code>overwrite</code>=<code>True</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Creates jekyll metadata for given notebook path.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Updating-all-module-docs">Updating all module docs<a class="anchor-link" href="#Updating-all-module-docs">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="update_notebooks"><code>update_notebooks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/gen_notebooks.py#L309" class="source_link">[source]</a></h4><blockquote><p><code>update_notebooks</code>(<code>source_path</code>, <code>dest_path</code>=<code>None</code>, <code>update_html</code>=<code>True</code>, <code>document_new_fns</code>=<code>False</code>, <code>update_nb_links</code>=<code>True</code>, <code>html_path</code>=<code>None</code>, <code>force</code>=<code>False</code>)</p>
+</blockquote>
+<p><code>source_path</code> can be a directory or a file. Assume all modules reside in the fastai directory.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As a convenience method, this can update all notebooks. This snippet does the whole lot for you:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;docs_src&#39;</span><span class="p">,</span> <span class="n">update_html</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">update_nb</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</pre></div>
+<p>This will update all ipynb documentation notebooks specified under source_path</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Add-documentation">Add documentation<a class="anchor-link" href="#Add-documentation">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The automatically generated module will only contain the table of contents and the doc string of the functions and classes in your module (or the ones you picked with __all__). You should add more prose to them in markdown cells, or examples of uses inside the notebook.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>At any time, if you don't want the input of a code cell to figure in the final result, you can use the little button in your tool bar to hide it.</p>
+<p><img src="imgs/button_hide.png" alt="Button to hide an input"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The same button can show you the hidden input from a cell. This used in conjunction with the helper functions from <a href="gen_doc.nbdoc.ipynb">nbdoc</a> should allow you to easily add any content you need.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Convert-notebook-to-html">Convert notebook to html<a class="anchor-link" href="#Convert-notebook-to-html">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once you're finished, don't forget to properly save your notebook, then you can either convert all the notebooks together with the script:</p>
+
+<pre><code>python -m convert2html dir</code></pre>
+<ul>
+<li><strong>dir</strong> is the directory where all your notebooks are stored.</li>
+</ul>
+<p>If you prefer to do this in a notebook, you can simply type:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.gen_doc.convert2html</span> <span class="kn">import</span> <span class="n">convert_nb</span>
+<span class="n">convert_nb</span><span class="p">(</span><span class="s1">&#39;gen_doc.gen_notebooks.ipynb&#39;</span><span class="p">,</span> <span class="s1">&#39;../docs&#39;</span><span class="p">)</span>
+</pre></div>
+<p>For more information see the <a href="gen_doc.convert2html.ipynb">documentation of convert2html</a>.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

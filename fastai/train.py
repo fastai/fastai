@@ -1,6 +1,7 @@
 "Provides advanced training extensions to `fastai.basic_train`. Includes half-precision, learning rate finder, mixup, and one-cycle"
 from .torch_core import *
 from .callbacks import *
+from .basic_data import *
 from .basic_train import *
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'mixup']
@@ -50,7 +51,7 @@ class ShowGraph(LearnerCallback):
         "If we have metrics plot them in our pbar graph"
         if last_metrics is not None:
             rec = self.learn.recorder
-            iters = list(range(len(rec.losses)))
+            iters = range_of(rec.losses)
             val_iter = np.array(rec.nb_batches).cumsum()
             x_bounds = (0, (n_epochs - len(rec.nb_batches)) * rec.nb_batches[-1] + len(rec.losses))
             y_bounds = (0, max((max(Tensor(rec.losses)), max(Tensor(rec.val_losses)))))

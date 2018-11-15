@@ -1,0 +1,277 @@
+---
+
+title: gen_doc.nbdoc
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Helper function to build the documentation"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Documentation-notebook-functions">Documentation notebook functions<a class="anchor-link" href="#Documentation-notebook-functions">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/gen_doc.nbdoc.html#gen_doc.nbdoc"><code>nbdoc</code></a> contains the functions for documentation notebooks. The most important is <a href="/gen_doc.nbdoc.html#show_doc"><code>show_doc</code></a>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Show-the-documentation-of-a-function">Show the documentation of a function<a class="anchor-link" href="#Show-the-documentation-of-a-function">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="show_doc"><code>show_doc</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>show_doc</code>(<code>elt</code>, <code>doc_string</code>:<code>bool</code>=<code>True</code>, <code>full_name</code>:<code>str</code>=<code>None</code>, <code>arg_comments</code>:<code>dict</code>=<code>None</code>, <code>title_level</code>=<code>None</code>, <code>alt_doc_string</code>:<code>str</code>=<code>''</code>, <code>ignore_warn</code>:<code>bool</code>=<code>False</code>, <code>markdown</code>=<code>True</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Show the documentation of an <code>elt</code> (function, class or enum). <code>doc_string</code> decices if we show the doc string of the element or not, <code>full_name</code> will override the name shown, <code>arg_comments</code> is a dictionary that will then show list the arguments with comments. <code>title_level</code> is the level of the corresponding cell in the TOC, <code>alt_doc_string</code> is a text that can replace the <code>doc_string</code>. <code>ignore_warn</code> will ignore warnings if you pass arguments in <code>arg_comments</code> that don't appear to belong to this function and <code>markdown</code> decides if the return is a Markdown cell or plain text.</p>
+<p>Plenty of examples of uses of this cell can been seen through the documentation, and you will want to <em>hide input</em> those cells for a clean final result.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Convenience-functions">Convenience functions<a class="anchor-link" href="#Convenience-functions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_source_link"><code>get_source_link</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L322" class="source_link">[source]</a></h4><blockquote><p><code>get_source_link</code>(<code>mod</code>, <code>lineno</code>, <code>display_text</code>=<code>'[source]'</code>) → <code>str</code></p>
+</blockquote>
+<p>Returns link to <code>lineno</code> in source code of <code>mod</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="show_video"><code>show_video</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L266" class="source_link">[source]</a></h4><blockquote><p><code>show_video</code>(<code>url</code>)</p>
+</blockquote>
+<p>Display video in <code>url</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="show_video_from_youtube"><code>show_video_from_youtube</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L271" class="source_link">[source]</a></h4><blockquote><p><code>show_video_from_youtube</code>(<code>code</code>, <code>start</code>=<code>0</code>)</p>
+</blockquote>
+<p>Display video from Youtube with a <code>code</code> and a <code>start</code> time.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Functions-for-internal-fastai-library-use">Functions for internal fastai library use<a class="anchor-link" href="#Functions-for-internal-fastai-library-use">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_exports"><code>get_exports</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L198" class="source_link">[source]</a></h4><blockquote><p><code>get_exports</code>(<code>mod</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Get the exports of <code>mod</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_fn_link"><code>get_fn_link</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>get_fn_link</code>(<code>ft</code>) → <code>str</code></p>
+</blockquote>
+<p>Return function link to notebook documentation of <code>ft</code>. Private functions link to source code</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_ft_names"><code>get_ft_names</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L203" class="source_link">[source]</a></h4><blockquote><p><code>get_ft_names</code>(<code>mod</code>, <code>include_inner</code>=<code>False</code>) → <code>List</code>[<code>str</code>]</p>
+</blockquote>
+<p>Return all the functions of module <code>mod</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="is_enum"><code>is_enum</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>is_enum</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check if something is an enumerator.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="import_mod"><code>import_mod</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L177" class="source_link">[source]</a></h4><blockquote><p><code>import_mod</code>(<code>mod_name</code>:<code>str</code>, <code>ignore_errors</code>=<code>False</code>)</p>
+</blockquote>
+<p>Return module from <code>mod_name</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="link_docstring"><code>link_docstring</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbdoc.py#L153" class="source_link">[source]</a></h4><blockquote><p><code>link_docstring</code>(<code>modules</code>, <code>docstring</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>) → <code>str</code></p>
+</blockquote>
+<p>Search <code>docstring</code> for backticks and attempt to link those functions to respective documentation.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

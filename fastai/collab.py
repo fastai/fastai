@@ -7,7 +7,7 @@ from .layers import *
 __all__ = ['CollabFilteringDataset', 'EmbeddingDotBias', 'get_collab_learner']
 
 @dataclass
-class CollabFilteringDataset(DatasetBase):
+class CollabFilteringDataset(Dataset):
     "Base dataset for collaborative filtering."
     user:Series
     item:Series
@@ -78,3 +78,4 @@ def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user
     data = DataBunch.create(*datasets, **kwargs)
     model = EmbeddingDotBias(n_factors, datasets[0].n_user, datasets[0].n_item, min_score, max_score)
     return Learner(data, model, metrics=metrics)
+

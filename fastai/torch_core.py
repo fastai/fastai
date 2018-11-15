@@ -9,12 +9,12 @@ IntOrTensor = Union[int,Tensor]
 ItemsList = Collection[Union[Tensor,ItemBase,'ItemsList',float,int]]
 LambdaFunc = Callable[[Tensor],Tensor]
 LayerFunc = Callable[[nn.Module],None]
-Model = nn.Module
 ModuleList = Collection[nn.Module]
+NPArray = np.ndarray
 OptOptimizer = Optional[optim.Optimizer]
 ParamList = Collection[nn.Parameter]
 Rank0Tensor = NewType('OneEltTensor', Tensor)
-SplitFunc = Callable[[Model], List[Model]]
+SplitFunc = Callable[[nn.Module], List[nn.Module]]
 SplitFuncOrIdxList = Union[Callable, Collection[ModuleList]]
 TensorOrNumber = Union[Tensor,Number]
 TensorOrNumList = Collection[TensorOrNumber]
@@ -24,7 +24,7 @@ Tensors = Union[Tensor, Collection['Tensors']]
 Weights = Dict[str,Tensor]
 
 AffineFunc = Callable[[KWArgs], AffineMatrix]
-HookFunc = Callable[[Model, Tensors, Tensors], Any]
+HookFunc = Callable[[nn.Module, Tensors, Tensors], Any]
 LogitTensorImage = TensorImage
 LossFunction = Callable[[Tensor, Tensor], Rank0Tensor]
 MetricFunc = Callable[[Tensor,Tensor],TensorOrNumber]
@@ -38,7 +38,7 @@ PixelFunc = Callable[[TensorImage, ArgStar, KWArgs], TensorImage]
 LightingFunc = Callable[[LogitTensorImage, ArgStar, KWArgs], LogitTensorImage]
 
 fastai_types = {
-    AnnealFunc:'AnnealFunc', ArgStar:'ArgStar', BatchSamples:'BatchSamples', Classes:'Classes',
+    AnnealFunc:'AnnealFunc', ArgStar:'ArgStar', BatchSamples:'BatchSamples',
     FilePathList:'FilePathList', Floats:'Floats', ImgLabel:'ImgLabel', ImgLabels:'ImgLabels', KeyFunc:'KeyFunc',
     KWArgs:'KWArgs', ListOrItem:'ListOrItem', ListRules:'ListRules', ListSizes:'ListSizes',
     NPArrayableList:'NPArrayableList', NPArrayList:'NPArrayList', NPArrayMask:'NPArrayMask', NPImage:'NPImage',
@@ -47,7 +47,7 @@ fastai_types = {
     SplitArrayList:'SplitArrayList', StartOptEnd:'StartOptEnd', StrList:'StrList', Tokens:'Tokens',
     OptStrList:'OptStrList', AffineMatrix:'AffineMatrix', BoolOrTensor:'BoolOrTensor', FloatOrTensor:'FloatOrTensor',
     IntOrTensor:'IntOrTensor', ItemsList:'ItemsList', LambdaFunc:'LambdaFunc',
-    LayerFunc:'LayerFunc', Model:'Model', ModuleList:'ModuleList', OptOptimizer:'OptOptimizer', ParamList:'ParamList',
+    LayerFunc:'LayerFunc', ModuleList:'ModuleList', OptOptimizer:'OptOptimizer', ParamList:'ParamList',
     Rank0Tensor:'Rank0Tensor', SplitFunc:'SplitFunc', SplitFuncOrIdxList:'SplitFuncOrIdxList',
     TensorOrNumber:'TensorOrNumber', TensorOrNumList:'TensorOrNumList', TensorImage:'TensorImage',
     TensorImageSize:'TensorImageSize', Tensors:'Tensors', Weights:'Weights', AffineFunc:'AffineFunc',
@@ -62,8 +62,9 @@ _default_device = torch.device('cuda') if torch.cuda.is_available() else torch.d
 defaults = SimpleNamespace(device=_default_device, cpus=_default_cpus)
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
-def tensor(x:Any)->Tensor:
-    "Like `torch.as_tensor`, but handle lists too"
+def tensor(x:Any, *rest)->Tensor:
+    "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly"
+    if len(rest): x = (x,)+rest
     return torch.tensor(x) if is_listy(x) else as_tensor(x)
 
 def np_address(x:np.ndarray)->int:
@@ -114,10 +115,14 @@ def range_children(m:nn.Module)->Iterator[int]:
     "Return iterator of len of children of `m`."
     return range(num_children(m))
 
-flatten_model=lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
+flatten_model = lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
 def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
+
+def last_layer(m:nn.Module)->nn.Module:
+    "Retrieve last layer in a module `m`."
+    return flatten_model(m)[-1]
 
 def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     "Split `model` according to the indices in `idxs`."
@@ -126,7 +131,7 @@ def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
     if idxs[-1] != len(layers): idxs.append(len(layers))
     return [nn.Sequential(*layers[i:j]) for i,j in zip(idxs[:-1],idxs[1:])]
 
-def split_model(model:nn.Module, splits:Collection[Union[Model,ModuleList]], want_idxs:bool=False):
+def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]], want_idxs:bool=False):
     "Split `model` according to the layers in `splits`."
     layers = flatten_model(model)
     splits = listify(splits)
@@ -185,29 +190,44 @@ def apply_init(m, init_func:LayerFunc):
     "Initialize all non-batchnorm layers of `m` with `init_func`."
     apply_leaf(m, partial(cond_init, init_func=init_func))
 
-def in_channels(m:Model) -> List[int]:
+def in_channels(m:nn.Module) -> List[int]:
     "Return the shape of the first weight layer in `m`."
     for l in flatten_model(m):
         if hasattr(l, 'weight'): return l.weight.shape[1]
     raise Exception('No weight layer')
 
-def calc_loss(y_pred:Tensor, y_true:Tensor, loss_class:type=nn.CrossEntropyLoss, bs=64):
+def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
     "Calculate loss between `y_pred` and `y_true` using `loss_class` and `bs`."
-    loss_dl = DataLoader(TensorDataset(as_tensor(y_pred),as_tensor(y_true)), bs)
-    with torch.no_grad():
-        return torch.cat([loss_class(reduction='none')(*b) for b in loss_dl])
-
-def to_np(x): return x.cpu().numpy()
+    if hasattr(loss_func, 'reduction'):
+        old_red = getattr(loss_func, 'reduction')
+        setattr(loss_func, 'reduction', 'none')
+        l = loss_func(y_pred, y_true)
+        setattr(loss_func, 'reduction', old_red)
+        return l
+    else: return loss_func(y_pred, y_true, reduction='none')
 
 def model_type(dtype):
+    "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
             torch.int64 if np.issubdtype(dtype, np.integer)
             else None)
 
 def np2model_tensor(a):
+    "Tranform numpy array `a` to a tensor of the same type."
     dtype = model_type(a.dtype)
     res = as_tensor(a)
     if not dtype: return res
     return res.type(dtype)
 
 def trange_of(x): return torch.arange(len(x))
+
+def to_np(x): return x.data.cpu().numpy()
+
+# monkey patching to allow matplotlib to plot tensors
+def tensor__array__(self, dtype=None):
+    res = to_np(self)
+    if dtype is None: return res
+    else: return res.astype(dtype, copy=False)
+Tensor.__array__ = tensor__array__
+Tensor.ndim = property(lambda x: len(x.shape))
+

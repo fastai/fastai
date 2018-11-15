@@ -1,6 +1,7 @@
 import pytest, torch
 import numpy as np
 from fastai import *
+from tempfile import TemporaryDirectory
 
 def test_cpus(): assert num_cpus() >= 1
 
@@ -137,3 +138,37 @@ def test_even_mults():
     a = even_mults(start=1, stop=8, n=4)
     b = array([1.,2.,4.,8.])
     np.testing.assert_array_equal(a,b)
+
+def test_series2cat():
+    df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4], 'col3':[5, 6]})
+    cols = 'col1','col2'
+    series2cat(df,*cols)
+    for col in cols:
+        assert (df[col].dtypes == 'category')
+    assert (df['col3'].dtypes == 'int64')
+
+def test_download_url():
+    for link, ext in [(URLs.MNIST_TINY, 'tgz')]:
+        url = f'{link}.{ext}'
+        path = URLs.LOCAL_PATH/'data'/'tmp'
+        try:
+            os.makedirs(path, exist_ok=True)
+            filepath = path/url2name(url)
+            download_url(url, filepath)
+            assert os.path.getsize(filepath) > 0
+        finally:
+            shutil.rmtree(path)
+
+def test_join_paths():
+    assert join_path('f') == Path('f')
+    assert join_path('f', Path('dir')) == Path('dir/f')
+    assert join_paths(['f1','f2']) == [Path('f1'), Path('f2')]
+    assert set(join_paths({'f1','f2'}, Path('dir'))) == {Path('dir/f1'), Path('dir/f2')}
+
+def test_df_names_to_idx():
+    df = pd.DataFrame({'col1': [1,2], 'col2': [3,4], 'col3':[5,6]})
+    assert df_names_to_idx(['col1','col3'], df) == [0, 2]
+
+def test_one_hot():
+    assert all(one_hot([0,-1], 5) == np.array([1,0,0,0,1]))
+

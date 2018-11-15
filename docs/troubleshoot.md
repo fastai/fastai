@@ -20,12 +20,6 @@ despite having `nvidia-smi` working just fine. Which means that `pytorch` can't 
 
 note: `pytorch` installs itself as `torch`. So we refer to the project and its packages as `pytorch`, but inside python we use it as `torch`.
 
-This issue could have other manifestations, for example, instead of getting `False`, you may get an error like:
-
-```
-ImportError: libcuda.so.1: cannot open shared object file: No such file or directory
-```
-
 First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch-nightly` with `cuda92` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
 
 The only thing you to need to ensure is that you have a correctly configured NVIDIA driver, which usually you can test by running: `nvidia-smi` in your console.
@@ -106,6 +100,60 @@ If you're not sure which nvidia driver to install here is a reference table:
 
 You can find a complete table with extra variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
 
+
+#### libcuda.so.1: cannot open shared object file
+
+This section is only relevant if you build `pytorch` from source - `pytorch` conda and pip packages link statically to `libcuda` and therefore `libcuda.so.1` is not required to be installed.
+
+If you get an error:
+
+```
+ImportError: libcuda.so.1: cannot open shared object file: No such file or directory
+```
+that means you're missing `libcuda.so.1` from your system.
+
+On most Linux systems the `libcuda` package is optional/recommended and doesn't get installed unless explicitly instructed to do so. You need to install the specific version matching the `nvidia` driver. For the sake of this example, let's assume that you installed `nvidia-396` debian package.
+
+1. find the apt package the file belongs to - `libcuda1-396`:
+
+   ```
+   $ dpkg -S  libcuda.so.1
+   libcuda1-396: /usr/lib/i386-linux-gnu/libcuda.so.1
+   libcuda1-396: /usr/lib/x86_64-linux-gnu/libcuda.so.1
+   ```
+2. check whether that package is installed - no, it is not installed:
+   ```
+   $ apt list libcuda1-396
+   Listing... Done
+   ```
+3. let's install it:
+   ```
+   $ apt install libcuda1-396
+   ```
+4. check whether that package is installed - yes, it is installed:
+   ```
+   $ apt list libcuda1-396
+   Listing... Done
+   libcuda1-396/unknown,now 396.44-0ubuntu1 amd64 [installed]
+   ```
+
+Now, you shouldn't have this error anymore when you load `pytorch`.
+
+To check which `nvidia` driver the installed package depends on, run:
+   ```
+   $ apt-cache rdepends libcuda1-396 | grep nvidia
+     nvidia-396
+   ```
+
+To check that `nvidia-396` is installed:
+   ```
+   $ apt list nvidia-396
+     nvidia-396/unknown,now 396.44-0ubuntu1 amd64 [installed,automatic]
+   ```
+
+In your situation, change `396` to whatever version of the driver you're using.
+
+This should be more or less similar on the recent Ubuntu Linux versions, but could vary on other systems. If it's different on your system, find out which package contains `libcuda.so.1` and install that package.
 
 
 ### Do not mix conda-forge packages

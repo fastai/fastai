@@ -1,0 +1,253 @@
+---
+
+title: metrics
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Useful metrics for training"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Training-metrics">Training metrics<a class="anchor-link" href="#Training-metrics">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>Metrics</em> for training fastai models are simply functions that take <code>input</code> and <code>target</code> tensors, and return some metric of interest for training. You can write your own metrics by defining a function of that type, and passing it to <a href="/basic_train.html#Learner"><code>Learner</code></a> in the [code]metrics[/code] parameter, or use one of the following pre-defined functions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Predefined-metrics:">Predefined metrics:<a class="anchor-link" href="#Predefined-metrics:">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>accuracy</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="accuracy_thresh"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.5</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> for multi-label models, based on comparing predictions to <code>thresh</code>, <code>sigmoid</code> will be applied to <code>y_pred</code> if the corresponding flag is True.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>, <code>iou</code>:<code>bool</code>=<code>False</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="error_rate"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L41" class="source_link">[source]</a></h4><blockquote><p><code>error_rate</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fbeta"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>fbeta</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.2</code>, <code>beta</code>:<code>float</code>=<code>2</code>, <code>eps</code>:<code>float</code>=<code>1e-09</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Computes the f_beta between preds and targets</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See the <a href="https://en.wikipedia.org/wiki/F1_score">F1 score wikipedia page</a> for details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<code>pred</code>:<code>Tensor</code>, <code>targ</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-your-own-metric">Creating your own metric<a class="anchor-link" href="#Creating-your-own-metric">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Creating a new metric can be as simple as creating a new function. If you metric is an average over the total number of elements in your dataset, just write the function that will compute it on a batch (taking <code>pred</code> and <code>targ</code> as arguments). It will then be automatically averaged over the batches (taking their different sizes into acount).</p>
+<p>Sometimes metrics aren't simple averages however. If we take the example of precision for instance, we have to divide the number of true positives by the number of predictions we made for that class. This isn't an average over the number of elements we have in the dataset, we only consider those where we made a positive prediction for a specific thing. Computing the precision for each batch, then averaging them will yield to a result that may be close to the real value, but won't be it exactly (and it really depends on how you deal with special case of 0 positive predicitions).</p>
+<p>This why in fastai, every metric is implemented as a callback. If you pass a regular function, the library transforms it to a proper callback called <code>AverageCallback</code>. The callback metrics are only called during the validation phase, and only for the following events:</p>
+<ul>
+<li><code>on_epoch_begin</code> (for initialization)</li>
+<li><code>on_batch_begin</code> (if we need to have a look at the input/target and maybe modify them)</li>
+<li><code>on_batch_end</code> (to analyze the last results and update our computation)</li>
+<li><code>on_epoch_end</code>(to wrap up the final result that should be stored in <code>.metric</code>)</li>
+</ul>
+<p>As an example, is here the exact implementation of the <a href="/callback.html#AverageMetric"><code>AverageMetric</code></a> callback that transforms a function like <a href="/metrics.html#accuracy"><code>accuracy</code></a> into a metric callback.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">AverageMetric</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span><span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_output</span><span class="p">,</span> <span class="n">last_target</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">last_target</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">+=</span> <span class="n">last_target</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">last_output</span><span class="p">,</span> <span class="n">last_target</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here is another example that properly computes the precision for a given class.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Precision</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correct</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    
+    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_output</span><span class="p">,</span> <span class="n">last_target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">last_output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correct</span> <span class="o">+=</span> <span class="p">((</span><span class="n">preds</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">last_target</span><span class="o">==</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">preds</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+ 
+

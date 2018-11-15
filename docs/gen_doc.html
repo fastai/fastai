@@ -1,0 +1,412 @@
+---
+
+title: gen_doc
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Documentation modules overview"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="How-to-contribute-to-jupyter-notebooks">How to contribute to jupyter notebooks<a class="anchor-link" href="#How-to-contribute-to-jupyter-notebooks">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The documentation is built from notebooks in <code>docs_src/</code>. Follow the steps below to build documentation. For more information about generating and authoring notebooks, see <a href="/gen_doc.gen_notebooks.html#gen_doc.gen_notebooks"><code>fastai.gen_doc.gen_notebooks</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Modules">Modules<a class="anchor-link" href="#Modules">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="fastai.gen_doc.gen_notebooks"><a href="/gen_doc.gen_notebooks.html#gen_doc.gen_notebooks"><code>fastai.gen_doc.gen_notebooks</code></a><a class="anchor-link" href="#fastai.gen_doc.gen_notebooks">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Generate and update notebook skeletons automatically from modules. Includes an overview of the whole authoring process.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="fastai.gen_doc.convert2html"><a href="/gen_doc.convert2html.html#gen_doc.convert2html"><code>fastai.gen_doc.convert2html</code></a><a class="anchor-link" href="#fastai.gen_doc.convert2html">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create HTML (jekyll) docs from notebooks.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="fastai.gen_doc.nbdoc"><a href="/gen_doc.nbdoc.html#gen_doc.nbdoc"><code>fastai.gen_doc.nbdoc</code></a><a class="anchor-link" href="#fastai.gen_doc.nbdoc">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Underlying documentation functions; most important is <a href="/gen_doc.nbdoc.html#show_doc"><code>show_doc</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Process-for-contributing-to-the-docs">Process for contributing to the docs<a class="anchor-link" href="#Process-for-contributing-to-the-docs">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to help us and contribute to the docs, you just have to make modifications to the source notebooks, our scripts will then automatically convert them to HTML. There is just one script to run after cloning the fastai repo, to ensure that everything works properly. The rest of this page goes more in depth about all the functionalities this module offers, but if you just want to add a sentence or correct a typo, make a PR with the notebook changed and we'll take care of the rest.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Thing-to-run-after-git-clone">Thing to run after git clone<a class="anchor-link" href="#Thing-to-run-after-git-clone">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Make sure you follow this recipe:</p>
+
+<pre><code>git clone https://github.com/fastai/fastai
+cd fastai
+tools/run-after-git-clone
+
+</code></pre>
+<p>This will take care of everything that is explained in the following two sections. We'll tell you what they do, but you need to execute just this one script.</p>
+<p>Note: windows users, not using bash emulation, will need to invoke the command as:</p>
+
+<pre><code>python tools\run-after-git-clone
+
+</code></pre>
+<p>If you're on windows, you also need to convert the Unix symlink between <code>docs_src\imgs</code> and <code>docs\imgs</code>. You will need to (1) remove <code>docs_src\imgs</code>, (2) execute <code>cmd.exe</code> as administrator, and (3) finally, in the <code>docs_src</code> folder, execute:</p>
+
+<pre><code>mklink /d imgs ..\docs\imgs</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after-git-clone-#1:-a-mandatory-notebook-strip-out">after-git-clone #1: a mandatory notebook strip out<a class="anchor-link" href="#after-git-clone-#1:-a-mandatory-notebook-strip-out">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Currently we only store <code>source</code> code cells under git (and a few extra fields for documentation notebooks). If you would like to commit or submit a PR, you need to confirm to that standard.</p>
+<p>This is done automatically during <code>diff</code>/<code>commit</code> git operations, but you need to configure your local repository once to activate that instrumentation.</p>
+<p>Therefore, your developing process will always start with:</p>
+
+<pre><code>tools/trust-origin-git-config
+
+</code></pre>
+<p>The last command tells git to invoke configuration stored in <code>fastai/.gitconfig</code>, so your <code>git diff</code> and <code>git commit</code> invocations for this particular repository will now go via <code>tools/fastai-nbstripout</code> which will do all the work for you.</p>
+<p>You don't need to run it if you run:</p>
+
+<pre><code>tools/run-after-git-clone
+
+</code></pre>
+<p>If you skip this configuration your commit/PR involving notebooks will not be accepted, since it'll carry in it many JSON bits which we don't want in the git repository. Those unwanted bits create collisions and lead to unnecessarily complicated and time wasting merge activities. So please do not skip this step.</p>
+<p>Note: we can't make this happen automatically, since git will ignore a repository-stored <code>.gitconfig</code> for security reasons, unless a user will tell git to use it (and thus trust it).</p>
+<p>If you'd like to check whether you already trusted git with using <code>fastai/.gitconfig</code> please look inside <code>fastai/.git/config</code>, which should have this entry:</p>
+
+<pre><code>[include]
+        path = ../.gitconfig
+
+</code></pre>
+<p>or alternatively run:</p>
+
+<pre><code>tools/trust-origin-git-config -t</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="after-git-clone-#2:-automatically-updating-doc-notebooks-to-be-trusted-on-git-pull">after-git-clone #2: automatically updating doc notebooks to be trusted on git pull<a class="anchor-link" href="#after-git-clone-#2:-automatically-updating-doc-notebooks-to-be-trusted-on-git-pull">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We want the doc notebooks to be already trusted when you load them in <code>jupyter notebook</code>, so this script which should be run once upon <code>git clone</code>, will install a <code>git</code> <code>post-merge</code> hook into your local check out.</p>
+<p>The installed hook will be executed by git automatically at the end of <code>git pull</code> only if it triggered an actual merge event and that the latter was successful.</p>
+<p>To trust run:</p>
+
+<pre><code>tools/trust-doc-nbs-install-hook
+
+</code></pre>
+<p>You don't need to run it if you run:</p>
+
+<pre><code>tools/run-after-git-clone
+
+</code></pre>
+<p>To distrust run:</p>
+
+<pre><code>rm .git/hooks/post-merge</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Validate-any-notebooks-you're-contributing-to">Validate any notebooks you're contributing to<a class="anchor-link" href="#Validate-any-notebooks-you're-contributing-to">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you were using a text editor to make changes, when you are done working on a notebook improvement, please, make sure to validate that notebook's format, by simply loading it in the jupyter notebook.</p>
+<p>Alternatively, you could use a CLI JSON validation tool, e.g. <a href="https://jsonlint.com/">jsonlint</a>:</p>
+
+<pre><code>jsonlint-php example.ipynb
+
+</code></pre>
+<p>but it's second best, since you may have a valid JSON, but invalid notebook format, as the latter has extra requirements on which fields are valid and which are not.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Building-the-documentation-website">Building the documentation website<a class="anchor-link" href="#Building-the-documentation-website">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <a href="https://docs.fast.ai">https://docs.fast.ai</a> website is comprised from documentation notebooks converted to <code>.html</code>, <code>.md</code> files, jekyll metadata, jekyll templates (including the sidebar).</p>
+<ul>
+<li><code>.md</code> files are automatically converted by github pages (requires no extra action)</li>
+<li>the sidebar and other jekyll templates under <code>docs/_data/</code> are automatically deployed by github pages (requires no extra action)</li>
+<li>changes in jekyll metadata require a rebuild of the affected notebooks</li>
+<li>changes in <code>.ipynb</code> nbs require a rebuild of the affected notebooks</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Updating-sidebar">Updating sidebar<a class="anchor-link" href="#Updating-sidebar">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ol>
+<li>edit <code>docs_src/sidebar/sidebar_data.py</code></li>
+<li><code>python tools/make_sidebar.py</code></li>
+<li>check <code>docs/_data/sidebars/home_sidebar.yml</code></li>
+<li><code>git commit docs_src/sidebar/sidebar_data.py docs/_data/sidebars/home_sidebar.yml</code></li>
+</ol>
+<p><a href="https://idratherbewriting.com/documentation-theme-jekyll/#configure-the-sidebar">jekyll sidebar documentation</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Updating-notebook-metadata">Updating notebook metadata<a class="anchor-link" href="#Updating-notebook-metadata">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In order to pass the right settings to the website version of the <code>docs</code>, each notebook has a custom entry which if you look at the source code, looks like:</p>
+
+<pre><code> "metadata": {
+  "jekyll": {
+   "keywords": "fastai",
+   "toc": "false",
+   "title": "Welcome to fastai"
+  },
+  [...]</code></pre>
+<p>Do not edit this entry manually, or your changes will be overwritten in the next metadata update.</p>
+<p>The only correct way to change any notebook's metadata is by opening <code>docs_src/jekyll_metadata.ipynb</code>, finding the notebook you want to change the metadata for, changing it, and running the notebook, then saving and committing it and the resulting changes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Updating-notebooks">Updating notebooks<a class="anchor-link" href="#Updating-notebooks">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Use this section only when you have added a new function that you want to document, or modified an existing function.</p>
+<p>Here is how to build/update the documentation notebooks to reflect changes in the library.</p>
+<p>To update all modified notebooks under <code>docs_src</code> run:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs
+</pre></div>
+<p>To update specific <code>*ipynb</code> nbs:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs docs_src/notebook1.ipynb docs_src/notebook2.ipynb ...
+</pre></div>
+<p>To force a rebuild of all notebooks and not just the modified ones, use the <code>-f</code> option.</p>
+<div class="highlight"><pre><span></span>python tools/build-docs -f
+</pre></div>
+<p>To scan a module and add any new module functions to documentation notebook:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs --document-new-fns
+</pre></div>
+<p>To automatically append new fastai methods to their corresponding documentation notebook:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs --update-nb-links
+</pre></div>
+<p>Use the <code>-h</code> for more options.</p>
+<p>Alternatively, <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> can be run from the notebook.</p>
+<p>To update all notebooks under <code>docs_src</code> run:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</pre></div>
+<p>To update specific python file only:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;gen_doc.gen_notebooks.ipynb&#39;</span><span class="p">,</span> <span class="n">update_nb</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+<p><code>update_nb=True</code> inserts newly added module methods into the docs that haven't already been documented.</p>
+<p>Alternatively, you can update a specific module:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;fastai.gen_doc.gen_notebooks&#39;</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="s1">&#39;fastai/docs_src&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Updating-html-only">Updating html only<a class="anchor-link" href="#Updating-html-only">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you are not syncronizing the code base with its documentation, but made some manual changes to the documentation notebooks, then you don't need to update the notebooks, but just convert them to <code>.html</code>:</p>
+<p>To convert <code>docs_src/*ipynb</code> to <code>docs/*html</code>:</p>
+<ul>
+<li>only the modified <code>*ipynb</code>:</li>
+</ul>
+<div class="highlight"><pre><span></span>python tools/build-docs -l
+</pre></div>
+<ul>
+<li>specific <code>*ipynb</code>s:</li>
+</ul>
+<div class="highlight"><pre><span></span>python tools/build-docs -l docs_src/notebook1.ipynb docs_src/notebook2.ipynb ...
+</pre></div>
+<ul>
+<li>force to rebuild all <code>*ipynb</code>s:</li>
+</ul>
+<div class="highlight"><pre><span></span>python tools/build-docs -fl
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Links-and-anchors">Links and anchors<a class="anchor-link" href="#Links-and-anchors">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Validate-links-and-anchors">Validate links and anchors<a class="anchor-link" href="#Validate-links-and-anchors">&#182;</a></h3><p>After you commit doc changes please validate that all the links and <code>#anchors</code> are correct.</p>
+<p>If it's the first time you are about to run the link checker, install the <a href="https://github.com/fastai/fastai/blob/master/tools/checklink/README.md">prerequisites</a> first.</p>
+<p>After committing the new changes, first, wait a few minutes for github pages to sync, otherwise you'll be testing an outdated live site.</p>
+<p>Then, do:</p>
+
+<pre><code>cd tools/checklink
+./checklink-docs.sh</code></pre>
+<p>The script will be silent and only report problems as it finds them.</p>
+<p>Remember, that it's testing the live website, so if you detect problems and make any changes, remember to first commit the changes and wait a few minutes before re-testing.</p>
+<p>You can also test the site locally before committing your changes, please see: <a href="https://github.com/fastai/fastai/blob/master/tools/checklink/README.md">README</a>.</p>
+<p>To test the course-v3.fast.ai site, do:</p>
+
+<pre><code>./checklink-course-v3.sh</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Working-with-Markdown">Working with Markdown<a class="anchor-link" href="#Working-with-Markdown">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Preview">Preview<a class="anchor-link" href="#Preview">&#182;</a></h3><p>If you work on markdown (.md) files it helps to be able to validate your changes so that the resulting layout is not broken. <a href="https://github.com/joeyespo/grip">grip</a> seems to work quite well for this purpose (<code>pip install grip</code>). For example:</p>
+
+<pre><code>grip -b docs/dev/release.md</code></pre>
+<p>will open a browser with the rendered markdown as html - it uses github API, so this is exacly how it'll look on github once you commit it. And here is a handy alias:</p>
+
+<pre><code>alias grip='grip -b'</code></pre>
+<p>so you don't need to remember the flag.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Markdown-Tips">Markdown Tips<a class="anchor-link" href="#Markdown-Tips">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>If you use numbered items and their number goes beyond 9 you must switch to 4-whitespace chars indentation for the paragraphs belonging to each item. Under 9 or with * you need 3-whitespace chars as a leading indentation.</li>
+<li>When building tables make sure to use <code>--|--</code> and not <code>--+--</code> to separate the headers - github will not render it properly otherwise.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Testing-site-locally">Testing site locally<a class="anchor-link" href="#Testing-site-locally">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Install prerequisites:</p>
+
+<pre><code>sudo apt install ruby-bundler</code></pre>
+<p>When running this one it will ask for your user's password (basically running a sudo operation):</p>
+
+<pre><code>bundle install jekyll</code></pre>
+<p>Start the website:</p>
+
+<pre><code>cd docs
+bundle exec jekyll serve</code></pre>
+<p>it will tell you which localhost url to go to to see the site.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

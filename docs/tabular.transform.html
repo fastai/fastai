@@ -1,0 +1,1029 @@
+---
+
+title: tabular.transform
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Transforms to clean and preprocess tabular data"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Tabular-data-preprocessing">Tabular data preprocessing<a class="anchor-link" href="#Tabular-data-preprocessing">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This package contains the basic class to define a transformation for preprocessing dataframes of tabular data, as well as basic <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a>. Preprocessing includes things like</p>
+<ul>
+<li>replacing non-numerical variables by categories, then their ids,</li>
+<li>filling missing values,</li>
+<li>normalizing continuous variables.</li>
+</ul>
+<p>In all those steps we have to be careful to use the correspondance we decide on our training set (which id we give to each category, what is the value we put for missing data, or how the mean/std we use to normalize) on our validation or test set. To deal with this, we use a speciall class called <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a>.</p>
+<p>The data used in this document page is a subset of the <a href="https://archive.ics.uci.edu/ml/datasets/adult">adult dataset</a>. It gives a certain amount of data on individuals to train a model to predict wether their salary is greater than \$50k or not.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">)</span>
+<span class="n">train_df</span><span class="p">,</span> <span class="n">valid_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">800</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">800</span><span class="p">:</span><span class="mi">1000</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">train_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>workclass</th>
+      <th>fnlwgt</th>
+      <th>education</th>
+      <th>education-num</th>
+      <th>marital-status</th>
+      <th>occupation</th>
+      <th>relationship</th>
+      <th>race</th>
+      <th>sex</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+      <th>native-country</th>
+      <th>&gt;=50k</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>49</td>
+      <td>Private</td>
+      <td>101320</td>
+      <td>Assoc-acdm</td>
+      <td>12.0</td>
+      <td>Married-civ-spouse</td>
+      <td>NaN</td>
+      <td>Wife</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>1902</td>
+      <td>40</td>
+      <td>United-States</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>44</td>
+      <td>Private</td>
+      <td>236746</td>
+      <td>Masters</td>
+      <td>14.0</td>
+      <td>Divorced</td>
+      <td>Exec-managerial</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>10520</td>
+      <td>0</td>
+      <td>45</td>
+      <td>United-States</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>38</td>
+      <td>Private</td>
+      <td>96185</td>
+      <td>HS-grad</td>
+      <td>NaN</td>
+      <td>Divorced</td>
+      <td>NaN</td>
+      <td>Unmarried</td>
+      <td>Black</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>32</td>
+      <td>United-States</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>38</td>
+      <td>Self-emp-inc</td>
+      <td>112847</td>
+      <td>Prof-school</td>
+      <td>15.0</td>
+      <td>Married-civ-spouse</td>
+      <td>Prof-specialty</td>
+      <td>Husband</td>
+      <td>Asian-Pac-Islander</td>
+      <td>Male</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+      <td>United-States</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>42</td>
+      <td>Self-emp-not-inc</td>
+      <td>82297</td>
+      <td>7th-8th</td>
+      <td>NaN</td>
+      <td>Married-civ-spouse</td>
+      <td>Other-service</td>
+      <td>Wife</td>
+      <td>Black</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50</td>
+      <td>United-States</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We see it contains numerical variables (like <code>age</code> or <code>education-num</code>) as well as categorical ones (like <code>workclass</code> or <code>relationship</code>). The original dataset is clean, but we removed a few values to give examples of dealing with missing variables.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;native-country&#39;</span><span class="p">]</span>
+<span class="n">cont_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;fnlwgt&#39;</span><span class="p">,</span> <span class="s1">&#39;education-num&#39;</span><span class="p">,</span> <span class="s1">&#39;capital-gain&#39;</span><span class="p">,</span> <span class="s1">&#39;capital-loss&#39;</span><span class="p">,</span> <span class="s1">&#39;hours-per-week&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Transforms-for-tabular-data">Transforms for tabular data<a class="anchor-link" href="#Transforms-for-tabular-data">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularProc"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L7" class="source_link">[source]</a></h2><blockquote><p><code>TabularProc</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Base class for creating transforms for dataframes with categorical variables <code>cat_names</code> and continuous variables <code>cont_names</code>. Note that any column not in one of those lists won't be touched.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularProc.__call__"><code>__call__</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L12" class="source_link">[source]</a></h4><blockquote><p><code>__call__</code>(<code>df</code>:<code>DataFrame</code>, <code>test</code>:<code>bool</code>=<code>False</code>)</p>
+</blockquote>
+<p>Apply the correct function to <code>df</code> depending on <code>test</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This simply calls <code>apply_test</code> if <code>test</code> or <code>apply_train</code> otherwise. Those functions apply the changes in place.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularProc.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Must be implemented by an inherited class with the desired transformation logic.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularProc.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If not implemented by an inherited class, defaults to calling <code>apply_train</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a> are implemented in the fastai library. Note that the replacement from categories to codes as well as the normalization of continuous variables are automatically done in a <a href="/tabular.data.html#TabularDataset"><code>TabularDataset</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Categorify"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L24" class="source_link">[source]</a></h2><blockquote><p><code>Categorify</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Changes the categorical variables in <code>cat_names</code> in categories. Variables in <code>cont_names</code> aren't affected.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Categorify.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L27" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Transforms the variable in the <code>cat_names</code> columns in categories. The category codes are the unique values in these columns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Categorify.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L33" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Transforms the variable in the <code>cat_names</code> columns in categories. The category codes are the ones used for the training set, new categories are replaced by NaN.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfm</span> <span class="o">=</span> <span class="n">Categorify</span><span class="p">(</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="p">)</span>
+<span class="n">tfm</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+<span class="n">tfm</span><span class="p">(</span><span class="n">valid_df</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we haven't changed the categories by their codes, nothing visible has changed in the dataframe yet, but we can check that the variables are now categorical and view their corresponding codes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Index([&#39; ?&#39;, &#39; Federal-gov&#39;, &#39; Local-gov&#39;, &#39; Private&#39;, &#39; Self-emp-inc&#39;,
+       &#39; Self-emp-not-inc&#39;, &#39; State-gov&#39;, &#39; Without-pay&#39;],
+      dtype=&#39;object&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The test set will be given the same category codes as the training set.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_df</span><span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Index([&#39; ?&#39;, &#39; Federal-gov&#39;, &#39; Local-gov&#39;, &#39; Private&#39;, &#39; Self-emp-inc&#39;,
+       &#39; Self-emp-not-inc&#39;, &#39; State-gov&#39;, &#39; Without-pay&#39;],
+      dtype=&#39;object&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FillMissing"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L40" class="source_link">[source]</a></h2><blockquote><p><code>FillMissing</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>, <code>fill_strategy</code>:<a href="/tabular.transform.html#FillStrategy"><code>FillStrategy</code></a>=<code>&lt;FillStrategy.MEDIAN: 1&gt;</code>, <code>add_col</code>:<code>bool</code>=<code>True</code>, <code>fill_val</code>:<code>float</code>=<code>0.0</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Transform that fills the missing values in <code>cont_names</code>. <code>cat_names</code> variables are left untouched (their missing value will be raplced by code 0 in the <a href="/tabular.data.html#TabularDataset"><code>TabularDataset</code></a>). <a href="#FillStrategy"><code>fill_strategy</code></a> is adopted to replace those nans and if <code>add_col</code> is True, whenever a column <code>c</code> has missing values, a column named <code>c_nan</code> is added and flags the line where the value was missing.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="FillMissing.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L46" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fills the missing values in the <code>cont_names</code> columns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="FillMissing.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L59" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fills the missing values in the <code>cont_names</code> columns with the ones picked during train.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="p">[</span><span class="n">cont_names</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>fnlwgt</th>
+      <th>education-num</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>49</td>
+      <td>101320</td>
+      <td>12.0</td>
+      <td>0</td>
+      <td>1902</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>44</td>
+      <td>236746</td>
+      <td>14.0</td>
+      <td>10520</td>
+      <td>0</td>
+      <td>45</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>38</td>
+      <td>96185</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>38</td>
+      <td>112847</td>
+      <td>15.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>42</td>
+      <td>82297</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfm</span> <span class="o">=</span> <span class="n">FillMissing</span><span class="p">(</span><span class="n">cat_names</span><span class="p">,</span> <span class="n">cont_names</span><span class="p">)</span>
+<span class="n">tfm</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+<span class="n">tfm</span><span class="p">(</span><span class="n">valid_df</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">train_df</span><span class="p">[</span><span class="n">cont_names</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>fnlwgt</th>
+      <th>education-num</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>49</td>
+      <td>101320</td>
+      <td>12.0</td>
+      <td>0</td>
+      <td>1902</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>44</td>
+      <td>236746</td>
+      <td>14.0</td>
+      <td>10520</td>
+      <td>0</td>
+      <td>45</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>38</td>
+      <td>96185</td>
+      <td>10.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>38</td>
+      <td>112847</td>
+      <td>15.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>42</td>
+      <td>82297</td>
+      <td>10.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Values issing in the <code>education-num</code> column are replaced by 10, which is the median of the column in <code>train_df</code>. Categorical variables are not changed, since <code>nan</code> is simply used as another category.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_df</span><span class="p">[</span><span class="n">cont_names</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>fnlwgt</th>
+      <th>education-num</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>800</th>
+      <td>45</td>
+      <td>96975</td>
+      <td>10.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>801</th>
+      <td>46</td>
+      <td>192779</td>
+      <td>10.0</td>
+      <td>15024</td>
+      <td>0</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>802</th>
+      <td>36</td>
+      <td>376455</td>
+      <td>10.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>38</td>
+    </tr>
+    <tr>
+      <th>803</th>
+      <td>25</td>
+      <td>50053</td>
+      <td>10.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>45</td>
+    </tr>
+    <tr>
+      <th>804</th>
+      <td>37</td>
+      <td>164526</td>
+      <td>10.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">reload_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FillStrategy">`FillStrategy`</h2><blockquote><p><code>Enum</code> = [MEDIAN, COMMON, CONSTANT]</p>
+</blockquote>
+<p>Enum flag represents determines how <a href="/tabular.transform.html#FillMissing"><code>FillMissing</code></a> should handle missing/nan values</p>
+<ul>
+<li><em>MEDIAN</em>: nans are replaced by the median value of the column</li>
+<li><em>COMMON</em>: nans are replaced by the most common value of the column</li>
+<li><em>CONSTANT</em>: nans are replaced by <code>fill_val</code> </li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Normalize"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L67" class="source_link">[source]</a></h2><blockquote><p><code>Normalize</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Normalize.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L70" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Computes the means and stds on the continuous variables of <code>df</code> then normalizes those columns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Normalize.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L76" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Use the means and stds stored to normalize the continuous columns of <code>df</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

@@ -1,0 +1,67 @@
+---
+
+title: callbacks
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Callbacks implemented in the fastai library"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="List-of-callbacks">List of callbacks<a class="anchor-link" href="#List-of-callbacks">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>fastai's training loop is highly extensible, with a rich <em>callback</em> system. See the <a href="/callback.html#callback"><code>callback</code></a> docs if you're interested in writing your own callback. See below for a list of callbacks that are provided with fastai, grouped by the module they're defined in.</p>
+<p>Every callback that is passed to <a href="/basic_train.html#Learner"><code>Learner</code></a> with the <code>callback_fns</code> parameter will be automatically stored as an attribute. The attribute name is snake-cased, so for instance <a href="/callbacks.hooks.html#ActivationStats"><code>ActivationStats</code></a> will appear as <code>learn.activation_stats</code> (assuming your object is named <code>learn</code>).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Callback"><a href="/callback.html#Callback"><code>Callback</code></a><a class="anchor-link" href="#Callback">&#182;</a></h2><p>This sub-package contains more sophisticated callbacks that each are in their own module. They are (click the link for more details):</p>
+<h3 id="OneCycleScheduler"><a href="/callbacks.one_cycle.html#OneCycleScheduler"><code>OneCycleScheduler</code></a><a class="anchor-link" href="#OneCycleScheduler">&#182;</a></h3><p>Train with Leslie Smith's <a href="https://sgugger.github.io/the-1cycle-policy.html">1cycle annealing</a> method.</p>
+<h3 id="MixedPrecision"><a href="/callbacks.fp16.html#MixedPrecision"><code>MixedPrecision</code></a><a class="anchor-link" href="#MixedPrecision">&#182;</a></h3><p>Use fp16 to <a href="https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html">take advantage of tensor cores</a> on recent NVIDIA GPUs for a 200% or more speedup.</p>
+<h3 id="GeneralScheduler"><a href="/callbacks.general_sched.html#GeneralScheduler"><code>GeneralScheduler</code></a><a class="anchor-link" href="#GeneralScheduler">&#182;</a></h3><p>Create your own multi-stage annealing schemes with a convenient API.</p>
+<h3 id="MixUpCallback"><a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a><a class="anchor-link" href="#MixUpCallback">&#182;</a></h3><p>Data augmentation using the method from <a href="https://arxiv.org/abs/1710.09412">mixup: Beyond Empirical Risk Minimization</a></p>
+<h3 id="LRFinder"><a href="/callbacks.lr_finder.html#LRFinder"><code>LRFinder</code></a><a class="anchor-link" href="#LRFinder">&#182;</a></h3><p>Use Leslie Smith's <a href="https://www.jeremyjordan.me/nn-learning-rate/">learning rate finder</a> to find a good learning rate for training your model.</p>
+<h3 id="HookCallback"><a href="/callbacks.hooks.html#HookCallback"><code>HookCallback</code></a><a class="anchor-link" href="#HookCallback">&#182;</a></h3><p>Convenient wrapper for registering and automatically deregistering <a href="https://pytorch.org/tutorials/beginner/former_torchies/nn_tutorial.html#forward-and-backward-function-hooks">PyTorch hooks</a>. Also contains pre-defined hook callback: <a href="/callbacks.hooks.html#ActivationStats"><code>ActivationStats</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="train-and-basic_train"><a href="/train.html#train"><code>train</code></a> and <a href="/basic_train.html#basic_train"><code>basic_train</code></a><a class="anchor-link" href="#train-and-basic_train">&#182;</a></h2><h3 id="Recorder"><a href="/basic_train.html#Recorder"><code>Recorder</code></a><a class="anchor-link" href="#Recorder">&#182;</a></h3><p>Track per-batch and per-epoch smoothed losses and metrics.</p>
+<h3 id="ShowGraph"><a href="/train.html#ShowGraph"><code>ShowGraph</code></a><a class="anchor-link" href="#ShowGraph">&#182;</a></h3><p>Dynamically display a learning chart during training.</p>
+<h3 id="BnFreeze"><a href="/train.html#BnFreeze"><code>BnFreeze</code></a><a class="anchor-link" href="#BnFreeze">&#182;</a></h3><p>Freeze batchnorm layer moving average statistics for non-trainable layers.</p>
+<h3 id="GradientClipping"><a href="/train.html#GradientClipping"><code>GradientClipping</code></a><a class="anchor-link" href="#GradientClipping">&#182;</a></h3><p>Clips gradient during training.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+ 
+

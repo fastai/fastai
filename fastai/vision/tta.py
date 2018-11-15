@@ -1,19 +1,15 @@
 "Brings TTA (Test Time Functionality) to the `Learner` class. Use `learner.TTA()` instead"
 from ..torch_core import *
 from ..basic_train import *
+from ..basic_train import _loss_func2activ
+from ..basic_data import DatasetType
 from .transform import *
 
-__all__ = ['pred_batch']
+__all__ = []
 
-def pred_batch(learn:Learner, is_valid:bool=True) -> Tuple[Tensors, Tensors, Tensors]:
-    "Returns input, target and output of the model on a batch"
-    x,y = next(iter(learn.data.valid_dl if is_valid else learn.data.train_dl))
-    return x,y,learn.model(x).detach()
-Learner.pred_batch = pred_batch
-
-def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[List[Tensor]]:
+def _tta_only(learn:Learner, ds_type:DatasetType=DatasetType.Valid, scale:float=1.35) -> Iterator[List[Tensor]]:
     "Computes the outputs for several augmented inputs for TTA"
-    dl = learn.data.holdout(is_test)
+    dl = learn.dl(ds_type)
     ds = dl.dataset
     old = ds.tfms
     augm_tfm = [o for o in learn.data.train_ds.tfms if o.tfm not in
@@ -28,16 +24,20 @@ def _tta_only(learn:Learner, is_test:bool=False, scale:float=1.35) -> Iterator[L
             tfm = [*augm_tfm, zoom(scale=scale, **d), crop_pad(**d)]
             if flip: tfm.append(flip_lr(p=1.))
             ds.tfms = tfm
-            yield get_preds(learn.model, dl, pbar=pbar)[0]
+            yield get_preds(learn.model, dl, pbar=pbar, activ=_loss_func2activ(learn.loss_func))[0]
     finally: ds.tfms = old
 
 Learner.tta_only = _tta_only
 
-def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, is_test:bool=False) -> Tensors:
-    preds,y = learn.get_preds(is_test)
-    all_preds = list(learn.tta_only(scale=scale, is_test=is_test))
+def _TTA(learn:Learner, beta:float=0.4, scale:float=1.35, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False) -> Tensors:
+    preds,y = learn.get_preds(ds_type)
+    all_preds = list(learn.tta_only(scale=scale, ds_type=ds_type))
     avg_preds = torch.stack(all_preds).mean(0)
     if beta is None: return preds,avg_preds,y
-    else:            return preds*beta + avg_preds*(1-beta), y
+    else:            
+        final_preds = preds*beta + avg_preds*(1-beta)
+        if with_loss: 
+            return final_preds, y, calc_loss(final_preds, y, learn.loss_func)
+        return final_preds, y
 
 Learner.TTA = _TTA

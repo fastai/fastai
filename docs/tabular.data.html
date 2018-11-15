@@ -1,0 +1,452 @@
+---
+
+title: tabular.data
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Base class to deal with tabular data and get a DataBunch"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Tabular-data-handling">Tabular data handling<a class="anchor-link" href="#Tabular-data-handling">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This module defines the main class to handle tabular data in the fastai library: <a href="/tabular.data.html#TabularDataset"><code>TabularDataset</code></a>. As always, there is also a helper function to quickly get your data.</p>
+<p>To allow you to easily create a <a href="/basic_train.html#Learner"><code>Learner</code></a> for your data, it provides <a href="/tabular.data.html#get_tabular_learner"><code>get_tabular_learner</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularDataBunch"><code>class</code> <code>TabularDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L107" class="source_link">[source]</a></h2><blockquote><p><code>TabularDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The best way to quickly get your data in a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> suitable for tabular data is to organize it in two (or three) dataframes. One for training, one for validation, and if you have it, one for testing. Here we are interested in a subsample of the <a href="https://archive.ics.uci.edu/ml/datasets/adult">adult dataset</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">ADULT_SAMPLE</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;adult.csv&#39;</span><span class="p">)</span>
+<span class="n">valid_idx</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>workclass</th>
+      <th>fnlwgt</th>
+      <th>education</th>
+      <th>education-num</th>
+      <th>marital-status</th>
+      <th>occupation</th>
+      <th>relationship</th>
+      <th>race</th>
+      <th>sex</th>
+      <th>capital-gain</th>
+      <th>capital-loss</th>
+      <th>hours-per-week</th>
+      <th>native-country</th>
+      <th>&gt;=50k</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>49</td>
+      <td>Private</td>
+      <td>101320</td>
+      <td>Assoc-acdm</td>
+      <td>12.0</td>
+      <td>Married-civ-spouse</td>
+      <td>NaN</td>
+      <td>Wife</td>
+      <td>White</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>1902</td>
+      <td>40</td>
+      <td>United-States</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>44</td>
+      <td>Private</td>
+      <td>236746</td>
+      <td>Masters</td>
+      <td>14.0</td>
+      <td>Divorced</td>
+      <td>Exec-managerial</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>10520</td>
+      <td>0</td>
+      <td>45</td>
+      <td>United-States</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>38</td>
+      <td>Private</td>
+      <td>96185</td>
+      <td>HS-grad</td>
+      <td>NaN</td>
+      <td>Divorced</td>
+      <td>NaN</td>
+      <td>Unmarried</td>
+      <td>Black</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>32</td>
+      <td>United-States</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>38</td>
+      <td>Self-emp-inc</td>
+      <td>112847</td>
+      <td>Prof-school</td>
+      <td>15.0</td>
+      <td>Married-civ-spouse</td>
+      <td>Prof-specialty</td>
+      <td>Husband</td>
+      <td>Asian-Pac-Islander</td>
+      <td>Male</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+      <td>United-States</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>42</td>
+      <td>Self-emp-not-inc</td>
+      <td>82297</td>
+      <td>7th-8th</td>
+      <td>NaN</td>
+      <td>Married-civ-spouse</td>
+      <td>Other-service</td>
+      <td>Wife</td>
+      <td>Black</td>
+      <td>Female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50</td>
+      <td>United-States</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;native-country&#39;</span><span class="p">]</span>
+<span class="n">dep_var</span> <span class="o">=</span> <span class="s1">&#39;&gt;=50k&#39;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L109" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>, <code>df</code>:<code>DataFrame</code>, <code>dep_var</code>:<code>str</code>, <code>valid_idx</code>:<code>Collection</code>[<code>int</code>], <code>procs</code>:<code>Optional</code>[<code>Collection</code>[<a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a>]]=<code>None</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>classes</code>:<code>Collection</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Creates a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> in <code>path</code> from <code>train_df</code>, <code>valid_df</code> and optionally <code>test_df</code>. The dependent variable is <code>dep_var</code>, while the categorical and continuous variables are in the <code>cat_names</code> columns and <code>cont_names</code> columns respectively. If <code>cont_names</code> is None then we assume all variables that aren't dependent or categorical are continuous. The <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a> in <code>tfms</code> are applied to the dataframes as preprocessing, then the categories are replaced by their codes+1 (leaving 0 for <code>nan</code>) and the continuous variables are normalized. You can pass the <code>stats</code> to use for that step. If <code>log_output</code> is True, the dependant variable is replaced by its log.</p>
+<p>Note that the transforms should be passed as <code>Callable</code>: the actual initialization with <code>cat_names</code> and <code>cont_names</code> is done inside.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">procs</span> <span class="o">=</span> <span class="p">[</span><span class="n">FillMissing</span><span class="p">,</span> <span class="n">Categorify</span><span class="p">,</span> <span class="n">Normalize</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">TabularDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">dep_var</span><span class="p">,</span> <span class="n">valid_idx</span><span class="o">=</span><span class="n">valid_idx</span><span class="p">,</span> <span class="n">procs</span><span class="o">=</span><span class="n">procs</span><span class="p">,</span> <span class="n">cat_names</span><span class="o">=</span><span class="n">cat_names</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can then easily create a <a href="/basic_train.html#Learner"><code>Learner</code></a> for this data with <a href="/tabular.data.html#get_tabular_learner"><code>get_tabular_learner</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="get_tabular_learner"><code>get_tabular_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>get_tabular_learner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>layers</code>:<code>Collection</code>[<code>int</code>], <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>metrics</code>=<code>None</code>, <code>ps</code>:<code>Collection</code>[<code>float</code>]=<code>None</code>, <code>emb_drop</code>:<code>float</code>=<code>0.0</code>, <code>y_range</code>:<code>OptRange</code>=<code>None</code>, <code>use_bn</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Get a <a href="/basic_train.html#Learner"><code>Learner</code></a> using <code>data</code>, with <code>metrics</code>, including a <a href="/tabular.models.html#TabularModel"><code>TabularModel</code></a> created using the remaining params.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>emb_szs</code> is a <code>dict</code> mapping categorical column names to embedding sizes; you only need to pass sizes for columns where you want to override the default behaviour of the model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularList"><code>class</code> <code>TabularList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L56" class="source_link">[source]</a></h2><blockquote><p><code>TabularList</code>(<code>items</code>:<code>Iterator</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>processor</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Basic class to create a list of inputs in <code>items</code> for tabular data. <code>cat_names</code> and <code>cont_names</code> are the names of the categorical and the continuous variables respectively. <code>processor</code> will be applied to the inputs or one will be created from the transforms in <code>procs</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularList.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>df</code>:<code>DataFrame</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>kwargs</code>) → <code>ItemList</code></p>
+</blockquote>
+<p>Get the list of inputs in the <code>col</code> of <code>path/csv_name</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularList.get_emb_szs"><code>get_emb_szs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>get_emb_szs</code>(<code>sz_dict</code>)</p>
+</blockquote>
+<p>Return the default embedding sizes suitable for this data or takes the ones in <code>sz_dict</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularLine"><code>class</code> <code>TabularLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L29" class="source_link">[source]</a></h2><blockquote><p><code>TabularLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>An object that will contain the encoded <code>cats</code>, the continuous variables <code>conts</code>, the <code>classes</code> and the <code>names</code> of the columns. This is the basic input for a dataset dealing with tabular data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularLine.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>idxs</code>:<code>Collection</code>[<code>int</code>], <code>rows</code>:<code>int</code>, <code>ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Show the data in <code>idxs</code> on a few <code>rows</code> from <code>ds</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularProcessor"><code>class</code> <code>TabularProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L79" class="source_link">[source]</a></h2><blockquote><p><code>TabularProcessor</code>(<code>procs</code>=<code>None</code>) :: <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a> from <code>procs</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

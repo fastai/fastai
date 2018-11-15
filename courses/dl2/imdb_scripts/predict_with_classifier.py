@@ -1,10 +1,9 @@
-import numpy as np
 from fastai.text import *
 
 import fire
 
 
-def load_model(itos_filename, classifier_filename):
+def load_model(itos_filename, classifier_filename, num_classes):
     """Load the classifier and int to string mapping
 
     Args:
@@ -23,7 +22,6 @@ def load_model(itos_filename, classifier_filename):
     # these parameters aren't used, but this is the easiest way to get a model
     bptt,em_sz,nh,nl = 70,400,1150,3
     dps = np.array([0.4,0.5,0.05,0.3,0.4])*0.5
-    num_classes = 2 # this is the number of classes we want to predict
     vs = len(itos)
 
     model = get_rnn_classifer(bptt, 20*70, num_classes, vs, emb_sz=em_sz, n_hid=nh, n_layers=nl, pad_token=1,
@@ -102,8 +100,14 @@ def predict_text(stoi, model, text):
     return softmax(numpy_preds[0])[0]
 
 
-def predict_input(itos_filename, trained_classifier_filename):
-
+def predict_input(itos_filename, trained_classifier_filename, num_classes=2):
+    """
+    Loads a model and produces predictions on arbitrary input.
+    :param itos_filename: the path to the id-to-string mapping file
+    :param trained_classifier_filename: the filename of the trained classifier;
+                                        typically ends with "clas_1.h5"
+    :param num_classes: the number of classes that the model predicts
+    """
     # Check the itos file exists
     if not os.path.exists(itos_filename):
         print("Could not find " + itos_filename)
@@ -114,17 +118,15 @@ def predict_input(itos_filename, trained_classifier_filename):
         print("Could not find " + trained_classifier_filename)
         exit(-1)
 
-    stoi, model = load_model(itos_filename, trained_classifier_filename)
+    stoi, model = load_model(itos_filename, trained_classifier_filename, num_classes)
 
     while True:
         text = input("Enter text to analyse (or q to quit): ")
-        if text == 'q':
+        if text.strip() == 'q':
             break
         else:
             scores = predict_text(stoi, model, text)
-            classes = [False, True]
-            print("Result: {0}, Scores: {1}".format(classes[np.argmax(scores)], scores))
-
+            print("Result id {0}, Scores: {1}".format(np.argmax(scores), scores))
 
 
 if __name__ == '__main__':

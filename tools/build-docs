@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+
+# usage:
+#   tools/build-docs -h
+#
+# update all notebooks:
+#   tools/build-docs
+#
+# update specific notebooks:
+#   tools/build-docs docs_src/one.ipynb docs_src/two.ipynb
+#
+# To update html only:
+#   tools/build-docs -l
+# or:
+#   tools/build-docs --html-only
+# --html-only is an alias for --no-update-nb-links
+#
+# To disable a flag, add --no- in front of argument:
+#   tools/build-docs docs_src/one.ipynb --no-update-html --no-update-line-num
+
+import os, sys, argparse
+from pathlib import Path
+
+# make sure we are under the root of the project
+if (Path(".").resolve().name == "tools"): os.chdir("..")
+# make sure we run against the local git fastai repo
+sys.path.insert(0, str(Path(".").resolve()))
+
+from fastai.gen_doc.gen_notebooks import *
+
+def add_bool_arg(parser, name, default=False, help='', true_aliases=None, false_aliases=None):
+    true_aliases = true_aliases or []
+    false_aliases = false_aliases or []
+    group = parser.add_mutually_exclusive_group(required=False)
+    dest_name = name.replace('-', '_')
+    group.add_argument('--' + name,    *true_aliases,  dest=dest_name, action='store_true',  help=help+(f' (Default)' if default else ''))
+    group.add_argument('--no-' + name, *false_aliases, dest=dest_name, action='store_false', help="do not "+help+(f' (Default)' if not default else ''))
+    parser.set_defaults(**{dest_name:default})
+
+parser = argparse.ArgumentParser(description="Build fastai docs from .ipynb files")
+parser.add_argument('files', type=str, nargs='*')
+parser.add_argument('-f', '--force', action="store_true", help="force .html files to be rebuilt")
+add_bool_arg(parser, 'document-new-fns',   default=False, help='scan module and adds any new module functions to documentation notebook')
+add_bool_arg(parser, 'update-html',        default=True,  help='update .html files from .ipynb notebooks')
+add_bool_arg(parser, 'update-nb-links',    default=True,  help='update documentation links and source code line numbers', false_aliases=['-l', '--html-only'])
+args = parser.parse_args()
+
+# if no files were specified pass the dir instead for all files
+files = args.files
+del args.files
+if not files: files.append('docs_src')
+
+succeeded = []
+failed = []
+for file in files:
+    try: update_notebooks(file, **vars(args))
+    except Exception as e:
+        print(f"failed to update {file}\n{e}")
+        failed.append(file)
+    else: succeeded.append(file)
+
+print("\n*** Summary:")
+if not failed: print("All succeeded")
+else:
+    if succeeded: print("- Succeeded:{'\n'.join(succeeded)}")
+    print("- Failed:{'\n'.join(failed)}")

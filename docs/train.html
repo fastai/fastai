@@ -1,0 +1,452 @@
+---
+
+title: train
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Extensions to Learner that easily implement Callback"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Additional-training-functions">Additional training functions<a class="anchor-link" href="#Additional-training-functions">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/train.html#train"><code>train</code></a> provides a number of extension methods that are added to <a href="/basic_train.html#Learner"><code>Learner</code></a> (see below for a list and details), along with three simple callbacks:</p>
+<ul>
+<li><a href="/train.html#ShowGraph"><code>ShowGraph</code></a></li>
+<li><a href="/train.html#GradientClipping"><code>GradientClipping</code></a></li>
+<li><a href="/train.html#BnFreeze"><code>BnFreeze</code></a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learner-extension-methods"><a href="/basic_train.html#Learner"><code>Learner</code></a> extension methods<a class="anchor-link" href="#Learner-extension-methods">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These methods are automatically added to all <a href="/basic_train.html#Learner"><code>Learner</code></a> objects created after importing this module. They provide convenient access to a number of callbacks, without requiring them to be manually created.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fit_one_cycle"><code>fit_one_cycle</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L12" class="source_link">[source]</a></h4><blockquote><p><code>fit_one_cycle</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>cyc_len</code>:<code>int</code>, <code>max_lr</code>:<code>Union</code>[<code>float</code>, <code>Collection</code>[<code>float</code>], <code>slice</code>]=<code>slice(None, 0.003, None)</code>, <code>moms</code>:<code>Point</code>=<code>(0.95, 0.85)</code>, <code>div_factor</code>:<code>float</code>=<code>25.0</code>, <code>pct_start</code>:<code>float</code>=<code>0.3</code>, <code>wd</code>:<code>float</code>=<code>None</code>, <code>callbacks</code>:<code>Optional</code>[<code>Collection</code>[<a href="/callback.html#Callback"><code>Callback</code></a>]]=<code>None</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Fit a model following the 1cycle policy.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fit a model with 1cycle training. See <a href="/callbacks.one_cycle.html#OneCycleScheduler"><code>OneCycleScheduler</code></a> for details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="lr_find"><code>lr_find</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L22" class="source_link">[source]</a></h4><blockquote><p><code>lr_find</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>Floats</code>=<code>1e-07</code>, <code>end_lr</code>:<code>Floats</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Explore lr from <code>start_lr</code> to <code>end_lr</code> over <code>num_it</code> iterations in <code>learn</code>. If <code>stop_div</code>, stops when loss explodes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See <a href="/callbacks.lr_finder.html#LRFinder"><code>LRFinder</code></a> for details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+</blockquote>
+<p>Transform <code>learn</code> in FP16 precision.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See <a href="/callbacks.fp16.html#MixedPrecision"><code>MixedPrecision</code></a> for details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="mixup"><code>mixup</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>mixup</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>alpha</code>:<code>float</code>=<code>0.4</code>, <code>stack_x</code>:<code>bool</code>=<code>False</code>, <code>stack_y</code>:<code>bool</code>=<code>True</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+</blockquote>
+<p>Add mixup <a href="https://arxiv.org/abs/1710.09412">https://arxiv.org/abs/1710.09412</a> to <code>learn</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See <a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a> for more details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A last extension method comes from the module tta.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TTA"><code>TTA</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/tta.py#L32" class="source_link">[source]</a></h4><blockquote><p><code>TTA</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>beta</code>:<code>float</code>=<code>0.4</code>, <code>scale</code>:<code>float</code>=<code>1.35</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Valid: 2&gt;</code>, <code>with_loss</code>:<code>bool</code>=<code>False</code>) → <code>Tensors</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Applies Test Time Augmentation to <code>learn</code> on the dataset <code>ds_type</code>. We take the average of our regular predictions (with a weight <code>beta</code>) with the average of predictions obtained thourh augmented versions of the training set (with a weight <code>1-beta</code>). The transforms decided for the training set are applied with a few changes <code>scale</code> controls the scale for zoom (which isn't random), the cropping isn't random but we make sure to get the four corners of the image. Flipping isn't random but applied once on each of those corner images (so that makes 8 augmented versions total).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll show examples below using our MNIST sample.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ShowGraph"><code>class</code> <code>ShowGraph</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L48" class="source_link">[source]</a></h2><blockquote><p><code>ShowGraph</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Update a graph of learner stats and metrics after each epoch.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">callback_fns</span><span class="o">=</span><span class="n">ShowGraph</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="imgs/train_graph.gif" alt="Training graph"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ShowGraph.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>n_epochs</code>:<code>int</code>, <code>last_metrics</code>:<code>MetricsList</code>, <code>kwargs</code>) → <code>bool</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we have <code>last_metrics</code>, plot them in <code>self.pbar</code>. Set the size of the graph with <code>n_epochs</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GradientClipping"><code>class</code> <code>GradientClipping</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L68" class="source_link">[source]</a></h2><blockquote><p><code>GradientClipping</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>clip</code>:<code>float</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>To do gradient clipping during training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Clips gradient at a maximum absolute value of <code>clip</code> during training. For instance:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">,</span>
+    <span class="n">callback_fns</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">GradientClipping</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:11
+epoch  train loss  valid loss  accuracy
+0      0.086958    0.038721    0.989696  (00:11)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GradientClipping.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>(<code>kwargs</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Clip the gradients after they are computed but before the optimizer step.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="BnFreeze"><code>class</code> <code>BnFreeze</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L61" class="source_link">[source]</a></h2><blockquote><p><code>BnFreeze</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Freeze moving average statistics in all non-trainable batchnorm layers.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For batchnorm layers where <code>requires_grad==False</code>, you generally don't want to update their moving average statistics, in order to avoid the model's statistics getting out of sync with its pre-trained weights. You can add this callback to automate this freezing of statistics (internally, it calls <code>eval</code> on these layers).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">callback_fns</span><span class="o">=</span><span class="n">BnFreeze</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:07
+epoch  train loss  valid loss  accuracy
+0      0.079278    0.041832    0.985280  (00:07)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="BnFreeze.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Set back the batchnorm layers on <code>eval</code> mode after the model has been set to <a href="/train.html#train"><code>train</code></a>.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

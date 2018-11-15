@@ -1,0 +1,87 @@
+---
+
+title: overview
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Overview of the core modules"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>To get started with fastai, have a look at the <a href="/training">training overview</a>. The documentation below covers some lower-level details.</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Core-modules-of-fastai">Core modules of fastai<a class="anchor-link" href="#Core-modules-of-fastai">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The basic foundations needed in several parts of the library are provided by these modules:</p>
+<h2 id="basic_data"><a href="/basic_data.html#basic_data"><code>basic_data</code></a><a class="anchor-link" href="#basic_data">&#182;</a></h2><p>This module defines the basic <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> class which is what will be needed to create a <a href="/basic_train.html#Learner"><code>Learner</code></a> object with a model. It also defines the <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a>, a class that wraps a pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a> to put batches on the right device.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="layers"><a href="/layers.html#layers"><code>layers</code></a><a class="anchor-link" href="#layers">&#182;</a></h2><p>This module contains the definitions of basic custom layers we need in most of our models, as well as a few helper functions to create simple blocks.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Most of the documentation of the following two modules can be skipped at a first read, unless you specifically want to know what a certain function is doing.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="core"><a href="/core.html#core"><code>core</code></a><a class="anchor-link" href="#core">&#182;</a></h2><p>This module contains the most basic functions and imports, notably:</p>
+<ul>
+<li>pandas as pd</li>
+<li>numpy as np</li>
+<li>matplotlib.pyplot as plt</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="torch_core"><a href="/torch_core.html#torch_core"><code>torch_core</code></a><a class="anchor-link" href="#torch_core">&#182;</a></h2><p>This module contains the most basic functions and imports that use pytorch. We follow pytorch naming conventions, mainly:</p>
+<ul>
+<li>torch.nn as nn</li>
+<li>torch.optim as optim</li>
+<li>torch.nn.functional as F</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

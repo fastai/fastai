@@ -1,0 +1,305 @@
+---
+
+title: callbacks.mixup
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Implementation of mixup"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Mixup-data-augmentation">Mixup data augmentation<a class="anchor-link" href="#Mixup-data-augmentation">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-is-Mixup?">What is Mixup?<a class="anchor-link" href="#What-is-Mixup?">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This module contains the implementation of a data augmentation technique called <a href="https://arxiv.org/abs/1710.09412">Mixup</a>. It is extremely efficient at regularizing models in computer vision (we used it to get our time to train CIFAR10 to 94% on one GPU to 6 minutes).</p>
+<p>As the name kind of suggests, the authors of the mixup article propose to train the model on a mix of the pictures of the training set. Let’s say we’re on CIFAR10 for instance, then instead of feeding the model the raw images, we take two (which could be in the same class or not) and do a linear combination of them: in terms of tensor it’s</p>
+<p><code>new_image = t * image1 + (1-t) * image2</code></p>
+<p>where t is a float between 0 and 1. Then the target we assign to that image is the same combination of the original targets:</p>
+<p><code>new_target = t * target1 + (1-t) * target2</code></p>
+<p>assuming your targets are one-hot encoded (which isn’t the case in pytorch usually). And that’s as simple as this.</p>
+<p><img src="imgs/mixup.png" alt="mixup"></p>
+<p>Dog or cat? The right answer here is 70% dog and 30% cat!</p>
+<p>As the picture above shows, it’s a bit hard for a human eye to comprehend the pictures obtained (although we do see the shapes of a dog and a cat) but somehow, it makes a lot of sense to the model which trains more efficiently. The final loss (training or validation) will be higher than when training without mixup even if the accuracy is far better, which means that a model trained like this will make predictions that are a bit less confident.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Basic-Training">Basic Training<a class="anchor-link" href="#Basic-Training">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To test this method, we will first build a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> and train it like we did with <a href="/basic_train.html#basic_train"><code>basic_train</code></a> so we can compare its results with a network trained with Mixup.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:18
+epoch  train loss  valid loss  accuracy
+0      0.154147    0.132811    0.953876  (00:02)
+1      0.114623    0.088874    0.970069  (00:02)
+2      0.087302    0.082290    0.975466  (00:02)
+3      0.055337    0.041746    0.986261  (00:02)
+4      0.046112    0.053610    0.980864  (00:02)
+5      0.036025    0.032832    0.989205  (00:02)
+6      0.034067    0.038534    0.985770  (00:02)
+7      0.029102    0.024582    0.992149  (00:02)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Mixup-implementation-in-the-library">Mixup implementation in the library<a class="anchor-link" href="#Mixup-implementation-in-the-library">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the original article, the authors suggested four things:</p>
+
+<pre><code>1. Create two separate dataloaders and draw a batch from each at every iteration to mix them up
+2. Draw a t value following a beta distribution with a parameter alpha (0.4 is suggested in their article)
+3. Mix up the two batches with the same value t.
+4. Use one-hot encoded targets
+
+</code></pre>
+<p>The implementation of this module is based on these suggestions but was modified when experiments suggested modifications with positive impact in performance.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The authors suggest to use the beta distribution with the same parameters alpha. Why do they suggest this? Well it looks like this:</p>
+<p><img src="imgs/betadist-mixup.png" alt="betadist"></p>
+<p>so it means there is a very high probability of picking values close to 0 or 1 (in which case the image is almost from 1 category) and then a somewhat constant probability of picking something in the middle (0.33 as likely as 0.5 for instance).</p>
+<p>While this works very well, it’s not the fastest way we can do this and this is the first suggestion we will adjust. The main point that slows down this process is wanting two different batches at every iteration (which means loading twice the amount of images and applying to them the other data augmentation function). To avoid this slow down, ou be a little smarter and mixup a batch with a shuffled version of itself (this way the images mixed up are still different).</p>
+<p>Using the same parameter t for the whole batch is another suggestion we will modify. In our experiments, we noticed that the model can train faster if we draw a different <code>t</code> for every image in the batch (both options get to the same result in terms of accuracy, it’s just that one arrives there more slowly).
+The last trick we have to apply with this is that there can be some duplicates with this strategy: let’s say we decide to mix <code>image0</code> with <code>image1</code> then <code>image1</code> with <code>image0</code>, and that we draw <code>t=0.1</code> for the first, and <code>t=0.9</code> for the second. Then</p>
+<p><code>image0 * 0.1 + shuffle0 * (1-0.1) = image0 * 0.1 + image1 * 0.9</code></p>
+<p>and</p>
+<p><code>image1 * 0.9 + shuffle1 * (1-0.9) = image1 * 0.9 + image0 * 0.1</code></p>
+<p>will be the sames. Of course we have to be a bit unlucky but in practice, we saw there was a drop in accuracy by using this without removing those duplicates. To avoid them, the tricks is to replace the vector of parameters <code>t</code> we drew by:</p>
+<p><code>t = max(t, 1-t)</code></p>
+<p>The beta distribution with the two parameters equal is symmetric in any case, and this way we insure that the biggest coefficient is always near the first image (the non-shuffled batch).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Adding-Mixup-to-the-Mix">Adding Mixup to the Mix<a class="anchor-link" href="#Adding-Mixup-to-the-Mix">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we will add <a href="/callbacks.mixup.html#MixUpCallback"><code>MixUpCallback</code></a> to our Learner so that it modifies our input and target accordingly. The <a href="/train.html#mixup"><code>mixup</code></a> function does that for us behind the scene, with a few other tweaks detailed below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">learner</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span><span class="o">.</span><span class="n">mixup</span><span class="p">()</span>
+<span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:22
+epoch  train loss  valid loss  accuracy
+0      0.372338    0.166498    0.951423  (00:02)
+1      0.349636    0.145830    0.965653  (00:02)
+2      0.333157    0.112585    0.977920  (00:02)
+3      0.318903    0.104405    0.982336  (00:02)
+4      0.317793    0.111996    0.988224  (00:02)
+5      0.315467    0.095693    0.986261  (00:02)
+6      0.312827    0.091224    0.990186  (00:02)
+7      0.309499    0.088683    0.991168  (00:02)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Training the net with Mixup improves the best accuracy. Note that the validation loss is higher than without MixUp, because the model makes less confident predictions: without mixup, most precisions are very close to 0. or 1. (in terms of probability) whereas the model with MixUp will give predictions that are more nuanced. Be sure to know what is the thing you want to optimize (lower loss or better accuracy) before using it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L7" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<code>learner</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>alpha</code>:<code>float</code>=<code>0.4</code>, <code>stack_x</code>:<code>bool</code>=<code>False</code>, <code>stack_y</code>:<code>bool</code>=<code>True</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> for mixup on <code>learn</code> with a parameter <code>alpha</code> for the beta distribution. <code>stack_x</code> and <code>stack_y</code> determines if we stack our inputs/targets with the vector lambda drawn or do the linear combination (in general, we stack the inputs or ouputs when they correspond to categories or classes and do the linear combination otherwise).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L14" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>last_input</code>, <code>last_target</code>, <code>train</code>, <code>kwargs</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Draws a vector of lambda following a beta distribution with <code>self.alpha</code> and operates the mixup on <code>last_input</code> and <code>last_target</code> according to <code>self.stack_x</code> and <code>self.stack_y</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dealing-with-the-loss">Dealing with the loss<a class="anchor-link" href="#Dealing-with-the-loss">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We often have to modify the loss so that it is compatible with Mixup: pytorch was very careful to avoid one-hot encoding targets when it could, so it seems a bit of a drag to undo this. Fortunately for us, if the loss is a classic <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.functional.cross_entropy">cross-entropy</a>, we have</p>
+<p><code>loss(output, new_target) = t * loss(output, target1) + (1-t) * loss(output, target2)</code></p>
+<p>so we won’t one-hot encode anything and just compute those two losses then do the linear combination.</p>
+<p>The following class is used to adapt the loss to mixup. Note that the <a href="/train.html#mixup"><code>mixup</code></a> function will use it to change the <code>Learner.loss_func</code> if necessary.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L33" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a loss function from <code>crit</code> that is compatible with MixUp.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

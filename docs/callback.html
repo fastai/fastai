@@ -1,0 +1,1078 @@
+---
+
+title: callback
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Implementation of the callback system"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Classes-for-callback-implementors">Classes for callback implementors<a class="anchor-link" href="#Classes-for-callback-implementors">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>fastai provides a powerful <em>callback</em> system, which is documented on the <a href="/callbacks.html#callbacks"><code>callbacks</code></a> page; look on that page if you're just looking for how to use existing callbacks. If you want to create your own, you'll need to use the classes discussed below.</p>
+<p>A key motivation for the callback system is that additional functionality can be entirely implemented in a single callback, so that it's easily read. By using this trick, we will have different methods categorized in different callbacks where we will find clearly stated all the interventions the method makes in training. For instance in the <a href="/callbacks.lr_finder.html#LRFinder"><code>LRFinder</code></a> callback, on top of running the fit function with exponentially growing LRs, it needs to handle some preparation and clean-up, and all this code can be in the same callback so we know exactly what it is doing and where to look if we need to change something.</p>
+<p>In addition, it allows our <a href="/basic_train.html#fit"><code>fit</code></a> function to be very clean and simple, yet still easily extended. So far in implementing a number of recent papers, we haven't yet come across any situation where we had to modify our training loop source code - we've been able to use callbacks every time.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Callback"><code>class</code> <code>Callback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L117" class="source_link">[source]</a></h2><blockquote><p><code>Callback</code>()</p>
+</blockquote>
+<p>Base class for callbacks that want to record values, dynamically change learner params, etc.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To create a new type of callback, you'll need to inherit from this class, and implement one or more methods as required for your purposes. Perhaps the easiest way to get started is to look at the source code for some of the pre-defined fastai callbacks. You might be surprised at how simple they are! For instance, here is the <strong>entire</strong> source code for <a href="/train.html#GradientClipping"><code>GradientClipping</code></a>:</p>
+<div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GradientClipping</span><span class="p">(</span><span class="n">LearnerCallback</span><span class="p">):</span>
+    <span class="n">clip</span><span class="p">:</span><span class="nb">float</span>
+    <span class="k">def</span> <span class="nf">on_backward_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">:</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You generally want your custom callback constructor to take a <a href="/basic_train.html#Learner"><code>Learner</code></a> parameter, e.g.:</p>
+<div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="n">learn</span><span class="p">:</span><span class="n">Learner</span>
+</pre></div>
+<p>Note that this allows the callback user to just pass your callback name to <code>callback_fns</code> when constructing their <a href="/basic_train.html#Learner"><code>Learner</code></a>, since that always passes <code>self</code> when constructing callbacks from <code>callback_fns</code>. In addition, by passing the learner, this callback will have access to everything: e.g all the inputs/outputs as they are calculated, the losses, and also the data loaders, the optimizer, etc. At any time:</p>
+<ul>
+<li>Changing self.learn.data.train_dl or self.data.valid_dl will change them inside the fit function (we just need to pass the <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> object to the fit function and not data.train_dl/data.valid_dl)</li>
+<li>Changing self.learn.opt.opt (We have an <a href="/callback.html#OptimWrapper"><code>OptimWrapper</code></a> on top of the actual optimizer) will change it inside the fit function.</li>
+<li>Changing self.learn.data or self.learn.opt directly WILL NOT change the data or the optimizer inside the fit function.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In any of the callbacks you can unpack in the kwargs:</p>
+<ul>
+<li><code>n_epochs</code>, contains the number of epochs the training will take in total</li>
+<li><code>epoch</code>, contains the number of the current</li>
+<li><code>iteration</code>, contains the number of iterations done since the beginning of training</li>
+<li><code>num_batch</code>, contains the number of the batch we're at in the dataloader</li>
+<li><code>last_input</code>, contains the last input that got through the model (eventually updated by a callback)</li>
+<li><code>last_target</code>, contains the last target that gor through the model (eventually updated by a callback)</li>
+<li><code>last_output</code>, contains the last output spitted by the model (eventually updated by a callback)</li>
+<li><code>last_loss</code>, contains the last loss computed (eventually updated by a callback)</li>
+<li><code>smooth_loss</code>, contains the smoothed version of the loss</li>
+<li><code>last_metrics</code>, contains the last validation loss and emtrics computed</li>
+<li><code>pbar</code>, the progress bar</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Methods-your-subclass-can-implement">Methods your subclass can implement<a class="anchor-link" href="#Methods-your-subclass-can-implement">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All of these methods are optional; your subclass can handle as many or as few as you require.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>To initialize constants in the callback.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here we can initiliaze anything we need. 
+The optimizer has now been initialized. We can change any hyper-parameters by typing, for instance:</p>
+
+<pre><code>self.opt.lr = new_lr
+self.opt.mom = new_mom
+self.opt.wd = new_wd
+self.opt.beta = new_beta</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>At the beginning of each epoch.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is not technically required since we have <code>on_train_begin</code> for epoch 0 and <code>on_epoch_end</code> for all the other epochs,
+yet it makes writing code that needs to be done at the beginning of every epoch easy and more readable.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L126" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Set HP before the step is done. Returns xb, yb (which can allow us to modify the input at that step if needed).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the perfect place to prepare everything before the model is called.
+Example: change the values of the hyperparameters (if we don't do it on_batch_end instead)</p>
+<p>If we return something, that will be the new value for <code>xb</code>,<code>yb</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L129" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Called after forward pass but before loss has been computed. Returns the output (which can allow us to modify it).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to run some code that needs to be executed after the output has been computed but before the
+loss computation.
+Example: putting the output back in FP32 when training in mixed precision.</p>
+<p>If we return something, that will be the new value for the output.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Called after the forward pass and the loss has been computed, but before backprop. Returns the loss (which can allow us to modify it, for instance for reg functions)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to run some code that needs to be executed after the loss has been computed but before the gradient computation.
+Example: <code>reg_fn</code> in RNNs.</p>
+<p>If we return something, that will be the new value for loss. Since the recorder is always called first,
+it will have the raw loss.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L136" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Called after backprop but before optimizer step. Useful for true weight decay in AdamW.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to run some code that needs to be executed after the gradients have been computed but
+before the optimizer is called.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L139" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Called after the step of the optimizer but before the gradients are zeroed.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to run some code that needs to be executed after the optimizer step but before the gradients
+are zeroed</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L142" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Called at the end of the batch.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to run some code that needs to be executed after a batch is fully done.
+Example: change the values of the hyperparameters (if we don't do it on_batch_begin instead)</p>
+<p>If we return true, the current epoch is interrupted (example: lr_finder stops the training when the loss explodes)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L145" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>kwargs</code>:<code>Any</code>) → <code>bool</code></p>
+</blockquote>
+<p>Called at the end of an epoch.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to run some code that needs to be executed at the end of an epoch.
+Example: Save the model if we have a new best validation loss/metric.</p>
+<p>If we return true, the training stops (example: early stopping)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Callback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L148" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Useful for cleaning up things and saving files/models.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is the place to tidy everything. It's always executed even if there was an error during the training loop,
+and has an extra kwarg named exception to check if there was an exception or not.
+Examples: save log_files, load best model found during training</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Annealing-functions">Annealing functions<a class="anchor-link" href="#Annealing-functions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following functions provide different annealing schedules. You probably won't need to call them directly, but would instead use them as part of a callback. Here's what each one looks like:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAX4AAAD8CAYAAABw1c+bAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAIABJREFUeJzs3XVc1lf7wPHP4SZFGpMQxG4Fwe5u5zZjuqlYm0td+MzfrLnpSqebznZlt3N26wzsQgWDCViU0lLn9wfoUEHqizdx3q/X/Zp887p5eC6+nPtc1xFSShRFUZTiw0DfASiKoigvl0r8iqIoxYxK/IqiKMWMSvyKoijFjEr8iqIoxYxK/IqiKMWMSvyKoijFjEr8iqIoxYxK/IqiKMWMob4DyIi9vb10cXHRdxiKoiiFxqlTp0KllKWyc2yBTPwuLi6cPHlS32EoiqIUGkKIf7N7rBrqURRFKWZU4lcURSlmVOJXFEUpZlTiVxRFKWZU4lcURSlmskz8QggnIcQ+IcRlIcQlIcQHGRwjhBCzhRDXhBDnhRAN0u17Swjhn/Z6S+s3oCiKouRMdqZzJgFjpZSnhRAWwCkhxC4ppW+6YzoDldNeXsAvgJcQwhaYCHgAMu3czVLKCE3fhaIoipJtWSZ+KeUd4E7av6OEEJcBByB94u8J/C5T13E8JoSwFkKUA1oBu6SU4QBCiF1AJ2CFpu8izRtrvuX+w0QMMMFAmmBACQylBTpZEkMsEAWzbEFRFAWAGuUtmdi9Zr7fJ0eZUAjhAtQHjj+zywEITPd1UNq2zLZndO0RwAgAZ2fnnIT1xJWo9SQYxWS8UwoMscBQ2mAk7TCWpTGWpTFJKYuJLI+OErm6p6IoSmGT7cQvhCgJrAM+lFJGPrs7g1PkC7Y/v1HKBcACAA8PjxyvAJ+clMKHl77AxsmUSj0qYmCTSFRCFBHxEYTHhxMWF8bd2LvcjbnL7ejbBEWdJ0kmPTm/TIkyVLWtSk27mqkv+5rYm9nnNAxFUZQCL1uJXwhhRGrSXyalXJ/BIUGAU7qvHYHbadtbPbN9f24CzUpKTASVTQ5y7moLbn17g6qepWjYowaWFcwyPD4pJYk70Xe4GXkT/wh/rj24xpXwKxwOPkyKTAGggmUF6peuj3sZdxqVa0RZ87L5EbqiKMpLJVKH5V9wgBAC+A0Il1J+mMkxXYF3gS6kfrg7W0rpmfbh7ing8Syf04D74zH/zHh4eMhc9ep5FEXstm85fTCKi3GdkMKI6s0c8ejsQkkbk2xdIjYxlivhVzgXco7T909z5v4ZHj56CICLpQuNyjWihWMLGpZtiKmhac5jVBRFyQdCiFNSSo9sHZuNxN8MOARcAFLSNn8OOANIKeel/XL4mdQPbmOBIVLKk2nnD007HuArKeXSrILKdeJ/LNCH6HXjOXWrHr5xHRA6Q2q1dKRBxwqUsDTO0aVSZAr+Ef4cv3OcY3eOcfLeSeKS4jDVmdKoXCPaVWhHK6dWWJlY5T5eRVGUPNI08etDnhM/QFICHJ5B5N7fOBHbn6sxTdEZG1K3tSP12jtjam6Uq8s+Sn7EibsnOBB4gP1B+7kbcxdDYYhXeS+6uHahrXNbzI3M8xa7oihKDqnEn979K7D5PSICgvDhA66FVsHYzJD67Z2o08YJY9PcT/GUUnIx9CK7bu1iZ8BOgqODMdWZ0sqpFT0r9aRxucboDHTavA9FUZQXUIn/WSnJcGIx7JlM6CMnjhv/j4BAC0xLGuHeqQK1WjpgaJS3BC2l5FzIObbc2MKOgB08ePSAsuZl6enWkz6V+1CuZDmN3oyiKMrzVOLPzINA2PIRXNvFXeseHE8YSdCNBMytTfDo4kL1puXQ6fLevighOYF9gfvY4L+BI7ePIISgpWNL+lXtR6PyjTAQqkWSoijaKpaJX0pJ/MVL6CxKYvyiZRulhAtrYNtn8CiK4KqTOPavF3dvRGFpb4pnN1cqe5bFwCCjEoScC44OZq3fWtb7ryc8PhxXK1cG1RhE94rd1awgRVE0UywTf0pcHH6Nm2D9Sm/KTpiQ9QkxobD9f3BhNdKuKv/WnMnxo0aEBkZjU84crx6uVKxXitQJS3mXkJzAjoAd/OH7B5fDL2NjYkO/av0YUG0A1qbWmtxDUZTiq1gmfoCg994j7tx5Ku3fhzDI5nCK/y7460OIDEZ6DOO6/Xsc33aHB/diKV3BAq+eFXGqbqvZLwApJafuneI339/YH7gfM0Mz+lTuw+CagyljXkaTeyiKUvwU28T/cNMmbn82DpdVKzGrWzf7Jz6Kgr1T4fh8sHQgpctMrobX5sSWm0SFx1O+sjWNelakXCVtn8z9I/xZenEpW29uxUAY8GqVV/Gu5a1+ASiKkmPFNvEnP3yIX9Nm2A0ZTOmxY3N+40Af2PwehFyB2q+R3O5rLp1O4OS2AOIiE6hQ2w6vHhUp5WSR82u/QFBUEIsuLGLTtU0IIXitymsMrzNc9QpSFCXbim3iB7g1dCiJt+9QcdvW3A3PJD2CwzPh4PdgYgGdppNYtQ8XDgRzese/PIpNopJHaby6V8S6jLYdPYOiglh4YSGbrm3CWGfMwOoDGVxrMJbGlpreR1GUoqdYJ/7w5cu5N+VLKv69BRM3t9wHcf9y6tN/0Amo1A66zeSRcTnO7LrFub1BJCemUL1xWTy6umJhq+3snICHAcw5O4ftAduxMrHi7bpv83qV1zHS5a7aWFGUoq9YJ/7Ee/e41rIVpT78EPtRI/MWSEoynFgEuyenft12AngOJzY6mVPbA7h4MBiBoFZLB9w7VcDMImd9gLJyOewyP5z6geN3juNs4cwY9zG0cW6j2QfNiqIUHcU68QPcfL0vpKTgunaNNgE9uAVbxsC1XeDYEHr8BKWrExkWx4m/A7h69A6GxjrqtnOifjtnjM20W+lLSsnh4MP8cPIHrj+8jldZLz71/JQqNlU0u4eiKIVfsU/8oQsWEjJjBpX27cWonEatEp4p/KL5GGg+FgxNiLgbw/HNN7h+OgRTcyMadKpA7ZYOGBpr16cnKSWJNX5r+PnMz0QnRvN6ldd5t/67qiuooiiASvw8unGTG126UGb8eGwHDdQwMp4q/MK+aurTv7MXAPf/jeT4phvc8g3H3NoEz26uVGtcFgMN2kA89iD+AXPOzmG132qsTawZ6zGW7hW7q+EfRSnmin3iB7jerRuG1jZU+PMPjaJ6RrrCLzyHp47/m6RO8wy+GsHRjde5dzMS6zIl8OpREbf6pRAatYGA1PH/qcencj7kPA1KN2Bi44lUtK6o2fUVRSlctF6IZQnQDbgvpayVwf5PgDfSvjQEqgOlpJThQogAIApIBpKyG5QWiT/kp58JnTuXSgf2Y1S6dJ6ulalHUbDnS/BZAJYO0G0mVOkApI7NB5wP5dimG4TfjqGUswWNelbEqYZ2VcApMoWN1zYy49QMYhJjGFZ7GMNqD8NEl73VxhRFKTq0TvwtgGjg94wS/zPHdgc+klK2Sfs6APCQUoZmJ5jHtEj8j/z9udG9B2W++D9s33gj6xPy4pnCLzpNB/PU4quUFIm/z12O/3WTqLB4HKpY06iXG2Urajc2HxYXxncnv+PvG3/jYunC5CaTaVCmQdYnKopSZGg+1COEcAG2ZCPxLwf2SSkXpn0dgJ4SP7yE4Z70kh7BoRlw6IcnhV/UeR3Snu6TE1O4dDiYk1sDiItKxLWuPV49K2JXvqRmIRwJPsKUY1O4HX2b/tX680GDDyhhpG2RmaIoBVNOEr9mnzoKIUqQuubuunSbJbBTCHFKCDFCq3tll2XHTsSeOkXi/fv5fzNDE2j9Pxh1COzcYMMIWPZq6lRQQGdkQJ3WTgz8sjFePVwJvhrByi992POrL5FhcZqE0MShCet7rKdftX4sv7KcVza/wom7JzS5tqIoRYeWK4J0B/6RUoan29ZUStkA6AyMThs2ypAQYoQQ4qQQ4mRISIgmAVl26ghSErVrlybXy5bS1WHoDuj0Dfx7FOY0gmPzUovBAGNTQzy6uDJoahPqtXPG/+R9lk08xuHV/sRFJ+T59iWMSvC51+f82ulXDIQBQ3cM5Rufb4hPis/ztRVFKRo0G+oRQmwA1kgpl2eyfxIQLaX8Pqv7abkC10sd7nnWg1upM3+u7wEHj9Spn2VqPHVIVHg8J7bc5MrROxia6Kjf3pm6bfO2FvBjsYmxzDw1k5VXV+Ji6cK05tOoZf/C0TpFUQqplz7UI4SwAloCm9JtMxdCWDz+N9ABuKjF/XLipQ73PMvaGQaug94LIPwGzG8B+6alfh6QxsLWlDZvVqffBC+cqtni89dN/vziKOf3BZGclJKn25cwKsH4RuNZ2GEh8cnxDNo6iPnn5pOUkpTXd6YoSiGWZeIXQqwAjgJVhRBBQghvIcQoIcSodIf1BnZKKWPSbSsDHBZCnAN8gL+llNu1DD479DLck54QULcvvHsCavaCA9NTfwEE+jx1mG05czqPqk2fz9yxLWfOoVV+LJ90DD+fu8iUvNVaNCrXiHU91tHepT0/n/2ZIduHEBQVlKdrKopSeBXZAq70rnfrhs7KGpdlf2p2zVzz25m64HtkMHiOgLZfPCn8ekxKyS3fcI5tvE5oYDT2TiVp1MsNZw1qAP6+8TdTj00FYELjCXR27Zyn6ymKUjDoZVZPQWbVtStxp06RePu2vkNJLfAafSw16fssSP3w12/nU4cIIahQ047X/9eQ9t41SIhLYstP59g08wx3bz7M0+27VuzK2h5rqWhdkU8Pfsr/Hf4/YhNj83RNRVEKl2KR+C27dgUgcutWPUeSxsQCunybOvvH2ByWvwbrhqX2AUpHGAiqNCzLgEmNaN63CuF3Ylj3zSm2zb9AxN2YTC6eNYeSDvza6VeG1x7O5uub6fd3P/wi/PL6rhRFKSSKxVAPwM2+fZGPEqi4cYOm182zDFb8Sl/4lV5CfBJndwdydtctkhJTqN60HJ5dXTG3zn2LhuN3jvPZwc+ITozmc6/P6V2pt2r4piiFkBrqyYBV1248unKFR/7++g7laYYm0GrcM4Vfrz0p/ErP2NQQz26uDPyyMbVaOnDlyB3+/OIoxzZe51Fc7mbqeJXzYm2PtdQrXY+JRyYy/vB4NfSjKEVcsXniTwoJwb9lK+xGDKf0hx9qem3NpCSDz0LYMyX163YToeEwMMi4r//DkDiOb76B/4l7mJgb4tHZhdotHdEZ5fz3eXJKMgsuLOCXs7/gZu3GjFYzcLVyzcu7URTlJVJtmTNxa6g3Cbdu4bZrZ8Eezoj4N3Xmz/U94OgJPWanVgRnIuRWFEc3XifQNxwLW1O8elakSsMyuWoDfeT2EcYdHMej5Ed82fRLOrh0yMs7URTlJVFDPZmw7N6dxKAg4s+d03coL2ZT4b/Cr7BrMK/5c4Vf6ZVytqDH+/Xo8UE9TMwN2b3Ul9XTTnDLNyzHt25Svgmru6+mkk0lxh4Yy4xTM1TBl6IUMcUq8Vu0b4cwNubhX1v0HUrWHhd+jfZ5YeFXek7VbZ+aAvrX7HNs+vEMIbeicnTrsuZlWdpxKX2r9mXpxaWM2jWK8PjwrE9UFKVQKFZDPQBBH3xI7IkTVD6wH2FklC/3yBfZKPxKLzkxhYsHU9tAx8ckUrlhGRr1rIilvVmObrvBfwNTj03FzsyOWa1nUd0u8yEnRVH0Rw31vIBVr54kh4cTfeiQvkPJmSeFX8NTC7/mNgb/3ZkerjMyoG5bJwZObYx75wrcPBvCsonHOLTaL0ddQHtX7s3vnX8nRabw5rY32XqjgNRCKIqSa8XuiV8mJuLfshUl3N1x/Gl2vtwj3906nrriV+hVqP162opfdi88JTriESe23ODykTsYmeho0KkCddo4YWSc8YyhZ4XGhTJ2/1hO3z/N0FpDeb/+++gymW2kKMrLp2b1ZOHetGmEL19B5YMHMLSxybf75KukR6mrfR2aAaaWqf3/a7+aYeFXeuG3Yzi68ToB50MxtzbBq4crVRuVwyAbM4ASkxOZ7jOd1X6raenYkunNp1PSWLsVxBRFyT011JMFq169IDGx4LRwyA1DE2j9OYw8CDausH5YpoVf6dmWN6frO3XoPbY+5tYm7P39Cqum+vDvxTCyeggw0hnxReMvGO81nsPBhxm0bRCBUYFavitFUV6CYvnED3CjZy+EsTGua1bn631eipTk1HH/PV+mfp1F4ddjUkqunw7h6MbrRIbE4VDVmiavVKJ0Bcssb3nszjHG7h+LgTDgx9Y/4l7GXYt3oihKLqkn/myw6tWL+AsXeHT9ur5DyTsDHTR6G945Cs6NYNunsKQT3L/ywtOEEFRyL82AiV4071uFsOAY1kw7yc7Fl4gMffE6wI3KNWJF1xVYm1gzbOcwNl/frOU7UhQlHxXfxN+9G+h0PNy4KeuDC4vnCr+awf7pmRZ+PaYzNKBOa0cGftkY904VuHE2hGWTjvHPWn/iYxIzPc/Z0pk/u/yJe2l3xh8ez6zTs0iReVs1TFGU/JedFbiWCCHuCyEyXDZRCNFKCPFQCHE27TUh3b5OQoirQohrQohxWgaeV4b29pRs1oyHmzYhk4pQZWr6wq8aPWH/tCwLvx4zMTOkUS83Bk5pRJWGZTi7J5A/vzjKmV23SE7MOKFbmVjxS/tfeLXKqyy6sIjPDn7Go+QX/6JRFEW/svPE/yvQKYtjDkkp66W9pgAIIXTAHKAzUAPoL4So8aKLvGxWr/Yh6f59og8f1nco2itZCl5dDANWw6NoWNwBtn6a+u+sTrUxpe1bNeg73pMyrpYcWXeNZZOO4Xci42UgjQyMmNBoAmPcx7A9YDvDdgxTlb6KUoBlmfillAeB3Py/2BO4JqW8IaVMAFYCPXNxnXxj0aoVOjs7Hqxdq+9Q8k+Vjs8UfjUC/+ytP2zvWJLu76X2ADI2M2TXYl/WfnOS2/4Rzx0rhGBIrSH80PIHLodfZuDWgfwb+a/W70ZRFA1oNcbfWAhxTgixTQhRM22bA5B+rl9Q2rYCQxgZYd27F9H79pMUEqLvcPKPiQV0+S51xS+jErDsVVg3HGKy18TNqbotr3/ekLZvVSc2MoENP5xh6y/nM1wFrINLBxZ3XEx0QjQDtw7k7P2zWr8bRVHySIvEfxqoIKWsC/wEbEzbnlFFUKZzR4UQI4QQJ4UQJ0NeYhK26tMHkpN5sHFj1gcXds5eqQu+tPwMLm2AOQ3h/BrIxpReAwNBtcbleGNyIxr1qkjQ1QhWTPHh4IqrxEU93QKibqm6/NnlTyyNLfHe4c2uf7P3F4aiKC9HnhO/lDJSShmd9u+tgJEQwp7UJ3yndIc6Apmudi6lXCCl9JBSepQqVSqvYWWbiasrJTw8eLB2bZYFTEVCRoVfy1+HB9krxDI01uHeyYWBUxpTs1l5Lh66zR9fHOXU9gCSEpKfHOds6cwfXf6gml01xu4fy7LLy/LrHSmKkkN5TvxCiLIibVUTIYRn2jXDgBNAZSGEqxDCGOgHFMjJ3tavvUriv7eIPXFC36G8PGVqgPfO1D4/Af+kjv0fX5BaDJYNJSyNaTmgKv0neOJQxYZjG2+wbOIxrh7/7wNgW1NbFndYTCunVkz3mc7MUzPVdE9FKQCyrNwVQqwAWgH2wD1gImAEIKWcJ4R4F3gbSALigDFSyiNp53YBfgR0wBIp5VfZCeplVO6mlxIXh3+LlpRs3QqHb799afctMJ5b8esnKF0tR5cIvhrBP+uuEXIrilLOFjR9tRIOVVL7ICWnJPP18a9Z7beabhW7MaXJFIx0hagltqIUAqpJWy7cnTKFB2vXUenA/sLbuC0vpITzq2D7/+BRFLT4GJqNAUPj7F8iReJ34h7HNl4nOuIRLnXsafKKGzZlzZFSsvDCQn468xNNyzdlRqsZlDAqkY9vSFGKF9WyIRes+/ZDJiTwcEMx+JA3I0JA3X4ZFH5lf/hLGAiqepV98gFwsF8EK6f4cHClH/ExiYyoM4LJTSZz9M5Rhu0cRkT889NCFUXJf+qJP52ANwaSFBKC2/ZtCINi/jvRbwdsGZO64pfXSGjzBZjkrAVzbGQCPltu4nv4NkYmOjw6u1CntSMH7xzgk4OfUM68HAvaL6BcyXL59CYUpfhQT/y5ZNOvH4m3bhFz5Ki+Q9G/x4VfDYfB8flphV+Zr/iVkRKWxrQaUJV+/+dJOTcrjqy/xvLJx3AKqcn8dvMJiwtj4LaBXH9QBBrlKUohohJ/OhYdO6CztSVixQp9h1IwmFhA1+9h6HYwMoNlfXJU+PWYbXlzur1blx7v18PIRMeOhRcJ+B1+rDmfFJnCW9vf4nzI+Xx6E4qiPEsl/nQMjI2x7tOH6H37SLxzR9/hFBzOjWDU4VwVfqXnVMOW18d70npgNR6GxnHilxA+CP+WUknlGbZzGEduH8mnN6AoSnpqjP8ZCUHBXG/fHrtRIyn9wQd6iaFAu+ebut5v8Emo3AG6zgBrp6zPe0ZCfBKnt//L2T2BICXXKpzgkP0GvmrzJe0qtMuHwJXCJjExkaCgIOLj4/UdSoFiamqKo6MjRkZPT4lW0znzKHDkKOIuXaLy3j0I4+xPZyw2nqz4NQWEAbR9vOJXzv+AjAqP59jG6/j53CPBJJajjpvp16Mzr1TtnQ+BK4XJzZs3sbCwwM7ODpHFWtLFhZSSsLAwoqKicHV1fWqf+nA3j2wGvkFyaCiR27frO5SC6cmKX8fAyRO2fQJLOma54ldGLGxNaT+0Jn0+c8exfGlaXu/HhfnRLN1RBJbEVPIkPj5eJf1nCCGws7PL819BKvFnwLxpU4xdXQn//Y/i0b8nt2wqwMD10Hs+hPnD/Oaw/xtISsj63GeUdbXi1U8b0ta7GlbChtgN9syZtjnDDqBK8aGS/vO0+J6oxJ8BYWCAzaCBxF+8SNwZ1Vb4hZ4Ufp2A6j1g/9c5Lvz671KCag3LM+rrDkTWu0ZCkCHLJh/j0Gq/Fy4BqSj5RQjB2LFjn3z9/fffM2nSpCdfL1iwgGrVqlGtWjU8PT05XEgWdVKJPxPWPXtiYGlJ+O+/6zuUwuGpFb+iYHF72PZZtlb8epapiTGfjRxG3KsXuVzqKOf2BfLnhKOc3xdEcrJq8qa8PCYmJqxfv57Q0NDn9m3ZsoX58+dz+PBhrly5wrx58xgwYAB3797VQ6Q5oxJ/JgzMzbF+9VWidu1SUztzIv2KX7ks/AIwEAb8r9UnVO5ZkrW1vyWy5H0OrfJj1Zc+3LqUszoCRcktQ0NDRowYwcyZM5/b98033/Ddd99hb28PQIMGDXjrrbeYM2fOyw4zx1TifwHbNwaAlEQsX67vUAqX51b86gPrR+S48EsIwYfuHzKgWR+Wuk7mTrMTJCen8NdP59jy8zk1/q+8FKNHj2bZsmU8fPjwqe2XLl3C3d39qW0eHh5cunTpZYaXK4b6DqAgM3JwwKJdOyJWr8H+7bcxKKG6SebI4xW/Dv0Ah2bAtd3Q6Ruo/WrqZwPZNKLOCMwMzfj2xLe0aBbIYMZwdlsgK6f4UKulAw27uWJqrto8F2WT/7qE7+1ITa9Zo7wlE7vXzPI4S0tL3nzzTWbPno2ZmdkLj5VSFooPpNUTfxZsB79FysOHPFi/Qd+hFE55XPHrsUE1BjGh8QQO3T3IAjGNVybUo3rTclzYH/Rk/D9Fjf8r+eTDDz9k8eLFxMT891dmjRo1OHXq1FPHnT59mho1arzs8HJOSlngXu7u7rIgudm3n/Rv01amJCbqO5TCLTlJyqNzpZxaVsqvykt5bL6Uyck5usSma5tknd/qyDe3vimjE6JlSGCU3DDjtPx55B65bNIxeetSWD4Fr7xsvr6++g5BmpubP/n3J598Ip2cnOTEiROllFJu2rRJenh4yNDQUCmllGfOnJFOTk7y9u3b+R5XRt8b4KTMZo7N8olfCLFECHFfCHExk/1vCCHOp72OCCHqptsXIIS4IIQ4K4TQXyluHtkN8yYxOJionTv1HUrh9lThl1euCr96uPXgm+bfcC7kHCN2jcC4dAo9P6xH51G1SU5KYfPss/w99zwP7sXm4xtRiqOxY8c+NbunR48eDB06lCZNmlCtWjWGDx/On3/+SblyBb/NeHaWXmwBRAO/SylrZbC/CXBZShkhhOgMTJJSeqXtCwA8pJTPz4V6AX23bHiWTEnhRpeuGJib47J2TaEYwyvwpITzq2H7OEiIhuYfQ7OPsr3i155be/j4wMdUsanCgvYLsDKxIjkxhXN7Azm5LYDkxBTqtHHCo4sLJmbqo6zC6PLly1SvXl3fYRRIGX1vNG3ZIKU8CIS/YP8RKeXjpZSOAY7ZuXFhIgwMsB0yhPhLl4g97qPvcIoGIaBu39QVv3JR+NXWuS2zWs/iWsQ1vHd4Ex4fjs7IgAYdK/DG5EZU9SrL2d23WDbhKL7/3CYlRVVgK8pjWn+46w1sS/e1BHYKIU4JIUZofK+XyqpXT3R2doQtXqzvUIqWDAu/xmWr8KuFYwt+avMTAZEBeO/wJjQu9Q9LcysT2rxZndfGeWBdugT7/rjC2uknuX3tQX6/G0UpFDRL/EKI1qQm/s/SbW4qpWwAdAZGpw0bZXb+CCHESSHEyZCQEK3C0oyBiQm2gwYSc+gQ8Vdy3oxMycJThV/zYG7j1OmfWWji0IQ5becQHB3M0B1DCYn972endAVLen/cgPbeNYiLSmDD96fZufgSUeGqza9SvGmS+IUQdYBFQE8p5ZMqHSnl7bT/3gc2AJ6ZXUNKuUBK6SGl9ChVqpQWYWnOpn9/DMzNCZ0/X9+hFE1PCr+2g5Ep/NkH1o+E2ExHGgHwKufF3LZzuRtzl6E7hnIv5t6TfUIIqjQsy4BJjfDo4sKNsyEsn3SME3/fJCkhOb/fkaIUSHlO/EIIZ2A9MEhK6Zduu7kQwuLxv4EOQIYzgwoLnZUVNm+8QdT2HTy6cVPf4RRdj1f8avEpXFwLPzeEC2tfuOKXR1kP5refz/3Y+wzZMYS7MU/3SzEy0eHVoyIDJnpRoZYdPn/dZPnk41w/c191YFWKnexM51wBHAWqCiGChBDeQohRQohRaYdMAOyAuc9M2ywDHBZCnAN8gL+llIW+wb3t4LeSmr10AAAgAElEQVQQJiaELVig71CKNkMTaDM+rfCrAqzzhuV94WFQpqfUL12fBR0WEBEfwZDtQ7gT/XyPJUt7MzqNqE3Pj+pjZKJj+/yLbPrxLGHBOW8mpyiFVXZm9fSXUpaTUhpJKR2llIullPOklPPS9g+TUtpIKeulvTzStt+QUtZNe9WUUn6V32/mZTC0tcWm7+s8/OsvEoIyT0KKRsrUBO9d0HEaBByCOV7gsxBSMq7SrVuqLvPbz+fBowcM2TGE29G3MzzOsaoNfcc3pEW/KoQGRrHqqxMcWqXaPytPK1my5HPbJk2axPfffw/A4MGDcXBw4NGjRwCEhobi4uICQEBAAGZmZtSrV+/J6/d03X7PnDmDEIIdO3Y8dX2dTke9evWoVasW3bt358ED7SclqJYNuWA7dCjCwICwRYv0HUrxYKCDxu/AO0fBsSFs/RiWdoKQqxkeXqdUHRZ2WEhkQiRDtg8hODo4k8saULuVIwOnNKZms/Jc2B/EsonHuHQoWE3/VLJNp9OxZMmSDPe5ublx9uzZJ68333zzyb4VK1bQrFkzVqxY8dQ5ZmZmnD17losXL2Jra5sv3T5V4s8FozJlsHrlFR6uW0/ivXtZn6Bow8YFBm2AXvMg1A/mNct0xa9a9rVY2GEh0YnRDN0+NNPkD2Ba0oiWA6ry+viG2JYzZ/+yq6ydfpK7Nx5meo6iPPbhhx8yc+ZMkpKSsn2OlJK1a9fy66+/snPnzkyXUmzcuDHBwZn/7OaWSvy5ZDd8eOrCx2qGz8slBNTrn7biV/f/Cr+Cnq/0rmlX80nyH7J9CEFRLx6as3e0oNeY+nTwrklsZALrvj3F7l99iXn4KL/ejVIEODs706xZM/7444/n9l2/fv2poZ5Dhw4B8M8//+Dq6oqbmxutWrVi69atz52bnJzMnj176NGjh+Yxq1r2XDJ2dMD6lVeIWLMWu2HDMCpfXt8hFS8lS8GrS6D26/D3GFjUDrxGQZv/A5P/xmVr2NVgYYeFDN85nKE7hrK442KcLJwyvawQgsoNy+BSx55T2wI4s/sWN86G0LCLK3XaOKIzVM9KerFtHNy9oO01y9aGztM1udTnn39Ojx496Nq161PbHw/1PGvFihX069cPgH79+vHHH3/wyiuvABAXF0e9evUICAjA3d2d9u3baxJjeuqnOA/sR41EAKG/zNN3KMVX1U6pTd8aesPxXzIs/KphV4NFHRYRmxSL9w5vAqOybgltZKKjUS83+k/wwqGyNUfWX2PVVB8CfV9cU6AUT5UqVaJevXqsXr06y2OTk5NZt24dU6ZMwcXFhffee49t27YRFRUF/DfG/++//5KQkJAvY/zqiT8PjMqXx/q114hYvRq7EcMxdsr8SVLJR6aW0PUHqPUq/PV+auFXnX7QaRqUsAWgul11FrZfyPBdw/He4Z3lk/9j1qVL0HV0XQIuhHJotT+bZ5+lYv1SNH21EpZ2L16UQ9GQRk/m+Wn8+PHPPfFnZPfu3dStW/ep2TxvvfUWGzduZNCgQU+2WVlZMXv2bHr27Mnbb7+NkZF2iw2pJ/48shs5EmFgQOjcX/QdilKhMYw8BC0+ybDw63Hyf/zkn9WYf3oute3pP8ETr54VuXUpjOWTjqdW/yaq6t+iLDY2FkdHxyevGTNmZHpszZo1adCgwVPbnh3jnz17NitWrKB3795PHdenTx+WZ7DEa/369albty4rV67U5g2lybItsz4UtLbMWbk3bRrhf/xJxb+3YOLqqu9wFIB7l2DzexB8Cip3hG4zwCq1cezlsMsM2zkMcyNzlnRcgqNFzhrKRoXHc2TdNa6duo+lvSnNXq+Cax37/HgXxZpqy5y5fG/LrGTNbvhwhKkpIbNm6zsU5bEXFH5Vt6vOog6LiEmMwXuH9wunembEwtaUjsNr0ePDeugMDdg69zxb5pzjYYha/EUpHFTi14ChvT12g98iavt24i5oPPNAyb0XFH5Vt6ue7Xn+mXGqZkvf//OkySuVuO33gBWTfTi++QaJqvmbUsCpxK8R26FD0dnYcP+HGarpV0GTUeHXgW+pYVWJhR0WEpUYhfcO7wx7+2RFZ2hA/Q7OvDG5ERXrl+Lk1gBWTD7OjbMh6udAKbBU4teIrmRJ7N8eReyxY8T8c0Tf4SjPelL45QPVusG+r2BBS2rExbKwfVp7hwy6emaXubUJHbxr0iut+du2eRf4e855NfyjFEgq8WvIul8/jBwcuP/DD8hMmogpelayNLy2FPqvhLgHsKgdNU/8wYKWPxL5KLW3T26TP4BDVRteH9+Qpq9W4rZ/2vDPXzdU73+lQFGJX0MGxsaU+uB9Hl2+TOTff+s7HOVFqnaG0cfBYygc/4Vaq7yZX92bB48ePLeYS07pdAbUa5du+OfvAFZMOU7A+VAN34Ci5J5K/Bqz7NYN0xo1uP/DDFLi4vQdjvIippap0zyHbAdDE2pvGsN8I1fC48Lw3umdp+QP/w3/9PyoPjpDA/6ee56/554nMlT9XBQWd+/epV+/fri5uVGjRg26dOmCn58fly5dok2bNlSpUoXKlSvz5ZdfPvlM5969e3Tr1o26des+OaegUYlfY8LAgDL/G0fS3buELV2q73CU7KjQOG3Fr0+oc3kH8+6HExp9h2E7vZ9awze3HKva0Pf/PGnc242gK+GsmHyck9sCSE5Uw4EFmZSS3r1706pVK65fv46vry9ff/019+7do0ePHowbNw4/Pz/OnTvHkSNHmDt3LgATJkygffv2nDt3Dl9fX6ZPL3hVx9lK/EKIJUKI+0KIDJdOFKlmCyGuCSHOCyEapNv3lhDCP+31llaBF2QlGjbEon17whYuIvHefX2Ho2SHkWlqg7cRB6hn7si8oFvcjwxk6LY3CY3L+xCNztCABh0rMGBSIyrUsuP4phusnOpD4BXV+6eg2rdvH0ZGRowaNerJtnr16uHn50fTpk3p0KEDACVKlODnn39+kuDv3LmDo+N/RYF16tR5uYFnQ3af+H8FOr1gf2egctprBPALgBDCFpgIeJG60PpEIYRNboMtTEp/8jEkJREya5a+Q1FyomwtGLabeq0m8cv9cO5FBjJ04yuExuT9yR9Si786jaxNt/fqkpIi2fzjWXYuukjMA9X6uaC5ePEi7u7uz22/dOnSc9vd3NyIjo4mMjKS0aNH4+3tTevWrfnqq6+4fTvjVeD0KVtN2qSUB4UQLi84pCfwu0wd5DomhLAWQpQDWgG7pJThAEKIXaT+AlmR6ZWKCGNnZ2wGDSJ86VJs3hiAWc2a+g5JyS4DHTQeTYNqXZm7eSTvxAcxbE0HFrdbgJ1jQ01uUaGmHf0neHJ6xy1Ob/+XgItheHWvSO1WDhjo1Ajss77x+YYr4Vc0vWY122p85vlZjs+TUiKEyHCfEIKOHTty48YNtm/fzrZt26hfvz4XL16kVKlSeQ1ZM1r9hDkA6XvdBqVty2x7sWD/9ih0Njbcm/qVmt5ZGNm44PHmduZUHsRtmciwbYMI3zslwxW/csPQSIdnN1f6feFJ2YpWHF7jz5rpJ7l7U638VRDUrFmTU6dOZbj92V5iN27coGTJklhYWABga2vLgAED+OOPP2jYsCEHDx58KTFnm5QyWy/ABbiYyb6/gWbpvt4DuAOfAP+XbvsXwNhMrjECOAmcdHZ2lkVFxNp10rdqNRmxfoO+Q1Hy4Pj17dLj1zqy14IqMmyOl5SBJzS9fkpKivQ/eU8u/fSQ/HnUHrnvz8syLjpB03sUNr6+vnq9f0pKivT09JQLFix4ss3Hx0fu379furq6yl27dkkppYyNjZVdu3aVs2fPllJKuWfPHhkTEyOllDIyMlJWq1ZN+vj4aBpbRt8b4KTMZj7X6ok/CEjf3NwRuP2C7c+RUi6QUnpIKT0K0p9EeWXVuxdmdety//vvSY6M1Hc4Si55VuzITx3mE2hSgmEm0UQs6QDb/wcJMZpcXwhBJffSDJjUiLqtnfA9fJvlk45x9fhd1fpBT4QQbNiwgV27duHm5kbNmjWZNGkS5cuXZ9OmTUydOpWqVatSu3ZtGjZsyLvvvgvAqVOn8PDwoE6dOjRu3Jhhw4bRsKE2Q4RayXZb5rQx/i1SyloZ7OsKvAt0IfWD3NlSSs+0D3dPAY9n+ZwG3GXamH9mCltb5qzEXbxEwGuvYTNoIGU//1zf4Sh5cPT2Ud7b+y4uGLPoxhWsLR2h249Qqa2m9wm5FcWBFVe5dzMSh6rWtOxfFZuy5preo6BTbZkz91LaMgshVgBHgapCiCAhhLcQYpQQ4vE8p63ADeAasBB4ByAtwX8JnEh7Tckq6RdFZrVqYt33dSKWLSf+6lV9h6PkQePyjZnd+iduygRG1GzMQ50x/PkKbBgFsdr9aJdytqDPJ+60HFCV0MBoVk5Na/2gFn5RNKAWYnlJkh884Hqnzhi7ulJh2Z8IAzVzozA7HHyY9/e+TyUrNxaaVcPq6FwwtYbO30CtPqlN4TQSG5nA4TX++J+4h1UpM1oOqIpTdVvNrl9QqSf+zKmFWAoJnbU1pcd9RtyZMzzIxoLMSsHWzKEZs1rP4trD64x85E/kkK1g7QzrvGFFP3iY/WUds1LC0pgO3jXp8UE9ADbPOsuuJZeIjdRmdpFS/KjE/xJZ9exJicaNuP/9D6qitwho7ticH1v/yNWIq4w89yORb66Hjl/DzYNPrfilFafqtvSb4IlHVxeunbrP8knHuHQoGJlS8P5qVwo2lfhfIiEE5SZORCYkcO/rr/UdjqKBFo4tmNlqJlcirjBqz2ii3N98ZsWvzhDip9n9DI10eHWvSL8vPLFzKMn+ZVfZMOM04be1mV2kFA8q8b9kxi4u2L/zNlE7dhC1d5++w1E00MqpFTNazuBy+GVG7RpFlLld2opfv0DIFZjXFA58q1nhF4BNWXN6jalPmzerEX4nhlVfpS77qD78VbJDJX49sBs6FJPKlbk7ebKa219EtHZuzQ8tf8A3zJdRu0cRnRgD9QbAuyfSrfjVCoKerwTNLSEE1ZuU541JjajsUYaTWwNY+aUPQarxm2Z0Oh316tV78po+fTrJycm4u7s/VY3boUMH1qxZA4CLiwu1a9embt26dOjQgbt3c7+wT35RiV8PhLEx5b7+mqTQUO59842+w1E00sa5Dd+3+h7fUF9G7h5JdEL0fyt+9VsBcRGwqK2mhV8AZhbGtBtSgx4f1ENK2PTjWfb85kt8dKJm9yiuzMzMOHv27JPXuHHj0Ol0zJ07l9GjR5OYmMiKFSsQQvDaa689OW/fvn2cO3cODw8Pvi6Aw7oq8euJWe1a2Hl783DdeqIPHdJ3OIpG2jq35fuWzyR/gGpd/lvx69hcmNsIru3R9N5O1W3p/4UnDTpVwO/4PZapyt984+XlRZMmTZg0aRKff/45c+bMyfC4Fi1acO3atZccXdZU4tcj+3dHY1zJjTtfTCA5Kkrf4SgaaVshk+SffsUvnUm+FH4ZGuto3MuN18c3xKqUGbuX+rLlp3Nq1a9ciouLe2qoZ9WqVU/2TZs2jR9//JEBAwZQqVKlDM/fsmULtWvXflnhZpsq4NKzuPPnCejXH6vevSj/1Vf6DkfR0J5/9/DxgY+pYV+D+e3mU9K45H87E+Ph4Hfwz4/5VviVkiK5eCCYYxuvI6XEs3tF6rZxLDRtn9MXKd39+mseXda2LbNJ9WpZtlApWbIk0dHRGe7buHEj77zzDg0bNmTTpk1Ptru4uGBhYYFOp6NOnTrMnj0ba2trTWNXBVyFnFmdOtgNG8bDdeuJ2r1b3+EoGnr2yT8qId1fdUam0PYLGHEg3wq/DAwEdVo70n+iF47VbDmy7hprvzlFyC3112VexcTE8Omnn7J3715CQkLYunXrU/v37dvH2bNn+f333zVP+lpQT/wFgExIIKBffxLv3KHi5k0YFqHupEq6J3+7GsxrPw8LY4unD0hJhuPzYO9UEDpoNxE8vEHDth5SSq6dus+hVX7ExyRRv70TDbu6Ymis0+weWisILRsye+L/7LPPMDIyYurUqZw9e5a+ffty7tw5TE1NcXFx4eTJk9jb2+dbXOqJvwgQxsaU/+5bUmJjuT1+vPowrohpW6Ft6myfMF9G7hpJZMIzU3jTVvxKLfzyyJfCLyEElT3KMGBSI6o1KsvpHbdY+aUPwVcjNLtHUfTsGP+4cePw9fVlw4YNjB8/Hkhdh7djx458U4hm6Kkn/gIk/M9l3Js6lTITvsB2wAB9h6NobO+tvYw9MJaqNlWZ334+ViZWzx8kJZxbATs+T53y2eJTaPoBGBprGkvQlXD2/XmFyNB4ajQtR5M+lTApYaTpPfKqIDzxF1Tqib8IsXljAObNm3P/m2+Jv6rd055SMLRxbsPMVjO5GnGVEbtG8PBRBkssCpFa+DXaJ63wa6rmhV8AjtVs6TfBi3rtnbl85A7LJx/nxlltFpRXCj6V+AsQIQTlp0/DwNKC4I8+IiU2Vt8hKRpr5dSKWa1n4R/hz/CdwzNO/vBf4Vf/lamFX4vbwfbPNS38MjLW0bRPJV4d54FZSWO2zbvAjoUXVdfPYkAl/gLG0M4Oh2+/JeHmTe5OVdM7i6IWji2Y1XoW1x9cx3uHNxHxLxhnr9o5tfDLfQgcm5MvhV+lK1jy2uceePWoyI1zISyfrAq/irrsrsDVSQhxVQhxTQgxLoP9M4UQZ9NefkKIB+n2Jafbt1nL4Isq88aNsRs1kofr1/Nws/qWFUXNHZvzU5ufCIgMwHunN2FxYZkf/KTwa1u6wq+3NS380ukM8OjiQt/PPbEuXYLdS335e855osLjNbuHUnBk+eGuEEIH+AHtSV08/QTQX0rpm8nx7wH1pZRD076OllKWzOjYzBTXD3fTk0lJ/Dt4MPG+l3FdvQqTTCoDlcLt2J1jvLfnPRxKOrCo4yLszbKYAvhs4VeXb6HmK5oXfl3YF8SxTdcRBoKmfSpRo1l5hIb3yA714W7mXsaHu57ANSnlDSllArAS6PmC4/sDK7JzcyVzwtAQhx9mYFCiBEHvvU9yJtWDSuHWqFwj5raby+2Y2wzZPoT7sVks0PNs4dfaobCiPzwM1iwmAwNB3bZO9PvCi9IVLNi/7CqbZ51VbR+KkOwkfgcgMN3XQWnbniOEqAC4AnvTbTYVQpwUQhwTQvTK7CZCiBFpx50MCVGzCwCMypTGYcYPJNy6xZ3P1fz+oqph2YbMazeP+7H3GbJ9CHdjstHGt2wtGLYbOnwFN/anrvh1YpGmK35ZlTKj5wf1aTmgKvcCIlnxpQ/n9wUVqxW/HrdlrlWrFq+99hqxaRMugoKC6NmzJ5UrV8bNzY0PPviAhITUD8X3799Pt27dnrrOp59++mTeP8DNmzdxc3MjUk9t2bOT+DP6+y6z/+X7AWullOlXg3BO+/NjAPCjEMItoxOllAuklB5SSo9SqnL1CXNPT0qPGUPUzp2EL1mq73CUfNKgTAMWdFhARHwEg7cPJigqG60bDHTQ5N20wi93+Hss/NpF28IvA0GtFg70n+BFeTcrDq3yY+PMMzy4XzxmnD1uy3zx4kWMjY2ZN28eUkpeeeUVevXqhb+/P35+fkRHRz+V2J81adIk1qxZw9WrVwF4//33+frrr7G0tHxZb+Up2Un8QYBTuq8dgduZHNuPZ4Z5pJS30/57A9gP1M9xlMWc7dAhWHTowP0ffiD68D/6DkfJJ3VL1WVhx4VEJUQxePtg/o38N3sn2rrCoI3Qcy7cv5y64tfB7yBZu378FramdHuvLm3erEZoUDSrvvTh3J7AYvX037x5c65du8bevXsxNTVlyJAhQOpfBTNnzmTJkiVP/iJ4VokSJfj+++9599132bx5MwkJCfTt2/dlhv+U7CT+E0BlIYSrEMKY1OT+3FQTIURVwAY4mm6bjRDCJO3f9kBTIMMPhZXMCSEoP+1rTCpVInjMGB7dvKnvkJR8UtOuJks6LiExJZHB2wdz/cH17J0oBNR/I23Fr66pfX/mt4Rg7Vf86j/BC4eqNhxe48+GGaeLxdN/UlIS27Zto3bt2ly6dAl3d/en9ltaWuLs7PzC3vs9evSgRIkSDBs2LNP+/S+LYVYHSCmThBDvAjsAHbBESnlJCDEFOCmlfPxLoD+wUj49EF0dmC+ESCH1l8z0zGYDKS9mYG6O49y5BLz2GkHvjMZl9Sp0FhZZn6gUOlVtq7Kk4xKG7RzGkO1DWNhhIVVtq2bv5JKl4bVfofbr8PcYWNQOvN6GNuPB2FyT+EramNB1dB2uHrvLodX+rPrSh0a93ajTyhFhkD8zfw6t9iM0UNsJDvZOJWn+epUXHvO4Vw+kPvF7e3vzyy+/ZDjDSUqZ5cyn0aNHI6XMtH//y5KtefxSyq1SyipSSjcp5Vdp2yakS/pIKSdJKcc9c94RKWVtKWXdtP8u1jb84sXY0QGHWT+SEBhI8JixyKQkfYek5BM3azd+7fQrxjpjhu4YyoWQCzm7wOMVv9wHpxV+NYbre7M8LbuEEFRrXO6/p//V/myceYaHIUVr5k/6pRd/+uknjI2NqVmzJs9ON4+MjCQwMBA3tww/wnzCwMAAAw27ruaalLLAvdzd3aWSufCVq6Rv1WryzuTJMiUlRd/hKPkoKCpIdlrbSXot85In7pzI3UVuHpZydgMpJ1pKuX6UlDFhmsaYkpIiff8Jlgs+2C/nvbdPnt8XKFOS8/5z6evrq0F0eWNubv7ctpSUFOnu7i5/++03KaWUSUlJctiwYXLMmDFSSin37dsnu3btmuH1du3aJXv27JnnuDL63pA6ApOtHFsAfvUoOWXT93VsvYcSsXwF4b/+pu9wlHzkUNKBXzv9SukSpXl799scCT6S84u4NIVR/0DzsXBhNczxhIvrUjuBauDx2H+/CV6Uq2TNwZV+bJ59tshW/Qoh2LBhA2vWrKFy5cpUqVIFU1PTpxZV37NnD46Ojk9eR48efcEVXz7VlrmQkikpBH+UOs3TYfYsLNu313dISj4Kiwtj5K6R3Hh4g+9afEfbCm1zd6G7F2Dze3D7DFTpDF1/AKsMy3JyRUrJpUO3+WfdNYSA5q9Xplrjcrmq+lWVu5lTbZmLKWFgQPlvpmNWpw63P/6E2FPatu1VChY7MzsWd1xMdbvqjD0wlr+u/5W7C5WtDd67ocPUfCn8EiJt3v8XnpRysmDv71fYOvc8MQ8faXJ9RRsq8RdiBqamOP4yF6Ny5Qh8+x3Vw7+IszKxYmH7hXiU8eDzw5+z6sqq3F1IZwhN3svXwi9LezN6fVSfZq9VJvBKBCumHMf/5D3Nrq/kjUr8hZyhrS3OixdhYGpK4PDhJARp17NFKXhKGJVgTrs5tHJsxdTjU1l0YVHuW3k8Kfyaky+FXyKt50/f8Q2xKlWCnYsusXPxJeJjtCssU3JHJf4iwMjBAadFC0mJjyfQ25uk0FB9h6TkIxOdCTNaz6CLaxdmnZ7FzFMzc5/8hYD6A1NX/KraJV8Kv2zKmtPnkwZ4dnfl+qn7rPzSh0Df7LWULoifQeqbFt8TlfiLCNMqVXCaN4/E+/e5NdSbpAi1iHZRZmRgxLTm0+hbtS9LLy1l8tHJJKckZ31iZizKwOu/Qb/lEBeeWvi1Y7xmK34Z6Axo2NWVPp+5Y2yqY/Pssxxc5UdiQuYxm5qaEhYWppJ/OlJKwsLCMDU1zdN11KyeIibm6FECR47CpFIlnH9dik5PTaCUl0NKyU9nfmLhhYW0r9Ce6c2nY6zL48Ls8Q9h9yQ4uQSsK0D3H8GtjSbxAiQlJHN043XO7w3CukwJ2g+tQekKz/+cJiYmEhQURHx80ZwWmlumpqY4OjpiZGT01PaczOpRib8Iij5wgMB338OsRg2cFi9CVzJH6+AohdBvl37j+5Pf41XOi1mtZ2FupEF7hoB/4K/3Iewa1B0AHb+CErZ5v26awCvh7P3tMrEPE2jYzYUGHStgoFODELmlEr9C5M6dBH80BrPatXFauED19SkGNl/fzIR/JlDdtjpz2s3B1lSDJJ0YDwe/hX9mgZkNdP4WavbWbMWv+JhEDq70w//EPcpWtKTdkBpYlSqhybWLG5X4FSAt+Y8Zi2nNGjgvXKiGfYqB/YH7+fjAx5QzL8f89vMpX7K8Nhe+ewE2vQt3zuZL4ZffibscWO6HTJE071uFao3LvvSlHgs7VcClAGDZoQOOs34k3vcyt4Z6k/zggb5DUvJZK6dWLGi/gLD4MAZtHYRfhEZz88vWhmF7nin8WqxZ4VeVhmXp94UnpZwt2Pv7ZXYsvKimfeYjlfiLOIu2bXGcPYtHV6/y76A3SbyfxZquSqHXoEwDfuuU2sNp8LbBnLyr0V/P6Qu/HBqktn3+tSuE+mtyeQtbU3p+VJ/Gvd24eS6UlV/6EHRVzU7LDyrxFwMWrVvjtGA+CcHB/DtwkCryKgYq21Tmjy5/YF/CnpG7RrIzYKd2F7d1hTc3pRV++cIvTTQr/DIwEDToWIFXP/PAyETHph/PcHTDNZKTtFtLWFFj/MVK3Llz3BoxEgMTE5wXL8KkcmV9h6Tks4ePHvLunnc5F3KOzzw/443qb2h7g6h7sO1T8N0IpWtCz5/AwT3r87Ih8VEyh9f643voNqWcLejgXRPrMuqD38xoPsYvhOgkhLgqhLgmhBiXwf7BQogQIcTZtNewdPveEkL4p73eyv7bULRmVrcuFX7/HaQkYMAbxPj46DskJZ9ZmVixsMNCWju1ZrrPdGacnEGK1PDpOR8Lv4xMdLR+oxqdR9YmMiyOVV+f4PKRO6qgSwNZPvELIXSAH9Ce1IXXTwD9ZbolFIUQgwEPKeW7z5xrC5wEPAAJnALcpZQvHLhTT/z5KzE4mFsjRpJ46xblv5mOZZcu+g5JyWfJKclM85nGqqur6OTSianNpmKiM9H2JvEPYddEOLU0rfBrFri11uTS0RHx7JKPuc0AABxsSURBVF7qS7DfAyp7lKblG9UwMcty5dhiResnfk/gmpTyhpQyAVgJ9MxmLB2BXVLK8LRkvwvolM1zlXxi5OCAy7I/Ma1bh+AxYwlduFA9RRVxOgMd473GM8Z9DNsDtjNi5wgePnqo7U1MrVKrfAdvBZ0R/NELNr4Dsdnry/MiJW1M6fFhfbx6VuTa6RBWf+XD3Zsax1+MZCfxOwCB6b4OStv2rD5CiPNCiLVCCKccnosQYoQQ4qQQ4mRISEg2wlLyQmdtjfPixVh26UzIDzO48/l4ZEKCvsNS8pEQgiG1hvBdi++4EHqBgVsHEhgZmPWJOZV+xa/zq9JW/Fqf5xW/DAwEHp1deOXjBsgU2PDdaU5tD0CmqIeWnMpO4s+oiuLZ7/RfgIuUsg6wG3i8HuD/t3fn8VFV5+PHPyeTmUkC2RMgCYEkgOwghEWgCsoqChGLu1UBtSKKtla/bm0tWqXf0oq4VtRfVRTli6gBEQQVUGSVNRAgLCEsIQnZt8lsz++PO2hElpBkkjA579frvmbunTtzz+WE586cc59zavJeY6PImyLST0T6RUdH16BYWl35Wa3E/utfRE2bRvGnn3J48mQ9uFszMCZxDHNHzaWwqpDblt7Gttxt9X8QcwAM/wvcuwpC4mDhJPjoViiu+x1lbZJCuenp/iReGs36zw6y+JXtVJToLy0XoiaB/ygQX229LXC8+g4iki8ip6bYmQsk1/S9WuNSShH94APEzpqFbcdOMn87Edvu3ed/o3ZRS26dzLyr5xFsCWbK8iksy1zmnQNVT/w68G29JX5Zg8yMvqc7w27rzPGMIj5+biNH9tS9Sam5qEng3wR0UkolKqUswM1AavUdlFIx1VbHA+me58uBUUqpcKVUODDKs01rYkKvvYb2H8xD3G4yb7mV4sW1nNpPu2gkhCYwb+w8ekT14NHVj/LG9je809fzU+LXD/Wa+KWUovvlcdzweD+sQf6kvrSNDYsP4tZNP+d13sAvIk7gAYyAnQ4sEJFdSqkZSqnxnt2mK6V2KaW2A9OBuzzvLQCexbh4bAJmeLZpTVBgz54kfrKQwJ49Of7oY5x47u+63d/HhQeEM3fUXMYljePVba/yxPdPUOXy0vy4EUnVEr92wetDYM2sOid+Rca15IYn+tNlYBs2f5FJ6uytlBfpOX7PRSdwab8iDge5s2ZR8O57BPTsSdyLL2JpW38DcmlNj4jw1s63mLN1Dr2ie/HSlS8RFRjlvQNWT/xq3QPGz6mXxK8967JZPX8vZquJkZO7E9+1/oaRbur06JxavSj56iuyn3oalCL2hecJHj68sYukedmKwyt46vunCLGE8PJVL9M1sqt3D7jnC2Oy97IcuOx+uPJJsNRtLoGC4+Usm5tG4Yly+o9NoN81ifj5+f5In3p0Tq1ehIwaReKiT7DEx3N02gNkP/MM7srKxi6W5kUj24/kvavfQynFHV/ewfJML3fJdbkGpm2AvnfCulfgtUFGJ3AdRMS24IbH+9F5QBs2fZHJ4jnb9F0/p9GBXzsnS3w87ed/SMTkyRR99DGHJt6Abc+exi6W5kVdIrow/5r5dInowp9W/4k5W+bUbT7f8/FC4pfZamL4XV258nddyD5QzILnN5F9QCd8naKberQaK1u7luOPP46rqJjoadOIvHsKyl+nzfsqu8vO8xue55OMT7ii7RXMvHwmwRYvz+TmsMHqfxgzfgVF1MuMX3lHSln2n52UFVQx6PoO9B4e75OTvOg2fs1rnIWFnJgxg9IvlxHQqxexM1/AmpTU2MXSvEREWLB3ATM3ziQuOI7Zw2bTMbyj9w9cfcavzmONGb9Caj+bWFWFg6/fTefQ9pN0TG7Flb/rgiXAt7606MCveV3J0qWc+NsM3JWVRN1/P5FTJqPM5sYuluYlP+b8yCOrHqHCWcGzQ55ldMJo7x/U5YQNr8M3fzeagEY8A8mTwK92LdQiwtavslj/2QHCWgdx9X09CW9TD5PSNxE68GsNwpmXx4nn/k7p8uVYu3Qh5tlnCezZo7GLpXlJbkUuf1z1R7bnbeeu7nfxUN+H8PdrgG/NBQdh8cNwaDW0G2zc+hlV+7kkju4p4Ku3d+F0uBlxZzeS+vjGEDE68GsNqmTFCnJmPIszP5/wW24h+uGHMAV7uS1YaxQOl4N/bPoHH+/9mL6t+jJr6CyigxogcIrAtg9h+RNGP8DQx2DIQ8YvgVooLbCx7M00cjNLSB7TngHjky76Wz514NcanKukhLyX5lD44YeYIiNp/T+PEXLttT7ZiabBkoNLmLFuBkH+Qfxz6D/p36Z/wxz4V4lfLxvDQNSC0+Hiu4/2sXttNu26RTBySncCWly8zZU68GuNpjJtFyeeeQZbWhqBffvS+qknCezevbGLpXnB/sL9/GHVH8gqzWJq76nc0/MeTH6mhjl4PSZ+7fruGGs+2kfLiADGTu1JZGzLei5sw9CBX2tU4nJRtGgReS/OxlVYSOhvryd6+nTMrVo1dtG0elbuKGfGuhksPbSUgTEDmXn5TO8O9VBdPc74lb2/iC/fTMNZ5WLEpG4kXXrxtfvrwK81Ca7SUk6++hoFH3yAMpuJnDSJyMmT8GvhO3dSaMbdMosyFvHCxhdoaW7J8795nsFxgxuuAJlrYfF0yN8Pl94Oo541cgAuUFlhFV++sYPcw6UMGJdIv7EJF1VTpQ78WpNiz8oi998vUrpsGaaoKKLuu4+wG2/Az2Jp7KJp9Whf4T4eW/0YB4oPMKn7JB7s8yDmWna+XrBfJH5Fwtj/hW7XXXDil9PhYtW8vezdcIIOfVsx/M6umK0N1HxVRzrwa01S5bZt5P7r31Rs2oR/bAzR06YRmpKis399SKWzklmbZrFg3wK6R3Zn5uUzSQhNaLgCZO+A1Acgezt0vgaumXXBiV8iwtYVWaz79ABRbVsydmovgiMCvFTg+qMDv9ZkiQjlP/xA3ouzsaWlYY6PJ+q+3xM6frxOAPMhKw+v5Jl1z2B32Xm0/6NM7DSx4ZpNXE5Y/xp8+7xxu+fIv0Hfuy448Stz50m+ensXZquJsVN70TohxDvlrSf1HviVUmOAlwAT8JaIzDzt9T8CdwNOIA+YLCKHPa+5gJ2eXbNEZDznoQO/7xMRyr79lpOvvoZt1y7McXFE3j2F0AkT8Ato+t+utPPLKc/hz2v/zLrsdQxrO4y/Dv5rw3X8gifx6yE4tAbaD4FxcyDqwoabyD9Wxhev7aCixM6Iu7rRMbnp3qBQr4FfKWUC9gEjMebQ3QTcIiK7q+1zJbBBRCqUUlOBYSJyk+e1MhG5oPujdOBvPkSEstWrOfn669i278AUFUXEHXcQftONmEJDG7t4Wh25xc2H6R/y4o8vEmQO4unLnm6Y4R5OEYGt8+Crp4x+gGH/A4OnX1DiV0WJnS/f2MmJg8Vcdl0SfUe3b5KdvvUd+AcBz4jIaM/6EwAi8sJZ9u8DvCIiQzzrOvBr5yUiVGzcRP7cuZR//z0qKIiw668n4o7fYWnXrrGLp9XRwaKDPPX9U6TlpzEmYQxPDnyS8IDwhitA6QlP4tfn0LqnZ8avmid+OR0uvnlvDxmbcug6JIaht3bGZGpao9rX90QsccCRautHPdvOZgrwZbX1AKXUZqXUeqXUdTUplNb8KKVoMXAA7d6aS+JnnxIyahSFH3/MgdFjODL1fsrWrkXc7sYuplZLSWFJvD/2fR7s8yArs1Zy3efXsTxzuXcmdz+T4DZw43tw0wdQngdvDYflT4G9okZv9zebGDm5G/3GJpC+NpsvXtlOVaXTy4X2npp8478BGC0id3vWfwcMEJEHz7Dv7RgTsw8VkSrPtlgROa6USgK+AYaLyIEzvPde4F6Adu3aJR8+fLhuZ6Zd9By5uRTOn0/Rgv/DlZ+PJTGR8JtvIjQlBVNYWGMXT6ulvQV7+csPf2F3/m5GtBvBkwOfbJjxfk6pLIKVf4Uf/wvhCUbiV9KwGr89/YfjrJq3l/CYFox7sDctwqxeKuiFaZSmHqXUCOBljKCfe5bP+i+wREQWnuuYuqlHq85tt1O6fDmF8z6gcvt2lMVC8JjRhE2cSFD//k2yvVU7N6fbybu73uW1ba9hNVl5OPlhJl4yET/VgM0nmd9D6nQoOHDBiV9Zu/NZ9p80rEH+jHvwUiJiGz8psb4Dvz9G5+5w4BhG5+6tIrKr2j59gIXAGBHJqLY9HKgQkSqlVBSwDkip3jF8Jjrwa2dj27uXoo8XUJyairusDHN8PKETriMsJQVz3LlaILWmKLM4k2fXP8vGExvp06oPf77sz3QKr/2QyxfMUelJ/JpzwYlfeVmlLHllOy6nm7FTexHbqXF/hXrjds6xwGyM2znfEZG/K6VmAJtFJFUptRLoCWR73pIlIuOVUoOB/wBujP6E2SLy9vmOpwO/dj7uykpKV6ygaNGnVKxfD0BQv36EjB9HyOjR+o6gi4iIkHoglVmbZ1FqL+X2rrcz9dKptDA34Lfo7O2Q+uAFJ36VnKxk8cvbKS2wMeaeHiT0asDbVU+jE7i0ZsV+9BglSxZT/Hkq9kOHwGym5ZAhhFwzlpZXXoWpZeP/DNfOr8hWxOwts/kk4xNaBbbikX6PcHXi1U0+8auy1M6SV7aTd6SMq+7oQpfLYhqmvKfRgV9rlkQEW9ouSpYupWTZMpzZ2SiLhRZDhhA8ciTBV12pO4UvAjvydvDc+udIL0inT6s+PD7gcbpFdmu4AtQi8ctuc/LlGzs5uqeQ39zQid7D4xuosD/TgV9r9sTtpnLbNkqXL6dkxQqcx7PBZCIoOZng4VfR8qqrsMQ3/H9OrWZcbhef7f+MOVvnUGgrJKVjCg9c+gCtW7RumALUIvHL5XDz1Tu7OLg1j4EpSfS7OqFhyuqhA7+mVWP8EkijdOXXlH3zNVUZ+wGwJCXR8ooraDn0CgKTk/VooU1Qqb2UN3e8yQfpH+Dv58+d3e9kUvdJBJmDGqgAJ2Dpo5CeWqPEL7fLzdfvpbNvQw7JY9ozMCWpwZqqdODXtHOwZ2VRtmoVZavXULFxI+JwoAIDCRrQn5ZDhtBi0CAsHTvq20SbkCOlR5izZQ7LMpcRERDBPT3v4cbON2IxNdDFOn0xfPEnKM+FQdNg2JNgOfPFR9zCqg/3svv74/QeEc+Q3zbM35IO/JpWQ+7ycso3bKR87VrKv/8euydx0BQdRYuBlxE0oD8tBgzA3L5pjs/S3OzI28FLW15i44mNxLSI4b7e9zGuwzjMfg0wsusFJH6JCN8tyGDnt0cbLPjrwK9pteQ4dozy9espX7ee8g3rceWdBMA/OprAfskE9U0mKLkv1ksu0fMINBIRYX32euZsmUNafhpxLeP4fa/fc22HaxvmAnB64tfo5yDw1+MOiQjffZzBzlVHuXRkOwZf38GrwV8Hfk2rByKC/VAmFZs2UbFxIxVbtuDMNlJVVFAQgb16EXhpbwJ79SawV0/8oxrvHu7mSERYc3QNr21/jd35u4ltEctdPe5iQscJBPh7eWjvXyV+/RO6pfwq8UtE+O6jfexcfYy+o9szaEIHrxVJB35N8xLH8eNU/LiFym3bqNy6FdveveByAeAfG0Ngj54EdO9OQI/uBHTrhn94A45A2UydugDM3TmX7XnbiQiI4Laut3HjJTcSFuDl23drMOOXiLB6/j52rTnGoAkd6Du6vVeKogO/pjUQd0UFtvR0KnfspHLHdmy7duPIyvrpdf82bQjo2pWArl2wXtKZgC6dMcfHo0wXxzyuFxMRYXPOZt5Oe5u1x9YSYAogpWMKt3W9jcTQRO8d2OWE9a96Er8sZ0z8Erew4p1dZGzOZdhtnel+ef0PL6IDv6Y1IldxMbbdu7HtTseWbiz2Q4fAM6y0CgjA2qED1k6dsHbqiCUpCWuHDpjj4vQFoZ5kFGYwL30eiw8sxuF2MChmEDd1uYmhbYfi7+elvpn8A0biV+Z30P43RudvtcQvl9PN0td3krU7n9F396j32bx04Ne0JsZts1G1/wBVe/dQlbGfqowMqvbtw5mX99M+ymLBkpCAJSkJS2IClvbtsSYkYG7fHlNYmL6rqBZOVp5kUcYiFuxdQE5FDq2CWpHSIYUJnSYQH+yFBD4R2Po+fPX0GRO/HHYXqbO3kZdVynWP9KFNYv2NKaUDv6ZdJFwlJVQdOEDV/v3YDx7CfugQVYcO4jh67Ke+AwC/4GAs7dphbhePpW085rZtMbeNw9K2Lf4xMTr57Dycbierj6xmYcZC1h5biyAMaDOAa5OuZUT7EQRbguv3gKcnfqW8DLF9AKgss7Nw5macdjcTH+9HcET9dETrwK9pFzmx27EfO4Y9MxP74cM4so5gz8rCfiQLx/FscDh+3lkp/KOjMcfGYo6NwT8mBnObGMwxbfBvE4O5dStMkZGo8ww21lycKD/B5/s/J/VAKlmlWVj8LAyNH8qohFFcEXdF/WYFnyXxK/94GZ/874+ERgdy/Z+SMVvr3sSnA7+m+TBxuXDm5GA/chTH8eM4jh0zluxsHNnHcR7PRqpfGAD8/Y2LQ6tW+J9aoqPxj47CPzoaU2Qk/lFR+EdEoMwNcC98EyAipJ1MY8nBJSzPXE6+LR+rycrg2MFcGX8ll7e9nKjAerhFt7IIVvwFtrz7i8Svw2n5fPHqdjokt2L03T3qfBgd+DWtGRO3G1dhIY7sEzhPZOPIycGZk4sz5wTOvDwcubk4c3Jxl5ae8f2m0FDjQhAZiSkiAlNEOP7h4ZjCIzCFh2MKD8MUFoZ/mPGogoIu+v4Hl9vF1tytrMxaycrDK8mpyAGge2R3BscOZlDsIHpH967bEBGHvoPF043RP/vcDqOeY/O3xWxIPcjYqT1J7F236Sd14Nc07bzcNhvOk/k483Jx5efjPHkS58l8XAX5OPMLcOafxFVQiKugAFdxsdFxeQbKbMYvLNS4YISEYgoJwRQagl9IKKbgYPxCgo3HYM9jy2BMwS3xa2ksymptUhcOEWFf4T5WH13NmqNrSDuZhktcBJgC6BXdi76t+9KnVR96RvW88L4BRyWsmgk/vAxBkbhG/5MFn8Vgtzm59a+X1anJxxszcI0BXsKYgestEZl52utW4D0gGcgHbhKRTM9rTwBTABcwXUSWn+94OvBrWtMiTieukhJcRUW4CguNpajo56W4BFdxsbGUluAuLsFVUnLWXxW/4O+PqUUL/M62BAUZS4sg/AIDUYGB+AUG4RcUWG3d8zwgEL/AAFRAAMpsrpcLSpm9jE0nNrHhxAa25Gxhb+Fe3GLcmpsQkkC3yG50juhMx7COXBJ+Ca2DWp//uNVm/MpuM5lF28bRZ2Q7Bv/23OP+n0t9z7lrwphzdyRwFGPO3Vuqz5urlLof6CUi9ymlbgYmiMhNSqluwHxgABALrAQuERHX6cepTgd+TfMN4nLhLi//6SLgLivDVVqGu6wUV1kZ7tIy3GVluMvLcZeX4Sov9zyvwF3heSwvx11RAU7nhR3czw8VEICf1Wo8BhgXBD+LxbgwWC3Gaxar8avDajFes1hRFku1xYyyeF4zm7H5ucmsOEpm5TEOlB9mf1kmuY4CnCZwmMBsCaBVaCyxYe1oHRxLVEgbWoXEENWiFeGBEYRbwwm2BGMSgXWvwKoX+Lbo96SXD+XGJ/oT1S6kVv/WFxL4a5LJMADYLyIHPR/+EZACVJ8wPQV4xvN8IfCKMi55KcBHIlIFHFJK7fd83rqaFE7TtIubMpmMpp+Q2gWz6sRux11Rgbuy0lgqKhFbtedVNtyVtp+32WyIrQq3rRKpshuv26oQmw23vQp3QTlOux2pqsJdVYWcem63//KuqTMIxphkvOcZXy0HMjzLL5X5QZEJ3H7g8gO3yQ+3KQr8l+LXNZnP/7yAyf+5GRXQss7/XudSk8AfBxyptn4UGHi2fUTEqZQqBiI929ef9t76z1XWNM3nKYsFk8XSINNnituNOBzGxaD64nD8vL36c6ez2nbnz685HVRWllFWWUhFZRm2qnKqqspxOqpwOapwOYzPweUm3PYlNnNbXH6BNQrMdVGTzz9TY9Xp7UNn26cm7zU+QKl7gXsB2rVrV4NiaZqmeYfy80NZrWC1NnZRvKImGR1Hgeq5zW2B42fbRynlD4QCBTV8LwAi8qaI9BORftHRdbutSdM0TTu7mgT+TUAnpVSiUsoC3AyknrZPKnCn5/lE4Bsxeo1TgZuVUlalVCLQCdhYP0XXNE3TauO8TT2eNvsHgOUYt3O+IyK7lFIzgM0ikgq8Dbzv6bwtwLg44NlvAUZHsBOYdr47ejRN0zTv0glcmqZpPuBCbufUozZpmqY1Mzrwa5qmNTM68GuapjUzOvBrmqY1M02yc1cplQccruXbo4CT9Vici0FzPGdonufdHM8Zmud5X+g5txeRGiVBNcnAXxdKqc017dn2Fc3xnKF5nndzPGdonuftzXPWTT2apmnNjA78mqZpzYwvBv43G7sAjaA5njM0z/NujucMzfO8vXbOPtfGr2mapp2bL37j1zRN087BZwK/UmqMUmqvUmq/Uurxxi6Ptyil4pVS3yql0pVSu5RSD3m2RyilViilMjyP4Y1d1vqmlDIppbYqpZZ41hOVUhs85/yxZ/RYn6KUClNKLVRK7fHU+SBfr2ul1B88f9tpSqn5SqkAX6xrpdQ7SqlcpVRatW1nrFtlmOOJbzuUUn3rcmyfCPyeeYFfBa4GugG3eOb79UVO4BER6QpcBkzznOvjwNci0gn42rPuax4C0qut/wN40XPOhcCURimVd70ELBORLkBvjPP32bpWSsUB04F+ItIDY0Tgm/HNuv4vMOa0bWer26sxhrXvhDFh1et1ObBPBH6qzQssInbg1LzAPkdEskVki+d5KUYgiMM433c9u70LXNc4JfQOpVRb4BrgLc+6Aq7CmOMZfPOcQ4ArMIY9R0TsIlKEj9c1xnDxgZ5JnYKAbHywrkVkDcYw9tWdrW5TgPfEsB4IU0rF1PbYvhL4zzQvsM/P7auUSgD6ABuA1iKSDcbFAWjVeCXzitnAY4Dbsx4JFImI07Pui3WeBOQB/8/TxPWWUqoFPlzXInIMmAVkYQT8YuBHfL+uTzlb3dZrjPOVwF/juX19hVKqJfAJ8LCIlDR2ebxJKXUtkCsiP1bffIZdfa3O/YG+wOsi0gcox4eadc7E06adAiQCsUALjGaO0/laXZ9Pvf69+0rgr/Hcvr5AKWXGCPofiMgiz+acUz/9PI+5jVU+LxgCjFdKZWI0412F8QsgzNMcAL5Z50eBoyKywbO+EONC4Mt1PQI4JCJ5IuIAFgGD8f26PuVsdVuvMc5XAn9N5gX2CZ627beBdBH5d7WXqs97fCfweUOXzVtE5AkRaSsiCRh1+42I3AZ8izHHM/jYOQOIyAngiFKqs2fTcIxpTH22rjGaeC5TSgV5/tZPnbNP13U1Z6vbVOAOz909lwHFp5qEakVEfGIBxgL7gAPAU41dHi+e528wfuLtALZ5lrEYbd5fAxmex4jGLquXzn8YsMTzPAnYCOwH/g+wNnb5vHC+lwKbPfX9GRDu63UN/A3YA6QB7wNWX6xrYD5GP4YD4xv9lLPVLUZTz6ue+LYT466nWh9bZ+5qmqY1M77S1KNpmqbVkA78mqZpzYwO/Jqmac2MDvyapmnNjA78mqZpzYwO/Jqmac2MDvyapmnNjA78mqZpzcz/B2fgpwIoieQhAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="annealing_cos"><code>annealing_cos</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L285" class="source_link">[source]</a></h4><blockquote><p><code>annealing_cos</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+</blockquote>
+<p>Cosine anneal from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="annealing_exp"><code>annealing_exp</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>annealing_exp</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+</blockquote>
+<p>Exponentially anneal from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="annealing_linear"><code>annealing_linear</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L279" class="source_link">[source]</a></h4><blockquote><p><code>annealing_linear</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+</blockquote>
+<p>Linearly anneal from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="annealing_no"><code>annealing_no</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L276" class="source_link">[source]</a></h4><blockquote><p><code>annealing_no</code>(<code>start</code>:<code>Number</code>, <code>end</code>:<code>Number</code>, <code>pct</code>:<code>float</code>) → <code>Number</code></p>
+</blockquote>
+<p>No annealing, always return <code>start</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="annealing_poly"><code>annealing_poly</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L293" class="source_link">[source]</a></h4><blockquote><p><code>annealing_poly</code>(<code>degree</code>:<code>Number</code>) → <code>Number</code></p>
+</blockquote>
+<p>Anneal polynomically from <code>start</code> to <code>end</code> as pct goes from 0.0 to 1.0.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="CallbackHandler"><code>class</code> <code>CallbackHandler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L169" class="source_link">[source]</a></h2><blockquote><p><code>CallbackHandler</code>(<code>callbacks</code>:<code>Collection</code>[<a href="/callback.html#Callback"><code>Callback</code></a>]=<code>None</code>, <code>metrics</code>:<code>Collection</code>[<a href="/callback.html#Callback"><code>Callback</code></a>]=<code>None</code>, <code>beta</code>:<code>float</code>=<code>0.98</code>)</p>
+</blockquote>
+<p>Manage all of the registered callback objects, smoothing loss by momentum <code>beta</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You probably won't need to use this class yourself. It's used by fastai to combine all the callbacks together and call any relevant callback functions for each training stage. The methods below simply call the equivalent method in each callback function in <a href="/callbacks.html#callbacks"><code>self.callbacks</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L219" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>loss</code>:<code>Tensor</code>)</p>
+</blockquote>
+<p>Handle gradient calculation on <code>loss</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L228" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>()</p>
+</blockquote>
+<p>Handle end of gradient calculation.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L201" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>xb</code>:<code>Tensor</code>, <code>yb</code>:<code>Tensor</code>, <code>train</code>:<code>bool</code>=<code>True</code>)</p>
+</blockquote>
+<p>Handle new batch <code>xb</code>,<code>yb</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L235" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>loss</code>:<code>Tensor</code>)</p>
+</blockquote>
+<p>Handle end of processing one batch with <code>loss</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L196" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>()</p>
+</blockquote>
+<p>Handle new epoch.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L244" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>val_loss</code>:<code>Tensor</code>) → <code>bool</code></p>
+</blockquote>
+<p>Epoch is done, process <code>val_metrics</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L211" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<code>out</code>:<code>Tensor</code>)</p>
+</blockquote>
+<p>Handle start of loss calculation with model output <code>out</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L231" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>()</p>
+</blockquote>
+<p>Handle end of optimization step.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L189" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>epochs</code>:<code>int</code>, <code>pbar</code>:<code>PBar</code>, <code>metrics</code>:<code>MetricFuncList</code>)</p>
+</blockquote>
+<p>About to start learning.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CallbackHandler.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L254" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>exception</code>:<code>Union</code>[<code>bool</code>, <code>Exception</code>])</p>
+</blockquote>
+<p>Handle end of training, <code>exception</code> is an <code>Exception</code> or False if no exceptions during training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="OptimWrapper"><code>class</code> <code>OptimWrapper</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>OptimWrapper</code>(<code>opt</code>:<a href="https://pytorch.org/docs/stable/optim.html#torch.optim.Optimizer"><code>Optimizer</code></a>, <code>wd</code>:<code>Floats</code>=<code>0.0</code>, <code>true_wd</code>:<code>bool</code>=<code>False</code>, <code>bn_wd</code>:<code>bool</code>=<code>True</code>)</p>
+</blockquote>
+<p>Basic wrapper around an optimizer to simplify HP changes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a convenience class that provides a consistent API for getting and setting optimizer hyperparameters. For instance, for <a href="https://pytorch.org/docs/stable/optim.html#torch.optim.Adam"><code>optim.Adam</code></a> the momentum parameter is actually <code>betas[0]</code>, whereas for <a href="https://pytorch.org/docs/stable/optim.html#torch.optim.SGD"><code>optim.SGD</code></a> it's simply <code>momentum</code>. As another example, the details of handling weight decay depend on whether you are using <code>true_wd</code> or the traditional L2 regularization approach.</p>
+<p>This class also handles setting different WD and LR for each layer group, for discriminative layer training.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="OptimWrapper.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>opt_func</code>:<code>Callable</code>, <code>lr</code>:<code>Union</code>[<code>float</code>, <code>Tuple</code>, <code>List</code>], <code>layer_groups</code>:<code>ModuleList</code>, <code>kwargs</code>:<code>Any</code>) → <a href="https://pytorch.org/docs/stable/optim.html#torch.optim.Optimizer"><code>Optimizer</code></a></p>
+</blockquote>
+<p>Create an optim.Optimizer from <code>opt_func</code> with <code>lr</code>. Set lr on <code>layer_groups</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="OptimWrapper.read_defaults"><code>read_defaults</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L94" class="source_link">[source]</a></h4><blockquote><p><code>read_defaults</code>()</p>
+</blockquote>
+<p>Read the values inside the optimizer for the hyper-parameters.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="OptimWrapper.read_val"><code>read_val</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>read_val</code>(<code>key</code>:<code>str</code>) → <code>Union</code>[<code>List</code>[<code>float</code>], <code>Tuple</code>[<code>List</code>[<code>float</code>], <code>List</code>[<code>float</code>]]]</p>
+</blockquote>
+<p>Read a hyperparameter key in the optimizer dictionary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="OptimWrapper.set_val"><code>set_val</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L103" class="source_link">[source]</a></h4><blockquote><p><code>set_val</code>(<code>key</code>:<code>str</code>, <code>val</code>:<code>Any</code>, <code>bn_groups</code>:<code>bool</code>=<code>True</code>) → <code>Any</code></p>
+</blockquote>
+<p>Set the values inside the optimizer dictionary at the key.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="OptimWrapper.step"><code>step</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L31" class="source_link">[source]</a></h4><blockquote><p><code>step</code>()</p>
+</blockquote>
+<p>Set weight decay and step optimizer.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="OptimWrapper.zero_grad"><code>zero_grad</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>zero_grad</code>()</p>
+</blockquote>
+<p>Clear optimizer gradients.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SmoothenValue"><code>class</code> <code>SmoothenValue</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L152" class="source_link">[source]</a></h2><blockquote><p><code>SmoothenValue</code>(<code>beta</code>:<code>float</code>)</p>
+</blockquote>
+<p>Create a smooth moving average for a value (loss, etc).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Used for smoothing loss in <a href="/basic_train.html#Recorder"><code>Recorder</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="SmoothenValue.add_value"><code>add_value</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>add_value</code>(<code>val</code>:<code>float</code>)</p>
+</blockquote>
+<p>Add current value to calculate updated smoothed value.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="Stepper"><code>class</code> <code>Stepper</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L297" class="source_link">[source]</a></h2><blockquote><p><code>Stepper</code>(<code>vals</code>:<code>StartOptEnd</code>, <code>n_iter</code>:<code>int</code>, <code>func</code>:<code>Optional</code>[<code>AnnealFunc</code>]=<code>None</code>)</p>
+</blockquote>
+<p>Used to "step" from start,end (<code>vals</code>) over <code>n_iter</code> iterations on a schedule defined by <code>func</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Used for creating annealing schedules, mainly for <a href="/callbacks.one_cycle.html#OneCycleScheduler"><code>OneCycleScheduler</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Stepper.step"><code>step</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L306" class="source_link">[source]</a></h4><blockquote><p><code>step</code>() → <code>Number</code></p>
+</blockquote>
+<p>Return next value along annealed schedule.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="AverageMetric"><code>class</code> <code>AverageMetric</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callback.py#L258" class="source_link">[source]</a></h2><blockquote><p><code>AverageMetric</code>(<code>func</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+<p>Wrap a <code>func</code> in a callback for metrics computation.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>See the documentation on <a href="/metrics.html#metrics"><code>metrics</code></a> for more information.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+
