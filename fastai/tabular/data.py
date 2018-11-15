@@ -111,7 +111,7 @@ class TabularDataBunch(DataBunch):
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, **kwargs)->DataBunch:
         "Create a `DataBunch` from train/valid/test dataframes."
         cat_names = ifnone(cat_names, [])
-        cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
+        cont_names = ifnone(cont_names, list(set(df.columns.values)-set(cat_names)-{dep_var}))
         procs = listify(procs)
         return (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                            .split_by_idx(valid_idx)
