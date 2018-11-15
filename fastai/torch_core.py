@@ -207,11 +207,13 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
     else: return loss_func(y_pred, y_true, reduction='none')
 
 def model_type(dtype):
+    "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
             torch.int64 if np.issubdtype(dtype, np.integer)
             else None)
 
 def np2model_tensor(a):
+    "Tranform numpy array `a` to a tensor of the same type."
     dtype = model_type(a.dtype)
     res = as_tensor(a)
     if not dtype: return res

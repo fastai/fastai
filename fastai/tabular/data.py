@@ -39,7 +39,8 @@ class TabularLine(ItemBase):
             res += f'{n} {c:.4f}\n'
         return res
 
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10))->None:
+    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, **kwargs)->None:
+        "Show the data in `idxs` on a few `rows` from `ds`."
         from IPython.display import display, HTML
         x,y = ds[0]
         items = [x.names]

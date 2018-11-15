@@ -53,9 +53,57 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="has_arg"><code>has_arg</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L211" class="source_link">[source]</a></h4><blockquote><p><code>has_arg</code>(<code>func</code>, <code>arg</code>) → <code>bool</code></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check if <code>func</code> accepts <code>arg</code> as an argument.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="ifnone"><code>ifnone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>ifnone</code>(<code>a</code>:<code>Any</code>, <code>b</code>:<code>Any</code>) → <code>Any</code></p>
 </blockquote>
 <p><code>a</code> if <code>a</code> is not None, otherwise <code>b</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="is1d"><code>is1d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L61" class="source_link">[source]</a></h4><blockquote><p><code>is1d</code>(<code>a</code>:<code>Collection</code>) → <code>bool</code></p>
+</blockquote>
+<p>Returns True if a collection is one dimensional</p>
 
 </div>
 
@@ -119,6 +167,27 @@ summary: "Basic helper functions for the fastai library"
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="try_int"><code>try_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L213" class="source_link">[source]</a></h4><blockquote><p><code>try_int</code>(<code>o</code>:<code>Any</code>) → <code>Any</code></p>
+</blockquote>
+<p>Try to conver <code>o</code> to int, default to <code>o</code> if not possible.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Collection-related-functions">Collection related functions<a class="anchor-link" href="#Collection-related-functions">&#182;</a></h2>
@@ -134,9 +203,57 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="arange_of"><code>arange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>arange_of</code>(<code>x</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Return the numpy array of the range of the same length as <code>x</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="arrays_split"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>arrays_split</code>(<code>mask</code>:<code>ndarray</code>, <code>arrs</code>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
 <p>Given <code>arrs</code> is [a,b,...] and <code>mask</code>index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...].</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="df_names_to_idx"><code>df_names_to_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L185" class="source_link">[source]</a></h4><blockquote><p><code>df_names_to_idx</code>(<code>names</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>], <code>df</code>:<code>DataFrame</code>)</p>
+</blockquote>
+<p>Return the column indexes of <code>names</code> in <code>df</code>.</p>
 
 </div>
 
@@ -232,6 +349,27 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="index_row"><code>index_row</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L197" class="source_link">[source]</a></h4><blockquote><p><code>index_row</code>(<code>a</code>:<code>Collection</code>, <code>idxs</code>:<code>Collection</code>[<code>int</code>]) → <code>Any</code></p>
+</blockquote>
+<p>Return the slice of <code>a</code> corresponding to <code>idxs</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="listify"><code>listify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>listify</code>(<code>p</code>:<code>OptListOrItem</code>=<code>None</code>, <code>q</code>:<code>OptListOrItem</code>=<code>None</code>)</p>
 </blockquote>
 <p>Make <code>p</code> same length as <code>q</code></p>
@@ -274,9 +412,57 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="range_of"><code>range_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L161" class="source_link">[source]</a></h4><blockquote><p><code>range_of</code>(<code>x</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Make a <code>range</code> of the same size as <code>x</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<code>df</code>:<code>DataFrame</code>, <code>col_names</code>)</p>
 </blockquote>
 <p>Categorifies the columns <code>col_names</code> in <code>df</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_int"><code>to_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>to_int</code>(<code>b</code>:<code>Any</code>) → <code>Union</code>[<code>int</code>, <code>List</code>[<code>int</code>]]</p>
+</blockquote>
+<p>Convert <code>b</code> to an int or list of ints (if <a href="/core.html#is_listy"><code>is_listy</code></a>); raises exception if not convertible</p>
 
 </div>
 
@@ -309,13 +495,6 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Return the unique elements in <code>x</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Files-management-and-downloads">Files management and downloads<a class="anchor-link" href="#Files-management-and-downloads">&#182;</a></h2>
 </div>
 </div>
@@ -329,7 +508,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L171" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>, <code>chunk_size</code>=<code>1048576</code>, <code>timeout</code>=<code>4</code>)</p>
+<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L144" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>, <code>chunk_size</code>=<code>1048576</code>, <code>timeout</code>=<code>4</code>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code>.</p>
 
@@ -371,7 +550,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L193" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
+<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L166" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
 </blockquote>
 <p>Return <code>Path(path)/Path(fname)</code>, <code>path</code> defaults to current dir.</p>
 
@@ -392,7 +571,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L197" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
+<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L170" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
 </blockquote>
 <p>Join <code>path</code> to every file name in <code>fnames</code>.</p>
 
@@ -413,7 +592,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L202" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
+<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L175" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
 </blockquote>
 <p>Return <code>ndarray</code> of <code>str</code> of lines of text from <code>path</code>.</p>
 
@@ -434,7 +613,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L207" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<code>fname</code>:<code>PathOrStr</code>, <code>texts</code>:<code>StrList</code>)</p>
+<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L180" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<code>fname</code>:<code>PathOrStr</code>, <code>texts</code>:<code>StrList</code>)</p>
 </blockquote>
 <p>Save in <code>fname</code> the content of <code>texts</code>.</p>
 
@@ -448,7 +627,7 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Others">Others<a class="anchor-link" href="#Others">&#182;</a></h2>
+<h2 id="Data-block-API">Data block API<a class="anchor-link" href="#Data-block-API">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -461,9 +640,8 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>(<code>data</code>:<code>Any</code>)</p>
+<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L136" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>(<code>data</code>:<code>Any</code>)</p>
 </blockquote>
-<p>All transformable dataset items use this type.</p>
 
 </div>
 
@@ -472,6 +650,73 @@ summary: "Basic helper functions for the fastai library"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The base clase for all items. Must have a <a href="/tabular.data.html#tabular.data"><code>data</code></a> field that will be used when collating in mini-batches.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="Category"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L223" class="source_link">[source]</a></h3><blockquote><p><code>Category</code>(<code>data</code>, <code>obj</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/core.html#Category"><code>Category</code></a> with an <code>obj</code> of index <a href="/tabular.data.html#tabular.data"><code>data</code></a> in a certain classes list.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="MultiCategory"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L228" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategory</code>(<code>data</code>, <code>obj</code>, <code>raw</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/core.html#MultiCategory"><code>MultiCategory</code></a> with an <code>obj</code> that is a collection of labels. <a href="/tabular.data.html#tabular.data"><code>data</code></a> corresponds to the one-hot encoded labels and <code>raw</code> is a list of associated string.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Others">Others<a class="anchor-link" href="#Others">&#182;</a></h2>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -559,6 +804,27 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="func_args"><code>func_args</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L206" class="source_link">[source]</a></h4><blockquote><p><code>func_args</code>(<code>func</code>) → <code>bool</code></p>
+</blockquote>
+<p>Return the arguments of <code>func</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="noop"><code>noop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>noop</code>(<code>x</code>)</p>
 </blockquote>
 
@@ -589,6 +855,27 @@ summary: "Basic helper functions for the fastai library"
 <h4 id="num_cpus"><code>num_cpus</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>num_cpus</code>() → <code>int</code></p>
 </blockquote>
 <p>Get number of cpus</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="one_hot"><code>one_hot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L191" class="source_link">[source]</a></h4><blockquote><p><code>one_hot</code>(<code>x</code>:<code>Collection</code>[<code>int</code>], <code>c</code>:<code>int</code>)</p>
+</blockquote>
+<p>One-hot encode the target.</p>
 
 </div>
 

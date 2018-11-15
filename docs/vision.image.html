@@ -1007,7 +1007,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageBBox"><code>class</code> <code>ImageBBox</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L367" class="source_link">[source]</a></h3><blockquote><p><code>ImageBBox</code>(<code>flow</code>:<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <code>scale</code>:<code>bool</code>=<code>True</code>, <code>y_first</code>:<code>bool</code>=<code>True</code>, <code>labels</code>:<code>Collection</code>=<code>None</code>, <code>c2i</code>:<code>dict</code>=<code>None</code>, <code>pad_idx</code>:<code>int</code>=<code>0</code>) :: <a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a></p>
+<h3 id="ImageBBox"><code>class</code> <code>ImageBBox</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L367" class="source_link">[source]</a></h3><blockquote><p><code>ImageBBox</code>(<code>flow</code>:<a href="/vision.image.html#FlowField"><code>FlowField</code></a>, <code>scale</code>:<code>bool</code>=<code>True</code>, <code>y_first</code>:<code>bool</code>=<code>True</code>, <code>labels</code>:<code>Collection</code>=<code>None</code>, <code>classes</code>:<code>dict</code>=<code>None</code>, <code>pad_idx</code>:<code>int</code>=<code>0</code>) :: <a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a></p>
 </blockquote>
 
 </div>
@@ -1041,7 +1041,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageBBox.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L382" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>h</code>:<code>int</code>, <code>w</code>:<code>int</code>, <code>bboxes</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>labels</code>:<code>Collection</code>=<code>None</code>, <code>c2i</code>:<code>dict</code>=<code>None</code>, <code>pad_idx</code>:<code>int</code>=<code>0</code>) → <code>ImageBBox</code></p>
+<h4 id="ImageBBox.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L382" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>h</code>:<code>int</code>, <code>w</code>:<code>int</code>, <code>bboxes</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>labels</code>:<code>Collection</code>=<code>None</code>, <code>classes</code>:<code>dict</code>=<code>None</code>, <code>pad_idx</code>:<code>int</code>=<code>0</code>) → <code>ImageBBox</code></p>
 </blockquote>
 <p>Create an ImageBBox object from <code>bboxes</code>.</p>
 <ul>
@@ -2536,7 +2536,61 @@ summary: "Image class, variants and internal data augmentation pipeline"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Send the <a href="/vision.image.html#Image"><code>Image</code></a> to <a href="/vision.image.html#show_image"><code>show_image</code></a> with <code>ax</code>, <code>y</code> and the <code>kwargs</code>.</p>
+<p>Show the image on <code>ax</code> with <code>figsize</code>, optional <code>title</code>, <code>hide_axis</code> will hide the axis, <code>cmap</code> is used and if <code>y</code> is passed, it is showed on the same <code>ax</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Image.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L241" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>idxs</code>:<code>Collection</code>[<code>int</code>], <code>rows</code>:<code>int</code>, <code>ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>figsize</code>:<code>Tuple</code>[<code>int</code>, <code>int</code>]=<code>(9, 10)</code>, <code>kwargs</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Show the images in <code>idxs</code> from <code>ds</code> on a few <code>rows</code> with <code>figsize</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="Image.show_results"><code>show_results</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L248" class="source_link">[source]</a></h4><blockquote><p><code>show_results</code>(<code>xys</code>, <code>preds</code>, <code>figsize</code>:<code>Tuple</code>[<code>int</code>, <code>int</code>]=<code>None</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Show the results in <code>xys</code> from <code>preds</code> with <code>figsize</code>.</p>
 
 </div>
 </div>

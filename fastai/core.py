@@ -182,7 +182,8 @@ def save_texts(fname:PathOrStr, texts:Collection[str]):
     with open(fname, 'w') as f:
         for t in texts: f.write(f'{t}\n')
 
-def df_names_to_idx(names, df):
+def df_names_to_idx(names:IntsOrStrs, df:DataFrame):
+    "Return the column indexes of `names` in `df`."
     if not is_listy(names): names = [names]
     if isinstance(names[0], int): return names
     return [df.columns.get_loc(c) for c in names]
@@ -194,6 +195,7 @@ def one_hot(x:Collection[int], c:int):
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
+    "Return the slice of `a` corresponding to `idxs`."
     if a is None: return a
     if isinstance(a,(pd.DataFrame,pd.Series)):
         res = a.iloc[idxs]
@@ -202,12 +204,14 @@ def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])-
     return a[idxs]
 
 def func_args(func)->bool:
+    "Return the arguments of `func`."
     code = func.__code__
     return code.co_varnames[:code.co_argcount]
 
 def has_arg(func, arg)->bool: return arg in func_args(func)
 
 def try_int(o:Any)->Any:
+    "Try to conver `o` to int, default to `o` if not possible."
     try: return int(o)
     except: return o
 

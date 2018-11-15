@@ -238,6 +238,7 @@ class TextClasDataBunch(TextDataBunch):
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
 
 def open_text(fn:PathOrStr):
+    "Read the text in `fn`."
     with open(fn,'r') as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
@@ -245,6 +246,7 @@ class Text(ItemBase):
     def __str__(self):  return str(self.text)
 
     def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, max_len:int=50)->None:
+        "Show the texts in `idx` on a few `rows` from `ds`. `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
         items = [['text', 'label']]
         for i in idxs[:rows]:
