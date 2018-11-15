@@ -16,7 +16,7 @@ def learn():
     data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
             .split_by_idx(list(range(800,1000)))
             .label_from_df(cols=dep_var)
-            .add_test(test, label=0)
+            .add_test(test)
             .databunch())
     learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(2, 1e-2)

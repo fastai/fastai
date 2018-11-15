@@ -156,7 +156,7 @@ class TextDataBunch(DataBunch):
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
         src = ItemLists(path, TextList.from_df(train_df, path, col=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, col=text_cols, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(col=label_cols, classes=classes, sep=label_delim)
         if test_df is not None: src.add_test(TextList.from_df(test_df, path, col=text_cols))
         return src.databunch(**kwargs)
 

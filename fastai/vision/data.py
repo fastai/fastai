@@ -123,7 +123,7 @@ class ImageDataBunch(DataBunch):
         "Create from a DataFrame."
         src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, col=fn_col)
                 .random_split_by_pct(valid_pct)
-                .label_from_df(sep=sep, cols=label_col))
+                .label_from_df(sep=sep, col=label_col))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod

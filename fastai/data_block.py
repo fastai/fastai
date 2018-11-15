@@ -164,9 +164,9 @@ class ItemList():
         res = self._label_list(x=self, y=y)
         return res
 
-    def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
+    def label_from_df(self, col:IntsOrStrs=1, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`."
-        labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])
         return self.label_from_list(labels, **kwargs)
 
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
