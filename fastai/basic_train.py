@@ -266,6 +266,7 @@ class Recorder(LearnerCallback):
         "Initialize recording status at beginning of training."
         self.pbar = pbar
         self.names = ['epoch', 'train_loss', 'valid_loss'] + metrics_names
+        if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         self.pbar.write('  '.join(self.names), table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
