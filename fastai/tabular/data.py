@@ -129,7 +129,7 @@ class TabularDataBunch(DataBunch):
         procs = listify(procs)
         return (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                            .split_by_idx(valid_idx)
-                           .label_from_df(col=dep_var, classes=None)
+                           .label_from_df(cols=dep_var, classes=None)
                            .databunch())
 
 def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,

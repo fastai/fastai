@@ -121,9 +121,9 @@ class ImageDataBunch(DataBunch):
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='',
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
-        src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, col=fn_col)
+        src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
                 .random_split_by_pct(valid_pct)
-                .label_from_df(sep=sep, col=label_col))
+                .label_from_df(sep=sep, cols=label_col))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
@@ -273,21 +273,21 @@ class ImageItemList(ItemList):
         return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, col:IntsOrStrs=0,
+    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, cols:IntsOrStrs=0,
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         """Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end.
         `create_func` is used to open the images."""
         suffix = suffix or ''
-        res = super().from_df(df, path=path, create_func=create_func, col=col)
+        res = super().from_df(df, path=path, create_func=create_func, cols=cols)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
         res.items = np.char.add(f'{res.path}/', res.items)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=open_image, col:IntsOrStrs=0, header:str='infer',
+    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=open_image, cols:IntsOrStrs=0, header:str='infer',
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
+        return cls.from_df(df, path=path, create_func=create_func, cols=cols, folder=folder, suffix=suffix)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]

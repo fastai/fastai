@@ -43,7 +43,7 @@ def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user
     processor = TabularProcessor(procs=[Categorify])
     src = (CollabList.from_df(ratings, cat_names=[user_name, item_name], cont_names=[], processor=processor)
                      .random_split_by_pct()
-                     .label_from_df(col=rating_name))
+                     .label_from_df(cols=rating_name))
     if test is not None: src.add_test(CollabList.from_df(test, cat_names=[user_name, item_name], cont_names=[]))
     data = src.databunch()
     model = EmbeddingDotBias(n_factors, len(data.classes[user_name]), len(data.classes[item_name]), min_score, max_score)
