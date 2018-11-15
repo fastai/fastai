@@ -25,6 +25,8 @@ of that change.
 
 ### Changed:
 
+- Remove `TextFilesList` as you can now use `TextList` instead.
+
 ### Fixed:
 
 
