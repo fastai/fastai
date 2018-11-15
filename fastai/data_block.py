@@ -3,7 +3,7 @@ from .basic_data import *
 from .layers import MSELossFlat
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
-           'PreProcessor', 'LabelLists', 'FloatList']
+           'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
@@ -250,7 +250,7 @@ class MultiCategoryList(CategoryListBase):
 
 class FloatList(ItemList):
     _item_cls=Category
-    def __init__(self, items:Iterator, log:bool=False, sep=None, **kwargs):
+    def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
         self.c = self.items.shape[1] if len(self.items.shape) > 1 else 1
