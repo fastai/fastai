@@ -4,7 +4,7 @@ from .transform import *
 from ..basic_data import *
 from ..data_block import *
 
-__all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextFilesList', 'TextList', 'pad_collate', 'TextDataBunch',
+__all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
            'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
            'OpenFileProcessor']
 
@@ -281,6 +281,13 @@ class TextList(ItemList):
         "A special labelling method for language models."
         self._bunch = TextLMDataBunch
         return self.label_const(0, label_cls=LMLabel)
+    
+    @classmethod
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor:PreProcessor=None,
+                    vocab:Vocab=None, **kwargs)->'TextList':
+        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
+        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
 
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
@@ -316,15 +323,3 @@ class NumericalizeProcessor(PreProcessor):
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
-
-class TextFilesList(TextList):
-    def __init__(self, items:Iterator, vocab:Vocab=None, processor=None, **kwargs):
-        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
-        super().__init__(items, vocab, processor=processor, **kwargs)
-
-    @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor=None, **kwargs)->ItemList:
-        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
-        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
-
-
