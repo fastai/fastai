@@ -32,6 +32,6 @@ class TabularModel(nn.Module):
             x = torch.cat([x, x_cont], 1) if self.n_emb != 0 else x_cont
         x = self.layers(x)
         if self.y_range is not None:
-            x = (self.y_range[1]-self.y_range[0]) * F.sigmoid(x) + self.y_range[0]
+            x = (self.y_range[1]-self.y_range[0]) * torch.sigmoid(x) + self.y_range[0]
         return x
 
