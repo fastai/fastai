@@ -1,9 +1,9 @@
 from .torch_core import *
 from .basic_data import *
-
+from .layers import MSELossFlat
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
-           'PreProcessor', 'LabelLists']
+           'PreProcessor', 'LabelLists', 'FloatList']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
@@ -146,12 +146,13 @@ class ItemList():
         return self.split_by_idx(valid_idx)
 
     def label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
-        if label_cls is not None:       return label_cls
-        if self._label_cls is not None: return self._label_cls
-        it = try_int(index_row(labels,0))
-        if sep is not None:             return MultiCategoryList
-        if isinstance(it, (str,int)):   return CategoryList
-        if isinstance(it, Collection):  return MultiCategoryList
+        if label_cls is not None:               return label_cls
+        if self._label_cls is not None:         return self._label_cls
+        it = index_row(labels,0)
+        if sep is not None:                     return MultiCategoryList
+        if isinstance(it, (float, np.float32)): return FloatList
+        if isinstance(try_int(it), (str,int)):  return CategoryList
+        if isinstance(it, Collection):          return MultiCategoryList
         return self.__class__
 
     def label_from_list(self, labels:Iterator, **kwargs)->'LabelList':
@@ -188,7 +189,6 @@ class ItemList():
             assert res,f'Failed to find "{pat}" in "{s}"'
             return res.group(1)
         return self.label_from_func(_inner, **kwargs)
-
 
 class CategoryProcessor(PreProcessor):
     def __init__(self, classes:Collection=None): self.create_classes(classes)
@@ -248,6 +248,20 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
 
+class FloatList(ItemList):
+    _item_cls=Category
+    def __init__(self, items:Iterator, log:bool=False, sep=None, **kwargs):
+        super().__init__(np.array(items, dtype=np.float32), **kwargs)
+        self.log = log
+        self.c = self.items.shape[1] if len(self.items.shape) > 1 else 1
+        self.loss_func = MSELossFlat()
+
+    def new(self, items,**kwargs):
+        return super().new(items, log=self.log, **kwargs)
+
+    def get(self, i):
+        o = super().get(i)
+        return tensor(o).log_() if self.log else tensor(o)
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"

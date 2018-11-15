@@ -367,11 +367,11 @@ class ImagePoints(Image):
 class ImageBBox(ImagePoints):
     "Support applying transforms to a `flow` of bounding boxes."
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True, labels:Collection=None,
-                 c2i:dict=None, pad_idx:int=0):
+                 classes:dict=None, pad_idx:int=0):
         super().__init__(flow, scale, y_first)
         self.pad_idx = pad_idx
         if labels is not None and len(labels)>0 and not isinstance(labels[0],Category):
-            labels = array([Category.create(l,c2i) for l in labels])
+            labels = array([Category(l,classes[l]) for l in labels])
         self.labels = labels
 
     def clone(self) -> 'ImageBBox':
@@ -380,7 +380,7 @@ class ImageBBox(ImagePoints):
         return self.__class__(flow, scale=False, y_first=False, labels=self.labels, pad_idx=self.pad_idx)
 
     @classmethod
-    def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, c2i:dict=None,
+    def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, classes:dict=None,
                pad_idx:int=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         bboxes = tensor(bboxes).float()
@@ -388,7 +388,7 @@ class ImageBBox(ImagePoints):
         bl_corners = bboxes[:,1:3].flip(1)
         bboxes = torch.cat([bboxes[:,:2], tr_corners, bl_corners, bboxes[:,2:]], 1)
         flow = FlowField((h,w), bboxes.view(-1,2))
-        return cls(flow, labels=labels, c2i=c2i, pad_idx=pad_idx, y_first=True)
+        return cls(flow, labels=labels, classes=classes, pad_idx=pad_idx, y_first=True)
 
     def _compute_boxes(self) -> Tuple[LongTensor, LongTensor]:
         bboxes = self.flow.flow.flip(1).view(-1, 4, 2).contiguous().clamp(min=-1, max=1)
@@ -412,7 +412,7 @@ class ImageBBox(ImagePoints):
         h,w = self.flow.size
         bboxes.add_(1).mul_(torch.tensor([h/2, w/2, h/2, w/2])).long()
         for i, bbox in enumerate(bboxes):
-            if lbls is not None: text = lbls[i].cat
+            if lbls is not None: text = str(lbls[i])
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 

@@ -31,7 +31,6 @@ def test_camvid():
             .transform(get_transforms(), tfm_y=True)
             .databunch())
 
-@pytest.mark.skip("Sylvain hasn't fixed me yet")
 def test_coco():
     coco = untar_data(URLs.COCO_TINY)
     images, lbl_bbox = get_annotations(coco/'train.json')

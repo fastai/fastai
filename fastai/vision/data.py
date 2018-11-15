@@ -289,9 +289,8 @@ class ImageItemList(ItemList):
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
 
-
 class ObjectCategoryProcessor(MultiCategoryProcessor):
-    def process_one(self,item): return [self.c2i.get(o,None) for o in item]
+    def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
 
     def generate_classes(self, items):
         classes = super().generate_classes([o[1] for o in items])
@@ -304,7 +303,7 @@ class ObjectCategoryList(MultiCategoryList):
         if processor is None: self.processor = ObjectCategoryProcessor(classes=classes)
 
     def get(self, i):
-        return ImageBBox.create(*self.x.sizes[i], *self.items[i])
+        return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
 
 class ObjectItemList(ImageItemList):
     def __post_init__(self):
