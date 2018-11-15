@@ -25,7 +25,9 @@ of that change.
 
 ### Changed:
 
-- Remove `TextFilesList` as you can now use `TextList` instead.
+- Remove `TextFilesList` as you can now use `TextList` instead
+- Consistent use of `cols` / `col` in the data block API depending on if you can pass multiple columns or not
+- Collab is refactored with the data block API behind the scene
 
 ### Fixed:
 
