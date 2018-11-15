@@ -52,7 +52,7 @@ summary: "Application to tabular/structured data"
 <span class="kn">from</span> <span class="nn">fastai.tabular</span> <span class="k">import</span> <span class="o">*</span> 
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -73,7 +73,7 @@ summary: "Application to tabular/structured data"
 <span class="n">path</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -103,7 +103,7 @@ summary: "Application to tabular/structured data"
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -272,7 +272,7 @@ summary: "Application to tabular/structured data"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">procs</span> <span class="o">=</span> <span class="p">[</span><span class="n">FillMissing</span><span class="p">,</span> <span class="n">Categorify</span><span class="p">,</span> <span class="n">Normalize</span><span class="p">]</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -292,7 +292,7 @@ summary: "Application to tabular/structured data"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_idx</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -313,7 +313,7 @@ summary: "Application to tabular/structured data"
 <span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;native-country&#39;</span><span class="p">]</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -334,7 +334,7 @@ summary: "Application to tabular/structured data"
 <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_ds</span><span class="o">.</span><span class="n">cont_names</span><span class="p">)</span>  <span class="c1"># `cont_names` defaults to: set(df)-set(cat_names)-{dep_var}</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -369,7 +369,7 @@ summary: "Application to tabular/structured data"
 <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cat_x</span><span class="p">,</span> <span class="n">cont_x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="n">to_np</span><span class="p">(</span><span class="n">o</span><span class="p">[:</span><span class="mi">5</span><span class="p">]))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -427,7 +427,7 @@ summary: "Application to tabular/structured data"
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
