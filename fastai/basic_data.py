@@ -2,77 +2,8 @@
 from .torch_core import *
 from .layers import MSELossFlat
 
-DatasetType = Enum('DatasetType', 'Train Valid Test')
-TaskType = Enum('TaskType', 'No Single Multi Regression')
-__all__ = ['SingleClassificationDataset', 'DataBunch', 'DatasetBase', 'DeviceDataLoader', 'DatasetType', 'TaskType']
-
-class DatasetBase(Dataset):
-    "Base class for all fastai datasets."
-    def __init__(self, x:Collection=None, y:Collection=None, classes:Collection=None, c:Optional[int]=None,
-                 task_type:TaskType=None, class2idx:Dict[Any,int]=None, as_array:bool=True, do_encode_y:bool=True):
-        self.c,self.classes,self.class2idx,self.item = c,classes,class2idx,None
-        if as_array: self.x,self.y = (np.array(x) if x is not None else None),(np.array(y) if y is not None else None)
-        self.task_type = ifnone(task_type, self.get_task_type())
-        if classes is None and y is not None:
-            if self.task_type==TaskType.Single: self.classes=uniqueify(y)
-            if self.task_type==TaskType.Multi:  self.classes=uniqueify(np.concatenate(y))
-
-        if self.classes is not None:
-            if not c:
-                if self.task_type==TaskType.Regression and y is not None: self.c = y.shape[1]
-                else: self.c = len(self.classes)
-            if class2idx is None: self.class2idx = {v:k for k,v in enumerate(self.classes)}
-            if y is not None and do_encode_y: self.encode_y()
-        if self.task_type==TaskType.Regression: self.loss_func = MSELossFlat()
-        elif self.task_type==TaskType.Single:   self.loss_func = F.cross_entropy
-        elif self.task_type==TaskType.Multi:    self.loss_func = F.binary_cross_entropy_with_logits
-
-    def encode_y(self):
-        if self.task_type==TaskType.Single:
-            self.y = np.array([self.class2idx[o] for o in self.y], dtype=np.int64)
-        elif self.task_type==TaskType.Multi:
-            self.y = [np.array([self.class2idx[o] for o in l], dtype=np.int64) for l in self.y]
-
-    def __len__(self): return len(self.x) if self.x is not None else 1
-    def set_item(self,item): self.item = item
-    def clear_item(self): self.item = None
-    def __repr__(self): return f'{type(self).__name__} of len {len(self)}'
-    def new(self, *args, **kwargs):
-        "Create a new dataset using `self` as a template"
-        return self.__class__(*args, **kwargs)
-
-    def _get_x(self,i):   return self.x[i]
-    def _get_y(self,i,x): return one_hot_encode(self.y[i],self.c) if self.task_type==TaskType.Multi else self.y[i]
-
-    def __getitem__(self, i):
-        if self.item is not None: return self.item,0
-        x = self._get_x(i)
-        return x,self._get_y(i,x)
-
-    def get_y_repr(self, i):
-        if task_type==TaskType.Single:  return self.classes[y[i]]
-        elif task_type==TaskType.Multi: return '; '.join([self.classes[a] for a in y[i]])
-        else: return y[i]
-
-    def get_task_type(self):
-        if self.y is None or len(self.y) == 0: return TaskType.No
-        y = self.y[0]
-        if isinstance(y,(int,str,np.int64)): return TaskType.Single
-        elif isinstance(y, (float,np.float32)):  return TaskType.Regression
-        elif isinstance(y, Iterable):
-            i=0
-            while len(y) == 0 and i < len(self.y):
-                y = self.y[i]
-                i += 1
-            if i == len(self.y) and len(y)==0: return TaskType.No
-            return (TaskType.Multi if isinstance(y[0],(int,str,np.int64)) else
-                    TaskType.Regression if isinstance(y[0],(float,np.float32)) else
-                    TaskType.No)
-        else: return TaskType.No
-
-class SingleClassificationDataset(DatasetBase):
-    "A `Dataset` that contains no data, only `classes`, mainly used for inference with `set_item`"
-    def __init__(self, classes): super().__init__(classes=classes)
+DatasetType = Enum('DatasetType', 'Train Valid Test Single')
+__all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType']
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
@@ -142,10 +73,16 @@ class DataBunch():
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
-        self.train_dl = DeviceDataLoader(train_dl, self.device, self.tfms, collate_fn, skip_size1=True)
-        self.valid_dl = DeviceDataLoader(valid_dl, self.device, self.tfms, collate_fn)
-        self.test_dl  = DeviceDataLoader(test_dl, self.device, self.tfms, collate_fn) if test_dl is not None else None
+        def _create_dl(dl, **kwargs):
+            return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
+        self.train_dl = _create_dl(train_dl, skip_size1=True)
+        self.valid_dl = _create_dl(valid_dl)
+        self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
+        self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
+
+    def __repr__(self)->str:
+        return f'{self.__class__.__name__};\nTrain: {self.train_ds};\nValid: {self.valid_ds};\nTest: {self.test_ds}'
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
@@ -164,12 +101,24 @@ class DataBunch():
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
         return (self.train_dl if ds_type == DatasetType.Train else
                 self.test_dl if ds_type == DatasetType.Test else
-                self.valid_dl)
+                self.valid_dl if ds_type == DatasetType.Valid else
+                self.single_dl)
+
+    @property
+    def dls(self):
+        res = [self.train_dl, self.valid_dl, self.single_dl]
+        return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
-        self.train_dl.add_tfm(tfm)
-        self.valid_dl.add_tfm(tfm)
-        if self.test_dl: self.test_dl.add_tfm(tfm)
+        for dl in self.dls: dl.add_tfm(tfm)
+
+    def show_batch(self, rows:int=None, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
+        "Show a batch of data in `ds_type` on a few `rows`."
+        dl = self.dl(ds_type)
+        b_idx = next(iter(dl.batch_sampler))
+        if rows is None: rows = int(math.sqrt(len(b_idx)))
+        ds = dl.dataset
+        ds[0][0].show_batch(b_idx, rows, ds, **kwargs)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
@@ -180,8 +129,5 @@ class DataBunch():
 
     @property
     def test_ds(self)->Dataset:
-        assert self.test_dl is not None, "You didn't specify a test set for this DataBunch."
-        return self.test_dl.dl.dataset
-
-    def learner_type(self)->type: return getattr(self.train_ds, 'learner_type', None)
+        return self.test_dl.dl.dataset if self.test_dl is not None else None
 

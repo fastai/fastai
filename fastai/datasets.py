@@ -31,6 +31,7 @@ class URLs():
     MNIST = f'{S3_IMAGE}mnist_png'
     CAMVID = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY = f'{URL}camvid_tiny'
+    BIWI_HEAD_POSE = f"{S3_IMAGELOC}biwi_head_pose"
 
 class Config():
     "Creates a default config file at `~/.fastai/config.yml`"

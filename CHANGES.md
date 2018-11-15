@@ -11,7 +11,45 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.22.dev0 (Work In Progress)
+
+
+
+
+
+
+## 1.0.25.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.24 (2018-11-13)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.23 (2018-11-13)
+
+### New:
+
+### Changed:
+
+- `tools/build-docs` and `tools/update-nbs` scripts combined into one script.
+
+### Fixed:
+
+
+
+## 1.0.22 (2018-11-09)
 
 ### Breaking changes:
 
@@ -38,6 +76,7 @@ of that change.
 ### Changed:
 
 - `datasets()` now can automatically figure out what class to use in many situations
+- `download_images()` now saves images with their original extensions
 
 
 ## 1.0.20 (2018-11-07)

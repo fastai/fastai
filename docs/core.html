@@ -202,7 +202,7 @@ summary: "Basic helper functions for the fastai library"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">idx_dict</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">])</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -329,7 +329,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>, <code>chunk_size</code>=<code>1048576</code>, <code>timeout</code>=<code>4</code>)</p>
+<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L171" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>, <code>chunk_size</code>=<code>1048576</code>, <code>timeout</code>=<code>4</code>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code>.</p>
 
@@ -371,7 +371,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L163" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
+<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L193" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
 </blockquote>
 <p>Return <code>Path(path)/Path(fname)</code>, <code>path</code> defaults to current dir.</p>
 
@@ -392,7 +392,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L167" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
+<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L197" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
 </blockquote>
 <p>Join <code>path</code> to every file name in <code>fnames</code>.</p>
 
@@ -413,7 +413,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L172" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
+<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L202" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
 </blockquote>
 <p>Return <code>ndarray</code> of <code>str</code> of lines of text from <code>path</code>.</p>
 
@@ -434,7 +434,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L177" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<code>fname</code>:<code>PathOrStr</code>, <code>texts</code>:<code>StrList</code>)</p>
+<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L207" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<code>fname</code>:<code>PathOrStr</code>, <code>texts</code>:<code>StrList</code>)</p>
 </blockquote>
 <p>Save in <code>fname</code> the content of <code>texts</code>.</p>
 
@@ -461,7 +461,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L132" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>()</p>
+<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>(<code>data</code>:<code>Any</code>)</p>
 </blockquote>
 <p>All transformable dataset items use this type.</p>
 
@@ -508,7 +508,7 @@ summary: "Basic helper functions for the fastai library"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">camel2snake</span><span class="p">(</span><span class="s1">&#39;DeviceDataLoader&#39;</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
