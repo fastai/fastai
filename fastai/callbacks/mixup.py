@@ -41,9 +41,7 @@ class MixUpLoss(nn.Module):
         if len(target.size()) == 2:
             loss1, loss2 = self.crit(output,target[:,0].long()), self.crit(output,target[:,1].long())
             d = (loss1 * target[:,2] + loss2 * (1-target[:,2])).mean()
-        else:
-            d = self.crit(output, target)
-
+        else:  d = self.crit(output, target)
         if reduction == 'elementwise_mean': return d.mean()
-        elif reduction == 'sum': return d.sum()
+        elif reduction == 'sum':            return d.sum()
         return d
