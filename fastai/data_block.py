@@ -106,7 +106,8 @@ class ItemList():
 
     def split_by_idx(self, valid_idx:Collection[int])->'ItemLists':
         "Split the data according to the indexes in `valid_idx`."
-        train_idx = [i for i in range_of(self.items) if i not in valid_idx]
+        #train_idx = [i for i in range_of(self.items) if i not in valid_idx]
+        train_idx = np.setdiff1d(arange_of(self.items), valid_idx)
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
