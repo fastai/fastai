@@ -21,6 +21,8 @@ of that change.
 
 ### New:
 
+- `FloatList` to do regression
+
 ### Changed:
 
 ### Fixed:
@@ -32,6 +34,8 @@ of that change.
 ### New:
 
 ### Changed:
+
+- Big refactor of the data block API
 
 ### Fixed:
 
