@@ -129,13 +129,11 @@ def series2cat(df:DataFrame, *col_names):
     "Categorifies the columns `col_names` in `df`."
     for c in listify(col_names): df[c] = df[c].astype('category').cat.as_ordered()
 
-
 TfmList = Union[Callable, Collection[Callable]]
-
 
 class ItemBase():
     "All transformable dataset items use this type."
-    def __init__(self, data:Any): self.data=data
+    def __init__(self, data:Any): self.data=self.obj=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
     def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
