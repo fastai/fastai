@@ -255,7 +255,7 @@ class MultiCategoryList(CategoryListBase):
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
-    _item_cls=Category
+    _item_cls=FloatItem
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
@@ -267,7 +267,7 @@ class FloatList(ItemList):
 
     def get(self, i):
         o = super().get(i)
-        return tensor(o).log_() if self.log else tensor(o)
+        return self._item_cls(log(o) if self.log else o)
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"

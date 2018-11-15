@@ -226,4 +226,3 @@ class Category(ItemBase):
 class MultiCategory(ItemBase):
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
-

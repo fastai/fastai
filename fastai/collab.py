@@ -3,56 +3,21 @@ from .torch_core import *
 from .basic_train import *
 from .basic_data import *
 from .layers import *
+from .tabular.data import *
+from .tabular.transform import *
 
-__all__ = ['CollabFilteringDataset', 'EmbeddingDotBias', 'get_collab_learner']
+__all__ = ['EmbeddingDotBias', 'get_collab_learner']
 
-@dataclass
-class CollabFilteringDataset(Dataset):
-    "Base dataset for collaborative filtering."
-    user:Series
-    item:Series
-    ratings:np.ndarray
-    def __post_init__(self):
-        self.user_ids = np.array(self.user.cat.codes, dtype=np.int64)
-        self.item_ids = np.array(self.item.cat.codes, dtype=np.int64)
-        self.loss_func = F.mse_loss
+class CollabLine(TabularLine):
+    def __init__(self, cats, conts, classes, names):
+        super().__init__(cats, conts, classes, names)
+        self.data = [self.data[0][0]-1,self.data[0][1]-1]
 
-    def __len__(self)->int: return len(self.ratings)
-
-    def __getitem__(self, idx:int)->Tuple[Tuple[int,int],float]:
-        return (self.user_ids[idx],self.item_ids[idx]), self.ratings[idx]
-
-    @property
-    def c(self) -> int: return 1
-
-    @property
-    def n_user(self)->int: return len(self.user.cat.categories)
-
-    @property
-    def n_item(self)->int: return len(self.item.cat.categories)
-
-    @classmethod
-    def from_df(cls, rating_df:DataFrame, pct_val:float=0.2, user_name:Optional[str]=None, item_name:Optional[str]=None,
-                rating_name:Optional[str]=None) -> Tuple['ColabFilteringDataset','ColabFilteringDataset']:
-        "Split a given dataframe in a training and validation set."
-        if user_name is None:   user_name = rating_df.columns[0]
-        if item_name is None:   item_name = rating_df.columns[1]
-        if rating_name is None: rating_name = rating_df.columns[2]
-        user = rating_df[user_name]
-        item = rating_df[item_name]
-        ratings = np.array(rating_df[rating_name], dtype=np.float32)
-        idx = np.random.permutation(len(ratings))
-        if pct_val is None: return cls(user, item, ratings)
-        cut = int(pct_val * len(ratings))
-        return (cls(user[idx[cut:]], item[idx[cut:]], ratings[idx[cut:]]),
-                cls(user[idx[:cut]], item[idx[:cut]], ratings[idx[:cut]]))
-
-    @classmethod
-    def from_csv(cls, csv_name:str, **kwargs) -> Tuple['ColabFilteringDataset','ColabFilteringDataset']:
-        "Split a given table in a csv in a training and validation set."
-        df = pd.read_csv(csv_name)
-        return cls.from_df(df, **kwargs)
-
+class CollabList(TabularList):
+    _item_cls = CollabLine
+    
+    
+    
 class EmbeddingDotBias(nn.Module):
     "Base model for callaborative filtering."
     def __init__(self, n_factors:int, n_users:int, n_items:int, min_score:float=None, max_score:float=None):
@@ -69,13 +34,18 @@ class EmbeddingDotBias(nn.Module):
         return torch.sigmoid(res) * (self.max_score-self.min_score) + self.min_score
 
 def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user_name:Optional[str]=None,
-          item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None, metrics=None,
-          min_score:float=None, max_score:float=None, **kwargs) -> Learner:
+          item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None, 
+          metrics=None, min_score:float=None, max_score:float=None, **kwargs) -> Learner:
     "Create a Learner for collaborative filtering."
-    datasets = list(CollabFilteringDataset.from_df(ratings, pct_val, user_name, item_name, rating_name))
-    if test is not None:
-        datasets.append(CollabFilteringDataset.from_df(test, None, user_name, item_name, rating_name))
-    data = DataBunch.create(*datasets, **kwargs)
-    model = EmbeddingDotBias(n_factors, datasets[0].n_user, datasets[0].n_item, min_score, max_score)
+    user_name = ifnone(user_name,ratings.columns[0])
+    item_name = ifnone(item_name,ratings.columns[1])
+    rating_name = ifnone(rating_name,ratings.columns[2])
+    processor = TabularProcessor(procs=[Categorify])
+    src = (CollabList.from_df(ratings, cat_names=[user_name, item_name], cont_names=[], processor=processor)
+                     .random_split_by_pct()
+                     .label_from_df(col=rating_name))
+    if test is not None: src.add_test(CollabList.from_df(test, cat_names=[user_name, item_name], cont_names=[]))
+    data = src.databunch()
+    model = EmbeddingDotBias(n_factors, len(data.classes[user_name]), len(data.classes[item_name]), min_score, max_score)
     return Learner(data, model, metrics=metrics)
 

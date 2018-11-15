@@ -29,7 +29,8 @@ def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])-
 class TabularLine(ItemBase):
     def __init__(self, cats, conts, classes, names):
         self.cats,self.conts,self.classes,self.names = cats,conts,classes,names
-        self.data = [tensor(cats), tensor(conts)]
+        self.data = [tensor(cats) if len(cats) != 0 else tensor([0]), 
+                     tensor(conts) if len(conts) != 0 else tensor([0])]
 
     def __str__(self):
         res = ''
@@ -43,17 +44,18 @@ class TabularLine(ItemBase):
         "Show the data in `idxs` on a few `rows` from `ds`."
         from IPython.display import display, HTML
         x,y = ds[0]
-        items = [x.names]
+        items = [x.names + ['target']]
         for i in idxs[:rows]:
             x,y = ds[i]
             res = []
             for c, n in zip(x.cats, self.names[:len(x.cats)]):
                 res.append(str(x.classes[n][c-1]) if c != 0 else 'nan')
-            res += [f'{c:.4f}' for c in x.conts]
+            res += [f'{c:.4f}' for c in x.conts] + [str(y)]
             items.append(res)
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
 
 class TabularList(ItemList):
+    _item_cls=TabularLine
     def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  processor=None, procs=None, **kwargs):
         #dataframe is in xtra, items is just a range of index
@@ -70,7 +72,9 @@ class TabularList(ItemList):
         return super().new(items=items, cat_names=self.cat_names, cont_names=self.cont_names, **kwargs)
 
     def get(self, o):
-        return TabularLine(self.codes[o], self.conts[o], self.classes, self.col_names)
+        codes = [] if self.codes is None else self.codes[o]
+        conts = [] if self.conts is None else self.conts[o]
+        return self._item_cls(codes, conts, self.classes, self.col_names)
 
     def get_emb_szs(self, sz_dict): 
         "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
@@ -83,8 +87,12 @@ class TabularProcessor(PreProcessor):
     def process_one(self, item):
         df = pd.DataFrame([item,item])
         for proc in self.procs: proc(df, test=True)
-        codes = np.stack([c.cat.codes.values for n,c in df[self.cat_names].items()], 1).astype(np.int64) + 1
-        conts = np.stack([c.astype('float32').values for n,c in df[self.cont_names].items()], 1)
+        if self.cat_names is not None:
+            codes = np.stack([c.cat.codes.values for n,c in df[self.cat_names].items()], 1).astype(np.int64) + 1
+        else: codes = [[]]
+        if self.cont_names is not None:
+            conts = np.stack([c.astype('float32').values for n,c in df[self.cont_names].items()], 1)
+        else: conts = [[]]
         classes = None
         col_names = list(df[self.cat_names].columns.values) + list(df[self.cont_names].columns.values)
         return TabularLine(codes[0], conts[0], classes, col_names)
@@ -99,10 +107,16 @@ class TabularProcessor(PreProcessor):
                 ds.cat_names,ds.cont_names = proc.cat_names,proc.cont_names
                 self.procs[i] = proc
         self.cat_names,self.cont_names = ds.cat_names,ds.cont_names
-        ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
-        ds.conts = np.stack([c.astype('float32').values for n,c in ds.xtra[ds.cont_names].items()], 1)
-        ds.classes = {n:c.cat.categories.values for n,c in ds.xtra[ds.cat_names].items()}
-        ds.col_names = list(ds.xtra[ds.cat_names].columns.values) + list(ds.xtra[ds.cont_names].columns.values)
+        if len(ds.cat_names) != 0:
+            ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
+            ds.classes = {n:c.cat.categories.values for n,c in ds.xtra[ds.cat_names].items()}
+            cat_cols = list(ds.xtra[ds.cat_names].columns.values)
+        else: ds.codes,ds.classes,cat_cols = None,None,[]
+        if len(ds.cont_names) != 0:
+            ds.conts = np.stack([c.astype('float32').values for n,c in ds.xtra[ds.cont_names].items()], 1)
+            cont_cols = list(ds.xtra[ds.cont_names].columns.values)
+        else: ds.conts,cont_cols = None,[]
+        ds.col_names = cat_cols + cont_cols
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
