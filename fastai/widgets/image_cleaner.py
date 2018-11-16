@@ -7,7 +7,7 @@ from ..vision.image import open_image
 from ipywidgets import widgets, Layout
 from IPython.display import clear_output, HTML
 
-__all__ = ['DatasetFormatter', 'ImageDeleter', 'ImageRelabeler']
+__all__ = ['DatasetFormatter', 'ImageRelabeler']
 
 # Example use: ds, idxs = DatasetFormatter().from_toplosses(learn, ds_type=DatasetType.Valid)
 # ImageRelabeler(ds, idxs)
@@ -63,48 +63,6 @@ class ImageCleaner():
     @classmethod
     def make_vertical_box(cls, children, width='auto', height='300px', overflow_x="hidden"):
         return widgets.VBox(children, layout=Layout(width=width, height=height, overflow_x=overflow_x))
-
-class ImageDeleter(ImageCleaner):
-    "Flag images in `file_paths` for deletion and confirm to delete images, showing `batch_size` at a time."
-
-    def __init__(self, dataset, fns_idxs, batch_size:int=5):
-        super().__init__(dataset, fns_idxs, batch_size=batch_size)
-        self._all_images = [(img_fp[0], img_fp[1]) for img_fp in self._all_images]
-        # Override parent's _all_images so we remove label data from tuples. We don't use them in this class.
-        self.render()
-
-    def on_confirm(self, btn):
-        "Handler for Confirm button click. Deletes all flagged images."
-        for img_widget,delete_btn,fp in self._batch:
-            fp = delete_btn.file_path
-            if (delete_btn.flagged_for_delete == True): self.delete_image(fp)
-        # Clear current batch from all_imgs
-        self._all_images = self._all_images[self._batch_size:]
-        self.empty_batch()
-        self.render()
-
-    def delete_image(self, file_path): os.remove(file_path)
-    # TODO: move to .Trash dir
-
-    def on_delete(self, btn):
-        "Flags this image as delete or keep."
-        btn.button_style = "" if btn.flagged_for_delete else "danger"
-        btn.flagged_for_delete = not btn.flagged_for_delete
-
-    # TODO: refactor some of this out to parent
-    def render(self):
-        "Re-renders Jupyter cell for a batch of images."
-        clear_output()
-        if (len(self._all_images) == 0): return display('No images to show :)')
-        widgets_to_render = []
-        for img,fp in self._all_images[:self._batch_size]:
-            img_widget = self.make_img_widget(img)
-            delete_btn = self.make_button_widget('Delete', file_path=fp, handler=self.on_delete)
-            widgets_to_render.append(self.make_vertical_box([img_widget, delete_btn]))
-            self._batch.append((img_widget, delete_btn, fp))
-        display(self.make_horizontal_box(widgets_to_render))
-        display(self.make_button_widget('Confirm', handler=self.on_confirm, style="primary"))
-
 
 class ImageRelabeler(ImageCleaner):
     "Displays images with their current label and, if labeled incorrectly, allows user to move image to properly labeled folder."
