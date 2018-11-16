@@ -61,10 +61,7 @@ class ItemList():
     def new(self, items:Iterator, create_func:Callable=None, processor:PreProcessor=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
         processor = ifnone(processor, self.processor)
-        #old_bunch,old_processor = self._bunch,self._processor
-        res = self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
-        #res._bunch,res._processor = old_bunch,old_processor
-        return res
+        return self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
