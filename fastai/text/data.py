@@ -257,7 +257,7 @@ class Text(ItemBase):
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
-
+    
 class TokenizeProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
@@ -302,15 +302,19 @@ class TextList(ItemList):
 
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
-        self._bunch = TextLMDataBunch
+        self.__class__ = LMTextList
         return self.label_const(0, label_cls=LMLabel)
     
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None, **kwargs)->'TextList':
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None, 
+                    processor:PreProcessor=None, **kwargs)->'TextList':
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
-        self._preprocessor = [OpenFileProcessor, TokenizeProcessor, NumericalizeProcessor]
-        return super().from_folder(path=path, extensions=extensions, **kwargs)
+        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
 
+class LMTextList(TextList):
+    _bunch = TextLMDataBunch
+    
 def _join_texts(texts:Collection[str], mark_fields:bool=True):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
