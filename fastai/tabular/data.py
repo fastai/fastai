@@ -38,9 +38,9 @@ class TabularLine(ItemBase):
     def __str__(self):
         res = ''
         for c, n in zip(self.cats, self.names[:len(self.cats)]):
-            res += f"{n} {(self.classes[n][c-1] if c != 0 else 'nan')}\n"
+            res += f"{n} {(self.classes[n][c-1] if c != 0 else 'nan')}; "
         for c,n in zip(self.conts, self.names[len(self.cats):]):
-            res += f'{n} {c:.4f}\n'
+            res += f'{n} {c:.4f}; '
         return res
 
     def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, **kwargs)->None:

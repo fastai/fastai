@@ -33,14 +33,13 @@ class EmbeddingDotBias(nn.Module):
 
 def get_collab_learner(ratings:DataFrame, n_factors:int, pct_val:float=0.2, user_name:Optional[str]=None,
           item_name:Optional[str]=None, rating_name:Optional[str]=None, test:DataFrame=None,
-          metrics=None, min_score:float=None, max_score:float=None, **kwargs) -> Learner:
+          metrics=None, min_score:float=None, max_score:float=None, seed=None, **kwargs) -> Learner:
     "Create a Learner for collaborative filtering."
     user_name = ifnone(user_name,ratings.columns[0])
     item_name = ifnone(item_name,ratings.columns[1])
     rating_name = ifnone(rating_name,ratings.columns[2])
-    processor = TabularProcessor(procs=[Categorify])
-    src = (CollabList.from_df(ratings, cat_names=[user_name, item_name], processor=processor)
-                     .random_split_by_pct()
+    src = (CollabList.from_df(ratings, cat_names=[user_name, item_name], procs=Categorify)
+                     .random_split_by_pct(seed=seed)
                      .label_from_df(cols=rating_name))
     if test is not None: src.add_test(CollabList.from_df(test, cat_names=[user_name, item_name], cont_names=[]))
     data = src.databunch()

@@ -34,7 +34,9 @@ class ItemList():
 
     def __post_init__(self): pass
     def __len__(self)->int: return len(self.items) or 1
-    def __repr__(self)->str: return f'{self.__class__.__name__} ({len(self)} items)\n{self.items}\nPath: {self.path}'
+    def __repr__(self)->str:
+        items = [self[i] for i in range(min(5,len(self)))]
+        return f'{self.__class__.__name__} ({len(self)} items)\n{items}...\nPath: {self.path}'
     def get(self, i)->Any:
         item = self.items[i]
         return self.create_func(item) if self.create_func else item
