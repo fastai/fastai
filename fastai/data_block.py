@@ -12,7 +12,7 @@ def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
 def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-    return [o for o in Path(c).glob('**/*' if recurse else '*')
+    return [o for o in sorted(Path(c).glob('**/*' if recurse else '*'))
             if not o.name.startswith('.') and not o.is_dir()
             and (extensions is None or (o.suffix.lower() in extensions))]
 
