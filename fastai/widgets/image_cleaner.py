@@ -9,10 +9,6 @@ from IPython.display import clear_output, HTML
 
 __all__ = ['DatasetFormatter', 'ImageDeleter', 'ImageRelabeler']
 
-# TODO:
-# FINISHED button (be done if I dont want to continue)
-# Grid 5x5
-
 # Example use: ds, idxs = DatasetFormatter().from_toplosses(learn, ds_type=DatasetType.Valid)
 # ImageRelabeler(ds, idxs)
 class DatasetFormatter():
@@ -25,16 +21,16 @@ class DatasetFormatter():
         idxs = torch.topk(val_losses, n_imgs)[1]
         return cls.padded_ds(dl.dataset, **kwargs), idxs
 
-    def padded_ds(ds_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
-        "For a Dataset `ds_input`, resize each image in `ds_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
-        return ds_input.transform([crop_pad()], size=size, do_crop=do_crop, padding_mode=padding_mode)
+    def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
+        "For a LabelList `ll_input`, resize each image in `ll_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
+        return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
 class ImageCleaner():
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
         self._labels = dataset.classes
-        self._all_images = [(open_image(dataset.x.items[i])._repr_jpeg_(), dataset.x.items[i], str(dataset.y[i]))
+        self._all_images = [(dataset.x[i]._repr_jpeg_(), dataset.x.items[i], self._labels[dataset.y[i].data])
                             for i in fns_idxs if dataset.x.items[i].is_file()]
 
     def empty_batch(self): self._batch[:] = []
@@ -45,9 +41,9 @@ class ImageCleaner():
         return widgets.Image(value=img, format=format, layout=Layout(width=width, height=height))
 
     @classmethod
-    def make_button_widget(cls, label, file_path=None, handler=None, style=None):
+    def make_button_widget(cls, label, file_path=None, handler=None, style=None, layout=Layout(width='auto')):
         "Returns a Button widget with specified handler"
-        btn = widgets.Button(description=label)
+        btn = widgets.Button(description=label, layout=layout)
         if handler is not None: btn.on_click(handler)
         if style is not None: btn.button_style = style
         btn.file_path = file_path
@@ -141,13 +137,9 @@ class ImageRelabeler(ImageCleaner):
         widgets_to_render = []
         for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
             img_widget = self.make_img_widget(img)
-            dropdown = self.make_dropdown_widget(description='Class:', options=self._labels, value=human_readable_label, file_path=fp, handler=self.relabel)
-            widgets_to_render.append(self.make_vertical_box([img_widget, dropdown], height='300px'))
+            dropdown = self.make_dropdown_widget(description='', options=self._labels, value=human_readable_label, file_path=fp, handler=self.relabel, layout=Layout(width='auto'))
+            delete_btn = self.make_button_widget('Delete', file_path=fp, handler=self.on_delete)
+            widgets_to_render.append(self.make_vertical_box([img_widget, dropdown, delete_btn], height='300px'))
             self._batch.append((img_widget, dropdown, fp, human_readable_label))
         display(self.make_horizontal_box(widgets_to_render))
         display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
-
-# Initial implementation by:
-# Zach Caceres @zachcaceres (https://github.com/zcaceres)
-# Jason Patnick (https://github.com/pattyhendrix)
-# Francisco Ingham @inghamfran (https://github.com/lesscomfortable)
