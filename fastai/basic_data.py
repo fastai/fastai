@@ -46,8 +46,7 @@ class DeviceDataLoader():
         "Process and returns items from `DataLoader`."
         for b in self.dl:
             y = b[1][0] if is_listy(b[1]) else b[1]
-            if not self.skip_size1 or y.size(0) != 1:
-                yield self.proc_batch(b)
+            if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)
 
     def one_batch(self)->Collection[Tensor]:
         "Get one batch from the data loader."

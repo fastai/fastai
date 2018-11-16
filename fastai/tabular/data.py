@@ -29,11 +29,12 @@ def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])-
         html_code += "\n  </tr>\n"
     return html_code + "</table>\n"
 
+#def _fix_empty_tensor(o): = [tensor(cats) if len(cats) != 0 else tensor(0),
+
 class TabularLine(ItemBase):
     def __init__(self, cats, conts, classes, names):
         self.cats,self.conts,self.classes,self.names = cats,conts,classes,names
-        self.data = [tensor(cats) if len(cats) != 0 else tensor([0]),
-                     tensor(conts) if len(conts) != 0 else tensor([0])]
+        self.data = [tensor(cats), tensor(conts)]
 
     def __str__(self):
         res = ''
@@ -113,7 +114,8 @@ class TabularProcessor(PreProcessor):
         self.cat_names,self.cont_names = ds.cat_names,ds.cont_names
         if len(ds.cat_names) != 0:
             ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
-            ds.classes = {n:c.cat.categories.values for n,c in ds.xtra[ds.cat_names].items()}
+            ds.classes = OrderedDict({n:c.cat.categories.values
+                                      for n,c in ds.xtra[ds.cat_names].items()})
             cat_cols = list(ds.xtra[ds.cat_names].columns.values)
         else: ds.codes,ds.classes,cat_cols = None,None,[]
         if len(ds.cont_names) != 0:
