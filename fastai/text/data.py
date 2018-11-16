@@ -259,7 +259,7 @@ class LMLabel(CategoryList):
     def predict(self, res): return res
     
 class TokenizeProcessor(PreProcessor):
-    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
+    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
     def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
@@ -315,11 +315,11 @@ class TextList(ItemList):
 class LMTextList(TextList):
     _bunch = TextLMDataBunch
     
-def _join_texts(texts:Collection[str], mark_fields:bool=True):
+def _join_texts(texts:Collection[str], mark_fields:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
+    text_col = f'{BOS} {FLD} {1} ' + df[0] if mark_fields else  f'{BOS} ' + df[0]
     for i in range(1,len(df.columns)):
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
     return text_col.values

@@ -19,6 +19,7 @@ of that change.
 ### New:
 
 - `FloatList` to do regression
+- Use of real neural nets in `collab`
 
 ### Changed:
 
@@ -27,10 +28,16 @@ of that change.
 - Collab is refactored with the data block API behind the scene
 - `get_collab_learner` and `get_tabular_learner` become `collab_learner` and `tabular_learner` for name harmonization accross applications
 - `get_embedding` becomes `embedding`
+- `ImageDeleter` and `ImageRelabeler` are merged into `ImageCleaner`
 
 ### Fixed:
 
 - `show_batch` works with `rows=1` 
+- Pretrained language models are saved in the correct folder (.fastai/models/)
+- Splitting too slow in the data block API
+- Mixup losses work with predict and TTA (thanks to bharadwaj6)
+- Wrong size for the added test set in the data block API (thanks to wdhorton)
+- Fix to the QRNN (thanks to PiotrCzapla)
 
 ## 1.0.24 (2018-11-13)
 
@@ -38,22 +45,24 @@ of that change.
 
 ### Changed:
 
-- Big refactor of the data block API
-
 ### Fixed:
-
 
 
 ## 1.0.23 (2018-11-13)
 
 ### New:
 
+- `Learner.predict` works accross applications
+- `Learner.show_batch` works accross applications
+
 ### Changed:
 
 - `tools/build-docs` and `tools/update-nbs` scripts combined into one script.
+- Big refactor of the data block API
 
 ### Fixed:
 
+- `download_images` works with different kind of suffixes (thanks to fpingham)
 
 
 ## 1.0.22 (2018-11-09)
@@ -70,6 +79,7 @@ of that change.
 ### Fixed:
 
 - `learn.predict` fixed
+- wrong dimension in dice (thanks to noklam)
 
 ## 1.0.21 (2018-11-08)
 
