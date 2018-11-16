@@ -30,7 +30,7 @@ of that change.
 
 ### Fixed:
 
-
+- `show_batch` works with `rows=1` 
 
 ## 1.0.24 (2018-11-13)
 

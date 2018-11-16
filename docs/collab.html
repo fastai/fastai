@@ -147,7 +147,7 @@ summary: "Application to collaborative filtering"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We'll first turn the <code>userId</code> and <code>movieId</code> columns in category codes, so that we can replace them with their codes when it's time to feed them to an <code>Embedding</code> layer. This step would be even more important if our csv had names of users, or names of items in it. To do it, we wimply have to call a <code>CollabDataBunch</code> factory method.</p>
+<p>We'll first turn the <code>userId</code> and <code>movieId</code> columns in category codes, so that we can replace them with their codes when it's time to feed them to an <code>Embedding</code> layer. This step would be even more important if our csv had names of users, or names of items in it. To do it, we wimply have to call a <a href="/collab.html#CollabDataBunch"><code>CollabDataBunch</code></a> factory method.</p>
 
 </div>
 </div>
@@ -177,7 +177,7 @@ summary: "Application to collaborative filtering"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">get_collab_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_factors</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">min_score</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_score</span><span class="o">=</span><span class="mf">5.</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">collab_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_factors</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">5.</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -212,11 +212,11 @@ summary: "Application to collaborative filtering"
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Total time: 00:03
 epoch  train_loss  valid_loss
-1      2.348904    1.862016    (00:00)
-2      1.085193    0.677519    (00:00)
-3      0.751162    0.665404    (00:00)
-4      0.644396    0.659000    (00:00)
-5      0.599772    0.655284    (00:00)
+1      2.354234    1.927426    (00:00)
+2      1.089076    0.677427    (00:00)
+3      0.729364    0.650618    (00:00)
+4      0.626125    0.638089    (00:00)
+5      0.561493    0.637897    (00:00)
 
 </pre>
 </div>
@@ -235,7 +235,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CollabDataBunch"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L41" class="source_link">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="CollabDataBunch"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L40" class="source_link">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -262,7 +262,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>ratings</code>:<code>DataFrame</code>, <code>pct_val</code>:<code>float</code>=<code>0.2</code>, <code>user_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>item_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>rating_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>test</code>:<code>DataFrame</code>=<code>None</code>, <code>seed</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="CollabDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L41" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>ratings</code>:<code>DataFrame</code>, <code>pct_val</code>:<code>float</code>=<code>0.2</code>, <code>user_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>item_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>rating_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>test</code>:<code>DataFrame</code>=<code>None</code>, <code>seed</code>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 
 </div>
@@ -295,7 +295,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDotBias"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L17" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDotBias</code>(<code>n_factors</code>:<code>int</code>, <code>n_users</code>:<code>int</code>, <code>n_items</code>:<code>int</code>, <code>min_score</code>:<code>float</code>=<code>None</code>, <code>max_score</code>:<code>float</code>=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDotBias"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L17" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDotBias</code>(<code>n_factors</code>:<code>int</code>, <code>n_users</code>:<code>int</code>, <code>n_items</code>:<code>int</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
@@ -308,7 +308,7 @@ epoch  train_loss  valid_loss
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Creates a simple model with <code>Embedding</code> weights and biases for <code>n_users</code> and <code>n_items</code>, with <code>n_factors</code> latent factors. Takes the dot product of the embeddings and adds the bias, then feed the result to a sigmoid rescaled to go from <code>min_score</code> to <code>max_score</code>.</p>
+<p>Creates a simple model with <code>Embedding</code> weights and biases for <code>n_users</code> and <code>n_items</code>, with <code>n_factors</code> latent factors. Takes the dot product of the embeddings and adds the bias, then if <code>y_range</code> is specified, feed the result to a sigmoid rescaled to go from <code>y_range[0]</code> to <code>y_range[1]</code>.</p>
 
 </div>
 </div>
@@ -322,7 +322,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_collab_learner"><code>get_collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L54" class="source_link">[source]</a></h4><blockquote><p><code>get_collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>min_score</code>:<code>float</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>max_score</code>:<code>float</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 
 </div>
@@ -335,7 +335,67 @@ epoch  train_loss  valid_loss
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Creates a <a href="/basic_train.html#Learner"><code>Learner</code></a> object built from the data in <code>ratings</code>, <code>pct_val</code>, <code>user_name</code>, <code>item_name</code>, <code>rating_name</code> to <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a>. Optionally, creates another <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a> for <code>test</code>. <code>kwargs</code> are fed to <a href="/basic_data.html#DataBunch.create"><code>DataBunch.create</code></a> with these datasets. The model is given by <a href="/collab.html#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code>, <code>min_score</code> and <code>max_score</code> (the numbers of users and items will be inferred from the data).</p>
+<p>Creates a <a href="/basic_train.html#Learner"><code>Learner</code></a> object built from the data in <code>ratings</code>, <code>pct_val</code>, <code>user_name</code>, <code>item_name</code>, <code>rating_name</code> to <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a>. Optionally, creates another <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a> for <code>test</code>. <code>kwargs</code> are fed to <a href="/basic_data.html#DataBunch.create"><code>DataBunch.create</code></a> with these datasets. The model is given by <a href="/collab.html#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code>, <code>y_range</code> (the numbers of users and items will be inferred from the data).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Links-with-the-Data-Block-API">Links with the Data Block API<a class="anchor-link" href="#Links-with-the-Data-Block-API">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="CollabLine"><code>class</code> <code>CollabLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L10" class="source_link">[source]</a></h3><blockquote><p><code>CollabLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Subclass of <a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a> for collaborative filtering.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="CollabList"><code>class</code> <code>CollabList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L15" class="source_link">[source]</a></h3><blockquote><p><code>CollabList</code>(<code>items</code>:<code>Iterator</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) → <code>TabularList</code> :: <a href="/tabular.data.html#TabularList"><code>TabularList</code></a></p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Subclass of <a href="/tabular.data.html#TabularList"><code>TabularList</code></a> for collaborative filtering.</p>
 
 </div>
 </div>

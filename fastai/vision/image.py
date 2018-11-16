@@ -240,7 +240,7 @@ class Image(ItemBase):
 
     def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
-        for i, ax in zip(idxs[:rows*rows], axs.flatten()):
+        for i, ax in zip(idxs[:rows*rows], (axs.flatten() if rows > 1 else [axs])):
             x,y = ds[i]
             x.show(ax=ax, y=y, **kwargs)
         plt.tight_layout()

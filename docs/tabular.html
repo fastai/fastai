@@ -423,7 +423,7 @@ summary: "Application to tabular/structured data"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">get_tabular_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">emb_szs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;native-country&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">tabular_learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">emb_szs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;native-country&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
