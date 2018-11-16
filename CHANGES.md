@@ -14,7 +14,19 @@ of that change.
 
 
 
-## 1.0.25.dev0 (Work In Progress)
+
+
+## 1.0.26.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.25 (2018-11-16)
 
 ### New:
 
