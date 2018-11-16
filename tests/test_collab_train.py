@@ -11,7 +11,7 @@ def learn():
     ratings.head()
     series2cat(ratings, 'userId','movieId')
     data = CollabDataBunch.from_df(ratings)
-    learn = get_collab_learner(data, n_factors=50, pct_val=0.2, min_score=0., max_score=5.)
+    learn = collab_learner(data, n_factors=50, pct_val=0.2, y_range=(0.,5.))
     learn.fit_one_cycle(3, 5e-3)
     return learn
 

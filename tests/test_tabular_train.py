@@ -18,7 +18,7 @@ def learn():
             .label_from_df(cols=dep_var)
             .add_test(test)
             .databunch(num_workers=1))
-    learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
+    learn = tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(2, 1e-2)
     return learn
 
@@ -70,7 +70,7 @@ def test_empty_cont():
     data = (TabularList.from_df(df, path=path, cat_names=cat_names, procs=procs)
             .split_by_idx(list(range(990,1000)))
             .label_from_df(cols=dep_var).databunch(num_workers=1))
-    learn = get_tabular_learner(data, layers=[10], metrics=accuracy)
+    learn = tabular_learner(data, layers=[10], metrics=accuracy)
     learn.fit_one_cycle(1, 1e-1)
     assert learn.validate()[1] > 0.5
 

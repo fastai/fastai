@@ -7,7 +7,7 @@ from ..basic_train import *
 from .models import *
 from pandas.api.types import is_numeric_dtype, is_categorical_dtype
 
-__all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor', 'get_tabular_learner']
+__all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor', 'tabular_learner']
 
 OptTabTfms = Optional[Collection[TabularProc]]
 
@@ -58,36 +58,10 @@ class TabularLine(ItemBase):
             items.append(res)
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
 
-class TabularList(ItemList):
-    _item_cls=TabularLine
-    def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
-                 processor=None, procs=None, **kwargs):
-        #dataframe is in xtra, items is just a range of index
-        if cat_names is None:  cat_names = []
-        if cont_names is None: cont_names = []
-        if processor is None: processor=TabularProcessor(procs)
-        super().__init__(range_of(items), processor=processor, **kwargs)
-        self.cat_names,self.cont_names = cat_names,cont_names
-
-    @classmethod
-    def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, **kwargs)->'ItemList':
-        "Get the list of inputs in the `col` of `path/csv_name`."
-        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, xtra=df, **kwargs)
-
-    def new(self, items:Iterator, **kwargs)->'TabularList':
-        return super().new(items=items, cat_names=self.cat_names, cont_names=self.cont_names, **kwargs)
-
-    def get(self, o):
-        codes = [] if self.codes is None else self.codes[o]
-        conts = [] if self.conts is None else self.conts[o]
-        return self._item_cls(codes, conts, self.classes, self.col_names)
-
-    def get_emb_szs(self, sz_dict):
-        "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
-        return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
-
 class TabularProcessor(PreProcessor):
-    def __init__(self, procs=None): self.procs = listify(procs)
+    def __init__(self, ds:ItemBase=None, procs=None): 
+        procs = ifnone(procs, ds.procs if ds is not None else None)
+        self.procs = listify(procs)
 
     def process_one(self, item):
         df = pd.DataFrame([item,item])
@@ -123,6 +97,34 @@ class TabularProcessor(PreProcessor):
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
+        
+class TabularList(ItemList):
+    _item_cls=TabularLine
+    _processor=TabularProcessor
+    def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
+                 procs=None, **kwargs)->'TabularList':
+        #dataframe is in xtra, items is just a range of index
+        if cat_names is None:  cat_names = []
+        if cont_names is None: cont_names = []
+        super().__init__(range_of(items), **kwargs)
+        self.cat_names,self.cont_names,self.procs = cat_names,cont_names,procs
+
+    @classmethod
+    def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, procs=None, **kwargs)->'ItemList':
+        "Get the list of inputs in the `col` of `path/csv_name`."
+        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df, **kwargs)
+
+    def new(self, items:Iterator, **kwargs)->'TabularList':
+        return super().new(items=items, cat_names=self.cat_names, cont_names=self.cont_names, procs=self.procs, **kwargs)
+
+    def get(self, o):
+        codes = [] if self.codes is None else self.codes[o]
+        conts = [] if self.conts is None else self.conts[o]
+        return self._item_cls(codes, conts, self.classes, self.col_names)
+
+    def get_emb_szs(self, sz_dict):
+        "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
+        return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
@@ -138,7 +140,7 @@ class TabularDataBunch(DataBunch):
                            .label_from_df(cols=dep_var, classes=None)
                            .databunch())
 
-def get_tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
+def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))

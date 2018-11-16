@@ -117,9 +117,9 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
         learn.freeze()
     return learn
 
-def text_classifier_learner(data:DataBunch, bptt:int=70, max_len:int=70*20, emb_sz:int=400, nh:int=1150, nl:int=3,
-               lin_ftrs:Collection[int]=None, ps:Collection[float]=None, pad_token:int=1,
-               drop_mult:float=1., qrnn:bool=False, **kwargs) -> 'TextClassifierLearner':
+def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
+               drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None, 
+               ps:Collection[float]=None, **kwargs) -> 'TextClassifierLearner':
     "Create a RNN classifier."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]

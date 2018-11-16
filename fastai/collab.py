@@ -5,7 +5,7 @@ from .basic_data import *
 from .layers import *
 from .tabular import *
 
-__all__ = ['EmbeddingDotBias', 'get_collab_learner', 'CollabDataBunch', 'CollabLine', 'CollabList']
+__all__ = ['EmbeddingDotBias', 'collab_learner', 'CollabDataBunch', 'CollabLine', 'CollabList']
 
 class CollabLine(TabularLine):
     def __init__(self, cats, conts, classes, names):
@@ -16,18 +16,18 @@ class CollabList(TabularList): _item_cls = CollabLine
 
 class EmbeddingDotBias(nn.Module):
     "Base model for callaborative filtering."
-    def __init__(self, n_factors:int, n_users:int, n_items:int, min_score:float=None, max_score:float=None):
+    def __init__(self, n_factors:int, n_users:int, n_items:int, y_range:Tuple[float,float]=None):
         super().__init__()
-        self.min_score,self.max_score = min_score,max_score
-        (self.u_weight, self.i_weight, self.u_bias, self.i_bias) = [get_embedding(*o) for o in [
+        self.y_range = y_range
+        (self.u_weight, self.i_weight, self.u_bias, self.i_bias) = [embedding(*o) for o in [
             (n_users, n_factors), (n_items, n_factors), (n_users,1), (n_items,1)
         ]]
 
     def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
         dot = self.u_weight(users)* self.i_weight(items)
         res = dot.sum(1) + self.u_bias(users).squeeze() + self.i_bias(items).squeeze()
-        if self.min_score is None: return res
-        return torch.sigmoid(res) * (self.max_score-self.min_score) + self.min_score
+        if self.y_range is None: return res
+        return torch.sigmoid(res) * (self.y_range[1]-self.y_range[0]) + self.y_range[0]
 
 class EmbeddingNN(TabularModel):
     def __init__(self, emb_szs:ListSizes, **kwargs):
@@ -36,7 +36,6 @@ class EmbeddingNN(TabularModel):
     def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
         x_cat = torch.stack([users,items], dim=1)
         return super().forward(x_cat, None)
-
 
 class CollabDataBunch(DataBunch):
     @classmethod
@@ -51,12 +50,12 @@ class CollabDataBunch(DataBunch):
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
         return src.databunch(**kwargs)
 
-def get_collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None, min_score:float=None,
-                       emb_szs:Dict[str,int]=None, max_score:float=None, **kwargs)->Learner:
+def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None, y_range:Tuple[float,float]=None,
+                       emb_szs:Dict[str,int]=None, **kwargs)->Learner:
     "Create a Learner for collaborative filtering."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     u,m = data.classes.values()
-    if use_nn: model = EmbeddingNN(emb_szs=emb_szs, y_range=[min_score,max_score], **kwargs)
-    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), min_score, max_score)
+    if use_nn: model = EmbeddingNN(emb_szs=emb_szs, y_range=y_range, **kwargs)
+    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range)
     return Learner(data, model, metrics=metrics)
 

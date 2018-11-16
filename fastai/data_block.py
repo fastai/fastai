@@ -17,8 +17,9 @@ def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)-
             and (extensions is None or (o.suffix.lower() in extensions))]
 
 class PreProcessor():
-    def process_one(self, item):      return item
-    def process(self, ds:Collection): ds.items = [self.process_one(item) for item in ds.items]
+    def __init__(self, ds:Collection):  self.ref_ds = ds
+    def process_one(self, item:Any):    return item
+    def process(self, ds:Collection):   ds.items = [self.process_one(item) for item in ds.items]
 
 class ItemList():
     _bunch = DataBunch
@@ -43,13 +44,13 @@ class ItemList():
 
     def process(self, processor=None):
         if processor is not None: self.processor = processor
-        if not is_listy(self.processor): self.processor = [self.processor]
+        self.processor = listify(self.processor)
         for p in self.processor: p.process(self)
         return self
 
     def process_one(self, item, processor=None):
         if processor is not None: self.processor = processor
-        if not is_listy(self.processor): self.processor = [self.processor]
+        self.processor = listify(self.processor)
         for p in self.processor: item = p.process_one(item)
         return item
 
@@ -60,7 +61,10 @@ class ItemList():
     def new(self, items:Iterator, create_func:Callable=None, processor:PreProcessor=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
         processor = ifnone(processor, self.processor)
-        return self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
+        old_bunch,old_processor = self._bunch,self._processor
+        res = self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
+        res._bunch,res._processor = old_bunch,old_processor
+        return res
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -195,7 +199,7 @@ class ItemList():
         return self.label_from_func(_inner, **kwargs)
 
 class CategoryProcessor(PreProcessor):
-    def __init__(self, classes:Collection=None): self.create_classes(classes)
+    def __init__(self, ds:ItemList): self.create_classes(ds.classes)
 
     def create_classes(self, classes):
         self.classes = classes
@@ -223,9 +227,9 @@ class CategoryListBase(ItemList):
 
 class CategoryList(CategoryListBase):
     _item_cls=Category
-    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, **kwargs):
-        super().__init__(items, processor=processor, classes=classes, **kwargs)
-        if processor is None: self.processor = CategoryProcessor(classes=classes)
+    _processor=CategoryProcessor
+    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
+        super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.cross_entropy
 
     def get(self, i):
@@ -246,10 +250,10 @@ class MultiCategoryProcessor(CategoryProcessor):
 
 class MultiCategoryList(CategoryListBase):
     _item_cls=MultiCategory
-    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, sep:str=None, **kwargs):
+    _processor=MultiCategoryProcessor
+    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
         if sep is not None: items = array(csv.reader(items, delimiter=sep))
-        super().__init__(items, processor=processor, classes=classes, **kwargs)
-        if processor is None: self.processor = MultiCategoryProcessor(classes=classes)
+        super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
 
     def get(self, i):
@@ -319,8 +323,9 @@ class ItemLists():
 
 class LabelLists(ItemLists):
     def get_processors(self):
-        xp = ifnone(self.train.x.processor, self.train.x._processor())
-        yp = ifnone(self.train.y.processor, self.train.y._processor())
+        procs_x,procs_y = listify(self.train.x._processor),listify(self.train.y._processor)
+        xp = ifnone(self.train.x.processor, [p(ds=self.train.x) for p in procs_x])
+        yp = ifnone(self.train.y.processor, [p(ds=self.train.y) for p in procs_y])
         return xp,yp
 
     def process(self):

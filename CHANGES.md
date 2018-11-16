@@ -14,9 +14,6 @@ of that change.
 
 
 
-
-
-
 ## 1.0.25.dev0 (Work In Progress)
 
 ### New:
@@ -28,6 +25,8 @@ of that change.
 - Remove `TextFilesList` as you can now use `TextList` instead
 - Consistent use of `cols` / `col` in the data block API depending on if you can pass multiple columns or not
 - Collab is refactored with the data block API behind the scene
+- `get_collab_learner` and `get_tabular_learner` become `collab_learner` and `tabular_learner` for name harmonization accross applications
+- `get_embedding` becomes `embedding`
 
 ### Fixed:
 

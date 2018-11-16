@@ -298,9 +298,9 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
         return classes
 
 class ObjectCategoryList(MultiCategoryList):
-    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, **kwargs):
+    _processor = ObjectCategoryProcessor
+    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
-        if processor is None: self.processor = ObjectCategoryProcessor(classes=classes)
 
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)

@@ -258,48 +258,8 @@ class Text(ItemBase):
 class LMLabel(CategoryList):
     def predict(self, res): return res
 
-class TextList(ItemList):
-    _bunch = TextClasDataBunch
-
-    def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
-        super().__init__(items, **kwargs)
-        self.processor = ifnone(self.processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
-        self.vocab = vocab
-
-    def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
-        #TODO: make that prettier
-        old_bunch = self._bunch
-        new = super().new(items=items, vocab=self.vocab, **kwargs)
-        new._bunch = old_bunch
-        return new
-
-    def get(self, i):
-        o = super().get(i)
-        return Text(o, self.vocab.textify(o))
-
-    def label_for_lm(self, **kwargs):
-        "A special labelling method for language models."
-        self._bunch = TextLMDataBunch
-        return self.label_const(0, label_cls=LMLabel)
-    
-    @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor:PreProcessor=None,
-                    vocab:Vocab=None, **kwargs)->'TextList':
-        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
-        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
-        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
-
-def _join_texts(texts:Collection[str], mark_fields:bool=True):
-    if not isinstance(texts, np.ndarray): texts = np.array(texts)
-    if is1d(texts): texts = texts[:,None]
-    df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
-    for i in range(1,len(df.columns)):
-        text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
-    return text_col.values
-
 class TokenizeProcessor(PreProcessor):
-    def __init__(self, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
+    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
     def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
@@ -311,7 +271,8 @@ class TokenizeProcessor(PreProcessor):
         ds.items = tokens
 
 class NumericalizeProcessor(PreProcessor):
-    def __init__(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+        vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
 
     def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
@@ -323,3 +284,38 @@ class NumericalizeProcessor(PreProcessor):
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
+    
+class TextList(ItemList):
+    _bunch = TextClasDataBunch
+    _processor = [TokenizeProcessor, NumericalizeProcessor]
+
+    def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
+        super().__init__(items, **kwargs)
+        self.vocab = vocab
+
+    def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
+        return super().new(items=items, vocab=self.vocab, **kwargs)
+
+    def get(self, i):
+        o = super().get(i)
+        return Text(o, self.vocab.textify(o))
+
+    def label_for_lm(self, **kwargs):
+        "A special labelling method for language models."
+        self._bunch = TextLMDataBunch
+        return self.label_const(0, label_cls=LMLabel)
+    
+    @classmethod
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None, **kwargs)->'TextList':
+        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
+        self._preprocessor = [OpenFileProcessor, TokenizeProcessor, NumericalizeProcessor]
+        return super().from_folder(path=path, extensions=extensions, **kwargs)
+
+def _join_texts(texts:Collection[str], mark_fields:bool=True):
+    if not isinstance(texts, np.ndarray): texts = np.array(texts)
+    if is1d(texts): texts = texts[:,None]
+    df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
+    text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
+    for i in range(1,len(df.columns)):
+        text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
+    return text_col.values
