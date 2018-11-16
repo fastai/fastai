@@ -20,7 +20,12 @@ of that change.
 
 ### New:
 
+- Maj token and new `deal_caps` rule
+
 ### Changed:
+
+- `Tokenizer` as `pre_rules` and `post_rules` now (for before and after tokenization)
+- `mark_fields` is now default to `False`
 
 ### Fixed:
 
