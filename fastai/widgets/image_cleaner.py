@@ -7,10 +7,8 @@ from ..vision.image import open_image
 from ipywidgets import widgets, Layout
 from IPython.display import clear_output, HTML
 
-__all__ = ['DatasetFormatter', 'ImageRelabeler']
+__all__ = ['DatasetFormatter', 'ImageCleaner']
 
-# Example use: ds, idxs = DatasetFormatter().from_toplosses(learn, ds_type=DatasetType.Valid)
-# ImageRelabeler(ds, idxs)
 class DatasetFormatter():
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, ds_type:DatasetType=DatasetType.Valid, **kwargs):
@@ -26,19 +24,19 @@ class DatasetFormatter():
         return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
 class ImageCleaner():
+    "Displays images with their current label. If image is junk data or labeled incorrectly, allows user to delete image or move image to properly labeled folder."
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
         self._labels = dataset.classes
         self._all_images = [(dataset.x[i]._repr_jpeg_(), dataset.x.items[i], self._labels[dataset.y[i].data])
                             for i in fns_idxs if dataset.x.items[i].is_file()]
-
-    def empty_batch(self): self._batch[:] = []
+        self.render()
 
     @classmethod
-    def make_img_widget(cls, img, height='250px', width='300px', format='jpg'):
+    def make_img_widget(cls, img, layout=Layout(), format='jpg'):
         "Returns an image widget for specified file name."
-        return widgets.Image(value=img, format=format, layout=Layout(width=width, height=height))
+        return widgets.Image(value=img, format=format, layout=layout)
 
     @classmethod
     def make_button_widget(cls, label, file_path=None, handler=None, style=None, layout=Layout(width='auto')):
@@ -51,24 +49,18 @@ class ImageCleaner():
         return btn
 
     @classmethod
-    def make_dropdown_widget(cls, description='Description', options=['Label 1', 'Label 2'], value='Label 1', file_path=None, layout=Layout(), handler=None):
+    def make_dropdown_widget(cls, description='Description', options=['Label 1', 'Label 2'], value='Label 1',
+                            file_path=None, layout=Layout(), handler=None):
         dd = widgets.Dropdown(description=description, options=options, value=value, layout=layout)
         if file_path is not None: dd.file_path = file_path
         if handler is not None: dd.observe(handler, names=['value'])
         return dd
 
     @classmethod
-    def make_horizontal_box(cls, children): return widgets.HBox(children)
+    def make_horizontal_box(cls, children, layout=Layout()): return widgets.HBox(children, layout=layout)
 
     @classmethod
-    def make_vertical_box(cls, children, width='auto', height='300px', overflow_x="hidden"):
-        return widgets.VBox(children, layout=Layout(width=width, height=height, overflow_x=overflow_x))
-
-class ImageRelabeler(ImageCleaner):
-    "Displays images with their current label and, if labeled incorrectly, allows user to move image to properly labeled folder."
-    def __init__(self, dataset, fns_idxs, batch_size:int=5):
-        super().__init__(dataset, fns_idxs, batch_size=batch_size)
-        self.render()
+    def make_vertical_box(cls, children, layout=Layout()): return widgets.VBox(children, layout=layout)
 
     def relabel(self, change):
         "Relabel images by moving from parent dir with old label `class_old` to parent dir with new label `class_new`"
@@ -79,25 +71,46 @@ class ImageRelabeler(ImageCleaner):
         new_filepath = Path(f'{parent}/{class_new}/{fp.name}')
         if new_filepath.exists():
             new_filepath = Path(f'{parent}/{class_new}/{fp.stem}-moved{fp.suffix}')
-        Path(file_path).replace(new_filepath)
+        fp.replace(new_filepath)
         change.owner.file_path = new_filepath
 
     def next_batch(self, btn):
+        "Handler for 'Next Batch' button click. Deletes all flagged images and renders next batch."
+        for img_widget, delete_btn, fp, in self._batch:
+            fp = delete_btn.file_path
+            if (delete_btn.flagged_for_delete == True): self.delete_image(fp)
         self._all_images = self._all_images[self._batch_size:]
         self.empty_batch()
         self.render()
 
-    # TODO: refactor some of this out to parent
+    def on_delete(self, btn):
+        "Flags this image as delete or keep."
+        btn.button_style = "" if btn.flagged_for_delete else "danger"
+        btn.flagged_for_delete = not btn.flagged_for_delete
+
+    def empty_batch(self): self._batch[:] = []
+
+    def delete_image(self, file_path): os.remove(file_path)
+    # TODO: move to .Trash dir
+
+    def empty(self): return len(self._all_images) == 0
+
+    def get_widgets(self):
+        "Create and format widget set"
+        widgets = []
+        for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
+            img_widget = self.make_img_widget(img, layout=Layout(height='250px', width='300px'))
+            dropdown = self.make_dropdown_widget(description='', options=self._labels, value=human_readable_label,
+                                                 file_path=fp, handler=self.relabel, layout=Layout(width='auto'))
+            delete_btn = self.make_button_widget('Delete', file_path=fp, handler=self.on_delete)
+            widgets.append(self.make_vertical_box([img_widget, dropdown, delete_btn],
+                                                  layout=Layout(width='auto', height='300px', overflow_x="hidden")))
+            self._batch.append((img_widget, delete_btn, fp))
+        return widgets
+
     def render(self):
         "Re-render Jupyter cell for batch of images"
         clear_output()
-        if (len(self._all_images) == 0): return display('No images to show :)')
-        widgets_to_render = []
-        for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
-            img_widget = self.make_img_widget(img)
-            dropdown = self.make_dropdown_widget(description='', options=self._labels, value=human_readable_label, file_path=fp, handler=self.relabel, layout=Layout(width='auto'))
-            delete_btn = self.make_button_widget('Delete', file_path=fp, handler=self.on_delete)
-            widgets_to_render.append(self.make_vertical_box([img_widget, dropdown, delete_btn], height='300px'))
-            self._batch.append((img_widget, dropdown, fp, human_readable_label))
-        display(self.make_horizontal_box(widgets_to_render))
+        if (self.empty()): return display('No images to show :)')
+        display(self.make_horizontal_box(self.get_widgets()))
         display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
