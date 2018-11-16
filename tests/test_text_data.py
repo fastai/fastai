@@ -51,3 +51,16 @@ def df_test_collate(data):
     x,y = next(iter(data.train_dl))
     assert x.size(0) == 8
     assert x[0,-1] == 1
+    
+def test_load_and_save_test():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    df = text_df(['neg','pos'])
+    data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols="text")
+    data.save()
+    data1 = TextClasDataBunch.load(path)
+    assert np.all(data.classes == data1.classes)
+    assert np.all(data.train_ds.y.items == data1.train_ds.y.items)
+    str1 = np.array([str(o) for o in data.train_ds.y])
+    str2 = np.array([str(o) for o in data1.train_ds.y])
+    assert np.all(str1 == str2)
+    shutil.rmtree(path/'tmp')
