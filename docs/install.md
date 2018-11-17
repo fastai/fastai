@@ -31,19 +31,17 @@ Below you will find the groups of dependencies for you to choose from. `fastai.b
 ```
 fastai.base:
 
-"fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" "pandas" "bottleneck" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml"
+  "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" "pandas" "bottleneck" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml"
 
 fastai.text:
 
-"spacy==2.0.16" "regex" "thinc==6.12.0" "cymem==2.0.2"
+  "spacy==2.0.16" "regex" "thinc==6.12.0" "cymem==2.0.2"
 
 fastai.text.qrnn:
 
-"cupy"
-
-"spacy==2.0.16" "regex" "thinc==6.12.0" "cymem==2.0.2"
+  "cupy"
 
 fastai.vision:
 
-"torchvision-nightly"
+  "torchvision-nightly"
 ```
