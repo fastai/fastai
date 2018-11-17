@@ -19,7 +19,7 @@ def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)-
 class PreProcessor():
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
     def process_one(self, item:Any):         return item
-    def process(self, ds:Collection):        ds.items = [self.process_one(item) for item in ds.items]
+    def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
 class ItemList():
     _bunch = DataBunch
@@ -231,6 +231,7 @@ class CategoryList(CategoryListBase):
 
     def get(self, i):
         o = self.items[i]
+        if o is None: return None
         return self._item_cls(o, self.classes[o])
 
     def predict(self, res):
@@ -255,6 +256,7 @@ class MultiCategoryList(CategoryListBase):
 
     def get(self, i):
         o = self.items[i]
+        if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
@@ -327,7 +329,7 @@ class LabelLists(ItemLists):
 
     def process(self):
         xp,yp = self.get_processors()
-        for ds in self.lists: ds.process(xp, yp)
+        for i,ds in enumerate(self.lists): ds.process(xp, yp, filter_missing_y=i==0)
         return self
 
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
@@ -387,15 +389,14 @@ class LabelList(Dataset):
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
-    def process(self, xp=None, yp=None):
+    def process(self, xp=None, yp=None, filter_missing_y:bool=False):
         "Launch the preprocessing on `xp` and `yp`."
-        self.x.process(xp)
         self.y.process(yp)
+        if filter_missing_y and (getattr(self.x, 'filter_missing_y', None)):
+            filt = array([o is None for o in self.y])
+            if filt.sum()>0: self.x,self.y = self.x[~filt],self.y[~filt]
+        self.x.process(xp)
         return self
-
-    def filter_missing_y(self):
-        filt = array([o is None for o in self.y])
-        if filt.sum()>0: self.x,self.y = self.x[~filt],self.y[~filt]
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
@@ -408,3 +409,4 @@ class LabelList(Dataset):
         self.tfms,self.tfmargs = tfms,kwargs
         if tfm_y is not None: self.tfm_y=tfm_y
         return self
+

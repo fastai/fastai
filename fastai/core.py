@@ -221,7 +221,7 @@ def array(a, *args, **kwargs)->np.ndarray:
 
 class Category(ItemBase):
     def __init__(self,data,obj): self.data,self.obj = data,obj
-    def __int__(self): return self.data
+    def __int__(self): return int(self.data)
     def __str__(self): return str(self.obj)
 
 class MultiCategory(ItemBase):
