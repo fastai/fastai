@@ -86,3 +86,12 @@ def model_sizes(m:nn.Module, size:tuple=(64,64), full:bool=True) -> Tuple[Sizes,
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
     return model_sizes(m, full=False)[-1][1]
+
+def get_dict(model):
+    layers_sizes = model_sizes(model)[0]
+    layers_names = list(map(get_layer_name, model))
+#     summary = namedtuple(list(zip(layers_names, layers_sizes)))
+    return list(zip(layers_names, layers_sizes))
+
+def get_layer_name(layer):
+    return str(layer.__class__).split(".")[-1].split("'")[0]
