@@ -24,7 +24,6 @@ def test_from_csv_and_from_df():
     df = text_df(['neg','pos'])
     data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols=["text"])
     assert len(data1.classes) == 2
-    df_test_collate(data1)
     df = text_df(['neg','pos','neg pos'])
     data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
                                   label_cols=0, text_cols=["text"], label_delim=' ')
