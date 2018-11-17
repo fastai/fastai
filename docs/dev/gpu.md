@@ -111,7 +111,7 @@ As soon as you start using `cuda`, your GPU loses about 0.5GB RAM per process. F
 import torch
 torch.ones((1, 1)).cuda()
 ```
-This GPU memory is not accessible for your program's needs and it's not re-usable between processes. If you run two processes, each executing code on `cuda`, each will consume 0.5GB GPU RAM from the get going.
+This GPU memory is not accessible to your program's needs and it's not re-usable between processes. If you run two processes, each executing code on `cuda`, each will consume 0.5GB GPU RAM from the get going.
 
 This fixed chunk of memory is used by `cuDNN` kernels (~300MB) and `pytorch` (the rest) for its internal needs.
 
@@ -124,7 +124,7 @@ import torch
 torch.cuda.empty_cache()
 ```
 
-If you have more than one process using the same GPU, the cached memory from one process is not accessible to the other. The above code executing by the first process will solve this issue and make the freed RAM available to the other process.
+If you have more than one process using the same GPU, the cached memory from one process is not accessible to the other. The above code executed by the first process will solve this issue and make the freed GPU RAM available to the other process.
 
 
 ### Reusing GPU RAM
