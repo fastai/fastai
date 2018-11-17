@@ -68,7 +68,7 @@ function wait_till_pip_ver_is_available() {
         COUNTER=$$[$$COUNTER +5]
 	    sleep 5
     done
-	sleep 5 # wait a bit longer if we hit a different cache on install
+    sleep 5 # wait a bit longer if we hit a different cache on install
     echo -e "\rwaited: $$COUNTER secs    "
     echo -e "fastai-$$ver is now available on pypi"
 }
