@@ -20,9 +20,11 @@ pip install "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" ...
 this will work with conda too:
 
 ```
-conda install --no-deps fastai
-conda install "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" ...
+conda install --no-deps -c fastai fastai
+conda install -c fastai "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" ...
 ```
+
+Don't forget to add `-c fastai` for the conda installs, e.g. it's needed for `torchvision-nightly`.
 
 Below you will find the groups of dependencies for you to choose from. `fastai.base` is mandatory, the rest are optional:
 
