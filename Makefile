@@ -68,6 +68,7 @@ function wait_till_pip_ver_is_available() {
         COUNTER=$$[$$COUNTER +5]
 	    sleep 5
     done
+	sleep 5 # wait a bit longer if we hit a different cache on install
     echo -e "\rwaited: $$COUNTER secs    "
     echo -e "fastai-$$ver is now available on pypi"
 }
@@ -292,7 +293,7 @@ test-install: ## test conda/pip package by installing that version them
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
 
 	@echo "\n\n*** waiting for $(version) conda version to become visible"
-	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v >/dev/null 2>&1`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; print "\n$$p-$$v is now available on conda\n"' $(version)
+	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v >/dev/null 2>&1`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; sleep 5; print "\n$$p-$$v is now available on conda\n"' $(version)
 
 	conda install -y -c fastai fastai==$(version)
 	conda uninstall -y fastai
