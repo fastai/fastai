@@ -38,7 +38,7 @@ def accuracy_balanced(input:Tensor, targs:Tensor, clw:list=None)->Rank0Tensor:
     "Balanced accuracy score between `input` and `targs` w.r.t. class label weights `clw`."
     n = targs.shape[0]
     if not clw:
-        clw = [1 for _ in range(n)]
+        clw = [1 for _ in range(input.shape[-1])]
     clw = Tensor(clw).view(1,-1).transpose(1, 0)
     input = input.argmax(dim=-1).view(n,-1)
     targs = targs.view(n,-1)
