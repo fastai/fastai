@@ -816,8 +816,6 @@ Remember that master should always have `.dev0` in its version number, e.g. `0.1
 
 Tagging targets:
 
-XXX: `make commit-tag`
-
 * List tags
 
     all tags:
@@ -827,7 +825,7 @@ XXX: `make commit-tag`
 
     tags matching pattern:
     ```
-    git tag -l "v1.8.5*"
+    git tag -l "1.8.5*"
     ```
 
     by date:
@@ -843,27 +841,27 @@ XXX: `make commit-tag`
 
 * Creating tags
 
-    To tag current checkout with tag "v1.0.5" with current date:
+    To tag current checkout with tag "1.0.5" with current date:
 
     ```
     git tag -a test-1.0.5 -m "test-1.0.5"
     git push --tags origin master
     ```
 
-    To tag commit 9fceb02a with tag "v1.0.5" with current date:
+    To tag commit 9fceb02a with tag "1.0.5" with current date:
 
     ```
     git checkout 9fceb02a
-    git tag -a v1.0.5 -m "v1.0.5"
+    git tag -a v1.0.5 -m "1.0.5"
     git push --tags origin master
     git checkout master
     ```
 
-    To tag commit 9fceb02a with tag "v1.0.5" with the date of that commit:
+    To tag commit 9fceb02a with tag "1.0.5" with the date of that commit:
 
     ```
     git checkout 9fceb02a
-    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "v1.0.5"
+    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "1.0.5"
     git push --tags origin master
     git checkout master
     ```
@@ -871,9 +869,15 @@ XXX: `make commit-tag`
     or the same without needing to `git checkout` and with typing the variables only once:
 
     ```
-    tag="v0.1.3" commit="9fceb02a" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
+    tag="0.1.3" commit="9fceb02a" bash -c 'GIT_COMMITTER_DATE="$(git show --format=%aD $commit)" git tag -a $tag -m $tag $commit'
     git push --tags origin master
     ```
+
+    To find out the hash of the last commit in a branch, to use in back-tagging:
+    ```
+    git log -n 1 origin/release-1.0.25
+    ```
+
 
 * Delete remote tag:
 
