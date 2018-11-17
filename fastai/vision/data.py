@@ -15,7 +15,7 @@ __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch'
            'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
-image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
+image_extensions = set(k[1:] for k,v in mimetypes.types_map.items() if v.startswith('image/'))
 
 def get_image_files(c:PathOrStr, check_ext:bool=True, recurse=False)->FilePathList:
     "Return list of files in `c` that are images. `check_ext` will filter to `image_extensions`."
@@ -267,9 +267,10 @@ class ImageItemList(ItemList):
         return res
 
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
+    def from_folder(cls, path:PathOrStr='.', create_func:Callable=None,
                     extensions:Collection[str]=image_extensions, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
+        create_func = ifnone(create_func, lambda o:open_image(os.path.join(path, o)))
         return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
 
     @classmethod
