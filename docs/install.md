@@ -9,7 +9,7 @@ Please refer to [README](https://github.com/fastai/fastai/blob/master/README.md#
 
 ## Custom Dependencies
 
-If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disc space on your remote instance, here how you can install only the dependencies that you need.
+If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disk space on your remote instance, here is how you can install only the dependencies that you need.
 
 First, install `fastai` without its dependencies, and then install the dependencies that you need directly:
 
