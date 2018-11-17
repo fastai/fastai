@@ -37,6 +37,12 @@ fastai.text:
 
 "spacy==2.0.16" "regex" "thinc==6.12.0" "cymem==2.0.2"
 
+fastai.text.qrnn:
+
+"cupy"
+
+"spacy==2.0.16" "regex" "thinc==6.12.0" "cymem==2.0.2"
+
 fastai.vision:
 
 "torchvision-nightly"
