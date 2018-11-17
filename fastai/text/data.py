@@ -9,7 +9,7 @@ __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', '
            'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
-text_extensions = ['.txt']
+text_extensions = {'txt'}
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
