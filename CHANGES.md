@@ -10,25 +10,16 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-
-
-
-
-
-
 ## 1.0.26.dev0 (Work In Progress)
 
 ### New:
 
-- Maj token and new `deal_caps` rule
+- xxmaj token and new `deal_caps` rule
 
 ### Changed:
 
 - `Tokenizer` as `pre_rules` and `post_rules` now (for before and after tokenization)
 - `mark_fields` is now default to `False`
-
-### Fixed:
-
 
 
 ## 1.0.25 (2018-11-16)
@@ -58,12 +49,7 @@ of that change.
 
 ## 1.0.24 (2018-11-13)
 
-### New:
-
-### Changed:
-
-### Fixed:
-
+- No changes
 
 ## 1.0.23 (2018-11-13)
 
