@@ -92,9 +92,9 @@ def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
 
-def _get_fns(ds, path):
+def _get_fns(ds, path): #TODO: fix me when from_folder is finished
     "List of all file names relative to `path`."
-    return [str(fn.relative_to(path)) for fn in ds.x]
+    return [str(fn.relative_to(path)) for fn in ds.x.items]
 
 class ImageDataBunch(DataBunch):
     @classmethod
@@ -169,13 +169,13 @@ class ImageDataBunch(DataBunch):
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
-        fns = _get_fns(self.train_ds)
-        y = list(self.train_ds.y)
-        fns += _get_fns(self.valid_ds)
-        y += list(self.valid_ds.y)
-        if hasattr(self,'test_dl') and data.test_dl:
-            fns += _get_fns(self.test_ds)
-            y += list(self.test_ds.y)
+        fns = _get_fns(self.train_ds, self.path)
+        y = [str(o) for o in self.train_ds.y]
+        fns += _get_fns(self.valid_ds, self.path)
+        y += [str(o) for o in self.valid_ds.y]
+        if self.test_ds is not None:
+            fns += _get_fns(self.test_ds, self.path)
+            y += [str(o) for o in self.test_ds.y]
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
 
