@@ -262,7 +262,8 @@ class TokenizeProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
-    def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
+    def process_one(self, item: str):  return self.tokenizer._process_all_1([item])[0]
+    def process_batch(self, items: Sequence[str]): return self.tokenizer._process_all_1(items)
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields)
         tokens = []
@@ -275,7 +276,25 @@ class NumericalizeProcessor(PreProcessor):
         vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
 
-    def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
+    def process_one(self,item: Sequence[str]): return np.array(self.vocab.numericalize(item), dtype=np.int64)
+
+    def process_batch(self, tokens: Sequence[Sequence[str]]) -> Tuple[torch.LongTensor, torch.LongTensor]:
+        numericalized = [self.vocab.numericalize(tok) for tok in tokens]
+
+        max_len = max(map(len, numericalized))
+        pad_per_sequence = [max_len - len(seq) for seq in numericalized]
+
+        padded_numericalized = maybe_cuda_alloc(torch.LongTensor([
+            seq + [self.vocab.stoi[PAD]] * num_pads
+            for seq, num_pads in zip(numericalized, pad_per_sequence)
+        ]))
+        padding_mask = maybe_cuda_alloc(torch.tensor([
+            [1.] * len(seq) + [0.] * num_pads
+            for seq, num_pads in zip(numericalized, pad_per_sequence)
+        ]))
+
+        return padded_numericalized, padding_mask
+
     def process(self, ds):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab

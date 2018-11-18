@@ -225,6 +225,11 @@ def trange_of(x): return torch.arange(len(x))
 
 def to_np(x): return x.data.cpu().numpy()
 
+
+def maybe_cuda_alloc(tensor: torch.Tensor) -> torch.Tensor:
+    """Helper to allocate the tensor on the GPU if available, else on the CPU."""
+    return tensor.cuda() if torch.cuda.device_count() >= 1 else tensor
+
 # monkey patching to allow matplotlib to plot tensors
 def tensor__array__(self, dtype=None):
     res = to_np(self)
