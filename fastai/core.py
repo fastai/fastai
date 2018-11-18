@@ -268,21 +268,21 @@ class DirEntryEx(Path):
     def __new__(cls, *args, **kwargs): return object.__new__(cls)
     def __init__(self, d): self._name,self.path = d.name,d.path
 
-    def __getattribute__(self, k):
+    def __getattr__(self, k):
         # Can't remove Path.name, but need isinstance(Path) to work for PIL
         if k=='name': return getattr(self, '_name')
-        return super().__getattribute__(k)
-    def __reduce__(self): return object.__reduce__(self)
+        raise AttributeError(k)
 
-    def __str__(self): return self.path
-    def __fspath__(self): return self.path
+    def __reduce__(self): return object.__reduce__(self)
     def resolve(self): return self.path
+    __repr__=__str__=__fspath__=resolve
 
     # You can add more stuff from pathlib.Path as needed
     @property
     def suffix(self): return os.path.splitext(self.path)[1]
     @property
     def stem(self): return os.path.splitext(os.path.split(self.path)[1])[0]
-# So we can pickle it
-DirEntryEx.__slots__=None
+    @property
+    def splitall(self): return self.path.split(os.path.sep)
+DirEntryEx.__slots__=None # So we can pickle it
 
