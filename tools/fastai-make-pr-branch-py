@@ -4,8 +4,10 @@ This program will checkout a forked version of the original repository, sync it 
 """
 import argparse
 import sys
-from os.path import basename
-from subprocess import call, PIPE
+from os.path import basename, exists
+import shlex
+from textwrap import dedent
+from subprocess import call, check_output, PIPE, SubprocessError
 
 
 ME = basename(sys.argv[0])
@@ -14,7 +16,9 @@ ORIG_USER_NAME = 'fastai'
 
 def main():
     args = parse_args()
-    check_curl_is_available()
+    fork_if_needed(args.url, args.user_name, args.repo_name)
+    clone_if_needed(args.url)
+
 
 
 def parse_args():
@@ -41,16 +45,79 @@ def parse_args():
     )
 
     args = parser.parse_args()
+
     args.path = f'{args.repo_name}-{args.new_branch_name}'
+    args.prefix = 'git@github.com:' if args.auth == 'ssh' else 'https://github.com/'
+    args.url = f'{args.prefix}{args.user_name}/{args.repo_name}.git'
+
     return args
 
 
 def check_curl_is_available():
+    "Check if curl is available and terminate the script if it isn't."
     try:
         call(['curl'], stdout=PIPE, stderr=PIPE)
     except FileNotFoundError:
         print(f"{ME} requires 'curl' but it's not installed. Aborting.")
         sys.exit(1)
+
+
+def fork_if_needed(url, user, repo):
+    "Fork the repo if it hasn't been forked yet."
+    print('\n\n*** Checking if we need to fork')
+    if success(f'git ls-remote {url} >/dev/null 2>&1'):
+        print(f'{url} is already forked')
+    else:
+        print(f"{url} doesn't exist - need to fork")
+        check_curl_is_available()
+        run(f"curl -u {user} https://api.github.com/repos/fastai/{repo}/forks -d ''")
+
+
+def clone_if_needed(url):
+    clone_is_needed = False
+    if exists('.git'):
+        print('detected current dir to be a git repository')
+        run('git status')
+
+
+def run(cmd, exit_on_fail=True):
+    print(f'running: {cmd}')
+    try:
+        out = check_output(shlex.split(cmd), stderr=PIPE)
+        return out, True
+    except (FileNotFoundError, SubprocessError):
+        print(f'command execution failed: {cmd}')
+        if exit_on_fail:
+            sys.exit(1)
+        return None, False
+
+
+def success(cmd):
+    _, ok = run(cmd, exit_on_fail=False)
+    return ok
+
+
+def output(cmd):
+    out, _ = run(cmd, exit_on_fail=False)
+    return out
+
+
+def master_sync(args):
+    run('git fetch upstream')
+    run('git checkout master')
+    # XXX: this will fail if the user was committing directly to their forked `master` branch is
+    ok = success('git merge --no-edit upstream/master')
+    if not ok:
+        user, repo = args.user_name, args.repo_name
+        run('git merge --abort')
+        print(dedent(f'''
+            Error: {user}/{repo}/master can't be merged with {ORIG_USER_NAME}/{repo}/master.
+            You must merge manually, or reset {user}/{repo}/master.
+            See:  https://docs-dev.fast.ai/git.html#how-to-reset-your-forked-master-branch
+            Aborting."
+        '''), file=sys.stderr)
+        sys.exit(1)
+    run('git push')
 
 
 if __name__ == '__main__':
