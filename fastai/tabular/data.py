@@ -69,7 +69,7 @@ class TabularProcessor(PreProcessor):
         if len(self.cat_names) != 0:
             codes = np.stack([c.cat.codes.values for n,c in df[self.cat_names].items()], 1).astype(np.int64) + 1
         else: codes = [[]]
-        if len(self.cont_names) != 0 is not None:
+        if len(self.cont_names) != 0:
             conts = np.stack([c.astype('float32').values for n,c in df[self.cont_names].items()], 1)
         else: conts = [[]]
         classes = None
