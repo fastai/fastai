@@ -430,6 +430,7 @@ class LabelList(Dataset):
         if tfm_y is not None:
             self.tfm_y=tfm_y
             self.tfms_y=tfms
+            self.tfmargs_y = kwargs
         return self
 
     def transform_labels(self, tfms:TfmList=None, **kwargs):
