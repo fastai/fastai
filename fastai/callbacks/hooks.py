@@ -87,11 +87,51 @@ def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
     return model_sizes(m, full=False)[-1][1]
 
-def get_dict(model):
-    layers_sizes = model_sizes(model)[0]
-    layers_names = list(map(get_layer_name, model))
-#     summary = namedtuple(list(zip(layers_names, layers_sizes)))
-    return list(zip(layers_names, layers_sizes))
+def total_params(module):
+    params = 0
+    if hasattr(module, "weight") and hasattr(module.weight, "size"):
+        params += module.weight.numel()
+    if hasattr(module, "bias") and hasattr(module.bias, "size"):
+        params += module.bias.numel()
+    return params
+
+def hook_params(modules: Collection[nn.Module]) -> Hooks:
+    return Hooks(modules, lambda m, i, o: total_params(m))
+
+def params_size(m: nn.Module,
+                size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Hooks]:
+    "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
+    hooks_outputs = hook_outputs(flatten_model(m))
+    hooks_params = hook_params(flatten_model(m))
+    ch_in = in_channels(m)
+    x = next(m.parameters()).new(1, ch_in, *size)
+    x = m.eval()(x)
+    hooks = zip(hooks_outputs, hooks_params)
+    res = [(o[0].stored.shape, o[1].stored) for o in hooks]
+    output_size, params = map(list, zip(*res))
+    return (output_size, params, hooks)
 
 def get_layer_name(layer):
     return str(layer.__class__).split(".")[-1].split("'")[0]
+
+def get_dict(model):
+    layers_sizes, layers_params, _ = params_size(model)
+    layers_names = list(map(get_layer_name, flatten_model(model)))
+    layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])
+    return list(map(layer_info, layers_names, layers_sizes, layers_params))
+
+def model_summary(layers_info: list):
+    n = 100
+    header = ["Layer (type)", "Output Shape", "Param #"]
+    print("=" * n)
+    print(f"{header[0]:<25}  {header[1]:<20} {header[2]:<10}")
+    print("=" * n)
+    total_params = 0
+    for layer, size, params in layers_info:
+        params = int(params)
+        total_params += params
+        params = str(params)
+        size = str(list(size))
+        print(f"{layer:<25} {size:<20} {params:<20}")
+        print("_" * n)
+    print("Total params: ", total_params)
