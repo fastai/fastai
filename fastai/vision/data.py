@@ -268,51 +268,47 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
     files = get_image_files(path)
-    if max_workers<2: res = [verify_image(file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+    if max_workers<2: res = [verify_image(path/file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
                              interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+        futures = [ex.submit(verify_image, path/file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
                              interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageItemList(ItemList):
     _bunch = ImageDataBunch
-
     def __post_init__(self):
         super().__post_init__()
         self.sizes={}
-        self.create_func = ifnone(self.create_func, open_image)
+
+    def open(self, fn): return open_image(fn)
 
     def get(self, i):
-        res = super().get(i)
+        fn = super().get(i)
+        res = self.open(self.path/fn)
         self.sizes[i] = res.size
         return res
 
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', create_func:Callable=None,
-                    extensions:Collection[str]=None, **kwargs)->ItemList:
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
-        create_func = ifnone(create_func, open_image)
         extensions = ifnone(extensions, image_extensions)
-        #create_func = ifnone(create_func, lambda o:open_image(os.path.join(path, o)))
-        return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
+        return super().from_folder(path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, cols:IntsOrStrs=0,
-                 folder:PathOrStr='.', suffix:str='')->'ItemList':
-        """Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end.
-        `create_func` is used to open the images."""
+    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='')->'ItemList':
+        "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
-        res = super().from_df(df, path=path, create_func=create_func, cols=cols)
+        res = super().from_df(df, path=path, cols=cols)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
         res.items = np.char.add(f'{res.path}/', res.items)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=open_image, cols:IntsOrStrs=0, header:str='infer',
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer',
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, create_func=create_func, cols=cols, folder=folder, suffix=suffix)
+        return cls.from_df(df, path=path, cols=cols, folder=folder, suffix=suffix)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
@@ -322,44 +318,50 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
         classes = ['background'] + list(classes)
         return classes
 
+def _get_size(xs,i):
+    size = xs.sizes.get(i,None)
+    if size is None:
+        # Image hasn't been accessed yet, so we don't know its size
+        _ = xs[i]
+        size =xs.sizes[i]
+    return size
+
 class ObjectCategoryList(MultiCategoryList):
     _processor = ObjectCategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
-        super().__init__(items, **kwargs)
-
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
-
+    
+    def reconstruct(self, t, x):
+        return self[0].reconstruct(*t, x, classes=self.classes)
+    
 class ObjectItemList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = ObjectCategoryList
+    _label_cls = ObjectCategoryList
 
 class SegmentationLabelList(ImageItemList):
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
-        self.classes,self.loss_func,self.create_func = classes,CrossEntropyFlat(),open_mask
+        self.classes,self.loss_func = classes,CrossEntropyFlat()
         self.c = len(self.classes)
 
     def new(self, items, classes=None, **kwargs):
         return self.__class__(items, ifnone(classes, self.classes), **kwargs)
 
+    def open(self, fn): return open_mask(fn)
+
 class SegmentationItemList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = SegmentationLabelList
+    _label_cls = SegmentationLabelList
 
 class PointsItemList(ItemList):
+    
     def __post_init__(self):
         super().__post_init__()
-        self.c = len(self.items[0].view(-1))
+        self.c = len(self.items[0].reshape(-1))
         self.loss_func = MSELossFlat()
 
     def get(self, i):
         o = super().get(i)
-        return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
+        return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
 
 class ImageToImageList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = ImageItemList
+    _label_cls = ImageItemList
+

@@ -115,8 +115,8 @@ def test_deterministic_transforms():
     check_tfms(img_test([3,4]), pads, [[4,5], [[4,5],[4,6]], [[4,5],[6,5]]])
 
 def test_crop_without_size():
-    path = untar_data(URLs.MNIST_TINY)
-    files = get_image_files(path/'train'/'3')
-    img = open_image(files[0])
+    path = untar_data(URLs.MNIST_TINY)/'train'/'3'
+    files = get_image_files(path)
+    img = open_image(path/files[0])
     tfms = get_transforms()
     img = img.apply_tfms(tfms[0])
