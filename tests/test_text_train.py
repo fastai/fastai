@@ -1,7 +1,6 @@
 import pytest
 from fastai import *
 from fastai.text import *
-from fastai.text.inference import LanguageModelPredictor
 
 pytestmark = pytest.mark.integration
 

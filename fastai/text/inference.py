@@ -11,6 +11,9 @@ from fastai.text.learner import RNNLearner
 from fastai.text.models import SequentialRNN
 
 
+__all__ = ['LanguageModelPredictor']
+
+
 class LanguageModelPredictor:
     """Wrapper on a fastai language model and additional artifacts, useful for sentence probability inference."""
     def __init__(self, preprocessors: Sequence[PreProcessor], model: SequentialRNN):
