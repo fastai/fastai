@@ -332,6 +332,14 @@ class ItemLists():
         if self.test: self.test.transform(tfms[1], **kwargs)
         return self
 
+    def transform_labels(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+        if not tfms: tfms=(None,None)
+        self.train.transform_labels(tfms[0], **kwargs)
+        self.valid.transform_labels(tfms[1], **kwargs)
+        if self.test: self.test.transform_labels(tfms[1], **kwargs)
+        return self
+
+
 class LabelLists(ItemLists):
     def get_processors(self):
         procs_x,procs_y = listify(self.train.x._processor),listify(self.train.y._processor)
@@ -396,8 +404,8 @@ class LabelList(Dataset):
             else:                 x,y = self.item   ,0
             if self.tfms:
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
-                if self.tfm_y and self.item is None:
-                    y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
+            if self.tfm_y and self.item is None:
+                y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
@@ -419,6 +427,12 @@ class LabelList(Dataset):
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
         "Set the `tfms` and `` tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs
-        if tfm_y is not None: self.tfm_y=tfm_y
+        if tfm_y is not None:  self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
+        return self
+
+    def transform_labels(self, tfms:TfmList=None, **kwargs):
+        self.tfm_y=True
+        if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
+        else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
 

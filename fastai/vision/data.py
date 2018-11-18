@@ -10,9 +10,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import PIL
 
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
-           'ImageItemList', 'normalize', 'normalize_funcs', 
+           'ImageItemList', 'normalize', 'normalize_funcs',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
-           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor',
+           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor', 'ImageToImageList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -78,10 +78,10 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     if do_y: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
     mean,std = tensor(mean),tensor(std)
-    return (partial(_normalize_batch, mean=mean, std=std),
+    return (partial(_normalize_batch, mean=mean, std=std, do_y=do_y),
             partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
@@ -92,9 +92,9 @@ def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
 
-def _get_fns(ds, path):
+def _get_fns(ds, path): #TODO: fix me when from_folder is finished
     "List of all file names relative to `path`."
-    return [str(fn.relative_to(path)) for fn in ds.x]
+    return [str(fn.relative_to(path)) for fn in ds.x.items]
 
 class ImageDataBunch(DataBunch):
     @classmethod
@@ -158,24 +158,24 @@ class ImageDataBunch(DataBunch):
         x = self.valid_dl.one_batch()[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
-    def normalize(self, stats:Collection[Tensor]=None)->None:
+    def normalize(self, stats:Collection[Tensor]=None, do_y:bool=None)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
         if stats is None: self.stats = self.batch_stats()
         else:             self.stats = stats
-        self.norm,self.denorm = normalize_funcs(*self.stats)
+        self.norm,self.denorm = normalize_funcs(*self.stats, do_y=do_y)
         self.add_tfm(self.norm)
         return self
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
-        fns = _get_fns(self.train_ds)
-        y = list(self.train_ds.y)
-        fns += _get_fns(self.valid_ds)
-        y += list(self.valid_ds.y)
-        if hasattr(self,'test_dl') and data.test_dl:
-            fns += _get_fns(self.test_ds)
-            y += list(self.test_ds.y)
+        fns = _get_fns(self.train_ds, self.path)
+        y = [str(o) for o in self.train_ds.y]
+        fns += _get_fns(self.valid_ds, self.path)
+        y += [str(o) for o in self.valid_ds.y]
+        if self.test_ds is not None:
+            fns += _get_fns(self.test_ds, self.path)
+            y += [str(o) for o in self.test_ds.y]
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
 
@@ -339,3 +339,7 @@ class PointsItemList(ItemList):
         o = super().get(i)
         return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
 
+class ImageToImageList(ImageItemList):
+    def __post_init__(self):
+        super().__post_init__()
+        self._label_cls = ImageItemList
