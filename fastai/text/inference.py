@@ -18,15 +18,12 @@ class LanguageModelPredictor:
         self._numericalizer = [p for p in preprocessors if isinstance(p, NumericalizeProcessor)][0]
         self._model = model
         self._model.eval()
-        #self._pad = self._vocabulary.stoi[PAD]
 
     @staticmethod
     def from_learner(learn: RNNLearner) -> 'LanguageModelPredictor':
         """Create new inferer and initialize it from a learner instance."""
         return LanguageModelPredictor(
             learn.data.processor,
-            #tokenizer=learn.data.train_ds.tokenizer,
-            #vocabulary=learn.data.train_ds.vocab,
             model=learn.model
         )
 
