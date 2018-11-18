@@ -3,7 +3,7 @@ from ..torch_core import *
 from .image import *
 from .image import _affine_mult
 
-__all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr', 
+__all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
            'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rotate', 'skew', 'squish',
            'rand_resize_crop', 'symmetric_warp', 'tilt', 'zoom', 'zoom_crop']
 

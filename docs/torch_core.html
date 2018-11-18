@@ -115,6 +115,27 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="np2model_tensor"><code>np2model_tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L215" class="source_link">[source]</a></h4><blockquote><p><code>np2model_tensor</code>(<code>a</code>)</p>
+</blockquote>
+<p>Tranform numpy array <code>a</code> to a tensor of the same type.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="requires_grad"><code>requires_grad</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L94" class="source_link">[source]</a></h4><blockquote><p><code>requires_grad</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>b</code>:<code>Optional</code>[<code>bool</code>]=<code>None</code>) → <code>Optional</code>[<code>bool</code>]</p>
 </blockquote>
 
@@ -260,7 +281,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_np"><code>to_np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L222" class="source_link">[source]</a></h4><blockquote><p><code>to_np</code>(<code>x</code>)</p>
+<h4 id="to_np"><code>to_np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L224" class="source_link">[source]</a></h4><blockquote><p><code>to_np</code>(<code>x</code>)</p>
 </blockquote>
 
 </div>
@@ -407,6 +428,27 @@ summary: "Basic functions using pytorch"
 <h4 id="first_layer"><code>first_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L119" class="source_link">[source]</a></h4><blockquote><p><code>first_layer</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Retrieve first layer in a module <code>m</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="last_layer"><code>last_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>last_layer</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Retrieve last layer in a module <code>m</code>.</p>
 
 </div>
 
@@ -605,6 +647,48 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="model_type"><code>model_type</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L209" class="source_link">[source]</a></h4><blockquote><p><code>model_type</code>(<code>dtype</code>)</p>
+</blockquote>
+<p>Return the torch type corresponding to <code>dtype</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="np_address"><code>np_address</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L70" class="source_link">[source]</a></h4><blockquote><p><code>np_address</code>(<code>x</code>:<code>ndarray</code>) → <code>int</code></p>
+</blockquote>
+<p>Address of <code>x</code> in memory</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="split_model"><code>split_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L134" class="source_link">[source]</a></h4><blockquote><p><code>split_model</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>splits</code>:<code>Collection</code>[<code>Union</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>ModuleList</code>]], <code>want_idxs</code>:<code>bool</code>=<code>False</code>)</p>
 </blockquote>
 
@@ -643,6 +727,33 @@ summary: "Basic functions using pytorch"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="trange_of"><code>trange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L222" class="source_link">[source]</a></h4><blockquote><p><code>trange_of</code>(<code>x</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Return a tensor from a range that has the same length as <code>x</code>.</p>
+
+</div>
+</div>
 </div>
 </div>
  

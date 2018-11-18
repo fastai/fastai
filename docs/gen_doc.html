@@ -195,68 +195,38 @@ tools/run-after-git-clone
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Update-the-documentation-notebooks">Update the documentation notebooks<a class="anchor-link" href="#Update-the-documentation-notebooks">&#182;</a></h2>
+<h2 id="Building-the-documentation-website">Building the documentation website<a class="anchor-link" href="#Building-the-documentation-website">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To update the documentation notebooks to reflect changes in the library, you should use <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> or the <code>tools/update-nbs</code> script. Only use this when you have added a new function that you want to document.</p>
+<p>The <a href="https://docs.fast.ai">https://docs.fast.ai</a> website is comprised from documentation notebooks converted to <code>.html</code>, <code>.md</code> files, jekyll metadata, jekyll templates (including the sidebar).</p>
+<ul>
+<li><code>.md</code> files are automatically converted by github pages (requires no extra action)</li>
+<li>the sidebar and other jekyll templates under <code>docs/_data/</code> are automatically deployed by github pages (requires no extra action)</li>
+<li>changes in jekyll metadata require a rebuild of the affected notebooks</li>
+<li>changes in <code>.ipynb</code> nbs require a rebuild of the affected notebooks</li>
+</ul>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Updating-docs-from-within-notebook">Updating docs from within notebook<a class="anchor-link" href="#Updating-docs-from-within-notebook">&#182;</a></h3>
+<h3 id="Updating-sidebar">Updating sidebar<a class="anchor-link" href="#Updating-sidebar">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> can be run from the notebook.</p>
-<p>Default - updates all notebooks in the fastai/docs_src folder:</p>
-<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-</pre></div>
-<p>To update specific python file only:</p>
-<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;gen_doc.gen_notebooks.ipynb&#39;</span><span class="p">,</span> <span class="n">update_nb</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-</pre></div>
-<p><code>update_nb=True</code> inserts newly added module methods into the docs that haven't already been documented</p>
-<p>Alternatively, you can update a specific module:</p>
-<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;fastai.gen_doc.gen_notebooks&#39;</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="s1">&#39;fastai/docs_src&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Updating-notebooks-from-script">Updating notebooks from script<a class="anchor-link" href="#Updating-notebooks-from-script">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> can be run as a script for convenience.</p>
-<p>To update all notebooks under <code>docs_src</code>:</p>
-<div class="highlight"><pre><span></span>python tools/update-nbs
-</pre></div>
-<p>To automatically append new fastai methods to their corresponding documentation notebook:</p>
-<div class="highlight"><pre><span></span>python tools/update-nbs --update_nb_links
-</pre></div>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Update-the-documentation-website">Update the documentation website<a class="anchor-link" href="#Update-the-documentation-website">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Once notebooks have been updated, update the website html files (under <code>docs</code>)</p>
+<ol>
+<li>edit <code>docs_src/sidebar/sidebar_data.py</code></li>
+<li><code>python tools/make_sidebar.py</code></li>
+<li>check <code>docs/_data/sidebars/home_sidebar.yml</code></li>
+<li><code>git commit docs_src/sidebar/sidebar_data.py docs/_data/sidebars/home_sidebar.yml</code></li>
+</ol>
+<p><a href="https://idratherbewriting.com/documentation-theme-jekyll/#configure-the-sidebar">jekyll sidebar documentation</a>.</p>
 
 </div>
 </div>
@@ -286,41 +256,69 @@ tools/run-after-git-clone
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Updating-sidebar">Updating sidebar<a class="anchor-link" href="#Updating-sidebar">&#182;</a></h3>
+<h3 id="Updating-notebooks">Updating notebooks<a class="anchor-link" href="#Updating-notebooks">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<ol>
-<li>edit <code>docs_src/sidebar/sidebar_data.py</code></li>
-<li><code>python tools/make_sidebar.py</code></li>
-<li>check <code>docs/_data/sidebars/home_sidebar.yml</code></li>
-<li><code>git commit docs_src/sidebar/sidebar_data.py docs/_data/sidebars/home_sidebar.yml</code></li>
-</ol>
-<p><a href="https://idratherbewriting.com/documentation-theme-jekyll/#configure-the-sidebar">jekyll sidebar documentation</a>.</p>
+<p>Use this section only when you have added a new function that you want to document, or modified an existing function.</p>
+<p>Here is how to build/update the documentation notebooks to reflect changes in the library.</p>
+<p>To update all modified notebooks under <code>docs_src</code> run:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs
+</pre></div>
+<p>To update specific <code>*ipynb</code> nbs:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs docs_src/notebook1.ipynb docs_src/notebook2.ipynb ...
+</pre></div>
+<p>To force a rebuild of all notebooks and not just the modified ones, use the <code>-f</code> option.</p>
+<div class="highlight"><pre><span></span>python tools/build-docs -f
+</pre></div>
+<p>To scan a module and add any new module functions to documentation notebook:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs --document-new-fns
+</pre></div>
+<p>To automatically append new fastai methods to their corresponding documentation notebook:</p>
+<div class="highlight"><pre><span></span>python tools/build-docs --update-nb-links
+</pre></div>
+<p>Use the <code>-h</code> for more options.</p>
+<p>Alternatively, <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a> can be run from the notebook.</p>
+<p>To update all notebooks under <code>docs_src</code> run:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</pre></div>
+<p>To update specific python file only:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;gen_doc.gen_notebooks.ipynb&#39;</span><span class="p">,</span> <span class="n">update_nb</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+<p><code>update_nb=True</code> inserts newly added module methods into the docs that haven't already been documented.</p>
+<p>Alternatively, you can update a specific module:</p>
+<div class="highlight"><pre><span></span><span class="n">update_notebooks</span><span class="p">(</span><span class="s1">&#39;fastai.gen_doc.gen_notebooks&#39;</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="s1">&#39;fastai/docs_src&#39;</span><span class="p">)</span>
+</pre></div>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Generating-html">Generating html<a class="anchor-link" href="#Generating-html">&#182;</a></h3>
+<h3 id="Updating-html-only">Updating html only<a class="anchor-link" href="#Updating-html-only">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>If you are not syncronizing the code base with its documentation, but made some manual changes to the documentation notebooks, then you don't need to update the notebooks, but just convert them to <code>.html</code>:</p>
 <p>To convert <code>docs_src/*ipynb</code> to <code>docs/*html</code>:</p>
 <ul>
 <li>only the modified <code>*ipynb</code>:</li>
 </ul>
-<div class="highlight"><pre><span></span>python tools/build-docs
+<div class="highlight"><pre><span></span>python tools/build-docs -l
+</pre></div>
+<ul>
+<li>specific <code>*ipynb</code>s:</li>
+</ul>
+<div class="highlight"><pre><span></span>python tools/build-docs -l docs_src/notebook1.ipynb docs_src/notebook2.ipynb ...
 </pre></div>
 <ul>
 <li>force to rebuild all <code>*ipynb</code>s:</li>
 </ul>
-<div class="highlight"><pre><span></span>python tools/build-docs -f
+<div class="highlight"><pre><span></span>python tools/build-docs -fl
 </pre></div>
 
 </div>

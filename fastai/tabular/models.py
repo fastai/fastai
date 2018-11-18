@@ -10,7 +10,7 @@ class TabularModel(nn.Module):
             ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True):
         super().__init__()
         ps = ifnone(ps, [0]*len(layers))
-        self.embeds = nn.ModuleList([get_embedding(ni, nf) for ni,nf in emb_szs])
+        self.embeds = nn.ModuleList([embedding(ni, nf) for ni,nf in emb_szs])
         self.emb_drop = nn.Dropout(emb_drop)
         self.bn_cont = nn.BatchNorm1d(n_cont)
         n_emb = sum(e.embedding_dim for e in self.embeds)
@@ -32,6 +32,6 @@ class TabularModel(nn.Module):
             x = torch.cat([x, x_cont], 1) if self.n_emb != 0 else x_cont
         x = self.layers(x)
         if self.y_range is not None:
-            x = (self.y_range[1]-self.y_range[0]) * F.sigmoid(x) + self.y_range[0]
-        return x.squeeze()
+            x = (self.y_range[1]-self.y_range[0]) * torch.sigmoid(x) + self.y_range[0]
+        return x
 

@@ -302,8 +302,12 @@ def get_module_from_notebook(doc_path):
     "Find module given a source path. Assume it belongs to fastai directory"
     return f'fastai.{Path(doc_path).stem}'
 
-def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=False,
-                     update_nb_links=True, do_execute=False, update_line_num=True, html_path=None):
+def check_nbconvert_version():
+    import nbconvert
+    assert nbconvert.version_info >= (5,4,0), "Please update nbconvert to >=5.4 for consistent .html output"
+
+def update_notebooks(source_path, dest_path=None, update_html=True, document_new_fns=False,
+                     update_nb_links=True, html_path=None, force=False):
     "`source_path` can be a directory or a file. Assume all modules reside in the fastai directory."
     from .convert2html import convert_nb
     source_path = Path(source_path)
@@ -313,21 +317,25 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         html_path = dest_path/'..'/'docs' if html_path is None else Path(html_path)
         doc_path = source_path
         assert source_path.suffix == '.ipynb', 'Must update from notebook or module'
-        if update_nb:
+        if document_new_fns:
             mod = import_mod(get_module_from_notebook(source_path))
             if not mod: print('Could not find module for path:', source_path)
             elif mod.__file__.endswith('__init__.py'): pass
             else: update_module_page(mod, dest_path)
-        if update_nb_links: link_nb(doc_path)
         generate_missing_metadata(doc_path)
-        if do_execute:
-            print(f'Executing notebook {doc_path}. Please wait...')
-            execute_nb(doc_path, {'metadata': {'path': doc_path.parent}})
-        elif update_line_num:
+        if update_nb_links:
             print(f'Updating notebook {doc_path}. Please wait...')
-            execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=update_line_num)
+            link_nb(doc_path)
+            execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=True)
+        if update_html: 
+            check_nbconvert_version()
+            html_fn = html_path/doc_path.with_suffix('.html').name
+            if not force and html_fn.is_file():
+                in_mod  = os.path.getmtime(doc_path)
+                out_mod = os.path.getmtime(html_fn)
+                if in_mod < out_mod: return
+            convert_nb(doc_path, html_path)
 
-        if update_html: convert_nb(doc_path, html_path)
     elif (source_path.name.startswith('fastai.')):
         # Do module update
         assert dest_path is not None, 'To update a module, you must specify a destination folder for where notebook resides'
@@ -337,10 +345,10 @@ def update_notebooks(source_path, dest_path=None, update_html=True, update_nb=Fa
         if not doc_path.exists():
             print('Notebook does not exist. Creating:', doc_path)
             create_module_page(mod, dest_path)
-        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, update_nb=update_nb,
-                         update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
+        update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, document_new_fns=document_new_fns,
+                         update_nb_links=update_nb_links, html_path=html_path)
     elif source_path.is_dir():
         for f in Path(source_path).glob('*.ipynb'):
-            update_notebooks(f, dest_path=dest_path, update_html=update_html, update_nb=update_nb,
-                             update_nb_links=update_nb_links, do_execute=do_execute, update_line_num=update_line_num, html_path=html_path)
+            update_notebooks(f, dest_path=dest_path, update_html=update_html, document_new_fns=document_new_fns,
+                             update_nb_links=update_nb_links, html_path=html_path)
     else: print('Could not resolve source file:', source_path)

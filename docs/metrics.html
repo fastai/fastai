@@ -109,6 +109,27 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="error_rate"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L41" class="source_link">[source]</a></h4><blockquote><p><code>error_rate</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="fbeta"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>fbeta</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.2</code>, <code>beta</code>:<code>float</code>=<code>2</code>, <code>eps</code>:<code>float</code>=<code>1e-09</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Computes the f_beta between preds and targets</p>
@@ -191,7 +212,7 @@ summary: "Useful metrics for training"
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -222,7 +243,7 @@ summary: "Useful metrics for training"
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 

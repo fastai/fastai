@@ -20,3 +20,9 @@ def test_model2half_forward():
     m = model2half(m)
     bn_result = m[0].cuda().forward(a3b3b3.cuda().half()).sum()
     assert isclose(bn_result,0,abs_tol=1e-2)
+
+def test_to_half():
+    t1,t2 = torch.ones([1]),torch.ones([1])
+    half = to_half([t1,t2])
+    assert isinstance(half[0],torch.HalfTensor)
+    assert isinstance(half[1],torch.FloatTensor)

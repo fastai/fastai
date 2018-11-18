@@ -5,7 +5,7 @@ from io import BytesIO
 import PIL
 
 __all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
-           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'apply_tfms', 'bb2hw', 'image2np', 'log_uniform',
+           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'log_uniform',
            'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
            'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMethod']
 
@@ -42,7 +42,7 @@ def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
 def pil2tensor(image:Union[NPImage,NPArray],dtype:np.dtype)->TensorImage:
     "Convert PIL style `image` array to torch style image tensor."
     a = np.asarray(image)
-    if a.ndim==2 : a = np.expand_dims(a,2)    
+    if a.ndim==2 : a = np.expand_dims(a,2)
     a = np.transpose(a, (1, 0, 2))
     a = np.transpose(a, (2, 1, 0))
     return torch.from_numpy( a.astype(dtype, copy=False) )
@@ -117,6 +117,32 @@ class Image(ItemBase):
             plt.imsave(str_buffer, image2np(self.px), format=format_str)
             return str_buffer.getvalue()
 
+    def apply_tfms(self, tfms:TfmList, do_resolve:bool=True, xtra:Optional[Dict[Callable,dict]]=None,
+                   size:Optional[Union[int,TensorImageSize]]=None, mult:int=32,
+                   resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
+        "Apply all `tfms` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
+        if not (tfms or xtra or size): return self
+        xtra = ifnone(xtra, {})
+        tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
+        if do_resolve: _resolve_tfms(tfms)
+        x = self.clone()
+        x.set_sample(padding_mode=padding_mode, **kwargs)
+        if size is not None:
+            crop_target = _get_crop_target(size, mult=mult)
+            if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+                target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
+                x.resize(target)
+            elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
+        else: size = x.size
+        size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
+        for tfm in tfms:
+            if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
+            elif tfm in size_tfms:
+                if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
+                    x = tfm(x, size=size, padding_mode=padding_mode)
+            else: x = tfm(x)
+        return x
+
     def refresh(self)->None:
         "Apply any logit, flow, or affine transfers that have been sent to the `Image`."
         if self._logit_px is not None:
@@ -127,7 +153,7 @@ class Image(ItemBase):
             self.sample_kwargs = {}
             self._flow = None
         return self
-    
+
     def save(self, fn:PathOrStr):
         "Save the image to `fn`."
         x = image2np(self.data*255).astype(np.uint8)
@@ -207,15 +233,29 @@ class Image(ItemBase):
         return self.px
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-              cmap:str='viridis', y:'Image'=None, classes:Collection[Any]=None, **kwargs):
+              cmap:str='viridis', y:Any=None, **kwargs):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
-        if y is not None:
-            if isinstance(y, Image): y.show(ax=ax, classes=classes, **kwargs)
-            else:
-                if not isinstance(y, Iterable): title = ifnone(title, classes[y])
-                else:  title = ifnone(title,'; '.join([classes[a] for a,t in enumerate(y) if t==1]))
-                ax.set_title(title)
-        elif title is not None: ax.set_title(title)
+        if y is not None: y.show(ax=ax, **kwargs)
+        if title is not None: ax.set_title(title)
+
+    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
+        fig, axs = plt.subplots(rows,rows,figsize=figsize)
+        for i, ax in zip(idxs[:rows*rows], (axs.flatten() if rows > 1 else [axs])):
+            x,y = ds[i]
+            x.show(ax=ax, y=y, **kwargs)
+        plt.tight_layout()
+
+    def show_results(self, xys, preds, figsize:Tuple[int,int]=None):
+        rows = len(xys)
+        figsize = ifnone(figsize, (8,3*rows))
+        _,axs = plt.subplots(rows, 2, figsize=figsize)
+        axs[0,0].set_title('Predictions')
+        axs[0,1].set_title('Ground truth')
+        for i,(x,y) in enumerate(xys):
+            x.show(ax=axs[i,1], y=y)
+            pred = y.reconstruct_output(preds[i], x)
+            x.show(ax=axs[i,0], y=pred)
+        plt.tight_layout()
 
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
@@ -236,6 +276,8 @@ class ImageSegment(Image):
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
 
+    def reconstruct_output(self, out, x): return self.__class__(out.argmax(dim=0)[None])
+
 class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True):
@@ -251,6 +293,8 @@ class ImagePoints(Image):
     def clone(self):
         "Mimic the behavior of torch.clone for `Image` objects."
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
+
+    def reconstruct_output(self, out, x): return self.__class__(FlowField(x.size, out[None]), scale=False)
 
     @property
     def shape(self)->Tuple[int,int,int]: return (1, *self._flow.size)
@@ -322,25 +366,29 @@ class ImagePoints(Image):
 
 class ImageBBox(ImagePoints):
     "Support applying transforms to a `flow` of bounding boxes."
-    def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True, labels:LongTensor=None, pad_idx:int=0):
+    def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True, labels:Collection=None,
+                 classes:dict=None, pad_idx:int=0):
         super().__init__(flow, scale, y_first)
-        self.labels, self.pad_idx = labels, pad_idx
+        self.pad_idx = pad_idx
+        if labels is not None and len(labels)>0 and not isinstance(labels[0],Category):
+            labels = array([Category(l,classes[l]) for l in labels])
+        self.labels = labels
 
     def clone(self) -> 'ImageBBox':
         "Mimic the behavior of torch.clone for `Image` objects."
         flow = FlowField(self.size, self.flow.flow.clone())
-        return self.__class__(flow, False, False,
-                              self.labels.clone() if self.labels is not None else None, self.pad_idx)
+        return self.__class__(flow, scale=False, y_first=False, labels=self.labels, pad_idx=self.pad_idx)
 
     @classmethod
-    def create(cls, bboxes:Collection[Collection[int]], h:int, w:int, labels:LongTensor=None, pad_idx:int=0)->'ImageBBox':
+    def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, classes:dict=None,
+               pad_idx:int=0)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         bboxes = tensor(bboxes).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
         bl_corners = bboxes[:,1:3].flip(1)
         bboxes = torch.cat([bboxes[:,:2], tr_corners, bl_corners, bboxes[:,2:]], 1)
         flow = FlowField((h,w), bboxes.view(-1,2))
-        return cls(flow, labels=labels, pad_idx=pad_idx, y_first=True)
+        return cls(flow, labels=labels, classes=classes, pad_idx=pad_idx, y_first=True)
 
     def _compute_boxes(self) -> Tuple[LongTensor, LongTensor]:
         bboxes = self.flow.flow.flip(1).view(-1, 4, 2).contiguous().clamp(min=-1, max=1)
@@ -348,35 +396,38 @@ class ImageBBox(ImagePoints):
         bboxes = torch.cat([mins, maxes], 1)
         mask = (bboxes[:,2]-bboxes[:,0] > 0) * (bboxes[:,3]-bboxes[:,1] > 0)
         if len(mask) == 0: return tensor([self.pad_idx] * 4), tensor([self.pad_idx])
-        return bboxes[mask], (self.labels[mask].long() if self.labels is not None else None)
+        res = bboxes[mask]
+        if self.labels is None: return res,None
+        return res, self.labels[to_np(mask).astype(bool)]
 
     @property
     def data(self)->Union[FloatTensor, Tuple[FloatTensor,LongTensor]]:
         bboxes,lbls = self._compute_boxes()
+        lbls = tensor([o.data for o in lbls]) if lbls is not None else None
         return bboxes if lbls is None else (bboxes, lbls)
 
     def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-        color:str='white', classes:Collection[Any]=None, **kwargs):
+        color:str='white', **kwargs):
         if ax is None: _,ax = plt.subplot(figsize=figsize)
         bboxes, lbls = self._compute_boxes()
         h,w = self.flow.size
         bboxes.add_(1).mul_(torch.tensor([h/2, w/2, h/2, w/2])).long()
         for i, bbox in enumerate(bboxes):
-            if lbls is not None: text = classes[lbls[i]] if classes is not None else lbls[i].item()
+            if lbls is not None: text = str(lbls[i])
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 
-def open_image(fn:PathOrStr)->Image:
+def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
-    x = PIL.Image.open(fn).convert('RGB')
-    return Image(pil2tensor(x,np.float32).div_(255))
+    #fn = getattr(fn, 'path', fn)
+    x = PIL.Image.open(fn).convert(convert_mode)
+    x = pil2tensor(x,np.float32)
+    if div: x.div_(255)
+    return cls(x)
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
-    x = PIL.Image.open(fn).convert(convert_mode)
-    mask = pil2tensor(x,np.float32)
-    if div: mask.div_(255)
-    return ImageSegment(mask)
+    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment)
 
 def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."
@@ -385,21 +436,21 @@ def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     return ImageSegment(x.permute(2,0,1))
 
 def rle_encode(img:NPArrayMask)->str:
-    "Return run-length encoding string from an image array"  
-    pixels = np.concatenate([[0], img.flatten() , [0]]) 
-    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1 
-    runs[1::2] -= runs[::2] 
-    return ' '.join(str(x) for x in runs) 
+    "Return run-length encoding string from an image array"
+    pixels = np.concatenate([[0], img.flatten() , [0]])
+    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1
+    runs[1::2] -= runs[::2]
+    return ' '.join(str(x) for x in runs)
 
 def rle_decode(mask_rle:str, shape:Tuple[int,int])->NPArrayMask:
     "Return an image array from run-length encoded string"
-    s = mask_rle.split() 
-    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])] 
-    starts -= 1 
-    ends = starts + lengths 
-    img = np.zeros(shape[0]*shape[1], dtype=np.uint) 
-    for low, up in zip(starts, ends): img[low:up] = 1 
-    return img.reshape(shape) 
+    s = mask_rle.split()
+    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])]
+    starts -= 1
+    ends = starts + lengths
+    img = np.zeros(shape[0]*shape[1], dtype=np.uint)
+    for low, up in zip(starts, ends): img[low:up] = 1
+    return img.reshape(shape)
 
 def show_image(img:Image, ax:plt.Axes=None, figsize:tuple=(3,3), hide_axis:bool=True, cmap:str='binary',
                 alpha:float=None, **kwargs)->plt.Axes:
@@ -450,8 +501,6 @@ class Transform():
     def name(self)->str: return self.__class__.__name__
 
     def __repr__(self)->str: return f'{self.name} ({self.func.__name__})'
-
-TfmList = Union[Transform, Collection[Transform]]
 
 @dataclass
 class RandTransform():
@@ -569,28 +618,3 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
     return ch,round(r/ratio),round(c/ratio)
 
-def apply_tfms(tfms:TfmList, x:TensorImage, do_resolve:bool=True,
-               xtra:Optional[Dict[Transform,dict]]=None, size:Optional[Union[int,TensorImageSize]]=None,
-               mult:int=32, resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
-    "Apply all `tfms` to `x` - `do_resolve`: bind random args - `size`, `mult` used to crop/pad."
-    if tfms or xtra or size:
-        if not xtra: xtra={}
-        tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
-        if do_resolve: _resolve_tfms(tfms)
-        x = x.clone()
-        x.set_sample(padding_mode=padding_mode, **kwargs)
-        if size is not None:
-            crop_target = _get_crop_target(size, mult=mult)
-            if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                target = _get_resize_target(x, crop_target, do_crop=(resize_method==ResizeMethod.CROP))
-                x.resize(target)
-            elif resize_method==ResizeMethod.SQUISH: x.resize((x.shape[0],) + crop_target)
-        else: size = x.size
-        size_tfms = [o for o in tfms if isinstance(o.tfm,TfmCrop)]
-        for tfm in tfms:
-            if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
-            elif tfm in size_tfms:
-                if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                    x = tfm(x, size=size, padding_mode=padding_mode)
-            else: x = tfm(x)
-    return x

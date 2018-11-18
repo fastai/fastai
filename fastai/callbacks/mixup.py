@@ -37,7 +37,11 @@ class MixUpLoss(nn.Module):
         super().__init__()
         self.crit = crit
         
-    def forward(self, output, target):
-        if not len(target.size()) == 2: return self.crit(output, target).mean()
-        loss1, loss2 = self.crit(output,target[:,0].long()), self.crit(output,target[:,1].long())
-        return (loss1 * target[:,2] + loss2 * (1-target[:,2])).mean()
+    def forward(self, output, target, reduction='elementwise_mean'):
+        if len(target.size()) == 2:
+            loss1, loss2 = self.crit(output,target[:,0].long()), self.crit(output,target[:,1].long())
+            d = (loss1 * target[:,2] + loss2 * (1-target[:,2])).mean()
+        else:  d = self.crit(output, target)
+        if reduction == 'elementwise_mean': return d.mean()
+        elif reduction == 'sum':            return d.sum()
+        return d
