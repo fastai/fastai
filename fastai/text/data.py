@@ -178,10 +178,10 @@ class TextDataBunch(DataBunch):
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path)
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
-        src = (TextFilesList.from_folder(path)
-                            .split_by_folder(train=train, valid=valid)
-                            .label_from_folder(classes=classes))
+        processor = [OpenFileProcessor] + _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        src = (TextList.from_folder(path, processor=processor)
+                       .split_by_folder(train=train, valid=valid)
+                       .label_from_folder(classes=classes))
         if test is not None: src.add_test_folder(path/test)
         return src.databunch(**kwargs)
 
