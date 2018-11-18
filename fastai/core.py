@@ -238,29 +238,4 @@ class MultiCategory(ItemBase):
         if res is not None: return res
         return getattr(self.p, k)
 
-    def read(self): return self.open('rb').read()
-
-
-class DirEntryEx(Path):
-    "A class that converts `DirEntry` into something enough like `Path` that we can open with PIL"
-    def __new__(cls, *args, **kwargs): return object.__new__(cls)
-    def __init__(self, d): self._name,self.path = d.name,d.path
-
-    def __getattr__(self, k):
-        # Can't remove Path.name, but need isinstance(Path) to work for PIL
-        if k=='name': return getattr(self, '_name')
-        raise AttributeError(k)
-
-    def __reduce__(self): return object.__reduce__(self)
-    def resolve(self): return self.path
-    __repr__=__str__=__fspath__=resolve
-
-    # You can add more stuff from pathlib.Path as needed
-    @property
-    def suffix(self): return os.path.splitext(self.path)[1]
-    @property
-    def stem(self): return os.path.splitext(os.path.split(self.path)[1])[0]
-    @property
-    def splitall(self): return self.path.split(os.path.sep)
-DirEntryEx.__slots__=None # So we can pickle it
-
+    #def read(self): return self.open('rb').read()

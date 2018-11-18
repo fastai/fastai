@@ -11,10 +11,12 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
-
 ## 1.0.28.dev0 (Work In Progress)
+
+### Breaking changes:
+
+- `get_files` and `get_image_files` not returns `Path`s relative to `path`, instead of relative to `.`
+- `ItemList.items` are also relative to `path` where relevant, since `get_files` is called internally
 
 ### New:
 
@@ -22,7 +24,7 @@ of that change.
 
 ### Fixed:
 
-- verify_image - now fixes files with corrupt EXIF data
+- `verify_image` - now fixes files with corrupt EXIF data
 
 ## 1.0.27 (2018-11-17)
 
