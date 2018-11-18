@@ -302,13 +302,18 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
         classes = ['background'] + list(classes)
         return classes
 
+def _get_size(xs,i):
+    size = xs.sizes.get(i,None)
+    if size is None:
+        # Image hasn't been accessed yet, so we don't know its size
+        _ = xs[i]
+        size =xs.sizes[i]
+    return size
+
 class ObjectCategoryList(MultiCategoryList):
     _processor = ObjectCategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
-        super().__init__(items, **kwargs)
-
     def get(self, i):
-        return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
+        return ImageBBox.create(*_get_size(self.x,i), *self.items[i], classes=self.classes)
 
 class ObjectItemList(ImageItemList):
     def __post_init__(self):
@@ -337,9 +342,10 @@ class PointsItemList(ItemList):
 
     def get(self, i):
         o = super().get(i)
-        return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
+        return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
 
 class ImageToImageList(ImageItemList):
     def __post_init__(self):
         super().__post_init__()
         self._label_cls = ImageItemList
+

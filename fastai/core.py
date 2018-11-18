@@ -240,31 +240,9 @@ class MultiCategory(ItemBase):
 
     def read(self): return self.open('rb').read()
 
-class DelayedPath(pathlib.PosixPath):
-    _not_ready = set(['ready', 'args', 'make_ready'])
-    def __init__(self, *args, **kwargs):
-        self.args,self.ready = args,False
-        self._flavour = pathlib._windows_flavour if os.name == 'nt' else pathlib._posix_flavour
-
-    def __new__(cls, *args, **kwargs): return object.__new__(cls)
-    @property
-    def path(self): return str(self)
-
-    def make_ready(self):
-        if self.ready: return
-        self._drv,self._root,self._parts = self._parse_args(self.args)
-        self._init()
-        self.ready = True
-
-    def __getattribute__(self,name):
-        if name.startswith('_'): return super().__getattribute__(name)
-        if name not in self._not_ready:
-            #print(name)
-            self.make_ready()
-        return super().__getattribute__(name)
 
 class DirEntryEx(Path):
-    "A class that converts `DirEntry` into something enough like `Path` that we can open it with PIL"
+    "A class that converts `DirEntry` into something enough like `Path` that we can open with PIL"
     def __new__(cls, *args, **kwargs): return object.__new__(cls)
     def __init__(self, d): self._name,self.path = d.name,d.path
 
