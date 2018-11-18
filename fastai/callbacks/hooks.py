@@ -87,7 +87,7 @@ def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
     return model_sizes(m, full=False)[-1][1]
 
-def total_params(m:nn.Module):
+def total_params(m:nn.Module) -> int:
     params = 0
     if hasattr(m, "weight") and hasattr(m.weight, "size"):
         params += m.weight.numel()
@@ -110,10 +110,10 @@ def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Ho
     output_size, params = map(list, zip(*res))
     return (output_size, params, hooks)
 
-def get_layer_name(layer:nn.Module):
+def get_layer_name(layer:nn.Module) -> str:
     return str(layer.__class__).split(".")[-1].split("'")[0]
 
-def layers_info(m:Collection[nn.Module]):
+def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     layers_sizes, layers_params, _ = params_size(m)
     layers_names = list(map(get_layer_name, flatten_model(m)))
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])
