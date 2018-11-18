@@ -236,3 +236,4 @@ Tensor.ndim = property(lambda x: len(x.shape))
 class FloatItem(ItemBase):
     def __init__(self,obj): self.data,self.obj = tensor(obj),obj
     def __str__(self): return str(self.obj)
+    def reconstruct(self,t): return t.item()

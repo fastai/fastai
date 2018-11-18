@@ -329,6 +329,9 @@ class ObjectCategoryList(MultiCategoryList):
 
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
+    
+    def reconstruct(self, t, x):
+        return self[0].reconstruct(*t, x, classes=self.classes)
 
 class ObjectItemList(ImageItemList):
     def __post_init__(self):
@@ -350,9 +353,10 @@ class SegmentationItemList(ImageItemList):
         self._label_cls = SegmentationLabelList
 
 class PointsItemList(ItemList):
+    
     def __post_init__(self):
         super().__post_init__()
-        self.c = len(self.items[0].view(-1))
+        self.c = len(self.items[0].reshape(-1))
         self.loss_func = MSELossFlat()
 
     def get(self, i):

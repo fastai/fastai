@@ -238,6 +238,13 @@ class Image(ItemBase):
         if y is not None: y.show(ax=ax, **kwargs)
         if title is not None: ax.set_title(title)
 
+    def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+        rows = int(math.sqrt(len(xs)))
+        fig, axs = plt.subplots(rows,rows,figsize=figsize)
+        for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
+            xs[i].show(ax=ax, y=ys[i], **kwargs)
+        plt.tight_layout()
+    
     def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
         for i, ax in zip(idxs[:rows*rows], (axs.flatten() if rows > 1 else [axs])):
@@ -256,6 +263,9 @@ class Image(ItemBase):
             pred = y.reconstruct_output(preds[i], x)
             x.show(ax=axs[i,0], y=pred)
         plt.tight_layout()
+        
+    def reconstruct(self, t:Tensor):
+        return self.__class__(t)
 
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
@@ -293,6 +303,8 @@ class ImagePoints(Image):
     def clone(self):
         "Mimic the behavior of torch.clone for `Image` objects."
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
+    
+    def reconstruct(self, t, x): return self.__class__(FlowField([x.size(1),x.size(2)], t), scale=False)
 
     def reconstruct_output(self, out, x): return self.__class__(FlowField(x.size, out[None]), scale=False)
 
@@ -381,14 +393,14 @@ class ImageBBox(ImagePoints):
 
     @classmethod
     def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, classes:dict=None,
-               pad_idx:int=0)->'ImageBBox':
+               pad_idx:int=0, scale:bool=True)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         bboxes = tensor(bboxes).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
         bl_corners = bboxes[:,1:3].flip(1)
         bboxes = torch.cat([bboxes[:,:2], tr_corners, bl_corners, bboxes[:,2:]], 1)
         flow = FlowField((h,w), bboxes.view(-1,2))
-        return cls(flow, labels=labels, classes=classes, pad_idx=pad_idx, y_first=True)
+        return cls(flow, labels=labels, classes=classes, pad_idx=pad_idx, y_first=True, scale=scale)
 
     def _compute_boxes(self) -> Tuple[LongTensor, LongTensor]:
         bboxes = self.flow.flow.flip(1).view(-1, 4, 2).contiguous().clamp(min=-1, max=1)
@@ -416,6 +428,13 @@ class ImageBBox(ImagePoints):
             if lbls is not None: text = str(lbls[i])
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
+    
+    def reconstruct(self, bboxes, labels, x, classes):
+        if len((labels - self.pad_idx).nonzero()) == 0: return
+        i = (labels - self.pad_idx).nonzero().min()
+        bboxes,labels = bboxes[i:],labels[i:]
+        flow = FlowField([x.size(1),x.size(2)], bboxes)
+        return self.create(x.size(1),x.size(2), bboxes, labels=labels, classes=classes, scale=False)
 
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."

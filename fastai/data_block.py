@@ -33,7 +33,7 @@ class PreProcessor():
 
 class ItemList():
     _bunch = DataBunch
-    _processor = PreProcessor
+    _processor = None
 
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
@@ -68,6 +68,10 @@ class ItemList():
     def predict(self, res):
         "Called at the end of `Learn.predict`; override for optional post-processing"
         return res
+    
+    def reconstruct(self, t:Tensor, x:Tensor=None):
+        "Reconstuct one of the underlying item for its data `t`."
+        return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
 
     def new(self, items:Iterator, create_func:Callable=None, processor:PreProcessor=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
@@ -249,6 +253,9 @@ class CategoryList(CategoryListBase):
     def predict(self, res):
         pred_max = res[0].argmax()
         return self.classes[pred_max],pred_max,res[0]
+    
+    def reconstruct(self, t):
+        return self._item_cls(t, self.classes[t])
 
 class MultiCategoryProcessor(CategoryProcessor):
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
@@ -270,6 +277,10 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+    
+    def reconstruct(self, t):
+        o = [i for i in range(self.c) if t[i] == 1.]
+        return self._item_cls(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
     _item_cls=FloatItem
