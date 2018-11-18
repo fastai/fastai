@@ -56,7 +56,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextLMDataBunch"><code>class</code> <code>TextLMDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L380" class="source_link">[source]</a></h3><blockquote><p><code>TextLMDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a></p>
+<h3 id="TextLMDataBunch"><code>class</code> <code>TextLMDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L201" class="source_link">[source]</a></h3><blockquote><p><code>TextLMDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -83,7 +83,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextLMDataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L390" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>sep</code>=<code>' '</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Train: 1&gt;</code>, <code>rows</code>:<code>int</code>=<code>10</code>, <code>max_len</code>:<code>int</code>=<code>100</code>)</p>
+<h4 id="TextLMDataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L212" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>sep</code>=<code>' '</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Train: 1&gt;</code>, <code>rows</code>:<code>int</code>=<code>10</code>, <code>max_len</code>:<code>int</code>=<code>100</code>)</p>
 </blockquote>
 <p>Show <code>rows</code> texts from a batch of <code>ds_type</code>, tokens are joined with <code>sep</code>, truncated at <code>max_len</code>.</p>
 
@@ -104,7 +104,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextClasDataBunch"><code>class</code> <code>TextClasDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L401" class="source_link">[source]</a></h3><blockquote><p><code>TextClasDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a></p>
+<h3 id="TextClasDataBunch"><code>class</code> <code>TextClasDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L223" class="source_link">[source]</a></h3><blockquote><p><code>TextClasDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -131,9 +131,9 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextClasDataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L418" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>sep</code>=<code>' '</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Train: 1&gt;</code>, <code>rows</code>:<code>int</code>=<code>10</code>, <code>max_len</code>:<code>int</code>=<code>100</code>)</p>
+<h4 id="DataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L115" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>rows</code>:<code>int</code>=<code>None</code>, <code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Train: 1&gt;</code>, <code>kwargs</code>)</p>
 </blockquote>
-<p>Show <code>rows</code> texts from a batch of <code>ds_type</code>, tokens are joined with <code>sep</code>, truncated at <code>max_len</code>.</p>
+<p>Show a batch of data in <code>ds_type</code> on a few <code>rows</code>.</p>
 
 </div>
 
@@ -152,7 +152,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextDataBunch"><code>class</code> <code>TextDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L282" class="source_link">[source]</a></h3><blockquote><p><code>TextDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h3 id="TextDataBunch"><code>class</code> <code>TextDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L99" class="source_link">[source]</a></h3><blockquote><p><code>TextDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -192,7 +192,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L359" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>train</code>:<code>str</code>=<code>'train'</code>, <code>valid</code>:<code>str</code>=<code>'valid'</code>, <code>test</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="TextDataBunch.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L176" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>train</code>:<code>str</code>=<code>'train'</code>, <code>valid</code>:<code>str</code>=<code>'valid'</code>, <code>test</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 
 </div>
@@ -220,7 +220,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.from_csv"><code>from_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L346" class="source_link">[source]</a></h4><blockquote><p><code>from_csv</code>(<code>path</code>:<code>PathOrStr</code>, <code>csv_name</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>test</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>classes</code>:<code>StrList</code>=<code>None</code>, <code>header</code>=<code>'infer'</code>, <code>text_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>1</code>, <code>label_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>0</code>, <code>label_delim</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TextDataBunch.from_csv"><code>from_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L163" class="source_link">[source]</a></h4><blockquote><p><code>from_csv</code>(<code>path</code>:<code>PathOrStr</code>, <code>csv_name</code>, <code>valid_pct</code>:<code>float</code>=<code>0.2</code>, <code>test</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>classes</code>:<code>StrList</code>=<code>None</code>, <code>header</code>=<code>'infer'</code>, <code>text_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>1</code>, <code>label_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>0</code>, <code>label_delim</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -248,7 +248,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L337" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>:<code>PathOrStr</code>, <code>train_df</code>:<code>DataFrame</code>, <code>valid_df</code>:<code>DataFrame</code>, <code>test_df</code>:<code>OptDataFrame</code>=<code>None</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>classes</code>:<code>StrList</code>=<code>None</code>, <code>text_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>1</code>, <code>label_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>0</code>, <code>label_delim</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TextDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>:<code>PathOrStr</code>, <code>train_df</code>:<code>DataFrame</code>, <code>valid_df</code>:<code>DataFrame</code>, <code>test_df</code>:<code>OptDataFrame</code>=<code>None</code>, <code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>classes</code>:<code>StrList</code>=<code>None</code>, <code>text_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>1</code>, <code>label_cols</code>:<code>Union</code>[<code>int</code>, <code>Collection</code>[<code>int</code>], <code>str</code>, <code>StrList</code>]=<code>0</code>, <code>label_delim</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -276,7 +276,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.from_tokens"><code>from_tokens</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L326" class="source_link">[source]</a></h4><blockquote><p><code>from_tokens</code>(<code>path</code>:<code>PathOrStr</code>, <code>trn_tok</code>:<code>Tokens</code>, <code>trn_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]], <code>val_tok</code>:<code>Tokens</code>, <code>val_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]], <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>tst_tok</code>:<code>Tokens</code>=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TextDataBunch.from_tokens"><code>from_tokens</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L139" class="source_link">[source]</a></h4><blockquote><p><code>from_tokens</code>(<code>path</code>:<code>PathOrStr</code>, <code>trn_tok</code>:<code>Tokens</code>, <code>trn_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]], <code>val_tok</code>:<code>Tokens</code>, <code>val_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]], <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>tst_tok</code>:<code>Tokens</code>=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -304,7 +304,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.from_ids"><code>from_ids</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L305" class="source_link">[source]</a></h4><blockquote><p><code>from_ids</code>(<code>path</code>:<code>PathOrStr</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>, <code>trn_ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>val_ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>tst_ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]]=<code>None</code>, <code>trn_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>val_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TextDataBunch.from_ids"><code>from_ids</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L115" class="source_link">[source]</a></h4><blockquote><p><code>from_ids</code>(<code>path</code>:<code>PathOrStr</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>, <code>train_ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>valid_ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>test_ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]]=<code>None</code>, <code>train_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>valid_lbls</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>processor</code>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 
 </div>
@@ -344,7 +344,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.load"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L315" class="source_link">[source]</a></h4><blockquote><p><code>load</code>(<code>path</code>:<code>PathOrStr</code>, <code>cache_name</code>:<code>PathOrStr</code>=<code>'tmp'</code>, <code>kwargs</code>)</p>
+<h4 id="TextDataBunch.load"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>load</code>(<code>path</code>:<code>PathOrStr</code>, <code>cache_name</code>:<code>PathOrStr</code>=<code>'tmp'</code>, <code>processor</code>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 <p>Load a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> from <code>path/cache_name</code>. <code>kwargs</code> are passed to the dataloader creation.</p>
 
@@ -365,7 +365,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataBunch.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L293" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<code>cache_name</code>:<code>PathOrStr</code>=<code>'tmp'</code>)</p>
+<h4 id="TextDataBunch.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L103" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<code>cache_name</code>:<code>PathOrStr</code>=<code>'tmp'</code>)</p>
 </blockquote>
 <p>Save the <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> in <code>self.path/cache_name</code> folder.</p>
 
@@ -399,7 +399,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <span class="n">path</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -435,7 +435,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;texts.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -527,20 +527,20 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <span class="n">data_clas</span> <span class="o">=</span> <span class="n">TextClasDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;texts.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-TextBase-dataset-classes">The TextBase dataset classes<a class="anchor-link" href="#The-TextBase-dataset-classes">&#182;</a></h2>
+<h2 id="The-TextList-input-classes">The TextList input classes<a class="anchor-link" href="#The-TextList-input-classes">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Behind the scenes, the previous functions will create a training, validation and maybe test <a href="/text.data.html#TextDataset"><code>TextDataset</code></a> which will then be transformed in a <a href="/text.data.html#TokenizedDataset"><code>TokenizedDataset</code></a> then a <a href="/text.data.html#NumericalizedDataset"><code>NumericalizedDataset</code></a>. Those are all subclasses of <a href="/text.data.html#TextBase"><code>TextBase</code></a>.</p>
+<p>Behind the scenes, the previous functions will create a training, validation and maybe test <a href="/text.data.html#TextList"><code>TextList</code></a> that will be tokenized and numericalized (if needed) using <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>.</p>
 
 </div>
 </div>
@@ -554,35 +554,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextBase"><code>class</code> <code>TextBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L61" class="source_link">[source]</a></h3><blockquote><p><code>TextBase</code>(<code>x</code>:<code>ArgStar</code>, <code>labels</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>encode_classes</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_data.html#DatasetBase"><code>DatasetBase</code></a></p>
-</blockquote>
-<p>Basic dataset for NLP tasks.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><code>x</code> is an array representing the inputs (filenames, texts, tokens or ids) with certain <code>labels</code> (default to all zeros if not specified). <code>classes</code> can be passed and if <code>encode_classes</code>, the <code>labels</code> are changed from their class to the corresponding index.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextDataset"><code>class</code> <code>TextDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L127" class="source_link">[source]</a></h3><blockquote><p><code>TextDataset</code>(<code>texts</code>:<code>StrList</code>, <code>labels</code>:<code>ArgStar</code>=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>mark_fields</code>:<code>bool</code>=<code>True</code>, <code>encode_classes</code>:<code>bool</code>=<code>True</code>) :: <a href="/text.data.html#TextBase"><code>TextBase</code></a></p>
+<h3 id="Text"><code>class</code> <code>Text</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L244" class="source_link">[source]</a></h3><blockquote><p><code>Text</code>(<code>ids</code>, <code>text</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
 
 </div>
@@ -595,7 +567,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/text.data.html#TextBase"><code>TextBase</code></a> dataset of <code>texts</code> with <code>labels</code> belonging to <code>classes</code>. The <code>texts</code> are joined in the column dimension and if <code>mark_fields</code>, field markers are added in-between. If <code>encode_classes</code> the <code>labels</code> are changed from their class to the corresponding index. If <code>is_fnames</code>, the filenames in <code>texts</code> are read to pull the texts.</p>
+<p>Basic item for text data, contains the numericalized <code>ids</code> and the corresponding <a href="/text.html#text"><code>text</code></a>.</p>
 
 </div>
 </div>
@@ -609,7 +581,28 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataset.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>valid_pct</code>:<code>float</code>=<code>0.0</code>, <code>extensions</code>:<code>StrList</code>=<code>['.txt']</code>, <code>mark_fields</code>:<code>bool</code>=<code>True</code>) → <code>TextDataset</code></p>
+<h4 id="Text.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L248" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>idxs</code>:<code>Collection</code>[<code>int</code>], <code>rows</code>:<code>int</code>, <code>ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>max_len</code>:<code>int</code>=<code>50</code>)</p>
+</blockquote>
+<p>Show the texts in <code>idx</code> on a few <code>rows</code> from <code>ds</code>. <code>max_len</code> is the maximum number of tokens displayed.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="TextList"><code>class</code> <code>TextList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L261" class="source_link">[source]</a></h3><blockquote><p><code>TextList</code>(<code>items</code>:<code>Iterator</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
 
 </div>
@@ -622,7 +615,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/text.data.html#TextDataset"><code>TextDataset</code></a> by scanning the subfolders in <code>path</code> for files with <code>extensions</code>. Only keep the ones with labels in <code>classes</code> if it's specified. If <code>valid_pct</code> is not 0., returns two datasets randomly split. <code>mark_fields</code> is passed to the initialization.</p>
+<p>The basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for text data in <code>items</code> with the corresponding <code>vocab</code>.</p>
 
 </div>
 </div>
@@ -636,7 +629,49 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataset.from_one_folder"><code>from_one_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L176" class="source_link">[source]</a></h4><blockquote><p><code>from_one_folder</code>(<code>path</code>:<code>PathOrStr</code>, <code>classes</code>:<code>ArgStar</code>, <code>extensions</code>:<code>StrList</code>=<code>['.txt']</code>, <code>mark_fields</code>:<code>bool</code>=<code>True</code>) → <code>TextDataset</code></p>
+<h4 id="TextList.label_for_lm"><code>label_for_lm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L280" class="source_link">[source]</a></h4><blockquote><p><code>label_for_lm</code>(<code>kwargs</code>)</p>
+</blockquote>
+<p>A special labelling method for language models.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TextList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L285" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>extensions</code>:<code>StrList</code>=<code>['.txt']</code>, <code>processor</code>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<code>None</code>, <code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>kwargs</code>) → <code>TextList</code></p>
+</blockquote>
+<p>Get the list of files in <code>path</code> that have a text suffix. <code>recurse</code> determines if we search subfolders.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="OpenFileProcessor"><code>class</code> <code>OpenFileProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L323" class="source_link">[source]</a></h3><blockquote><p><code>OpenFileProcessor</code>() :: <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a></p>
 </blockquote>
 
 </div>
@@ -649,7 +684,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Primarly used for the test set. Create a <a href="/text.data.html#TextDataset"><code>TextDataset</code></a> by scanning the subfolders in <code>path</code> for files with <code>extensions</code>. Labels all of them for <code>classes[0]</code>.  <code>mark_fields</code> is passed to the initialization.</p>
+<p>Simple <code>Preprocessor</code> that opens the files in items and reads the texts inside them.</p>
 
 </div>
 </div>
@@ -663,9 +698,9 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataset.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L134" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>df</code>:<code>DataFrame</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>n_labels</code>:<code>int</code>=<code>1</code>, <code>txt_cols</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>str</code>]]=<code>None</code>, <code>label_cols</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>str</code>]]=<code>None</code>, <code>mark_fields</code>:<code>bool</code>=<code>True</code>) → <code>TextDataset</code></p>
+<h4 id="open_text"><code>open_text</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L240" class="source_link">[source]</a></h4><blockquote><p><code>open_text</code>(<code>fn</code>:<code>PathOrStr</code>, <code>enc</code>=<code>'utf-8'</code>)</p>
 </blockquote>
-<p>Create a <a href="/text.data.html#TextDataset"><code>TextDataset</code></a> from the texts in a dataframe</p>
+<p>Read the text in <code>fn</code>.</p>
 
 </div>
 
@@ -684,49 +719,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextDataset.tokenize"><code>tokenize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L186" class="source_link">[source]</a></h4><blockquote><p><code>tokenize</code>(<code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>chunksize</code>:<code>int</code>=<code>10000</code>) → <code>TokenizedDataset</code></p>
-</blockquote>
-<p>Tokenize the texts with <code>tokenizer</code> by bits of <code>chunksize</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="FilesTextDataset"><code>class</code> <code>FilesTextDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L194" class="source_link">[source]</a></h3><blockquote><p><code>FilesTextDataset</code>(<code>fns</code>:<code>StrList</code>, <code>labels</code>:<code>ArgStar</code>=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>mark_fields</code>:<code>bool</code>=<code>True</code>, <code>encode_classes</code>:<code>bool</code>=<code>True</code>) :: <a href="/text.data.html#TextDataset"><code>TextDataset</code></a></p>
-</blockquote>
-<p>Reads the content of <code>fns</code> then pass them to a <code>TextDataSet</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TokenizedDataset"><code>class</code> <code>TokenizedDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L100" class="source_link">[source]</a></h3><blockquote><p><code>TokenizedDataset</code>(<code>tokens</code>:<code>Tokens</code>, <code>labels</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>encode_classes</code>:<code>bool</code>=<code>True</code>) :: <a href="/text.data.html#TextBase"><code>TextBase</code></a></p>
+<h3 id="TokenizeProcessor"><code>class</code> <code>TokenizeProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L301" class="source_link">[source]</a></h3><blockquote><p><code>TokenizeProcessor</code>(<code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>chunksize</code>:<code>int</code>=<code>10000</code>, <code>mark_fields</code>:<code>bool</code>=<code>True</code>) :: <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a></p>
 </blockquote>
 
 </div>
@@ -739,7 +732,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/text.data.html#TextBase"><code>TextBase</code></a> dataset of <code>tokens</code> with <code>labels</code> belonging to <code>classes</code>. If <code>encode_classes</code> the <code>labels</code> are changed from their class to the corresponding index.</p>
+<p>Simple <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a> that tokenizes the texts in <code>items</code> using <code>tokenizer</code> by bits of <code>chunsize</code>. If <code>mark_fields</code> is <code>True</code>, add field tokens.</p>
 
 </div>
 </div>
@@ -753,9 +746,8 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TokenizedDataset.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L106" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<code>path</code>:<code>Path</code>, <code>name</code>:<code>str</code>)</p>
+<h3 id="NumericalizeProcessor"><code>class</code> <code>NumericalizeProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L313" class="source_link">[source]</a></h3><blockquote><p><code>NumericalizeProcessor</code>(<code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>max_vocab</code>:<code>int</code>=<code>60000</code>, <code>min_freq</code>:<code>int</code>=<code>2</code>) :: <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a></p>
 </blockquote>
-<p>Save the dataset in <code>path</code> with <code>name</code>.</p>
 
 </div>
 
@@ -765,116 +757,12 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="TokenizedDataset.numericalize"><code>numericalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L113" class="source_link">[source]</a></h4><blockquote><p><code>numericalize</code>(<code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>max_vocab</code>:<code>int</code>=<code>60000</code>, <code>min_freq</code>:<code>int</code>=<code>2</code>) → <code>NumericalizedDataset</code></p>
-</blockquote>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>Numericalize the tokens with <code>vocab</code> (if not None) otherwise create one with <code>max_vocab</code> and <code>min_freq</code> from tokens.</p>
 
 </div>
-
 </div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="NumericalizedDataset"><code>class</code> <code>NumericalizedDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L70" class="source_link">[source]</a></h3><blockquote><p><code>NumericalizedDataset</code>(<code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>, <code>ids</code>:<code>Collection</code>[<code>Collection</code>[<code>int</code>]], <code>labels</code>:<code>Collection</code>[<code>Union</code>[<code>int</code>, <code>float</code>]]=<code>None</code>, <code>classes</code>:<code>ArgStar</code>=<code>None</code>, <code>encode_classes</code>:<code>bool</code>=<code>True</code>) :: <a href="/text.data.html#TextBase"><code>TextBase</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/text.data.html#TextBase"><code>TextBase</code></a> dataset of <code>ids</code> with <code>labels</code> belonging to <code>classes</code>. <code>vocab</code> contains the correspondance between ids an tokens. If <code>encode_classes</code> the <code>labels</code> are changed from their class to the corresponding index.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumericalizedDataset.get_text_item"><code>get_text_item</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L77" class="source_link">[source]</a></h4><blockquote><p><code>get_text_item</code>(<code>idx</code>, <code>sep</code>=<code>' '</code>, <code>max_len</code>:<code>int</code>=<code>None</code>)</p>
-</blockquote>
-<p>Return the text in <code>idx</code>, tokens separated by <code>sep</code> and cutting at <code>max_len</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumericalizedDataset.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<code>path</code>:<code>Path</code>, <code>name</code>:<code>str</code>)</p>
-</blockquote>
-<p>Save the dataset in <code>path</code> with <code>name</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="NumericalizedDataset.load"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L92" class="source_link">[source]</a></h4><blockquote><p><code>load</code>(<code>path</code>:<code>Path</code>, <code>name</code>:<code>str</code>)</p>
-</blockquote>
-<p>Load a <a href="/text.data.html#NumericalizedDataset"><code>NumericalizedDataset</code></a> from <code>path</code> in <code>name</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -902,7 +790,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <span class="n">texts</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -947,262 +835,262 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
     <tr>
       <th>0</th>
       <td>xxfld</td>
-      <td>can</td>
-      <td>the</td>
-      <td>!</td>
-      <td>-</td>
-      <td>young</td>
+      <td>in</td>
+      <td>michael</td>
+      <td>that</td>
+      <td>movie</td>
       <td>xxunk</td>
-      <td>xxunk</td>
-      <td>him</td>
-      <td>his</td>
+      <td>\n\n</td>
+      <td>watch</td>
+      <td>worst</td>
+      <td>,</td>
     </tr>
     <tr>
       <th>1</th>
       <td>1</td>
-      <td>xxunk</td>
-      <td>xxunk</td>
-      <td>firstly</td>
-      <td>watch</td>
-      <td>xxunk</td>
-      <td>this</td>
-      <td>and</td>
-      <td>?</td>
+      <td>fact</td>
+      <td>moore</td>
+      <td>they</td>
+      <td>down</td>
+      <td>"</td>
+      <td>once</td>
+      <td>a</td>
+      <td>mistakes</td>
       <td>xxunk</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>a</td>
-      <td>one</td>
-      <td>corpse</td>
-      <td>,</td>
-      <td>the</td>
-      <td>is</td>
-      <td>stinks</td>
-      <td>have</td>
-      <td>no</td>
-      <td>debut</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>definite</td>
-      <td>'s</td>
-      <td>of</td>
-      <td>there</td>
-      <td>xxunk</td>
-      <td>sent</td>
-      <td>!</td>
-      <td>considered</td>
-      <td>xxunk</td>
-      <td>with</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>no</td>
-      <td>perception</td>
-      <td>the</td>
-      <td>are</td>
-      <td>stealing</td>
-      <td>by</td>
-      <td>as</td>
-      <td>myself</td>
-      <td>for</td>
-      <td>this</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>.</td>
-      <td>of</td>
-      <td>dead</td>
-      <td>a</td>
-      <td>scene</td>
-      <td>his</td>
-      <td>everyone</td>
-      <td>as</td>
-      <td>taste</td>
-      <td>chilling</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>a</td>
-      <td>reality</td>
-      <td>hitchhiker</td>
-      <td>number</td>
-      <td>to</td>
-      <td>xxunk</td>
-      <td>knows</td>
-      <td>an</td>
-      <td>)</td>
-      <td>,</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>xxunk</td>
-      <td>.</td>
-      <td>.</td>
-      <td>of</td>
-      <td>see</td>
-      <td>to</td>
-      <td>it</td>
-      <td>atheist</td>
-      <td>.</td>
-      <td>dark</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>no</td>
-      <td>in</td>
-      <td>\n\n</td>
-      <td>reviews</td>
-      <td>what</td>
-      <td>conclude</td>
-      <td>'s</td>
-      <td>throughout</td>
-      <td>the</td>
-      <td>,</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>.</td>
-      <td>this</td>
-      <td>xxunk</td>
-      <td>available</td>
       <td>i</td>
-      <td>the</td>
-      <td>based</td>
-      <td>my</td>
-      <td>xxunk</td>
+      <td>,</td>
+      <td>,</td>
+      <td>have</td>
+      <td>was</td>
+      <td>,</td>
+      <td>this</td>
+      <td>love</td>
+      <td>of</td>
       <td>and</td>
     </tr>
     <tr>
-      <th>10</th>
+      <th>3</th>
+      <td>really</td>
+      <td>other</td>
+      <td>but</td>
+      <td>more</td>
+      <td>that</td>
+      <td>"</td>
+      <td>daily</td>
+      <td>story</td>
+      <td>my</td>
+      <td>much</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>enjoyed</td>
+      <td>than</td>
+      <td>he</td>
+      <td>in</td>
+      <td>there</td>
+      <td>sailor</td>
+      <td>(</td>
       <td>this</td>
-      <td>case</td>
-      <td>awful</td>
-      <td>from</td>
-      <td>mean</td>
+      <td>life</td>
+      <td>much</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>girl</td>
+      <td>a</td>
+      <td>also</td>
+      <td>common</td>
+      <td>would</td>
+      <td>moon</td>
+      <td>painful</td>
+      <td>one</td>
+      <td>so</td>
+      <td>more</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>fight</td>
+      <td>few</td>
+      <td>follows</td>
+      <td>in</td>
+      <td>be</td>
+      <td>"</td>
+      <td>)</td>
+      <td>will</td>
+      <td>far</td>
+      <td>.</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>.</td>
+      <td>good</td>
+      <td>in</td>
+      <td>their</td>
+      <td>a</td>
+      <td>and</td>
       <td>xxunk</td>
-      <td>upon</td>
-      <td>adult</td>
+      <td>suffice</td>
+      <td>,</td>
+      <td>it</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>it</td>
+      <td>scenes</td>
+      <td>his</td>
+      <td>old</td>
+      <td>hour</td>
+      <td>co.</td>
+      <td>is</td>
+      <td>.</td>
+      <td>and</td>
+      <td>stars</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>something</td>
+      <td>,</td>
+      <td>xxunk</td>
+      <td>age</td>
       <td>of</td>
+      <td>are</td>
+      <td>over</td>
+      <td>xxfld</td>
+      <td>it</td>
+      <td>kim</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>i</td>
+      <td>this</td>
+      <td>by</td>
+      <td>than</td>
+      <td>footage</td>
       <td>xxunk</td>
+      <td>,</td>
+      <td>1</td>
+      <td>'s</td>
+      <td>bassenger</td>
     </tr>
     <tr>
       <th>11</th>
-      <td>movie</td>
+      <td>could</td>
+      <td>character</td>
+      <td>using</td>
+      <td>they</td>
       <td>,</td>
-      <td>,</td>
-      <td>the</td>
       <td>.</td>
-      <td>of</td>
-      <td>some</td>
-      <td>life</td>
-      <td>madness</td>
-      <td>made</td>
+      <td>eric</td>
+      <td>i</td>
+      <td>only</td>
+      <td>and</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>is</td>
-      <td>we</td>
-      <td>but</td>
-      <td>film</td>
-      <td>\n\n</td>
-      <td>a</td>
-      <td>geico</td>
-      <td>.</td>
-      <td>(</td>
-      <td>thriller</td>
+      <td>watch</td>
+      <td>seems</td>
+      <td>several</td>
+      <td>thought</td>
+      <td>then</td>
+      <td>not</td>
+      <td>rushes</td>
+      <td>am</td>
+      <td>half</td>
+      <td>xxunk</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>an</td>
-      <td>have</td>
-      <td>i</td>
-      <td>'s</td>
-      <td>the</td>
-      <td>recently</td>
-      <td>insurance</td>
-      <td>in</td>
-      <td>simply</td>
-      <td>about</td>
+      <td>over</td>
+      <td>pretty</td>
+      <td>of</td>
+      <td>.</td>
+      <td>basically</td>
+      <td>to</td>
+      <td>down</td>
+      <td>glad</td>
+      <td>done</td>
+      <td>baldwin</td>
     </tr>
     <tr>
       <th>14</th>
-      <td>absolute</td>
-      <td>a</td>
-      <td>really</td>
-      <td>german</td>
-      <td>fight</td>
-      <td>deceased</td>
-      <td>commercials</td>
-      <td>fact</td>
-      <td>xxunk</td>
-      <td>a</td>
+      <td>and</td>
+      <td>much</td>
+      <td>moore</td>
+      <td>even</td>
+      <td>that</td>
+      <td>mention</td>
+      <td>to</td>
+      <td>to</td>
+      <td>.</td>
+      <td>as</td>
     </tr>
     <tr>
       <th>15</th>
-      <td>dud</td>
-      <td>well</td>
-      <td>did</td>
-      <td>xxup</td>
-      <td>scenes</td>
-      <td>widow</td>
-      <td>;</td>
-      <td>when</td>
-      <td>being</td>
-      <td>widowed</td>
+      <td>over</td>
+      <td>wasted</td>
+      <td>'s</td>
+      <td>the</td>
+      <td>same</td>
+      <td>the</td>
+      <td>his</td>
+      <td>read</td>
+      <td>i</td>
+      <td>the</td>
     </tr>
     <tr>
       <th>16</th>
+      <td>again</td>
       <td>.</td>
-      <td>-</td>
-      <td>n't</td>
-      <td>theatrical</td>
-      <td>were</td>
-      <td>,</td>
-      <td>what</td>
-      <td>it</td>
-      <td>enough</td>
+      <td>propaganda</td>
+      <td>xxunk</td>
+      <td>hour</td>
+      <td>xxunk</td>
+      <td>basement</td>
+      <td>so</td>
+      <td>seriously</td>
       <td>xxunk</td>
     </tr>
     <tr>
       <th>17</th>
+      <td>.</td>
       <td>\n\n</td>
-      <td>known</td>
-      <td>get</td>
-      <td>release</td>
-      <td>at</td>
-      <td>who</td>
-      <td>no</td>
-      <td>comes</td>
-      <td>to</td>
-      <td>(</td>
+      <td>film</td>
+      <td>willie</td>
+      <td>repeated</td>
+      <td>racial</td>
+      <td>,</td>
+      <td>many</td>
+      <td>thought</td>
+      <td>xxunk</td>
     </tr>
     <tr>
       <th>18</th>
-      <td>having</td>
-      <td>xxunk</td>
-      <td>into</td>
+      <td>the</td>
+      <td>while</td>
       <td>-</td>
-      <td>once</td>
-      <td>died</td>
-      <td>one</td>
-      <td>to</td>
-      <td>be</td>
-      <td>paxton</td>
+      <td>xxunk</td>
+      <td>4</td>
+      <td>/</td>
+      <td>where</td>
+      <td>negative</td>
+      <td>it</td>
+      <td>'s</td>
     </tr>
     <tr>
       <th>19</th>
-      <td>been</td>
-      <td>xxunk</td>
-      <td>this</td>
+      <td>acting</td>
       <td>i</td>
-      <td>quite</td>
-      <td>on</td>
-      <td>knows</td>
-      <td>religion</td>
-      <td>a</td>
-      <td>himself</td>
+      <td>making</td>
+      <td>that</td>
+      <td>times</td>
+      <td>gender</td>
+      <td>all</td>
+      <td>comments</td>
+      <td>was</td>
+      <td>.</td>
     </tr>
   </tbody>
 </table>
@@ -1233,7 +1121,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1243,11 +1131,11 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>torch.Size([64, 64])
+<pre>torch.Size([68, 64])
+torch.Size([64, 64])
+torch.Size([40, 64])
 torch.Size([69, 64])
-torch.Size([71, 64])
-torch.Size([71, 64])
-torch.Size([76, 64])
+torch.Size([66, 64])
 </pre>
 </div>
 </div>
@@ -1272,7 +1160,7 @@ torch.Size([76, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="LanguageModelLoader"><code>class</code> <code>LanguageModelLoader</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L203" class="source_link">[source]</a></h2><blockquote><p><code>LanguageModelLoader</code>(<code>dataset</code>:<a href="/text.data.html#TextDataset"><code>TextDataset</code></a>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>backwards</code>:<code>bool</code>=<code>False</code>, <code>shuffle</code>:<code>bool</code>=<code>False</code>, <code>max_len</code>:<code>int</code>=<code>25</code>)</p>
+<h2 id="LanguageModelLoader"><code>class</code> <code>LanguageModelLoader</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L14" class="source_link">[source]</a></h2><blockquote><p><code>LanguageModelLoader</code>(<code>dataset</code>:<a href="/data_block.html#LabelList"><code>LabelList</code></a>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>bptt</code>:<code>int</code>=<code>70</code>, <code>backwards</code>:<code>bool</code>=<code>False</code>, <code>shuffle</code>:<code>bool</code>=<code>False</code>, <code>max_len</code>:<code>int</code>=<code>25</code>)</p>
 </blockquote>
 
 </div>
@@ -1299,7 +1187,7 @@ torch.Size([76, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LanguageModelLoader.batchify"><code>batchify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L232" class="source_link">[source]</a></h4><blockquote><p><code>batchify</code>(<code>data</code>:<code>ndarray</code>) → <code>LongTensor</code></p>
+<h4 id="LanguageModelLoader.batchify"><code>batchify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>batchify</code>(<code>data</code>:<code>ndarray</code>) → <code>LongTensor</code></p>
 </blockquote>
 
 </div>
@@ -1326,7 +1214,7 @@ torch.Size([76, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LanguageModelLoader.get_batch"><code>get_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L239" class="source_link">[source]</a></h4><blockquote><p><code>get_batch</code>(<code>i</code>:<code>int</code>, <code>seq_len</code>:<code>int</code>) → <code>Tuple</code>[<code>LongTensor</code>, <code>LongTensor</code>]</p>
+<h4 id="LanguageModelLoader.get_batch"><code>get_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>get_batch</code>(<code>i</code>:<code>int</code>, <code>seq_len</code>:<code>int</code>) → <code>Tuple</code>[<code>LongTensor</code>, <code>LongTensor</code>]</p>
 </blockquote>
 <p>Create a batch at <code>i</code> of a given <code>seq_len</code>.</p>
 
@@ -1369,7 +1257,7 @@ torch.Size([76, 64])
 <span class="n">x</span><span class="p">[:</span><span class="mi">20</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">:]</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1381,26 +1269,27 @@ torch.Size([76, 64])
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], device=&#39;cuda:0&#39;)</pre>
+<pre>tensor([[   1,    1,    1,    1,    1,    1,    1,    1,    1,    1],
+        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1],
+        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1],
+        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1],
+        [   1,    1,    1,    1,    1,    1,    1,    1,    1,    1],
+        [  43,   43,    1,    1,    1,    1,    1,    1,    1,    1],
+        [  40,   40,   43,   43,   43,   43,   43,   43,   43,    1],
+        [   2,   10,   40,   40,   40,   40,   40,   40,   40,   43],
+        [1061,    9,  297, 5400,    2,   14,   12,    7,   12,   40],
+        [  18,  667,   89,  263,   75,    9,  273,   41,  103,    2],
+        [  65,    8,  462,   47,  465,    6,   14,    2,   29, 1632],
+        [   3, 5047,   47, 2667,   13,   81,   70,  120,  264,  135],
+        [   2,   14,  155, 1115, 4282,  229, 1531,   12,   10,    9],
+        [5761,   51,    2,  246,   66,   20,   22,   36,   68,  567],
+        [  18,  100,    0,   13,   14,    4, 4682,  137,   12,   56],
+        [  65,  102,    3,    9,   20,   10,    5,    3,  333, 1343],
+        [   3, 5237,  248,   29,    9,    9, 6107,    5,   14,  181],
+        [ 288,   25,    9,  522,    0,   46,  859,   13,   20,    3],
+        [  33,    7,  487,   89,    4,  195,  286,   16,   11,   23],
+        [ 596,    2,  248,  377,   10,   20,   41,  112,   77,    6]],
+       device=&#39;cuda:0&#39;)</pre>
 </div>
 
 </div>
@@ -1425,7 +1314,7 @@ torch.Size([76, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SortSampler"><code>class</code> <code>SortSampler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L244" class="source_link">[source]</a></h2><blockquote><p><code>SortSampler</code>(<code>data_source</code>:<code>NPArrayList</code>, <code>key</code>:<code>KeyFunc</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Sampler"><code>Sampler</code></a></p>
+<h2 id="SortSampler"><code>class</code> <code>SortSampler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L55" class="source_link">[source]</a></h2><blockquote><p><code>SortSampler</code>(<code>data_source</code>:<code>NPArrayList</code>, <code>key</code>:<code>KeyFunc</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Sampler"><code>Sampler</code></a></p>
 </blockquote>
 
 </div>
@@ -1452,7 +1341,7 @@ torch.Size([76, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SortishSampler"><code>class</code> <code>SortishSampler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L252" class="source_link">[source]</a></h2><blockquote><p><code>SortishSampler</code>(<code>data_source</code>:<code>NPArrayList</code>, <code>key</code>:<code>KeyFunc</code>, <code>bs</code>:<code>int</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Sampler"><code>Sampler</code></a></p>
+<h2 id="SortishSampler"><code>class</code> <code>SortishSampler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L63" class="source_link">[source]</a></h2><blockquote><p><code>SortishSampler</code>(<code>data_source</code>:<code>NPArrayList</code>, <code>key</code>:<code>KeyFunc</code>, <code>bs</code>:<code>int</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Sampler"><code>Sampler</code></a></p>
 </blockquote>
 
 </div>
@@ -1479,7 +1368,7 @@ torch.Size([76, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="pad_collate"><code>pad_collate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L273" class="source_link">[source]</a></h4><blockquote><p><code>pad_collate</code>(<code>samples</code>:<code>BatchSamples</code>, <code>pad_idx</code>:<code>int</code>=<code>1</code>, <code>pad_first</code>:<code>bool</code>=<code>True</code>) → <code>Tuple</code>[<code>LongTensor</code>, <code>LongTensor</code>]</p>
+<h4 id="pad_collate"><code>pad_collate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>pad_collate</code>(<code>samples</code>:<code>BatchSamples</code>, <code>pad_idx</code>:<code>int</code>=<code>1</code>, <code>pad_first</code>:<code>bool</code>=<code>True</code>) → <code>Tuple</code>[<code>LongTensor</code>, <code>LongTensor</code>]</p>
 </blockquote>
 
 </div>
@@ -1496,226 +1385,6 @@ torch.Size([76, 64])
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Data-block-API">Data block API<a class="anchor-link" href="#Data-block-API">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The data block API works for the text application too. Here are a few subclasses of the usual objects to implement the parts speficic to the text application.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextFileList"><code>class</code> <code>TextFileList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L14" class="source_link">[source]</a></h3><blockquote><p><code>TextFileList</code>(<code>items</code>:<code>Iterator</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) :: <a href="/data_block.html#InputList"><code>InputList</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This subclasses <a href="/data_block.html#InputList"><code>InputList</code></a> just to change the defulat extentions in <code>from_folder</code> to text extensions.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextFileList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>extensions</code>:<code>StrList</code>=<code>['.txt']</code>, <code>recurse</code>=<code>True</code>) → <code>ImageFileList</code></p>
-</blockquote>
-<p>Get the list of files in <code>path</code> that have a suffix in <code>extensions</code>. <code>recurse</code> determines if we search subfolders.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextSplitData"><code>class</code> <code>TextSplitData</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L30" class="source_link">[source]</a></h3><blockquote><p><code>TextSplitData</code>(<code>path</code>:<code>PathOrStr</code>, <code>train</code>:<a href="/data_block.html#LabelList"><code>LabelList</code></a>, <code>valid</code>:<a href="/data_block.html#LabelList"><code>LabelList</code></a>, <code>test</code>:<a href="/data_block.html#LabelList"><code>LabelList</code></a>=<code>None</code>) :: <a href="/data_block.html#SplitData"><code>SplitData</code></a></p>
-</blockquote>
-<p>A <a href="/data_block.html#LabelList"><code>LabelList</code></a> for each of <code>train</code> and <code>valid</code> (optional <code>test</code>), and method to get <code>datasets</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextSplitData.add_test_folder"><code>add_test_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L38" class="source_link">[source]</a></h4><blockquote><p><code>add_test_folder</code>(<code>test_folder</code>:<code>str</code>=<code>'test'</code>, <code>label</code>:<code>Any</code>=<code>None</code>)</p>
-</blockquote>
-<p>Add test set containing items from folder <code>test_folder</code> and an arbitrary <code>label</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TextSplitDatasets"><code>class</code> <code>TextSplitDatasets</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L43" class="source_link">[source]</a></h3><blockquote><p><code>TextSplitDatasets</code>(<code>path</code>:<code>PathOrStr</code>, <code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<code>None</code>) :: <a href="/data_block.html#SplitDatasets"><code>SplitDatasets</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>A subclass of <a href="/data_block.html#SplitDatasets"><code>SplitDatasets</code></a> that implements methods specific to texts.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextSplitDatasets.tokenize"><code>tokenize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L44" class="source_link">[source]</a></h4><blockquote><p><code>tokenize</code>(<code>tokenizer</code>:<a href="/text.transform.html#Tokenizer"><code>Tokenizer</code></a>=<code>None</code>, <code>chunksize</code>:<code>int</code>=<code>10000</code>)</p>
-</blockquote>
-<p>Tokenize <code>self.datasets</code> with <code>tokenizer</code> by bits of <code>chunksize</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextSplitDatasets.numericalize"><code>numericalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L49" class="source_link">[source]</a></h4><blockquote><p><code>numericalize</code>(<code>vocab</code>:<a href="/text.transform.html#Vocab"><code>Vocab</code></a>=<code>None</code>, <code>max_vocab</code>:<code>int</code>=<code>60000</code>, <code>min_freq</code>:<code>int</code>=<code>2</code>)</p>
-</blockquote>
-<p>Numericalize <code>self.datasets</code> with <code>vocab</code> or by creating one on the training set with <code>max_vocab</code> and <code>min_freq</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextSplitDatasets.databunch"><code>databunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L56" class="source_link">[source]</a></h4><blockquote><p><code>databunch</code>(<code>cls_func</code>, <code>path</code>:<code>PathOrStr</code>=<code>None</code>, <code>kwargs</code>)</p>
-</blockquote>
-<p>Create an <code>cls_func</code> from self, <code>path</code> will override <code>self.path</code>, <code>kwargs</code> are passed to <code>cls_func.create</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Enums">Enums<a class="anchor-link" href="#Enums">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="TextMtd">`TextMtd`</h2><blockquote><p><code>Enum</code> = [DF, TOK, IDS]</p>
-</blockquote>
-<p><a href="/text.data.html#TextDataset"><code>TextDataset</code></a> enum to keep track of what data needs to be processed (dataframe, csv, tokens, ids)</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 </div>
  

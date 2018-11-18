@@ -72,7 +72,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="kn">from</span> <span class="nn">fastai.text</span> <span class="k">import</span> <span class="o">*</span> 
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -101,7 +101,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="n">path</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -143,7 +143,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -246,7 +246,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="n">data_clas</span> <span class="o">=</span> <span class="n">TextClasDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;texts.csv&#39;</span><span class="p">,</span> <span class="n">vocab</span><span class="o">=</span><span class="n">data_lm</span><span class="o">.</span><span class="n">train_ds</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -268,7 +268,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="n">data_clas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -289,7 +289,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="n">data_clas</span> <span class="o">=</span> <span class="n">TextClasDataBunch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -323,7 +323,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -335,7 +335,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Total time: 00:17
 epoch  train_loss  valid_loss  accuracy
-1      4.745734    4.218480    0.247500  (00:17)
+1      4.728971    4.228551    0.247234  (00:17)
 
 </pre>
 </div>
@@ -361,7 +361,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -371,9 +371,9 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:21
+<pre>Total time: 00:22
 epoch  train_loss  valid_loss  accuracy
-1      4.431404    4.084375    0.260209  (00:21)
+1      4.450525    4.127853    0.253167  (00:22)
 
 </pre>
 </div>
@@ -385,7 +385,53 @@ epoch  train_loss  valid_loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>And finally we save the encoder to be able to use it for classification in the next section.</p>
+<p>To evaluate your language model, you can run the <a href="/basic_train.html#Learner.predict"><code>Learner.predict</code></a> method and specify the number of words you want it to guess.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;This is a review about&quot;</span><span class="p">,</span> <span class="n">n_words</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total time: 00:00
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;This is a review about the first way to climb to overcome the best robert&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It doesn't make much sense (we have a tiny vocabulary here and didn't train much on it) but note that it respects basic grammar (which comes from the pretrained model).</p>
+<p>Finally we save the encoder to be able to use it for classification in the next section.</p>
 
 </div>
 </div>
@@ -398,7 +444,7 @@ epoch  train_loss  valid_loss  accuracy
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">save_encoder</span><span class="p">(</span><span class="s1">&#39;ft_enc&#39;</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -426,7 +472,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -436,9 +482,9 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:25
+<pre>Total time: 00:26
 epoch  train_loss  valid_loss  accuracy
-1      0.645119    0.660906    0.552239  (00:25)
+1      0.686503    0.632651    0.701493  (00:26)
 
 </pre>
 </div>
@@ -464,7 +510,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">5e-3</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -474,9 +520,9 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:32
+<pre>Total time: 00:33
 epoch  train_loss  valid_loss  accuracy
-1      0.637404    0.618768    0.626866  (00:32)
+1      0.612237    0.542365    0.706468  (00:33)
 
 </pre>
 </div>
@@ -495,7 +541,7 @@ epoch  train_loss  valid_loss  accuracy
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">2e-3</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span> <span class="mf">2e-3</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -505,12 +551,48 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 01:04
+<pre>Total time: 00:55
 epoch  train_loss  valid_loss  accuracy
-1      0.598171    0.568904    0.696517  (01:04)
+1      0.510760    0.479997    0.791045  (00:55)
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Again, we can predict on a raw text by using the <a href="/basic_train.html#Learner.predict"><code>Learner.predict</code></a> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;This was a great movie!&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(&#39;positive&#39;, tensor(0), tensor([0.8558, 0.1442]))</pre>
+</div>
+
 </div>
 
 </div>

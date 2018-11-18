@@ -16,18 +16,6 @@ sidebar: home_sidebar
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai.vision</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai.widgets</span> <span class="k">import</span> <span class="n">DatasetFormatter</span><span class="p">,</span> <span class="n">ImageDeleter</span><span class="p">,</span> <span class="n">ImageRelabeler</span>
-</pre></div>
-
-</div>
-</div>
-</div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
@@ -65,7 +53,7 @@ sidebar: home_sidebar
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -79,14 +67,14 @@ sidebar: home_sidebar
 <span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="n">DatasetFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">from_toplosses</span><span class="p">(</span><span class="n">learner</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">Valid</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="ImageDeleter">ImageDeleter<a class="anchor-link" href="#ImageDeleter">&#182;</a></h3>
+<h3 id="ImageCleaner">ImageCleaner<a class="anchor-link" href="#ImageCleaner">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -102,10 +90,10 @@ sidebar: home_sidebar
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ImageDeleter</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ImageCleaner</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -117,52 +105,7 @@ sidebar: home_sidebar
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_cleaner.ImageDeleter at 0x1a1d138908&gt;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="ImageRelabeler">ImageRelabeler<a class="anchor-link" href="#ImageRelabeler">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/widgets.image_cleaner.html#ImageRelabeler"><code>ImageRelabeler</code></a> helps you find mis-categorized images in your data directory.</p>
-<blockquote><p>NOTE: ImageRelabeler currently only works with files where labels were created from the names of their parent directory (i.e. with .from_folder()). The widget moves mislabeled photos from the incorrect parent directory to the properly-labeled parent directory.</p>
-</blockquote>
-<p>To relabel an image, just click the proper label in the widget dropdown.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ImageRelabeler</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_cleaner.ImageRelabeler at 0x1a1feefc50&gt;</pre>
+<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7fe7f1322ac8&gt;</pre>
 </div>
 
 </div>

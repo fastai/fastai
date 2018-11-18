@@ -2,7 +2,7 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'StdUpsample', 'bn_drop_lin', 'conv2d', 'conv2d_relu', 'conv2d_trans', 'conv_layer', 'get_embedding', 'simple_cnn',
+           'StdUpsample', 'bn_drop_lin', 'conv2d', 'conv2d_relu', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
            'std_upsample_head', 'trunc_normal_']
 
 class Lambda(nn.Module):
@@ -118,7 +118,7 @@ def trunc_normal_(x:Tensor, mean:float=0., std:float=1.) -> Tensor:
     # From https://discuss.pytorch.org/t/implementing-truncated-normal-initializer/4778/12
     return x.normal_().fmod_(2).mul_(std).add_(mean)
 
-def get_embedding(ni:int,nf:int) -> nn.Module:
+def embedding(ni:int,nf:int) -> nn.Module:
     "Create an embedding layer."
     emb = nn.Embedding(ni, nf)
     # See https://arxiv.org/abs/1711.09160

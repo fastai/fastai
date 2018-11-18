@@ -31,6 +31,7 @@ class URLs():
     MNIST = f'{S3_IMAGE}mnist_png'
     CAMVID = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY = f'{URL}camvid_tiny'
+    BIWI_HEAD_POSE = f"{S3_IMAGELOC}biwi_head_pose"
 
 class Config():
     "Creates a default config file at `~/.fastai/config.yml`"
@@ -73,7 +74,8 @@ def url2name(url): return url.split('/')[-1]
 def _url2path(url, data=True):
     name = url2name(url)
     return datapath4file(name) if data else modelpath4file(name)
-def _url2tgz(url): return datapath4file(f'{url2name(url)}.tgz')
+def _url2tgz(url, data=True): 
+    return datapath4file(f'{url2name(url)}.tgz') if data else modelpath4file(f'{url2name(url)}.tgz')
 
 def modelpath4file(filename):
     "Returns URLs.MODEL path if file exists. Otherwise returns config path"
@@ -87,9 +89,9 @@ def datapath4file(filename):
     if local_path.exists() or local_path.with_suffix('.tgz').exists(): return local_path
     else: return Config.data_path()/filename
 
-def download_data(url:str, fname:PathOrStr=None):
+def download_data(url:str, fname:PathOrStr=None, data:bool=True):
     "Download `url` to destination `fname`"
-    fname = Path(ifnone(fname, _url2tgz(url)))
+    fname = Path(ifnone(fname, _url2tgz(url, data)))
     os.makedirs(fname.parent, exist_ok=True)
     if not fname.exists():
         print(f'Downloading {url}')
@@ -98,9 +100,9 @@ def download_data(url:str, fname:PathOrStr=None):
 
 def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True):
     "Download `url` if it doesn't exist to `fname` and un-tgz to folder `dest`"
-    dest = Path(ifnone(dest, _url2path(url)))
+    dest = Path(ifnone(dest, _url2path(url, data)))
     if not dest.exists():
-        fname = download_data(url, fname=fname)
+        fname = download_data(url, fname=fname, data=data)
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest
 
