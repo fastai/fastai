@@ -9,7 +9,7 @@ __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', '
            'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
-text_extensions = {'txt'}
+text_extensions = {'.txt'}
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
@@ -173,15 +173,15 @@ class TextDataBunch(DataBunch):
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols,
                            label_cols, label_delim, **kwargs)
 
-    @classmethod#TODO: test
+    @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
-        path = Path(path)
-        processor = [OpenFileProcessor] + _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        path = Path(path).absolute()
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
         src = (TextList.from_folder(path, processor=processor)
-                       .split_by_folder(train=train, valid=valid)
-                       .label_from_folder(classes=classes))
+                       .split_by_folder(train=train, valid=valid))
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
         if test is not None: src.add_test_folder(path/test)
         return src.databunch(**kwargs)
 
