@@ -75,7 +75,7 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
-    if do_y: y = normalize(y,mean,std)
+    if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
 def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
@@ -322,17 +322,22 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
         classes = ['background'] + list(classes)
         return classes
 
+def _get_size(xs,i):
+    size = xs.sizes.get(i,None)
+    if size is None:
+        # Image hasn't been accessed yet, so we don't know its size
+        _ = xs[i]
+        size =xs.sizes[i]
+    return size
+
 class ObjectCategoryList(MultiCategoryList):
     _processor = ObjectCategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
-        super().__init__(items, **kwargs)
-
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
     
     def reconstruct(self, t, x):
         return self[0].reconstruct(*t, x, classes=self.classes)
-
+    
 class ObjectItemList(ImageItemList):
     def __post_init__(self):
         super().__post_init__()
@@ -361,9 +366,10 @@ class PointsItemList(ItemList):
 
     def get(self, i):
         o = super().get(i)
-        return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
+        return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
 
 class ImageToImageList(ImageItemList):
     def __post_init__(self):
         super().__post_init__()
         self._label_cls = ImageItemList
+

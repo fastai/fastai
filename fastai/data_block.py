@@ -37,9 +37,9 @@ class ItemList():
 
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, **kwargs):
+                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
         self.path = Path(path).absolute()
-        self.items,self.create_func = array(items, dtype=object),create_func
+        self.items,self.create_func,self.x = array(items, dtype=object),create_func,x
         self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
@@ -76,7 +76,7 @@ class ItemList():
     def new(self, items:Iterator, create_func:Callable=None, processor:PreProcessor=None, **kwargs)->'ItemList':
         create_func = ifnone(create_func, self.create_func)
         processor = ifnone(processor, self.processor)
-        return self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
+        return self.__class__(items=items, create_func=create_func, processor=processor, path=self.path, x=self.x, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -393,7 +393,9 @@ class LabelList(Dataset):
     def __len__(self)->int: return len(self.x) if self.item is None else 1
     def set_item(self,item): self.item = self.x.process_one(item)
     def clear_item(self): self.item = None
-    def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
+    def __repr__(self)->str:
+        x = f'{self.x}' # force this to happen first
+        return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'
     def predict(self, res): return self.y.predict(res)
 
     @property
