@@ -11,18 +11,20 @@ def _decode(df):
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
 def _get_files(p, extensions):
-    res = [DirEntryEx(f) for f in os.scandir(p) if f.name[0] != '.' and f.is_file()]
-    if extensions is not None: res = [f for f in res if f.suffix.lower() in extensions]
+    res = [DirEntryEx(f) for f in os.scandir(p) if f.name[0] != '.' and f.is_file()
+           and (extensions is None or f'.{f.name.split(".")[-1].lower()}' in extensions)]
     return res
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-    if recurse: return sum((_get_files(p, extensions) for p,d,f in os.walk(path)), [])
+    #if recurse: return sum((_get_files(p, extensions) for p,d,f in os.walk(path)), [])
+    if recurse:
+        res = []
+        for p,d,f in os.walk(path): res += _get_files(p, extensions)
+        return res
     else:       return  _get_files(path, extensions)
 
-def _class_folder(o):
-    p,f = os.path.split(o)
-    return os.path.split(p)[1]
+def _class_folder(o): return o.splitall[-2]
 
 class PreProcessor():
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
@@ -43,7 +45,7 @@ class ItemList():
         self.__post_init__()
 
     def __post_init__(self): pass
-    def __len__(self)->int: return len(self.items) or 1
+    def __len__(self)->int: return len(self.items)
     def __repr__(self)->str:
         items = [self[i] for i in range(min(5,len(self)))]
         return f'{self.__class__.__name__} ({len(self)} items)\n{items}...\nPath: {self.path}'
@@ -190,7 +192,7 @@ class ItemList():
     def label_from_func(self, func:Callable, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
         return self.label_from_list([func(o) for o in self.items], **kwargs)
-    
+
     def label_from_folder(self, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
         return self.label_from_func(func=_class_folder, **kwargs)
@@ -330,6 +332,14 @@ class ItemLists():
         if self.test: self.test.transform(tfms[1], **kwargs)
         return self
 
+    def transform_labels(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+        if not tfms: tfms=(None,None)
+        self.train.transform_labels(tfms[0], **kwargs)
+        self.valid.transform_labels(tfms[1], **kwargs)
+        if self.test: self.test.transform_labels(tfms[1], **kwargs)
+        return self
+
+
 class LabelLists(ItemLists):
     def get_processors(self):
         procs_x,procs_y = listify(self.train.x._processor),listify(self.train.y._processor)
@@ -394,8 +404,8 @@ class LabelList(Dataset):
             else:                 x,y = self.item   ,0
             if self.tfms:
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
-                if self.tfm_y and self.item is None:
-                    y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
+            if self.tfm_y and self.item is None:
+                y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
@@ -417,6 +427,12 @@ class LabelList(Dataset):
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
         "Set the `tfms` and `` tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs
-        if tfm_y is not None: self.tfm_y=tfm_y
+        if tfm_y is not None:  self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
+        return self
+
+    def transform_labels(self, tfms:TfmList=None, **kwargs):
+        self.tfm_y=True
+        if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
+        else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
 
