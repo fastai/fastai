@@ -7,7 +7,7 @@ from ..basic_data import *
 from ..layers import *
 from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
-import PIL
+import PIL, warnings
 
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageItemList', 'normalize', 'normalize_funcs',
@@ -75,7 +75,7 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
-    if do_y: y = normalize(y,mean,std)
+    if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
 def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
@@ -208,11 +208,31 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
 def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
-    """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
+    """Check if the image in `file` exists, it can be opened and has `n_channels`.
+    If `delete=True`:
+    (1) removes `file` if any of the verifications fails
+    (2) saves a modified version of `file` w/o EXIF data if the latter is broken
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
     to PIL.Image.save."""
     try:
+        # deal with partially broken images as indicated by PIL warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings('error')
+            try:
+                # must use this workaround to avoid: ResourceWarning: unclosed file warning
+                with open(file, 'rb') as img_file: PIL.Image.open(img_file)
+            except Warning as w:
+                if "Possibly corrupt EXIF data" in str(w):
+                    if delete: # green light to modify files
+                        print(f"{file}: Removing corrupt EXIF data")
+                        warnings.simplefilter("ignore")
+                        # save EXIF-cleaned up image, which happens automatically
+                        PIL.Image.open(file).save(file)
+                    else: # keep user's files intact
+                        print(f"{file}: Not removing corrupt EXIF data, pass `delete=True` to do that")
+                else: warnings.warn(w)
+
         img = PIL.Image.open(file)
         if max_size is None: return
         assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
