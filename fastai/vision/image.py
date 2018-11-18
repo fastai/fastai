@@ -419,7 +419,7 @@ class ImageBBox(ImagePoints):
 
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
-    fn = getattr(fn, 'path', fn)
+    #fn = getattr(fn, 'path', fn)
     x = PIL.Image.open(fn).convert(convert_mode)
     x = pil2tensor(x,np.float32)
     if div: x.div_(255)
