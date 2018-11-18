@@ -75,7 +75,7 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
-    if do_y: y = normalize(y,mean,std)
+    if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
 def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
