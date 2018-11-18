@@ -9,7 +9,7 @@ __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', '
            'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
-text_extensions = ['.txt']
+text_extensions = {'txt'}
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
@@ -99,7 +99,7 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
 class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
     `TextClasDataBunch`."""
-    
+
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
@@ -150,7 +150,7 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def from_df(cls, path:PathOrStr, train_df:DataFrame, valid_df:DataFrame, test_df:Optional[DataFrame]=None,
-                tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1, 
+                tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1,
                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
@@ -162,7 +162,7 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
-                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1, 
+                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1,
                  label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
         df = pd.read_csv(Path(path)/csv_name, header=header)
@@ -170,7 +170,7 @@ class TextDataBunch(DataBunch):
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
-        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols, 
+        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols,
                            label_cols, label_delim, **kwargs)
 
     @classmethod#TODO: test
@@ -257,7 +257,7 @@ class Text(ItemBase):
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
-    
+
 class TokenizeProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
@@ -284,12 +284,13 @@ class NumericalizeProcessor(PreProcessor):
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
-    
+
 class TextList(ItemList):
     _bunch = TextClasDataBunch
     _processor = [TokenizeProcessor, NumericalizeProcessor]
 
     def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
+        self.filter_missing_y = True
         super().__init__(items, **kwargs)
         self.vocab = vocab
 
@@ -304,9 +305,9 @@ class TextList(ItemList):
         "A special labelling method for language models."
         self.__class__ = LMTextList
         return self.label_const(0, label_cls=LMLabel)
-    
+
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None, 
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
                     processor:PreProcessor=None, **kwargs)->'TextList':
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
         processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
@@ -314,7 +315,7 @@ class TextList(ItemList):
 
 class LMTextList(TextList):
     _bunch = TextLMDataBunch
-    
+
 def _join_texts(texts:Collection[str], mark_fields:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]

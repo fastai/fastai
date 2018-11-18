@@ -10,16 +10,24 @@ def _decode(df):
 
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
-def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
+def _get_files(p, extensions):
+    res = [DirEntryEx(f) for f in os.scandir(p) if f.name[0] != '.' and f.is_file()]
+    if extensions is not None: res = [f for f in res if f.suffix.lower() in extensions]
+    return res
+
+def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-    return [o for o in Path(c).glob('**/*' if recurse else '*')
-            if not o.name.startswith('.') and not o.is_dir()
-            and (extensions is None or (o.suffix.lower() in extensions))]
+    if recurse: return sum((_get_files(p, extensions) for p,d,f in os.walk(path)), [])
+    else:       return  _get_files(path, extensions)
+
+def _class_folder(o):
+    p,f = os.path.split(o)
+    return os.path.split(p)[1]
 
 class PreProcessor():
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
     def process_one(self, item:Any):         return item
-    def process(self, ds:Collection):        ds.items = [self.process_one(item) for item in ds.items]
+    def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
 class ItemList():
     _bunch = DataBunch
@@ -28,7 +36,8 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, **kwargs):
-        self.items,self.create_func,self.path = array(items, dtype=object),create_func,Path(path)
+        self.path = Path(path).absolute()
+        self.items,self.create_func = array(items, dtype=object),create_func
         self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
@@ -70,6 +79,7 @@ class ItemList():
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
+        path = Path(path).absolute()
         return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
 
     @classmethod
@@ -115,8 +125,8 @@ class ItemList():
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
-        return [i for i in range_of(self)
-                if self.items[i].relative_to(self.path).parts[0] == name]
+        comp_name = os.path.join(self.path, name) + os.path.sep
+        return [i for i in range_of(self) if self.items[i].path.startswith(comp_name)]
 
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
@@ -180,16 +190,16 @@ class ItemList():
     def label_from_func(self, func:Callable, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
         return self.label_from_list([func(o) for o in self.items], **kwargs)
-
+    
     def label_from_folder(self, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=lambda o: o.parent.name, **kwargs)
+        return self.label_from_func(func=_class_folder, **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, **kwargs)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
         pat = re.compile(pat)
         def _inner(o):
-            s = str(o if full_path else o.name)
+            s = str(os.path.join(self.path,o) if full_path else o)
             res = pat.search(s)
             assert res,f'Failed to find "{pat}" in "{s}"'
             return res.group(1)
@@ -231,6 +241,7 @@ class CategoryList(CategoryListBase):
 
     def get(self, i):
         o = self.items[i]
+        if o is None: return None
         return self._item_cls(o, self.classes[o])
 
     def predict(self, res):
@@ -255,6 +266,7 @@ class MultiCategoryList(CategoryListBase):
 
     def get(self, i):
         o = self.items[i]
+        if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
@@ -327,7 +339,7 @@ class LabelLists(ItemLists):
 
     def process(self):
         xp,yp = self.get_processors()
-        for ds in self.lists: ds.process(xp, yp)
+        for i,ds in enumerate(self.lists): ds.process(xp, yp, filter_missing_y=i==0)
         return self
 
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
@@ -387,15 +399,14 @@ class LabelList(Dataset):
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
-    def process(self, xp=None, yp=None):
+    def process(self, xp=None, yp=None, filter_missing_y:bool=False):
         "Launch the preprocessing on `xp` and `yp`."
-        self.x.process(xp)
         self.y.process(yp)
+        if filter_missing_y and (getattr(self.x, 'filter_missing_y', None)):
+            filt = array([o is None for o in self.y])
+            if filt.sum()>0: self.x,self.y = self.x[~filt],self.y[~filt]
+        self.x.process(xp)
         return self
-
-    def filter_missing_y(self):
-        filt = array([o is None for o in self.y])
-        if filt.sum()>0: self.x,self.y = self.x[~filt],self.y[~filt]
 
     @classmethod
     def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
@@ -408,3 +419,4 @@ class LabelList(Dataset):
         self.tfms,self.tfmargs = tfms,kwargs
         if tfm_y is not None: self.tfm_y=tfm_y
         return self
+

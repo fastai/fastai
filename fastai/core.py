@@ -221,9 +221,68 @@ def array(a, *args, **kwargs)->np.ndarray:
 
 class Category(ItemBase):
     def __init__(self,data,obj): self.data,self.obj = data,obj
-    def __int__(self): return self.data
+    def __int__(self): return int(self.data)
     def __str__(self): return str(self.obj)
 
 class MultiCategory(ItemBase):
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
+
+    @property
+    def p(self):
+        if self.p_ is None: self.p_ = Path(self.d)
+        return self.p_
+
+    def __getattr__(self,k):
+        res = getattr(self.d, k, None)
+        if res is not None: return res
+        return getattr(self.p, k)
+
+    def read(self): return self.open('rb').read()
+
+class DelayedPath(pathlib.PosixPath):
+    _not_ready = set(['ready', 'args', 'make_ready'])
+    def __init__(self, *args, **kwargs):
+        self.args,self.ready = args,False
+        self._flavour = pathlib._windows_flavour if os.name == 'nt' else pathlib._posix_flavour
+
+    def __new__(cls, *args, **kwargs): return object.__new__(cls)
+    @property
+    def path(self): return str(self)
+
+    def make_ready(self):
+        if self.ready: return
+        self._drv,self._root,self._parts = self._parse_args(self.args)
+        self._init()
+        self.ready = True
+
+    def __getattribute__(self,name):
+        if name.startswith('_'): return super().__getattribute__(name)
+        if name not in self._not_ready:
+            #print(name)
+            self.make_ready()
+        return super().__getattribute__(name)
+
+class DirEntryEx(Path):
+    "A class that converts `DirEntry` into something enough like `Path` that we can open it with PIL"
+    def __new__(cls, *args, **kwargs): return object.__new__(cls)
+    def __init__(self, d): self._name,self.path = d.name,d.path
+
+    def __getattribute__(self, k):
+        # Can't remove Path.name, but need isinstance(Path) to work for PIL
+        if k=='name': return getattr(self, '_name')
+        return super().__getattribute__(k)
+    def __reduce__(self): return object.__reduce__(self)
+
+    def __str__(self): return self.path
+    def __fspath__(self): return self.path
+    def resolve(self): return self.path
+
+    # You can add more stuff from pathlib.Path as needed
+    @property
+    def suffix(self): return os.path.splitext(self.path)[1]
+    @property
+    def stem(self): return os.path.splitext(os.path.split(self.path)[1])[0]
+# So we can pickle it
+DirEntryEx.__slots__=None
+

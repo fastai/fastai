@@ -99,3 +99,36 @@ gpustat -cp -i --no-color
 ```
 
 For more details see: https://github.com/wookayin/gpustat
+
+
+## GPU Memory Notes
+
+
+### Unusable GPU RAM per process
+
+As soon as you start using `cuda`, your GPU loses about 0.5GB RAM per process. For example this code consumes 0.5GB GPU RAM:
+```
+import torch
+torch.ones((1, 1)).cuda()
+```
+This GPU memory is not accessible to your program's needs and it's not re-usable between processes. If you run two processes, each executing code on `cuda`, each will consume 0.5GB GPU RAM from the get going.
+
+This fixed chunk of memory is used by `cuDNN` kernels (~300MB) and `pytorch` (the rest) for its internal needs.
+
+
+### Cached Memory
+
+`pytorch` normally caches GPU RAM it previously used to re-use it at a later time. So the output from `nvidia-smi` could be incorrect in that you may have more GPU RAM available than it reports. You can reclaim this cache with:
+```
+import torch
+torch.cuda.empty_cache()
+```
+
+If you have more than one process using the same GPU, the cached memory from one process is not accessible to the other. The above code executed by the first process will solve this issue and make the freed GPU RAM available to the other process.
+
+
+### Reusing GPU RAM
+
+How can we do a lot of experimentation in a given jupyter notebook w/o needing to restart the kernel all the time? You can delete the variables that hold the memory, can call `import gc; gc.collect()` to reclaim memory by deleted objects with circular references, optionally (if you have just one process) calling `torch.cuda.empty_cache()` and you can now re-use the GPU memory inside the same kernel.
+
+To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.

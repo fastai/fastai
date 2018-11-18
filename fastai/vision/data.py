@@ -247,8 +247,10 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     if resume is None and dest == '.': resume=False
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
+    files = get_image_files(path)
+    if max_workers<2: res = [verify_image(file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        files = get_image_files(path)
         futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
                              interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
@@ -267,9 +269,12 @@ class ImageItemList(ItemList):
         return res
 
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
-                    extensions:Collection[str]=image_extensions, **kwargs)->ItemList:
+    def from_folder(cls, path:PathOrStr='.', create_func:Callable=None,
+                    extensions:Collection[str]=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
+        create_func = ifnone(create_func, open_image)
+        extensions = ifnone(extensions, image_extensions)
+        #create_func = ifnone(create_func, lambda o:open_image(os.path.join(path, o)))
         return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
 
     @classmethod

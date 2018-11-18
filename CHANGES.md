@@ -12,7 +12,9 @@ of that change.
 
 
 
-## 1.0.27.dev0 (Work In Progress)
+
+
+## 1.0.28.dev0 (Work In Progress)
 
 ### New:
 
@@ -20,6 +22,18 @@ of that change.
 
 ### Fixed:
 
+
+
+## 1.0.27 (2018-11-17)
+
+### New:
+
+### Changed:
+
+- ItemLists can now set `self.filter_missing_y` to automatically remove items
+  from LabelLists  training set that can't be labeled
+
+### Fixed:
 
 
 ## 1.0.26 (2018-11-16)
@@ -30,7 +44,7 @@ of that change.
 
 ### Changed:
 
-- `Tokenizer` as `pre_rules` and `post_rules` now (for before and after tokenization)
+- `Tokenizer` has `pre_rules` and `post_rules` now (for before and after tokenization)
 - `mark_fields` is now default to `False`
 
 
@@ -46,7 +60,8 @@ of that change.
 - Remove `TextFilesList` as you can now use `TextList` instead
 - Consistent use of `cols` / `col` in the data block API depending on if you can pass multiple columns or not
 - Collab is refactored with the data block API behind the scene
-- `get_collab_learner` and `get_tabular_learner` become `collab_learner` and `tabular_learner` for name harmonization accross applications
+- `get_collab_learner` and `get_tabular_learner` become `collab_learner` and
+  `tabular_learner` for name harmonization accross applications
 - `get_embedding` becomes `embedding`
 - `ImageDeleter` and `ImageRelabeler` are merged into `ImageCleaner`
 
