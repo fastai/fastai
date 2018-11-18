@@ -49,7 +49,6 @@ def test_download_images():
     finally:
         shutil.rmtree(tmp_path)
 
-@pytest.mark.skip("Jeremy needs to fix me")
 def test_verify_images(path):
     tmp_path = path/'tmp'
     os.makedirs(tmp_path, exist_ok=True)

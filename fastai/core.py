@@ -228,16 +228,49 @@ class MultiCategory(ItemBase):
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
 
-class DirEntryPath(pathlib.PosixPath):
-    def __init__(self, d): self.d,self.p_ = d,None
-        
     @property
     def p(self):
         if self.p_ is None: self.p_ = Path(self.d)
         return self.p_
-    
+
     def __getattr__(self,k):
-        if k.startswith('_'): raise AttributeError()
         res = getattr(self.d, k, None)
         if res is not None: return res
         return getattr(self.p, k)
+
+    def read(self): return self.open('rb').read()
+
+class DelayedPath(pathlib.PosixPath):
+    _not_ready = set(['ready', 'args', 'make_ready'])
+    def __init__(self, *args, **kwargs):
+        self.args,self.ready = args,False
+        self._flavour = pathlib._windows_flavour if os.name == 'nt' else pathlib._posix_flavour
+
+    def __new__(cls, *args, **kwargs): return object.__new__(cls)
+    @property
+    def path(self): return str(self)
+
+    def make_ready(self):
+        if self.ready: return
+        self._drv,self._root,self._parts = self._parse_args(self.args)
+        self._init()
+        self.ready = True
+
+    def __getattribute__(self,name):
+        if name.startswith('_'): return super().__getattribute__(name)
+        if name not in self._not_ready:
+            #print(name)
+            self.make_ready()
+        return super().__getattribute__(name)
+
+class DirEntryEx(os.PathLike):
+    def __init__(self, d): self.name,self.path = d.name,d.path
+    def __str__(self): return self.path
+    def __fspath__(self): return self.path
+    @property
+    def suffix(self): return os.path.splitext(self.path)[1]
+    @property
+    def stem(self): return os.path.splitext(os.path.split(self.path)[1])[0]
+    # Hack to allow this to work with PIL.Image.open()
+    def read(self): return open(self.path, 'rb').read()
+

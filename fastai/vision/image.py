@@ -417,17 +417,17 @@ class ImageBBox(ImagePoints):
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
 
-def open_image(fn:PathOrStr)->Image:
+def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
-    x = PIL.Image.open(fn).convert('RGB')
-    return Image(pil2tensor(x,np.float32).div_(255))
+    fn = getattr(fn, 'path', fn)
+    x = PIL.Image.open(fn).convert(convert_mode)
+    x = pil2tensor(x,np.float32)
+    if div: x.div_(255)
+    return cls(x)
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
-    x = PIL.Image.open(fn).convert(convert_mode)
-    mask = pil2tensor(x,np.float32)
-    if div: mask.div_(255)
-    return ImageSegment(mask)
+    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment)
 
 def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."

@@ -10,19 +10,15 @@ def _decode(df):
 
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
-def _test_ext(file, extensions):
-    return (file.name[0] != '.' and (extensions is None or file.name.split('.')[-1].lower() in extensions) 
-              and file.is_file())
+def _get_files(p, extensions):
+    res = [DirEntryEx(f) for f in os.scandir(p) if f.name[0] != '.' and f.is_file()]
+    if extensions is not None: res = [f for f in res if f.suffix.lower() in extensions]
+    return res
 
-def get_files(c:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
+def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-    files = []
-    c = Path(c).absolute()
-    if recurse:
-        for p,d,f in os.walk(c):
-            files += [DirEntryPath(file) for file in os.scandir(p) if _test_ext(file, extensions)]
-        return files
-    return [DirEntryPath(file) for file in os.scandir(c) if _test_ext(file, extensions)]
+    if recurse: return sum((_get_files(p, extensions) for p,d,f in os.walk(path)), [])
+    else:       return  _get_files(path, extensions)
 
 def _class_folder(o):
     p,f = os.path.split(o)
@@ -40,7 +36,8 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, **kwargs):
-        self.items,self.create_func,self.path = array(items, dtype=object),create_func,Path(path)
+        self.path = Path(path).absolute()
+        self.items,self.create_func = array(items, dtype=object),create_func
         self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
@@ -82,6 +79,7 @@ class ItemList():
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
+        path = Path(path).absolute()
         return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
 
     @classmethod
@@ -129,7 +127,7 @@ class ItemList():
     def _get_by_folder(self, name):
         comp_name = os.path.join(self.path, name) + os.path.sep
         return [i for i in range_of(self) if self.items[i].path.startswith(comp_name)]
-    
+
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
