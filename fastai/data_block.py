@@ -71,6 +71,10 @@ class ItemList():
         "Called at the end of `Learn.predict`; override for optional post-processing"
         return res
 
+    def reconstruct(self, t:Tensor, x:Tensor=None):
+        "Reconstuct one of the underlying item for its data `t`."
+        return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
+
     def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':
         processor = ifnone(processor, self.processor)
         return self.__class__(items=items, processor=processor, path=self.path, x=self.x, **kwargs)
@@ -227,7 +231,7 @@ class CategoryListBase(ItemList):
     def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
         self.classes=classes
         super().__init__(items, **kwargs)
-        
+
     @property
     def c(self): return len(self.classes)
 
@@ -250,6 +254,9 @@ class CategoryList(CategoryListBase):
         pred_max = res[0].argmax()
         return self.classes[pred_max],pred_max,res[0]
 
+    def reconstruct(self, t):
+        return self._item_cls(t, self.classes[t])
+
 class MultiCategoryProcessor(CategoryProcessor):
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
 
@@ -270,6 +277,10 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+
+    def reconstruct(self, t):
+        o = [i for i in range(self.c) if t[i] == 1.]
+        return self._item_cls(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
     _item_cls=FloatItem
