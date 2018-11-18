@@ -50,9 +50,10 @@ def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
 
 @dataclass
 class Fbeta_binary(Callback):
-    "Computes the fbeta between preds and targets for binary classification"
+    "Computes the fbeta between preds and targets for single-label classification"
     beta2: int = 2
     eps: float = 1e-9
+    clas:int=1
     
     def on_epoch_begin(self, **kwargs):
         self.TP = 0
@@ -60,13 +61,12 @@ class Fbeta_binary(Callback):
         self.total_y_true = 0
     
     def on_batch_end(self, last_output, last_target, **kwargs):
-        y_pred = last_output               
-        y_pred = y_pred.argmax(dim=1)
+        y_pred = last_output.argmax(dim=1)
         y_true = last_target.float()
         
-        self.TP += ((y_pred==1) * (y_true==1)).float().sum()
-        self.total_y_pred += (y_pred==1).float().sum()
-        self.total_y_true += (y_true==1).float().sum()
+        self.TP += ((y_pred==clas) * (y_true==clas)).float().sum()
+        self.total_y_pred += (y_pred==clas).float().sum()
+        self.total_y_true += (y_true==clas).float().sum()
     
     def on_epoch_end(self, **kwargs):
         beta2=self.beta2**2
