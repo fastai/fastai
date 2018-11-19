@@ -268,11 +268,11 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
     files = get_image_files(path)
-    if max_workers<2: res = [verify_image(path/file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
+    if max_workers<2: res = [verify_image(f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        futures = [ex.submit(verify_image, path/file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
+        futures = [ex.submit(verify_image, f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageItemList(ItemList):
@@ -285,7 +285,7 @@ class ImageItemList(ItemList):
 
     def get(self, i):
         fn = super().get(i)
-        res = self.open(self.path/fn)
+        res = self.open(fn)
         self.sizes[i] = res.size
         return res
 
@@ -333,7 +333,7 @@ class ObjectCategoryList(MultiCategoryList):
     
     def reconstruct(self, t, x):
         return self[0].reconstruct(*t, x, classes=self.classes)
-    
+
 class ObjectItemList(ImageItemList):
     _label_cls = ObjectCategoryList
 

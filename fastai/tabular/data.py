@@ -59,7 +59,7 @@ class TabularLine(ItemBase):
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
 
 class TabularProcessor(PreProcessor):
-    def __init__(self, ds:ItemBase=None, procs=None): 
+    def __init__(self, ds:ItemBase=None, procs=None):
         procs = ifnone(procs, ds.procs if ds is not None else None)
         self.procs = listify(procs)
 
@@ -97,7 +97,7 @@ class TabularProcessor(PreProcessor):
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
-        
+
 class TabularList(ItemList):
     _item_cls=TabularLine
     _processor=TabularProcessor
