@@ -10,7 +10,7 @@ __all__ = ['EmbeddingDotBias', 'collab_learner', 'CollabDataBunch', 'CollabLine'
 class CollabLine(TabularLine):
     def __init__(self, cats, conts, classes, names):
         super().__init__(cats, conts, classes, names)
-        self.data = [self.data[0][0]-1,self.data[0][1]-1]
+        self.data = [self.data[0][0],self.data[0][1]]
 
 class CollabList(TabularList): _item_cls = CollabLine
 
@@ -46,16 +46,16 @@ class CollabDataBunch(DataBunch):
         rating_name = ifnone(rating_name,ratings.columns[2])
         cat_names = [user_name,item_name]
         src = (CollabList.from_df(ratings, cat_names=cat_names, procs=Categorify)
-                 .random_split_by_pct(seed=seed).label_from_df(cols=rating_name))
+               .random_split_by_pct(valid_pct=pct_val, seed=seed).label_from_df(cols=rating_name))
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
         return src.databunch(**kwargs)
 
 def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None, y_range:Tuple[float,float]=None,
-                       emb_szs:Dict[str,int]=None, **kwargs)->Learner:
+                   emb_szs:Dict[str,int]=None, wd:float=0.01, **kwargs)->Learner:
     "Create a Learner for collaborative filtering."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     u,m = data.classes.values()
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, y_range=y_range, **kwargs)
-    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range)
-    return Learner(data, model, metrics=metrics)
+    else:      model = EmbeddingDotBias(n_factors, len(u)+1, len(m)+1, y_range)
+    return Learner(data, model, metrics=metrics, wd=wd)
 

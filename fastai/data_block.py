@@ -11,7 +11,7 @@ def _decode(df):
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
 def _get_files(parent, p, f, extensions):
-    p = Path(p).relative_to(parent)
+    p = Path(p)#.relative_to(parent)
     res = [p/o for o in f if not o.startswith('.')
            and (extensions is None or f'.{o.split(".")[-1].lower()}' in extensions)]
     return res
@@ -29,8 +29,6 @@ def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=Fals
         f = [o.name for o in os.scandir(path) if o.is_file()]
         return _get_files(path, path, f, extensions)
 
-def _class_folder(o): return o.parts[-2]
-
 class PreProcessor():
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
     def process_one(self, item:Any):         return item
@@ -43,16 +41,17 @@ class ItemList():
     def __init__(self, items:Iterator, path:PathOrStr='.',
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
         self.path = Path(path)
+        self.num_parts = len(self.path.parts)
         self.items,self.x = array(items, dtype=object),x
         self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
 
     def __post_init__(self): pass
-    def __len__(self)->int: return len(self.items)
+    def __len__(self)->int: return len(self.items) or 1
     def get(self, i)->Any: return self.items[i]
     def __repr__(self)->str:
-        items = [self[i] for i in range(min(5,len(self)))]
+        items = [self[i] for i in range(min(5,len(self.items)))]
         return f'{self.__class__.__name__} ({len(self)} items)\n{items}...\nPath: {self.path}'
 
     def process(self, processor=None):
@@ -132,7 +131,7 @@ class ItemList():
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
-        return [i for i in range_of(self) if self.items[i].parts[0]==name]
+        return [i for i in range_of(self) if self.items[i].parts[self.num_parts]==name]
 
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
@@ -199,7 +198,7 @@ class ItemList():
 
     def label_from_folder(self, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=_class_folder, **kwargs)
+        return self.label_from_func(func=lambda o: o.parts[-2], **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, **kwargs)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
@@ -328,7 +327,7 @@ class ItemLists():
 
     def label_from_lists(self, train_labels:Iterator, valid_labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
         "Use the labels in `train_labels` and `valid_labels` to label the data. `label_cls` will overwrite the default."
-        label_cls = self.train.label_cls(train_labels, label_cls)
+        label_cls = self.train.get_label_cls(train_labels, label_cls)
         self.train = self.train._label_list(x=self.train, y=label_cls(train_labels, **kwargs))
         self.valid = self.valid._label_list(x=self.valid, y=self.train.y.new(valid_labels, **kwargs))
         self.__class__ = LabelLists

@@ -1,0 +1,66 @@
+{% set name = "nvidia-ml-py3" %}
+{% set version = "7.352.0" %}
+{% set file_ext = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_value = "390f02919ee9d73fe63a98c73101061a6b37fa694a793abf56673320f1f51277" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
+  '{{ hash_type }}': '{{ hash_value }}'
+
+build:
+  number: 0
+  noarch: python
+  script: 'python setup.py install '
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+about:
+  home: http://www.nvidia.com/
+  license: BSD License
+  license_family: BSD
+  license_file: ''
+  summary: Python Bindings for the NVIDIA Management Library
+  description: "======\npyNVML\n======\n\n***\nPatched to support Python 3\n***\n\n------------------------------------------------\nPython bindings to the NVIDIA Management Library\n------------------------------------------------\n\
+    \nProvides a Python interface to GPU management and monitoring functions.\n\nThis is a wrapper around the NVML library.\nFor information about the NVML library, see the NVML developer page\nhttp://developer.nvidia.com/nvidia-management-library-nvml\n\
+    \nDownload the latest package from:\nhttp://pypi.python.org/pypi/nvidia-ml-py/\n\nNote this file can be run with 'python -m doctest -v README.txt'\nalthough the results are system dependent\n\nREQUIRES\n\
+    --------\nPython 2.5, or an earlier version with the ctypes module.\n\nINSTALLATION\n------------\nsudo python setup.py install\n\nUSAGE\n-----\n\n    >>> from pynvml import *\n    >>> nvmlInit()\n\
+    \    >>> print \"Driver Version:\", nvmlSystemGetDriverVersion()\n    Driver Version: 352.00\n    >>> deviceCount = nvmlDeviceGetCount()\n    >>> for i in range(deviceCount):\n    ...     handle = nvmlDeviceGetHandleByIndex(i)\n\
+    \    ...     print \"Device\", i, \":\", nvmlDeviceGetName(handle)\n    ...\n    Device 0 : Tesla K40c\n\n    >>> nvmlShutdown()\n\nAdditionally, see nvidia_smi.py.  A sample application.\n\nFUNCTIONS\n\
+    ---------\nPython methods wrap NVML functions, implemented in a C shared library.\nEach function's use is the same with the following exceptions:\n\n- Instead of returning error codes, failing error\
+    \ codes are raised as\n  Python exceptions.\n\n    >>> try:\n    ...     nvmlDeviceGetCount()\n    ... except NVMLError as error:\n    ...     print error\n    ...\n    Uninitialized\n\n- C function\
+    \ output parameters are returned from the corresponding\n  Python function left to right.\n\n::\n\n    nvmlReturn_t nvmlDeviceGetEccMode(nvmlDevice_t device,\n                                      nvmlEnableState_t\
+    \ *current,\n                                      nvmlEnableState_t *pending);\n\n    >>> nvmlInit()\n    >>> handle = nvmlDeviceGetHandleByIndex(0)\n    >>> (current, pending) = nvmlDeviceGetEccMode(handle)\n\
+    \n- C structs are converted into Python classes.\n\n::\n\n    nvmlReturn_t DECLDIR nvmlDeviceGetMemoryInfo(nvmlDevice_t device,\n                                                 nvmlMemory_t *memory);\n\
+    \    typedef struct nvmlMemory_st {\n        unsigned long long total;\n        unsigned long long free;\n        unsigned long long used;\n    } nvmlMemory_t;\n\n    >>> info = nvmlDeviceGetMemoryInfo(handle)\n\
+    \    >>> print \"Total memory:\", info.total\n    Total memory: 5636292608\n    >>> print \"Free memory:\", info.free\n    Free memory: 5578420224\n    >>> print \"Used memory:\", info.used\n    Used\
+    \ memory: 57872384\n\n- Python handles string buffer creation.\n\n::\n\n    nvmlReturn_t nvmlSystemGetDriverVersion(char* version,\n                                            unsigned int length);\n\
+    \n    >>> version = nvmlSystemGetDriverVersion();\n    >>> nvmlShutdown()\n\nFor usage information see the NVML documentation.\n\nVARIABLES\n---------\nAll meaningful NVML constants and enums are exposed\
+    \ in Python.\n\nThe NVML_VALUE_NOT_AVAILABLE constant is not used.  Instead None is mapped to the field.\n\nRELEASE NOTES\n-------------\nVersion 2.285.0\n- Added new functions for NVML 2.285.  See\
+    \ NVML documentation for more information.\n- Ported to support Python 3.0 and Python 2.0 syntax.\n- Added nvidia_smi.py tool as a sample app.\nVersion 3.295.0\n- Added new functions for NVML 3.295.\
+    \  See NVML documentation for more information.\n- Updated nvidia_smi.py tool\n  - Includes additional error handling\nVersion 4.304.0\n- Added new functions for NVML 4.304.  See NVML documentation\
+    \ for more information.\n- Updated nvidia_smi.py tool\nVersion 4.304.3\n- Fixing nvmlUnitGetDeviceCount bug\nVersion 5.319.0\n- Added new functions for NVML 5.319.  See NVML documentation for more information.\n\
+    Version 6.340.0\n- Added new functions for NVML 6.340.  See NVML documentation for more information.\nVersion 7.346.0\n- Added new functions for NVML 7.346.  See NVML documentation for more information.\n\
+    Version 7.352.0\n- Added new functions for NVML 7.352.  See NVML documentation for more information.\n\nCOPYRIGHT\n---------\nCopyright (c) 2011-2015, NVIDIA Corporation.  All rights reserved.\n\nLICENSE\n\
+    -------\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n- Redistributions of source code must retain\
+    \ the above copyright notice, this list of conditions and the following disclaimer.\n\n- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following\
+    \ disclaimer in the documentation and/or other materials provided with the distribution.\n\n- Neither the name of the NVIDIA Corporation nor the names of its contributors may be used to endorse or promote\
+    \ products derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES,\
+    \ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY\
+    \ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)\
+    \ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED\
+    \ OF THE POSSIBILITY OF SUCH DAMAGE.\n"
+  doc_url: ''
+  dev_url: ''
+
+extra:
+  recipe-maintainers: ''
