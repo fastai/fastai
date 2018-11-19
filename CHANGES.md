@@ -21,6 +21,10 @@ of that change.
 
 ### New:
 
+- `Vocab` and `TabularTransform` can now be saved
+- each application has its method to create an inference learner
+- `model_summary` function for standard models (thanks to noklam)
+
 ### Changed:
 
 ### Fixed:
