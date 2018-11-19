@@ -56,7 +56,7 @@ def mnist_tiny():
 
 @pytest.fixture(scope="module")
 def learn(mnist_tiny):
-    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
+    learn = Learner(mnist_tiny, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
                     callback_fns=[callbacks.CSVLogger])
     buffer = StringIO()
     with redirect_stdout(buffer): learn.fit_one_cycle(3)
