@@ -17,6 +17,7 @@ of that change.
 
 - `get_files` and `get_image_files` not returns `Path`s relative to `path`, instead of relative to `.`
 - `ItemList.items` are also relative to `path` where relevant, since `get_files` is called internally
+- `create_func` is removed in the data API, subclass and change the `get` method instead (in vision, you can subclass the `open` method if you want to change the images are opened).
 
 ### New:
 

@@ -122,6 +122,15 @@ class Vocab():
     def textify(self, nums:Collection[int], sep=' ') -> List[str]:
         "Convert a list of `nums` to their tokens."
         return sep.join([self.itos[i] for i in nums])
+        
+    def save(self, path:PathOrStr, dict_name='itos.pkl'):
+        "Save the vocab in `path/dict_name."
+        pickle.dump(self.itos, open(Path(path)/dict_name, 'wb'))
+        
+    @classmethod
+    def load(cls, path:PathOrStr, dict_name='itos.pkl'):
+        "Load the vocab from `path/dict_name."
+        return cls(pickle.load(open(Path(path)/dict_name, 'rb')))
 
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':

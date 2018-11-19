@@ -14,9 +14,8 @@ OptTabTfms = Optional[Collection[TabularProc]]
 def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
 #def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
 
-def def_emb_sz(df, n, sz_dict):
-    col = df[n]
-    n_cat = len(col.cat.categories)+1  # extra cat for NA
+def def_emb_sz(classes, n, sz_dict):
+    n_cat = len(classes[n])
     sz = sz_dict.get(n, int(emb_sz_rule(n_cat)))  # rule of thumb
     return n_cat,sz
 
@@ -77,6 +76,9 @@ class TabularProcessor(PreProcessor):
         return TabularLine(codes[0], conts[0], classes, col_names)
 
     def process(self, ds):
+        if ds.xtra is None: 
+            ds.classes,ds.cat_names,ds.cont_names = self.classes,self.cat_names,self.cont_names
+            return
         for i,proc in enumerate(self.procs):
             if isinstance(proc, TabularProc): proc(ds.xtra, test=True)
             else:
@@ -88,7 +90,7 @@ class TabularProcessor(PreProcessor):
         self.cat_names,self.cont_names = ds.cat_names,ds.cont_names
         if len(ds.cat_names) != 0:
             ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
-            ds.classes = OrderedDict({n:c.cat.categories.values
+            self.classes = ds.classes = OrderedDict({n:c.cat.categories.values
                                       for n,c in ds.xtra[ds.cat_names].items()})
             cat_cols = list(ds.xtra[ds.cat_names].columns.values)
         else: ds.codes,ds.classes,cat_cols = None,None,[]
@@ -97,10 +99,47 @@ class TabularProcessor(PreProcessor):
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
+        
+    def save(self, path:PathOrStr, dict_name='processor.pkl'):
+        "Save the vocab in `path/dict_name."
+        pickle.dump(self, open(Path(path)/dict_name, 'wb'))
+        
+    @staticmethod
+    def load(path:PathOrStr, dict_name='processor.pkl'):
+        "Load the vocab from `path/dict_name."
+        return pickle.load(open(Path(path)/dict_name, 'rb'))
+
+class TabularDataBunch(DataBunch):
+    "Create a `DataBunch` suitable for tabular data."
+    
+    def save_processor(self, cache_path:PathOrStr='tmp'):
+        os.makedirs(self.path/cache_path, exist_ok=True)
+        self.train_ds.x.processor[0].save(self.path/cache_path)
+    
+    @classmethod
+    def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
+                cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, **kwargs)->DataBunch:
+        "Create a `DataBunch` from train/valid/test dataframes."
+        cat_names = ifnone(cat_names, [])
+        cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
+        procs = listify(procs)
+        return (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
+                           .split_by_idx(valid_idx)
+                           .label_from_df(cols=dep_var, classes=None)
+                           .databunch())
+    
+    @staticmethod
+    def single_from_processor(path:Union[Path, str], processor:PreProcessor, classes:Collection[str]=None, 
+                              label_cls=CategoryList, **kwargs):
+        """Create an empty `ImageTabularBunch` in `path` with `preprocessor` and `classes`. Typically used for inference.
+        Use `label_cls` to specify the type of your labels"""
+        sd = TabularList([], path=path, processor=processor).split_by_idx([])
+        return sd.label_const(0, label_cls=label_cls, classes=classes).databunch()
 
 class TabularList(ItemList):
     _item_cls=TabularLine
     _processor=TabularProcessor
+    _bunch=TabularDataBunch
     def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  procs=None, **kwargs)->'TabularList':
         #dataframe is in xtra, items is just a range of index
@@ -124,22 +163,8 @@ class TabularList(ItemList):
 
     def get_emb_szs(self, sz_dict):
         "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
-        return [def_emb_sz(self.xtra, n, sz_dict) for n in self.cat_names]
-
-class TabularDataBunch(DataBunch):
-    "Create a `DataBunch` suitable for tabular data."
-    @classmethod
-    def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
-                cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, **kwargs)->DataBunch:
-        "Create a `DataBunch` from train/valid/test dataframes."
-        cat_names = ifnone(cat_names, [])
-        cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
-        procs = listify(procs)
-        return (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
-                           .split_by_idx(valid_idx)
-                           .label_from_df(cols=dep_var, classes=None)
-                           .databunch())
-
+        return [def_emb_sz(self.classes, n, sz_dict) for n in self.cat_names]
+    
 def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
