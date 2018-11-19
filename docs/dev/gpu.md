@@ -45,6 +45,66 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
 
 While watching `nvidia-smi` running in your terminal is handy, sometimes you want to do more than that. And that's where API access comes in handy. The following tools provide that.
 
+
+### Python 3 Bindings for the NVIDIA Management Library
+
+`nvidia-ml-py3` provides Python 3 bindings for nvml c-lib (NVIDIA Management Library), which allows you to query the library directly, without needing to go through `nvidia-smi`. Therefore this module is much faster than the wrappers around `nvidia-smi`.
+
+The bindings are implemented with `Ctypes`, so this module is `noarch` - it's just pure python.
+
+Installation:
+
+* Pypi:
+```
+pip3 install nvidia-ml-py3
+```
+* Conda:
+```
+conda install nvidia-ml-py3 -c fastai
+```
+
+Examples:
+
+Print the memory stats for the first GPU card:
+```
+from pynvml import *
+nvmlInit()
+handle = nvmlDeviceGetHandleByIndex(0)
+info = nvmlDeviceGetMemoryInfo(handle)
+print("Total memory:", info.total)
+print("Free memory:", info.free)
+print("Used memory:", info.used)
+```
+
+List the available GPU devices:
+
+```
+from pynvml import *
+nvmlInit()
+try:
+    deviceCount = nvmlDeviceGetCount()
+    for i in range(deviceCount):
+        handle = nvmlDeviceGetHandleByIndex(i)
+        print("Device", i, ":", nvmlDeviceGetName(handle))
+except NVMLError as error:
+    print(error)
+```
+
+And here is a usage example via a sample module `nvidia_smi`:
+
+```
+import nvidia_smi
+
+nvidia_smi.nvmlInit()
+handle = nvidia_smi.nvmlDeviceGetHandleByIndex(0)
+# card id 0 hardcoded here, there is also a call to get all available card ids, so we could iterate
+
+res = nvidia_smi.nvmlDeviceGetUtilizationRates(handle)
+print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
+```
+
+
+
 ### GPUtil
 
 GPUtil is a wrapper around `nvidia-smi`, and requires the latter to function before it can be used.
@@ -61,44 +121,6 @@ gpu = GPUs[0]
 ```
 
 For more details see: https://github.com/anderskm/gputil
-
-
-
-### Python 3 Bindings for the NVIDIA Management Library
-
-`nvidia-ml-py3` provides Python 3 bindings for nvml c-lib (NVIDIA Management Library), which allows you to query the library directly, without needing to go through `nvidia-smi`.
-
-Installation: `pip3 install nvidia-ml-py3`.
-
-And here is a usage example via a sample module `nvidia_smi`:
-
-```
-import nvidia_smi
-
-nvidia_smi.nvmlInit()
-handle = nvidia_smi.nvmlDeviceGetHandleByIndex(0)
-# card id 0 hardcoded here, there is also a call to get all available card ids, so we could iterate
-
-res = nvidia_smi.nvmlDeviceGetUtilizationRates(handle)
-print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
-```
-or direct module usage:
-```
-from pynvml import *
-nvmlInit()
-try:
-    deviceCount = nvmlDeviceGetCount()
-    for i in range(deviceCount):
-        handle = nvmlDeviceGetHandleByIndex(i)
-        print("Device", i, ":", nvmlDeviceGetName(handle))
-except NVMLError as error:
-    print(error)
-handle = nvmlDeviceGetHandleByIndex(0)
-info = nvmlDeviceGetMemoryInfo(handle)
-print("Total memory:", info.total)
-print("Free memory:", info.free)
-print("Used memory:", info.used)
-```
 
 For more details see: https://github.com/nicolargo/nvidia-ml-py3
 
