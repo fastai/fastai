@@ -111,7 +111,6 @@ def matthews_corrcoef(input:Tensor, targs:Tensor):
     return mcc
 
 
-
 def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
     "1 - `accuracy`"
     return 1-accuracy(input, targs)
