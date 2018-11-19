@@ -99,7 +99,8 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
 class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
     `TextClasDataBunch`."""
-
+    _batch_first=False
+    
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
@@ -218,18 +219,6 @@ class TextLMDataBunch(TextDataBunch):
         dataloaders = [LanguageModelLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
         return cls(*dataloaders, path=path)
 
-    #TODO: see if we can get rid of that later
-    def show_batch(self, sep=' ', ds_type:DatasetType=DatasetType.Train, rows:int=10, max_len:int=100):
-        "Show `rows` texts from a batch of `ds_type`, tokens are joined with `sep`, truncated at `max_len`."
-        from IPython.display import display, HTML
-        dl = self.dl(ds_type)
-        x,y = next(iter(dl))
-        items = [['idx','text']]
-        for i in range(rows):
-            inp = self.x[:,i] if max_len is None else x[:,i][:max_len]
-            items.append([str(i), self.train_ds.vocab.textify(inp.cpu(), sep=sep)])
-        display(HTML(_text2html_table(items, [5,95])))
-
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
@@ -252,21 +241,22 @@ def open_text(fn:PathOrStr, enc='utf-8'):
     with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
-    def __init__(self, ids, text): self.data,self.text = ids,text
+    def __init__(self, ids, text, is_lm): self.data,self.text,self.is_lm = ids,text,is_lm
     def __str__(self):  return str(self.text)
 
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, max_len:int=50)->None:
-        "Show the texts in `idx` on a few `rows` from `ds`. `max_len` is the maximum number of tokens displayed."
+    def show_xys(self, xs, ys, max_len:int=70)->None:
+        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        items = [['text', 'label']]
-        for i in idxs[:rows]:
-            x,y = ds[i]
-            txt_x = ' '.join(x.text.split(' ')[:max_len])
-            items.append([str(txt_x), str(y)])
-        display(HTML(_text2html_table(items, [90,10])))
+        items = [['idx','text']]
+        for i, (x,y) in enumerate(zip(xs,ys)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
+            items.append([str(i), str(txt_x)] if self.is_lm else [str(txt_x), str(y)])
+        display(HTML(_text2html_table(items, ([5,95] if self.is_lm else [90,10]))))
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
+        
+    def reconstruct(self,t:Tensor): return 0
 
 class TokenizeProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
@@ -299,17 +289,17 @@ class TextList(ItemList):
     _bunch = TextClasDataBunch
     _processor = [TokenizeProcessor, NumericalizeProcessor]
 
-    def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
+    def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
         self.filter_missing_y = True
         super().__init__(items, **kwargs)
-        self.vocab = vocab
+        self.vocab,self.pad_idx = vocab,pad_idx
 
     def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
-        return super().new(items=items, vocab=self.vocab, **kwargs)
+        return super().new(items=items, vocab=self.vocab, pad_idx=self.pad_idx, **kwargs)
 
     def get(self, i):
         o = super().get(i)
-        return Text(o, self.vocab.textify(o))
+        return Text(o, self.vocab.textify(o), self.__class__ == LMTextList)
 
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
@@ -317,7 +307,8 @@ class TextList(ItemList):
         return self.label_const(0, label_cls=LMLabel)
     
     def reconstruct(self, t:Tensor):
-        return Text(t, self.vocab.textify(t))
+        idx = (t != self.pad_idx).nonzero().min()
+        return Text(t[idx:], self.vocab.textify(t[idx:]), self.__class__ == TextList)
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
@@ -325,7 +316,7 @@ class TextList(ItemList):
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
         processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
-
+    
 class LMTextList(TextList):
     _bunch = TextLMDataBunch
 

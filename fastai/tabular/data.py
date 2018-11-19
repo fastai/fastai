@@ -41,20 +41,18 @@ class TabularLine(ItemBase):
             res += f'{n} {c:.4f}; '
         return res
 
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, **kwargs)->None:
-        "Show the data in `idxs` on a few `rows` from `ds`."
+    def show_xys(self, xs, ys, max_len:int=70)->None:
+        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        x,y = ds[0]
-        items = [x.names + ['target']]
-        for i in idxs[:rows]:
-            x,y = ds[i]
+        items = [xs[0].names + ['target']]
+        for i, (x,y) in enumerate(zip(xs,ys)):
             res = []
             for c, n in zip(x.cats, self.names[:len(x.cats)]):
                 res.append(str(x.classes[n][c]))
             res += [f'{c:.4f}' for c in x.conts] + [str(y)]
             items.append(res)
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
-
+        
 class TabularProcessor(PreProcessor):
     def __init__(self, ds:ItemBase=None, procs=None):
         procs = ifnone(procs, ds.procs if ds is not None else None)

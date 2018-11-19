@@ -97,6 +97,8 @@ def _get_fns(ds, path): #TODO: fix me when from_folder is finished
     return [str(fn.relative_to(path)) for fn in ds.x.items]
 
 class ImageDataBunch(DataBunch):
+    _square_show = True
+    
     @classmethod
     def create_from_ll(cls, dss:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,

@@ -239,19 +239,13 @@ class Image(ItemBase):
         if title is not None: ax.set_title(title)
 
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
         rows = int(math.sqrt(len(xs)))
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
     
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
-        fig, axs = plt.subplots(rows,rows,figsize=figsize)
-        for i, ax in zip(idxs[:rows*rows], (axs.flatten() if rows > 1 else [axs])):
-            x,y = ds[i]
-            x.show(ax=ax, y=y, **kwargs)
-        plt.tight_layout()
-
     def show_results(self, xys, preds, figsize:Tuple[int,int]=None):
         rows = len(xys)
         figsize = ifnone(figsize, (8,3*rows))
@@ -304,7 +298,7 @@ class ImagePoints(Image):
         "Mimic the behavior of torch.clone for `Image` objects."
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
     
-    def reconstruct(self, t, x): return self.__class__(FlowField([x.size(1),x.size(2)], t), scale=False)
+    def reconstruct(self, t, x): return self.__class__(FlowField(x.size, t), scale=False)
 
     def reconstruct_output(self, out, x): return self.__class__(FlowField(x.size, out[None]), scale=False)
 
@@ -433,8 +427,7 @@ class ImageBBox(ImagePoints):
         if len((labels - self.pad_idx).nonzero()) == 0: return
         i = (labels - self.pad_idx).nonzero().min()
         bboxes,labels = bboxes[i:],labels[i:]
-        flow = FlowField([x.size(1),x.size(2)], bboxes)
-        return self.create(x.size(1),x.size(2), bboxes, labels=labels, classes=classes, scale=False)
+        return self.create(*x.size, bboxes, labels=labels, classes=classes, scale=False)
 
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
