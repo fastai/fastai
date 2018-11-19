@@ -30,10 +30,13 @@ of that change.
 
 ### New:
 
+- We can add transform to `y` in the data block API
+- metric fbeta for single classification (thanks to wy-q)
+
 ### Changed:
 
-- ItemLists can now set `self.filter_missing_y` to automatically remove items
-  from LabelLists  training set that can't be labeled
+- ItemLists can now set `self.filter_missing_y` to automatically remove items from LabelLists  training set that can't be labeled
+- revert xxmaj token and `deal_caps` rule
 
 ### Fixed:
 
