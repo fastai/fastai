@@ -31,7 +31,6 @@ class Categorify(TabularProc):
             self.categories[n] = df[n].cat.categories
 
     def apply_test(self, df:DataFrame):
-        import pdb; pdb.set_trace()
         for n in self.cat_names:
             df.loc[:,n] = pd.Categorical(df[n], categories=self.categories[n], ordered=True)
 
