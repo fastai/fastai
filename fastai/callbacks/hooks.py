@@ -5,7 +5,7 @@ from ..basic_train import *
 from ..basic_data import *
 
 __all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'hook_outputs', 
-           'model_sizes', 'num_features_model']
+           'model_sizes', 'num_features_model', 'model_summary']
 
 class Hook():
     "Create a hook."
@@ -86,3 +86,48 @@ def model_sizes(m:nn.Module, size:tuple=(64,64), full:bool=True) -> Tuple[Sizes,
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
     return model_sizes(m, full=False)[-1][1]
+
+def total_params(m:nn.Module) -> int:
+    params = 0
+    if hasattr(m, "weight") and hasattr(m.weight, "size"): params += m.weight.numel()
+    if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
+    return params
+
+def hook_params(modules:Collection[nn.Module]) -> Hooks:
+    return Hooks(modules, lambda m, i, o: total_params(m))
+
+def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Hooks]:
+    "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
+    hooks_outputs = hook_outputs(flatten_model(m))
+    hooks_params = hook_params(flatten_model(m))
+    ch_in = in_channels(m)
+    x = next(m.parameters()).new(1, ch_in, *size)
+    x = m.eval()(x)
+    hooks = zip(hooks_outputs, hooks_params)
+    res = [(o[0].stored.shape, o[1].stored) for o in hooks]
+    output_size, params = map(list, zip(*res))
+    return (output_size, params, hooks)
+
+def get_layer_name(layer:nn.Module) -> str:
+    return str(layer.__class__).split(".")[-1].split("'")[0]
+
+def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
+    layers_sizes, layers_params, _ = params_size(m)
+    layers_names = list(map(get_layer_name, flatten_model(m)))
+    layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])
+    return list(map(layer_info, layers_names, layers_sizes, layers_params))
+
+def model_summary(m:Collection[nn.Module], n:int=100):
+    "Print a summary of `m` using a char length of `n`."
+    info = layers_info(m)
+    header = ["Layer (type)", "Output Shape", "Param #"]
+    print("=" * n)
+    print(f"{header[0]:<25}  {header[1]:<20} {header[2]:<10}")
+    print("=" * n)
+    total_params = 0
+    for layer, size, params in info:
+        total_params += int(params)
+        params,size = str(params),str(list(size))
+        print(f"{layer:<25} {size:<20} {params:<20}")
+        print("_" * n)
+    print("Total params: ", total_params)
