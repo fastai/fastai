@@ -7,12 +7,12 @@ from ..basic_data import *
 from ..layers import *
 from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
-import PIL
+import PIL, warnings
 
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
-           'ImageItemList', 'normalize', 'normalize_funcs', 
+           'ImageItemList', 'normalize', 'normalize_funcs',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
-           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor',
+           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor', 'ImageToImageList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -75,13 +75,13 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
-    if do_y: y = normalize(y,mean,std)
+    if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
     mean,std = tensor(mean),tensor(std)
-    return (partial(_normalize_batch, mean=mean, std=std),
+    return (partial(_normalize_batch, mean=mean, std=std, do_y=do_y),
             partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
@@ -92,9 +92,9 @@ def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
 
-def _get_fns(ds, path):
+def _get_fns(ds, path): #TODO: fix me when from_folder is finished
     "List of all file names relative to `path`."
-    return [str(fn.relative_to(path)) for fn in ds.x]
+    return [str(fn.relative_to(path)) for fn in ds.x.items]
 
 class ImageDataBunch(DataBunch):
     @classmethod
@@ -158,24 +158,24 @@ class ImageDataBunch(DataBunch):
         x = self.valid_dl.one_batch()[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
-    def normalize(self, stats:Collection[Tensor]=None)->None:
+    def normalize(self, stats:Collection[Tensor]=None, do_y:bool=None)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
         if stats is None: self.stats = self.batch_stats()
         else:             self.stats = stats
-        self.norm,self.denorm = normalize_funcs(*self.stats)
+        self.norm,self.denorm = normalize_funcs(*self.stats, do_y=do_y)
         self.add_tfm(self.norm)
         return self
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
-        fns = _get_fns(self.train_ds)
-        y = list(self.train_ds.y)
-        fns += _get_fns(self.valid_ds)
-        y += list(self.valid_ds.y)
-        if hasattr(self,'test_dl') and data.test_dl:
-            fns += _get_fns(self.test_ds)
-            y += list(self.test_ds.y)
+        fns = _get_fns(self.train_ds, self.path)
+        y = [str(o) for o in self.train_ds.y]
+        fns += _get_fns(self.valid_ds, self.path)
+        y += [str(o) for o in self.valid_ds.y]
+        if self.test_ds is not None:
+            fns += _get_fns(self.test_ds, self.path)
+            y += [str(o) for o in self.test_ds.y]
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
 
@@ -208,11 +208,31 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
 def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
-    """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
+    """Check if the image in `file` exists, it can be opened and has `n_channels`.
+    If `delete=True`:
+    (1) removes `file` if any of the verifications fails
+    (2) saves a modified version of `file` w/o EXIF data if the latter is broken
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
     to PIL.Image.save."""
     try:
+        # deal with partially broken images as indicated by PIL warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings('error')
+            try:
+                # must use this workaround to avoid: ResourceWarning: unclosed file warning
+                with open(file, 'rb') as img_file: PIL.Image.open(img_file)
+            except Warning as w:
+                if "Possibly corrupt EXIF data" in str(w):
+                    if delete: # green light to modify files
+                        print(f"{file}: Removing corrupt EXIF data")
+                        warnings.simplefilter("ignore")
+                        # save EXIF-cleaned up image, which happens automatically
+                        PIL.Image.open(file).save(file)
+                    else: # keep user's files intact
+                        print(f"{file}: Not removing corrupt EXIF data, pass `delete=True` to do that")
+                else: warnings.warn(w)
+
         img = PIL.Image.open(file)
         if max_size is None: return
         assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
@@ -248,51 +268,47 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
     files = get_image_files(path)
-    if max_workers<2: res = [verify_image(file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
+    if max_workers<2: res = [verify_image(f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
+        futures = [ex.submit(verify_image, f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageItemList(ItemList):
     _bunch = ImageDataBunch
-
     def __post_init__(self):
         super().__post_init__()
         self.sizes={}
-        self.create_func = ifnone(self.create_func, open_image)
+
+    def open(self, fn): return open_image(fn)
 
     def get(self, i):
-        res = super().get(i)
+        fn = super().get(i)
+        res = self.open(fn)
         self.sizes[i] = res.size
         return res
 
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', create_func:Callable=None,
-                    extensions:Collection[str]=None, **kwargs)->ItemList:
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
-        create_func = ifnone(create_func, open_image)
         extensions = ifnone(extensions, image_extensions)
-        #create_func = ifnone(create_func, lambda o:open_image(os.path.join(path, o)))
-        return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
+        return super().from_folder(path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, cols:IntsOrStrs=0,
-                 folder:PathOrStr='.', suffix:str='')->'ItemList':
-        """Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end.
-        `create_func` is used to open the images."""
+    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='')->'ItemList':
+        "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
-        res = super().from_df(df, path=path, create_func=create_func, cols=cols)
+        res = super().from_df(df, path=path, cols=cols)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
         res.items = np.char.add(f'{res.path}/', res.items)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=open_image, cols:IntsOrStrs=0, header:str='infer',
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer',
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
         df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, create_func=create_func, cols=cols, folder=folder, suffix=suffix)
+        return cls.from_df(df, path=path, cols=cols, folder=folder, suffix=suffix)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
@@ -302,40 +318,50 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
         classes = ['background'] + list(classes)
         return classes
 
+def _get_size(xs,i):
+    size = xs.sizes.get(i,None)
+    if size is None:
+        # Image hasn't been accessed yet, so we don't know its size
+        _ = xs[i]
+        size =xs.sizes[i]
+    return size
+
 class ObjectCategoryList(MultiCategoryList):
     _processor = ObjectCategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
-        super().__init__(items, **kwargs)
-
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
+    
+    def reconstruct(self, t, x):
+        return self[0].reconstruct(*t, x, classes=self.classes)
 
 class ObjectItemList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = ObjectCategoryList
+    _label_cls = ObjectCategoryList
 
 class SegmentationLabelList(ImageItemList):
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
-        self.classes,self.loss_func,self.create_func = classes,CrossEntropyFlat(),open_mask
+        self.classes,self.loss_func = classes,CrossEntropyFlat()
         self.c = len(self.classes)
 
     def new(self, items, classes=None, **kwargs):
         return self.__class__(items, ifnone(classes, self.classes), **kwargs)
 
+    def open(self, fn): return open_mask(fn)
+
 class SegmentationItemList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = SegmentationLabelList
+    _label_cls = SegmentationLabelList
 
 class PointsItemList(ItemList):
+    
     def __post_init__(self):
         super().__post_init__()
-        self.c = len(self.items[0].view(-1))
+        self.c = len(self.items[0].reshape(-1))
         self.loss_func = MSELossFlat()
 
     def get(self, i):
         o = super().get(i)
-        return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
+        return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
+
+class ImageToImageList(ImageItemList):
+    _label_cls = ImageItemList
 

@@ -59,17 +59,17 @@ class TabularLine(ItemBase):
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
 
 class TabularProcessor(PreProcessor):
-    def __init__(self, ds:ItemBase=None, procs=None): 
+    def __init__(self, ds:ItemBase=None, procs=None):
         procs = ifnone(procs, ds.procs if ds is not None else None)
         self.procs = listify(procs)
 
     def process_one(self, item):
         df = pd.DataFrame([item,item])
         for proc in self.procs: proc(df, test=True)
-        if self.cat_names is not None:
+        if len(self.cat_names) != 0:
             codes = np.stack([c.cat.codes.values for n,c in df[self.cat_names].items()], 1).astype(np.int64) + 1
         else: codes = [[]]
-        if self.cont_names is not None:
+        if len(self.cont_names) != 0:
             conts = np.stack([c.astype('float32').values for n,c in df[self.cont_names].items()], 1)
         else: conts = [[]]
         classes = None
@@ -97,7 +97,7 @@ class TabularProcessor(PreProcessor):
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
-        
+
 class TabularList(ItemList):
     _item_cls=TabularLine
     _processor=TabularProcessor

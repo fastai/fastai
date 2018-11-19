@@ -11,10 +11,12 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
-
 ## 1.0.28.dev0 (Work In Progress)
+
+### Breaking changes:
+
+- `get_files` and `get_image_files` not returns `Path`s relative to `path`, instead of relative to `.`
+- `ItemList.items` are also relative to `path` where relevant, since `get_files` is called internally
 
 ### New:
 
@@ -22,7 +24,7 @@ of that change.
 
 ### Fixed:
 
-
+- `verify_image` - now fixes files with corrupt EXIF data
 
 ## 1.0.27 (2018-11-17)
 
@@ -67,7 +69,7 @@ of that change.
 
 ### Fixed:
 
-- `show_batch` works with `rows=1` 
+- `show_batch` works with `rows=1`
 - Pretrained language models are saved in the correct folder (.fastai/models/)
 - Splitting too slow in the data block API
 - Mixup losses work with predict and TTA (thanks to bharadwaj6)
@@ -227,7 +229,7 @@ of that change.
 
 ### New:
 
-- `Learner` objects now determine from the loss function if there is something to add on top of the models to get the true predictions 
+- `Learner` objects now determine from the loss function if there is something to add on top of the models to get the true predictions
 
 ### Changed:
 
@@ -237,7 +239,7 @@ of that change.
 - `get_preds` now return the true probabilities
 - `TTA` averages the probabilities and not the last activations of the model
 - `ClassificationInterpretation` has been changed accordingly and the `sigmoid` argument has been deprecated
- 
+
 ### Fixed:
 
 - Make `pred_batch` faster and remove redundent `*`
@@ -268,7 +270,7 @@ of that change.
 
 ## 1.0.13 (2018-10-24)
 
-### New: 
+### New:
 
 - pretrained language model is now downloaded directly in the .fastai/models/ folder. Use `pretrained_model=URLs.WT103`
 - add an argument `stop_div` to `Learner.lr_find()` to prevent early stopping, useful for negative losses.
@@ -288,7 +290,7 @@ of that change.
 - Strip space from file name when CSV has spaces
 - Handle missing `loss_func` attr
 - Pass on the `use_bn` parameter in `get_tabular_learner`
-- Bad handling when final batch has size of 1 
+- Bad handling when final batch has size of 1
 - rolled back numpy dependency to >=1.12 (anaconda package has a upper pin on it) and to pip>=9.0.1, the old version are buggy but should be ok for fastai
 
 ## 1.0.11 (2018-10-20)

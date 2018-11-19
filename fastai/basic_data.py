@@ -63,6 +63,9 @@ class DeviceDataLoader():
         return cls(DataLoader(dataset, batch_size=bs, shuffle=shuffle, num_workers=num_workers, **kwargs),
                    device=device, tfms=tfms, collate_fn=collate_fn)
 
+def grab_idx(x,i):
+    return [o[i].cpu() for o in x] if is_listy(x) else x[i].cpu()
+    
 class DataBunch():
     "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
@@ -118,6 +121,17 @@ class DataBunch():
         if rows is None: rows = int(math.sqrt(len(b_idx)))
         ds = dl.dataset
         ds[0][0].show_batch(b_idx, rows, ds, **kwargs)
+        
+    def alt_show_batch(data, rows:int=None, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
+        "Show a batch of data in `ds_type` on a few `rows`."
+        dl = data.dl(ds_type)
+        x,y = next(iter(dl))
+        if rows is None: rows = int(math.sqrt(y.size(0)))
+        xs = [data.train_ds.x.reconstruct(grab_idx(x, i)) for i in range(rows*rows)]
+        if has_arg(data.train_ds.y.reconstruct, 'x'):
+            ys = [data.train_ds.y.reconstruct(grab_idx(y, i), x=grab_idx(x, i)) for i in range(rows*rows)]
+        else : ys = [data.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(rows*rows)]
+        dl.dataset[0][0].show_xys(xs, ys, **kwargs)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset

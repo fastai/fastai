@@ -10,19 +10,24 @@ def _decode(df):
 
 def _maybe_squeeze(arr): return (arr if is1d(arr) else np.squeeze(arr))
 
-def _get_files(p, extensions):
-    res = [DirEntryEx(f) for f in os.scandir(p) if f.name[0] != '.' and f.is_file()]
-    if extensions is not None: res = [f for f in res if f.suffix.lower() in extensions]
+def _get_files(parent, p, f, extensions):
+    p = Path(p)#.relative_to(parent)
+    res = [p/o for o in f if not o.startswith('.')
+           and (extensions is None or f'.{o.split(".")[-1].lower()}' in extensions)]
     return res
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
     "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-    if recurse: return sum((_get_files(p, extensions) for p,d,f in os.walk(path)), [])
-    else:       return  _get_files(path, extensions)
-
-def _class_folder(o):
-    p,f = os.path.split(o)
-    return os.path.split(p)[1]
+    if recurse:
+        res = []
+        for p,d,f in os.walk(path):
+                # skip hidden dirs
+                d[:] = [o for o in d if not o.startswith('.')]
+                res += _get_files(path, p, f, extensions)
+        return res
+    else:
+        f = [o.name for o in os.scandir(path) if o.is_file()]
+        return _get_files(path, path, f, extensions)
 
 class PreProcessor():
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
@@ -30,26 +35,24 @@ class PreProcessor():
     def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
 class ItemList():
-    _bunch = DataBunch
-    _processor = PreProcessor
+    _bunch,_processor,_label_cls = DataBunch,None,None
 
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
-    def __init__(self, items:Iterator, create_func:Callable=None, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, **kwargs):
-        self.path = Path(path).absolute()
-        self.items,self.create_func = array(items, dtype=object),create_func
-        self._label_cls,self.xtra,self.processor = label_cls,xtra,processor
+    def __init__(self, items:Iterator, path:PathOrStr='.',
+                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
+        self.path = Path(path)
+        self.num_parts = len(self.path.parts)
+        self.items,self.x = array(items, dtype=object),x
+        self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.__post_init__()
 
     def __post_init__(self): pass
     def __len__(self)->int: return len(self.items) or 1
+    def get(self, i)->Any: return self.items[i]
     def __repr__(self)->str:
-        items = [self[i] for i in range(min(5,len(self)))]
+        items = [self[i] for i in range(min(5,len(self.items)))]
         return f'{self.__class__.__name__} ({len(self)} items)\n{items}...\nPath: {self.path}'
-    def get(self, i)->Any:
-        item = self.items[i]
-        return self.create_func(item) if self.create_func else item
 
     def process(self, processor=None):
         if processor is not None: self.processor = processor
@@ -67,10 +70,13 @@ class ItemList():
         "Called at the end of `Learn.predict`; override for optional post-processing"
         return res
 
-    def new(self, items:Iterator, create_func:Callable=None, processor:PreProcessor=None, **kwargs)->'ItemList':
-        create_func = ifnone(create_func, self.create_func)
+    def reconstruct(self, t:Tensor, x:Tensor=None):
+        "Reconstuct one of the underlying item for its data `t`."
+        return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
+
+    def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':
         processor = ifnone(processor, self.processor)
-        return self.__class__(items=items, create_func=create_func, path=self.path, processor=processor, **kwargs)
+        return self.__class__(items=items, processor=processor, path=self.path, x=self.x, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -79,7 +85,7 @@ class ItemList():
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
         "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
-        path = Path(path).absolute()
+        path = Path(path)
         return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
 
     @classmethod
@@ -125,8 +131,7 @@ class ItemList():
         return self.split_by_idxs(train_idx, valid_idx)
 
     def _get_by_folder(self, name):
-        comp_name = os.path.join(self.path, name) + os.path.sep
-        return [i for i in range_of(self) if self.items[i].path.startswith(comp_name)]
+        return [i for i in range_of(self) if self.items[i].parts[self.num_parts]==name]
 
     def split_by_folder(self, train:str='train', valid:str='valid')->'ItemLists':
         "Split the data depending on the folder (`train` or `valid`) in which the filenames are."
@@ -160,9 +165,9 @@ class ItemList():
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
         return self.split_by_idx(valid_idx)
 
-    def label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
+    def get_label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
         if label_cls is not None:               return label_cls
-        if self._label_cls is not None:         return self._label_cls
+        if self.label_cls is not None:          return self.label_cls
         it = index_row(labels,0)
         if sep is not None:                     return MultiCategoryList
         if isinstance(it, (float, np.float32)): return FloatList
@@ -173,8 +178,8 @@ class ItemList():
     def label_from_list(self, labels:Iterator, **kwargs)->'LabelList':
         "Label `self.items` with `labels` using `label_cls`"
         labels = array(labels, dtype=object)
-        label_cls = self.label_cls(labels, **kwargs)
-        y = label_cls(labels, **kwargs)
+        label_cls = self.get_label_cls(labels, **kwargs)
+        y = label_cls(labels, path=self.path, **kwargs)
         res = self._label_list(x=self, y=y)
         return res
 
@@ -190,10 +195,10 @@ class ItemList():
     def label_from_func(self, func:Callable, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
         return self.label_from_list([func(o) for o in self.items], **kwargs)
-    
+
     def label_from_folder(self, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=_class_folder, **kwargs)
+        return self.label_from_func(func=lambda o: o.parts[-2], **kwargs)
 
     def label_from_re(self, pat:str, full_path:bool=False, **kwargs)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
@@ -225,7 +230,7 @@ class CategoryListBase(ItemList):
     def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
         self.classes=classes
         super().__init__(items, **kwargs)
-        
+
     @property
     def c(self): return len(self.classes)
 
@@ -248,6 +253,9 @@ class CategoryList(CategoryListBase):
         pred_max = res[0].argmax()
         return self.classes[pred_max],pred_max,res[0]
 
+    def reconstruct(self, t):
+        return self._item_cls(t, self.classes[t])
+
 class MultiCategoryProcessor(CategoryProcessor):
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
 
@@ -268,6 +276,10 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+
+    def reconstruct(self, t):
+        o = [i for i in range(self.c) if t[i] == 1.]
+        return self._item_cls(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
     _item_cls=FloatItem
@@ -315,7 +327,7 @@ class ItemLists():
 
     def label_from_lists(self, train_labels:Iterator, valid_labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
         "Use the labels in `train_labels` and `valid_labels` to label the data. `label_cls` will overwrite the default."
-        label_cls = self.train.label_cls(train_labels, label_cls)
+        label_cls = self.train.get_label_cls(train_labels, label_cls)
         self.train = self.train._label_list(x=self.train, y=label_cls(train_labels, **kwargs))
         self.valid = self.valid._label_list(x=self.valid, y=self.train.y.new(valid_labels, **kwargs))
         self.__class__ = LabelLists
@@ -329,6 +341,14 @@ class ItemLists():
         self.valid.transform(tfms[1], **kwargs)
         if self.test: self.test.transform(tfms[1], **kwargs)
         return self
+
+    def transform_labels(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+        if not tfms: tfms=(None,None)
+        self.train.transform_labels(tfms[0], **kwargs)
+        self.valid.transform_labels(tfms[1], **kwargs)
+        if self.test: self.test.transform_labels(tfms[1], **kwargs)
+        return self
+
 
 class LabelLists(ItemLists):
     def get_processors(self):
@@ -372,7 +392,9 @@ class LabelList(Dataset):
     def __len__(self)->int: return len(self.x) if self.item is None else 1
     def set_item(self,item): self.item = self.x.process_one(item)
     def clear_item(self): self.item = None
-    def __repr__(self)->str: return f'{self.__class__.__name__}\ny: {self.y}\nx: {self.x}'
+    def __repr__(self)->str:
+        x = f'{self.x}' # force this to happen first
+        return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'
     def predict(self, res): return self.y.predict(res)
 
     @property
@@ -394,8 +416,8 @@ class LabelList(Dataset):
             else:                 x,y = self.item   ,0
             if self.tfms:
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
-                if self.tfm_y and self.item is None:
-                    y = y.apply_tfms(self.tfms, **{**self.tfmargs, 'do_resolve':False})
+            if self.tfm_y and self.item is None:
+                y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
@@ -417,6 +439,12 @@ class LabelList(Dataset):
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
         "Set the `tfms` and `` tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs
-        if tfm_y is not None: self.tfm_y=tfm_y
+        if tfm_y is not None:  self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
+        return self
+
+    def transform_labels(self, tfms:TfmList=None, **kwargs):
+        self.tfm_y=True
+        if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
+        else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
 
