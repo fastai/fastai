@@ -70,7 +70,7 @@ For more details see: https://github.com/anderskm/gputil
 
 Installation: `pip3 install nvidia-ml-py3`.
 
-And here is a usage example:
+And here is a usage example via a sample module `nvidia_smi`:
 
 ```
 import nvidia_smi
@@ -81,6 +81,23 @@ handle = nvidia_smi.nvmlDeviceGetHandleByIndex(0)
 
 res = nvidia_smi.nvmlDeviceGetUtilizationRates(handle)
 print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
+```
+or direct module usage:
+```
+from pynvml import *
+nvmlInit()
+try:
+    deviceCount = nvmlDeviceGetCount()
+    for i in range(deviceCount):
+        handle = nvmlDeviceGetHandleByIndex(i)
+        print("Device", i, ":", nvmlDeviceGetName(handle))
+except NVMLError as error:
+    print(error)
+handle = nvmlDeviceGetHandleByIndex(0)
+info = nvmlDeviceGetMemoryInfo(handle)
+print("Total memory:", info.total)
+print("Free memory:", info.free)
+print("Used memory:", info.used)
 ```
 
 For more details see: https://github.com/nicolargo/nvidia-ml-py3
