@@ -330,12 +330,10 @@ class ObjectCategoryList(MultiCategoryList):
     _processor = ObjectCategoryProcessor
     def get(self, i):
         return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
-    
-    def reconstruct(self, t, x):
-        return self[0].reconstruct(*t, x, classes=self.classes)
 
-class ObjectItemList(ImageItemList):
-    _label_cls = ObjectCategoryList
+    def reconstruct(self, t, x): return self[0].reconstruct(*t, x, classes=self.classes)
+
+class ObjectItemList(ImageItemList): _label_cls = ObjectCategoryList
 
 class SegmentationLabelList(ImageItemList):
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
@@ -348,11 +346,9 @@ class SegmentationLabelList(ImageItemList):
 
     def open(self, fn): return open_mask(fn)
 
-class SegmentationItemList(ImageItemList):
-    _label_cls = SegmentationLabelList
+class SegmentationItemList(ImageItemList): _label_cls = SegmentationLabelList
 
 class PointsItemList(ItemList):
-    
     def __post_init__(self):
         super().__post_init__()
         self.c = len(self.items[0].reshape(-1))
@@ -362,6 +358,5 @@ class PointsItemList(ItemList):
         o = super().get(i)
         return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
 
-class ImageToImageList(ImageItemList):
-    _label_cls = ImageItemList
+class ImageToImageList(ImageItemList): _label_cls = ImageItemList
 

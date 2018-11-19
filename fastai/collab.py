@@ -2,6 +2,7 @@
 from .torch_core import *
 from .basic_train import *
 from .basic_data import *
+from .data_block import *
 from .layers import *
 from .tabular import *
 
@@ -12,7 +13,7 @@ class CollabLine(TabularLine):
         super().__init__(cats, conts, classes, names)
         self.data = [self.data[0][0],self.data[0][1]]
 
-class CollabList(TabularList): _item_cls = CollabLine
+class CollabList(TabularList): _item_cls,_label_cls = CollabLine,FloatList
 
 class EmbeddingDotBias(nn.Module):
     "Base model for callaborative filtering."
@@ -34,8 +35,7 @@ class EmbeddingNN(TabularModel):
         super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, **kwargs)
 
     def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
-        x_cat = torch.stack([users,items], dim=1)
-        return super().forward(x_cat, None)
+        return super().forward(torch.stack([users,items], dim=1), None)
 
 class CollabDataBunch(DataBunch):
     @classmethod
@@ -56,6 +56,6 @@ def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None, y_
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     u,m = data.classes.values()
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, y_range=y_range, **kwargs)
-    else:      model = EmbeddingDotBias(n_factors, len(u)+1, len(m)+1, y_range)
+    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range)
     return Learner(data, model, metrics=metrics, wd=wd)
 
