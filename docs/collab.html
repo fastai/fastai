@@ -210,13 +210,13 @@ summary: "Application to collaborative filtering"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:03
+<pre>Total time: 00:02
 epoch  train_loss  valid_loss
-1      2.354234    1.927426    (00:00)
-2      1.089076    0.677427    (00:00)
-3      0.729364    0.650618    (00:00)
-4      0.626125    0.638089    (00:00)
-5      0.561493    0.637897    (00:00)
+1      2.361941    1.874407    (00:00)
+2      1.093075    0.657915    (00:00)
+3      0.741212    0.631365    (00:00)
+4      0.630556    0.618452    (00:00)
+5      0.585503    0.616357    (00:00)
 
 </pre>
 </div>
@@ -295,7 +295,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDotBias"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L17" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDotBias</code>(<code>n_factors</code>:<code>int</code>, <code>n_users</code>:<code>int</code>, <code>n_items</code>:<code>int</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDotBias"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L18" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDotBias</code>(<code>n_factors</code>:<code>int</code>, <code>n_users</code>:<code>int</code>, <code>n_items</code>:<code>int</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
@@ -322,7 +322,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>wd</code>:<code>float</code>=<code>0.01</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 
 </div>
@@ -335,7 +335,7 @@ epoch  train_loss  valid_loss
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Creates a <a href="/basic_train.html#Learner"><code>Learner</code></a> object built from the data in <code>ratings</code>, <code>pct_val</code>, <code>user_name</code>, <code>item_name</code>, <code>rating_name</code> to <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a>. Optionally, creates another <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a> for <code>test</code>. <code>kwargs</code> are fed to <a href="/basic_data.html#DataBunch.create"><code>DataBunch.create</code></a> with these datasets. The model is given by <a href="/collab.html#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code>, <code>y_range</code> (the numbers of users and items will be inferred from the data).</p>
+<p>Creates a <a href="/basic_train.html#Learner"><code>Learner</code></a> object built from the data in <code>ratings</code>, <code>pct_val</code>, <code>user_name</code>, <code>item_name</code>, <code>rating_name</code> to <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a>. Optionally, creates another <a href="/collab.html#CollabFilteringDataset"><code>CollabFilteringDataset</code></a> for <code>test</code>. <code>kwargs</code> are fed to <a href="/basic_data.html#DataBunch.create"><code>DataBunch.create</code></a> with these datasets. The model is given by <a href="/collab.html#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code> if <code>use_nn</code> is <code>False</code>, and is a neural net with <code>emb_szs</code> otherwise. In both cases the numbers of users and items will be inferred from the data, <code>y_range</code> is the range of the output (optional) and you can pass <a href="/metrics.html#metrics"><code>metrics</code></a>.</p>
 
 </div>
 </div>
@@ -355,7 +355,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CollabLine"><code>class</code> <code>CollabLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L10" class="source_link">[source]</a></h3><blockquote><p><code>CollabLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a></p>
+<h3 id="CollabLine"><code>class</code> <code>CollabLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L11" class="source_link">[source]</a></h3><blockquote><p><code>CollabLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a></p>
 </blockquote>
 
 </div>
@@ -382,7 +382,7 @@ epoch  train_loss  valid_loss
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CollabList"><code>class</code> <code>CollabList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L15" class="source_link">[source]</a></h3><blockquote><p><code>CollabList</code>(<code>items</code>:<code>Iterator</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) → <code>TabularList</code> :: <a href="/tabular.data.html#TabularList"><code>TabularList</code></a></p>
+<h3 id="CollabList"><code>class</code> <code>CollabList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L16" class="source_link">[source]</a></h3><blockquote><p><code>CollabList</code>(<code>items</code>:<code>Iterator</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) → <code>TabularList</code> :: <a href="/tabular.data.html#TabularList"><code>TabularList</code></a></p>
 </blockquote>
 
 </div>
