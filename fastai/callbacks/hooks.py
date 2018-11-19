@@ -89,10 +89,8 @@ def num_features_model(m:nn.Module)->int:
 
 def total_params(m:nn.Module) -> int:
     params = 0
-    if hasattr(m, "weight") and hasattr(m.weight, "size"):
-        params += m.weight.numel()
-    if hasattr(m, "bias") and hasattr(m.bias, "size"):
-        params += m.bias.numel()
+    if hasattr(m, "weight") and hasattr(m.weight, "size"): params += m.weight.numel()
+    if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
     return params
 
 def hook_params(modules:Collection[nn.Module]) -> Hooks:
@@ -119,19 +117,17 @@ def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])
     return list(map(layer_info, layers_names, layers_sizes, layers_params))
 
-def model_summary(m:Collection[nn.Module]):
+def model_summary(m:Collection[nn.Module], n:int=100):
+    "Print a summary of `m` using a char length of `n`."
     info = layers_info(m)
-    n = 100
     header = ["Layer (type)", "Output Shape", "Param #"]
     print("=" * n)
     print(f"{header[0]:<25}  {header[1]:<20} {header[2]:<10}")
     print("=" * n)
     total_params = 0
     for layer, size, params in info:
-        params = int(params)
-        total_params += params
-        params = str(params)
-        size = str(list(size))
+        total_params += int(params)
+        params,size = str(params),str(list(size))
         print(f"{layer:<25} {size:<20} {params:<20}")
         print("_" * n)
     print("Total params: ", total_params)
