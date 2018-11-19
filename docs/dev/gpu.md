@@ -46,7 +46,7 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
 While watching `nvidia-smi` running in your terminal is handy, sometimes you want to do more than that. And that's where API access comes in handy. The following tools provide that.
 
 
-### Python 3 Bindings for the NVIDIA Management Library
+### pynvml
 
 `nvidia-ml-py3` provides Python 3 bindings for nvml c-lib (NVIDIA Management Library), which allows you to query the library directly, without needing to go through `nvidia-smi`. Therefore this module is much faster than the wrappers around `nvidia-smi`.
 
