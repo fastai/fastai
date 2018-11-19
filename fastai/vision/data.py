@@ -309,8 +309,8 @@ class ImageItemList(ItemList):
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer',
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
-        df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, cols=cols, folder=folder, suffix=suffix)
+        df = pd.read_csv(Path(path)/csv_name, header=header)
+        return cls.from_df(df, path=Path(path), create_func=create_func, cols=cols, folder=folder, suffix=suffix)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
