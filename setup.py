@@ -16,6 +16,8 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 
 ### normal dependencies ###
 #
+# important: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
+#
 # these get resolved and installed via either of these two:
 #
 #   pip install fastai

@@ -40,8 +40,8 @@ class Hooks():
     def remove(self):
         for h in self.hooks: h.remove()
 
-def hook_output (module:nn.Module) -> Hook:  return Hook (module,  lambda m,i,o: o)
-def hook_outputs(modules:Collection[nn.Module]) -> Hooks: return Hooks(modules, lambda m,i,o: o)
+def hook_output (module:nn.Module, detach:bool=True) -> Hook:  return Hook (module,  lambda m,i,o: o, detach=detach)
+def hook_outputs(modules:Collection[nn.Module], detach:bool=True) -> Hooks: return Hooks(modules, lambda m,i,o: o, detach=detach)
 
 class HookCallback(LearnerCallback):
     "Callback that registers given hooks."

@@ -2,9 +2,13 @@
 from .torch_core import *
 from .callback import *
 
+<<<<<<< HEAD
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'accuracy_balanced', 'top_k_accuracy', 
            'mean_class_accuracy', 'dice', 'kappa_score', 'confusion_matrix', 'mae', 'mse', 
            'msle', 'rmse', 'explained_variance', 'r2_score', 'exp_rmspe', 'fbeta']
+=======
+__all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','Fbeta_binary']
+>>>>>>> 60fd344e3bba04ed2e81b9e410142a82a9e3d369
 
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
@@ -108,6 +112,7 @@ def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     pct_var = (targ - pred)/targ
     return torch.sqrt((pct_var**2).mean())
 
+<<<<<<< HEAD
 
 def mae(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean absolute error between `pred` and `targ`."
@@ -144,3 +149,31 @@ def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
     u = torch.sum((targ - pred) ** 2)
     d = torch.sum((targ - targ.mean()) ** 2)
     return 1 - u / d
+=======
+@dataclass
+class Fbeta_binary(Callback):
+    "Computes the fbeta between preds and targets for single-label classification"
+    beta2: int = 2
+    eps: float = 1e-9
+    clas:int=1
+    
+    def on_epoch_begin(self, **kwargs):
+        self.TP = 0
+        self.total_y_pred = 0   
+        self.total_y_true = 0
+    
+    def on_batch_end(self, last_output, last_target, **kwargs):
+        y_pred = last_output.argmax(dim=1)
+        y_true = last_target.float()
+        
+        self.TP += ((y_pred==clas) * (y_true==clas)).float().sum()
+        self.total_y_pred += (y_pred==clas).float().sum()
+        self.total_y_true += (y_true==clas).float().sum()
+    
+    def on_epoch_end(self, **kwargs):
+        beta2=self.beta2**2
+        prec = self.TP/(self.total_y_pred+self.eps)
+        rec = self.TP/(self.total_y_true+self.eps)       
+        res = (prec*rec)/(prec*beta2+rec+self.eps)*(1+beta2)
+        self.metric = res 
+>>>>>>> 60fd344e3bba04ed2e81b9e410142a82a9e3d369
