@@ -19,6 +19,25 @@ def text_csv_file(filepath, labels):
     file.close()
     return file
 
+def text_files(path, labels):
+    os.makedirs(path/'temp', exist_ok=True)
+    texts = ["fast ai is a cool project", "hello world"] * 20
+    for lbl in labels:
+        os.makedirs(path/'temp'/lbl, exist_ok=True)
+        for i,t in enumerate(texts):
+            with open(path/'temp'/lbl/f'{lbl}_{i}.txt', 'w') as f: f.write(t)
+
+def test_from_folder():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    text_files(path, ['pos', 'neg'])
+    data = (TextList.from_folder(path/'temp')                           
+               .random_split_by_pct(0.1)
+               .label_from_folder()           
+               .databunch())
+    assert (len(data.train_ds) + len(data.valid_ds)) == 80
+    assert set(data.classes) == {'neg', 'pos'}
+    shutil.rmtree(path/'temp')
+
 def test_from_csv_and_from_df():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos'])

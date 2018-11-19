@@ -163,6 +163,9 @@ class TabularList(ItemList):
         "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
         return [def_emb_sz(self.classes, n, sz_dict) for n in self.cat_names]
     
+    def reconstruct(self, t:Tensor):
+        return self._item_cls(t[0], t[1], self.classes, self.col_names)
+    
 def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."

@@ -315,6 +315,9 @@ class TextList(ItemList):
         "A special labelling method for language models."
         self.__class__ = LMTextList
         return self.label_const(0, label_cls=LMLabel)
+    
+    def reconstruct(self, t:Tensor):
+        return Text(t, self.vocab.textify(t))
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,

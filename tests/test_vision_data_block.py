@@ -6,6 +6,7 @@ def _print_data(data): print(len(data.train_ds),len(data.valid_ds))
 def _check_data(data, t, v):
     assert len(data.train_ds)==t
     assert len(data.valid_ds)==v
+    _ = data.train_ds[0]
 
 def test_vision_datasets():
     il = ImageItemList.from_folder(untar_data(URLs.MNIST_TINY))
@@ -37,6 +38,21 @@ def test_camvid():
             .transform(get_transforms(), tfm_y=True)
             .databunch())
     _check_data(data, 80, 20)
+    
+def get_ip(img,pts): return ImagePoints(FlowField(img.size, pts), scale=True)
+    
+def test_points():
+    coco = untar_data(URLs.COCO_TINY)
+    images, lbl_bbox = get_annotations(coco/'train.json')
+    points = [tensor([b[0][0][0], b[0][0][1]]) for b in lbl_bbox]
+    img2pnts = dict(zip(images, points))
+    get_y_func = lambda o:img2pnts[o.name]
+    data = (ImageItemList.from_folder(coco)
+            .random_split_by_pct()
+            .label_from_func(get_y_func, label_cls=PointsItemList)
+            .transform(get_transforms(), tfm_y=True)
+            .databunch())
+    _check_data(data,160,40)
 
 def test_coco():
     coco = untar_data(URLs.COCO_TINY)
