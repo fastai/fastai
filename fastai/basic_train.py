@@ -315,12 +315,10 @@ class Recorder(LearnerCallback):
 
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
-        if last is None:
-            last=len(self.nb_batches)
-        else:
-            assert last<=len(self.nb_batches), "We can only plot up to the last %d epochs. Please adapt 'last' parameter accordingly."%len(self.nb_batches)
+        last = ifnone(last,len(self.nb_batches))
+        assert last<=len(self.nb_batches), f"We can only plot up to the last {len(self.nb_batches)} epochs. Please adapt 'last' parameter accordingly."
         _, ax = plt.subplots(1,1)
-        l_b=np.sum(self.nb_batches[-last:])
+        l_b = np.sum(self.nb_batches[-last:])
         iterations = range_of(self.losses)[-l_b:]
         ax.plot(iterations, self.losses[-l_b:], label='Train')
         val_iter = self.nb_batches[-last:]
