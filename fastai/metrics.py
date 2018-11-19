@@ -95,16 +95,6 @@ def top_k_accuracy(input:Tensor, targs:Tensor, k:int=5)->Rank0Tensor:
     return (input == targs).sum(dim=1, dtype=torch.float32).mean()
 
 
-def mean_class_accuracy(input: Tensor, targs: Tensor):
-    "Computes the accuracy for each class label ->Rank1Tensor"
-    x = torch.arange(0, input.shape[-1])
-    targs = targs==x[:,None]
-    input = input.argmax(-1)==x[:,None]
-    label_sum = targs.sum(dim=1).float()
-    eq = targs.float() * input.float()
-    return eq.sum(1) / label_sum
-
-
 def matthews_corrcoef(input:Tensor, targs:Tensor):
     """
     Matthews correlation coefficient.
