@@ -15,6 +15,7 @@ source:
 
 build:
   number: 0
+  noarch: python
   script: 'python setup.py install '
 
 requirements:
