@@ -16,12 +16,15 @@ class TabularModel(nn.Module):
         self.bn_cont = nn.BatchNorm1d(n_cont)
         n_emb = sum(e.embedding_dim for e in self.embeds)
         self.n_emb,self.n_cont,self.y_range = n_emb,n_cont,y_range
-        sizes = [n_emb + n_cont] + layers + [out_sz]
+        sizes = self.get_sizes(layers, out_sz)
         actns = [nn.ReLU(inplace=True)] * (len(sizes)-2) + [None]
         layers = []
         for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:],[0.]+ps,actns)):
             layers += bn_drop_lin(n_in, n_out, bn=use_bn and i!=0, p=dp, actn=act)
         self.layers = nn.Sequential(*layers)
+
+    def get_sizes(self, layers, out_sz):
+        return [self.n_emb + self.n_cont] + layers + [out_sz]
 
     def forward(self, x_cat:Tensor, x_cont:Tensor) -> Tensor:
         if self.n_emb != 0:

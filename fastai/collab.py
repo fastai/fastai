@@ -50,12 +50,12 @@ class CollabDataBunch(DataBunch):
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
         return src.databunch(**kwargs)
 
-def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None, y_range:Tuple[float,float]=None,
+def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None,
                    emb_szs:Dict[str,int]=None, wd:float=0.01, **kwargs)->Learner:
     "Create a Learner for collaborative filtering."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     u,m = data.classes.values()
-    if use_nn: model = EmbeddingNN(emb_szs=emb_szs, y_range=y_range, **kwargs)
-    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range)
+    if use_nn: model = EmbeddingNN(emb_szs=emb_szs, **kwargs)
+    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), **kwargs)
     return Learner(data, model, metrics=metrics, wd=wd)
 
