@@ -28,8 +28,6 @@ def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])-
         html_code += "\n  </tr>\n"
     return html_code + "</table>\n"
 
-#def _fix_empty_tensor(o): = [tensor(cats) if len(cats) != 0 else tensor(0),
-
 class TabularLine(ItemBase):
     def __init__(self, cats, conts, classes, names):
         self.cats,self.conts,self.classes,self.names = cats,conts,classes,names
@@ -38,7 +36,7 @@ class TabularLine(ItemBase):
     def __str__(self):
         res = ''
         for c, n in zip(self.cats, self.names[:len(self.cats)]):
-            res += f"{n} {(self.classes[n][c-1] if c != 0 else 'nan')}; "
+            res += f"{n} {(self.classes[n][c])}; "
         for c,n in zip(self.conts, self.names[len(self.cats):]):
             res += f'{n} {c:.4f}; '
         return res
@@ -52,7 +50,7 @@ class TabularLine(ItemBase):
             x,y = ds[i]
             res = []
             for c, n in zip(x.cats, self.names[:len(x.cats)]):
-                res.append(str(x.classes[n][c-1]) if c != 0 else 'nan')
+                res.append(str(x.classes[n][c]))
             res += [f'{c:.4f}' for c in x.conts] + [str(y)]
             items.append(res)
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
@@ -90,7 +88,7 @@ class TabularProcessor(PreProcessor):
         self.cat_names,self.cont_names = ds.cat_names,ds.cont_names
         if len(ds.cat_names) != 0:
             ds.codes = np.stack([c.cat.codes.values for n,c in ds.xtra[ds.cat_names].items()], 1).astype(np.int64) + 1
-            self.classes = ds.classes = OrderedDict({n:c.cat.categories.values
+            self.classes = ds.classes = OrderedDict({n:np.concatenate([['#na#'],c.cat.categories.values])
                                       for n,c in ds.xtra[ds.cat_names].items()})
             cat_cols = list(ds.xtra[ds.cat_names].columns.values)
         else: ds.codes,ds.classes,cat_cols = None,None,[]
