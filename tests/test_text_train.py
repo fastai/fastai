@@ -26,8 +26,9 @@ def learn():
                 .label_for_lm()
                 .add_test(df['texts'].iloc[:200].values)
                 .databunch())
-    learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
-    learn.fit_one_cycle(2, 0.1)
+    learn = language_model_learner(data, emb_sz=100, nh=100, nl=1, drop_mult=0.)
+    learn.opt_func = partial(optim.SGD, momentum=0.9)
+    learn.fit(3,1)
     return learn
 
 @pytest.mark.slow

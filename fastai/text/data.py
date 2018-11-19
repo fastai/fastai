@@ -9,7 +9,7 @@ __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', '
            'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
-text_extensions = {'txt'}
+text_extensions = {'.txt'}
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
@@ -17,7 +17,7 @@ class LanguageModelLoader():
                  max_len:int=25):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
-        self.n = len(np.concatenate(dataset.x.items)) // self.bs
+        self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
         self.max_len,self.num_workers = max_len,0
 
     def __iter__(self):
@@ -104,7 +104,7 @@ class TextDataBunch(DataBunch):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
         cache_path = self.path/cache_name
-        pickle.dump(self.train_ds.vocab.itos, open(cache_path/f'itos.pkl', 'wb'))
+        self.train_ds.vocab.save(cache_path)
         np.save(cache_path/f'train_ids.npy', self.train_ds.x.items)
         np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
         np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
@@ -129,7 +129,7 @@ class TextDataBunch(DataBunch):
     def load(cls, path:PathOrStr, cache_name:PathOrStr='tmp', processor:PreProcessor=None, **kwargs):
         "Load a `TextDataBunch` from `path/cache_name`. `kwargs` are passed to the dataloader creation."
         cache_path = Path(path)/cache_name
-        vocab = Vocab(pickle.load(open(cache_path/f'itos.pkl', 'rb')))
+        vocab = Vocab.load(cache_path)
         train_ids,train_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')
         valid_ids,valid_lbls = np.load(cache_path/f'valid_ids.npy'), np.load(cache_path/f'valid_lbl.npy')
         test_ids = np.load(cache_path/f'test_ids.npy') if os.path.isfile(cache_path/f'test_ids.npy') else None
@@ -173,17 +173,27 @@ class TextDataBunch(DataBunch):
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols,
                            label_cols, label_delim, **kwargs)
 
-    @classmethod#TODO: test
+    @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
-        path = Path(path)
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
-        src = (TextFilesList.from_folder(path)
-                            .split_by_folder(train=train, valid=valid)
-                            .label_from_folder(classes=classes))
+        path = Path(path).absolute()
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        src = (TextList.from_folder(path, processor=processor)
+                       .split_by_folder(train=train, valid=valid))
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
         if test is not None: src.add_test_folder(path/test)
         return src.databunch(**kwargs)
+    
+    @classmethod
+    def single_from_vocab(cls, path:Union[Path, str], vocab:Vocab, tokenizer:Tokenizer=None, classes:Collection[Any]=None,
+                            label_cls=CategoryList, **kwargs):
+        """Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference.
+        Use `label_cls` to specify the type of your labels"""
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        src = TextList([], path=path, processor=processor).split_by_idx([])
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes, label_cls=label_cls)
+        return src.databunch()
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')

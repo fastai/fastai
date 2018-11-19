@@ -2,6 +2,7 @@
 from .torch_core import *
 from .basic_train import *
 from .basic_data import *
+from .data_block import *
 from .layers import *
 from .tabular import *
 
@@ -10,9 +11,9 @@ __all__ = ['EmbeddingDotBias', 'collab_learner', 'CollabDataBunch', 'CollabLine'
 class CollabLine(TabularLine):
     def __init__(self, cats, conts, classes, names):
         super().__init__(cats, conts, classes, names)
-        self.data = [self.data[0][0]-1,self.data[0][1]-1]
+        self.data = [self.data[0][0],self.data[0][1]]
 
-class CollabList(TabularList): _item_cls = CollabLine
+class CollabList(TabularList): _item_cls,_label_cls = CollabLine,FloatList
 
 class EmbeddingDotBias(nn.Module):
     "Base model for callaborative filtering."
@@ -34,8 +35,7 @@ class EmbeddingNN(TabularModel):
         super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, **kwargs)
 
     def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
-        x_cat = torch.stack([users,items], dim=1)
-        return super().forward(x_cat, None)
+        return super().forward(torch.stack([users,items], dim=1), None)
 
 class CollabDataBunch(DataBunch):
     @classmethod
@@ -46,16 +46,16 @@ class CollabDataBunch(DataBunch):
         rating_name = ifnone(rating_name,ratings.columns[2])
         cat_names = [user_name,item_name]
         src = (CollabList.from_df(ratings, cat_names=cat_names, procs=Categorify)
-                 .random_split_by_pct(seed=seed).label_from_df(cols=rating_name))
+               .random_split_by_pct(valid_pct=pct_val, seed=seed).label_from_df(cols=rating_name))
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
         return src.databunch(**kwargs)
 
 def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None, y_range:Tuple[float,float]=None,
-                       emb_szs:Dict[str,int]=None, **kwargs)->Learner:
+                   emb_szs:Dict[str,int]=None, wd:float=0.01, **kwargs)->Learner:
     "Create a Learner for collaborative filtering."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     u,m = data.classes.values()
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, y_range=y_range, **kwargs)
     else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range)
-    return Learner(data, model, metrics=metrics)
+    return Learner(data, model, metrics=metrics, wd=wd)
 
