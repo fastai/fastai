@@ -15,17 +15,17 @@ of that change.
 
 ### Breaking changes:
 
-- `get_files` and `get_image_files` not returns `Path`s relative to `path`, instead of relative to `.`
+- `get_files` and `get_image_files` now return `Path`s relative to `path`, instead of relative to `.`
 - `ItemList.items` are also relative to `path` where relevant, since `get_files` is called internally
-- `create_func` is removed in the data API, subclass and change the `get` method instead (in vision, you can subclass the `open` method if you want to change the images are opened).
+- `create_func` is removed in the data API; subclass and change the `get` method instead (in vision, you can subclass the `open` method if you want to change how the images are opened).
 
 ### New:
 
 - `Vocab` and `TabularTransform` can now be saved
-- each application has its method to create an inference learner
-- `model_summary` function for standard models (thanks to noklam)
-
-### Changed:
+- Each application has its method to create an inference learner
+- `model_summary` function for standard models (thanks to @noklam)
+- Added `pca` to `torch.Tensor`
+- Add methods to get embeddings from `CollabLearner`
 
 ### Fixed:
 

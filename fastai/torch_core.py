@@ -221,6 +221,12 @@ def np2model_tensor(a):
     if not dtype: return res
     return res.type(dtype)
 
+def _pca(x, k=2):
+    x = x-torch.mean(x,0)
+    U,S,V = torch.svd(x.t())
+    return torch.mm(x,U[:,:k])
+torch.Tensor.pca = _pca
+
 def trange_of(x): return torch.arange(len(x))
 
 def to_np(x): return x.data.cpu().numpy()

@@ -50,6 +50,29 @@ class CollabDataBunch(DataBunch):
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
         return src.databunch(**kwargs)
 
+class CollabLearner(Learner):
+    def get_idx(self, arr:Collection, is_item:bool=True):
+        m = self.model.eval().cpu()
+        requires_grad(m,False)
+        u_class,i_class = self.data.classes.values()
+        classes = i_class if is_item else u_class
+        c2i = {v:k for k,v in enumerate(classes)}
+        return tensor([c2i[o] for o in arr])
+
+    def bias(self, arr:Collection, is_item:bool=True):
+        "Bias for item or user (based on `is_item`) for all in `arr`. (Sets model to `cpu` and no grad)"
+        idx = self.get_idx(arr, is_item)
+        m = self.model
+        layer = m.i_bias if is_item else m.u_bias
+        return layer(idx).squeeze()
+
+    def weight(self, arr:Collection, is_item:bool=True):
+        "Bias for item or user (based on `is_item`) for all in `arr`. (Sets model to `cpu` and no grad)"
+        idx = self.get_idx(arr, is_item)
+        m = self.model
+        layer = m.i_weight if is_item else m.u_weight
+        return layer(idx)
+
 def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None,
                    emb_szs:Dict[str,int]=None, wd:float=0.01, **kwargs)->Learner:
     "Create a Learner for collaborative filtering."
@@ -57,5 +80,5 @@ def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None,
     u,m = data.classes.values()
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, **kwargs)
     else:      model = EmbeddingDotBias(n_factors, len(u), len(m), **kwargs)
-    return Learner(data, model, metrics=metrics, wd=wd)
+    return CollabLearner(data, model, metrics=metrics, wd=wd)
 
