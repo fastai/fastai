@@ -24,8 +24,8 @@ If you're interested in using the library in your own projects, we're happy to h
 
 ### Install as pip package
 
-Do not use this method anymore, as it'll install `fastai-1.x` instead.
-`pip install git+https://github.com/fastai/fastai.git`
+Do not use this method anymore, as it'll install `fastai-1.x` instead. (
+<s>`pip install git+https://github.com/fastai/fastai.git`</s>)
 If you don't want to use `conda`, but to install via `pip` do:
 1. Download project: `git clone https://github.com/fastai/fastai.git`
 1. Move into root folder: `cd fastai`
