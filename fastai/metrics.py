@@ -64,7 +64,6 @@ def recall(input:Tensor, targs:Tensor, average:bool=False):
         return rec
 
 
-
 def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
     "Compute accuracy with `targs` when `input` is bs * n_classes."
     n = targs.shape[0]
