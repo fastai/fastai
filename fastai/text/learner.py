@@ -99,7 +99,29 @@ class LanguageLearner(RNNLearner):
             idx = torch.multinomial(res, 1).item()
             text += f' {self.data.vocab.itos[idx]}'
         return text
-
+    
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
+        from IPython.display import display, HTML
+        "Show `rows` result of predictions on `ds_type` dataset."
+        ds = self.dl(ds_type).dataset
+        self.callbacks.append(RecordOnCPU())
+        preds = self.pred_batch(ds_type)
+        x,y = self.callbacks[-1].input,self.callbacks[-1].target
+        self.callbacks = self.callbacks[:-1]
+        y = y.view(*x.size())
+        z = preds.view(*x.size(),-1).argmax(dim=2)
+        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        ys = [ds.x.reconstruct(grab_idx(y, i, self.data._batch_first)) for i in range(rows)]
+        zs = [ds.x.reconstruct(grab_idx(z, i, self.data._batch_first)) for i in range(rows)]
+        
+        items = [['text', 'target', 'pred']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len])
+            txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
+            txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
+            items.append([str(txt_x), str(txt_y), str(txt_z)])
+        display(HTML(text2html_table(items, ([34,33,33]))))
+        
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':

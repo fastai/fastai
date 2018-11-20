@@ -196,19 +196,6 @@ class TextDataBunch(DataBunch):
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes, label_cls=label_cls)
         return src.databunch()
 
-def _treat_html(o:str)->str:
-    return o.replace('\n','\\n')
-
-#TODO: refactor common bit with tabular method of the same name
-def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
-    html_code = f"<table>"
-    for w in widths: html_code += f"  <col width='{w}%'>"
-    for line in items:
-        html_code += "  <tr>\n"
-        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
-        html_code += "\n  </tr>\n"
-    return html_code + "</table>\n"
-
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
@@ -251,7 +238,7 @@ class Text(ItemBase):
         for i, (x,y) in enumerate(zip(xs,ys)):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
             items.append([str(i), str(txt_x)] if self.is_lm else [str(txt_x), str(y)])
-        display(HTML(_text2html_table(items, ([5,95] if self.is_lm else [90,10]))))
+        display(HTML(text2html_table(items, ([5,95] if self.is_lm else [90,10]))))
         
     def show_xyzs(self, xs, ys, zs, max_len:int=70):
         "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
@@ -260,7 +247,7 @@ class Text(ItemBase):
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
             items.append([str(txt_x), str(y), str(z)])
-        display(HTML(_text2html_table(items,  [85,7.5,7.5])))
+        display(HTML(text2html_table(items,  [85,7.5,7.5])))
 
 class LMLabel(CategoryList):
     def predict(self, res): return res

@@ -3,7 +3,7 @@ from .torch_core import *
 from .basic_data import *
 from .callback import *
 
-__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train_epoch', 'validate',
+__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'default_lr', 'default_wd']
 
 default_lr = slice(3e-3)

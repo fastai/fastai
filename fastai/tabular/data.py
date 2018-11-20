@@ -19,15 +19,6 @@ def def_emb_sz(classes, n, sz_dict):
     sz = sz_dict.get(n, int(emb_sz_rule(n_cat)))  # rule of thumb
     return n_cat,sz
 
-def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
-    html_code = f"<table>"
-    for w in widths: html_code += f"  <col width='{w}px'>"
-    for line in items:
-        html_code += "  <tr>\n"
-        html_code += "\n".join([f"    <th>{o}</th>" for o in line if len(o) >= 1])
-        html_code += "\n  </tr>\n"
-    return html_code + "</table>\n"
-
 class TabularLine(ItemBase):
     def __init__(self, cats, conts, classes, names):
         self.cats,self.conts,self.classes,self.names = cats,conts,classes,names
@@ -51,7 +42,7 @@ class TabularLine(ItemBase):
                 res.append(str(x.classes[n][c]))
             res += [f'{c:.4f}' for c in x.conts] + [str(y)]
             items.append(res)
-        display(HTML(_text2html_table(items, [10] * len(items[0]))))
+        display(HTML(text2html_table(items, [10] * len(items[0]))))
      
     def show_xyzs(self, xs, ys, zs, max_len:int=70):
         "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
@@ -63,7 +54,7 @@ class TabularLine(ItemBase):
                 res.append(str(x.classes[n][c]))
             res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
             items.append(res)
-        display(HTML(_text2html_table(items, [10] * len(items[0]))))
+        display(HTML(text2html_table(items, [10] * len(items[0]))))
         
 class TabularProcessor(PreProcessor):
     def __init__(self, ds:ItemBase=None, procs=None):
