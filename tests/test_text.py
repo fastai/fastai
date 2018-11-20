@@ -14,7 +14,7 @@ def test_tokenize():
     tokenizer = Tokenizer(BaseTokenizer)
     toks = tokenizer.process_all(texts)
     assert toks[0] == ['one', 'two', 'three', 'four']
-    assert toks[1][:5] == ['lorem', 'ipsum', 'dolor', 'sit', 'amet,']
-    assert ' '.join(toks[2]) == "i'm suddenly xxup shouting xxup for xxup no xxup reason"
+    assert toks[1][:6] == ['xxmaj', 'lorem', 'ipsum', 'dolor', 'sit', 'amet,']
+    assert ' '.join(toks[2]) == "xxmaj i'm suddenly xxup shouting xxup for xxup no xxup reason"
 
     
