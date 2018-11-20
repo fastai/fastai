@@ -251,10 +251,6 @@ class CategoryList(CategoryListBase):
     
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax()
 
-    def predict(self, res):
-        pred_max = res[0].argmax()
-        return self.classes[pred_max],pred_max,res[0]
-
     def reconstruct(self, t):
         return self._item_cls(t, self.classes[t])
 

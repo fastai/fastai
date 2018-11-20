@@ -88,8 +88,11 @@ class LanguageLearner(RNNLearner):
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         pbar = master_bar(range(n_words))
+        ds = self.data.single_dl.dataset
         for _ in pbar:
-            res = super().predict(text, pbar=pbar)[-1]
+            ds.set_item(text)
+            res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)[-1]
+            ds.clear_item()
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(temperature)
