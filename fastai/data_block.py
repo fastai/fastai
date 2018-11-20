@@ -225,6 +225,9 @@ class CategoryProcessor(PreProcessor):
         ds.classes = self.classes
         ds.c2i = self.c2i
         super().process(ds)
+    
+    def __getstate__(self): return {'classes':self.classes}
+    def __setstate__(self, state:dict): self.create_classes(state['classes'])
 
 class CategoryListBase(ItemList):
     def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
@@ -350,7 +353,6 @@ class ItemLists():
         if self.test: self.test.transform_labels(tfms[1], **kwargs)
         return self
 
-
 class LabelLists(ItemLists):
     def get_processors(self):
         procs_x,procs_y = listify(self.train.x._processor),listify(self.train.y._processor)
@@ -421,6 +423,21 @@ class LabelList(Dataset):
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
+        
+    def export(self, fn:PathOrStr):
+        "Export the minimal state and save it in `fn` to load an empty version for inference."
+        state = {'x_cls':self.x.__class__, 'x_proc':self.x.processor,
+                 'y_cls':self.y.__class__, 'y_proc':self.y.processor,
+                 'path':self.path}
+        pickle.dump(state, open(fn, 'wb'))
+    
+    @classmethod
+    def load_empty(cls, fn:PathOrStr):
+        "Load the sate in `fn` to create an empty `LabelList` for inference."
+        state = pickle.load(open(fn, 'rb'))
+        x = state['x_cls']([], path=state['path'], processor=state['x_proc'])
+        y = state['y_cls']([], path=state['path'], processor=state['y_proc'])
+        return cls(x, y).process()
 
     def process(self, xp=None, yp=None, filter_missing_y:bool=False):
         "Launch the preprocessing on `xp` and `yp`."
@@ -449,3 +466,9 @@ class LabelList(Dataset):
         else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
 
+@classmethod
+def _databunch_load_empty(cls, path, fname:str='export.pkl'):
+    ds = LabelList.load_empty(path/fname)
+    return cls.create(ds,ds,path=path)
+
+DataBunch.load_empty = _databunch_load_empty

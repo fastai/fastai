@@ -105,7 +105,7 @@ class TextDataBunch(DataBunch):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
         cache_path = self.path/cache_name
-        self.train_ds.vocab.save(cache_path)
+        pickle.dump(self.train_ds.vocab.itos, open(cache_name/'itos.pkl','wb'))
         np.save(cache_path/f'train_ids.npy', self.train_ds.x.items)
         np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
         np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
@@ -130,7 +130,7 @@ class TextDataBunch(DataBunch):
     def load(cls, path:PathOrStr, cache_name:PathOrStr='tmp', processor:PreProcessor=None, **kwargs):
         "Load a `TextDataBunch` from `path/cache_name`. `kwargs` are passed to the dataloader creation."
         cache_path = Path(path)/cache_name
-        vocab = Vocab.load(cache_path)
+        vocab = Vocab(pickle.load(open(cache_name/'itos.pkl','rb')))
         train_ids,train_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')
         valid_ids,valid_lbls = np.load(cache_path/f'valid_ids.npy'), np.load(cache_path/f'valid_lbl.npy')
         test_ids = np.load(cache_path/f'test_ids.npy') if os.path.isfile(cache_path/f'test_ids.npy') else None

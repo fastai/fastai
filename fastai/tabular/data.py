@@ -98,15 +98,6 @@ class TabularProcessor(PreProcessor):
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
-        
-    def save(self, path:PathOrStr, dict_name='processor.pkl'):
-        "Save the vocab in `path/dict_name."
-        pickle.dump(self, open(Path(path)/dict_name, 'wb'))
-        
-    @staticmethod
-    def load(path:PathOrStr, dict_name='processor.pkl'):
-        "Load the vocab from `path/dict_name."
-        return pickle.load(open(Path(path)/dict_name, 'rb'))
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."

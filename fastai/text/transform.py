@@ -123,15 +123,13 @@ class Vocab():
         "Convert a list of `nums` to their tokens."
         return sep.join([self.itos[i] for i in nums])
         
-    def save(self, path:PathOrStr, dict_name='itos.pkl'):
-        "Save the vocab in `path/dict_name."
-        pickle.dump(self.itos, open(Path(path)/dict_name, 'wb'))
-        
-    @classmethod
-    def load(cls, path:PathOrStr, dict_name='itos.pkl'):
-        "Load the vocab from `path/dict_name."
-        return cls(pickle.load(open(Path(path)/dict_name, 'rb')))
-
+    def __getstate__(self):
+        return {'itos':self.itos}
+    
+    def __setstate__(self, state:dict):
+        self.itos = state['itos']
+        self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
+    
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of tokens."

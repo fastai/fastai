@@ -124,6 +124,9 @@ class DataBunch():
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
         dl.dataset[0][0].show_xys(xs, ys, **kwargs)
+        
+    def export(self, fname:str='export.pkl'):
+        self.valid_ds.export(self.path/fname)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
