@@ -237,13 +237,27 @@ class Learner():
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
 
-    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, **kwargs):
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=5, thresh:float=0.5, **kwargs):
         "Show `rows` result of predictions on `ds_type` dataset."
         ds = self.dl(ds_type).dataset
+        self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
-        xys = [ds[i] for i in range(rows)]
-        xys[0][0].show_results(xys, preds, **kwargs)
+        x,y = self.callbacks[-1].input,self.callbacks[-1].target
+        self.callbacks = self.callbacks[:-1]
+        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        preds = [ds.y.analyze_pred(grab_idx(preds, i), thresh=thresh) for i in range(rows)]
+        if has_arg(ds.y.reconstruct, 'x'):
+            ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
+            zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
+        else : 
+            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
+            zs = [ds.y.reconstruct(z) for z in preds]
+        ds[0][0].show_xyzs(xs, ys, zs, **kwargs)
 
+class RecordOnCPU(Callback):
+    def on_batch_begin(self, last_input,last_target,**kwargs):
+        self.input,self.target = to_cpu(last_input),to_cpu(last_target)
+        
 @dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."

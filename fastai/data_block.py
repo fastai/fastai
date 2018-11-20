@@ -66,9 +66,9 @@ class ItemList():
         for p in self.processor: item = p.process_one(item)
         return item
 
-    def predict(self, res):
-        "Called at the end of `Learn.predict`; override for optional post-processing"
-        return res
+    def analyze_pred(self, pred, thresh:float=0.5): 
+        "Called on `pred` before `reconstruct` for additional preprocessing."
+        return pred
 
     def reconstruct(self, t:Tensor, x:Tensor=None):
         "Reconstuct one of the underlying item for its data `t`."
@@ -248,6 +248,8 @@ class CategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(o, self.classes[o])
+    
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax()
 
     def predict(self, res):
         pred_max = res[0].argmax()
@@ -276,6 +278,9 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+    
+    def analyze_pred(self, pred, thresh:float=0.5):
+        return (pred >= thresh).float()
 
     def reconstruct(self, t):
         o = [i for i in range(self.c) if t[i] == 1.]

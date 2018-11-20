@@ -52,6 +52,18 @@ class TabularLine(ItemBase):
             res += [f'{c:.4f}' for c in x.conts] + [str(y)]
             items.append(res)
         display(HTML(_text2html_table(items, [10] * len(items[0]))))
+     
+    def show_xyzs(self, xs, ys, zs, max_len:int=70):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        from IPython.display import display, HTML
+        items = [xs[0].names + ['target', 'prediction']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            res = []
+            for c, n in zip(x.cats, self.names[:len(x.cats)]):
+                res.append(str(x.classes[n][c]))
+            res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
+            items.append(res)
+        display(HTML(_text2html_table(items, [10] * len(items[0]))))
         
 class TabularProcessor(PreProcessor):
     def __init__(self, ds:ItemBase=None, procs=None):

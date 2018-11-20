@@ -79,9 +79,14 @@ def to_detach(b:Tensors):
     return b.detach() if isinstance(b,Tensor) else b
 
 def to_data(b:ItemsList):
-    "Recursively map lists of items in `b ` to their wrapped data"
+    "Recursively map lists of items in `b ` to their wrapped data."
     if is_listy(b): return [to_data(o) for o in b]
     return b.data if isinstance(b,ItemBase) else b
+
+def to_cpu(b:ItemsList):
+    "Recursively map lists of tensors in `b ` to the cpu."
+    if is_listy(b): return [to_cpu(o) for o in b]
+    return b.cpu() if isinstance(b,Tensor) else b
 
 def to_device(b:Tensors, device:torch.device):
     "Ensure `b` is on `device`."

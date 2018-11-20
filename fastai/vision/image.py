@@ -246,18 +246,15 @@ class Image(ItemBase):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
     
-    def show_results(self, xys, preds, figsize:Tuple[int,int]=None):
-        rows = len(xys)
-        figsize = ifnone(figsize, (8,3*rows))
-        _,axs = plt.subplots(rows, 2, figsize=figsize)
-        axs[0,0].set_title('Predictions')
-        axs[0,1].set_title('Ground truth')
-        for i,(x,y) in enumerate(xys):
-            x.show(ax=axs[i,1], y=y)
-            pred = y.reconstruct_output(preds[i], x)
-            x.show(ax=axs[i,0], y=pred)
-        plt.tight_layout()
-        
+    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        figsize = ifnone(figsize, (6,3*len(xs)))
+        fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
+        fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
+        for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
+            x.show(ax=axs[i,0], y=y, **kwargs)
+            x.show(ax=axs[i,1], y=z, **kwargs)
+    
     def reconstruct(self, t:Tensor):
         return self.__class__(t)
 
@@ -280,8 +277,6 @@ class ImageSegment(Image):
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
 
-    def reconstruct_output(self, out, x): return self.__class__(out.argmax(dim=0)[None])
-
 class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True):
@@ -299,8 +294,6 @@ class ImagePoints(Image):
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
     
     def reconstruct(self, t, x): return self.__class__(FlowField(x.size, t), scale=False)
-
-    def reconstruct_output(self, out, x): return self.__class__(FlowField(x.size, out[None]), scale=False)
 
     @property
     def shape(self)->Tuple[int,int,int]: return (1, *self._flow.size)

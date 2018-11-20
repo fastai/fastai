@@ -349,6 +349,7 @@ class SegmentationLabelList(ImageItemList):
         return self.__class__(items, ifnone(classes, self.classes), **kwargs)
 
     def open(self, fn): return open_mask(fn)
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
 
 class SegmentationItemList(ImageItemList): _label_cls = SegmentationLabelList
 
@@ -361,6 +362,8 @@ class PointsItemList(ItemList):
     def get(self, i):
         o = super().get(i)
         return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
+    
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
 
 class ImageToImageList(ImageItemList): _label_cls = ImageItemList
 
