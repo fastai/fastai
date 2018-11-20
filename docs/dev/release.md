@@ -1245,6 +1245,8 @@ To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fast
 
 If you want to run a build as a cron-job, rather than it getting triggered by a PR or a push, add the pipeline script as normal, and then go to that build's [Edit], and then [Triggers], disable CI and PR entries and configure a scheduled entry.
 
+Also, most likely you don't want the outcome of the scheduled job to be attached to the most recent commit on github (as it will most likely be misleading if it's a failure). So to fix that under [Edit], and then [YAML], followed by [Get Sources], and uncheck "Report Build Status" on the right side.
+
 
 #### Modifying `azure-pipelines.yml`
 
