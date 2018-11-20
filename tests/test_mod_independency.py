@@ -24,18 +24,7 @@ def load_setup_py_data_basic(setup_file, work_dir=None):
     cd_to_work = False
     path_backup = sys.path
 
-    def _change_cwd(target_dir):
-        cd_to_work = True
-        try:
-            cwd = os.getcwd()
-        except OSError:
-            cwd = recipe_dir or work_dir
-        os.chdir(target_dir)
-        # this is very important - or else if versioneer or otherwise is in the start folder,
-        # things will pick up the wrong versioneer/whatever!
-        sys.path.insert(0, target_dir)
-        return cd_to_work, cwd
-
+    os.chdir(work_dir)
     setup_cfg_data = {}
     try:
         from setuptools.config import read_configuration
@@ -93,6 +82,7 @@ def test_setup_parser():
 
 # fastai must not depend on 'extras_require' package requirements from setup.py,
 # which won't be installed by default
+if 'extras_require' not in data: data['extras_require']= {'dev':[]}
 extras_require = [(re.split(r'[>=<]+',x))[0] for x in data['extras_require']['dev']]
 exceptions = ['pytest'] # see the top for the reason for exceptions
 unwanted_deps = [x for x in extras_require if x not in exceptions]

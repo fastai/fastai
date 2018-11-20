@@ -9,5 +9,6 @@ def test_order_preds():
     data_clas = TextClasDataBunch.from_df(path, train_df, valid_df)
     learn = text_classifier_learner(data_clas)
     preds = learn.get_preds(ordered=True)
-    true_value = np.array([data_clas.train_ds.class2idx[o] for o in valid_df.iloc[:,0]])
+    true_value = np.array([data_clas.train_ds.c2i[o] for o in valid_df.iloc[:,0]])
     assert np.all(torch.Tensor.numpy(preds[1]) == true_value)
+

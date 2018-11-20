@@ -68,6 +68,7 @@ function wait_till_pip_ver_is_available() {
         COUNTER=$$[$$COUNTER +5]
 	    sleep 5
     done
+    sleep 5 # wait a bit longer if we hit a different cache on install
     echo -e "\rwaited: $$COUNTER secs    "
     echo -e "fastai-$$ver is now available on pypi"
 }
@@ -244,11 +245,11 @@ commit-tag-push: ## commit and tag the release
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
-	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"
-	git tag -a $(version) -m "$(version)" && git push --tags
-
 	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push --set-upstream origin release-$(version)
+
+	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"
+	git tag -a $(version) -m "$(version)" && git push origin tag $(version)
 
 # check whether there any commits besides fastai/version.py and CHANGES.md
 # from the point of branching of release-$(version) till its HEAD. If
@@ -292,11 +293,13 @@ test-install: ## test conda/pip package by installing that version them
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
 
 	@echo "\n\n*** waiting for $(version) conda version to become visible"
-	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v >/dev/null 2>&1`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; print "\n$$p-$$v is now available on conda\n"' $(version)
+	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v >/dev/null 2>&1`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; sleep 5; print "\n$$p-$$v is now available on conda\n"' $(version)
 
 	conda install -y -c fastai fastai==$(version)
-	@# leave conda package installed: conda uninstall -y fastai
+	conda uninstall -y fastai
 
+	@echo "\n\n*** Install the editable version to return to dev work"
+	pip install -e .[dev]
 
 ##@ CHANGES.md file targets
 

@@ -65,6 +65,8 @@ AdamW = partial(optim.Adam, betas=(0.9,0.99))
 def tensor(x:Any, *rest)->Tensor:
     "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly"
     if len(rest): x = (x,)+rest
+    # XXX: Pytorch bug in dataloader using num_workers>0; TODO: create repro and report
+    if is_listy(x) and len(x)==0: return tensor(0)
     return torch.tensor(x) if is_listy(x) else as_tensor(x)
 
 def np_address(x:np.ndarray)->int:
@@ -207,15 +209,23 @@ def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
     else: return loss_func(y_pred, y_true, reduction='none')
 
 def model_type(dtype):
+    "Return the torch type corresponding to `dtype`."
     return (torch.float32 if np.issubdtype(dtype, np.floating) else
             torch.int64 if np.issubdtype(dtype, np.integer)
             else None)
 
 def np2model_tensor(a):
+    "Tranform numpy array `a` to a tensor of the same type."
     dtype = model_type(a.dtype)
     res = as_tensor(a)
     if not dtype: return res
     return res.type(dtype)
+
+def _pca(x, k=2):
+    x = x-torch.mean(x,0)
+    U,S,V = torch.svd(x.t())
+    return torch.mm(x,U[:,:k])
+torch.Tensor.pca = _pca
 
 def trange_of(x): return torch.arange(len(x))
 
@@ -229,3 +239,7 @@ def tensor__array__(self, dtype=None):
 Tensor.__array__ = tensor__array__
 Tensor.ndim = property(lambda x: len(x.shape))
 
+class FloatItem(ItemBase):
+    def __init__(self,obj): self.data,self.obj = tensor(obj),obj
+    def __str__(self): return str(self.obj)
+    def reconstruct(self,t): return t.item()

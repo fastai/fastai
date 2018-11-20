@@ -1,6 +1,8 @@
 import pytest
 from fastai import *
 from fastai.vision import *
+from fastai.vision.data import verify_image
+import PIL
 
 @pytest.fixture(scope="module")
 def path():
@@ -10,16 +12,15 @@ def path():
 def mnist_tiny_sanity_test(data):
     assert data.c == 2
     assert set(map(str, set(data.classes))) == {'3', '7'}
-    assert set(data.train_ds.y) == set(data.valid_ds.y) == {0, 1}
 
 def test_from_folder(path):
     for valid_pct in [None, 0.9]:
-        data = ImageDataBunch.from_folder(path, test='test', valid_pct=valid_pct)
+        data = ImageDataBunch.from_folder(path, test='test')
         mnist_tiny_sanity_test(data)
 
 def test_from_name_re(path):
     fnames = get_files(path/'train', recurse=True)
-    pat = r'\/([^/]+)\/\d+.png$'
+    pat = r'/([^/]+)\/\d+.png$'
     data = ImageDataBunch.from_name_re(path, fnames, pat, ds_tfms=(rand_pad(2, 28), []))
     mnist_tiny_sanity_test(data)
 
@@ -47,3 +48,21 @@ def test_download_images():
             assert os.path.getsize(files[0]) > 0
     finally:
         shutil.rmtree(tmp_path)
+
+def test_verify_images(path):
+    tmp_path = path/'tmp'
+    os.makedirs(tmp_path, exist_ok=True)
+    verify_images(path/'train'/'3', dest=tmp_path, max_size=27, max_workers=4)
+    images = list(tmp_path.iterdir())
+    assert len(images) == 346
+    img = PIL.Image.open(images[0])
+    assert img.height == 27 and img.width == 27
+    shutil.rmtree(tmp_path)
+
+def test_verify_image(path):
+    tmp_path = path/'tmp'
+    os.makedirs(tmp_path, exist_ok=True)
+    verify_image(path/'train'/'3'/'867.png',False, dest=tmp_path, max_size=27)
+    img = PIL.Image.open(tmp_path/'867.png')
+    assert img.height == 27 and img.width == 27
+    shutil.rmtree(tmp_path)

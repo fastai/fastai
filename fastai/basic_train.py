@@ -219,6 +219,14 @@ class Learner():
         dl.num_workers = nw
         return preds
 
+    def predict(self, img:ItemBase, pbar:Optional[PBar]=None):
+        "Return prect class, label and probabilities for `img`."
+        ds = self.data.single_dl.dataset
+        ds.set_item(img)
+        res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        ds.clear_item()
+        return ds.predict(res)
+
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
         dl = ifnone(dl, self.data.valid_dl)
@@ -228,6 +236,13 @@ class Learner():
         val_metrics = validate(self.model, dl, self.loss_func, cb_handler)
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
+
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, **kwargs):
+        "Show `rows` result of predictions on `ds_type` dataset."
+        ds = self.dl(ds_type).dataset
+        preds = self.pred_batch(ds_type)
+        xys = [ds[i] for i in range(rows)]
+        xys[0][0].show_results(xys, preds, **kwargs)
 
 @dataclass
 class LearnerCallback(Callback):
@@ -251,6 +266,7 @@ class Recorder(LearnerCallback):
         "Initialize recording status at beginning of training."
         self.pbar = pbar
         self.names = ['epoch', 'train_loss', 'valid_loss'] + metrics_names
+        if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         self.pbar.write('  '.join(self.names), table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
@@ -313,14 +329,20 @@ class Recorder(LearnerCallback):
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
 
-    def plot_losses(self)->None:
+    def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
+        last = ifnone(last,len(self.nb_batches))
+        assert last<=len(self.nb_batches), f"We can only plot up to the last {len(self.nb_batches)} epochs. Please adapt 'last' parameter accordingly."
         _, ax = plt.subplots(1,1)
-        iterations = range_of(self.losses)
-        ax.plot(iterations, self.losses)
-        val_iter = self.nb_batches
-        val_iter = np.cumsum(val_iter)
-        ax.plot(val_iter, self.val_losses)
+        l_b = np.sum(self.nb_batches[-last:])
+        iterations = range_of(self.losses)[-l_b:]
+        ax.plot(iterations, self.losses[-l_b:], label='Train')
+        val_iter = self.nb_batches[-last:]
+        val_iter = np.cumsum(val_iter)+np.sum(self.nb_batches[:-last])
+        ax.plot(val_iter, self.val_losses[-last:], label='Validation')
+        ax.set_ylabel('Loss')
+        ax.set_xlabel('Batches processed')
+        ax.legend()
 
     def plot_metrics(self)->None:
         "Plot metrics collected during training."

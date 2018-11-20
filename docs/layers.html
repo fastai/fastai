@@ -73,7 +73,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -95,7 +95,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -110,7 +110,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -120,9 +120,9 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-0      0.082607    0.087943    0.970069  (00:02)
+<pre>Total time: 00:03
+epoch  train_loss  valid_loss  accuracy
+1      0.091847    0.078211    0.975466  (00:03)
 
 </pre>
 </div>
@@ -156,7 +156,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -171,7 +171,7 @@ epoch  train loss  valid loss  accuracy
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -182,8 +182,8 @@ epoch  train loss  valid loss  accuracy
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-0      0.151425    0.126878    0.957802  (00:02)
+epoch  train_loss  valid_loss  accuracy
+1      0.137756    0.125046    0.950442  (00:02)
 
 </pre>
 </div>
@@ -217,7 +217,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -232,7 +232,7 @@ epoch  train loss  valid loss  accuracy
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -243,8 +243,8 @@ epoch  train loss  valid loss  accuracy
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-0      0.076629    0.054396    0.983808  (00:02)
+epoch  train_loss  valid_loss  accuracy
+1      0.097507    0.074090    0.976938  (00:02)
 
 </pre>
 </div>
@@ -310,7 +310,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -350,7 +350,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -418,7 +418,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -485,7 +485,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -541,7 +541,7 @@ epoch  train loss  valid loss  accuracy
 <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -570,7 +570,7 @@ epoch  train loss  valid loss  accuracy
 <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -850,7 +850,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_embedding"><code>get_embedding</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>get_embedding</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="embedding"><code>embedding</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>embedding</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
