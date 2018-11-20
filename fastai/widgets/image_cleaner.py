@@ -5,13 +5,9 @@ from ..vision.data import *
 from ..vision.transform import *
 from ..vision.image import open_image
 from ipywidgets import widgets, Layout
-from IPython.display import clear_output, HTML
+from IPython.display import clear_output, HTML, display
 
-<<<<<<< HEAD
-__all__ = ['DatasetFormatter', 'ImageDeleter', 'ImageRelabeler', 'ImageCleaner']
-=======
 __all__ = ['DatasetFormatter', 'ImageCleaner']
->>>>>>> 1edf362d0190ee9981bf6822ca70df5a2946bb5e
 
 class DatasetFormatter():
     @classmethod
