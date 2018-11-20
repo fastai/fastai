@@ -62,10 +62,6 @@ class DeviceDataLoader():
         "Create DeviceDataLoader from `dataset` with `batch_size` and `shuffle`: processs using `num_workers`."
         return cls(DataLoader(dataset, batch_size=bs, shuffle=shuffle, num_workers=num_workers, **kwargs),
                    device=device, tfms=tfms, collate_fn=collate_fn)
-
-def grab_idx(x,i,batch_first:bool=True):
-    if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
-    else:           return ([o[:,i].cpu() for o in x] if is_listy(x) else x[:,i].cpu())
     
 class DataBunch():
     _batch_first=True

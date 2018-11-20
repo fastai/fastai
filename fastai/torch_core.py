@@ -236,4 +236,8 @@ Tensor.ndim = property(lambda x: len(x.shape))
 class FloatItem(ItemBase):
     def __init__(self,obj): self.data,self.obj = tensor(obj),obj
     def __str__(self): return str(self.obj)
-    def reconstruct(self,t): return t.item()
+    def reconstruct(self,t): return self(t.item())
+
+def grab_idx(x,i,batch_first:bool=True):
+    if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
+    else:           return ([o[:,i].cpu() for o in x] if is_listy(x) else x[:,i].cpu())
