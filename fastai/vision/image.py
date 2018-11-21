@@ -256,9 +256,6 @@ class Image(ItemBase):
             x.show(ax=axs[i,0], y=y, **kwargs)
             x.show(ax=axs[i,1], y=z, **kwargs)
     
-    def reconstruct(self, t:Tensor):
-        return self.__class__(t)
-
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
@@ -293,8 +290,6 @@ class ImagePoints(Image):
     def clone(self):
         "Mimic the behavior of torch.clone for `Image` objects."
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
-    
-    def reconstruct(self, t, x): return self.__class__(FlowField(x.size, t), scale=False)
 
     @property
     def shape(self)->Tuple[int,int,int]: return (1, *self._flow.size)
@@ -417,12 +412,6 @@ class ImageBBox(ImagePoints):
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
     
-    def reconstruct(self, bboxes, labels, x, classes):
-        if len((labels - self.pad_idx).nonzero()) == 0: return
-        i = (labels - self.pad_idx).nonzero().min()
-        bboxes,labels = bboxes[i:],labels[i:]
-        return self.create(*x.size, bboxes, labels=labels, classes=classes, scale=False)
-
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
     #fn = getattr(fn, 'path', fn)

@@ -223,10 +223,15 @@ class Learner():
         "Return prect class, label and probabilities for `img`."
         ds = self.data.single_dl.dataset
         ds.set_item(img)
+        self.callbacks.append(RecordOnCPU())
         res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        x = self.callbacks[-1].input
+        if getattr(self.data,'norm',False): x = self.data.denorm(x)
+        self.callbacks = self.callbacks[:-1]
         ds.clear_item()
         pred = ds.y.analyze_pred(res[0], **kwargs)
-        return ds.y.reconstruct(pred), pred, res[0]
+        out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
+        return out, pred, res[0]
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
