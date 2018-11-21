@@ -622,4 +622,3 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
     return ch,round(r/ratio),round(c/ratio)
-

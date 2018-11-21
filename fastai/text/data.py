@@ -185,16 +185,6 @@ class TextDataBunch(DataBunch):
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
         if test is not None: src.add_test_folder(path/test)
         return src.databunch(**kwargs)
-    
-    @classmethod
-    def single_from_vocab(cls, path:Union[Path, str], vocab:Vocab, tokenizer:Tokenizer=None, classes:Collection[Any]=None,
-                            label_cls=CategoryList, **kwargs):
-        """Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference.
-        Use `label_cls` to specify the type of your labels"""
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
-        src = TextList([], path=path, processor=processor).split_by_idx([])
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes, label_cls=label_cls)
-        return src.databunch()
 
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."

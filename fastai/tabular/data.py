@@ -117,14 +117,6 @@ class TabularDataBunch(DataBunch):
                            .split_by_idx(valid_idx)
                            .label_from_df(cols=dep_var, classes=None)
                            .databunch())
-    
-    @staticmethod
-    def single_from_processor(path:Union[Path, str], processor:PreProcessor, classes:Collection[str]=None, 
-                              label_cls=CategoryList, **kwargs):
-        """Create an empty `ImageTabularBunch` in `path` with `preprocessor` and `classes`. Typically used for inference.
-        Use `label_cls` to specify the type of your labels"""
-        sd = TabularList([], path=path, processor=processor).split_by_idx([])
-        return sd.label_const(0, label_cls=label_cls, classes=classes).databunch()
 
 class TabularList(ItemList):
     _item_cls=TabularLine

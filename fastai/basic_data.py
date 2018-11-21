@@ -116,6 +116,7 @@ class DataBunch():
 
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
+        #TODO: get rid of has_arg if possible
         dl = self.dl(ds_type)
         x,y = next(iter(dl))
         if self._square_show: rows = rows ** 2

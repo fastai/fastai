@@ -432,12 +432,12 @@ class LabelList(Dataset):
         pickle.dump(state, open(fn, 'wb'))
     
     @classmethod
-    def load_empty(cls, fn:PathOrStr):
+    def load_empty(cls, fn:PathOrStr, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
         state = pickle.load(open(fn, 'rb'))
         x = state['x_cls']([], path=state['path'], processor=state['x_proc'])
         y = state['y_cls']([], path=state['path'], processor=state['y_proc'])
-        return cls(x, y).process()
+        return cls(x, y, tfms=tfms, tfm_y=tfm_y, **kwargs).process()
 
     def process(self, xp=None, yp=None, filter_missing_y:bool=False):
         "Launch the preprocessing on `xp` and `yp`."
@@ -467,8 +467,8 @@ class LabelList(Dataset):
         return self
 
 @classmethod
-def _databunch_load_empty(cls, path, fname:str='export.pkl'):
-    ds = LabelList.load_empty(path/fname)
+def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+    ds = LabelList.load_empty(path/fname, tfms=tfms, tfm_y=tfm_y, **kwargs)
     return cls.create(ds,ds,path=path)
 
 DataBunch.load_empty = _databunch_load_empty
