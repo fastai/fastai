@@ -3,7 +3,7 @@ from .torch_core import *
 from .basic_data import *
 from .callback import *
 
-__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'fit', 'loss_batch', 'train_epoch', 'validate',
+__all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'default_lr', 'default_wd']
 
 default_lr = slice(3e-3)
@@ -95,8 +95,8 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     finally: cb_handler.on_train_end(exception)
 
 loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': F.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
-    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': F.sigmoid
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
+    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid
 }
 
 def _loss_func2activ(loss_func):
@@ -219,13 +219,19 @@ class Learner():
         dl.num_workers = nw
         return preds
 
-    def predict(self, img:ItemBase, pbar:Optional[PBar]=None):
+    def predict(self, img:ItemBase, pbar:Optional[PBar]=None, **kwargs):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.single_dl.dataset
         ds.set_item(img)
+        self.callbacks.append(RecordOnCPU())
         res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        x = self.callbacks[-1].input
+        if getattr(self.data,'norm',False): x = self.data.denorm(x)
+        self.callbacks = self.callbacks[:-1]
         ds.clear_item()
-        return ds.predict(res)
+        pred = ds.y.analyze_pred(res[0], **kwargs)
+        out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
+        return out, pred, res[0]
 
     def validate(self, dl=None, callbacks=None, metrics=None):
         "Validate on `dl` with potential `callbacks` and `metrics`."
@@ -237,13 +243,30 @@ class Learner():
         cb_handler.on_epoch_end(val_metrics)
         return cb_handler.state_dict['last_metrics']
 
-    def show_results(self, ds_type=DatasetType.Valid, rows:int=3, **kwargs):
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=5, **kwargs):
         "Show `rows` result of predictions on `ds_type` dataset."
+        #TODO: get read of has_arg x and split_kwargs if possible
         ds = self.dl(ds_type).dataset
+        self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
-        xys = [ds[i] for i in range(rows)]
-        xys[0][0].show_results(xys, preds, **kwargs)
+        x,y = self.callbacks[-1].input,self.callbacks[-1].target
+        if getattr(self.data,'norm',False): x = self.data.denorm(x)
+        self.callbacks = self.callbacks[:-1]
+        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        analyze_kwargs,kwargs = split_kwargs(kwargs, ds.y.analyze_pred)
+        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
+        if has_arg(ds.y.reconstruct, 'x'):
+            ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
+            zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
+        else : 
+            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
+            zs = [ds.y.reconstruct(z) for z in preds]
+        ds[0][0].show_xyzs(xs, ys, zs, **kwargs)
 
+class RecordOnCPU(Callback):
+    def on_batch_begin(self, last_input,last_target,**kwargs):
+        self.input,self.target = to_cpu(last_input),to_cpu(last_target)
+        
 @dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."

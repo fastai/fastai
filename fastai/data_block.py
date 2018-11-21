@@ -66,9 +66,9 @@ class ItemList():
         for p in self.processor: item = p.process_one(item)
         return item
 
-    def predict(self, res):
-        "Called at the end of `Learn.predict`; override for optional post-processing"
-        return res
+    def analyze_pred(self, pred:Tensor): 
+        "Called on `pred` before `reconstruct` for additional preprocessing."
+        return pred
 
     def reconstruct(self, t:Tensor, x:Tensor=None):
         "Reconstuct one of the underlying item for its data `t`."
@@ -225,6 +225,9 @@ class CategoryProcessor(PreProcessor):
         ds.classes = self.classes
         ds.c2i = self.c2i
         super().process(ds)
+    
+    def __getstate__(self): return {'classes':self.classes}
+    def __setstate__(self, state:dict): self.create_classes(state['classes'])
 
 class CategoryListBase(ItemList):
     def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
@@ -248,10 +251,8 @@ class CategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(o, self.classes[o])
-
-    def predict(self, res):
-        pred_max = res[0].argmax()
-        return self.classes[pred_max],pred_max,res[0]
+    
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax()
 
     def reconstruct(self, t):
         return self._item_cls(t, self.classes[t])
@@ -268,7 +269,7 @@ class MultiCategoryList(CategoryListBase):
     _item_cls=MultiCategory
     _processor=MultiCategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
-        if sep is not None: items = array(csv.reader(items, delimiter=sep))
+        if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
 
@@ -276,6 +277,9 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+    
+    def analyze_pred(self, pred, thresh:float=0.5):
+        return (pred >= thresh).float()
 
     def reconstruct(self, t):
         o = [i for i in range(self.c) if t[i] == 1.]
@@ -349,7 +353,6 @@ class ItemLists():
         if self.test: self.test.transform_labels(tfms[1], **kwargs)
         return self
 
-
 class LabelLists(ItemLists):
     def get_processors(self):
         procs_x,procs_y = listify(self.train.x._processor),listify(self.train.y._processor)
@@ -420,6 +423,21 @@ class LabelList(Dataset):
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
+        
+    def export(self, fn:PathOrStr):
+        "Export the minimal state and save it in `fn` to load an empty version for inference."
+        state = {'x_cls':self.x.__class__, 'x_proc':self.x.processor,
+                 'y_cls':self.y.__class__, 'y_proc':self.y.processor,
+                 'path':self.path}
+        pickle.dump(state, open(fn, 'wb'))
+    
+    @classmethod
+    def load_empty(cls, fn:PathOrStr, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+        "Load the sate in `fn` to create an empty `LabelList` for inference."
+        state = pickle.load(open(fn, 'rb'))
+        x = state['x_cls']([], path=state['path'], processor=state['x_proc'])
+        y = state['y_cls']([], path=state['path'], processor=state['y_proc'])
+        return cls(x, y, tfms=tfms, tfm_y=tfm_y, **kwargs).process()
 
     def process(self, xp=None, yp=None, filter_missing_y:bool=False):
         "Launch the preprocessing on `xp` and `yp`."
@@ -448,3 +466,9 @@ class LabelList(Dataset):
         else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
 
+@classmethod
+def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+    ds = LabelList.load_empty(path/fname, tfms=tfms, tfm_y=tfm_y, **kwargs)
+    return cls.create(ds,ds,path=path)
+
+DataBunch.load_empty = _databunch_load_empty

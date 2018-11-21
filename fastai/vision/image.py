@@ -239,34 +239,23 @@ class Image(ItemBase):
         if title is not None: ax.set_title(title)
 
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
         rows = int(math.sqrt(len(xs)))
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
     
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
-        fig, axs = plt.subplots(rows,rows,figsize=figsize)
-        for i, ax in zip(idxs[:rows*rows], (axs.flatten() if rows > 1 else [axs])):
-            x,y = ds[i]
-            x.show(ax=ax, y=y, **kwargs)
-        plt.tight_layout()
-
-    def show_results(self, xys, preds, figsize:Tuple[int,int]=None):
-        rows = len(xys)
-        figsize = ifnone(figsize, (8,3*rows))
-        _,axs = plt.subplots(rows, 2, figsize=figsize)
-        axs[0,0].set_title('Predictions')
-        axs[0,1].set_title('Ground truth')
-        for i,(x,y) in enumerate(xys):
-            x.show(ax=axs[i,1], y=y)
-            pred = y.reconstruct_output(preds[i], x)
-            x.show(ax=axs[i,0], y=pred)
-        plt.tight_layout()
-        
-    def reconstruct(self, t:Tensor):
-        return self.__class__(t)
-
+    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`. 
+        `kwargs` are passed to the show method."""
+        figsize = ifnone(figsize, (6,3*len(xs)))
+        fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
+        fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
+        for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
+            x.show(ax=axs[i,0], y=y, **kwargs)
+            x.show(ax=axs[i,1], y=z, **kwargs)
+    
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
@@ -286,8 +275,6 @@ class ImageSegment(Image):
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
 
-    def reconstruct_output(self, out, x): return self.__class__(out.argmax(dim=0)[None])
-
 class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True):
@@ -303,10 +290,6 @@ class ImagePoints(Image):
     def clone(self):
         "Mimic the behavior of torch.clone for `Image` objects."
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
-    
-    def reconstruct(self, t, x): return self.__class__(FlowField([x.size(1),x.size(2)], t), scale=False)
-
-    def reconstruct_output(self, out, x): return self.__class__(FlowField(x.size, out[None]), scale=False)
 
     @property
     def shape(self)->Tuple[int,int,int]: return (1, *self._flow.size)
@@ -429,13 +412,6 @@ class ImageBBox(ImagePoints):
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
     
-    def reconstruct(self, bboxes, labels, x, classes):
-        if len((labels - self.pad_idx).nonzero()) == 0: return
-        i = (labels - self.pad_idx).nonzero().min()
-        bboxes,labels = bboxes[i:],labels[i:]
-        flow = FlowField([x.size(1),x.size(2)], bboxes)
-        return self.create(x.size(1),x.size(2), bboxes, labels=labels, classes=classes, scale=False)
-
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
     #fn = getattr(fn, 'path', fn)
@@ -636,4 +612,3 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
     return ch,round(r/ratio),round(c/ratio)
-
