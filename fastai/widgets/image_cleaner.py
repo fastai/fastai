@@ -4,6 +4,8 @@ from ..basic_data import *
 from ..vision.data import *
 from ..vision.transform import *
 from ..vision.image import open_image
+from ..callbacks.hooks import *
+from ..layers import *
 from ipywidgets import widgets, Layout
 from IPython.display import clear_output, HTML
 
@@ -23,14 +25,78 @@ class DatasetFormatter():
         "For a LabelList `ll_input`, resize each image in `ll_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
         return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
+
+    @classmethod
+    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, top=20, **kwargs):
+        "Gets the indices for the most similar images in a dataset"
+        hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
+        dl = learn.dl(ds_type)
+
+        ds_actns = cls.get_actns(learn, hook=hook, ds_type=ds_type, **kwargs)
+        similarities = cls.comb_similarity(ds_actns, ds_actns, **kwargs)
+        maxs = cls.sort_ids(similarities, top)
+        return cls.padded_ds(dl, **kwargs), maxs
+    
+    @staticmethod
+    def get_actns(learn, hook:Hook, ds_type, pool=AdaptiveConcatPool2d, pool_dim:int=4):
+        "Activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
+        pool = pool(pool_dim)
+        dl = learn.dl(ds_type)
+        print('Getting activations...')
+
+        actns = []
+        learn.model.eval()
+        with torch.no_grad():
+            for i,(xb,yb) in enumerate(dl):
+                learn.model(xb)
+                actns.append((hook.stored).cpu())
+        return pool(torch.cat(actns)).view(len(dl.x), -1)
+
+    @staticmethod
+    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0)):
+        "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices. t1` and `t2` should have dimensions [n_embeddings, n_features]"
+        self_sim = False
+        if torch.equal(t1, t2): self_sim = True
+        print('Computing similarities...')
+
+        sims = np.zeros((t1.shape[0], t2.shape[0]))
+        for idx1 in progress_bar(range(t1.shape[0])):
+            for idx2 in range(t2.shape[0]):
+                if not self_sim or idx1>idx2:
+                    ex1 = t1[idx1,:]
+                    ex2 = t2[idx2,:]
+                    sims[idx1][idx2] = sim_func(ex1,ex2)
+                else:
+                    sims[idx1][idx2] = 0
+        return sims
+
+    def largest_indices(arr, n):
+        'https://stackoverflow.com/questions/6910641/how-do-i-get-indices-of-n-maximum-values-in-a-numpy-array'
+        "Returns the n largest indices from a numpy array"
+        flat = arr.flatten()
+        indices = np.argpartition(flat, -n)[-n:]
+        indices = indices[np.argsort(-flat[indices])]
+        return np.unravel_index(indices, arr.shape)
+
+    @classmethod
+    def sort_ids(cls, similarities, top):
+        "Sorts similarities and returns the indexes for the highest `top` similarities."
+        idxs = cls.largest_indices(similarities, top)
+        idxs = [(idxs[0][i], idxs[1][i]) for i in range(top)]
+        return [e for l in idxs for e in l]
+
 class ImageCleaner():
     "Displays images with their current label. If image is junk data or labeled incorrectly, allows user to delete image or move image to properly labeled folder."
-    def __init__(self, dataset, fns_idxs, batch_size:int=5):
+    def __init__(self, dataset, fns_idxs, batch_size:int=5, duplicates=False):
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
+        if duplicates: self._batch_size = 2
         self._labels = dataset.classes
         self._all_images = [(dataset.x[i]._repr_jpeg_(), dataset.x.items[i], self._labels[dataset.y[i].data])
                             for i in fns_idxs if dataset.x.items[i].is_file()]
+        self._duplicates = duplicates
+        self._deleted_fns = []
+        self._skipped = 0
         self.render()
 
     @classmethod
@@ -60,7 +126,9 @@ class ImageCleaner():
     def make_horizontal_box(cls, children, layout=Layout()): return widgets.HBox(children, layout=layout)
 
     @classmethod
-    def make_vertical_box(cls, children, layout=Layout()): return widgets.VBox(children, layout=layout)
+    def make_vertical_box(cls, children, layout=Layout(), duplicates=False):
+        if not duplicates: return widgets.VBox(children, layout=layout)
+        else: return widgets.VBox([children[0], children[2]], layout=layout)
 
     def relabel(self, change):
         "Relabel images by moving from parent dir with old label `class_old` to parent dir with new label `class_new`"
@@ -74,11 +142,12 @@ class ImageCleaner():
         fp.replace(new_filepath)
         change.owner.file_path = new_filepath
 
-    def next_batch(self, btn):
+    def next_batch(self, _):
         "Handler for 'Next Batch' button click. Deletes all flagged images and renders next batch."
         for img_widget, delete_btn, fp, in self._batch:
             fp = delete_btn.file_path
             if (delete_btn.flagged_for_delete == True): self.delete_image(fp)
+            self._deleted_fns.append(fp)
         self._all_images = self._all_images[self._batch_size:]
         self.empty_batch()
         self.render()
@@ -90,12 +159,12 @@ class ImageCleaner():
 
     def empty_batch(self): self._batch[:] = []
 
-    def delete_image(self, file_path): os.remove(file_path)
+    def delete_image(self, file_path): pass#os.remove(file_path)
     # TODO: move to .Trash dir
 
     def empty(self): return len(self._all_images) == 0
 
-    def get_widgets(self):
+    def get_widgets(self, duplicates):
         "Create and format widget set"
         widgets = []
         for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
@@ -104,13 +173,25 @@ class ImageCleaner():
                                                  file_path=fp, handler=self.relabel, layout=Layout(width='auto'))
             delete_btn = self.make_button_widget('Delete', file_path=fp, handler=self.on_delete)
             widgets.append(self.make_vertical_box([img_widget, dropdown, delete_btn],
-                                                  layout=Layout(width='auto', height='300px', overflow_x="hidden")))
+                                                  layout=Layout(width='auto', height='300px',
+                                                      overflow_x="hidden"), duplicates=duplicates))
             self._batch.append((img_widget, delete_btn, fp))
         return widgets
+
+    def batch_contains_deleted(self):
+        'Checks if current batch contains already deleted images.'
+        imgs = [self._all_images[:self._batch_size][0][1], self._all_images[:self._batch_size][1][1]]
+        return any(img in self._deleted_fns for img in imgs)
 
     def render(self):
         "Re-render Jupyter cell for batch of images"
         clear_output()
-        if (self.empty()): return display('No images to show :)')
-        display(self.make_horizontal_box(self.get_widgets()))
-        display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
+        if self.empty() and self._duplicates: return display(f'No images to show :). {self._skipped} pairs of images '
+                                                             f'were skipped since one of the images was deleted in a previous batch.')
+        elif self.empty(): return display('No images to show :)')
+        if self.batch_contains_deleted():
+            self.next_batch(None)
+            self._skipped += 1
+        else:
+            display(self.make_horizontal_box(self.get_widgets(self._duplicates)))
+            display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
