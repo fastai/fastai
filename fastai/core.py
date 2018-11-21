@@ -209,6 +209,12 @@ def func_args(func)->bool:
 
 def has_arg(func, arg)->bool: return arg in func_args(func)
 
+def split_kwargs(kwargs, func):
+    "Split `kwargs` between those expected by `func` and the others."
+    args = func_args(func)
+    func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}
+    return func_kwargs, kwargs
+
 def try_int(o:Any)->Any:
     "Try to conver `o` to int, default to `o` if not possible."
     try: return int(o)
@@ -239,3 +245,15 @@ class MultiCategory(ItemBase):
         return getattr(self.p, k)
 
     #def read(self): return self.open('rb').read()
+
+def _treat_html(o:str)->str:
+    return o.replace('\n','\\n')
+
+def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
+    html_code = f"<table>"
+    for w in widths: html_code += f"  <col width='{w}%'>"
+    for line in items:
+        html_code += "  <tr>\n"
+        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
+        html_code += "\n  </tr>\n"
+    return html_code + "</table>\n"

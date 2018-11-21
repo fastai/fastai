@@ -97,6 +97,8 @@ def _get_fns(ds, path): #TODO: fix me when from_folder is finished
     return [str(fn.relative_to(path)) for fn in ds.x.items]
 
 class ImageDataBunch(DataBunch):
+    _square_show = True
+    
     @classmethod
     def create_from_ll(cls, dss:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
@@ -178,14 +180,6 @@ class ImageDataBunch(DataBunch):
             y += [str(o) for o in self.test_ds.y]
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
-
-    @staticmethod
-    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, 
-                            label_cls=CategoryList, **kwargs):
-        """Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference.
-        Use `label_cls` to specify the type of your labels"""
-        sd = ImageItemList([], path=path).split_by_idx([])
-        return sd.label_const(0, label_cls=label_cls, classes=classes).transform(tfms, **kwargs).databunch()
 
 def download_image(url,dest, timeout=4):
     try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
@@ -347,6 +341,7 @@ class SegmentationLabelList(ImageItemList):
         return self.__class__(items, ifnone(classes, self.classes), **kwargs)
 
     def open(self, fn): return open_mask(fn)
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
 
 class SegmentationItemList(ImageItemList): _label_cls = SegmentationLabelList
 
@@ -359,6 +354,8 @@ class PointsItemList(ItemList):
     def get(self, i):
         o = super().get(i)
         return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
+    
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
 
 class ImageToImageList(ImageItemList): _label_cls = ImageItemList
 
