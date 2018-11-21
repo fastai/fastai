@@ -119,6 +119,7 @@ class DataBunch():
         #TODO: get rid of has_arg if possible
         dl = self.dl(ds_type)
         x,y = next(iter(dl))
+        if getattr(self,'norm',False): x = self.denorm(x.cpu())
         if self._square_show: rows = rows ** 2
         xs = [self.train_ds.x.reconstruct(grab_idx(x, i, self._batch_first)) for i in range(rows)]
         if has_arg(self.train_ds.y.reconstruct, 'x'):

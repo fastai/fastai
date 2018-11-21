@@ -22,6 +22,7 @@ class URLs():
     ADULT_SAMPLE = f'{URL}adult_sample'
     ML_SAMPLE = f'{URL}movie_lens_sample'
     PLANET_SAMPLE = f'{URL}planet_sample'
+    BIWI_SAMPLE = f'{URL}biwi_sample'
     PLANET_TINY = f'{URL}planet_tiny'
     CIFAR = f'{URL}cifar10'
     WT103 = f'{S3_MODEL}wt103'

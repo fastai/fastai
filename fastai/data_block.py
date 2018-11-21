@@ -269,7 +269,7 @@ class MultiCategoryList(CategoryListBase):
     _item_cls=MultiCategory
     _processor=MultiCategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
-        if sep is not None: items = array(csv.reader(items, delimiter=sep))
+        if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = F.binary_cross_entropy_with_logits
 

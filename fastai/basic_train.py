@@ -95,8 +95,8 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     finally: cb_handler.on_train_end(exception)
 
 loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': F.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
-    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': F.sigmoid
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
+    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid
 }
 
 def _loss_func2activ(loss_func):
@@ -245,6 +245,7 @@ class Learner():
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
         x,y = self.callbacks[-1].input,self.callbacks[-1].target
+        if getattr(self.data,'norm',False): x = self.data.denorm(x)
         self.callbacks = self.callbacks[:-1]
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
         analyze_kwargs,kwargs = split_kwargs(kwargs, ds.y.analyze_pred)
