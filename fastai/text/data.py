@@ -143,9 +143,9 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from tokens and labels."
         processor = _get_processor(tokenizer=None, vocab=vocab, **kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
-                        TextList(valid_tok, path=path, processor=processor))
+                        TextList(val_tok, path=path, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls)
-        if test_tok is not None: src.add_test(TextList(tst_tok, path=path))
+        if tst_tok is not None: src.add_test(TextList(tst_tok, path=path))
         return src.databunch(**kwargs)
 
     @classmethod
