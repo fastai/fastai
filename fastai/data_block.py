@@ -66,7 +66,7 @@ class ItemList():
         for p in self.processor: item = p.process_one(item)
         return item
 
-    def analyze_pred(self, pred, thresh:float=0.5): 
+    def analyze_pred(self, pred:Tensor): 
         "Called on `pred` before `reconstruct` for additional preprocessing."
         return pred
 

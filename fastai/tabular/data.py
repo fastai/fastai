@@ -32,8 +32,8 @@ class TabularLine(ItemBase):
             res += f'{n} {c:.4f}; '
         return res
 
-    def show_xys(self, xs, ys, max_len:int=70)->None:
-        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
+    def show_xys(self, xs, ys)->None:
+        "Show the `xs` and `ys`."
         from IPython.display import display, HTML
         items = [xs[0].names + ['target']]
         for i, (x,y) in enumerate(zip(xs,ys)):
@@ -44,8 +44,8 @@ class TabularLine(ItemBase):
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
      
-    def show_xyzs(self, xs, ys, zs, max_len:int=70):
-        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+    def show_xyzs(self, xs, ys, zs):
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions)."
         from IPython.display import display, HTML
         items = [xs[0].names + ['target', 'prediction']]
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):

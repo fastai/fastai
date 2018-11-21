@@ -231,7 +231,7 @@ class Text(ItemBase):
         display(HTML(text2html_table(items, ([5,95] if self.is_lm else [90,10]))))
         
     def show_xyzs(self, xs, ys, zs, max_len:int=70):
-        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
         items = [['text','target','prediction']]
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):

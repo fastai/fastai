@@ -247,7 +247,8 @@ class Image(ItemBase):
         plt.tight_layout()
     
     def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
-        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`. 
+        `kwargs` are passed to the show method."""
         figsize = ifnone(figsize, (6,3*len(xs)))
         fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
         fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
