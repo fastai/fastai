@@ -15,12 +15,21 @@ of that change.
 
 ## 1.0.29.dev0 (Work In Progress)
 
+### Breaking changes:
+
+- `ImageDataBunch.single_from_classes` has been removed 
+
 ### New:
+
+- every type of items now has a `reconstruct` method that does the opposite of `.data`: taking the tensor data and creating the object back
+- `show_results` now works across applications
+- introducing `data.export()` that will save the internal information (classes, vocab in text, processors in tabular etc) need for inference in a file named 'export.pkl'. You can then create an `empty_data` object by using `DataBunch.load_empty(path)` (where `path` points to where this 'export.pkl' file is). This also works across applications.
 
 ### Changed:
 
-### Fixed:
+- `show_batch` has been internally modified to actually grab a batch then showing it
 
+### Fixed:
 
 
 ## 1.0.28 (2018-11-19)
