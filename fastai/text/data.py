@@ -105,7 +105,7 @@ class TextDataBunch(DataBunch):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
         cache_path = self.path/cache_name
-        pickle.dump(self.train_ds.vocab.itos, open(cache_name/'itos.pkl','wb'))
+        pickle.dump(self.train_ds.vocab.itos, open(cache_path/'itos.pkl','wb'))
         np.save(cache_path/f'train_ids.npy', self.train_ds.x.items)
         np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
         np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
