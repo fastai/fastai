@@ -234,18 +234,6 @@ class MultiCategory(ItemBase):
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
 
-    @property
-    def p(self):
-        if self.p_ is None: self.p_ = Path(self.d)
-        return self.p_
-
-    def __getattr__(self,k):
-        res = getattr(self.d, k, None)
-        if res is not None: return res
-        return getattr(self.p, k)
-
-    #def read(self): return self.open('rb').read()
-
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
 
