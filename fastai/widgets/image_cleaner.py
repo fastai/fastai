@@ -128,6 +128,23 @@ class ImageCleaner():
         if not duplicates: return widgets.VBox(children, layout=layout)
         else: return widgets.VBox([children[0], children[2]], layout=layout)
 
+    def chunks(self, l, n):
+        'https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks'
+        "Yield successive n-sized chunks from l."
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    def create_image_list(self, dataset, fns_idxs, start, end):
+        'Creates a list of images, filenames and labels but first removing files that do not exist or are not supposed to be displayed'
+        if self._duplicates:
+            items = dataset.x.items
+            chunked_idxs = self.chunks(fns_idxs, 2)
+            chunked_idxs = [chunk for chunk in chunked_idxs if items[chunk[0]].is_file() and items[chunk[1]].is_file()]
+            return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk][start:end]
+        else:
+            return [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for i in fns_idxs if
+                    items[i].is_file()]
+
     def relabel(self, change):
         "Relabel images by moving from parent dir with old label `class_old` to parent dir with new label `class_new`"
         class_new,class_old,file_path = change.new,change.old,change.owner.file_path
@@ -182,22 +199,6 @@ class ImageCleaner():
         'Checks if current batch contains already deleted images.'
         imgs = [self._all_images[:self._batch_size][0][1], self._all_images[:self._batch_size][1][1]]
         return any(img in self._deleted_fns for img in imgs)
-
-    def chunks(self, l, n):
-        'https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks'
-        "Yield successive n-sized chunks from l."
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    def create_image_list(self, dataset, fns_idxs, start, end):
-        'Creates a list of images, filenames and labels but first removing files that do not exist or are not supposed to be displayed'
-        if self._duplicates:
-            items = dataset.x.items
-            chunked_idxs = self.chunks(fns_idxs, 2)
-            chunked_idxs = [chunk for chunk in chunked_idxs if items[chunk[0]].is_file() and items[chunk[1]].is_file()]
-            return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk][start:end]
-        else:
-            return [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for i in fns_idxs if items[i].is_file()]
 
     def render(self):
         "Re-render Jupyter cell for batch of images"
