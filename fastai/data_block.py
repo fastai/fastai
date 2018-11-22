@@ -278,8 +278,7 @@ class MultiCategoryList(CategoryListBase):
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
     
-    def analyze_pred(self, pred, thresh:float=0.5):
-        return (pred >= thresh).float()
+    def analyze_pred(self, pred, thresh:float=0.5): return (pred >= thresh).float()
 
     def reconstruct(self, t):
         o = [i for i in range(self.c) if t[i] == 1.]

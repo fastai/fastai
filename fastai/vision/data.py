@@ -356,7 +356,6 @@ class SegmentationLabelList(ImageItemList):
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
         self.classes,self.loss_func = classes,CrossEntropyFlat()
-        #self.c = len(self.classes) if classes is not None
 
     def new(self, items, classes=None, **kwargs):
         return self.__class__(items, ifnone(classes, self.classes), **kwargs)
