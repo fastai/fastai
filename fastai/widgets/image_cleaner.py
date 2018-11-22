@@ -25,29 +25,29 @@ class DatasetFormatter():
         "For a LabelList `ll_input`, resize each image in `ll_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
         return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
-
     @classmethod
-    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, top=20, **kwargs):
+    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
         "Gets the indices for the most similar images in a dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
-        dl = learn.dl(ds_type)
+        if ds_type == DatasetType.Train: dl = DataLoader(learn.data.train_ds,
+            batch_size=learn.dl(DatasetType.Train).batch_size, shuffle=False, collate_fn=data_collate)
+        else: dl = learn.dl(ds_type)
 
-        ds_actns = cls.get_actns(learn, hook=hook, ds_type=ds_type, **kwargs)
+        ds_actns = cls.get_actns(learn, hook=hook, dl=dl, **kwargs)
         similarities = cls.comb_similarity(ds_actns, ds_actns, **kwargs)
-        maxs = cls.sort_ids(similarities, top)
-        return cls.padded_ds(dl, **kwargs), maxs
-    
+        idxs = cls.sort_ids(similarities)
+        return cls.padded_ds(dl, **kwargs), idxs
+ 
     @staticmethod
-    def get_actns(learn, hook:Hook, ds_type, pool=AdaptiveConcatPool2d, pool_dim:int=4):
+    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4):
         "Activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
         pool = pool(pool_dim)
-        dl = learn.dl(ds_type)
         print('Getting activations...')
 
         actns = []
         learn.model.eval()
         with torch.no_grad():
-            for i,(xb,yb) in enumerate(dl):
+            for (xb,yb) in progress_bar(dl):
                 learn.model(xb)
                 actns.append((hook.stored).cpu())
         return pool(torch.cat(actns)).view(len(dl.x), -1)
@@ -68,33 +68,31 @@ class DatasetFormatter():
                     sims[idx1][idx2] = sim_func(ex1,ex2)
                 else:
                     sims[idx1][idx2] = 0
-        return sims
+        return np.array(sims)
 
     def largest_indices(arr, n):
-        'https://stackoverflow.com/questions/6910641/how-do-i-get-indices-of-n-maximum-values-in-a-numpy-array'
-        "Returns the n largest indices from a numpy array"
+        """Returns the n largest indices from a numpy array."""
         flat = arr.flatten()
         indices = np.argpartition(flat, -n)[-n:]
         indices = indices[np.argsort(-flat[indices])]
         return np.unravel_index(indices, arr.shape)
 
     @classmethod
-    def sort_ids(cls, similarities, top):
+    def sort_ids(cls, similarities):
         "Sorts similarities and returns the indexes for the highest `top` similarities."
-        idxs = cls.largest_indices(similarities, top)
-        idxs = [(idxs[0][i], idxs[1][i]) for i in range(top)]
+        idxs = cls.largest_indices(similarities, len(similarities))
+        idxs = [(idxs[0][i], idxs[1][i]) for i in range(len(idxs[0]))]
         return [e for l in idxs for e in l]
 
 class ImageCleaner():
     "Displays images with their current label. If image is junk data or labeled incorrectly, allows user to delete image or move image to properly labeled folder."
-    def __init__(self, dataset, fns_idxs, batch_size:int=5, duplicates=False):
+    def __init__(self, dataset, fns_idxs, batch_size:int=5, duplicates=False, start=0, end=40):
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
         if duplicates: self._batch_size = 2
-        self._labels = dataset.classes
-        self._all_images = [(dataset.x[i]._repr_jpeg_(), dataset.x.items[i], self._labels[dataset.y[i].data])
-                            for i in fns_idxs if dataset.x.items[i].is_file()]
         self._duplicates = duplicates
+        self._labels = dataset.classes
+        self._all_images = self.create_image_list(dataset, fns_idxs, start, end)
         self._deleted_fns = []
         self._skipped = 0
         self.render()
@@ -146,8 +144,9 @@ class ImageCleaner():
         "Handler for 'Next Batch' button click. Deletes all flagged images and renders next batch."
         for img_widget, delete_btn, fp, in self._batch:
             fp = delete_btn.file_path
-            if (delete_btn.flagged_for_delete == True): self.delete_image(fp)
-            self._deleted_fns.append(fp)
+            if (delete_btn.flagged_for_delete == True):
+                self.delete_image(fp)
+                self._deleted_fns.append(fp)
         self._all_images = self._all_images[self._batch_size:]
         self.empty_batch()
         self.render()
@@ -159,10 +158,11 @@ class ImageCleaner():
 
     def empty_batch(self): self._batch[:] = []
 
-    def delete_image(self, file_path): pass#os.remove(file_path)
+    def delete_image(self, file_path): os.remove(file_path)
     # TODO: move to .Trash dir
 
-    def empty(self): return len(self._all_images) == 0
+    def empty(self):
+        return len(self._all_images) == 0
 
     def get_widgets(self, duplicates):
         "Create and format widget set"
@@ -183,11 +183,27 @@ class ImageCleaner():
         imgs = [self._all_images[:self._batch_size][0][1], self._all_images[:self._batch_size][1][1]]
         return any(img in self._deleted_fns for img in imgs)
 
+    def chunks(self, l, n):
+        'https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks'
+        "Yield successive n-sized chunks from l."
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    def create_image_list(self, dataset, fns_idxs, start, end):
+        'Creates a list of images, filenames and labels but first removing files that do not exist or are not supposed to be displayed'
+        if self._duplicates:
+            items = dataset.x.items
+            chunked_idxs = self.chunks(fns_idxs, 2)
+            chunked_idxs = [chunk for chunk in chunked_idxs if items[chunk[0]].is_file() and items[chunk[1]].is_file()]
+            return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk][start:end]
+        else:
+            return [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for i in fns_idxs if items[i].is_file()]
+
     def render(self):
         "Re-render Jupyter cell for batch of images"
         clear_output()
-        if self.empty() and self._duplicates: return display(f'No images to show :). {self._skipped} pairs of images '
-                                                             f'were skipped since one of the images was deleted in a previous batch.')
+        if self.empty() and self._skipped>0: return display(f'No images to show :). {self._skipped} pairs were '
+                                                            f'skipped since at least one of the images was deleted by the user.')
         elif self.empty(): return display('No images to show :)')
         if self.batch_contains_deleted():
             self.next_batch(None)
