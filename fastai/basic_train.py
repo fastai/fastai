@@ -301,7 +301,7 @@ class Recorder(LearnerCallback):
 
     def on_backward_begin(self, smooth_loss:Tensor, **kwargs:Any)->None:
         "Record the loss before any other callback has a chance to modify it."
-        self.losses.append(smooth_loss)
+        self.losses.append(smooth_loss.item())
         if self.pbar is not None and hasattr(self.pbar,'child'):
             self.pbar.child.comment = f'{smooth_loss:.4f}'
 
