@@ -54,7 +54,7 @@ class ShowGraph(LearnerCallback):
             iters = range_of(rec.losses)
             val_iter = np.array(rec.nb_batches).cumsum()
             x_bounds = (0, (n_epochs - len(rec.nb_batches)) * rec.nb_batches[-1] + len(rec.losses))
-            y_bounds = (0, max((max(Tensor(rec.losses)), max(Tensor(rec.val_losses)))))
+            y_bounds = (0, max((max(Tensor(rec.losses).cpu()), max(Tensor(rec.val_losses).cpu()))))
             rec.pbar.update_graph([(iters, rec.losses), (val_iter, rec.val_losses)], x_bounds, y_bounds)
             return False
 
