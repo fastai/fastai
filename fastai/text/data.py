@@ -9,7 +9,7 @@ __all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', '
            'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
-text_extensions = ['.txt']
+text_extensions = {'.txt'}
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
@@ -17,7 +17,7 @@ class LanguageModelLoader():
                  max_len:int=25):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
-        self.n = len(np.concatenate(dataset.x.items)) // self.bs
+        self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
         self.max_len,self.num_workers = max_len,0
 
     def __iter__(self):
@@ -99,12 +99,13 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
 class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
     `TextClasDataBunch`."""
+    _batch_first=False
     
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
         cache_path = self.path/cache_name
-        pickle.dump(self.train_ds.vocab.itos, open(cache_path/f'itos.pkl', 'wb'))
+        pickle.dump(self.train_ds.vocab.itos, open(cache_path/'itos.pkl','wb'))
         np.save(cache_path/f'train_ids.npy', self.train_ds.x.items)
         np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
         np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
@@ -129,7 +130,7 @@ class TextDataBunch(DataBunch):
     def load(cls, path:PathOrStr, cache_name:PathOrStr='tmp', processor:PreProcessor=None, **kwargs):
         "Load a `TextDataBunch` from `path/cache_name`. `kwargs` are passed to the dataloader creation."
         cache_path = Path(path)/cache_name
-        vocab = Vocab(pickle.load(open(cache_path/f'itos.pkl', 'rb')))
+        vocab = Vocab(pickle.load(open(cache_path/'itos.pkl','rb')))
         train_ids,train_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')
         valid_ids,valid_lbls = np.load(cache_path/f'valid_ids.npy'), np.load(cache_path/f'valid_lbl.npy')
         test_ids = np.load(cache_path/f'test_ids.npy') if os.path.isfile(cache_path/f'test_ids.npy') else None
@@ -143,26 +144,26 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from tokens and labels."
         processor = _get_processor(tokenizer=None, vocab=vocab, **kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
-                        TextList(valid_tok, path=path, processor=processor))
+                        TextList(val_tok, path=path, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls)
-        if test_tok is not None: src.add_test(TextList(tst_tok, path=path))
+        if tst_tok is not None: src.add_test(TextList(tst_tok, path=path))
         return src.databunch(**kwargs)
 
     @classmethod
     def from_df(cls, path:PathOrStr, train_df:DataFrame, valid_df:DataFrame, test_df:Optional[DataFrame]=None,
-                tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1, 
+                tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1,
                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
-        src = ItemLists(path, TextList.from_df(train_df, path, col=text_cols, processor=processor),
-                        TextList.from_df(valid_df, path, col=text_cols, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(col=label_cols, classes=classes, sep=label_delim)
-        if test_df is not None: src.add_test(TextList.from_df(test_df, path, col=text_cols))
+        src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
+                        TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
+        if test_df is not None: src.add_test(TextList.from_df(test_df, path, cols=text_cols))
         return src.databunch(**kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
-                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1, 
+                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1,
                  label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
         df = pd.read_csv(Path(path)/csv_name, header=header)
@@ -170,33 +171,20 @@ class TextDataBunch(DataBunch):
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
-        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols, 
+        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols,
                            label_cols, label_delim, **kwargs)
 
-    @classmethod#TODO: test
+    @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
-        path = Path(path)
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
-        src = (TextFilesList.from_folder(path)
-                            .split_by_folder(train=train, valid=valid)
-                            .label_from_folder(classes=classes))
+        path = Path(path).absolute()
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        src = (TextList.from_folder(path, processor=processor)
+                       .split_by_folder(train=train, valid=valid))
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
         if test is not None: src.add_test_folder(path/test)
         return src.databunch(**kwargs)
-
-def _treat_html(o:str)->str:
-    return o.replace('\n','\\n')
-
-#TODO: refactor common bit with tabular method of the same name
-def _text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
-    html_code = f"<table>"
-    for w in widths: html_code += f"  <col width='{w}%'>"
-    for line in items:
-        html_code += "  <tr>\n"
-        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
-        html_code += "\n  </tr>\n"
-    return html_code + "</table>\n"
 
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
@@ -207,18 +195,6 @@ class TextLMDataBunch(TextDataBunch):
         if test_ds is not None: datasets.append(test_ds)
         dataloaders = [LanguageModelLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
         return cls(*dataloaders, path=path)
-
-    #TODO: see if we can get rid of that later
-    def show_batch(self, sep=' ', ds_type:DatasetType=DatasetType.Train, rows:int=10, max_len:int=100):
-        "Show `rows` texts from a batch of `ds_type`, tokens are joined with `sep`, truncated at `max_len`."
-        from IPython.display import display, HTML
-        dl = self.dl(ds_type)
-        x,y = next(iter(dl))
-        items = [['idx','text']]
-        for i in range(rows):
-            inp = self.x[:,i] if max_len is None else x[:,i][:max_len]
-            items.append([str(i), self.train_ds.vocab.textify(inp.cpu(), sep=sep)])
-        display(HTML(_text2html_table(items, [5,95])))
 
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
@@ -242,64 +218,34 @@ def open_text(fn:PathOrStr, enc='utf-8'):
     with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
-    def __init__(self, ids, text): self.data,self.text = ids,text
+    def __init__(self, ids, text, is_lm): self.data,self.text,self.is_lm = ids,text,is_lm
     def __str__(self):  return str(self.text)
 
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, max_len:int=50)->None:
-        "Show the texts in `idx` on a few `rows` from `ds`. `max_len` is the maximum number of tokens displayed."
+    def show_xys(self, xs, ys, max_len:int=70)->None:
+        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        items = [['text', 'label']]
-        for i in idxs[:rows]:
-            x,y = ds[i]
-            txt_x = ' '.join(x.text.split(' ')[:max_len])
-            items.append([str(txt_x), str(y)])
-        display(HTML(_text2html_table(items, [90,10])))
+        items = [['idx','text']] if self.is_lm else [['text','target']]
+        for i, (x,y) in enumerate(zip(xs,ys)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
+            items.append([str(i), str(txt_x)] if self.is_lm else [str(txt_x), str(y)])
+        display(HTML(text2html_table(items, ([5,95] if self.is_lm else [90,10]))))
+        
+    def show_xyzs(self, xs, ys, zs, max_len:int=70):
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
+        from IPython.display import display, HTML
+        items = [['text','target','prediction']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
+            items.append([str(txt_x), str(y), str(z)])
+        display(HTML(text2html_table(items,  [85,7.5,7.5])))
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
-
-class TextList(ItemList):
-    _bunch = TextClasDataBunch
-
-    def __init__(self, items:Iterator, vocab:Vocab=None, **kwargs):
-        super().__init__(items, **kwargs)
-        self.processor = ifnone(self.processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
-        self.vocab = vocab
-
-    def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
-        #TODO: make that prettier
-        old_bunch = self._bunch
-        new = super().new(items=items, vocab=self.vocab, **kwargs)
-        new._bunch = old_bunch
-        return new
-
-    def get(self, i):
-        o = super().get(i)
-        return Text(o, self.vocab.textify(o))
-
-    def label_for_lm(self, **kwargs):
-        "A special labelling method for language models."
-        self._bunch = TextLMDataBunch
-        return self.label_const(0, label_cls=LMLabel)
-    
-    @classmethod
-    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, processor:PreProcessor=None,
-                    vocab:Vocab=None, **kwargs)->'TextList':
-        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
-        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
-        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
-
-def _join_texts(texts:Collection[str], mark_fields:bool=True):
-    if not isinstance(texts, np.ndarray): texts = np.array(texts)
-    if is1d(texts): texts = texts[:,None]
-    df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    text_col = f'{FLD} {1} ' + df[0] if mark_fields else df[txt_cols[0]]
-    for i in range(1,len(df.columns)):
-        text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
-    return text_col.values
+        
+    def reconstruct(self,t:Tensor): return 0
 
 class TokenizeProcessor(PreProcessor):
-    def __init__(self, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=True):
+    def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
     def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
@@ -311,7 +257,8 @@ class TokenizeProcessor(PreProcessor):
         ds.items = tokens
 
 class NumericalizeProcessor(PreProcessor):
-    def __init__(self, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+        vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
 
     def process_one(self,item): return np.array(self.vocab.numericalize(item), dtype=np.int64)
@@ -323,3 +270,47 @@ class NumericalizeProcessor(PreProcessor):
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
+
+class TextList(ItemList):
+    _bunch = TextClasDataBunch
+    _processor = [TokenizeProcessor, NumericalizeProcessor]
+
+    def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
+        self.filter_missing_y = True
+        super().__init__(items, **kwargs)
+        self.vocab,self.pad_idx = vocab,pad_idx
+
+    def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
+        return super().new(items=items, vocab=self.vocab, pad_idx=self.pad_idx, **kwargs)
+
+    def get(self, i):
+        o = super().get(i)
+        return Text(o, self.vocab.textify(o), self.__class__ == LMTextList)
+
+    def label_for_lm(self, **kwargs):
+        "A special labelling method for language models."
+        self.__class__ = LMTextList
+        return self.label_const(0, label_cls=LMLabel)
+    
+    def reconstruct(self, t:Tensor):
+        idx = (t != self.pad_idx).nonzero().min()
+        return Text(t[idx:], self.vocab.textify(t[idx:]), self.__class__ == TextList)
+
+    @classmethod
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
+                    processor:PreProcessor=None, **kwargs)->'TextList':
+        "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
+        processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
+        return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
+    
+class LMTextList(TextList):
+    _bunch = TextLMDataBunch
+
+def _join_texts(texts:Collection[str], mark_fields:bool=False):
+    if not isinstance(texts, np.ndarray): texts = np.array(texts)
+    if is1d(texts): texts = texts[:,None]
+    df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
+    text_col = f'{BOS} {FLD} {1} ' + df[0] if mark_fields else  f'{BOS} ' + df[0]
+    for i in range(1,len(df.columns)):
+        text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
+    return text_col.values

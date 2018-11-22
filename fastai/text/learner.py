@@ -88,15 +88,40 @@ class LanguageLearner(RNNLearner):
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         pbar = master_bar(range(n_words))
+        ds = self.data.single_dl.dataset
         for _ in pbar:
-            res = super().predict(text, pbar=pbar)[-1]
+            ds.set_item(text)
+            res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)[-1]
+            ds.clear_item()
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(temperature)
             idx = torch.multinomial(res, 1).item()
             text += f' {self.data.vocab.itos[idx]}'
         return text
-
+    
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
+        from IPython.display import display, HTML
+        "Show `rows` result of predictions on `ds_type` dataset."
+        ds = self.dl(ds_type).dataset
+        self.callbacks.append(RecordOnCPU())
+        preds = self.pred_batch(ds_type)
+        x,y = self.callbacks[-1].input,self.callbacks[-1].target
+        self.callbacks = self.callbacks[:-1]
+        y = y.view(*x.size())
+        z = preds.view(*x.size(),-1).argmax(dim=2)
+        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        ys = [ds.x.reconstruct(grab_idx(y, i, self.data._batch_first)) for i in range(rows)]
+        zs = [ds.x.reconstruct(grab_idx(z, i, self.data._batch_first)) for i in range(rows)]
+        
+        items = [['text', 'target', 'pred']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len])
+            txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
+            txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
+            items.append([str(txt_x), str(txt_y), str(txt_z)])
+        display(HTML(text2html_table(items, ([34,33,33]))))
+        
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
@@ -117,9 +142,9 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
         learn.freeze()
     return learn
 
-def text_classifier_learner(data:DataBunch, bptt:int=70, max_len:int=70*20, emb_sz:int=400, nh:int=1150, nl:int=3,
-               lin_ftrs:Collection[int]=None, ps:Collection[float]=None, pad_token:int=1,
-               drop_mult:float=1., qrnn:bool=False, **kwargs) -> 'TextClassifierLearner':
+def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
+               drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None, 
+               ps:Collection[float]=None, **kwargs) -> 'TextClassifierLearner':
     "Create a RNN classifier."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]

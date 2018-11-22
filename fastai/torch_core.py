@@ -65,6 +65,8 @@ AdamW = partial(optim.Adam, betas=(0.9,0.99))
 def tensor(x:Any, *rest)->Tensor:
     "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly"
     if len(rest): x = (x,)+rest
+    # XXX: Pytorch bug in dataloader using num_workers>0; TODO: create repro and report
+    if is_listy(x) and len(x)==0: return tensor(0)
     return torch.tensor(x) if is_listy(x) else as_tensor(x)
 
 def np_address(x:np.ndarray)->int:
@@ -77,9 +79,14 @@ def to_detach(b:Tensors):
     return b.detach() if isinstance(b,Tensor) else b
 
 def to_data(b:ItemsList):
-    "Recursively map lists of items in `b ` to their wrapped data"
+    "Recursively map lists of items in `b ` to their wrapped data."
     if is_listy(b): return [to_data(o) for o in b]
     return b.data if isinstance(b,ItemBase) else b
+
+def to_cpu(b:ItemsList):
+    "Recursively map lists of tensors in `b ` to the cpu."
+    if is_listy(b): return [to_cpu(o) for o in b]
+    return b.cpu() if isinstance(b,Tensor) else b
 
 def to_device(b:Tensors, device:torch.device):
     "Ensure `b` is on `device`."
@@ -219,6 +226,12 @@ def np2model_tensor(a):
     if not dtype: return res
     return res.type(dtype)
 
+def _pca(x, k=2):
+    x = x-torch.mean(x,0)
+    U,S,V = torch.svd(x.t())
+    return torch.mm(x,U[:,:k])
+torch.Tensor.pca = _pca
+
 def trange_of(x): return torch.arange(len(x))
 
 def to_np(x): return x.data.cpu().numpy()
@@ -231,3 +244,11 @@ def tensor__array__(self, dtype=None):
 Tensor.__array__ = tensor__array__
 Tensor.ndim = property(lambda x: len(x.shape))
 
+class FloatItem(ItemBase):
+    def __init__(self,obj): self.data,self.obj = tensor(obj),obj
+    def __str__(self): return str(self.obj)
+    def reconstruct(self,t): return self(t.item())
+
+def grab_idx(x,i,batch_first:bool=True):
+    if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
+    else:           return ([o[:,i].cpu() for o in x] if is_listy(x) else x[:,i].cpu())

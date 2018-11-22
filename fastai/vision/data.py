@@ -7,12 +7,12 @@ from ..basic_data import *
 from ..layers import *
 from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
-import PIL
+import PIL, warnings
 
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
-           'ImageItemList', 'normalize', 'normalize_funcs', 
+           'ImageItemList', 'normalize', 'normalize_funcs',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
-           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor',
+           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor', 'ImageToImageList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -75,13 +75,13 @@ def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, 
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
     x = normalize(x,mean,std)
-    if do_y: y = normalize(y,mean,std)
+    if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor)->Tuple[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
     mean,std = tensor(mean),tensor(std)
-    return (partial(_normalize_batch, mean=mean, std=std),
+    return (partial(_normalize_batch, mean=mean, std=std, do_y=do_y),
             partial(denormalize,      mean=mean, std=std))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
@@ -92,11 +92,13 @@ def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
 
-def _get_fns(ds, path):
+def _get_fns(ds, path): #TODO: fix me when from_folder is finished
     "List of all file names relative to `path`."
-    return [str(fn.relative_to(path)) for fn in ds.x]
+    return [str(fn.relative_to(path)) for fn in ds.x.items]
 
 class ImageDataBunch(DataBunch):
+    _square_show = True
+    
     @classmethod
     def create_from_ll(cls, dss:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
@@ -121,9 +123,9 @@ class ImageDataBunch(DataBunch):
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='',
                 **kwargs:Any)->'ImageDataBunch':
         "Create from a DataFrame."
-        src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, col=fn_col)
+        src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
                 .random_split_by_pct(valid_pct)
-                .label_from_df(sep=sep, col=label_col))
+                .label_from_df(sep=sep, cols=label_col))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
@@ -158,32 +160,26 @@ class ImageDataBunch(DataBunch):
         x = self.valid_dl.one_batch()[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
-    def normalize(self, stats:Collection[Tensor]=None)->None:
+    def normalize(self, stats:Collection[Tensor]=None, do_y:bool=None)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
         if stats is None: self.stats = self.batch_stats()
         else:             self.stats = stats
-        self.norm,self.denorm = normalize_funcs(*self.stats)
+        self.norm,self.denorm = normalize_funcs(*self.stats, do_y=do_y)
         self.add_tfm(self.norm)
         return self
 
     def labels_to_csv(self, dest:str)->None:
         "Save file names and labels in `data` as CSV to file name `dest`."
-        fns = _get_fns(self.train_ds)
-        y = list(self.train_ds.y)
-        fns += _get_fns(self.valid_ds)
-        y += list(self.valid_ds.y)
-        if hasattr(self,'test_dl') and data.test_dl:
-            fns += _get_fns(self.test_ds)
-            y += list(self.test_ds.y)
+        fns = _get_fns(self.train_ds, self.path)
+        y = [str(o) for o in self.train_ds.y]
+        fns += _get_fns(self.valid_ds, self.path)
+        y += [str(o) for o in self.valid_ds.y]
+        if self.test_ds is not None:
+            fns += _get_fns(self.test_ds, self.path)
+            y += [str(o) for o in self.test_ds.y]
         df = pd.DataFrame({'name': fns, 'label': y})
         df.to_csv(dest, index=False)
-
-    @staticmethod
-    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
-        "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
-        sd = ImageItemList([], path=path).split_by_idx([])
-        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
 
 def download_image(url,dest, timeout=4):
     try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
@@ -208,11 +204,31 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
 
 def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
-    """Check if the image in `file` exists, can be opend and has `n_channels`. If `delete`, removes it if it fails.
+    """Check if the image in `file` exists, it can be opened and has `n_channels`.
+    If `delete=True`:
+    (1) removes `file` if any of the verifications fails
+    (2) saves a modified version of `file` w/o EXIF data if the latter is broken
     If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
     using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
     to PIL.Image.save."""
     try:
+        # deal with partially broken images as indicated by PIL warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings('error')
+            try:
+                # must use this workaround to avoid: ResourceWarning: unclosed file warning
+                with open(file, 'rb') as img_file: PIL.Image.open(img_file)
+            except Warning as w:
+                if "Possibly corrupt EXIF data" in str(w):
+                    if delete: # green light to modify files
+                        print(f"{file}: Removing corrupt EXIF data")
+                        warnings.simplefilter("ignore")
+                        # save EXIF-cleaned up image, which happens automatically
+                        PIL.Image.open(file).save(file)
+                    else: # keep user's files intact
+                        print(f"{file}: Not removing corrupt EXIF data, pass `delete=True` to do that")
+                else: warnings.warn(w)
+
         img = PIL.Image.open(file)
         if max_size is None: return
         assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
@@ -247,49 +263,60 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     if resume is None and dest == '.': resume=False
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
+    files = get_image_files(path)
+    if max_workers<2: res = [verify_image(f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
     with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        files = get_image_files(path)
-        futures = [ex.submit(verify_image, file, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for file in files]
+        futures = [ex.submit(verify_image, f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
+                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
         for f in progress_bar(as_completed(futures), total=len(files)): pass
 
 class ImageItemList(ItemList):
     _bunch = ImageDataBunch
-
     def __post_init__(self):
         super().__post_init__()
         self.sizes={}
-        self.create_func = ifnone(self.create_func, open_image)
+
+    def open(self, fn): return open_image(fn)
 
     def get(self, i):
-        res = super().get(i)
+        fn = super().get(i)
+        res = self.open(fn)
         self.sizes[i] = res.size
         return res
 
     @classmethod
-    def from_folder(cls, path:PathOrStr='.', create_func:Callable=open_image,
-                    extensions:Collection[str]=image_extensions, **kwargs)->ItemList:
+    def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=None, **kwargs)->ItemList:
         "Get the list of files in `path` that have an image suffix. `recurse` determines if we search subfolders."
-        return super().from_folder(create_func=create_func, path=path, extensions=extensions, **kwargs)
+        extensions = ifnone(extensions, image_extensions)
+        return super().from_folder(path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, create_func:Callable=open_image, col:IntsOrStrs=0,
-                 folder:PathOrStr='.', suffix:str='')->'ItemList':
-        """Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end.
-        `create_func` is used to open the images."""
+    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='')->'ItemList':
+        "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
-        res = super().from_df(df, path=path, create_func=create_func, col=col)
+        res = super().from_df(df, path=path, cols=cols)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
         res.items = np.char.add(f'{res.path}/', res.items)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, create_func:Callable=open_image, col:IntsOrStrs=0, header:str='infer',
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer',
                  folder:PathOrStr='.', suffix:str='')->'ItemList':
-        df = pd.read_csv(path/csv_name, header=header)
-        return cls.from_df(df, path=path, create_func=create_func, col=col, folder=folder, suffix=suffix)
+        df = pd.read_csv(Path(path)/csv_name, header=header)
+        return cls.from_df(df, path=Path(path), cols=cols, folder=folder, suffix=suffix)
+    
+    def reconstruct(self, t:Tensor): return Image(t)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
+    def __init__(self, ds:ItemList, pad_idx:int=0):
+        self.pad_idx = pad_idx
+        super().__init__(ds)
+    
+    def process(self, ds:ItemList):  
+        ds.pad_idx = self.pad_idx
+        super().process(ds)
+  
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
 
     def generate_classes(self, items):
@@ -297,40 +324,64 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
         classes = ['background'] + list(classes)
         return classes
 
+def _get_size(xs,i):
+    size = xs.sizes.get(i,None)
+    if size is None:
+        # Image hasn't been accessed yet, so we don't know its size
+        _ = xs[i]
+        size =xs.sizes[i]
+    return size
+
 class ObjectCategoryList(MultiCategoryList):
-    def __init__(self, items:Iterator, classes:Collection=None, processor:PreProcessor=None, **kwargs):
-        super().__init__(items, **kwargs)
-        if processor is None: self.processor = ObjectCategoryProcessor(classes=classes)
-
+    _processor = ObjectCategoryProcessor
+    
     def get(self, i):
-        return ImageBBox.create(*self.x.sizes[i], *self.items[i], classes=self.classes)
+        return ImageBBox.create(*_get_size(self.x,i), *self.items[i], classes=self.classes, pad_idx=self.pad_idx)
 
-class ObjectItemList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = ObjectCategoryList
+    def reconstruct(self, t, x): 
+        bboxes, labels = t
+        if len((labels - self.pad_idx).nonzero()) == 0: return
+        i = (labels - self.pad_idx).nonzero().min()
+        bboxes,labels = bboxes[i:],labels[i:]
+        return ImageBBox.create(*x.size, bboxes, labels=labels, classes=self.classes, scale=False)
 
+class ObjectItemList(ImageItemList): _label_cls = ObjectCategoryList
+
+class SegmentationProcessor(PreProcessor):
+    def __init__(self, ds:ItemList): self.classes = ds.classes
+    def process(self, ds:ItemList):  ds.classes,ds.c = self.classes,len(self.classes)
+        
 class SegmentationLabelList(ImageItemList):
+    _processor=SegmentationProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
-        self.classes,self.loss_func,self.create_func = classes,CrossEntropyFlat(),open_mask
-        self.c = len(self.classes)
+        self.classes,self.loss_func = classes,CrossEntropyFlat()
+        #self.c = len(self.classes) if classes is not None
 
     def new(self, items, classes=None, **kwargs):
         return self.__class__(items, ifnone(classes, self.classes), **kwargs)
 
-class SegmentationItemList(ImageItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self._label_cls = SegmentationLabelList
+    def open(self, fn): return open_mask(fn)
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
+    def reconstruct(self, t:Tensor): return ImageSegment(t)
+
+class SegmentationItemList(ImageItemList): _label_cls = SegmentationLabelList
+
+class PointsProcessor(PreProcessor):
+    def __init__(self, ds:ItemList): self.c = len(ds.items[0].reshape(-1))
+    def process(self, ds:ItemList):  ds.c = self.c
 
 class PointsItemList(ItemList):
-    def __post_init__(self):
-        super().__post_init__()
-        self.c = len(self.items[0].view(-1))
-        self.loss_func = MSELossFlat()
-
+    _processor = PointsProcessor
+    
+    def __post_init__(self): self.loss_func = MSELossFlat()
+  
     def get(self, i):
         o = super().get(i)
-        return ImagePoints(FlowField(self.x.sizes[i], o), scale=True)
+        return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
+    
+    def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
+    def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
+
+class ImageToImageList(ImageItemList): _label_cls = ImageItemList
 

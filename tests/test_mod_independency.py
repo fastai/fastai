@@ -24,18 +24,7 @@ def load_setup_py_data_basic(setup_file, work_dir=None):
     cd_to_work = False
     path_backup = sys.path
 
-    def _change_cwd(target_dir):
-        cd_to_work = True
-        try:
-            cwd = os.getcwd()
-        except OSError:
-            cwd = recipe_dir or work_dir
-        os.chdir(target_dir)
-        # this is very important - or else if versioneer or otherwise is in the start folder,
-        # things will pick up the wrong versioneer/whatever!
-        sys.path.insert(0, target_dir)
-        return cd_to_work, cwd
-
+    os.chdir(work_dir)
     setup_cfg_data = {}
     try:
         from setuptools.config import read_configuration

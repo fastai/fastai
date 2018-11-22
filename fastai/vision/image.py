@@ -238,25 +238,24 @@ class Image(ItemBase):
         if y is not None: y.show(ax=ax, **kwargs)
         if title is not None: ax.set_title(title)
 
-    def show_batch(self, idxs:Collection[int], rows:int, ds:Dataset, figsize:Tuple[int,int]=(9,10), **kwargs)->None:
+    def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        rows = int(math.sqrt(len(xs)))
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
-        for i, ax in zip(idxs[:rows*rows], axs.flatten()):
-            x,y = ds[i]
-            x.show(ax=ax, y=y, **kwargs)
+        for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
+            xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
-
-    def show_results(self, xys, preds, figsize:Tuple[int,int]=None):
-        rows = len(xys)
-        figsize = ifnone(figsize, (8,3*rows))
-        _,axs = plt.subplots(rows, 2, figsize=figsize)
-        axs[0,0].set_title('Predictions')
-        axs[0,1].set_title('Ground truth')
-        for i,(x,y) in enumerate(xys):
-            x.show(ax=axs[i,1], y=y)
-            pred = y.reconstruct_output(preds[i], x)
-            x.show(ax=axs[i,0], y=pred)
-        plt.tight_layout()
-
+    
+    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`. 
+        `kwargs` are passed to the show method."""
+        figsize = ifnone(figsize, (6,3*len(xs)))
+        fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
+        fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
+        for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
+            x.show(ax=axs[i,0], y=y, **kwargs)
+            x.show(ax=axs[i,1], y=z, **kwargs)
+    
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
@@ -276,8 +275,6 @@ class ImageSegment(Image):
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
 
-    def reconstruct_output(self, out, x): return self.__class__(out.argmax(dim=0)[None])
-
 class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
     def __init__(self, flow:FlowField, scale:bool=True, y_first:bool=True):
@@ -293,8 +290,6 @@ class ImagePoints(Image):
     def clone(self):
         "Mimic the behavior of torch.clone for `Image` objects."
         return self.__class__(FlowField(self.size, self.flow.flow.clone()), scale=False, y_first=False)
-
-    def reconstruct_output(self, out, x): return self.__class__(FlowField(x.size, out[None]), scale=False)
 
     @property
     def shape(self)->Tuple[int,int,int]: return (1, *self._flow.size)
@@ -381,14 +376,14 @@ class ImageBBox(ImagePoints):
 
     @classmethod
     def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, classes:dict=None,
-               pad_idx:int=0)->'ImageBBox':
+               pad_idx:int=0, scale:bool=True)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
         bboxes = tensor(bboxes).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
         bl_corners = bboxes[:,1:3].flip(1)
         bboxes = torch.cat([bboxes[:,:2], tr_corners, bl_corners, bboxes[:,2:]], 1)
         flow = FlowField((h,w), bboxes.view(-1,2))
-        return cls(flow, labels=labels, classes=classes, pad_idx=pad_idx, y_first=True)
+        return cls(flow, labels=labels, classes=classes, pad_idx=pad_idx, y_first=True, scale=scale)
 
     def _compute_boxes(self) -> Tuple[LongTensor, LongTensor]:
         bboxes = self.flow.flow.flip(1).view(-1, 4, 2).contiguous().clamp(min=-1, max=1)
@@ -403,7 +398,8 @@ class ImageBBox(ImagePoints):
     @property
     def data(self)->Union[FloatTensor, Tuple[FloatTensor,LongTensor]]:
         bboxes,lbls = self._compute_boxes()
-        return bboxes if lbls is None else (bboxes, lbls.data)
+        lbls = tensor([o.data for o in lbls]) if lbls is not None else None
+        return bboxes if lbls is None else (bboxes, lbls)
 
     def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
         color:str='white', **kwargs):
@@ -415,18 +411,18 @@ class ImageBBox(ImagePoints):
             if lbls is not None: text = str(lbls[i])
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
-
-def open_image(fn:PathOrStr)->Image:
+    
+def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
-    x = PIL.Image.open(fn).convert('RGB')
-    return Image(pil2tensor(x,np.float32).div_(255))
+    #fn = getattr(fn, 'path', fn)
+    x = PIL.Image.open(fn).convert(convert_mode)
+    x = pil2tensor(x,np.float32)
+    if div: x.div_(255)
+    return cls(x)
 
 def open_mask(fn:PathOrStr, div=False, convert_mode='L')->ImageSegment:
     "Return `ImageSegment` object create from mask in file `fn`. If `div`, divides pixel values by 255."
-    x = PIL.Image.open(fn).convert(convert_mode)
-    mask = pil2tensor(x,np.float32)
-    if div: mask.div_(255)
-    return ImageSegment(mask)
+    return open_image(fn, div=div, convert_mode=convert_mode, cls=ImageSegment)
 
 def open_mask_rle(mask_rle:str, shape:Tuple[int, int])->ImageSegment:
     "Return `ImageSegment` object create from run-length encoded string in `mask_lre` with size in `shape`."
@@ -616,4 +612,3 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
     return ch,round(r/ratio),round(c/ratio)
-

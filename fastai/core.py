@@ -90,6 +90,7 @@ def random_split(valid_pct:float, *arrs:NPArrayableList)->SplitArrayList:
 def listify(p:OptListOrItem=None, q:OptListOrItem=None):
     "Make `p` same length as `q`"
     if p is None: p=[]
+    elif isinstance(p, str):          p=[p]
     elif not isinstance(p, Iterable): p=[p]
     n = q if type(q)==int else len(p) if q is None else len(q)
     if len(p)==1: p = p * n
@@ -208,6 +209,12 @@ def func_args(func)->bool:
 
 def has_arg(func, arg)->bool: return arg in func_args(func)
 
+def split_kwargs(kwargs, func):
+    "Split `kwargs` between those expected by `func` and the others."
+    args = func_args(func)
+    func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}
+    return func_kwargs, kwargs
+
 def try_int(o:Any)->Any:
     "Try to conver `o` to int, default to `o` if not possible."
     try: return int(o)
@@ -220,10 +227,33 @@ def array(a, *args, **kwargs)->np.ndarray:
 
 class Category(ItemBase):
     def __init__(self,data,obj): self.data,self.obj = data,obj
-    def __int__(self): return self.data
+    def __int__(self): return int(self.data)
     def __str__(self): return str(self.obj)
 
 class MultiCategory(ItemBase):
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
 
+    @property
+    def p(self):
+        if self.p_ is None: self.p_ = Path(self.d)
+        return self.p_
+
+    def __getattr__(self,k):
+        res = getattr(self.d, k, None)
+        if res is not None: return res
+        return getattr(self.p, k)
+
+    #def read(self): return self.open('rb').read()
+
+def _treat_html(o:str)->str:
+    return o.replace('\n','\\n')
+
+def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
+    html_code = f"<table>"
+    for w in widths: html_code += f"  <col width='{w}%'>"
+    for line in items:
+        html_code += "  <tr>\n"
+        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
+        html_code += "\n  </tr>\n"
+    return html_code + "</table>\n"

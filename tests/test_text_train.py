@@ -6,8 +6,7 @@ pytestmark = pytest.mark.integration
 
 def read_file(fname):
     texts = []
-    with open(fname, 'r') as f:
-        texts = f.readlines()
+    with open(fname, 'r') as f: texts = f.readlines()
     labels = [0] * len(texts)
     df = pd.DataFrame({'labels':labels, 'texts':texts}, columns = ['labels', 'texts'])
     return df
@@ -22,13 +21,14 @@ def prep_human_numbers():
 def learn():
     path, df_trn, df_val = prep_human_numbers()
     df = df_trn.append(df_val)
-    data = (TextList.from_df(df, path, col='texts')
+    data = (TextList.from_df(df, path, cols='texts')
                 .split_by_idx(list(range(len(df_trn),len(df))))
                 .label_for_lm()
                 .add_test(df['texts'].iloc[:200].values)
                 .databunch())
-    learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
-    learn.fit_one_cycle(2, 5e-3)
+    learn = language_model_learner(data, emb_sz=100, nh=100, nl=1, drop_mult=0.)
+    learn.opt_func = partial(optim.SGD, momentum=0.9)
+    learn.fit(3,1)
     return learn
 
 @pytest.mark.slow
@@ -40,8 +40,7 @@ def manual_seed(seed=42):
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
-def test_val_loss(learn):
-    assert learn.validate()[1] > 0.3
+def test_val_loss(learn): assert learn.validate()[1] > 0.3
 
 @pytest.mark.slow
 def test_qrnn_works_with_no_split():
@@ -51,7 +50,7 @@ def test_qrnn_works_with_no_split():
     data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1, qrnn=True)
     learn = LanguageLearner(data, learn.model, bptt=70) #  remove the split_fn
-    learn.fit_one_cycle(2, 5e-3)
+    learn.fit_one_cycle(2, 0.1)
     assert learn.validate()[1] > 0.3
 
 @pytest.mark.slow
@@ -61,7 +60,7 @@ def test_qrnn_works_if_split_fn_provided():
     path, df_trn, df_val = prep_human_numbers()
     data = TextLMDataBunch.from_df(path, df_trn, df_val, tokenizer=Tokenizer(BaseTokenizer))
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.1, qrnn=True) # it sets: split_func=lm_split
-    learn.fit_one_cycle(2, 5e-3)
+    learn.fit_one_cycle(2, 0.1)
     assert learn.validate()[1] > 0.3
 
 def test_vocabs(learn):
@@ -71,7 +70,7 @@ def test_vocabs(learn):
 
 def test_classifier(learn):
     lm_vocab = learn.data.vocab
-    data = (TextList.from_df(df, path, col='texts', vocab = lm_vocab)
+    data = (TextList.from_df(df, path, cols='texts', vocab = lm_vocab)
                 .split_by_idx(list(range(len(df_trn),len(df))))
                 .label_from_df(cols=0)
                 .add_test(df['texts'].iloc[:200].values)
