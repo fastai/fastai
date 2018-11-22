@@ -136,8 +136,8 @@ class ImageCleaner():
 
     def create_image_list(self, dataset, fns_idxs, start, end):
         'Creates a list of images, filenames and labels but first removing files that do not exist or are not supposed to be displayed'
+        items = dataset.x.items
         if self._duplicates:
-            items = dataset.x.items
             chunked_idxs = self.chunks(fns_idxs, 2)
             chunked_idxs = [chunk for chunk in chunked_idxs if items[chunk[0]].is_file() and items[chunk[1]].is_file()]
             return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk][start:end]
