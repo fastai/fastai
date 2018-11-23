@@ -43,6 +43,7 @@ def test_from_csv_and_from_df():
     df = text_df(['neg','pos'])
     data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols=["text"])
     assert len(data1.classes) == 2
+
     df = text_df(['neg','pos','neg pos'])
     data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
                                   label_cols=0, text_cols=["text"], label_delim=' ')
@@ -52,6 +53,9 @@ def test_from_csv_and_from_df():
     text_csv_file(path/'tmp.csv', ['neg','pos'])
     data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"])
     assert len(data3.classes) == 1
+    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)  
+    assert len(data4.train_ds.vocab.itos) == 7 # 5 + 2 (special UNK and PAD token)
+
     os.remove(path/'tmp.csv')
 
 def test_should_load_backwards_lm():
