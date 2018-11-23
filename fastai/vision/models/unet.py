@@ -71,7 +71,7 @@ class DynamicUnet(nn.Sequential):
         x = encoder(dummy_batch(encoder, imsize))
 
         ni = sfs_szs[-1][1]
-        middle_conv = nn.Sequential(conv2d_relu(ni, ni*2, bn=True), conv2d_relu(ni*2, ni, bn=True))
+        middle_conv = nn.Sequential(conv_layer(ni, ni*2, bn=True), conv_layer(ni*2, ni, bn=True))
         x = middle_conv(x)
         layers = [encoder, nn.ReLU(), middle_conv]
 

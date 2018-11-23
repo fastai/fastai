@@ -2,7 +2,7 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'StdUpsample', 'bn_drop_lin', 'conv2d', 'conv2d_relu', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
+           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'conv_bn_lrelu', 'embedding', 'simple_cnn',
            'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr']
 
 class Lambda(nn.Module):
@@ -39,24 +39,25 @@ def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False)
     if padding is None: padding = ks//2
     return nn.Conv2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
-def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
+def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=False) -> nn.ConvTranspose2d:
+    "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
+    return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
+
+def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=False, bn:bool=True, 
+                  leaky:bool=False, slope:float=0.1, transpose:bool=False):
+    if padding is None: padding = (ks-1)//2 if not transpose else 0
+    conv_func = nn.ConvTranspose2d if transpose else nn.Conv2d
+    activ = nn.LeakyReLU(inplace=True, negative_slope=slope) if leaky else nn.ReLU(inplace=True) 
+    layers = [conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), activ]
+    if bn: layers.append(nn.BatchNorm2d(nf))
+    return nn.Sequential(*layers)
+
+def conv_bn_lrelu(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
     "Create Conv2d->BatchNorm2d->LeakyReLu layer: `ni` input, `nf` out filters, `ks` kernel, `stride`:stride."
     return nn.Sequential(
         nn.Conv2d(ni, nf, kernel_size=ks, bias=False, stride=stride, padding=ks//2),
         nn.BatchNorm2d(nf),
         nn.LeakyReLU(negative_slope=0.1, inplace=True))
-
-def conv2d_relu(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bn:bool=False,
-                bias:bool=False) -> nn.Sequential:
-    """Create a `conv2d` layer with `nn.ReLU` activation and optional(`bn`) `nn.BatchNorm2d`: `ni` input, `nf` out
-    filters, `ks` kernel, `stride`:stride, `padding`:padding, `bn`: batch normalization."""
-    layers = [conv2d(ni, nf, ks=ks, stride=stride, padding=padding, bias=bias), nn.ReLU(inplace=True)]
-    if bn: layers.append(nn.BatchNorm2d(nf))
-    return nn.Sequential(*layers)
-
-def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=False) -> nn.ConvTranspose2d:
-    "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
-    return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
@@ -73,21 +74,11 @@ class Debugger(nn.Module):
         set_trace()
         return x
 
-class StdUpsample(nn.Module):
-    "Increases the dimensionality of our data by applying a transposed convolution layer."
-    def __init__(self, n_in:int, n_out:int):
-        super().__init__()
-        self.conv = conv2d_trans(n_in, n_out)
-        self.bn = nn.BatchNorm2d(n_out)
-
-    def forward(self, x:Tensor) -> Tensor:
-        return self.bn(F.relu(self.conv(x)))
-
 def std_upsample_head(c, *nfs:Collection[int]) -> nn.Module:
     "Create a sequence of upsample layers."
     return nn.Sequential(
         nn.ReLU(),
-        *(StdUpsample(nfs[i],nfs[i+1]) for i in range(4)),
+        *(conv_layer(nfs[i],nfs[i+1],ks=2, stride=2, padding=0, transpose=True) for i in range(4)),
         conv2d_trans(nfs[-1], c)
     )
 
@@ -123,11 +114,11 @@ class MSELossFlat(nn.MSELoss):
 
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:
-    "CNN with `conv2d_relu` layers defined by `actns`, `kernel_szs` and `strides`, plus batchnorm if `bn`."
+    "CNN with `conv_layer` defined by `actns`, `kernel_szs` and `strides`, plus batchnorm if `bn`."
     nl = len(actns)-1
     kernel_szs = ifnone(kernel_szs, [3]*nl)
     strides    = ifnone(strides   , [2]*nl)
-    layers = [conv2d_relu(actns[i], actns[i+1], kernel_szs[i], stride=strides[i],
+    layers = [conv_layer(actns[i], actns[i+1], kernel_szs[i], stride=strides[i],
               bn=(bn and i<(len(strides)-1))) for i in range_of(strides)]
     layers.append(PoolFlatten())
     return nn.Sequential(*layers)
