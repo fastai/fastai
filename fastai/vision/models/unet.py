@@ -11,14 +11,13 @@ def _get_sfs_idxs(sizes:Sizes) -> List[int]:
     if feature_szs[0] != feature_szs[1]: sfs_idxs = [0] + sfs_idxs
     return sfs_idxs
 
-class UnetBlock(nn.Module):
+class UnetBlockOld(nn.Module):
     "A basic U-Net block."
     def __init__(self, up_in_c:int, x_in_c:int, hook:Hook):
         super().__init__()
         self.hook = hook
         ni = up_in_c
         self.upconv = conv2d(ni, ni//2, ks=1) # H, W -> 2H, 2W
-        #self.upconv = conv2d_trans(ni, ni//2, stride=1, ks=1)
         ni = ni//2 + x_in_c
         self.conv1 = conv2d(ni, ni//2)
         self.bn1 = nn.BatchNorm2d(ni)
@@ -28,7 +27,6 @@ class UnetBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(ni)
 
     def forward(self, up_in:Tensor) -> Tensor:
-        #up_out = self.upconv(up_in)
         s = self.hook.stored
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -39,26 +37,52 @@ class UnetBlock(nn.Module):
         x = F.relu(self.conv2(x))
         return self.bn(x)
 
+class UnetBlock(nn.Module):
+    "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
+    def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True):
+        super().__init__()
+        self.hook = hook
+        self.shuf = PixelShuffle_ICNR(up_in_c, up_in_c//2)
+        self.bn1 = nn.BatchNorm2d(x_in_c)
+        ni = up_in_c//2 + x_in_c
+        nf = ni if final_div else ni//2
+        self.conv1 = conv2d(ni, nf)
+        self.conv2 = conv2d(nf, nf)
+        self.bn  = nn.BatchNorm2d(nf)
+        self.bn2 = nn.BatchNorm2d(nf)
+
+    def forward(self, up_in:Tensor) -> Tensor:
+        s = self.bn1(self.hook.stored)
+        up_out = self.shuf(up_in)
+        ssh = s.shape[-2:]
+        if ssh != up_out.shape[-2:]:
+            up_out = F.interpolate(up_out, s.shape[-2:], mode='nearest')
+        cat_x = F.relu(torch.cat([up_out, self.bn1(s)], dim=1))
+        x = self.bn2(F.relu(self.conv1(cat_x)))
+        return self.bn( F.relu(self.conv2(x)))
+
 class DynamicUnet(nn.Sequential):
     "Create a U-Net from a given architecture."
     def __init__(self, encoder:nn.Module, n_classes:int):
         imsize = (256,256)
-        sfs_szs,x,self.sfs = model_sizes(encoder, size=imsize)
-        sfs_idxs = reversed(_get_sfs_idxs(sfs_szs))
+        sfs_szs = model_sizes(encoder, size=imsize)
+        sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
+        self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
+        x = encoder(dummy_batch(encoder, imsize))
 
         ni = sfs_szs[-1][1]
         middle_conv = nn.Sequential(conv2d_relu(ni, ni*2, bn=True), conv2d_relu(ni*2, ni, bn=True))
         x = middle_conv(x)
         layers = [encoder, nn.ReLU(), middle_conv]
 
-        for idx in sfs_idxs:
+        for i,idx in enumerate(sfs_idxs):
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
-            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[idx])
+            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[i], final_div=(i!=len(sfs_idxs)-1))
             layers.append(unet_block)
             x = unet_block(x)
 
         ni = unet_block.conv2.out_channels
-        if imsize != sfs_szs[0][-2:]: layers.append(conv2d_trans(ni, ni))
+        if imsize != sfs_szs[0][-2:]: layers.append(PixelShuffle_ICNR(ni))
         layers.append(conv2d(ni, n_classes, 1))
         super().__init__(*layers)
 

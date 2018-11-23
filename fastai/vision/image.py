@@ -4,41 +4,12 @@ from ..basic_data import *
 from io import BytesIO
 import PIL
 
-__all__ = ['Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
-           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'log_uniform',
-           'logit', 'logit_', 'open_image', 'open_mask', 'pil2tensor', 'rand_bool', 'scale_flow', 'show_image',
-           'uniform', 'uniform_int', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode', 'rle_decode', 'ResizeMethod']
+__all__ = ['PIL', 'Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
+           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'open_image', 'open_mask',
+           'pil2tensor', 'scale_flow', 'show_image', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode',
+           'rle_decode', 'ResizeMethod']
 
 ResizeMethod = IntEnum('ResizeMethod', 'CROP PAD SQUISH NO')
-
-def logit(x:Tensor)->Tensor:
-    "Logit of `x`, clamped to avoid inf"
-    x = x.clamp(1e-7, 1-1e-7)
-    return -(1/x-1).log()
-
-def logit_(x:Tensor)->Tensor:
-    "Inplace logit of `x`, clamped to avoid inf"
-    x.clamp_(1e-7, 1-1e-7)
-    return (x.reciprocal_().sub_(1)).log_().neg_()
-
-def uniform(low:Number, high:Number=None, size:Optional[List[int]]=None)->FloatOrTensor:
-    "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`."
-    if high is None: high=low
-    return random.uniform(low,high) if size is None else torch.FloatTensor(*listify(size)).uniform_(low,high)
-
-def log_uniform(low, high, size:Optional[List[int]]=None)->FloatOrTensor:
-    "Draw 1 or shape=`size` random floats from uniform dist: min=log(`low`), max=log(`high`)."
-    res = uniform(log(low), log(high), size)
-    return exp(res) if size is None else res.exp_()
-
-def rand_bool(p:float, size:Optional[List[int]]=None)->BoolOrTensor:
-    "Draw 1 or shape=`size` random booleans (True occuring probability `p`)."
-    return uniform(0,1,size)<p
-
-def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
-    "Generate int or tensor `size` of ints between `low` and `high` (included)."
-    return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
-
 def pil2tensor(image:Union[NPImage,NPArray],dtype:np.dtype)->TensorImage:
     "Convert PIL style `image` array to torch style image tensor."
     a = np.asarray(image)
@@ -245,9 +216,9 @@ class Image(ItemBase):
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
-    
+
     def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
-        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`. 
+        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`.
         `kwargs` are passed to the show method."""
         figsize = ifnone(figsize, (6,3*len(xs)))
         fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
@@ -255,7 +226,7 @@ class Image(ItemBase):
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], y=y, **kwargs)
             x.show(ax=axs[i,1], y=z, **kwargs)
-    
+
 class ImageSegment(Image):
     "Support applying transforms to segmentation masks data in `px`."
     def lighting(self, func:LightingFunc, *args:Any, **kwargs:Any)->'Image': return self
@@ -411,11 +382,12 @@ class ImageBBox(ImagePoints):
             if lbls is not None: text = str(lbls[i])
             else: text=None
             _draw_rect(ax, bb2hw(bbox), text=text, color=color)
-    
+
 def open_image(fn:PathOrStr, div:bool=True, convert_mode:str='RGB', cls:type=Image)->Image:
     "Return `Image` object created from image in file `fn`."
-    #fn = getattr(fn, 'path', fn)
-    x = PIL.Image.open(fn).convert(convert_mode)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning) # EXIF warning from TiffPlugin
+        x = PIL.Image.open(fn).convert(convert_mode)
     x = pil2tensor(x,np.float32)
     if div: x.div_(255)
     return cls(x)
@@ -544,8 +516,16 @@ def _resolve_tfms(tfms:TfmList):
     for f in listify(tfms): f.resolve()
 
 def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', **kwargs)->TensorImage:
-    "Grab pixels in `coords` from `input` sampling by `mode`. `paddding_mode` is reflection, border or zeros."
+    "Resample pixels in `coords` from `x` by `mode`, with `padding_mode` in ('reflection','border','zeros')."
     coords = coords.flow.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
+    if mode=='bilinear': # hack to get smoother downwards resampling
+        mn,mx = coords.min(),coords.max()
+        # max amount we're affine zooming by (>1 means zooming in)
+        z = 1/(mx-mn).item()*2
+        # amount we're resizing by, with 100% extra margin
+        d = min(x.shape[1]/coords.shape[1], x.shape[2]/coords.shape[2])/2
+        # If we're resizing up by >200%, and we're zooming less than that, interpolate first
+        if d>1 and d>z: x = F.interpolate(x[None], scale_factor=1/d, mode='area')[0]
     return F.grid_sample(x[None], coords, mode=mode, padding_mode=padding_mode)[0]
 
 def _affine_grid(size:TensorImageSize)->FlowField:
