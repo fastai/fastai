@@ -68,7 +68,7 @@ class DynamicUnet(nn.Sequential):
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
         self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
-        x = encoder(dummy_batch(encoder, imsize))
+        x = dummy_eval(encoder, imsize).detach()
 
         ni = sfs_szs[-1][1]
         middle_conv = nn.Sequential(conv_layer(ni, ni*2, bn=True), conv_layer(ni*2, ni, bn=True))
@@ -88,3 +88,4 @@ class DynamicUnet(nn.Sequential):
 
     def __del__(self):
         if hasattr(self, "sfs"): self.sfs.remove()
+

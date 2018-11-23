@@ -4,8 +4,8 @@ from ..callback import *
 from ..basic_train import *
 from ..basic_data import *
 
-__all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'hook_outputs', 
-           'model_sizes', 'num_features_model', 'model_summary', 'dummy_batch']
+__all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'hook_outputs',
+           'model_sizes', 'num_features_model', 'model_summary', 'dummy_eval', 'dummy_batch']
 
 class Hook():
     "Create a hook."
@@ -81,12 +81,15 @@ class ActivationStats(HookCallback):
 
 def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
     ch_in = in_channels(m)
-    return one_param(m).new(1, ch_in, *size)
+    return one_param(m).new(1, ch_in, *size).requires_grad_(False)
+
+def dummy_eval(m:nn.Module, size:tuple=(64,64)):
+    return m.eval()(dummy_batch(m, size))
 
 def model_sizes(m:nn.Module, size:tuple=(64,64)) -> Tuple[Sizes,Tensor,Hooks]:
     "Pass a dummy input through the model `m` to get the various sizes of activations."
     with hook_outputs(m) as hooks:
-        x = m.eval()(dummy_batch(m, size))
+        x = dummy_eval(m, size)
         return [o.stored.shape for o in hooks]
 
 def num_features_model(m:nn.Module)->int:
