@@ -14,7 +14,7 @@ text_extensions = {'.txt'}
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
     def __init__(self, dataset:LabelList, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False,
-                 max_len:int=25):
+                 max_len:int=25, **kwargs):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
         self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
