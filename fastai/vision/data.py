@@ -67,7 +67,7 @@ def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
 
 def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Denormalize `x` with `mean` and `std`."
-    return x*std[...,None,None] + mean[...,None,None]
+    return x.cpu()*std[...,None,None] + mean[...,None,None]
 
 def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Tensor,Tensor]:
     "`b` = `x`,`y` - normalize `x` array of imgs and `do_y` optionally `y`."
@@ -152,7 +152,7 @@ class ImageDataBunch(DataBunch):
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
         funcs = ifnone(funcs, [torch.mean,torch.std])
-        x = self.valid_dl.one_batch()[0].cpu()
+        x = self.one_batch(ds_type=DatasetType.Valid, denorm=False)[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
     def normalize(self, stats:Collection[Tensor]=None, do_y:bool=None)->None:
@@ -168,24 +168,19 @@ def download_image(url,dest, timeout=4):
     try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
     except Exception as e: print(f"Error {url} {e}")
 
+def _download_image_inner(dest, url, i, timeout=4):
+    suffix = re.findall(r'\.\w+?(?=(?:\?|$))', url)
+    suffix = suffix[0] if len(suffix)>0  else '.jpg'
+    download_image(url, dest/f"{i:08d}{suffix}", timeout=timeout)
+
 def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max_workers:int=8, timeout=4):
     "Download images listed in text file `urls` to path `dest`, at most `max_pics`"
     urls = open(urls).read().strip().split("\n")[:max_pics]
     dest = Path(dest)
     dest.mkdir(exist_ok=True)
+    parallel(partial(_download_image_inner, dest, timeout=timeout), urls, max_workers=max_workers)
 
-    if max_workers:
-        with ProcessPoolExecutor(max_workers=max_workers) as ex:
-            suffixes = [re.findall(r'\.\w+?(?=(?:\?|$))', url) for url in urls]
-            suffixes = [suffix[0] if len(suffix)>0  else '.jpg' for suffix in suffixes]
-            futures = [ex.submit(download_image, url, dest/f"{i:08d}{suffixes[i]}", timeout=timeout)
-                       for i,url in enumerate(urls)]
-            for f in progress_bar(as_completed(futures), total=len(urls)): pass
-    else:
-        for i,url in enumerate(progress_bar(urls)):
-            download_image(url, dest/f"{i:08d}.jpg", timeout=timeout)
-
-def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
+def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
     """Check if the image in `file` exists, it can be opened and has `n_channels`.
     If `delete=True`:
@@ -199,7 +194,6 @@ def verify_image(file:Path, delete:bool, max_size:Union[int,Tuple[int,int]]=None
         with warnings.catch_warnings():
             warnings.filterwarnings('error')
             try:
-                # must use this workaround to avoid: ResourceWarning: unclosed file warning
                 with open(file, 'rb') as img_file: PIL.Image.open(img_file)
             except Warning as w:
                 if "Possibly corrupt EXIF data" in str(w):

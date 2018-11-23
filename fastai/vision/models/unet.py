@@ -52,7 +52,7 @@ class UnetBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(nf)
 
     def forward(self, up_in:Tensor) -> Tensor:
-        s = self.bn1(self.hook.stored)
+        s = self.hook.stored
         up_out = self.shuf(up_in)
         ssh = s.shape[-2:]
         if ssh != up_out.shape[-2:]:

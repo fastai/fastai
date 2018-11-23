@@ -77,7 +77,7 @@ def test_image_to_image_different_y_size():
             .transform_y(size=80)
             .databunch(bs=16))
 
-    x,y = data.dl().one_batch()
+    x,y = data.one_batch()
     assert x.shape[2]*4 == y.shape[3]
 
 def test_image_to_image_different_tfms():
@@ -93,7 +93,7 @@ def test_image_to_image_different_tfms():
             .transform_y(y_tfms)
             .databunch(bs=16))
 
-    x,y = data.dl(DatasetType.Train).one_batch()
+    x,y = data.one_batch()
     x1 = x[0]
     y1 = y[0]
     x1r = flip_lr(Image(x1)).data

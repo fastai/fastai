@@ -48,16 +48,6 @@ class DeviceDataLoader():
             y = b[1][0] if is_listy(b[1]) else b[1]
             if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)
 
-    def one_batch(self, detach:bool=False)->Collection[Tensor]:
-        "Get one batch from the data loader."
-        w = self.num_workers
-        self.num_workers = 0
-        it = iter(self)
-        try:     x,y = next(it)
-        finally: self.num_workers = w
-        if detach: x,y = x.detach(),y.detach()
-        return x,y
-
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
                tfms:Collection[Callable]=tfms, num_workers:int=defaults.cpus, collate_fn:Callable=data_collate, **kwargs:Any):
@@ -117,18 +107,30 @@ class DataBunch():
     def add_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.add_tfm(tfm)
 
+    def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True)->Collection[Tensor]:
+        "Get one batch from the data loader."
+        dl = self.dl(ds_type)
+        w = self.num_workers
+        self.num_workers = 0
+        try:     x,y = next(iter(dl))
+        finally: self.num_workers = w
+        if detach: x,y = x.detach(),y.detach()
+        norm = getattr(self,'norm',False)
+        if denorm and norm:
+            x = self.denorm(x)
+            if norm.keywords.get('do_y',True): y = self.denorm(y)
+        return x,y
+
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
-        dl = self.dl(ds_type)
-        x,y = next(iter(dl))
-        if getattr(self,'norm',False): x = self.denorm(x.cpu())
+        x,y = one_batch(ds_type, True, True)
         if self._square_show: rows = rows ** 2
         xs = [self.train_ds.x.reconstruct(grab_idx(x, i, self._batch_first)) for i in range(rows)]
         #TODO: get rid of has_arg if possible
         if has_arg(self.train_ds.y.reconstruct, 'x'):
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
-        dl.dataset[0][0].show_xys(xs, ys, **kwargs)
+        x[0].show_xys(xs, ys, **kwargs)
 
     def export(self, fname:str='export.pkl'):
         self.valid_ds.export(self.path/fname)
