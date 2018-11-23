@@ -44,10 +44,10 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
 def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=False, bn:bool=True, 
-                  leaky:bool=False, slope:float=0.1, transpose:bool=False):
+                  leaky:float=None, transpose:bool=False):
     if padding is None: padding = (ks-1)//2 if not transpose else 0
     conv_func = nn.ConvTranspose2d if transpose else nn.Conv2d
-    activ = nn.LeakyReLU(inplace=True, negative_slope=slope) if leaky else nn.ReLU(inplace=True) 
+    activ = nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True) 
     layers = [conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), activ]
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
