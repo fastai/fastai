@@ -2,7 +2,7 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'conv_bn_lrelu', 'embedding', 'simple_cnn',
+           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
            'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr']
 
 class Lambda(nn.Module):
@@ -51,13 +51,6 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     layers = [conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), activ]
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
-
-def conv_bn_lrelu(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
-    "Create Conv2d->BatchNorm2d->LeakyReLu layer: `ni` input, `nf` out filters, `ks` kernel, `stride`:stride."
-    return nn.Sequential(
-        nn.Conv2d(ni, nf, kernel_size=ks, bias=False, stride=stride, padding=ks//2),
-        nn.BatchNorm2d(nf),
-        nn.LeakyReLU(negative_slope=0.1, inplace=True))
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
