@@ -40,7 +40,7 @@ class DatasetFormatter():
  
     @staticmethod
     def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4):
-        "Activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
+        "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
         pool = pool(pool_dim)
         print('Getting activations...')
 
