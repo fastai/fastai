@@ -80,7 +80,7 @@ class DatasetFormatter():
 
     @classmethod
     def sort_idxs(cls, similarities):
-        "Sorts similarities and returns the indexes for the highest `top` similarities."
+        "Sorts similarities and returns the indexes in pairs ordered by highest similarity"
         idxs = cls.largest_indices(similarities, len(similarities))
         idxs = [(idxs[0][i], idxs[1][i]) for i in range(len(idxs[0]))]
         return [e for l in idxs for e in l]
@@ -136,7 +136,7 @@ class ImageCleaner():
             yield l[i:i + n]
 
     def create_image_list(self, dataset, fns_idxs, start, end):
-        'Creates a list of images, filenames and labels but first removing files that do not exist or are not supposed to be displayed'
+        "Creates a list of images, filenames and labels but first removing files that are not supposed to be displayed"
         items = dataset.x.items
         if self._duplicates:
             chunked_idxs = self.chunks(fns_idxs, 2)
@@ -197,7 +197,7 @@ class ImageCleaner():
         return widgets
 
     def batch_contains_deleted(self):
-        'Checks if current batch contains already deleted images.'
+        "Checks if current batch contains already deleted images"
         imgs = [self._all_images[:self._batch_size][0][1], self._all_images[:self._batch_size][1][1]]
         return any(img in self._deleted_fns for img in imgs)
 
