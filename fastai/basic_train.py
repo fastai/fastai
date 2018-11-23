@@ -249,13 +249,6 @@ class Learner():
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
-<<<<<<< HEAD
-        x,y = self.callbacks[-1].input,self.callbacks[-1].target
-        if getattr(self.data,'norm',False): x = self.data.denorm(x)
-        self.callbacks = self.callbacks[:-1]
-        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
-        analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
-=======
         rec_cpu,*self.callbacks = self.callbacks
         x,y = rec_cpu.input,rec_cpu.target
         norm = getattr(self.data,'norm',False)
@@ -264,8 +257,7 @@ class Learner():
             if norm.keywords.get('do_y',True):
                 y     = self.data.denorm(y)
                 preds = self.data.denorm(preds)
-        analyze_kwargs,kwargs = split_kwargs(kwargs, ds.y.analyze_pred)
->>>>>>> 12fa3f6fb3f3d6f534b6bdf202ea74939e6120f4
+        analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
         preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
         if has_arg(ds.y.reconstruct, 'x'):
