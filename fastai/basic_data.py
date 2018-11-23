@@ -123,14 +123,14 @@ class DataBunch():
 
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
-        x,y = one_batch(ds_type, True, True)
+        x,y = self.one_batch(ds_type, True, True)
         if self._square_show: rows = rows ** 2
         xs = [self.train_ds.x.reconstruct(grab_idx(x, i, self._batch_first)) for i in range(rows)]
         #TODO: get rid of has_arg if possible
         if has_arg(self.train_ds.y.reconstruct, 'x'):
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
         else : ys = [self.train_ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
-        x[0].show_xys(xs, ys, **kwargs)
+        self.dl(ds_type).dataset[0][0].show_xys(xs, ys, **kwargs)
 
     def export(self, fname:str='export.pkl'):
         self.valid_ds.export(self.path/fname)
