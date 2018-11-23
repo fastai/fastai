@@ -3,7 +3,7 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
            'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
-           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr']
+           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -104,6 +104,10 @@ class MSELossFlat(nn.MSELoss):
     "Same as `nn.MSELoss`, but flattens input and target."
     def forward(self, input:Tensor, target:Tensor) -> Rank0Tensor:
         return super().forward(input.view(-1), target.view(-1))
+
+class NoopLoss(nn.Module):
+    "Just returns the `output`."
+    def forward(self, output, target): return output[0]
 
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:

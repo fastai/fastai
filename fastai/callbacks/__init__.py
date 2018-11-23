@@ -1,6 +1,7 @@
 from .lr_finder import *
 from .one_cycle import *
 from .fp16 import *
+from .gan import *
 from .general_sched import *
 from .hooks import *
 from .mixup import *
