@@ -5,7 +5,7 @@ from ..vision.data import *
 from ..vision.transform import *
 from ..vision.image import open_image
 from ipywidgets import widgets, Layout
-from IPython.display import clear_output, HTML
+from IPython.display import clear_output, HTML, display
 
 __all__ = ['DatasetFormatter', 'ImageCleaner']
 
@@ -26,6 +26,7 @@ class DatasetFormatter():
 class ImageCleaner():
     "Displays images with their current label. If image is junk data or labeled incorrectly, allows user to delete image or move image to properly labeled folder."
     def __init__(self, dataset, fns_idxs, batch_size:int=5):
+        assert(len(dataset) == len(fns_idxs)), 'Check if you pass in the correct dataset'
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
         self._labels = dataset.classes
