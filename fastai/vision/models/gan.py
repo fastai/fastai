@@ -7,11 +7,11 @@ def AvgFlatten():
     return Lambda(lambda x: x.mean(0).view(1))
 
 def discriminator(in_size, n_channels, n_features, n_extra_layers=0):
-    layers = [conv_layer(n_channels, n_features, 4, 2, 1, bn=False, leaky=True, slope=0.2)]
+    layers = [conv_layer(n_channels, n_features, 4, 2, 1, bn=False, leaky=0.2)]
     cur_size, cur_ftrs = in_size//2, n_features
-    layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=True, slope=0.2) for _ in range(n_extra_layers)]))
+    layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=0.2) for _ in range(n_extra_layers)]))
     while cur_size > 4:
-        layers.append(conv_layer(cur_ftrs, cur_ftrs*2, 4, 2, 1, leaky=True, slope=0.2))
+        layers.append(conv_layer(cur_ftrs, cur_ftrs*2, 4, 2, 1, leaky=0.2))
         cur_ftrs *= 2 ; cur_size //= 2
     layers += [conv2d(cur_ftrs, 1, 4, padding=0), AvgFlatten()]
     return nn.Sequential(*layers)

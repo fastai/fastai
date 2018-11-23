@@ -29,14 +29,8 @@ class GANTrainer(LearnerCallback):
             self.opt_gen.wd, self.opt_gen.beta = self.learn.opt.wd, self.learn.opt.beta
     
     def on_train_begin(self, **kwargs):
-        opt_fn = self.learn.opt_fn
-        lr, wd, true_wd, bn_wd = self.learn.opt.lr, self.learn.opt.wd, self.learn.opt.true_wd, self.learn.opt.bn_wd
-        self.opt_gen = OptimWrapper.create(opt_fn, lr, 
-                                      [nn.Sequential(*flatten_model(self.learn.model.generator))], 
-                                      wd=wd, true_wd=true_wd, bn_wd=bn_wd)
-        self.opt_disc = OptimWrapper.create(opt_fn, lr, 
-                                      [nn.Sequential(*flatten_model(self.learn.model.discriminator))],
-                                      wd=wd, true_wd=true_wd, bn_wd=bn_wd)
+        self.opt_gen = self.learn.opt.new([nn.Sequential(*flatten_model(self.learn.model.generator))])
+        self.opt_disc = self.learn.opt.new([nn.Sequential(*flatten_model(self.learn.model.discriminator))])
         self.learn.opt.opt = self.opt_disc.opt
         self.disc_iters, self.gen_iters = 0, 0
         self._set_trainable()
