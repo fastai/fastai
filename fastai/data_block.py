@@ -66,7 +66,7 @@ class ItemList():
         for p in self.processor: item = p.process_one(item)
         return item
 
-    def analyze_pred(self, pred:Tensor): 
+    def analyze_pred(self, pred:Tensor):
         "Called on `pred` before `reconstruct` for additional preprocessing."
         return pred
 
@@ -76,7 +76,7 @@ class ItemList():
 
     def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':
         processor = ifnone(processor, self.processor)
-        return self.__class__(items=items, processor=processor, path=self.path, x=self.x, **kwargs)
+        return self.__class__(items=items, processor=processor, path=self.path, x=self.x, label_cls=self.label_cls, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -101,6 +101,13 @@ class ItemList():
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, cols=cols, **kwargs)
 
+    def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
+    def _relative_item_paths(self):   return [self._relative_item_path(i) for i in range_of(self.items)]
+
+    def to_text(self, fn:str):
+        "Save `self.items` to `fn` in `self.path`"
+        with open(self.path/fn, 'w') as f: f.writelines([f'{o}\n' for o in self._relative_item_paths()])
+
     def filter_by_func(self, func:Callable)->'ItemList':
         "Only keeps elements for which `func` returns `True`."
         self.items = array([o for o in self.items if func(o)])
@@ -115,6 +122,10 @@ class ItemList():
             if exclude and     n in exclude: return False
             return True
         return self.filter_by_func(_inner)
+
+    def filter_by_rand(self, p:float):
+        "Keep random sample of `items` with probability `p`"
+        return self.filter_by_func(lambda o: rand_bool(p))
 
     def split_by_list(self, train, valid):
         "Split the data between `train` and `valid`."
@@ -225,7 +236,7 @@ class CategoryProcessor(PreProcessor):
         ds.classes = self.classes
         ds.c2i = self.c2i
         super().process(ds)
-    
+
     def __getstate__(self): return {'classes':self.classes}
     def __setstate__(self, state:dict): self.create_classes(state['classes'])
 
@@ -251,7 +262,7 @@ class CategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(o, self.classes[o])
-    
+
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax()
 
     def reconstruct(self, t):
@@ -277,7 +288,7 @@ class MultiCategoryList(CategoryListBase):
         o = self.items[i]
         if o is None: return None
         return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
-    
+
     def analyze_pred(self, pred, thresh:float=0.5):
         return (pred >= thresh).float()
 
@@ -346,11 +357,11 @@ class ItemLists():
         if self.test: self.test.transform(tfms[1], **kwargs)
         return self
 
-    def transform_labels(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+    def transform_y(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
         if not tfms: tfms=(None,None)
-        self.train.transform_labels(tfms[0], **kwargs)
-        self.valid.transform_labels(tfms[1], **kwargs)
-        if self.test: self.test.transform_labels(tfms[1], **kwargs)
+        self.train.transform_y(tfms[0], **kwargs)
+        self.valid.transform_y(tfms[1], **kwargs)
+        if self.test: self.test.transform_y(tfms[1], **kwargs)
         return self
 
 class LabelLists(ItemLists):
@@ -423,14 +434,22 @@ class LabelList(Dataset):
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
-        
+
+    def to_df(self)->None:
+        "Create `pd.DataFrame` containing `items` from `self.x` and `self.y`"
+        return pd.DataFrame(dict(x=self.x._relative_item_paths(), y=self.y._relative_item_paths()))
+
+    def to_csv(self, dest:str)->None:
+        "Save `self.to_df()` to a CSV file in `self.path`/`dest`"
+        self.to_df().to_csv(self.path/dest, index=False)
+
     def export(self, fn:PathOrStr):
         "Export the minimal state and save it in `fn` to load an empty version for inference."
         state = {'x_cls':self.x.__class__, 'x_proc':self.x.processor,
                  'y_cls':self.y.__class__, 'y_proc':self.y.processor,
                  'path':self.path}
         pickle.dump(state, open(fn, 'wb'))
-    
+
     @classmethod
     def load_empty(cls, fn:PathOrStr, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
@@ -460,7 +479,7 @@ class LabelList(Dataset):
         if tfm_y is not None:  self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
         return self
 
-    def transform_labels(self, tfms:TfmList=None, **kwargs):
+    def transform_y(self, tfms:TfmList=None, **kwargs):
         self.tfm_y=True
         if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
         else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
@@ -472,3 +491,4 @@ def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, 
     return cls.create(ds,ds,path=path)
 
 DataBunch.load_empty = _databunch_load_empty
+

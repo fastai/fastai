@@ -3,7 +3,7 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
            'StdUpsample', 'bn_drop_lin', 'conv2d', 'conv2d_relu', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
-           'std_upsample_head', 'trunc_normal_']
+           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -90,6 +90,25 @@ def std_upsample_head(c, *nfs:Collection[int]) -> nn.Module:
         *(StdUpsample(nfs[i],nfs[i+1]) for i in range(4)),
         conv2d_trans(nfs[-1], c)
     )
+
+def icnr(x, scale=2, init=nn.init.kaiming_normal_):
+    "ICNR init."
+    ni,nf,h,w = x.shape
+    ni2 = int(ni/(scale**2))
+    k = init(torch.zeros([ni2,nf,h,w])).transpose(0, 1)
+    k = k.contiguous().view(ni2, nf, -1)
+    k = k.repeat(1, 1, scale**2)
+    k = k.contiguous().view([nf,ni,h,w]).transpose(0, 1)
+    x.data.copy_(k)
+
+class PixelShuffle_ICNR(nn.Sequential):
+    "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
+    def __init__(self, ni:int, nf:int=None, scale:int=2):
+        nf = ifnone(nf, ni)
+        conv = weight_norm(conv2d(ni, nf * (scale**2), ks=1))
+        icnr(conv.weight)
+        shuf = nn.PixelShuffle(scale)
+        return super().__init__(conv,shuf)
 
 class CrossEntropyFlat(nn.CrossEntropyLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."

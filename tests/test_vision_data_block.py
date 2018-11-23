@@ -38,9 +38,9 @@ def test_camvid():
             .transform(get_transforms(), tfm_y=True)
             .databunch())
     _check_data(data, 80, 20)
-    
+
 def get_ip(img,pts): return ImagePoints(FlowField(img.size, pts), scale=True)
-    
+
 def test_points():
     coco = untar_data(URLs.COCO_TINY)
     images, lbl_bbox = get_annotations(coco/'train.json')
@@ -74,7 +74,7 @@ def test_image_to_image_different_y_size():
             .random_split_by_pct()
             .label_from_func(get_y_func)
             .transform(tfms, size=20)
-            .transform_labels(size=80)
+            .transform_y(size=80)
             .databunch(bs=16))
 
     x,y = data.dl().one_batch()
@@ -90,7 +90,7 @@ def test_image_to_image_different_tfms():
             .random_split_by_pct()
             .label_from_func(get_y_func)
             .transform(x_tfms)
-            .transform_labels(y_tfms)
+            .transform_y(y_tfms)
             .databunch(bs=16))
 
     x,y = data.dl(DatasetType.Train).one_batch()

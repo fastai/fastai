@@ -44,5 +44,5 @@ def test_denormalize(path):
     data.normalize()
     normalized_x, y = data.valid_dl.one_batch()
     denormalized = denormalize(normalized_x, original_x.mean(), original_x.std())
-    assert round(original_x.mean().item(), 4) == round(denormalized.mean().item(), 4)
-    assert round(original_x.std().item(), 4) == round(denormalized.std().item(), 4)
+    assert round(original_x.mean().item(), 3) == round(denormalized.mean().item(), 3)
+    assert round(original_x.std().item(), 3) == round(denormalized.std().item(), 3)

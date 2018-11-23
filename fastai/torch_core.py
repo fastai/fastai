@@ -57,9 +57,7 @@ fastai_types = {
 }
 
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
-_default_cpus = min(16, num_cpus())
-_default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-defaults = SimpleNamespace(device=_default_device, cpus=_default_cpus)
+defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
 def tensor(x:Any, *rest)->Tensor:
@@ -111,7 +109,7 @@ def trainable_params(m:nn.Module)->ParamList:
     return res
 
 def children(m:nn.Module)->ModuleList:
-    "Get children of module `m`."
+    "Get children of `m`."
     return list(m.children())
 
 def num_children(m:nn.Module)->int:
@@ -252,3 +250,34 @@ class FloatItem(ItemBase):
 def grab_idx(x,i,batch_first:bool=True):
     if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
     else:           return ([o[:,i].cpu() for o in x] if is_listy(x) else x[:,i].cpu())
+
+def logit(x:Tensor)->Tensor:
+    "Logit of `x`, clamped to avoid inf"
+    x = x.clamp(1e-7, 1-1e-7)
+    return -(1/x-1).log()
+
+def logit_(x:Tensor)->Tensor:
+    "Inplace logit of `x`, clamped to avoid inf"
+    x.clamp_(1e-7, 1-1e-7)
+    return (x.reciprocal_().sub_(1)).log_().neg_()
+
+def uniform(low:Number, high:Number=None, size:Optional[List[int]]=None)->FloatOrTensor:
+    "Draw 1 or shape=`size` random floats from uniform dist: min=`low`, max=`high`."
+    if high is None: high=low
+    return random.uniform(low,high) if size is None else torch.FloatTensor(*listify(size)).uniform_(low,high)
+
+def log_uniform(low, high, size:Optional[List[int]]=None)->FloatOrTensor:
+    "Draw 1 or shape=`size` random floats from uniform dist: min=log(`low`), max=log(`high`)."
+    res = uniform(log(low), log(high), size)
+    return exp(res) if size is None else res.exp_()
+
+def rand_bool(p:float, size:Optional[List[int]]=None)->BoolOrTensor:
+    "Draw 1 or shape=`size` random booleans (True occuring probability `p`)."
+    return uniform(0,1,size)<p
+
+def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
+    "Generate int or tensor `size` of ints between `low` and `high` (included)."
+    return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
+
+def one_param(m: nn.Module)->Tensor: return next(m.parameters())
+

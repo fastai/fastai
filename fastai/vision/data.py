@@ -7,7 +7,6 @@ from ..basic_data import *
 from ..layers import *
 from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
-import PIL, warnings
 
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageItemList', 'normalize', 'normalize_funcs',
@@ -92,13 +91,9 @@ def channel_view(x:Tensor)->Tensor:
     "Make channel the first axis of `x` and flatten remaining axes"
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
 
-def _get_fns(ds, path): #TODO: fix me when from_folder is finished
-    "List of all file names relative to `path`."
-    return [str(fn.relative_to(path)) for fn in ds.x.items]
-
 class ImageDataBunch(DataBunch):
     _square_show = True
-    
+
     @classmethod
     def create_from_ll(cls, dss:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
@@ -168,18 +163,6 @@ class ImageDataBunch(DataBunch):
         self.norm,self.denorm = normalize_funcs(*self.stats, do_y=do_y)
         self.add_tfm(self.norm)
         return self
-
-    def labels_to_csv(self, dest:str)->None:
-        "Save file names and labels in `data` as CSV to file name `dest`."
-        fns = _get_fns(self.train_ds, self.path)
-        y = [str(o) for o in self.train_ds.y]
-        fns += _get_fns(self.valid_ds, self.path)
-        y += [str(o) for o in self.valid_ds.y]
-        if self.test_ds is not None:
-            fns += _get_fns(self.test_ds, self.path)
-            y += [str(o) for o in self.test_ds.y]
-        df = pd.DataFrame({'name': fns, 'label': y})
-        df.to_csv(dest, index=False)
 
 def download_image(url,dest, timeout=4):
     try: r = download_url(url, dest, overwrite=True, show_progress=False, timeout=timeout)
@@ -264,12 +247,9 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
     files = get_image_files(path)
-    if max_workers<2: res = [verify_image(f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
-    with ProcessPoolExecutor(max_workers=max_workers) as ex:
-        futures = [ex.submit(verify_image, f, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels,
-                             interp=interp, ext=ext, img_format=img_format, resume=resume, **kwargs) for f in files]
-        for f in progress_bar(as_completed(futures), total=len(files)): pass
+    func = partial(verify_image, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels, interp=interp,
+                   ext=ext, img_format=img_format, resume=resume, **kwargs)
+    parallel(func, files, max_workers=max_workers)
 
 class ImageItemList(ItemList):
     _bunch = ImageDataBunch
@@ -292,31 +272,31 @@ class ImageItemList(ItemList):
         return super().from_folder(path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='')->'ItemList':
+    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='', **kwargs)->'ItemList':
         "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
-        res = super().from_df(df, path=path, cols=cols)
+        res = super().from_df(df, path=path, cols=cols, **kwargs)
         res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
         res.items = np.char.add(f'{res.path}/', res.items)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer',
-                 folder:PathOrStr='.', suffix:str='')->'ItemList':
-        df = pd.read_csv(Path(path)/csv_name, header=header)
-        return cls.from_df(df, path=Path(path), cols=cols, folder=folder, suffix=suffix)
-    
+    def from_csv(cls, path:PathOrStr, csv_name:str, header:str='infer', **kwargs)->'ItemList':
+        path = Path(path)
+        df = pd.read_csv(path/csv_name, header=header)
+        return cls.from_df(df, path=path, **kwargs)
+
     def reconstruct(self, t:Tensor): return Image(t)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     def __init__(self, ds:ItemList, pad_idx:int=0):
         self.pad_idx = pad_idx
         super().__init__(ds)
-    
-    def process(self, ds:ItemList):  
+
+    def process(self, ds:ItemList):
         ds.pad_idx = self.pad_idx
         super().process(ds)
-  
+
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
 
     def generate_classes(self, items):
@@ -334,11 +314,11 @@ def _get_size(xs,i):
 
 class ObjectCategoryList(MultiCategoryList):
     _processor = ObjectCategoryProcessor
-    
+
     def get(self, i):
         return ImageBBox.create(*_get_size(self.x,i), *self.items[i], classes=self.classes, pad_idx=self.pad_idx)
 
-    def reconstruct(self, t, x): 
+    def reconstruct(self, t, x):
         bboxes, labels = t
         if len((labels - self.pad_idx).nonzero()) == 0: return
         i = (labels - self.pad_idx).nonzero().min()
@@ -350,7 +330,7 @@ class ObjectItemList(ImageItemList): _label_cls = ObjectCategoryList
 class SegmentationProcessor(PreProcessor):
     def __init__(self, ds:ItemList): self.classes = ds.classes
     def process(self, ds:ItemList):  ds.classes,ds.c = self.classes,len(self.classes)
-        
+
 class SegmentationLabelList(ImageItemList):
     _processor=SegmentationProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
@@ -373,13 +353,13 @@ class PointsProcessor(PreProcessor):
 
 class PointsItemList(ItemList):
     _processor = PointsProcessor
-    
+
     def __post_init__(self): self.loss_func = MSELossFlat()
-  
+
     def get(self, i):
         o = super().get(i)
         return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
-    
+
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 

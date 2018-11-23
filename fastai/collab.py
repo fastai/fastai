@@ -15,6 +15,13 @@ class CollabLine(TabularLine):
 
 class CollabList(TabularList): _item_cls,_label_cls = CollabLine,FloatList
 
+class EmbeddingNN(TabularModel):
+    def __init__(self, emb_szs:ListSizes, **kwargs):
+        super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, **kwargs)
+
+    def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
+        return super().forward(torch.stack([users,items], dim=1), None)
+
 class EmbeddingDotBias(nn.Module):
     "Base model for callaborative filtering."
     def __init__(self, n_factors:int, n_users:int, n_items:int, y_range:Tuple[float,float]=None):
@@ -29,13 +36,6 @@ class EmbeddingDotBias(nn.Module):
         res = dot.sum(1) + self.u_bias(users).squeeze() + self.i_bias(items).squeeze()
         if self.y_range is None: return res
         return torch.sigmoid(res) * (self.y_range[1]-self.y_range[0]) + self.y_range[0]
-
-class EmbeddingNN(TabularModel):
-    def __init__(self, emb_szs:ListSizes, **kwargs):
-        super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, **kwargs)
-
-    def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
-        return super().forward(torch.stack([users,items], dim=1), None)
 
 class CollabDataBunch(DataBunch):
     @classmethod

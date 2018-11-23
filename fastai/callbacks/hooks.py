@@ -5,7 +5,7 @@ from ..basic_train import *
 from ..basic_data import *
 
 __all__ = ['ActivationStats', 'Hook', 'HookCallback', 'Hooks', 'hook_output', 'hook_outputs', 
-           'model_sizes', 'num_features_model', 'model_summary']
+           'model_sizes', 'num_features_model', 'model_summary', 'dummy_batch']
 
 class Hook():
     "Create a hook."
@@ -26,6 +26,9 @@ class Hook():
             self.hook.remove()
             self.removed=True
 
+    def __enter__(self, *args): return self
+    def __exit__(self, *args): self.remove()
+
 class Hooks():
     "Create several hooks."
     def __init__(self, ms:Collection[nn.Module], hook_func:HookFunc, is_forward:bool=True, detach:bool=True):
@@ -39,6 +42,9 @@ class Hooks():
 
     def remove(self):
         for h in self.hooks: h.remove()
+
+    def __enter__(self, *args): return self
+    def __exit__ (self, *args): self.remove()
 
 def hook_output (module:nn.Module, detach:bool=True) -> Hook:  return Hook (module,  lambda m,i,o: o, detach=detach)
 def hook_outputs(modules:Collection[nn.Module], detach:bool=True) -> Hooks: return Hooks(modules, lambda m,i,o: o, detach=detach)
@@ -73,15 +79,15 @@ class ActivationStats(HookCallback):
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
 
-def model_sizes(m:nn.Module, size:tuple=(64,64), full:bool=True) -> Tuple[Sizes,Tensor,Hooks]:
-    "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
-    hooks = hook_outputs(m)
+def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
     ch_in = in_channels(m)
-    x = next(m.parameters()).new(1,ch_in,*size)
-    x = m.eval()(x)
-    res = [o.stored.shape for o in hooks]
-    if not full: hooks.remove()
-    return (res,x,hooks) if full else res
+    return one_param(m).new(1, ch_in, *size)
+
+def model_sizes(m:nn.Module, size:tuple=(64,64)) -> Tuple[Sizes,Tensor,Hooks]:
+    "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
+    with hook_outputs(m) as hooks:
+        x = m.eval()(dummy_batch(m, size))
+        return [o.stored.shape for o in hooks]
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."

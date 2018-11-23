@@ -249,16 +249,21 @@ class Learner():
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
-        x,y = self.callbacks[-1].input,self.callbacks[-1].target
-        if getattr(self.data,'norm',False): x = self.data.denorm(x)
-        self.callbacks = self.callbacks[:-1]
-        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        rec_cpu,*self.callbacks = self.callbacks
+        x,y = rec_cpu.input,rec_cpu.target
+        norm = getattr(self.data,'norm',False)
+        if norm:
+            x = self.data.denorm(x)
+            if norm.keywords.get('do_y',True):
+                y     = self.data.denorm(y)
+                preds = self.data.denorm(preds)
         analyze_kwargs,kwargs = split_kwargs(kwargs, ds.y.analyze_pred)
         preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
+        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
         if has_arg(ds.y.reconstruct, 'x'):
             ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
             zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
-        else : 
+        else :
             ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
             zs = [ds.y.reconstruct(z) for z in preds]
         ds[0][0].show_xyzs(xs, ys, zs, **kwargs)
@@ -266,7 +271,7 @@ class Learner():
 class RecordOnCPU(Callback):
     def on_batch_begin(self, last_input,last_target,**kwargs):
         self.input,self.target = to_cpu(last_input),to_cpu(last_target)
-        
+
 @dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
