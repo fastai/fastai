@@ -209,7 +209,7 @@ def func_args(func)->bool:
 
 def has_arg(func, arg)->bool: return arg in func_args(func)
 
-def split_kwargs(kwargs, func):
+def split_kwargs_by_func(kwargs, func):
     "Split `kwargs` between those expected by `func` and the others."
     args = func_args(func)
     func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}

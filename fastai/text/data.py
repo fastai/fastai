@@ -14,7 +14,7 @@ text_extensions = {'.txt'}
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
     def __init__(self, dataset:LabelList, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False,
-                 max_len:int=25, **kwargs):
+                 max_len:int=25):
         self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
         self.first,self.i,self.iter = True,0,0
         self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
@@ -92,7 +92,7 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     return res, tensor([s[1] for s in samples])
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
-                   min_freq:int=2, mark_fields:bool=True, **kwargs):
+                   min_freq:int=2, mark_fields:bool=True):
     return [TokenizeProcessor(tokenizer=tokenizer, chunksize=chunksize, mark_fields=mark_fields),
             NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
 
@@ -142,7 +142,8 @@ class TextDataBunch(DataBunch):
                  val_tok:Collection[Collection[str]], val_lbls:Collection[Union[int,float]], vocab:Vocab=None,
                  tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels."
-        processor = _get_processor(tokenizer=None, vocab=vocab, **kwargs)[1]
+        p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
+        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
                         TextList(val_tok, path=path, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls)
@@ -154,7 +155,8 @@ class TextDataBunch(DataBunch):
                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1,
                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
+        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
@@ -179,7 +181,8 @@ class TextDataBunch(DataBunch):
                     classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path).absolute()
-        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **kwargs)
+        p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)
         src = (TextList.from_folder(path, processor=processor)
                        .split_by_folder(train=train, valid=valid))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)

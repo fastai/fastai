@@ -245,7 +245,7 @@ class Learner():
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, **kwargs):
         "Show `rows` result of predictions on `ds_type` dataset."
-        #TODO: get read of has_arg x and split_kwargs if possible
+        #TODO: get read of has_arg x and split_kwargs_by_func if possible
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
@@ -253,7 +253,7 @@ class Learner():
         if getattr(self.data,'norm',False): x = self.data.denorm(x)
         self.callbacks = self.callbacks[:-1]
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
-        analyze_kwargs,kwargs = split_kwargs(kwargs, ds.y.analyze_pred)
+        analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
         preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
         if has_arg(ds.y.reconstruct, 'x'):
             ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
