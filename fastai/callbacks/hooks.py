@@ -84,14 +84,14 @@ def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
     return one_param(m).new(1, ch_in, *size)
 
 def model_sizes(m:nn.Module, size:tuple=(64,64)) -> Tuple[Sizes,Tensor,Hooks]:
-    "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
+    "Pass a dummy input through the model `m` to get the various sizes of activations."
     with hook_outputs(m) as hooks:
         x = m.eval()(dummy_batch(m, size))
         return [o.stored.shape for o in hooks]
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
-    return model_sizes(m, full=False)[-1][1]
+    return model_sizes(m)[-1][1]
 
 def total_params(m:nn.Module) -> int:
     params = 0
