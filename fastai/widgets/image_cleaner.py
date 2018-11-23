@@ -35,7 +35,7 @@ class DatasetFormatter():
 
         ds_actns = cls.get_actns(learn, hook=hook, dl=dl, **kwargs)
         similarities = cls.comb_similarity(ds_actns, ds_actns, **kwargs)
-        idxs = cls.sort_ids(similarities)
+        idxs = cls.sort_idxs(similarities)
         return cls.padded_ds(dl, **kwargs), idxs
  
     @staticmethod
@@ -78,7 +78,7 @@ class DatasetFormatter():
         return np.unravel_index(indices, arr.shape)
 
     @classmethod
-    def sort_ids(cls, similarities):
+    def sort_idxs(cls, similarities):
         "Sorts similarities and returns the indexes for the highest `top` similarities."
         idxs = cls.largest_indices(similarities, len(similarities))
         idxs = [(idxs[0][i], idxs[1][i]) for i in range(len(idxs[0]))]
