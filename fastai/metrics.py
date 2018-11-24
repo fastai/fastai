@@ -28,7 +28,11 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     targs = targs.view(n,-1)
     intersect = (input*targs).sum().float()
     union = (input+targs).sum().float()
-    if not iou: return 2. * intersect / union
+    if not iou:
+        if torch.isnan(2. * intersect / union) > 0:
+            return torch.isnan(2. * intersect / union).float()
+        else:
+            return 2. * intersect / union
     else: return intersect / (union-intersect+1.0)
 
 def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
