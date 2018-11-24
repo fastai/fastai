@@ -10,13 +10,14 @@ def test_model_summary_vision():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), bs=64)
     learn = create_cnn(data, models.resnet18, metrics=accuracy)
-    model_summary(learn.model)
-    
+    model_summary(learn)
+
+@pytest.mark.xfail(reason = "Expected Fail, Dataset should be passed instead.")      
 def test_model_summary_text():
     path = untar_data(URLs.IMDB_SAMPLE)
     data_lm = TextLMDataBunch.from_csv(path, 'texts.csv')
     learn = language_model_learner(data_lm, pretrained_model=None)
-    model_summary(learn.model)
+    model_summary(learn)
     
 def test_model_summary_tabular():
     path = untar_data(URLs.ADULT_SAMPLE)
@@ -30,7 +31,7 @@ def test_model_summary_tabular():
                                .label_from_df(cols=dep_var)
                                .databunch())
     learn = tabular_learner(data, layers=[200,100], metrics=accuracy)
-    model_summary(learn.model)
+    model_summary(learn)
     
 def test_model_summary_collab():
     path = untar_data(URLs.ML_SAMPLE)
@@ -39,7 +40,7 @@ def test_model_summary_collab():
     data = CollabDataBunch.from_df(ratings, seed=42)
     y_range = [0,5.5]
     learn = collab_learner(data, n_factors=50, y_range=y_range)
-    model_summary(learn.model)
+    model_summary(learn)
     
 def test_model_summary_nn_module():
     model_summary(nn.Conv2d(16,32,3,padding=1))
@@ -56,5 +57,4 @@ def test_model_summary_nn_modules():
             x = self.conv2(x) 
             return x
     model_summary(BasicBlock())
-    
     
