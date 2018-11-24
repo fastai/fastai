@@ -309,6 +309,8 @@ class FloatList(ItemList):
     def get(self, i):
         o = super().get(i)
         return FloatItem(log(o) if self.log else o)
+    
+    def reconstruct(self,t): return FloatItem(t.item())
 
 class ItemLists():
     "A `ItemList` for each of `train` and `valid` (optional `test`)"
