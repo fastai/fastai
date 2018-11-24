@@ -40,6 +40,13 @@ class LanguageModelLoader():
     def __len__(self) -> int: return (self.n-1) // self.bptt
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
 
+    @property
+    def batch_size(self):
+        return self.bs
+    @batch_size.setter
+    def batch_size(self, v):
+        self.bs = v
+
     def batchify(self, data:np.ndarray) -> LongTensor:
         "Split the corpus `data` in batches."
         nb = data.shape[0] // self.bs
