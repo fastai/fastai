@@ -99,43 +99,29 @@ def num_features_model(m:nn.Module)->int:
 def total_params(m:nn.Module) -> int:
     params = 0
     if hasattr(m, "weight") and hasattr(m.weight, "size"): params += m.weight.numel()
-    if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
+    if hasattr(m, "bias") and hasattr(m.bias, "size"): params += m.bias.numel()
     return params
 
 def hook_params(modules:Collection[nn.Module]) -> Hooks:
     return Hooks(modules, lambda m, i, o: total_params(m))
-
-# def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Hooks]:
-#     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
-#     hooks_outputs = hook_outputs(flatten_model(m))
-#     hooks_params = hook_params(flatten_model(m))
-#     ch_in = in_channels(m)
-#     x = next(m.parameters()).new(1, ch_in, *size)
-#     x = m.eval()(x)
-#     hooks = zip(hooks_outputs, hooks_params)
-#     res = [(o[0].stored.shape, o[1].stored) for o in hooks]
-#     output_size, params = map(list, zip(*res))
-#     return (output_size, params, hooks)
 
 def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
         dl = m.data.train_dl
         m = m.model
-        # ch_in = in_channels(m)
-        # x = next(m.parameters()).new(1, ch_in, *size)
         x = next(iter(dl))[0]
-        print('Input Size override by Learner.data.train_ds')
+        print('Input Size override by Learner.data.train_dl')
     elif isinstance(m, nn.Module): 
         ch_in = in_channels(m)
         x = next(m.parameters()).new(1, ch_in, *size)
     else:
         raise TypeError('You should either pass in a Learner or nn.Module')
-    # x = next(iter(m.d))
     hooks_outputs = hook_outputs(flatten_model(m))
     hooks_params = hook_params(flatten_model(m))
-    print('Input Size passed in:', x.size(), "\n")
-    x = m.eval()(x)
+    print_size = lambda x: print('Input Size passed in:', x, "\n")
+    print_size(list(map(len, x))) if is_listy(x) else print_size(len(x))
+    x = m.eval()(*x) if is_listy(x) else m.eval()(x)
     hooks = zip(hooks_outputs, hooks_params)
     res = [(o[0].stored.shape, o[1].stored) for o in hooks]
     output_size, params = map(list, zip(*res))
