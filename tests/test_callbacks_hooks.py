@@ -44,3 +44,17 @@ def test_model_summary_collab():
 def test_model_summary_nn_module():
     model_summary(nn.Conv2d(16,32,3,padding=1))
     
+def test_model_summary_nn_modules():
+    class BasicBlock(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.conv1 = conv2d(16,32,3,1)
+            self.conv2 = conv2d(32,32,3,1)
+
+        def forward(self, x):
+            x = self.conv1(x)
+            x = self.conv2(x) 
+            return x
+    model_summary(BasicBlock())
+    
+    
