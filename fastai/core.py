@@ -40,8 +40,11 @@ OptStrList = Optional[StrList]
 
 np.set_printoptions(precision=6, threshold=50, edgeitems=4, linewidth=120)
 
+turn_off_parallel_execution = False
 def num_cpus()->int:
     "Get number of cpus"
+
+    if turn_off_parallel_execution: return 1
     try:                   return len(os.sched_getaffinity(0))
     except AttributeError: return os.cpu_count()
 
