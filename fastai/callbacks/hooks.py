@@ -81,7 +81,7 @@ class ActivationStats(HookCallback):
 
 def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
     ch_in = in_channels(m)
-    return one_param(m).new(1, ch_in, *size).requires_grad_(False)
+    return one_param(m).new(1, ch_in, *size).zero_().requires_grad_(False)
 
 def dummy_eval(m:nn.Module, size:tuple=(64,64)):
     return m.eval()(dummy_batch(m, size))
