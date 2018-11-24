@@ -249,7 +249,7 @@ class Learner():
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
-        rec_cpu,*self.callbacks = self.callbacks
+        *self.callbacks,rec_cpu = self.callbacks
         x,y = rec_cpu.input,rec_cpu.target
         norm = getattr(self.data,'norm',False)
         if norm:

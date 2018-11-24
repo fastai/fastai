@@ -68,16 +68,17 @@ class DynamicUnet(nn.Sequential):
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
         self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
-        x = encoder(dummy_batch(encoder, imsize))
+        x = dummy_eval(encoder, imsize).detach()
 
         ni = sfs_szs[-1][1]
-        middle_conv = nn.Sequential(conv_layer(ni, ni*2, bn=True), conv_layer(ni*2, ni, bn=True))
+        middle_conv = nn.Sequential(conv_layer(ni, ni*2, bn=True),
+                                    conv_layer(ni*2, ni, bn=True)).eval()
         x = middle_conv(x)
         layers = [encoder, nn.ReLU(), middle_conv]
 
         for i,idx in enumerate(sfs_idxs):
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
-            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[i], final_div=(i!=len(sfs_idxs)-1))
+            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[i], final_div=(i!=len(sfs_idxs)-1)).eval()
             layers.append(unet_block)
             x = unet_block(x)
 
@@ -88,3 +89,4 @@ class DynamicUnet(nn.Sequential):
 
     def __del__(self):
         if hasattr(self, "sfs"): self.sfs.remove()
+

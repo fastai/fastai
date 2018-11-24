@@ -436,7 +436,7 @@ class LabelList(Dataset):
 
     def to_df(self)->None:
         "Create `pd.DataFrame` containing `items` from `self.x` and `self.y`"
-        return pd.DataFrame(dict(x=self.x._relative_item_paths(), y=self.y._relative_item_paths()))
+        return pd.DataFrame(dict(x=self.x._relative_item_paths(), y=[str(o) for o in self.y]))
 
     def to_csv(self, dest:str)->None:
         "Save `self.to_df()` to a CSV file in `self.path`/`dest`"
