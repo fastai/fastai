@@ -40,3 +40,7 @@ def test_model_summary_collab():
     y_range = [0,5.5]
     learn = collab_learner(data, n_factors=50, y_range=y_range)
     model_summary(learn.model)
+    
+def test_model_summary_nn_module():
+    model_summary(nn.Conv2d(16,32,3,padding=1))
+    
