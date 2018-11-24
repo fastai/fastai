@@ -91,7 +91,20 @@ def text_df(n_labels):
     df = pd.DataFrame(data)
     return df
 
-@pytest.mark.skip(reason="need to update")
+def test_sortish_sampler():
+    ds = [1,2,3,4,5,6,7,8,9,10]
+    train_sampler = SortishSampler(ds, key=lambda t: ds[t], bs=2)
+    assert len(train_sampler) == 10
+    ds_srt = [ds[i] for i in train_sampler]
+    assert ds_srt[0] == 10
+
+    # test on small datasets
+    ds = [1, 10]
+    train_sampler = SortishSampler(ds, key=lambda t: ds[t], bs=2)
+    assert len(train_sampler) == 2
+    ds_srt = [ds[i] for i in train_sampler]
+    assert ds_srt[0] == 10
+
 @pytest.mark.skip(reason="It is broken currently")
 def test_from_ids_works_for_equally_length_sentences():
     ids = [np.array([0])]*10
@@ -110,7 +123,6 @@ def test_from_ids_works_for_variable_length_sentences():
     text_classifier_learner(data).fit(1)
 
 def test_classifier():
-    for n_labels in [1, 8]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
         os.makedirs(path)
         try:
