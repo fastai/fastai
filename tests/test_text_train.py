@@ -92,6 +92,23 @@ def text_df(n_labels):
     return df
 
 @pytest.mark.skip(reason="need to update")
+@pytest.mark.skip(reason="It is broken currently")
+def test_from_ids_works_for_equally_length_sentences():
+    ids = [np.array([0])]*10
+    lbl = [0]*10
+    data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
+                                      train_ids=ids, train_lbls=lbl,
+                                      valid_ids=ids, valid_lbls=lbl, classes={0:0})
+    text_classifier_learner(data).fit(1)
+
+def test_from_ids_works_for_variable_length_sentences():
+    ids = [np.array([0]),np.array([0,1])]*5 # notice diffrent number of elements in arrays
+    lbl = [0]*10
+    data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
+                                      train_ids=ids, train_lbls=lbl,
+                                      valid_ids=ids, valid_lbls=lbl, classes={0:0})
+    text_classifier_learner(data).fit(1)
+
 def test_classifier():
     for n_labels in [1, 8]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
