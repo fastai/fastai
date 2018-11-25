@@ -605,11 +605,11 @@ def plot_multi(func:Callable[[int,int,plt.Axes],None], r:int=1, c:int=1, figsize
 
 def show_multi(func:Callable[[int,int],Image], r:int=1, c:int=1, figsize:Tuple=(9,9)):
     "Call `func(i,j).show(ax)` for every combination of `r,c`"
-    plot_multi(lambda i,j,ax: func(i,j).show(ax), 2, 2, figsize=(9,9))
+    plot_multi(lambda i,j,ax: func(i,j).show(ax), r, c, figsize=figsize)
 
-def show_all(imgs:Collection[Image], r=1, figsize=(12,6)):
+def show_all(imgs:Collection[Image], r:int=1, c:Optional[int]=None, figsize=(12,6)):
     "Show all `imgs` using `r` rows"
     imgs = listify(imgs)
-    c = len(imgs)//r
+    if c is None: c = len(imgs)//r
     for i,ax in plot_flat(r,c,figsize): imgs[i].show(ax)
 

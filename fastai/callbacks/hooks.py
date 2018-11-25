@@ -34,8 +34,8 @@ class Hooks():
     def __init__(self, ms:Collection[nn.Module], hook_func:HookFunc, is_forward:bool=True, detach:bool=True):
         self.hooks = [Hook(m, hook_func, is_forward, detach) for m in ms]
 
-    def __getitem__(self,i:int) -> Hook: return self.hooks[i]
-    def __len__(self) -> int: return len(self.hooks)
+    def __getitem__(self,i:int)->Hook: return self.hooks[i]
+    def __len__(self)->int: return len(self.hooks)
     def __iter__(self): return iter(self.hooks)
     @property
     def stored(self): return [o.stored for o in self]
@@ -46,8 +46,14 @@ class Hooks():
     def __enter__(self, *args): return self
     def __exit__ (self, *args): self.remove()
 
-def hook_output (module:nn.Module, detach:bool=True) -> Hook:  return Hook (module,  lambda m,i,o: o, detach=detach)
-def hook_outputs(modules:Collection[nn.Module], detach:bool=True) -> Hooks: return Hooks(modules, lambda m,i,o: o, detach=detach)
+def hook_output (module:nn.Module, detach:bool=True, grad:bool=False)->Hook:
+    "Add `Hook` that stores activations of `module` in `self.stored`"
+    def _inner(m,i,o): return (o,o.grad) if grad else o
+    return Hook (module,  _inner, detach=detach, is_forward=not grad)
+
+def hook_outputs(modules:Collection[nn.Module], detach:bool=True)->Hooks:
+    "Add `Hooks` that stores activations of all `modules` in `self.stored`"
+    return Hooks(modules, lambda m,i,o: o, detach=detach)
 
 class HookCallback(LearnerCallback):
     "Callback that registers given hooks."
@@ -73,7 +79,7 @@ class ActivationStats(HookCallback):
         super().on_train_begin(**kwargs)
         self.stats = []
 
-    def hook(self, m:nn.Module, i:Tensors, o:Tensors) -> Tuple[Rank0Tensor,Rank0Tensor]:
+    def hook(self, m:nn.Module, i:Tensors, o:Tensors)->Tuple[Rank0Tensor,Rank0Tensor]:
         return o.mean().item(),o.std().item()
     def on_batch_end(self, train, **kwargs): 
         if train: self.stats.append(self.hooks.stored)
@@ -86,7 +92,7 @@ def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
 def dummy_eval(m:nn.Module, size:tuple=(64,64)):
     return m.eval()(dummy_batch(m, size))
 
-def model_sizes(m:nn.Module, size:tuple=(64,64)) -> Tuple[Sizes,Tensor,Hooks]:
+def model_sizes(m:nn.Module, size:tuple=(64,64))->Tuple[Sizes,Tensor,Hooks]:
     "Pass a dummy input through the model `m` to get the various sizes of activations."
     with hook_outputs(m) as hooks:
         x = dummy_eval(m, size)
@@ -96,16 +102,16 @@ def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
     return model_sizes(m)[-1][1]
 
-def total_params(m:nn.Module) -> int:
+def total_params(m:nn.Module)->int:
     params = 0
     if hasattr(m, "weight") and hasattr(m.weight, "size"): params += m.weight.numel()
     if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
     return params
 
-def hook_params(modules:Collection[nn.Module]) -> Hooks:
+def hook_params(modules:Collection[nn.Module])->Hooks:
     return Hooks(modules, lambda m, i, o: total_params(m))
 
-def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Hooks]:
+def params_size(m: nn.Module, size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     hooks_outputs = hook_outputs(flatten_model(m))
     hooks_params = hook_params(flatten_model(m))
@@ -117,10 +123,10 @@ def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Ho
     output_size, params = map(list, zip(*res))
     return (output_size, params, hooks)
 
-def get_layer_name(layer:nn.Module) -> str:
+def get_layer_name(layer:nn.Module)->str:
     return str(layer.__class__).split(".")[-1].split("'")[0]
 
-def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
+def layers_info(m:Collection[nn.Module])->Collection[namedtuple]:
     layers_sizes, layers_params, _ = params_size(m)
     layers_names = list(map(get_layer_name, flatten_model(m)))
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])

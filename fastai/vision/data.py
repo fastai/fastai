@@ -9,7 +9,7 @@ from .learner import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
-           'ImageItemList', 'normalize', 'normalize_funcs',
+           'ImageItemList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
            'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor', 'ImageToImageList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
@@ -180,6 +180,13 @@ def download_images(urls:Collection[str], dest:PathOrStr, max_pics:int=1000, max
     dest.mkdir(exist_ok=True)
     parallel(partial(_download_image_inner, dest, timeout=timeout), urls, max_workers=max_workers)
 
+def resize_to(img, targ_sz:int, use_min:bool=False):
+    "Size to resize to, to hit `targ_sz` at same aspect ratio, in PIL coords (i.e w*h)"
+    w,h = img.size
+    min_sz = (min if use_min else max)(w,h)
+    ratio = targ_sz/min_sz
+    return int(w*ratio),int(h*ratio)
+
 def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
     """Check if the image in `file` exists, it can be opened and has `n_channels`.
@@ -207,18 +214,14 @@ def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,i
                 else: warnings.warn(w)
 
         img = PIL.Image.open(file)
-        if max_size is None: return
-        assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
-        max_size = listify(max_size, 2)
-        if img.height > max_size[0] or img.width > max_size[1]:
+        if max_size is not None and (img.height > max_size or img.width > max_size):
+            assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
             dest_fname = dest/file.name
             if ext is not None: dest_fname=dest_fname.with_suffix(ext)
             if resume and os.path.isfile(dest_fname): return
-            ratio = img.height/img.width
-            new_h = min(max_size[0], int(max_size[1] * ratio))
-            new_w = int(new_h/ratio)
+            new_sz = resize_to(img, max_size)
             if n_channels == 3: img = img.convert("RGB")
-            img = img.resize((new_w,new_h), resample=interp)
+            img = img.resize(new_sz, resample=interp)
             img.save(dest_fname, img_format, **kwargs)
         img = np.array(img)
         img_channels = 1 if len(img.shape) == 2 else img.shape[2]
@@ -227,7 +230,7 @@ def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,i
         print(f'{e}')
         if delete: file.unlink()
 
-def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int,Tuple[int,int]]=None,
+def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int]=None,
                   dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
                   resume:bool=None, **kwargs):
     """Check if the image in `path` exists, can be opened and has `n_channels`.

@@ -205,20 +205,21 @@ class Learner():
                                    strict=strict)
         return self
 
-    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
+                  pbar:Optional[PBar]=None) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
         lf = self.loss_func if with_loss else None
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, pbar:Optional[PBar]=None) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, pbar:Optional[PBar]=None, with_loss:bool=False) -> List[Tensor]:
         "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
         dl = self.dl(ds_type)
         nw = dl.num_workers
         dl.num_workers = 0
-        preds,_ = self.get_preds(ds_type, with_loss=False, n_batch=1, pbar=pbar)
+        preds = self.get_preds(ds_type, with_loss=with_loss, n_batch=1, pbar=pbar)
         dl.num_workers = nw
-        return preds
+        return preds if with_loss else preds[0]
 
     def predict(self, img:ItemBase, pbar:Optional[PBar]=None, **kwargs):
         "Return prect class, label and probabilities for `img`."
