@@ -51,9 +51,9 @@ def hook_output (module:nn.Module, detach:bool=True, grad:bool=False)->Hook:
     def _inner(m,i,o): return (o,o.grad) if grad else o
     return Hook (module,  _inner, detach=detach, is_forward=not grad)
 
-def hook_outputs(modules:Collection[nn.Module], detach:bool=True)->Hooks:
+def hook_outputs(modules:Collection[nn.Module], detach:bool=True, grad:bool=False)->Hooks:
     "Add `Hooks` that stores activations of all `modules` in `self.stored`"
-    return Hooks(modules, lambda m,i,o: o, detach=detach)
+    return Hooks(modules, lambda m,i,o: o, detach=detach, is_forward=not grad)
 
 class HookCallback(LearnerCallback):
     "Callback that registers given hooks."

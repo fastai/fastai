@@ -220,6 +220,14 @@ class Learner():
         preds = self.get_preds(ds_type, with_loss=with_loss, n_batch=1, pbar=pbar)
         dl.num_workers = nw
         return preds if with_loss else preds[0]
+    
+    def backward(self, item):
+        ds = self.data.single_dl.dataset
+        ds.set_item(item)
+        xb,yb = self.data.one_batch(ds_type=DatasetType.Single, detach=False, denorm=False)
+        loss = loss_batch(self.model.eval(), xb, yb, self.loss_func, opt=FakeOptimizer(),
+                          cb_handler=CallbackHandler(self.callbacks))
+        return loss
 
     def predict(self, img:ItemBase, pbar:Optional[PBar]=None, **kwargs):
         "Return prect class, label and probabilities for `img`."
@@ -389,3 +397,7 @@ class Recorder(LearnerCallback):
         for i, ax in enumerate(axes):
             values = [met[i] for met in self.metrics]
             ax.plot(val_iter, values)
+
+class FakeOptimizer():
+    def step(self): pass
+    def zero_grad(self): pass

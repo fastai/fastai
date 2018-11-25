@@ -26,7 +26,7 @@ of that change.
   You can then create an `empty_data` object by using `DataBunch.load_empty(path)`
   (where `path` points to where this 'export.pkl' file is). This also works
   across applications
-- Basic GAN functionality
+- GAN and CycleGAN
 - `parallel`: Run a function on every element of an array, using multiple processes
 - `icnr` initializes a weight matrix with ICNR
 - `PixelShuffle_ICNR` layer that combines PixelShuffle, a suitable conv2d, plus
