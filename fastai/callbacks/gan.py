@@ -15,11 +15,13 @@ def standard_disc_iter(gen_iter):
 
 @dataclass
 class GANTrainer(LearnerCallback):
-    loss_fn:LossFunction = WasserteinLoss()
+    _order=-20
+    loss_func:LossFunction = WasserteinLoss()
     n_disc_iter:Callable = standard_disc_iter
     clip:float = 0.01
     bs:int = 64
     noise_sz:int=100
+    beta:float=0.98
     
     def _set_trainable(self, gen=False):
         requires_grad(self.learn.model.generator, gen)
@@ -35,6 +37,8 @@ class GANTrainer(LearnerCallback):
         self.disc_iters, self.gen_iters = 0, 0
         self._set_trainable()
         self.dlosses,self.glosses = [],[]
+        self.smoothenerG,self.smoothenerD = SmoothenValue(self.beta),SmoothenValue(self.beta)
+        self.learn.recorder.add_metric_names(['gen_loss', 'disc_loss'])
     
     def on_batch_begin(self, **kwargs):
         for p in self.learn.model.discriminator.parameters(): 
@@ -43,8 +47,9 @@ class GANTrainer(LearnerCallback):
     def on_backward_begin(self, last_output, last_input, **kwargs):
         fake = self.learn.model(create_noise(last_input, last_input.size(0), self.noise_sz, False), gen=True)
         fake.requires_grad_(True)
-        loss = self.loss_fn(last_output, self.learn.model(fake))
-        self.dlosses.append(loss.detach().cpu())
+        loss = self.loss_func(last_output, self.learn.model(fake))
+        self.smoothenerD.add_value(loss.detach().cpu())
+        self.dlosses.append(self.smoothenerD.smooth)
         return loss
     
     def on_batch_end(self, last_input, **kwargs):
@@ -53,9 +58,13 @@ class GANTrainer(LearnerCallback):
             self.disc_iters = 0
             self._set_trainable(True)
             loss = self.learn.model(self.learn.model(create_noise(last_input,self.bs,self.noise_sz), gen=True)).mean().view(1)[0]
-            self.glosses.append(loss.detach().cpu())
+            self.smoothenerG.add_value(loss.detach().cpu())
+            self.glosses.append(self.smoothenerG.smooth)
             self.learn.model.generator.zero_grad()
             loss.backward()
             self.opt_gen.step()
             self.gen_iters += 1
             self._set_trainable()
+    
+    def on_epoch_end(self, **kwargs):
+        self.learn.recorder.add_metrics([self.smoothenerG.smooth,self.smoothenerD.smooth])

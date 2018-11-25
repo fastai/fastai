@@ -322,17 +322,17 @@ class Recorder(LearnerCallback):
         self.nb_batches.append(num_batch)
         if last_metrics is not None:
             self.val_losses.append(last_metrics[0])
-            if hasattr(self, '_added_mets'): last_metrics += self._added_mets
-            if len(last_metrics) > 1: self.metrics.append(last_metrics[1:])
-            self.format_stats([epoch, smooth_loss] + last_metrics)
-        else:  self.format_stats([epoch, smooth_loss])
+        else: last_metrics = [None]
+        if hasattr(self, '_added_mets'): last_metrics += self._added_mets
+        if len(last_metrics) > 1: self.metrics.append(last_metrics[1:])
+        self.format_stats([epoch, smooth_loss] + last_metrics)
         return False
 
     def format_stats(self, stats:TensorOrNumList)->None:
         "Format stats before printing."
         str_stats = []
         for name,stat in zip(self.names,stats):
-            t = str(stat) if isinstance(stat, int) else f'{stat:.6f}'
+            t = '' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}'
             t += ' ' * (len(name) - len(t))
             str_stats.append(t)
         self.pbar.write('  '.join(str_stats), table=True)
