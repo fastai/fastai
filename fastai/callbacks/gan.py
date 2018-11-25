@@ -3,7 +3,7 @@ from ..callback import *
 from ..basic_train import Learner, LearnerCallback
 from ..vision.models.gan import WasserteinLoss
 
-__all__ = ['GANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
+__all__ = ['CycleGANTrainer', 'GANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
 
 def create_noise(x, b, noise_sz, grad=True): return x.new(b, noise_sz, 1, 1).normal_(0, 1).requires_grad_(grad)
 
@@ -68,3 +68,46 @@ class GANTrainer(LearnerCallback):
     
     def on_epoch_end(self, **kwargs):
         self.learn.recorder.add_metrics([self.smoothenerG.smooth,self.smoothenerD.smooth])
+        
+class CycleGANTrainer(LearnerCallback):
+    
+    def _set_trainable(self, D_A=False, D_B=False):
+        gen = (not D_A) and (not D_B)
+        requires_grad(self.learn.model.G_A, gen)
+        requires_grad(self.learn.model.G_B, gen)
+        requires_grad(self.learn.model.D_A, D_A)
+        requires_grad(self.learn.model.D_B, D_B)
+        if not gen:
+            self.opt_D_A.lr, self.opt_D_A.mom = self.learn.opt.lr, self.learn.opt.mom
+            self.opt_D_A.wd, self.opt_D_A.beta = self.learn.opt.wd, self.learn.opt.beta
+            self.opt_D_B.lr, self.opt_D_B.mom = self.learn.opt.lr, self.learn.opt.mom
+            self.opt_D_B.wd, self.opt_D_B.beta = self.learn.opt.wd, self.learn.opt.beta
+    
+    def on_train_begin(self, **kwargs):
+        self.G_A,self.G_B = self.learn.model.G_A,self.learn.model.G_B
+        self.D_A,self.D_B = self.learn.model.D_A,self.learn.model.D_B
+        self.crit = self.learn.loss_func.crit
+        self.opt_G = self.learn.opt.new([nn.Sequential(*flatten_model(self.G_A), *flatten_model(self.G_B))])
+        self.opt_D_A = self.learn.opt.new([nn.Sequential(*flatten_model(self.D_A))])
+        self.opt_D_B = self.learn.opt.new([nn.Sequential(*flatten_model(self.D_B))])
+        self.learn.opt.opt = self.opt_G.opt
+        self._set_trainable()
+        
+    def on_batch_begin(self, last_input, **kwargs):
+        self.learn.loss_func.set_input(last_input)
+    
+    def on_batch_end(self, last_input, last_output, **kwargs):
+        self.G_A.zero_grad(); self.G_B.zero_grad()
+        fake_A, fake_B = last_output[0].detach(), last_output[1].detach()
+        real_A, real_B = last_input
+        self._set_trainable(D_A=True)
+        self.D_A.zero_grad()
+        loss_D_A = 0.5 * (self.crit(self.D_A(real_A), True) + self.crit(self.D_A(fake_A), False))
+        loss_D_A.backward()
+        self.opt_D_A.step()
+        self._set_trainable(D_B=True)
+        self.D_B.zero_grad()
+        loss_D_B = 0.5 * (self.crit(self.D_B(real_B), True) + self.crit(self.D_B(fake_B), False))
+        loss_D_B.backward()
+        self.opt_D_B.step()
+        self._set_trainable()
