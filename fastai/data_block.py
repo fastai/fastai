@@ -123,8 +123,9 @@ class ItemList():
             return True
         return self.filter_by_func(_inner)
 
-    def filter_by_rand(self, p:float):
+    def filter_by_rand(self, p:float, seed:int=None):
         "Keep random sample of `items` with probability `p`"
+        if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
 
     def split_by_list(self, train, valid):

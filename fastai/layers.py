@@ -34,29 +34,27 @@ def bn_drop_lin(n_in:int, n_out:int, bn:bool=True, p:float=0., actn:Optional[nn.
     if actn is not None: layers.append(actn)
     return layers
 
-def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False) -> nn.Conv2d:
+def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
     "Create `nn.Conv2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size. `padding` defaults to `k//2`."
     if padding is None: padding = ks//2
-    return nn.Conv2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
+    return init_default(nn.Conv2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias), init)
 
 def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=False) -> nn.ConvTranspose2d:
     "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
-def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, bn:bool=True,
+def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, bn:bool=True, use_activ:bool=True,
                leaky:float=None, transpose:bool=False, wn:bool=False, init:Callable=nn.init.kaiming_normal_):
     if padding is None: padding = (ks-1)//2 if not transpose else 0
-    if bias is None: bias = not bn
+    if wn: bn=False
+    if bias is None:
+        bias = not bn
     conv_func = nn.ConvTranspose2d if transpose else nn.Conv2d
-    activ = nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True)
-    conv = conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding)
-    if init:
-        init(conv.weight)
-        if hasattr(conv, 'bias') and hasattr(conv.bias, 'data'): conv.bias.data.fill_(0.)
-    if wn:
-        bn=False
-        conv = weight_norm(conv)
-    layers = [conv, activ]
+    conv = init_default(conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), init)
+    if wn: conv = weight_norm(conv)
+    layers = [conv]
+    if use_activ:
+        layers.append(nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True))
     if bn: layers.append(nn.BatchNorm2d(nf))
     return nn.Sequential(*layers)
 
@@ -93,14 +91,26 @@ def icnr(x, scale=2, init=nn.init.kaiming_normal_):
     k = k.contiguous().view([nf,ni,h,w]).transpose(0, 1)
     x.data.copy_(k)
 
-class PixelShuffle_ICNR(nn.Sequential):
+class PixelShuffle_ICNR(nn.Module):
     "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
-    def __init__(self, ni:int, nf:int=None, scale:int=2):
+    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False):
+        super().__init__()
         nf = ifnone(nf, ni)
-        conv = weight_norm(conv2d(ni, nf * (scale**2), ks=1))
-        icnr(conv.weight)
-        shuf = nn.PixelShuffle(scale)
-        return super().__init__(conv,shuf)
+        self.conv = weight_norm(conv2d(ni, nf * (scale**2), ks=1, bias=True))
+        icnr(self.conv.weight)
+        self.shuf = nn.PixelShuffle(scale)
+        # Blurring over (h*w) kernel
+        self.blur = blur
+        self.pad = nn.ReplicationPad2d((1,0,1,0))
+        t = torch.ones(scale,scale)/(scale**2)
+        k = torch.zeros(nf, nf, scale,scale)
+        for i in range(nf): k[i,i] = t
+        self.k = nn.Parameter(k, requires_grad=False)
+
+    def forward(self,x):
+        x = self.shuf(F.relu(self.conv(x)))
+        if self.blur: x = F.conv2d(self.pad(x), self.k)
+        return x
 
 class CrossEntropyFlat(nn.CrossEntropyLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."

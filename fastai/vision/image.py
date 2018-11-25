@@ -7,7 +7,7 @@ import PIL
 __all__ = ['PIL', 'Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
            'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'open_image', 'open_mask',
            'pil2tensor', 'scale_flow', 'show_image', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode',
-           'rle_decode', 'ResizeMethod']
+           'rle_decode', 'ResizeMethod', 'plot_flat', 'plot_multi', 'show_multi', 'show_all']
 
 ResizeMethod = IntEnum('ResizeMethod', 'CROP PAD SQUISH NO')
 def pil2tensor(image:Union[NPImage,NPArray],dtype:np.dtype)->TensorImage:
@@ -592,3 +592,24 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
     return ch,round(r/ratio),round(c/ratio)
+
+def plot_flat(r, c, figsize):
+    "Shortcut for `enumerate(subplots.flatten())`"
+    return enumerate(plt.subplots(r, c, figsize=figsize)[1].flatten())
+
+def plot_multi(func:Callable[[int,int,plt.Axes],None], r:int=1, c:int=1, figsize:Tuple=(12,6)):
+    "Call `func` for every combination of `r,c` on a subplot"
+    axes = plt.subplots(r, c, figsize=figsize)[1]
+    for i in range(r):
+        for j in range(c): func(i,j,axes[i,j])
+
+def show_multi(func:Callable[[int,int],Image], r:int=1, c:int=1, figsize:Tuple=(9,9)):
+    "Call `func(i,j).show(ax)` for every combination of `r,c`"
+    plot_multi(lambda i,j,ax: func(i,j).show(ax), 2, 2, figsize=(9,9))
+
+def show_all(imgs:Collection[Image], r=1, figsize=(12,6)):
+    "Show all `imgs` using `r` rows"
+    imgs = listify(imgs)
+    c = len(imgs)//r
+    for i,ax in plot_flat(r,c,figsize): imgs[i].show(ax)
+

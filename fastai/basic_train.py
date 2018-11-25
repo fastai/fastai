@@ -148,7 +148,7 @@ class Learner():
         "Build differential learning rates."
         if not isinstance(lr,slice): return lr
         if lr.start: res = even_mults(lr.start, lr.stop, len(self.layer_groups))
-        else: res = [lr.stop/3]*(len(self.layer_groups)-1) + [lr.stop]
+        else: res = [lr.stop/10]*(len(self.layer_groups)-1) + [lr.stop]
         return np.array(res)
 
     def fit(self, epochs:int, lr:Union[Floats,slice]=default_lr,
@@ -198,10 +198,11 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True):
         "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
         if device is None: device = self.data.device
-        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device))
+        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device),
+                                   strict=strict)
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None) -> List[Tensor]:
@@ -225,11 +226,16 @@ class Learner():
         ds.set_item(img)
         self.callbacks.append(RecordOnCPU())
         res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        pred = res[0]
         x = self.callbacks[-1].input
-        if getattr(self.data,'norm',False): x = self.data.denorm(x)
+        norm = getattr(self.data,'norm',False)
+        if norm:
+            x = self.data.denorm(x)
+            if norm.keywords.get('do_y',True):
+                pred = self.data.denorm(pred)
         self.callbacks = self.callbacks[:-1]
         ds.clear_item()
-        pred = ds.y.analyze_pred(res[0], **kwargs)
+        pred = ds.y.analyze_pred(pred, **kwargs)
         out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
         return out, pred, res[0]
 
