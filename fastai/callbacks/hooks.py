@@ -108,9 +108,8 @@ def hook_params(modules:Collection[nn.Module]) -> Hooks:
 def params_size(m: nn.Module, size: tuple = (64, 64)) -> Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
-        dl = m.data.train_dl
-        m = m.model
-        x = next(iter(dl))[0]
+        x = m.data.one_batch()[0]
+        m = m.model        
         print('Input Size override by Learner.data.train_dl')
     elif isinstance(m, nn.Module): 
         ch_in = in_channels(m)
