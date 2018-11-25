@@ -70,7 +70,7 @@ class GANTrainer(LearnerCallback):
         self.learn.recorder.add_metrics([self.smoothenerG.smooth,self.smoothenerD.smooth])
         
 class CycleGANTrainer(LearnerCallback):
-    
+    _order=-20
     def _set_trainable(self, D_A=False, D_B=False):
         gen = (not D_A) and (not D_B)
         requires_grad(self.learn.model.G_A, gen)
@@ -92,6 +92,9 @@ class CycleGANTrainer(LearnerCallback):
         self.opt_D_B = self.learn.opt.new([nn.Sequential(*flatten_model(self.D_B))])
         self.learn.opt.opt = self.opt_G.opt
         self._set_trainable()
+        self.names = ['idt_loss', 'gen_loss', 'cyc_loss', 'da_loss', 'db_loss']
+        self.learn.recorder.add_metric_names(self.names)
+        self.smootheners = {n:SmoothenValue(0.98) for n in self.names}
         
     def on_batch_begin(self, last_input, **kwargs):
         self.learn.loss_func.set_input(last_input)
@@ -111,3 +114,8 @@ class CycleGANTrainer(LearnerCallback):
         loss_D_B.backward()
         self.opt_D_B.step()
         self._set_trainable()
+        metrics = self.learn.loss_func.metrics + [loss_D_A, loss_D_B]
+        for n,m in zip(self.names,metrics): self.smootheners[n].add_value(m)
+            
+    def on_epoch_end(self, **kwargs):
+        self.learn.recorder.add_metrics([s.smooth for k,s in self.smootheners.items()])
