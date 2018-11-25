@@ -114,7 +114,7 @@ class DataBunch():
         self.num_workers = 0
         try:     x,y = next(iter(dl))
         finally: self.num_workers = w
-        if detach: x,y = x.detach(),y.detach()
+        if detach: x,y = to_detach(x),to_detach(y)
         norm = getattr(self,'norm',False)
         if denorm and norm:
             x = self.denorm(x)
