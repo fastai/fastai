@@ -220,7 +220,7 @@ class Learner():
         preds = self.get_preds(ds_type, with_loss=with_loss, n_batch=1, pbar=pbar)
         dl.num_workers = nw
         return preds if with_loss else preds[0]
-    
+
     def backward(self, item):
         ds = self.data.single_dl.dataset
         ds.set_item(item)
@@ -401,3 +401,4 @@ class Recorder(LearnerCallback):
 class FakeOptimizer():
     def step(self): pass
     def zero_grad(self): pass
+

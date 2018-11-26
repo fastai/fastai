@@ -53,6 +53,7 @@ of that change.
 - Moved some non-image-specific functions from `vision.image` to `torch_core`
 - Change `grid_sample` to downsample smoothly
 - Reduce the number of hooked modules to just those required in `vision.models.unet`
+- `bn_final` param in `TabularModel` and `create_cnn` to add batchnorm after final affine layer
 
 ### Fixed:
 
