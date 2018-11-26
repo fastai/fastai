@@ -1702,7 +1702,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rand_bool"><code>rand_bool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L274" class="source_link">[source]</a></h4><blockquote><p><code>rand_bool</code>(<code>p</code>:<code>float</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>BoolOrTensor</code></p>
+<h4 id="rand_bool"><code>rand_bool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L277" class="source_link">[source]</a></h4><blockquote><p><code>rand_bool</code>(<code>p</code>:<code>float</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>BoolOrTensor</code></p>
 </blockquote>
 <p>Draw 1 or shape=<code>size</code> random booleans (True occuring probability <code>p</code>).</p>
 
@@ -1752,7 +1752,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniform"><code>uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L264" class="source_link">[source]</a></h4><blockquote><p><code>uniform</code>(<code>low</code>:<code>Number</code>, <code>high</code>:<code>Number</code>=<code>None</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>FloatOrTensor</code></p>
+<h4 id="uniform"><code>uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L267" class="source_link">[source]</a></h4><blockquote><p><code>uniform</code>(<code>low</code>:<code>Number</code>, <code>high</code>:<code>Number</code>=<code>None</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>FloatOrTensor</code></p>
 </blockquote>
 <p>Draw 1 or shape=<code>size</code> random floats from uniform dist: min=<code>low</code>, max=<code>high</code>.</p>
 
@@ -1802,7 +1802,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniform_int"><code>uniform_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L278" class="source_link">[source]</a></h4><blockquote><p><code>uniform_int</code>(<code>low</code>:<code>int</code>, <code>high</code>:<code>int</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>IntOrTensor</code></p>
+<h4 id="uniform_int"><code>uniform_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L281" class="source_link">[source]</a></h4><blockquote><p><code>uniform_int</code>(<code>low</code>:<code>int</code>, <code>high</code>:<code>int</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>IntOrTensor</code></p>
 </blockquote>
 <p>Generate int or tensor <code>size</code> of ints between <code>low</code> and <code>high</code> (included).</p>
 
@@ -1852,7 +1852,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_uniform"><code>log_uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L269" class="source_link">[source]</a></h4><blockquote><p><code>log_uniform</code>(<code>low</code>, <code>high</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>FloatOrTensor</code></p>
+<h4 id="log_uniform"><code>log_uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L272" class="source_link">[source]</a></h4><blockquote><p><code>log_uniform</code>(<code>low</code>, <code>high</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>FloatOrTensor</code></p>
 </blockquote>
 
 </div>
@@ -2254,7 +2254,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit"><code>logit</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L254" class="source_link">[source]</a></h4><blockquote><p><code>logit</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="logit"><code>logit</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L257" class="source_link">[source]</a></h4><blockquote><p><code>logit</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Logit of <code>x</code>, clamped to avoid inf</p>
 
@@ -2282,7 +2282,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit_"><code>logit_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L259" class="source_link">[source]</a></h4><blockquote><p><code>logit_</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="logit_"><code>logit_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L262" class="source_link">[source]</a></h4><blockquote><p><code>logit_</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Inplace logit of <code>x</code>, clamped to avoid inf</p>
 

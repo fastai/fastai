@@ -34,7 +34,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AdaptiveConcatPool2d"><code>class</code> <code>AdaptiveConcatPool2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L55" class="source_link">[source]</a></h2><blockquote><p><code>AdaptiveConcatPool2d</code>(<code>sz</code>:<code>Optional</code>[<code>int</code>]=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h2 id="AdaptiveConcatPool2d"><code>class</code> <code>AdaptiveConcatPool2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L61" class="source_link">[source]</a></h2><blockquote><p><code>AdaptiveConcatPool2d</code>(<code>sz</code>:<code>Optional</code>[<code>int</code>]=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
@@ -598,7 +598,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CrossEntropyFlat"><code>class</code> <code>CrossEntropyFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L97" class="source_link">[source]</a></h2><blockquote><p><code>CrossEntropyFlat</code>(<code>weight</code>=<code>None</code>, <code>size_average</code>=<code>None</code>, <code>ignore_index</code>=<code>-100</code>, <code>reduce</code>=<code>None</code>, <code>reduction</code>=<code>'elementwise_mean'</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss"><code>CrossEntropyLoss</code></a></p>
+<h2 id="CrossEntropyFlat"><code>class</code> <code>CrossEntropyFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L115" class="source_link">[source]</a></h2><blockquote><p><code>CrossEntropyFlat</code>(<code>weight</code>=<code>None</code>, <code>size_average</code>=<code>None</code>, <code>ignore_index</code>=<code>-100</code>, <code>reduce</code>=<code>None</code>, <code>reduction</code>=<code>'elementwise_mean'</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss"><code>CrossEntropyLoss</code></a></p>
 </blockquote>
 
 </div>
@@ -626,7 +626,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MSELossFlat"><code>class</code> <code>MSELossFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L103" class="source_link">[source]</a></h2><blockquote><p><code>MSELossFlat</code>(<code>size_average</code>=<code>None</code>, <code>reduce</code>=<code>None</code>, <code>reduction</code>=<code>'elementwise_mean'</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.MSELoss"><code>MSELoss</code></a></p>
+<h2 id="MSELossFlat"><code>class</code> <code>MSELossFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L121" class="source_link">[source]</a></h2><blockquote><p><code>MSELossFlat</code>(<code>size_average</code>=<code>None</code>, <code>reduce</code>=<code>None</code>, <code>reduction</code>=<code>'elementwise_mean'</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.MSELoss"><code>MSELoss</code></a></p>
 </blockquote>
 <p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.MSELoss"><code>nn.MSELoss</code></a>, but flattens input and target.</p>
 
@@ -647,7 +647,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Debugger"><code>class</code> <code>Debugger</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L64" class="source_link">[source]</a></h2><blockquote><p><code>Debugger</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h2 id="Debugger"><code>class</code> <code>Debugger</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L70" class="source_link">[source]</a></h2><blockquote><p><code>Debugger</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>A module to debug inside a model.</p>
 
@@ -698,7 +698,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="NoopLoss"><code>class</code> <code>NoopLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L108" class="source_link">[source]</a></h2><blockquote><p><code>NoopLoss</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h2 id="NoopLoss"><code>class</code> <code>NoopLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L126" class="source_link">[source]</a></h2><blockquote><p><code>NoopLoss</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Just returns the <code>output</code>.</p>
 
@@ -719,7 +719,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PixelShuffle_ICNR"><code>class</code> <code>PixelShuffle_ICNR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L88" class="source_link">[source]</a></h2><blockquote><p><code>PixelShuffle_ICNR</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>=<code>None</code>, <code>scale</code>:<code>int</code>=<code>2</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h2 id="PixelShuffle_ICNR"><code>class</code> <code>PixelShuffle_ICNR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L94" class="source_link">[source]</a></h2><blockquote><p><code>PixelShuffle_ICNR</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>=<code>None</code>, <code>scale</code>:<code>int</code>=<code>2</code>, <code>blur</code>:<code>bool</code>=<code>False</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Upsample by <code>scale</code> from <code>ni</code> filters to <code>nf</code> (default <code>ni</code>), using <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.PixelShuffle"><code>nn.PixelShuffle</code></a>, <a href="/layers.html#icnr"><code>icnr</code></a> init, and <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.weight_norm"><code>weight_norm</code></a>.</p>
 
@@ -768,7 +768,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv2d"><code>conv2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>conv2d</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>, <code>padding</code>:<code>int</code>=<code>None</code>, <code>bias</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>Conv2d</code></a></p>
+<h4 id="conv2d"><code>conv2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>conv2d</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>, <code>padding</code>:<code>int</code>=<code>None</code>, <code>bias</code>=<code>False</code>, <code>init</code>:<code>LayerFunc</code>=<code>'kaiming_normal_'</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>Conv2d</code></a></p>
 </blockquote>
 <p>Create <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>nn.Conv2d</code></a> layer: <code>ni</code> inputs, <code>nf</code> outputs, <code>ks</code> kernel size. <code>padding</code> defaults to <code>k//2</code>.</p>
 
@@ -810,7 +810,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv_layer"><code>conv_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L46" class="source_link">[source]</a></h4><blockquote><p><code>conv_layer</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>, <code>padding</code>:<code>int</code>=<code>None</code>, <code>bias</code>:<code>bool</code>=<code>False</code>, <code>bn</code>:<code>bool</code>=<code>True</code>, <code>leaky</code>:<code>float</code>=<code>None</code>, <code>transpose</code>:<code>bool</code>=<code>False</code>)</p>
+<h4 id="conv_layer"><code>conv_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L46" class="source_link">[source]</a></h4><blockquote><p><code>conv_layer</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>, <code>padding</code>:<code>int</code>=<code>None</code>, <code>bias</code>:<code>bool</code>=<code>None</code>, <code>bn</code>:<code>bool</code>=<code>True</code>, <code>use_activ</code>:<code>bool</code>=<code>True</code>, <code>leaky</code>:<code>float</code>=<code>None</code>, <code>transpose</code>:<code>bool</code>=<code>False</code>, <code>wn</code>:<code>bool</code>=<code>False</code>, <code>init</code>:<code>Callable</code>=<code>'kaiming_normal_'</code>)</p>
 </blockquote>
 
 </div>
@@ -838,7 +838,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="embedding"><code>embedding</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>embedding</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="embedding"><code>embedding</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L150" class="source_link">[source]</a></h4><blockquote><p><code>embedding</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
@@ -865,7 +865,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="simple_cnn"><code>simple_cnn</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L112" class="source_link">[source]</a></h4><blockquote><p><code>simple_cnn</code>(<code>actns</code>:<code>Collection</code>[<code>int</code>], <code>kernel_szs</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>strides</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>bn</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h4 id="simple_cnn"><code>simple_cnn</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L134" class="source_link">[source]</a></h4><blockquote><p><code>simple_cnn</code>(<code>actns</code>:<code>Collection</code>[<code>int</code>], <code>kernel_szs</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>strides</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>bn</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>CNN with <a href="/layers.html#conv_layer"><code>conv_layer</code></a> defined by <code>actns</code>, <code>kernel_szs</code> and <code>strides</code>, plus batchnorm if <code>bn</code>.</p>
 
@@ -886,7 +886,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="std_upsample_head"><code>std_upsample_head</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L70" class="source_link">[source]</a></h4><blockquote><p><code>std_upsample_head</code>(<code>c</code>, <code>nfs</code>:<code>Collection</code>[<code>int</code>]) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="std_upsample_head"><code>std_upsample_head</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L76" class="source_link">[source]</a></h4><blockquote><p><code>std_upsample_head</code>(<code>c</code>, <code>nfs</code>:<code>Collection</code>[<code>int</code>]) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
@@ -914,7 +914,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trunc_normal_"><code>trunc_normal_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>float</code>=<code>0.0</code>, <code>std</code>:<code>float</code>=<code>1.0</code>) → <code>Tensor</code></p>
+<h4 id="trunc_normal_"><code>trunc_normal_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L145" class="source_link">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>float</code>=<code>0.0</code>, <code>std</code>:<code>float</code>=<code>1.0</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Truncated normal initialization.</p>
 
@@ -935,7 +935,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="icnr"><code>icnr</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>icnr</code>(<code>x</code>, <code>scale</code>=<code>2</code>, <code>init</code>=<code>'kaiming_normal_'</code>)</p>
+<h4 id="icnr"><code>icnr</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>icnr</code>(<code>x</code>, <code>scale</code>=<code>2</code>, <code>init</code>=<code>'kaiming_normal_'</code>)</p>
 </blockquote>
 <p>ICNR init.</p>
 
