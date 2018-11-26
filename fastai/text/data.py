@@ -40,6 +40,11 @@ class LanguageModelLoader():
     def __len__(self) -> int: return (self.n-1) // self.bptt
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
 
+    @property
+    def batch_size(self): return self.bs
+    @batch_size.setter
+    def batch_size(self, v): self.bs = v
+
     def batchify(self, data:np.ndarray) -> LongTensor:
         "Split the corpus `data` in batches."
         nb = data.shape[0] // self.bs
@@ -77,7 +82,7 @@ class SortishSampler(Sampler):
         ck_idx = [sort_idx[i:i+sz] for i in range(0, len(sort_idx), sz)]
         max_ck = np.argmax([self.key(ck[0]) for ck in ck_idx])  # find the chunk with the largest key,
         ck_idx[0],ck_idx[max_ck] = ck_idx[max_ck],ck_idx[0]     # then make sure it goes first.
-        sort_idx = np.concatenate(np.random.permutation(ck_idx[1:]))
+        sort_idx = np.concatenate(np.random.permutation(ck_idx[1:])) if len(ck_idx) > 1 else np.array([],dtype=np.int)
         sort_idx = np.concatenate((ck_idx[0], sort_idx))
         return iter(sort_idx)
 
@@ -119,8 +124,8 @@ class TextDataBunch(DataBunch):
                  valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
-        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
-                        TextList(valid_ids, vocab, path=path, processor=[]))
+        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[ToIntsProcessor()]),
+                        TextList(valid_ids, vocab, path=path, processor=[ToIntsProcessor()]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
@@ -146,7 +151,7 @@ class TextDataBunch(DataBunch):
         processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
                         TextList(val_tok, path=path, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls)
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls, classes=classes)
         if tst_tok is not None: src.add_test(TextList(tst_tok, path=path))
         return src.databunch(**kwargs)
 
@@ -156,7 +161,7 @@ class TextDataBunch(DataBunch):
                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
@@ -182,7 +187,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path).absolute()
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = [OpenFileProcessor()] + _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
         src = (TextList.from_folder(path, processor=processor)
                        .split_by_folder(train=train, valid=valid))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
@@ -269,6 +274,10 @@ class NumericalizeProcessor(PreProcessor):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         super().process(ds)
+
+class ToIntsProcessor(PreProcessor):
+    def process_one(self, item):  return np.array(item, dtype=np.int64)
+
 
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):

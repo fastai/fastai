@@ -31,7 +31,7 @@ def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Mo
     return (nn.Sequential(*list(model.children())[:cut]) if cut
             else body_fn(model) if body_fn else model)
 
-def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5):
+def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, bn_final:bool=False):
     """Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes.
     :param ps: dropout, can be a single float or a list for each layer."""
     lin_ftrs = [nf, 512, nc] if lin_ftrs is None else [nf] + lin_ftrs + [nc]
@@ -41,18 +41,19 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     layers = [AdaptiveConcatPool2d(), Flatten()]
     for ni,no,p,actn in zip(lin_ftrs[:-1],lin_ftrs[1:],ps,actns):
         layers += bn_drop_lin(ni,no,True,p,actn)
+    if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     return nn.Sequential(*layers)
 
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                classification:bool=True, **kwargs:Any)->Learner:
+                classification:bool=True, bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learners."
     assert classification, 'Regression CNN not implemented yet, bug us on the forums if you want this!'
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), ifnone(cut,meta['cut']))
     nf = num_features_model(body) * 2
-    head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
+    head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
     model = nn.Sequential(body, head)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))

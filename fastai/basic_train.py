@@ -219,7 +219,7 @@ class Learner():
         cb_handler.on_batch_begin(xb,yb, train=False)
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
         return _loss_func2activ(self.loss_func)(preds[0])
-    
+
     def backward(self, item):
         ds = self.data.single_dl.dataset
         ds.set_item(item)
@@ -400,3 +400,4 @@ class Recorder(LearnerCallback):
 class FakeOptimizer():
     def step(self): pass
     def zero_grad(self): pass
+
