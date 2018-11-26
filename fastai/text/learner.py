@@ -47,12 +47,12 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
 class RNNLearner(Learner):
     "Basic class for a Learner in RNN."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
-                 adjust:bool=False, alpha:float=2., beta:float=1., **kwargs):
+                 adjust:bool=False, alpha:float=2., beta:float=1., metrics=None, **kwargs):
         super().__init__(data, model, **kwargs)
         self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta, adjust=adjust))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
-        self.metrics = [accuracy]
+        self.metrics = ifnone(metrics, [accuracy])
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
