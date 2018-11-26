@@ -109,7 +109,7 @@ class DataBunch():
         for dl in self.dls: dl.add_tfm(tfm)
 
     def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True)->Collection[Tensor]:
-        "Get one batch from the data loader."
+        "Get one batch from the data loader of `ds_type`. Optionally `detach` and `denorm`."
         dl = self.dl(ds_type)
         w = self.num_workers
         self.num_workers = 0
@@ -123,6 +123,7 @@ class DataBunch():
         return x,y
 
     def one_item(self, item, detach:bool=False, denorm:bool=False):
+        "Get ìtem` into a batch. Optionally `detach` and `denorm`."
         ds = self.single_ds
         ds.set_item(item)
         res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)

@@ -40,6 +40,7 @@ of that change.
 - `DataBunch` convenience properties: `test_ds` and `single_ds`
 - `DataBunch.single_item` to convert an `ItemBase` in to a batch (tensor + dummy y)
 - `Learner.pred_batch()` can now take an optional batch to predict, rather than grabbing its own
+- introduce `EmptyLabel` and `EmptyLabelList`
 
 ### Changed:
 
