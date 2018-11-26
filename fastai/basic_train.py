@@ -212,28 +212,26 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None) -> List[Tensor]:
         "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
-        xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
+        if batch: xb,yb = batch
+        else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
         cb_handler.on_batch_begin(xb,yb, train=False)
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
         return _loss_func2activ(self.loss_func)(preds[0])
 
     def backward(self, item):
-        ds = self.data.single_dl.dataset
-        ds.set_item(item)
-        xb,yb = self.data.one_batch(ds_type=DatasetType.Single, detach=False, denorm=False)
+        xb,yb = self.data.one_item(item)
         loss = loss_batch(self.model.eval(), xb, yb, self.loss_func, opt=FakeOptimizer(),
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
     def predict(self, img:ItemBase, **kwargs):
         "Return prect class, label and probabilities for `img`."
-        ds = self.data.single_dl.dataset
-        ds.set_item(img)
         self.callbacks.append(RecordOnCPU())
-        res = self.pred_batch(ds_type=DatasetType.Single)
+        batch = self.data.one_item(img)
+        res = self.pred_batch(batch)
         pred = res[0]
         x = self.callbacks[-1].input
         norm = getattr(self.data,'norm',False)
@@ -242,7 +240,7 @@ class Learner():
             if norm.keywords.get('do_y',True):
                 pred = self.data.denorm(pred)
         self.callbacks = self.callbacks[:-1]
-        ds.clear_item()
+        ds = self.data.single_ds
         pred = ds.y.analyze_pred(pred, **kwargs)
         out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
         return out, pred, res[0]

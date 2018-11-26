@@ -121,6 +121,13 @@ class DataBunch():
             if norm.keywords.get('do_y',True): y = self.denorm(y)
         return x,y
 
+    def one_item(self, item, detach:bool=False, denorm:bool=False):
+        ds = self.single_dl.dataset
+        ds.set_item(item)
+        res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
+        ds.clear_item()
+        return res
+
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
         x,y = self.one_batch(ds_type, True, True)
@@ -139,6 +146,10 @@ class DataBunch():
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
     @property
     def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset
+    @property
+    def test_ds(self)->Dataset: return self.test_dl.dl.dataset
+    @property
+    def single_ds(self)->Dataset: return self.single_dl.dl.dataset
     @property
     def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
 
