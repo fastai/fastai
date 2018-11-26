@@ -167,25 +167,15 @@ entries:
     output: web
     title: Core
   - folderitems:
-      subfolders:
-      - output: web
-        subfolderitems:
-        - output: web,pdf
-          title: Look at data
-          url: /tutorial.data.html
-        title: beginner
-      - output: web
-        subfolderitems:
-        - output: web,pdf
-          title: Inference Learner
-          url: /tutorial.inference.html
-        title: intermediate
-      - output: web
-        subfolderitems:
-        - output: web,pdf
-          title: Custom ItemList
-          url: /tutorial.itemlist.html
-        title: advanced
+    - output: web,pdf
+      title: Look at data
+      url: /tutorial.data.html
+    - output: web,pdf
+      title: Inference Learner
+      url: /tutorial.inference.html
+    - output: web,pdf
+      title: Custom ItemList
+      url: /tutorial.itemlist.html
     output: web
     title: Tutorials
   - folderitems:

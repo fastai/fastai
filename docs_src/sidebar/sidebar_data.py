@@ -76,21 +76,9 @@ sidebar_d = {
         'torch_core': '/torch_core',
     },
     'Tutorials': {
-        '': {
-            'beginner': {
-                'Look at data': '/tutorial.data',
-            }
-        },
-        'empty1': {
-            'intermediate': {
-                'Inference Learner': '/tutorial.inference',
-            }
-        },
-        'empty2': {
-            'advanced': {
-                'Custom ItemList': '/tutorial.itemlist',
-            }
-        },
+        'Look at data': '/tutorial.data',
+        'Inference Learner': '/tutorial.inference',
+        'Custom ItemList': '/tutorial.itemlist',
     },
     'Doc authoring': {
         'Overview': '/gen_doc',
