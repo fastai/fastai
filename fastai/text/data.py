@@ -145,10 +145,10 @@ class TextDataBunch(DataBunch):
     @classmethod#TODO: test
     def from_tokens(cls, path:PathOrStr, trn_tok:Collection[Collection[str]], trn_lbls:Collection[Union[int,float]],
                  val_tok:Collection[Collection[str]], val_lbls:Collection[Union[int,float]], vocab:Vocab=None,
-                 tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None,tokenizer:Tokenizer=None, **kwargs) -> DataBunch:
+                 tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)[1]
+        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
                         TextList(val_tok, path=path, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls, classes=classes)
