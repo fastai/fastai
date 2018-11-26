@@ -215,7 +215,9 @@ class Learner():
     def pred_batch(self, ds_type:DatasetType=DatasetType.Valid) -> List[Tensor]:
         "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
         xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
-        preds = loss_batch(self.model.eval(), xb, yb, cb_handler=CallbackHandler(self.callbacks))
+        cb_handler = CallbackHandler(self.callbacks)
+        cb_handler.on_batch_begin(xb,yb, train=False)
+        preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
         return _loss_func2activ(self.loss_func)(preds[0])
     
     def backward(self, item):
