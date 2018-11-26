@@ -1,7 +1,7 @@
 from ...torch_core import *
 from ...layers import *
 
-__all__ = ['discriminator', 'generator', 'BasicGAN', 'WasserteinLoss', 'CycleGAN', 'CycleGANLoss', 'AdaptiveLoss']
+__all__ = ['discriminator', 'generator', 'BasicGAN', 'WasserteinLoss', 'CycleGAN', 'CycleGanLoss', 'AdaptiveLoss']
 
 def AvgFlatten():
     return Lambda(lambda x: x.mean(0).view(1))
