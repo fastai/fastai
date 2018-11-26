@@ -111,7 +111,7 @@ class TextDataBunch(DataBunch):
         np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
         np.save(cache_path/f'valid_lbl.npy', self.valid_ds.y.items)
         if self.test_dl is not None: np.save(cache_path/f'test_ids.npy', self.test_ds.x.items)
-        save_texts(cache_path/'classes.txt', self.train_ds.classes)
+        if hasattr(self.train_ds, 'classes'): save_texts(cache_path/'classes.txt', self.train_ds.classes)
 
     @classmethod
     def from_ids(cls, path:PathOrStr, vocab:Vocab, train_ids:Collection[Collection[int]], valid_ids:Collection[Collection[int]],
@@ -122,7 +122,7 @@ class TextDataBunch(DataBunch):
         src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
                         TextList(valid_ids, vocab, path=path, processor=[]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
-        if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path))
+        if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         return src.databunch(**kwargs)
 
@@ -134,7 +134,7 @@ class TextDataBunch(DataBunch):
         train_ids,train_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')
         valid_ids,valid_lbls = np.load(cache_path/f'valid_ids.npy'), np.load(cache_path/f'valid_lbl.npy')
         test_ids = np.load(cache_path/f'test_ids.npy') if os.path.isfile(cache_path/f'test_ids.npy') else None
-        classes = loadtxt_str(cache_path/'classes.txt')
+        classes = loadtxt_str(cache_path/'classes.txt') if os.path.isfile(cache_path/'classes.txt') else None
         return cls.from_ids(path, vocab, train_ids, valid_ids, test_ids, train_lbls, valid_lbls, classes, processor, **kwargs)
 
     @classmethod#TODO: test
