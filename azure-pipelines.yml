@@ -70,6 +70,7 @@ jobs:
 
     # Run Tests
   - script: |
+      echo "cwd:" `pwd`
       python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
@@ -156,6 +157,7 @@ jobs:
 
     # Run Tests
   - script: |
+      echo "cwd:" `pwd`
       python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
@@ -230,6 +232,7 @@ jobs:
 #
 #    # Run Tests
 #  - script: |
+#      echo "cwd:" `pwd`
 #      python -c 'import fastai; fastai.show_install()'
 #      py.test tests --cache-clear --junitxml=result.xml
 #    displayName: 'Run tests'
@@ -318,6 +321,7 @@ jobs:
 
     # Run Tests
   - script: |
+      echo "cwd:" `pwd`
       python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
