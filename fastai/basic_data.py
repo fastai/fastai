@@ -44,6 +44,7 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
+        assert not self.skip_size1 or self.batch_size > 1, "Batch size cannot be one if skip_size1 is set to True"
         for b in self.dl:
             y = b[1][0] if is_listy(b[1]) else b[1]
             if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)

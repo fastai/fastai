@@ -68,17 +68,6 @@ def test_vocabs(learn):
         assert len(learn.data.train_ds.vocab.itos) == len(ds.vocab.itos)
         assert np.all(learn.data.train_ds.vocab.itos == ds.vocab.itos)
 
-def test_classifier(learn):
-    lm_vocab = learn.data.vocab
-    data = (TextList.from_df(df, path, cols='texts', vocab = lm_vocab)
-                .split_by_idx(list(range(len(df_trn),len(df))))
-                .label_from_df(cols=0)
-                .add_test(df['texts'].iloc[:200].values)
-                .databunch())
-    for ds in [data.train_ds, data.valid_ds, data.test_ds]:
-        assert len(lm_vocab.itos) == len(ds.vocab.itos)
-        assert np.all(lm_vocab.itos == ds.vocab.itos)
-
 @pytest.mark.skip(reason="need to update")
 def text_df(n_labels):
     data = []
@@ -91,16 +80,20 @@ def text_df(n_labels):
     df = pd.DataFrame(data)
     return df
 
-@pytest.mark.skip(reason="need to update")
 def test_classifier():
-    for n_labels in [1, 8]:
+    for n_labels in [1]: # , 8 - does not work for multilclass yet
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
         os.makedirs(path)
         try:
+            expected_classes = n_labels if n_labels > 1 else 2
             df = text_df(n_labels=n_labels)
-            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), text_cols=["text"])
-            classifier = text_classifier_learner(data)
-            assert last_layer(classifier.model).out_features == n_labels if n_labels > 1 else n_labels+1
+            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), text_cols=["text"], bs=4)
+            classifier = text_classifier_learner(data, bptt=10)
+            assert last_layer(classifier.model).out_features == expected_classes
+            assert len(data.train_dl) == math.ceil(len(data.train_ds)/data.train_dl.batch_size)
+            assert next(iter(data.train_dl))[0].shape == (9, 2)
+            assert next(iter(data.valid_dl))[0].shape == (9, 2)
+            classifier.fit(1)
         finally:
             shutil.rmtree(path)
 
