@@ -275,7 +275,9 @@ class MultiCategoryProcessor(CategoryProcessor):
     def generate_classes(self, items):
         classes = set()
         for c in items: classes = classes.union(set(c))
-        return list(classes)
+        classes = list(classes)
+        classes.sort()
+        return classes
 
 class MultiCategoryList(CategoryListBase):
     _item_cls=MultiCategory

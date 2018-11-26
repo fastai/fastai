@@ -67,7 +67,9 @@ def is1d(a:Collection)->bool:
 
 def uniqueify(x:Series)->List:
     "Return unique values of `x`"
-    return list(OrderedDict.fromkeys(x).keys())
+    res = list(OrderedDict.fromkeys(x).keys())
+    res.sort()
+    return res
 
 def idx_dict(a): return {v:k for k,v in enumerate(a)}
 
@@ -143,6 +145,7 @@ class ItemBase():
     def apply_tfms(self, tfms:Collection, **kwargs):
         if tfms: raise Exception('Not implemented')
         return self
+    
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
