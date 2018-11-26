@@ -48,7 +48,7 @@ class DeviceDataLoader():
         for b in self.dl:
             y = b[1][0] if is_listy(b[1]) else b[1]
             if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)
-
+                
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
                tfms:Collection[Callable]=tfms, num_workers:int=defaults.cpus, collate_fn:Callable=data_collate, **kwargs:Any):
