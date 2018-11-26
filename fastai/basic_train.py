@@ -212,14 +212,13 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, pbar:Optional[PBar]=None, with_loss:bool=False) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid) -> List[Tensor]:
         "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
-        dl = self.dl(ds_type)
-        nw = dl.num_workers
-        dl.num_workers = 0
-        preds = self.get_preds(ds_type, with_loss=with_loss, n_batch=1, pbar=pbar)
-        dl.num_workers = nw
-        return preds if with_loss else preds[0]
+        xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
+        cb_handler = CallbackHandler(self.callbacks)
+        cb_handler.on_batch_begin(xb,yb, train=False)
+        preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
+        return _loss_func2activ(self.loss_func)(preds[0])
 
     def backward(self, item):
         ds = self.data.single_dl.dataset
@@ -229,12 +228,12 @@ class Learner():
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
-    def predict(self, img:ItemBase, pbar:Optional[PBar]=None, **kwargs):
+    def predict(self, img:ItemBase, **kwargs):
         "Return prect class, label and probabilities for `img`."
         ds = self.data.single_dl.dataset
         ds.set_item(img)
         self.callbacks.append(RecordOnCPU())
-        res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)
+        res = self.pred_batch(ds_type=DatasetType.Single)
         pred = res[0]
         x = self.callbacks[-1].input
         norm = getattr(self.data,'norm',False)

@@ -91,7 +91,7 @@ class LanguageLearner(RNNLearner):
         ds = self.data.single_dl.dataset
         for _ in pbar:
             ds.set_item(text)
-            res = self.pred_batch(ds_type=DatasetType.Single, pbar=pbar)[-1]
+            res = self.pred_batch(ds_type=DatasetType.Single)[-1]
             ds.clear_item()
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.

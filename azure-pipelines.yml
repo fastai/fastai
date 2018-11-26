@@ -70,6 +70,7 @@ jobs:
 
     # Run Tests
   - script: |
+      python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -155,6 +156,7 @@ jobs:
 
     # Run Tests
   - script: |
+      python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -228,6 +230,7 @@ jobs:
 
     # Run Tests
   - script: |
+      python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -315,6 +318,7 @@ jobs:
 
     # Run Tests
   - script: |
+      python -c 'import fastai; fastai.show_install()'
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false

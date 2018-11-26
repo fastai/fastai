@@ -432,7 +432,7 @@ class LabelList(Dataset):
             else:                 x,y = self.item   ,0
             if self.tfms:
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
-            if self.tfm_y and self.item is None:
+            if hasattr(self, 'tfms_y') and self.tfm_y and self.item is None:
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
