@@ -126,8 +126,8 @@ class TextDataBunch(DataBunch):
                  valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a dictionary."
-        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
-                        TextList(valid_ids, vocab, path=path, processor=[]))
+        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[ToIntsProcessor()]),
+                        TextList(valid_ids, vocab, path=path, processor=[ToIntsProcessor()]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path))
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
@@ -276,6 +276,10 @@ class NumericalizeProcessor(PreProcessor):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         super().process(ds)
+
+class ToIntsProcessor(PreProcessor):
+    def process_one(self, item):  return np.array(item, dtype=np.int64)
+
 
 class OpenFileProcessor(PreProcessor):
     def process_one(self,item):
