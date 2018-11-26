@@ -1,11 +1,12 @@
 from ..torch_core import *
 from ..callback import *
+from ..layers import NoopLoss
 from ..basic_train import Learner, LearnerCallback
 from ..vision.models.gan import WasserteinLoss
 
-__all__ = ['CycleGANTrainer', 'GANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
+__all__ = ['CycleGANTrainer', 'GANTrainer', 'NoisyGANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
 
-def create_noise(x, b, noise_sz, grad=True): return x.new(b, noise_sz, 1, 1).normal_(0, 1).requires_grad_(grad)
+def create_noise(x, b, noise_sz): return x.new(b, noise_sz, 1, 1).normal_(0, 1)
 
 def first_disc_iter(gen_iter):
     return 100 if (gen_iter < 25 or gen_iter%500 == 0) else 5
@@ -16,11 +17,10 @@ def standard_disc_iter(gen_iter):
 @dataclass
 class GANTrainer(LearnerCallback):
     _order=-20
-    loss_func:LossFunction = WasserteinLoss()
-    n_disc_iter:Callable = standard_disc_iter
-    clip:float = 0.01
-    bs:int = 64
-    noise_sz:int=100
+    loss_funcD:LossFunction=WasserteinLoss()
+    loss_funcG:LossFunction=NoopLoss()
+    n_disc_iter:Callable=standard_disc_iter
+    clip:float=0.01
     beta:float=0.98
     
     def _set_trainable(self, gen=False):
@@ -29,6 +29,9 @@ class GANTrainer(LearnerCallback):
         if gen:
             self.opt_gen.lr, self.opt_gen.mom = self.learn.opt.lr, self.learn.opt.mom
             self.opt_gen.wd, self.opt_gen.beta = self.learn.opt.wd, self.learn.opt.beta
+    
+    def input_fake(self, last_input, grad:bool=True):
+        return last_input.detach().requires_grad_(grad)
     
     def on_train_begin(self, **kwargs):
         self.opt_gen = self.learn.opt.new([nn.Sequential(*flatten_model(self.learn.model.generator))])
@@ -45,9 +48,9 @@ class GANTrainer(LearnerCallback):
             p.data.clamp_(-self.clip, self.clip)
         
     def on_backward_begin(self, last_output, last_input, **kwargs):
-        fake = self.learn.model(create_noise(last_input, last_input.size(0), self.noise_sz, False), gen=True)
+        fake = self.learn.model(self.input_fake(last_input, grad=False), gen=True)
         fake.requires_grad_(True)
-        loss = self.loss_func(last_output, self.learn.model(fake))
+        loss = self.loss_funcD(last_output, self.learn.model(fake))
         self.smoothenerD.add_value(loss.detach().cpu())
         self.dlosses.append(self.smoothenerD.smooth)
         return loss
@@ -57,7 +60,8 @@ class GANTrainer(LearnerCallback):
         if self.disc_iters == self.n_disc_iter(self.gen_iters):
             self.disc_iters = 0
             self._set_trainable(True)
-            loss = self.learn.model(self.learn.model(create_noise(last_input,self.bs,self.noise_sz), gen=True)).mean().view(1)[0]
+            pred = self.learn.model(self.learn.model(self.input_fake(last_input), gen=True)).mean().view(1)[0]
+            loss = self.loss_funcG(pred)
             self.smoothenerG.add_value(loss.detach().cpu())
             self.glosses.append(self.smoothenerG.smooth)
             self.learn.model.generator.zero_grad()
@@ -68,6 +72,15 @@ class GANTrainer(LearnerCallback):
     
     def on_epoch_end(self, **kwargs):
         self.learn.recorder.add_metrics([self.smoothenerG.smooth,self.smoothenerD.smooth])
+
+@dataclass
+class NoisyGANTrainer(GANTrainer):
+    _order=-20
+    bs:int=64
+    noise_sz:int=100
+    
+    def input_fake(self, last_input, grad:bool=True):
+        return create_noise(last_input, self.bs, self.noise_sz).requires_grad_(grad)
         
 class CycleGANTrainer(LearnerCallback):
     _order=-20

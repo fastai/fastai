@@ -63,6 +63,10 @@ of that change.
 
 - factory methods of `TextDataBunch` accept `max_vocab` (thanks to jfilter)
 - `vision.models.unet` now uses `eval` correctly when building model
+- classes are sorted when created to avoid having them change when restarting the notebook
+- fix loading issues with the test set in `TextDataBunch`
+- fix random bug in `TextDataBunch.from_ids` (thanks to PiotrCzapla)
+
 
 ## 1.0.28 (2018-11-19)
 

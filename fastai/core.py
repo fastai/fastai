@@ -232,6 +232,10 @@ def array(a, *args, **kwargs)->np.ndarray:
         a = list(a)
     return np.array(a, *args, **kwargs)
 
+class EmptyLabel(ItemBase):
+    def __init__(self): self.obj,self.data = 0.,0.
+    def __str__(self):  return ''
+
 class Category(ItemBase):
     def __init__(self,data,obj): self.data,self.obj = data,obj
     def __int__(self): return int(self.data)

@@ -203,6 +203,9 @@ class ItemList():
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
         "Label every item with `const`."
         return self.label_from_func(func=lambda o: const, **kwargs)
+    
+    def label_empty(self):
+        return self.label_from_func(func=lambda o: 0., label_cls=EmptyLabelList)
 
     def label_from_func(self, func:Callable, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
@@ -222,6 +225,12 @@ class ItemList():
             return res.group(1)
         return self.label_from_func(_inner, **kwargs)
 
+class EmptyLabelList(ItemList):
+    def get(self, i): return EmptyLabel()
+    def reconstruct(self, t:Tensor, x:Tensor=None):
+        if len(t.size()) == 0: return EmptyLabel()
+        return self.x.reconstruct(t,x) if has_arg(self.x.reconstruct, 'x') else self.x.reconstruct(t)
+    
 class CategoryProcessor(PreProcessor):
     def __init__(self, ds:ItemList): self.create_classes(ds.classes)
 
