@@ -55,6 +55,8 @@ More advanced installation issues, such as installing only partial dependencies 
    conda install -c fastai fastai
    ```
 
+   On MacOS for non-GPU build install `pytorch-nightly` and `torchvision-nightly` instead of `pytorch-nightly-cpu` and `torchvision-nightly-cpu`.
+
 Note that JPEG decoding can be a bottleneck, particularly if you have a fast CPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
 ```bash
