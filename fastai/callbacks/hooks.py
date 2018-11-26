@@ -46,14 +46,15 @@ class Hooks():
     def __enter__(self, *args): return self
     def __exit__ (self, *args): self.remove()
 
+def _hook_inner(m,i,o): return o if isinstance(o,Tensor) else o if is_listy(o) else list(o)
+
 def hook_output (module:nn.Module, detach:bool=True, grad:bool=False)->Hook:
     "Add `Hook` that stores activations of `module` in `self.stored`"
-    def _inner(m,i,o): return (o,o.grad) if grad else o
-    return Hook (module,  _inner, detach=detach, is_forward=not grad)
+    return Hook(module, _hook_inner, detach=detach, is_forward=not grad)
 
 def hook_outputs(modules:Collection[nn.Module], detach:bool=True, grad:bool=False)->Hooks:
     "Add `Hooks` that stores activations of all `modules` in `self.stored`"
-    return Hooks(modules, lambda m,i,o: o, detach=detach, is_forward=not grad)
+    return Hooks(modules, _hook_inner, detach=detach, is_forward=not grad)
 
 class HookCallback(LearnerCallback):
     "Callback that registers given hooks."

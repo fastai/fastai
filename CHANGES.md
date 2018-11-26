@@ -37,6 +37,9 @@ of that change.
 - `ItemList.filter_by_rand` to randomly sample items
 - `LabelList.transform_y` to use different transformation params for `y` (thanks for Fred Monroe)
 - `LabelList.{to_df,to_csv}` to save items including labels
+- `DataBunch` convenience properties: `test_ds` and `single_ds`
+- `DataBunch.single_item` to convert an `ItemBase` in to a batch (tensor + dummy y)
+- `Learner.pred_batch()` can now take an optional batch to predict, rather than grabbing its own
 
 ### Changed:
 
@@ -53,6 +56,7 @@ of that change.
 - Moved some non-image-specific functions from `vision.image` to `torch_core`
 - Change `grid_sample` to downsample smoothly
 - Reduce the number of hooked modules to just those required in `vision.models.unet`
+- `hook_output(s)` can also hook the backward/grad now
 - `bn_final` param in `TabularModel` and `create_cnn` to add batchnorm after final affine layer
 
 ### Fixed:
