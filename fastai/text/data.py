@@ -147,13 +147,13 @@ class TextDataBunch(DataBunch):
     @classmethod#TODO: test
     def from_tokens(cls, path:PathOrStr, trn_tok:Collection[Collection[str]], trn_lbls:Collection[Union[int,float]],
                  val_tok:Collection[Collection[str]], val_lbls:Collection[Union[int,float]], vocab:Vocab=None,
-                 tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
+                 tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None,tokenizer:Tokenizer=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from tokens and labels."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)[1]
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)[1]
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
                         TextList(val_tok, path=path, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls)
+        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls, classes=classes)
         if tst_tok is not None: src.add_test(TextList(tst_tok, path=path))
         return src.databunch(**kwargs)
 
@@ -163,7 +163,7 @@ class TextDataBunch(DataBunch):
                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from DataFrames."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
@@ -189,7 +189,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path).absolute()
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = [OpenFileProcessor()] + _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
         src = (TextList.from_folder(path, processor=processor)
                        .split_by_folder(train=train, valid=valid))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)

@@ -38,23 +38,33 @@ def test_from_folder():
     assert set(data.classes) == {'neg', 'pos'}
     shutil.rmtree(path/'temp')
 
+
+def sepcial_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")
+
 def test_from_csv_and_from_df():
     path = untar_data(URLs.IMDB_SAMPLE)
-    df = text_df(['neg','pos'])
+    df = text_df(['neg','pos']) #"fast ai is a cool project", "hello world"
     data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols=["text"])
     assert len(data1.classes) == 2
 
     df = text_df(['neg','pos','neg pos'])
     data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
-                                  label_cols=0, text_cols=["text"], label_delim=' ')
+                                  label_cols=0, text_cols=["text"], label_delim=' ',
+                                  tokenizer=Tokenizer(pre_rules=[sepcial_fastai_test_rule]))
     assert len(data2.classes) == 2
     x,y = data2.train_ds[0]
     assert len(y.data) == 2
+    assert '@fastdotai' in data2.train_ds.vocab.itos,  "It seems that our custom tokenzier was not used by TextClasDataBunch"
     text_csv_file(path/'tmp.csv', ['neg','pos'])
     data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"])
     assert len(data3.classes) == 1
-    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)  
+    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)
     assert len(data4.train_ds.vocab.itos) == 7 # 5 + 2 (special UNK and PAD token)
+
+    # Test that the tokenizer parameter is used in from_csv
+    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"],
+                                     tokenizer=Tokenizer(pre_rules=[sepcial_fastai_test_rule]))
+    assert '@fastdotai' in data4.train_ds.vocab.itos, "It seems that our custom tokenzier was not used by TextClasDataBunch"
 
     os.remove(path/'tmp.csv')
 
