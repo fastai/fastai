@@ -10,29 +10,54 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-
-
-
 ## 1.0.29.dev0 (Work In Progress)
 
 ### Breaking changes:
 
-- `ImageDataBunch.single_from_classes` has been removed 
+- `ImageDataBunch.single_from_classes` has been removed
 
 ### New:
 
-- every type of items now has a `reconstruct` method that does the opposite of `.data`: taking the tensor data and creating the object back
-- `show_results` now works across applications
-- introducing `data.export()` that will save the internal information (classes, vocab in text, processors in tabular etc) need for inference in a file named 'export.pkl'. You can then create an `empty_data` object by using `DataBunch.load_empty(path)` (where `path` points to where this 'export.pkl' file is). This also works across applications.
-- add basic GAN functionalities
+- Every type of items now has a `reconstruct` method that does the opposite of
+  `ItemBase.data`: taking the tensor data and creating the object back
+- `Learner.show_results` now works across applications
+- `DataBunch.export`: saves the internal information (classes, vocab in text,
+  processors in tabular etc) need for inference in a file named 'export.pkl'.
+  You can then create an `empty_data` object by using `DataBunch.load_empty(path)`
+  (where `path` points to where this 'export.pkl' file is). This also works
+  across applications
+- GAN and CycleGAN
+- `parallel`: Run a function on every element of an array, using multiple processes
+- `icnr` initializes a weight matrix with ICNR
+- `PixelShuffle_ICNR` layer that combines PixelShuffle, a suitable conv2d, plus
+  optional weightnorm and `(scale,scale)` blurring
+- `Learner.clip_grad` convenience function for `GradientClipping` callback
+- `plot_flat`, `plot_multi`, `show_multi`, `show_all`: simple functions for showing images on subplots
+- `ItemList.to_text` to save items to a text file
+- `ItemList.filter_by_rand` to randomly sample items
+- `LabelList.transform_y` to use different transformation params for `y` (thanks for Fred Monroe)
+- `LabelList.{to_df,to_csv}` to save items including labels
 
 ### Changed:
 
-- `show_batch` has been internally modified to actually grab a batch then showing it
+- `lr_range` now divides non-final layer LRs by 10, instead of 3, when called with `slice(lr)`
+- `Learner.load` now has a `strict` argument like Pytorch's `load_state_dict`
+- 1cycle training now uses cosine reverse annealing instead of linear
+- `conv2d` and `conv_linear` now initialize weights/bias by default
+- `core.to_detach` now moves data to CPU
+- `vision.models.unet` now uses `PixelShuffle_ICNR` for upsampling, with
+  optional weightnorm and blurring
+- `vision.models.unet` final layer now has twice as many activations
+- `one_batch` moved to `DataBunch`, and can `detach` and `denorm` if requested
+- `Hooks` and `Hook` can now be used as context managers
+- Moved some non-image-specific functions from `vision.image` to `torch_core`
+- Change `grid_sample` to downsample smoothly
+- Reduce the number of hooked modules to just those required in `vision.models.unet`
 
 ### Fixed:
 
 - factory methods of `TextDataBunch` accept `max_vocab` (thanks to jfilter)
+- `vision.models.unet` now uses `eval` correctly when building model
 
 ## 1.0.28 (2018-11-19)
 
@@ -40,7 +65,7 @@ of that change.
 
 - `get_files` and `get_image_files` now return `Path`s relative to `path`, instead of relative to `.`
 - `ItemList.items` are also relative to `path` where relevant, since `get_files` is called internally
-- `create_func` is removed in the data API; subclass and change the `get` method instead (in vision, you can subclass the `open` method if you want to change how the images are opened).
+- `create_func` is removed in the data API; subclass and change the `get` method instead (in vision, you can subclass the `open` method if you want to change how the images are opened)
 
 ### New:
 
@@ -120,7 +145,7 @@ of that change.
 
 ### Changed:
 
-- `tools/build-docs` and `tools/update-nbs` scripts combined into one script.
+- `tools/build-docs` and `tools/update-nbs` scripts combined into one script
 - Big refactor of the data block API
 
 ### Fixed:
@@ -137,7 +162,7 @@ of that change.
 
 ### Changed:
 
-- All the `DataBunch` factory method use the data block API, the factory method of `Datasets` are deprecated and will be removed in a future version.
+- All the `DataBunch` factory method use the data block API, the factory method of `Datasets` are deprecated and will be removed in a future version
 
 ### Fixed:
 
@@ -149,9 +174,9 @@ of that change.
 ### New:
 
 - `CSVLogger` callback (thanks to devorfu)
-- Initial support for image regression problems.
-- If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`.
-- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems accross applications.
+- Initial support for image regression problems
+- If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`
+- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems accross applications
 
 ### Changed:
 
@@ -163,8 +188,8 @@ of that change.
 
 ### New:
 
-- `DataBunch.dl` replaces the various `holdout`, `is_test`, and `is_train` approaches with a single consistent enum.
-- `fastai.text` is fully compatible with the data block API.
+- `DataBunch.dl` replaces the various `holdout`, `is_test`, and `is_train` approaches with a single consistent enum
+- `fastai.text` is fully compatible with the data block API
 
 ### Changed:
 
@@ -174,9 +199,9 @@ of that change.
 ### Fixed:
 
 - `create_cnn` correctly calculates # features in body correctly for more architectures
-- `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
-- `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.
-- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`.
+- `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically
+- `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`
+- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`
 - `pil2tensor` is faster and works on more image types (thanks to kasparlund)
 - Imports in the file picker widget (thanks to Hiromi)
 - Batches of size 1 will be removed during training because of the issue with BatchNorm1d
@@ -190,19 +215,19 @@ of that change.
 
 ### New:
 
-- add an argument `resize_method` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no).
-- all the image dataset have an `image_opener` attribute (default `open_image`) that can be changed. The `SegmentationDataset` has a `mask_opener` attribute.
-- `add_test` and `add_test_folder` in data block API.
+- add an argument `resize_method` that tells `apply_tfms` how to resize the image to the desired size (crop, pad, squish or no)
+- all the image dataset have an `image_opener` attribute (default `open_image`) that can be changed. The `SegmentationDataset` has a `mask_opener` attribute
+- `add_test` and `add_test_folder` in data block API
 
 ### Changed:
 
 - jupyter et al no longer forced dependencies
-- `verify_images` can now resize images on top of checking they're not broken.
+- `verify_images` can now resize images on top of checking they're not broken
 - LR finder plot now uses python scientific notation instead of math superset notation
 
 ### Fixed:
 
-- `ImageDataBunch.from_df` doesn't change the dataframe.
+- `ImageDataBunch.from_df` doesn't change the dataframe
 
 ## 1.0.18 (2018-10-30)
 
@@ -243,10 +268,10 @@ of that change.
 - `validate` now takes optional `n_batch`
 - `create_cnn` now returns a `ClassificationLearner`
 - `return_path` flag to `Learner.save`
-- `ImageDataBunch.show_batch()` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result.
+- `ImageDataBunch.show_batch()` now works for every type of dataset, removes `show_images` and `show_xy_images` as a result
 - Monkey-patched torch.utils.data.dataloader.DataLoader to create a passthrough to the dataset
 - `max_workers` for `download_images`
-- Change the arguments of `ObjectDetectDataset` to make it consistent with the rest of the API, changes the return of `get_annotations` to go with it.
+- Change the arguments of `ObjectDetectDataset` to make it consistent with the rest of the API, changes the return of `get_annotations` to go with it
 
 ### Fixed:
 
@@ -304,8 +329,8 @@ of that change.
 ### New:
 
 - pretrained language model is now downloaded directly in the .fastai/models/ folder. Use `pretrained_model=URLs.WT103`
-- add an argument `stop_div` to `Learner.lr_find()` to prevent early stopping, useful for negative losses.
-- add an argument `convert_mode` to `open_mask` and `SegmentationDataset` to choose the PIL conversion mode of the masks.
+- add an argument `stop_div` to `Learner.lr_find()` to prevent early stopping, useful for negative losses
+- add an argument `convert_mode` to `open_mask` and `SegmentationDataset` to choose the PIL conversion mode of the masks
 
 ### Changed:
 
@@ -357,10 +382,10 @@ of that change.
 ### Changed:
 
 - `data` is now called `basic_data` to avoid weird conflicts when naming our
-  data objects data.
+  data objects data
 - `datasets.untar_data` and `datasets.download_data` will now download to
   fastai home directory `~/.fastai/data` if the dataset does not already exist
-  locally `./data`.
+  locally `./data`
 
 ### Fixed:
 

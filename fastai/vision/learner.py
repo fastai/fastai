@@ -61,12 +61,12 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     return learn
 
 @classmethod
-def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True,
-             split_on:Optional[SplitFuncOrIdxList]=None, **kwargs:Any)->None:
+def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True, all_wn:bool=False,
+                        split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False, **kwargs:Any)->None:
     "Build Unet learners."
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
-    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, all_wn=all_wn, blur=blur), data.device)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
