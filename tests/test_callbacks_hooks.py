@@ -12,7 +12,7 @@ def test_model_summary_vision():
     learn = create_cnn(data, models.resnet18, metrics=accuracy)
     model_summary(learn)
 
-@pytest.mark.xfail(reason = "Expected Fail, Dataset should be passed instead.")      
+@pytest.mark.xfail(reason = "Expected Fail, text models not supported yet.")      
 def test_model_summary_text():
     path = untar_data(URLs.IMDB_SAMPLE)
     data_lm = TextLMDataBunch.from_csv(path, 'texts.csv')
