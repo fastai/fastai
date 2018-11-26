@@ -112,7 +112,7 @@ def _loss_func2activ(loss_func):
         loss_func = loss_func.func
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
         return loss_func_name2activ[loss_func.__name__]
-    return
+    return noop
 
 @dataclass
 class Learner():
@@ -231,14 +231,13 @@ class Learner():
         "Return prect class, label and probabilities for `img`."
         self.callbacks.append(RecordOnCPU())
         batch = self.data.one_item(img)
-        res = self.pred_batch(batch)
+        res = self.pred_batch(batch=batch)
         pred = res[0]
         x = self.callbacks[-1].input
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
-            if norm.keywords.get('do_y',True):
-                pred = self.data.denorm(pred)
+            if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
         self.callbacks = self.callbacks[:-1]
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(pred, **kwargs)

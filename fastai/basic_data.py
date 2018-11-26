@@ -123,7 +123,7 @@ class DataBunch():
         return x,y
 
     def one_item(self, item, detach:bool=False, denorm:bool=False):
-        ds = self.single_dl.dataset
+        ds = self.single_ds
         ds.set_item(item)
         res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
         ds.clear_item()
