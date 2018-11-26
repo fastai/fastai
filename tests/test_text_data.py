@@ -39,7 +39,7 @@ def test_from_folder():
     shutil.rmtree(path/'temp')
 
 
-def sepcial_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")
+def special_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")
 
 def test_from_csv_and_from_df():
     path = untar_data(URLs.IMDB_SAMPLE)
@@ -50,7 +50,7 @@ def test_from_csv_and_from_df():
     df = text_df(['neg','pos','neg pos'])
     data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
                                   label_cols=0, text_cols=["text"], label_delim=' ',
-                                  tokenizer=Tokenizer(pre_rules=[sepcial_fastai_test_rule]))
+                                  tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]))
     assert len(data2.classes) == 2
     x,y = data2.train_ds[0]
     assert len(y.data) == 2
@@ -63,7 +63,7 @@ def test_from_csv_and_from_df():
 
     # Test that the tokenizer parameter is used in from_csv
     data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"],
-                                     tokenizer=Tokenizer(pre_rules=[sepcial_fastai_test_rule]))
+                                     tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]))
     assert '@fastdotai' in data4.train_ds.vocab.itos, "It seems that our custom tokenzier was not used by TextClasDataBunch"
 
     os.remove(path/'tmp.csv')
