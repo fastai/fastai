@@ -2,7 +2,7 @@ from ..torch_core import *
 from ..callback import *
 from ..layers import NoopLoss
 from ..basic_train import Learner, LearnerCallback
-from ..vision.models.gan import WasserteinLoss
+from ..vision.models.gan import WassersteinLoss
 
 __all__ = ['CycleGANTrainer', 'GANTrainer', 'NoisyGANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
 
@@ -17,7 +17,7 @@ def standard_disc_iter(gen_iter):
 @dataclass
 class GANTrainer(LearnerCallback):
     _order=-20
-    loss_funcD:LossFunction=WasserteinLoss()
+    loss_funcD:LossFunction=WassersteinLoss()
     loss_funcG:LossFunction=NoopLoss()
     n_disc_iter:Callable=standard_disc_iter
     clip:float=0.01
