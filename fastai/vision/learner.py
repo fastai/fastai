@@ -7,7 +7,7 @@ from . import models
 from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
-from ..callbacks.gan import *
+from ..callbacks.gan import GANTrainer, NoisyGANTrainer
 
 __all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner', 'GANLearner', 'gan_learner']
 # By default split models between first and second layer
@@ -48,9 +48,8 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                classification:bool=True, bn_final:bool=False, **kwargs:Any)->Learner:
+                bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learners."
-    assert classification, 'Regression CNN not implemented yet, bug us on the forums if you want this!'
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), ifnone(cut,meta['cut']))
     nf = num_features_model(body) * 2
@@ -178,7 +177,7 @@ def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None
     """
     gan = models.GAN(generator, discriminator)
     learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
-    if wgan: loss_funcD,loss_funcG = WasserteinLoss(),noop
+    if wgan: loss_funcD,loss_funcG = WassersteinLoss(),noop
     if noise_size is None: cb = GANTrainer(learn, loss_funcD, loss_funcG)
     else: cb = NoisyGANTrainer(learn, loss_funcD, loss_funcG, bs=data.batch_size, noise_sz=noise_size)
     learn.add_gan_trainer(cb)

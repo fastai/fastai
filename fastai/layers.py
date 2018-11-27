@@ -3,7 +3,7 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
            'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
-           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WasserteinLoss']
+           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -127,7 +127,7 @@ class NoopLoss(nn.Module):
     "Just returns the `output`."
     def forward(self, output, target): return output[0]
 
-class WasserteinLoss(nn.Module):
+class WassersteinLoss(nn.Module):
     "For WGAN."
     def forward(self, real, fake): return real[0] - fake[0]
     

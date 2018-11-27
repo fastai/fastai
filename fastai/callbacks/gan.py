@@ -1,8 +1,7 @@
 from ..torch_core import *
 from ..callback import *
-from ..layers import NoopLoss
+from ..layers import NoopLoss, WassersteinLoss
 from ..basic_train import Learner, LearnerCallback
-from ..vision.models.gan import WasserteinLoss
 
 __all__ = ['CycleGANTrainer', 'GANTrainer', 'NoisyGANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
 
@@ -17,7 +16,7 @@ def standard_disc_iter(gen_iter):
 @dataclass
 class GANTrainer(LearnerCallback):
     _order=-20
-    loss_funcD:LossFunction=WasserteinLoss()
+    loss_funcD:LossFunction=WassersteinLoss()
     loss_funcG:LossFunction=NoopLoss()
     n_disc_iter:Callable=standard_disc_iter
     clip:float=0.01
@@ -41,6 +40,7 @@ class GANTrainer(LearnerCallback):
         self._set_trainable()
         self.dlosses,self.glosses = [],[]
         self.smoothenerG,self.smoothenerD = SmoothenValue(self.beta),SmoothenValue(self.beta)
+        self.learn.recorder.no_val=True
         self.learn.recorder.add_metric_names(['gen_loss', 'disc_loss'])
     
     def on_batch_begin(self, **kwargs):
@@ -106,6 +106,7 @@ class CycleGANTrainer(LearnerCallback):
         self.learn.opt.opt = self.opt_G.opt
         self._set_trainable()
         self.names = ['idt_loss', 'gen_loss', 'cyc_loss', 'da_loss', 'db_loss']
+        self.learn.recorder.no_val=True
         self.learn.recorder.add_metric_names(self.names)
         self.smootheners = {n:SmoothenValue(0.98) for n in self.names}
         
