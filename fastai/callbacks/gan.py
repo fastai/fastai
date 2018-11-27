@@ -1,8 +1,7 @@
 from ..torch_core import *
 from ..callback import *
-from ..layers import NoopLoss
+from ..layers import NoopLoss, WassersteinLoss
 from ..basic_train import Learner, LearnerCallback
-from ..vision.models.gan import WassersteinLoss
 
 __all__ = ['CycleGANTrainer', 'GANTrainer', 'NoisyGANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
 
