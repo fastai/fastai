@@ -1,6 +1,6 @@
 ---
 
-title: tutorial.inference
+title: Inference Learner
 keywords: fastai
 sidebar: home_sidebar
 
@@ -158,7 +158,7 @@ have this notebook run fast.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">mnist</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">mnist</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">empty_data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">);</span>
 </pre></div>
@@ -196,7 +196,7 @@ have this notebook run fast.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(Category 7, tensor(0), tensor([0.6870, 0.3130]))</pre>
+<pre>(Category 3, tensor(0), tensor([0.8990, 0.1010]))</pre>
 </div>
 
 </div>
@@ -296,7 +296,7 @@ have this notebook run fast.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">empty_data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">);</span>
 </pre></div>
@@ -462,7 +462,7 @@ have this notebook run fast.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">biwi</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">get_transforms</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">60</span><span class="p">))</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">biwi</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">60</span><span class="p">))</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">empty_data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">);</span>
 </pre></div>
@@ -648,7 +648,7 @@ have this notebook run fast.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">camvid</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">get_transforms</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">empty_data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">camvid</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">tfm_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="o">.</span><span class="n">create_unet</span><span class="p">(</span><span class="n">empty_data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;mini_train&#39;</span><span class="p">);</span>
 </pre></div>
@@ -671,116 +671,10 @@ have this notebook run fast.
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">img</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">train_ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">);</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(ImageSegment (1, 128, 128), tensor([[[21, 21, 21,  ...,  4,  4,  4],
-          [21, 21, 21,  ...,  4,  4,  4],
-          [21, 21, 21,  ...,  4,  4,  4],
-          ...,
-          [17, 17, 17,  ..., 17, 17, 17],
-          [17, 17, 17,  ..., 17, 17, 17],
-          [17, 17, 17,  ..., 17, 17, 17]]]), tensor([[[2.3323e-02, 2.2946e-02, 4.6494e-03,  ..., 3.7161e-04,
-           5.0104e-03, 6.4412e-03],
-          [2.2634e-02, 2.0179e-02, 5.6307e-03,  ..., 2.9151e-04,
-           5.1298e-03, 5.2150e-03],
-          [6.2241e-03, 7.0151e-03, 3.7897e-04,  ..., 4.0918e-06,
-           3.2178e-04, 4.4637e-04],
-          ...,
-          [9.0529e-04, 7.9842e-04, 7.6028e-05,  ..., 8.6253e-04,
-           3.6710e-03, 3.6289e-03],
-          [3.6277e-03, 4.0498e-03, 5.4831e-04,  ..., 3.7190e-03,
-           8.8866e-03, 9.6405e-03],
-          [3.8535e-03, 3.4831e-03, 6.7555e-04,  ..., 2.9442e-03,
-           8.2562e-03, 7.8639e-03]],
- 
-         [[2.7580e-02, 2.4669e-02, 7.3161e-03,  ..., 1.1249e-03,
-           9.4848e-03, 1.1947e-02],
-          [2.5641e-02, 2.3801e-02, 8.7720e-03,  ..., 7.5269e-04,
-           9.4482e-03, 8.9084e-03],
-          [9.8628e-03, 9.7588e-03, 9.2763e-04,  ..., 2.3099e-05,
-           8.9190e-04, 1.2924e-03],
-          ...,
-          [3.0092e-04, 3.2446e-04, 1.6413e-05,  ..., 5.1571e-04,
-           1.9530e-03, 2.2843e-03],
-          [1.5598e-03, 1.6954e-03, 1.7152e-04,  ..., 2.1259e-03,
-           5.2503e-03, 5.7921e-03],
-          [1.5411e-03, 1.6587e-03, 1.9799e-04,  ..., 1.7436e-03,
-           4.3894e-03, 4.9487e-03]],
- 
-         [[3.9882e-03, 3.1505e-03, 5.0457e-04,  ..., 1.4255e-03,
-           1.0569e-02, 1.2237e-02],
-          [4.3692e-03, 3.8382e-03, 7.0057e-04,  ..., 1.4145e-03,
-           1.2426e-02, 1.2313e-02],
-          [8.4888e-04, 7.3702e-04, 2.9357e-05,  ..., 8.8902e-05,
-           2.1612e-03, 2.8400e-03],
-          ...,
-          [4.2905e-04, 4.1327e-04, 1.9656e-05,  ..., 3.4418e-03,
-           6.5353e-03, 6.9649e-03],
-          [1.5882e-03, 1.9241e-03, 1.7470e-04,  ..., 6.1704e-03,
-           8.6600e-03, 9.6681e-03],
-          [1.6485e-03, 1.6144e-03, 1.9710e-04,  ..., 4.7098e-03,
-           7.9967e-03, 8.2181e-03]],
- 
-         ...,
- 
-         [[9.3113e-03, 6.5334e-03, 1.8013e-03,  ..., 3.2796e-03,
-           2.0767e-02, 2.0632e-02],
-          [8.6677e-03, 8.9047e-03, 2.1877e-03,  ..., 3.3119e-03,
-           2.2205e-02, 2.2050e-02],
-          [2.8595e-03, 2.1089e-03, 1.8231e-04,  ..., 2.3835e-04,
-           4.7750e-03, 5.3993e-03],
-          ...,
-          [1.3388e-04, 1.5440e-04, 3.7817e-06,  ..., 1.1344e-03,
-           2.8678e-03, 3.3601e-03],
-          [7.2934e-04, 9.0662e-04, 5.3639e-05,  ..., 2.7882e-03,
-           4.7959e-03, 5.4441e-03],
-          [6.9227e-04, 8.4727e-04, 5.7668e-05,  ..., 2.1941e-03,
-           4.1560e-03, 4.9784e-03]],
- 
-         [[1.2492e-02, 1.1063e-02, 4.9451e-03,  ..., 3.0513e-02,
-           6.4178e-02, 7.0040e-02],
-          [1.2166e-02, 1.2005e-02, 6.0362e-03,  ..., 3.1947e-02,
-           6.7927e-02, 6.9785e-02],
-          [7.7364e-03, 7.5642e-03, 1.4550e-03,  ..., 6.8208e-03,
-           3.3262e-02, 4.0198e-02],
-          ...,
-          [1.5871e-05, 1.4742e-05, 1.9349e-07,  ..., 3.2095e-04,
-           8.5799e-04, 9.8868e-04],
-          [1.1769e-04, 1.4500e-04, 4.5852e-06,  ..., 7.2754e-04,
-           1.4678e-03, 1.6742e-03],
-          [1.1819e-04, 1.1339e-04, 5.3238e-06,  ..., 5.4077e-04,
-           1.2279e-03, 1.3526e-03]],
- 
-         [[2.5760e-03, 2.1818e-03, 1.8901e-04,  ..., 1.0640e-03,
-           1.0117e-02, 1.1868e-02],
-          [2.7598e-03, 2.6283e-03, 2.9429e-04,  ..., 9.7199e-04,
-           1.1117e-02, 1.1070e-02],
-          [3.4934e-04, 3.4733e-04, 5.4813e-06,  ..., 6.2566e-05,
-           1.8896e-03, 2.6472e-03],
-          ...,
-          [6.8025e-04, 5.9770e-04, 3.0153e-05,  ..., 6.9031e-03,
-           1.1587e-02, 1.2512e-02],
-          [2.8487e-03, 2.9917e-03, 3.1098e-04,  ..., 1.0829e-02,
-           1.6660e-02, 1.6246e-02],
-          [2.4998e-03, 2.2843e-03, 2.9663e-04,  ..., 8.1416e-03,
-           1.2735e-02, 1.3245e-02]]]))</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
