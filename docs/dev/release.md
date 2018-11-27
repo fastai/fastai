@@ -1333,12 +1333,15 @@ Here is how to get segfault backtrace directly or via the core dump in a non-int
    ```
    # allow large core files
    ulimit -c unlimited
-   # test cores can be written by this user
+   # test core dump files can be written by this user
    touch /cores/test && rm /cores/test
    # any cores prior to the run?
-   py.test tests/test_vision_data_block.py
    ls -l /cores/
-   # get the backtrace
+   # run the program that segfaults
+   py.test tests/test_vision_data_block.py
+   # any cores after the run?
+   ls -l /cores/
+   # get the backtrace of the first core file
    echo bt | lldb -c /cores/core.*
    ```
 
