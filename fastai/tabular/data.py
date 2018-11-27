@@ -14,7 +14,8 @@ OptTabTfms = Optional[Collection[TabularProc]]
 def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
 #def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
 
-def def_emb_sz(classes, n, sz_dict):
+def def_emb_sz(classes, n, sz_dict=None):
+    sz_dict = ifnone(sz_dict, {})
     n_cat = len(classes[n])
     sz = sz_dict.get(n, int(emb_sz_rule(n_cat)))  # rule of thumb
     return n_cat,sz
@@ -31,7 +32,7 @@ class TabularLine(ItemBase):
         for c,n in zip(self.conts, self.names[len(self.cats):]):
             res += f'{n} {c:.4f}; '
         return res
-        
+
 class TabularProcessor(PreProcessor):
     def __init__(self, ds:ItemBase=None, procs=None):
         procs = ifnone(procs, ds.procs if ds is not None else None)
@@ -51,7 +52,7 @@ class TabularProcessor(PreProcessor):
         return TabularLine(codes[0], conts[0], classes, col_names)
 
     def process(self, ds):
-        if ds.xtra is None: 
+        if ds.xtra is None:
             ds.classes,ds.cat_names,ds.cont_names = self.classes,self.cat_names,self.cont_names
             return
         for i,proc in enumerate(self.procs):
@@ -77,7 +78,7 @@ class TabularProcessor(PreProcessor):
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
-    
+
     @classmethod
     def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, **kwargs)->DataBunch:
@@ -115,13 +116,13 @@ class TabularList(ItemList):
         conts = [] if self.conts is None else self.conts[o]
         return self._item_cls(codes, conts, self.classes, self.col_names)
 
-    def get_emb_szs(self, sz_dict):
+    def get_emb_szs(self, sz_dict=None):
         "Return the default embedding sizes suitable for this data or takes the ones in `sz_dict`."
         return [def_emb_sz(self.classes, n, sz_dict) for n in self.cat_names]
-    
+
     def reconstruct(self, t:Tensor):
         return self._item_cls(t[0], t[1], self.classes, self.col_names)
-    
+
     def show_xys(self, xs, ys)->None:
         "Show the `xs` and `ys`."
         from IPython.display import display, HTML
@@ -133,7 +134,7 @@ class TabularList(ItemList):
             res += [f'{c:.4f}' for c in x.conts] + [str(y)]
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
-     
+
     def show_xyzs(self, xs, ys, zs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions)."
         from IPython.display import display, HTML
@@ -145,7 +146,7 @@ class TabularList(ItemList):
             res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
-    
+
 def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."

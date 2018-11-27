@@ -203,7 +203,7 @@ class ItemList():
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
         "Label every item with `const`."
         return self.label_from_func(func=lambda o: const, **kwargs)
-    
+
     def label_empty(self):
         "Label every item with an `EmptyLabel`."
         return self.label_from_func(func=lambda o: 0., label_cls=EmptyLabelList)
@@ -231,7 +231,7 @@ class EmptyLabelList(ItemList):
     def reconstruct(self, t:Tensor, x:Tensor=None):
         if len(t.size()) == 0: return EmptyLabel()
         return self.x.reconstruct(t,x) if has_arg(self.x.reconstruct, 'x') else self.x.reconstruct(t)
-    
+
 class CategoryProcessor(PreProcessor):
     def __init__(self, ds:ItemList): self.create_classes(ds.classes)
 
@@ -242,7 +242,7 @@ class CategoryProcessor(PreProcessor):
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."
         return uniqueify(items)
-    
+
     def process_one(self,item): return self.c2i.get(item,None)
 
     def process(self, ds):
@@ -324,7 +324,7 @@ class FloatList(ItemList):
     def get(self, i):
         o = super().get(i)
         return FloatItem(log(o) if self.log else o)
-    
+
     def reconstruct(self,t): return FloatItem(t.item())
 
 class ItemLists():

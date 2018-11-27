@@ -118,7 +118,7 @@ class DataBunch():
         norm = getattr(self,'norm',False)
         if denorm and norm:
             x = self.denorm(x)
-            if norm.keywords.get('do_y',True): y = self.denorm(y)
+            if norm.keywords.get('do_y',False): y = self.denorm(y)
         return x,y
 
     def one_item(self, item, detach:bool=False, denorm:bool=False):

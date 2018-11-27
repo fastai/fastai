@@ -15,6 +15,7 @@ of that change.
 ### Breaking changes:
 
 - `ImageDataBunch.single_from_classes` has been removed
+- `Learner.create_unet` is now called `unet_learner`
 
 ### New:
 

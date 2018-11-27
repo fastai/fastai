@@ -44,6 +44,7 @@ def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
 
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
+    if len(pred.shape)==2: pred=pred.squeeze(1)
     pred, targ = torch.exp(pred), torch.exp(targ)
     pct_var = (targ - pred)/targ
     return torch.sqrt((pct_var**2).mean())

@@ -9,7 +9,7 @@ from ..layers import *
 from ..callbacks.hooks import num_features_model
 from ..callbacks.gan import *
 
-__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'GANLearner', 'gan_learner']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner', 'GANLearner', 'gan_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -62,20 +62,17 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
 
-@classmethod
-def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True, all_wn:bool=False,
-                        split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False, **kwargs:Any)->None:
+def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, all_wn:bool=False, blur_final:bool=True,
+                 split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False, **kwargs:Any)->None:
     "Build Unet learners."
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
-    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, all_wn=all_wn, blur=blur), data.device)
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, all_wn=all_wn, blur=blur, blur_final=blur_final), data.device)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[2], nn.init.kaiming_normal_)
     return learn
-
-Learner.create_unet = Learner_create_unet
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
@@ -111,15 +108,15 @@ class ClassificationInterpretation():
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
         if slice_size is None: cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-        else: 
+        else:
             cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
             for i in range(0, self.y_true.shape[0], slice_size):
-                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None]) 
+                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None])
                             & (self.y_true[i:i+slice_size]==x[:,None,None])).sum(2)
                 torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, 
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2,
                               slice_size:int=None, **kwargs)->None:
         """Plot the confusion matrix, with `title` and using `cmap`. If `normalize`, plots the percentages with
         `norm_dec` digits. `slice_size` can be used to avoid out of memory error if your set is too big.
@@ -157,7 +154,7 @@ class GANLearner(Learner):
     def add_gan_trainer(self, cb):
         self.gan_trainer = cb
         self.callbacks.append(cb)
-    
+
     def predict(self):
         "Predict one batch of fake images."
         x,y = next(iter(self.data.train_dl))
@@ -165,13 +162,13 @@ class GANLearner(Learner):
         norm = getattr(self.data,'norm',False)
         if norm: out = self.data.denorm(out)
         return out.detach().cpu()
-    
+
     def show_results(self, rows:int=5, figsize=(10,10)):
         "Show `rows` by `rows` fake images with `figsize`."
         out = self.predict()
         xs = [self.data.train_ds.x.reconstruct(o) for o in out[:rows*rows]]
         self.data.train_ds.x.show_xys(xs, [EmptyLabel()] * (rows*rows))
-        
+
 def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None, noise_size:int=None, wgan:bool=False,
                 **kwargs):
     """Create a `GANLearner` from `data` with a `generator` and a `discriminator`. If `noise_size` is set, the GAN will generate
