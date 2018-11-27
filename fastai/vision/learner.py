@@ -7,8 +7,9 @@ from . import models
 from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
+from ..callbacks.gan import *
 
-__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'GANLearner', 'gan_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -150,3 +151,38 @@ class ClassificationInterpretation():
         res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
+
+class GANLearner(Learner):
+
+    def add_gan_trainer(self, cb):
+        self.gan_trainer = cb
+        self.callbacks.append(cb)
+    
+    def predict(self):
+        "Predict one batch of fake images."
+        x,y = next(iter(self.data.train_dl))
+        out = self.model(self.gan_trainer.input_fake(x, grad=False), gen=True)
+        norm = getattr(self.data,'norm',False)
+        if norm: out = self.data.denorm(out)
+        return out.detach().cpu()
+    
+    def show_results(self, rows:int=5, figsize=(10,10)):
+        "Show `rows` by `rows` fake images with `figsize`."
+        out = self.predict()
+        xs = [self.data.train_ds.x.reconstruct(o) for o in out[:rows*rows]]
+        self.data.train_ds.x.show_xys(xs, [EmptyLabel()] * (rows*rows))
+        
+def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None, noise_size:int=None, wgan:bool=False,
+                **kwargs):
+    """Create a `GANLearner` from `data` with a `generator` and a `discriminator`. If `noise_size` is set, the GAN will generate
+    fakes from a noise of this size, otherwise it'll use the inputs in data. If `wgan` is set to `True`, overrides the
+    loss functions for a WGAN. `loss_funcD` and `loss_funcG` are used for discriminator and the generator. `kwargs`
+    are passed to the `Learner` init.
+    """
+    gan = models.GAN(generator, discriminator)
+    learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
+    if wgan: loss_funcD,loss_funcG = WasserteinLoss(),noop
+    if noise_size is None: cb = GANTrainer(learn, loss_funcD, loss_funcG)
+    else: cb = NoisyGANTrainer(learn, loss_funcD, loss_funcG, bs=data.batch_size, noise_sz=noise_size)
+    learn.add_gan_trainer(cb)
+    return learn
