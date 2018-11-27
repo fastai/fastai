@@ -40,6 +40,7 @@ class GANTrainer(LearnerCallback):
         self._set_trainable()
         self.dlosses,self.glosses = [],[]
         self.smoothenerG,self.smoothenerD = SmoothenValue(self.beta),SmoothenValue(self.beta)
+        self.learn.recorder.no_val=True
         self.learn.recorder.add_metric_names(['gen_loss', 'disc_loss'])
     
     def on_batch_begin(self, **kwargs):

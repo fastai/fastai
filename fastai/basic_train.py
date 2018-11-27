@@ -302,11 +302,13 @@ class Recorder(LearnerCallback):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
+        self.no_val = False
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
-        self.names = ['epoch', 'train_loss', 'valid_loss'] + metrics_names
+        self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
+        self.names += metrics_names
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         self.pbar.write('  '.join(self.names), table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
@@ -329,7 +331,7 @@ class Recorder(LearnerCallback):
         self.nb_batches.append(num_batch)
         if last_metrics is not None:
             self.val_losses.append(last_metrics[0])
-        else: last_metrics = [None]
+        else: last_metrics = [] if self.no_val else [None]
         if hasattr(self, '_added_mets'): last_metrics += self._added_mets
         if len(last_metrics) > 1: self.metrics.append(last_metrics[1:])
         self.format_stats([epoch, smooth_loss] + last_metrics)
