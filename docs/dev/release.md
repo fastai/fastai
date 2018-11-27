@@ -1324,6 +1324,34 @@ find . -type f -exec perl -pi -e 's|^\S+ ||' {} \;
 find . -type f -exec perl -0777 -pi -e 's|\n\n|\n|g' {} \;
 ```
 
+#### Debugging segfaults
+
+Here is how to get segfault backtrace directly or via the core dump in a non-interactive way:
+
+* MacOS
+
+   ```
+   # allow large core files
+   ulimit -c unlimited
+   # test cores can be written by this user
+   touch /cores/test && rm /cores/test
+   # any cores prior to the run?
+   py.test tests/test_vision_data_block.py
+   ls -l /cores/
+   # get the backtrace
+   echo bt | lldb -c /cores/core.*
+   ```
+
+* Linux
+
+   ```
+   # allow large core files
+   ulimit -c unlimited
+   export SEGFAULT_SIGNALS="all"
+   # catch the segfault and get the backtrace
+   catchsegv py.test tests/test_vision_data_block.py
+   ```
+
 #### Support
 
 - General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
