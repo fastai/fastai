@@ -946,6 +946,30 @@ conda deactivate
 conda env remove -y --name fastai-py3.6
 ```
 
+### Installed Packages
+
+When debugging issues it helps to know what packages have been installed. The following will dump the installed versions list in identical format for conda and pypi (`package-name==version`):
+
+* Conda:
+   ```
+   conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq > packages-conda.txt
+   ```
+
+* PyPi:
+
+   ```
+   pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq > packages-pip.txt
+   ```
+
+* Comparing the output of both environments:
+
+   ```
+   diff -u0 --suppress-common-lines packages-conda.txt packages-pip.txt | grep -v "@@"
+   ```
+
+The comparison is useful for identifying differences in these two package environment (for example when CI build fails with pypi but not with conda).
+
+
 ### Package Dependencies
 
 We need to make sure that `setup.py` sets identical dependencies to `conda/meta.yml`. It's not always possible but it should be attempted.
@@ -1279,6 +1303,18 @@ And remember to sync the branch with the master changes so that you're testing t
 #### Multiple Pipelines In The Same Repo
 
 Currently [New] will not let you choose an alternative pipeline. So until this is fixed, let it use the default `azure-pipelines.yml`, Save and then go and Edit it and replace with a different file from the repository (and perhaps switching to a different branch if needed), using [...].
+
+#### Debug
+
+Download the logs from the build report page, unzip the file, and then cleanup the timestamps:
+```
+mkdir logs
+mv logs_2005.zip logs
+cd logs
+unzip logs_2005.zip
+find . -type f -exec perl -pi -e 's|^\S+ ||' {} \;
+find . -type f -exec perl -0777 -pi -e 's|\n\n|\n|g' {} \;
+```
 
 #### Support
 
