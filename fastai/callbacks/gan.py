@@ -106,6 +106,7 @@ class CycleGANTrainer(LearnerCallback):
         self.learn.opt.opt = self.opt_G.opt
         self._set_trainable()
         self.names = ['idt_loss', 'gen_loss', 'cyc_loss', 'da_loss', 'db_loss']
+        self.learn.recorder.no_val=True
         self.learn.recorder.add_metric_names(self.names)
         self.smootheners = {n:SmoothenValue(0.98) for n in self.names}
         
