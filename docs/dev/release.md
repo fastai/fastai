@@ -1112,7 +1112,15 @@ platform are shown):
     conda search -c fastai --override --platform linux-64
     ```
 
+* To find out why a particular package is installed (i.e. which package requires it):
 
+    ```
+    conda create -n c43 conda=4.3
+    conda activate c43
+    python -m conda search --reverse-dependency --full-name pillow
+    ```
+
+    Note, that conda==4.4 removed this functionality, that's why we need a special downgraded to conda==4.3 environment to make this work as a workaround.
 
 
 #### PyPI Dependencies
