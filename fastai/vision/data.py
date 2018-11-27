@@ -11,7 +11,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageItemList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
-           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor', 'ImageToImageList',
+           'verify_images', 'bb_pad_collate', 'ObjectCategoryProcessor', 'ImageImageList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -249,7 +249,7 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     parallel(func, files, max_workers=max_workers)
 
 class ImageItemList(ItemList):
-    _bunch = ImageDataBunch
+    _bunch,_square_show = ImageDataBunch,True
     def __post_init__(self):
         super().__post_init__()
         self.sizes={}
@@ -283,7 +283,7 @@ class ImageItemList(ItemList):
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, **kwargs)
 
-    def reconstruct(self, t:Tensor): return Image(t)
+    def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
     
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
         "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
@@ -377,5 +377,26 @@ class PointsItemList(ItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
-class ImageToImageList(ImageItemList): _label_cls = ImageItemList
+class ImageImageList(ImageItemList): 
+    _label_cls = ImageItemList
+    _square_show=False
+    
+    def show_xys(self, xs, ys, figsize:Tuple[int,int]=None, **kwargs):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        figsize = ifnone(figsize, (6,3*len(xs)))
+        fig, axs = plt.subplots(len(xs),2,figsize=figsize)
+        for i, (x,y) in enumerate(zip(xs,ys)):
+            x.show(ax=axs[i,0], **kwargs)
+            y.show(ax=axs[i,1], **kwargs)
+        plt.tight_layout()
 
+    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`.
+        `kwargs` are passed to the show method."""
+        figsize = ifnone(figsize, (9,3*len(xs)))
+        fig,axs = plt.subplots(len(xs), 3, figsize=figsize)
+        fig.suptitle('Input / Prediction / Target', weight='bold', size=14)
+        for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
+            x.show(ax=axs[i,0], **kwargs)
+            y.show(ax=axs[i,2], **kwargs)
+            z.show(ax=axs[i,1], **kwargs)

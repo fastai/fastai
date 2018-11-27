@@ -58,7 +58,6 @@ class DeviceDataLoader():
 
 class DataBunch():
     _batch_first=True
-    _square_show=False
 
     "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
@@ -133,7 +132,7 @@ class DataBunch():
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
         x,y = self.one_batch(ds_type, True, True)
-        if self._square_show: rows = rows ** 2
+        if self.train_ds.x._square_show: rows = rows ** 2
         xs = [self.train_ds.x.reconstruct(grab_idx(x, i, self._batch_first)) for i in range(rows)]
         #TODO: get rid of has_arg if possible
         if has_arg(self.train_ds.y.reconstruct, 'x'):

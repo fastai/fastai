@@ -35,7 +35,7 @@ class PreProcessor():
     def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
 class ItemList():
-    _bunch,_processor,_label_cls = DataBunch,None,None
+    _bunch,_processor,_label_cls,_square_show = DataBunch,None,None,False
 
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, path:PathOrStr='.',
@@ -262,7 +262,6 @@ class CategoryListBase(ItemList):
         return super().new(items, classes=ifnone(classes, self.classes), **kwargs)
 
 class CategoryList(CategoryListBase):
-    _item_cls=Category
     _processor=CategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, classes=classes, **kwargs)
@@ -271,12 +270,12 @@ class CategoryList(CategoryListBase):
     def get(self, i):
         o = self.items[i]
         if o is None: return None
-        return self._item_cls(o, self.classes[o])
+        return Category(o, self.classes[o])
 
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax()
 
     def reconstruct(self, t):
-        return self._item_cls(t, self.classes[t])
+        return Category(t, self.classes[t])
 
 class MultiCategoryProcessor(CategoryProcessor):
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
@@ -289,7 +288,6 @@ class MultiCategoryProcessor(CategoryProcessor):
         return classes
 
 class MultiCategoryList(CategoryListBase):
-    _item_cls=MultiCategory
     _processor=MultiCategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
         if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
@@ -299,14 +297,14 @@ class MultiCategoryList(CategoryListBase):
     def get(self, i):
         o = self.items[i]
         if o is None: return None
-        return self._item_cls(one_hot(o, self.c), [self.classes[p] for p in o], o)
+        return MultiCategory(one_hot(o, self.c), [self.classes[p] for p in o], o)
 
     def analyze_pred(self, pred, thresh:float=0.5):
         return (pred >= thresh).float()
 
     def reconstruct(self, t):
         o = [i for i in range(self.c) if t[i] == 1.]
-        return self._item_cls(t, [self.classes[p] for p in o], o)
+        return MultiCategory(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
