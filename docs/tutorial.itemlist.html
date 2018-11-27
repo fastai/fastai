@@ -374,6 +374,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
         <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
+<p>Linked to this method is the class variable <code>_show_square</code> of an <a href="/data_block.html#ItemList"><code>ItemList</code></a>. It defaults to <code>False</code> but if it's <code>True</code>, the <code>show_batch</code> method will send <code>rows * rows</code> <code>xs</code> and <code>ys</code> to <code>show_xys</code> (so that it shows a square of inputs/targets), like here for iamges.</p>
 
 </div>
 </div>
