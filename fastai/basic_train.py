@@ -222,6 +222,7 @@ class Learner():
         return _loss_func2activ(self.loss_func)(preds[0])
 
     def backward(self, item):
+        "Pass `item` through the model and computes the gradient. Useful if `backward_hooks` are attached."
         xb,yb = self.data.one_item(item)
         loss = loss_batch(self.model.eval(), xb, yb, self.loss_func, opt=FakeOptimizer(),
                           cb_handler=CallbackHandler(self.callbacks))
@@ -280,6 +281,7 @@ class Learner():
         ds.x.show_xyzs(xs, ys, zs, **kwargs)
 
 class RecordOnCPU(Callback):
+    "Stores the `input` and `target` going through the model on the CPU."
     def on_batch_begin(self, last_input,last_target,**kwargs):
         self.input,self.target = to_cpu(last_input),to_cpu(last_target)
 

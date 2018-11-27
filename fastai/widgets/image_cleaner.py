@@ -7,7 +7,7 @@ from ..vision.image import open_image
 from ..callbacks.hooks import *
 from ..layers import *
 from ipywidgets import widgets, Layout
-from IPython.display import clear_output
+from IPython.display import clear_output, display
 
 __all__ = ['DatasetFormatter', 'ImageCleaner']
 

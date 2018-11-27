@@ -78,10 +78,6 @@ class TabularProcessor(PreProcessor):
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
     
-    def save_processor(self, cache_path:PathOrStr='tmp'):
-        os.makedirs(self.path/cache_path, exist_ok=True)
-        self.train_ds.x.processor[0].save(self.path/cache_path)
-    
     @classmethod
     def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, **kwargs)->DataBunch:

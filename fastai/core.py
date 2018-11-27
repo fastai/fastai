@@ -249,6 +249,7 @@ def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
 
 def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
+    "Put the texts in `items` in an HTML table, `widths` are the widths of the columns in %."
     html_code = f"<table>"
     for w in widths: html_code += f"  <col width='{w}%'>"
     for line in items:

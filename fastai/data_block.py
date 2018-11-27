@@ -205,6 +205,7 @@ class ItemList():
         return self.label_from_func(func=lambda o: const, **kwargs)
     
     def label_empty(self):
+        "Label every item with an `EmptyLabel`."
         return self.label_from_func(func=lambda o: 0., label_cls=EmptyLabelList)
 
     def label_from_func(self, func:Callable, **kwargs)->'LabelList':
@@ -238,7 +239,10 @@ class CategoryProcessor(PreProcessor):
         self.classes = classes
         if classes is not None: self.c2i = {v:k for k,v in enumerate(classes)}
 
-    def generate_classes(self, items): return uniqueify(items)
+    def generate_classes(self, items):
+        "Generate classes from `items` by taking the sorted unique values."
+        return uniqueify(items)
+    
     def process_one(self,item): return self.c2i.get(item,None)
 
     def process(self, ds):
@@ -281,6 +285,7 @@ class MultiCategoryProcessor(CategoryProcessor):
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
 
     def generate_classes(self, items):
+        "Generate classes from `items` by taking the sorted unique values."
         classes = set()
         for c in items: classes = classes.union(set(c))
         classes = list(classes)
@@ -361,7 +366,7 @@ class ItemLists():
         return self
 
     def transform(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
-        "Set `tfms` to be applied to the train and validation set."
+        "Set `tfms` to be applied to the xs of the train and validation set."
         if not tfms: return self
         self.train.transform(tfms[0], **kwargs)
         self.valid.transform(tfms[1], **kwargs)
@@ -369,6 +374,7 @@ class ItemLists():
         return self
 
     def transform_y(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
+        "Set `tfms` to be applied to the ys of the train and validation set."
         if not tfms: tfms=(None,None)
         self.train.transform_y(tfms[0], **kwargs)
         self.valid.transform_y(tfms[1], **kwargs)
@@ -491,6 +497,7 @@ class LabelList(Dataset):
         return self
 
     def transform_y(self, tfms:TfmList=None, **kwargs):
+        "Set `tfms` to be applied to the targets only."
         self.tfm_y=True
         if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
         else:            self.tfms_y,self.tfmargs_y = tfms,kwargs

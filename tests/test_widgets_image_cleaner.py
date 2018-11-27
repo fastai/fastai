@@ -17,13 +17,11 @@ def test_image_cleaner_index_length_mismatch(data):
         n = len(data.valid_ds)
         assert  ImageCleaner(data.valid_ds, np.arange(n+2))
 
-@pytest.mark.skip(reason="Francisco needs to fix me.")
 def test_image_cleaner_length_correct(data):
     n = len(data.valid_ds)
     ImageCleaner(data.valid_ds, np.arange(n))       
         
-#@pytest.mark.xfail(reason = "Expected Fail, Dataset should be passed instead.")                   
-@pytest.mark.skip(reason="Francisco needs to fix me.")
+@pytest.mark.xfail(reason = "Expected Fail, Dataset should be passed instead.")                   
 def test_image_cleaner_wrong_input_type(data):
     n = len(data.valid_ds)
     ImageCleaner(data, np.arange(n))

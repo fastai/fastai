@@ -87,10 +87,12 @@ class ActivationStats(HookCallback):
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
 
 def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
+    "Create a dummy batch to go through `m` with `size`."
     ch_in = in_channels(m)
     return one_param(m).new(1, ch_in, *size).zero_().requires_grad_(False)
 
 def dummy_eval(m:nn.Module, size:tuple=(64,64)):
+    "Pass a `dummy_batch` in evaluation mode in `m` with `size`."
     return m.eval()(dummy_batch(m, size))
 
 def model_sizes(m:nn.Module, size:tuple=(64,64))->Tuple[Sizes,Tensor,Hooks]:
