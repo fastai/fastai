@@ -68,10 +68,16 @@ jobs:
     displayName: 'Install test deps'
     continueOnError: false
 
-    # Run Tests
+    # Show PyPi Build Env
   - script: |
       echo "cwd:" `pwd`
-      python -c 'import fastai; fastai.show_install()'
+      python -c 'import fastai; fastai.show_install(0)'
+      pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+    displayName: 'Show build environment'
+    continueOnError: true
+
+    # Run Tests
+  - script: |
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -155,10 +161,16 @@ jobs:
     displayName: 'Install test deps'
     continueOnError: false
 
-    # Run Tests
+    # Show Conda Build Env
   - script: |
       echo "cwd:" `pwd`
-      python -c 'import fastai; fastai.show_install()'
+      python -c 'import fastai; fastai.show_install(0)'
+      conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+    displayName: 'Show build environment'
+    continueOnError: true
+
+    # Run Tests
+  - script: |
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
@@ -224,16 +236,22 @@ jobs:
 #    displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
 #    continueOnError: false
 #
-#     # Install Test deps
+#    # Install Test deps
 #  - script: |
 #      pip install pytest pytest-runner
 #    displayName: 'Install test deps'
 #    continueOnError: false
 #
-#    # Run Tests
+#     # Show PyPi Build Env
 #  - script: |
 #      echo "cwd:" `pwd`
-#      python -c 'import fastai; fastai.show_install()'
+#      python -c 'import fastai; fastai.show_install(0)'
+#      pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+#    displayName: 'Show build environment'
+#    continueOnError: true
+#
+#    # Run Tests
+#  - script: |
 #      py.test tests --cache-clear --junitxml=result.xml
 #    displayName: 'Run tests'
 #    continueOnError: false
@@ -320,10 +338,16 @@ jobs:
     displayName: 'Install test deps'
     continueOnError: false
 
-    # Run Tests
+    # Show Conda Build Env
   - script: |
       echo "cwd:" `pwd`
-      python -c 'import fastai; fastai.show_install()'
+      python -c 'import fastai; fastai.show_install(0)'
+      conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+    displayName: 'Show build environment'
+    continueOnError: true
+
+    # Run Tests
+  - script: |
       py.test tests --cache-clear --junitxml=result.xml
     displayName: 'Run tests'
     continueOnError: false
