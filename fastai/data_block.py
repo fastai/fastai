@@ -505,7 +505,7 @@ class LabelList(Dataset):
 
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
-    ds = LabelList.load_empty(path/fname, tfms=tfms[1], tfm_y=tfm_y, **kwargs)
+    ds = LabelList.load_empty(path/fname, tfms=(None if tfms is None else tfms[1]), tfm_y=tfm_y, **kwargs)
     return cls.create(ds,ds,path=path)
 
 DataBunch.load_empty = _databunch_load_empty
