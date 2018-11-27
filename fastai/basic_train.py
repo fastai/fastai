@@ -277,7 +277,7 @@ class Learner():
         else :
             ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
             zs = [ds.y.reconstruct(z) for z in preds]
-        ds[0][0].show_xyzs(xs, ys, zs, **kwargs)
+        ds.x.show_xyzs(xs, ys, zs, **kwargs)
 
 class RecordOnCPU(Callback):
     def on_batch_begin(self, last_input,last_target,**kwargs):

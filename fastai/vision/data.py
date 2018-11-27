@@ -284,6 +284,24 @@ class ImageItemList(ItemList):
         return cls.from_df(df, path=path, **kwargs)
 
     def reconstruct(self, t:Tensor): return Image(t)
+    
+    def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        rows = int(math.sqrt(len(xs)))
+        fig, axs = plt.subplots(rows,rows,figsize=figsize)
+        for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
+            xs[i].show(ax=ax, y=ys[i], **kwargs)
+        plt.tight_layout()
+
+    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`.
+        `kwargs` are passed to the show method."""
+        figsize = ifnone(figsize, (6,3*len(xs)))
+        fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
+        fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
+        for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
+            x.show(ax=axs[i,0], y=y, **kwargs)
+            x.show(ax=axs[i,1], y=z, **kwargs)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
     def __init__(self, ds:ItemList, pad_idx:int=0):

@@ -31,30 +31,6 @@ class TabularLine(ItemBase):
         for c,n in zip(self.conts, self.names[len(self.cats):]):
             res += f'{n} {c:.4f}; '
         return res
-
-    def show_xys(self, xs, ys)->None:
-        "Show the `xs` and `ys`."
-        from IPython.display import display, HTML
-        items = [xs[0].names + ['target']]
-        for i, (x,y) in enumerate(zip(xs,ys)):
-            res = []
-            for c, n in zip(x.cats, self.names[:len(x.cats)]):
-                res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in x.conts] + [str(y)]
-            items.append(res)
-        display(HTML(text2html_table(items, [10] * len(items[0]))))
-     
-    def show_xyzs(self, xs, ys, zs):
-        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions)."
-        from IPython.display import display, HTML
-        items = [xs[0].names + ['target', 'prediction']]
-        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
-            res = []
-            for c, n in zip(x.cats, self.names[:len(x.cats)]):
-                res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
-            items.append(res)
-        display(HTML(text2html_table(items, [10] * len(items[0]))))
         
 class TabularProcessor(PreProcessor):
     def __init__(self, ds:ItemBase=None, procs=None):
@@ -149,6 +125,30 @@ class TabularList(ItemList):
     
     def reconstruct(self, t:Tensor):
         return self._item_cls(t[0], t[1], self.classes, self.col_names)
+    
+    def show_xys(self, xs, ys)->None:
+        "Show the `xs` and `ys`."
+        from IPython.display import display, HTML
+        items = [xs[0].names + ['target']]
+        for i, (x,y) in enumerate(zip(xs,ys)):
+            res = []
+            for c, n in zip(x.cats, x.names[:len(x.cats)]):
+                res.append(str(x.classes[n][c]))
+            res += [f'{c:.4f}' for c in x.conts] + [str(y)]
+            items.append(res)
+        display(HTML(text2html_table(items, [10] * len(items[0]))))
+     
+    def show_xyzs(self, xs, ys, zs):
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions)."
+        from IPython.display import display, HTML
+        items = [xs[0].names + ['target', 'prediction']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            res = []
+            for c, n in zip(x.cats, x.names[:len(x.cats)]):
+                res.append(str(x.classes[n][c]))
+            res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
+            items.append(res)
+        display(HTML(text2html_table(items, [10] * len(items[0]))))
     
 def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):

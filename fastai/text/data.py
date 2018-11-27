@@ -226,26 +226,8 @@ def open_text(fn:PathOrStr, enc='utf-8'):
     with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
-    def __init__(self, ids, text, is_lm): self.data,self.text,self.is_lm = ids,text,is_lm
+    def __init__(self, ids, text): self.data,self.text = ids,text
     def __str__(self):  return str(self.text)
-
-    def show_xys(self, xs, ys, max_len:int=70)->None:
-        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
-        from IPython.display import display, HTML
-        items = [['idx','text']] if self.is_lm else [['text','target']]
-        for i, (x,y) in enumerate(zip(xs,ys)):
-            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
-            items.append([str(i), str(txt_x)] if self.is_lm else [str(txt_x), str(y)])
-        display(HTML(text2html_table(items, ([5,95] if self.is_lm else [90,10]))))
-        
-    def show_xyzs(self, xs, ys, zs, max_len:int=70):
-        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
-        from IPython.display import display, HTML
-        items = [['text','target','prediction']]
-        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
-            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
-            items.append([str(txt_x), str(y), str(z)])
-        display(HTML(text2html_table(items,  [85,7.5,7.5])))
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
@@ -286,6 +268,7 @@ class OpenFileProcessor(PreProcessor):
 class TextList(ItemList):
     _bunch = TextClasDataBunch
     _processor = [TokenizeProcessor, NumericalizeProcessor]
+    _is_lm = False
 
     def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
         self.filter_missing_y = True
@@ -297,7 +280,7 @@ class TextList(ItemList):
 
     def get(self, i):
         o = super().get(i)
-        return Text(o, self.vocab.textify(o), self.__class__ == LMTextList)
+        return Text(o, self.vocab.textify(o))
 
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
@@ -306,7 +289,7 @@ class TextList(ItemList):
     
     def reconstruct(self, t:Tensor):
         idx = (t != self.pad_idx).nonzero().min()
-        return Text(t[idx:], self.vocab.textify(t[idx:]), self.__class__ == TextList)
+        return Text(t[idx:], self.vocab.textify(t[idx:]))
 
     @classmethod
     def from_folder(cls, path:PathOrStr='.', extensions:Collection[str]=text_extensions, vocab:Vocab=None,
@@ -315,8 +298,28 @@ class TextList(ItemList):
         processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
     
+    def show_xys(self, xs, ys, max_len:int=70)->None:
+        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
+        from IPython.display import display, HTML
+        items = [['idx','text']] if self._is_lm else [['text','target']]
+        for i, (x,y) in enumerate(zip(xs,ys)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
+            items.append([str(i), str(txt_x)] if self._is_lm else [str(txt_x), str(y)])
+        display(HTML(text2html_table(items, ([5,95] if self._is_lm else [90,10]))))
+        
+    def show_xyzs(self, xs, ys, zs, max_len:int=70):
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
+        from IPython.display import display, HTML
+        items = [['text','target','prediction']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
+            items.append([str(txt_x), str(y), str(z)])
+        display(HTML(text2html_table(items,  [85,7.5,7.5])))
+    
 class LMTextList(TextList):
     _bunch = TextLMDataBunch
+    _is_lm = True
+    _label_cls = EmptyLabel
 
 def _join_texts(texts:Collection[str], mark_fields:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
