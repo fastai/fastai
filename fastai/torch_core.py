@@ -98,7 +98,7 @@ def data_collate(batch:ItemsList)->Tensor:
 
 def requires_grad(m:nn.Module, b:Optional[bool]=None)->Optional[bool]:
     "If `b` is not set `requires_grad` on all params in `m`, else return `requires_grad` of first param."
-    ps = one_param(m)
+    ps = list(m.parameters())
     if not ps: return None
     if b is None: return ps[0].requires_grad
     for p in ps: p.requires_grad=b

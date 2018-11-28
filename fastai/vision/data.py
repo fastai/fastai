@@ -251,13 +251,9 @@ class ImageItemList(ItemList):
         self.copy_new.append('convert_mode')
         self.sizes={}
 
-<<<<<<< HEAD
     def open(self, fn): 
         "Open image in `fn`, subclass and overwrite for custom behavior."
-        return open_image(fn)
-=======
-    def open(self, fn): return open_image(fn, convert_mode=self.convert_mode)
->>>>>>> 064cbfb98de6c04ddb2ff852f75e6f20bf67d568
+        return open_image(fn, convert_mode=self.convert_mode)
 
     def get(self, i):
         fn = super().get(i)
@@ -391,12 +387,8 @@ class PointsItemList(ItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
-<<<<<<< HEAD
 class ImageImageList(ImageItemList): 
-     "`ItemList` suitable for `Image` to `Image` tasks."
-=======
-class ImageImageList(ImageItemList):
->>>>>>> 064cbfb98de6c04ddb2ff852f75e6f20bf67d568
+    "`ItemList` suitable for `Image` to `Image` tasks."
     _label_cls = ImageItemList
     _square_show=False
 

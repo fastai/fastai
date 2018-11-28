@@ -57,7 +57,7 @@ class CollabDataBunch(DataBunch):
 
 class CollabLearner(Learner):
     def get_idx(self, arr:Collection, is_item:bool=True):
-        "Fetch item or user (based on `is_item`) for all in `arr`. (Set model to `cpu` and no grad.)""
+        "Fetch item or user (based on `is_item`) for all in `arr`. (Set model to `cpu` and no grad.)"
         m = self.model.eval().cpu()
         requires_grad(m,False)
         u_class,i_class = self.data.classes.values()

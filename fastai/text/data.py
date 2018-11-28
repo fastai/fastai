@@ -315,6 +315,10 @@ class TextList(ItemList):
             items.append([str(txt_x), str(y), str(z)])
         display(HTML(text2html_table(items,  [85,7.5,7.5])))
 
+class LMLabel(CategoryList):
+    def predict(self, res): return res
+    def reconstruct(self,t:Tensor): return 0
+        
 class LMTextList(TextList):
     "Special `TextList` for a language model."
     _bunch = TextLMDataBunch
