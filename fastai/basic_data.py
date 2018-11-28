@@ -1,6 +1,5 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
-from .layers import MSELossFlat
 from torch.utils.data.dataloader import default_collate
 
 DatasetType = Enum('DatasetType', 'Train Valid Test Single')
