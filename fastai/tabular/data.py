@@ -11,8 +11,8 @@ __all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor',
 
 OptTabTfms = Optional[Collection[TabularProc]]
 
-def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
-#def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
+#def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
+def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
 
 def def_emb_sz(classes, n, sz_dict=None):
     sz_dict = ifnone(sz_dict, {})

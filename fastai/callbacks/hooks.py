@@ -82,7 +82,7 @@ class ActivationStats(HookCallback):
 
     def hook(self, m:nn.Module, i:Tensors, o:Tensors)->Tuple[Rank0Tensor,Rank0Tensor]:
         return o.mean().item(),o.std().item()
-    def on_batch_end(self, train, **kwargs): 
+    def on_batch_end(self, train, **kwargs):
         if train: self.stats.append(self.hooks.stored)
     def on_train_end(self, **kwargs): self.stats = tensor(self.stats).permute(2,1,0)
 
@@ -118,9 +118,9 @@ def params_size(m: nn.Module, size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hook
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
         x = m.data.one_batch(detach=False, denorm=False)[0]
-        m = m.model        
+        m = m.model
         print('Input Size override by Learner.data.train_dl')
-    elif isinstance(m, nn.Module): 
+    elif isinstance(m, nn.Module):
         ch_in = in_channels(m)
         x = next(m.parameters()).new(1, ch_in, *size)
     else:
@@ -141,12 +141,12 @@ def get_layer_name(layer:nn.Module)->str:
 def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     func = lambda m:list(map(get_layer_name, flatten_model(m)))
     layers_names = func(m.model) if isinstance(m, Learner) else func(m)
-    layers_sizes, layers_params, _ = params_size(m)    
+    layers_sizes, layers_params, _ = params_size(m)
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])
     return list(map(layer_info, layers_names, layers_sizes, layers_params))
 
-def model_summary(m:Collection[nn.Module], n:int=100):
-    "Print a summary of `m` using a char length of `n`."
+def model_summary(m:Collection[nn.Module], n:int=80):
+    "Print a summary of `m` using a output text width of `n` chars"
     info = layers_info(m)
     header = ["Layer (type)", "Output Shape", "Param #"]
     print("=" * n)
@@ -159,3 +159,6 @@ def model_summary(m:Collection[nn.Module], n:int=100):
         print(f"{layer:<25} {size:<20} {params:<20}")
         print("_" * n)
     print("Total params: ", total_params)
+
+Learner.summary = model_summary
+

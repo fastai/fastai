@@ -312,6 +312,7 @@ class MultiCategoryList(CategoryListBase):
         return MultiCategory(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
+    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if True"
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
