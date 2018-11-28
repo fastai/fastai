@@ -16,6 +16,9 @@ of that change.
 
 ### New:
 
+- `DeviceDataLoader.new` method to get a copy of a `DeviceDataLoader` while changing an attribute
+- `DataBunch.batch_size` allows to change the batch size of all the dataloaders
+
 ### Changed:
 
 ### Fixed:
