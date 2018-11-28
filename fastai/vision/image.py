@@ -204,7 +204,9 @@ class Image(ItemBase):
         return self.px
 
     def show(self, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
-              cmap:str='viridis', y:Any=None, **kwargs):
+              cmap:str=None, y:Any=None, **kwargs):
+        "Show image on `ax` with `title`, using `cmap` if single-channel, overlaid with optional `y`"
+        cmap = ifnone(cmap, defaults.cmap)
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize)
         if y is not None: y.show(ax=ax, **kwargs)
         if title is not None: ax.set_title(title)

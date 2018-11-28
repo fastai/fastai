@@ -250,11 +250,12 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
 
 class ImageItemList(ItemList):
     _bunch,_square_show = ImageDataBunch,True
-    def __post_init__(self):
-        super().__post_init__()
+    def __init__(self, *args, convert_mode='RGB', **kwargs):
+        super().__init__(*args, **kwargs)
+        self.convert_mode = convert_mode
         self.sizes={}
 
-    def open(self, fn): return open_image(fn)
+    def open(self, fn): return open_image(fn, convert_mode=self.convert_mode)
 
     def get(self, i):
         fn = super().get(i)
@@ -284,7 +285,7 @@ class ImageItemList(ItemList):
         return cls.from_df(df, path=path, **kwargs)
 
     def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
-    
+
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
         "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
         rows = int(math.sqrt(len(xs)))
@@ -377,10 +378,10 @@ class PointsItemList(ItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
-class ImageImageList(ImageItemList): 
+class ImageImageList(ImageItemList):
     _label_cls = ImageItemList
     _square_show=False
-    
+
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=None, **kwargs):
         "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
         figsize = ifnone(figsize, (6,3*len(xs)))
