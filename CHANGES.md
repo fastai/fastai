@@ -16,6 +16,7 @@ of that change.
 ### New:
 
 - `Learner.summary`
+- `add_datepart`
 
 ## 1.0.29 (2018-11-27)
 
