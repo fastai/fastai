@@ -10,17 +10,16 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-
-
-
 ## 1.0.31.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
 
-### Fixed:
+- `ImageItemList` now takes optional `convert_mode`
+- `Image.show` now uses `defaults.cmap` if no `cmap` passed
 
+### Fixed:
 
 
 ## 1.0.30 (2018-11-28)
