@@ -12,10 +12,23 @@ of that change.
 
 
 
-## 1.0.30.dev0 (Work In Progress)
+
+## 1.0.31.dev0 (Work In Progress)
 
 ### New:
 
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.30 (2018-11-28)
+
+### New:
+
+- `Learner.summary`
+- `add_datepart`
 - `DeviceDataLoader.new` method to get a copy of a `DeviceDataLoader` while changing an attribute
 - `DataBunch.batch_size` allows to change the batch size of all the dataloaders
 
@@ -24,6 +37,7 @@ of that change.
 ### Fixed:
 
 
+>>>>>>> d4b7b3161aa8de4f54da61612e3ff941dd73a408
 
 ## 1.0.29 (2018-11-27)
 

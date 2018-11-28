@@ -98,7 +98,7 @@ class ItemList():
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`."
-        df = pd.read_csv(path/csv_name, header=header)
+        df = pd.read_csv(Path(path)/csv_name, header=header)
         return cls.from_df(df, path=path, cols=cols, **kwargs)
 
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
@@ -312,6 +312,7 @@ class MultiCategoryList(CategoryListBase):
         return MultiCategory(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
+    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if True"
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
