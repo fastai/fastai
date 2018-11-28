@@ -245,13 +245,19 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
 class ImageItemList(ItemList):
     "`ItemList` suitable for computre vision."
     _bunch,_square_show = ImageDataBunch,True
-    def __post_init__(self):
-        super().__post_init__()
+    def __init__(self, *args, convert_mode='RGB', **kwargs):
+        super().__init__(*args, **kwargs)
+        self.convert_mode = convert_mode
+        self.copy_new.append('convert_mode')
         self.sizes={}
 
+<<<<<<< HEAD
     def open(self, fn): 
         "Open image in `fn`, subclass and overwrite for custom behavior."
         return open_image(fn)
+=======
+    def open(self, fn): return open_image(fn, convert_mode=self.convert_mode)
+>>>>>>> 064cbfb98de6c04ddb2ff852f75e6f20bf67d568
 
     def get(self, i):
         fn = super().get(i)
@@ -282,7 +288,7 @@ class ImageItemList(ItemList):
         return cls.from_df(df, path=path, **kwargs)
 
     def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
-    
+
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
         "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
         rows = int(math.sqrt(len(xs)))
@@ -357,7 +363,7 @@ class SegmentationLabelList(ImageItemList):
         self.classes,self.loss_func = classes,CrossEntropyFlat()
 
     def new(self, items, classes=None, **kwargs):
-        return self.__class__(items, ifnone(classes, self.classes), **kwargs)
+        return self.new(items, ifnone(classes, self.classes), **kwargs)
 
     def open(self, fn): return open_mask(fn)
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
@@ -385,11 +391,15 @@ class PointsItemList(ItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
+<<<<<<< HEAD
 class ImageImageList(ImageItemList): 
      "`ItemList` suitable for `Image` to `Image` tasks."
+=======
+class ImageImageList(ImageItemList):
+>>>>>>> 064cbfb98de6c04ddb2ff852f75e6f20bf67d568
     _label_cls = ImageItemList
     _square_show=False
-    
+
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=None, **kwargs):
         "Show the `xs` (inputs) and `ys`(targets)  on a figure of `figsize`."
         figsize = ifnone(figsize, (6,3*len(xs)))

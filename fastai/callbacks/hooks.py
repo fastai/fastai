@@ -130,16 +130,12 @@ def params_size(m: nn.Module, size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hook
     if isinstance(m, Learner):
         x = m.data.one_batch(detach=False, denorm=False)[0]
         m = m.model
-        print('Input Size override by Learner.data.train_dl')
     elif isinstance(m, nn.Module):
         ch_in = in_channels(m)
         x = next(m.parameters()).new(1, ch_in, *size)
-    else:
-        raise TypeError('You should either pass in a Learner or nn.Module')
+    else: raise TypeError('You should either pass in a Learner or nn.Module')
     hooks_outputs = hook_outputs(flatten_model(m))
     hooks_params = hook_params(flatten_model(m))
-    print_size = lambda x: print('Input Size passed in:', x, "\n")
-    print_size(list(map(len, x))) if is_listy(x) else print_size(len(x))
     x = m.eval()(*x) if is_listy(x) else m.eval()(x)
     hooks = zip(hooks_outputs, hooks_params)
     res = [(o[0].stored.shape, o[1].stored) for o in hooks]

@@ -46,6 +46,7 @@ class ItemList():
         self.items,self.x = array(items, dtype=object),x
         self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
+        self.copy_new = ['x', 'label_cls', 'path']
         self.__post_init__()
 
     def __post_init__(self): pass
@@ -82,7 +83,8 @@ class ItemList():
     def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':
         "Create a new `ItemList` from `items`, keeping the same attributes."
         processor = ifnone(processor, self.processor)
-        return self.__class__(items=items, processor=processor, path=self.path, x=self.x, label_cls=self.label_cls, **kwargs)
+        copy_d = {o:getattr(self,o) for o in self.copy_new}
+        return self.__class__(items=items, processor=processor, **copy_d, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -328,11 +330,9 @@ class FloatList(ItemList):
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
+        self.copy_new.append('log')
         self.c = self.items.shape[1] if len(self.items.shape) > 1 else 1
         self.loss_func = MSELossFlat()
-
-    def new(self, items,**kwargs):
-        return super().new(items, log=self.log, **kwargs)
 
     def get(self, i):
         o = super().get(i)
