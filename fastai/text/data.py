@@ -174,7 +174,7 @@ class TextDataBunch(DataBunch):
                  label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files."
         df = pd.read_csv(Path(path)/csv_name, header=header)
-        idx = np.random.permutation(len(df))
+        df = df.iloc[np.random.permutation(len(df))]
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
