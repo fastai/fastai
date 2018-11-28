@@ -253,6 +253,7 @@ class ImageItemList(ItemList):
     def __init__(self, *args, convert_mode='RGB', **kwargs):
         super().__init__(*args, **kwargs)
         self.convert_mode = convert_mode
+        self.copy_new.append('convert_mode')
         self.sizes={}
 
     def open(self, fn): return open_image(fn, convert_mode=self.convert_mode)
@@ -354,7 +355,7 @@ class SegmentationLabelList(ImageItemList):
         self.classes,self.loss_func = classes,CrossEntropyFlat()
 
     def new(self, items, classes=None, **kwargs):
-        return self.__class__(items, ifnone(classes, self.classes), **kwargs)
+        return self.new(items, ifnone(classes, self.classes), **kwargs)
 
     def open(self, fn): return open_mask(fn)
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]

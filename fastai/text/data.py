@@ -105,7 +105,7 @@ class TextDataBunch(DataBunch):
     """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
     `TextClasDataBunch`."""
     _batch_first=False
-    
+
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
@@ -231,7 +231,7 @@ class Text(ItemBase):
 
 class LMLabel(CategoryList):
     def predict(self, res): return res
-        
+
     def reconstruct(self,t:Tensor): return 0
 
 class TokenizeProcessor(PreProcessor):
@@ -274,9 +274,7 @@ class TextList(ItemList):
         self.filter_missing_y = True
         super().__init__(items, **kwargs)
         self.vocab,self.pad_idx = vocab,pad_idx
-
-    def new(self, items:Iterator, **kwargs)->'NumericalizedTextList':
-        return super().new(items=items, vocab=self.vocab, pad_idx=self.pad_idx, **kwargs)
+        self.copy_new += ['vocab', 'pad_idx']
 
     def get(self, i):
         o = super().get(i)
@@ -286,7 +284,7 @@ class TextList(ItemList):
         "A special labelling method for language models."
         self.__class__ = LMTextList
         return self.label_const(0, label_cls=LMLabel)
-    
+
     def reconstruct(self, t:Tensor):
         idx = (t != self.pad_idx).nonzero().min()
         return Text(t[idx:], self.vocab.textify(t[idx:]))
@@ -297,7 +295,7 @@ class TextList(ItemList):
         "Get the list of files in `path` that have a text suffix. `recurse` determines if we search subfolders."
         processor = ifnone(processor, [OpenFileProcessor(), TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
-    
+
     def show_xys(self, xs, ys, max_len:int=70)->None:
         "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
@@ -306,7 +304,7 @@ class TextList(ItemList):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
             items.append([str(i), str(txt_x)] if self._is_lm else [str(txt_x), str(y)])
         display(HTML(text2html_table(items, ([5,95] if self._is_lm else [90,10]))))
-        
+
     def show_xyzs(self, xs, ys, zs, max_len:int=70):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
@@ -315,7 +313,7 @@ class TextList(ItemList):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
             items.append([str(txt_x), str(y), str(z)])
         display(HTML(text2html_table(items,  [85,7.5,7.5])))
-    
+
 class LMTextList(TextList):
     _bunch = TextLMDataBunch
     _is_lm = True

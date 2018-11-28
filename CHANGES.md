@@ -18,6 +18,7 @@ of that change.
 
 - `ImageItemList` now takes optional `convert_mode`
 - `Image.show` now uses `defaults.cmap` if no `cmap` passed
+- `ItemList` subclasses can now add to `copy_new` list for any attributes that need to be saved on `new()`
 
 ### Fixed:
 

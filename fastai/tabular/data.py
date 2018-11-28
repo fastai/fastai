@@ -97,19 +97,17 @@ class TabularList(ItemList):
     _bunch=TabularDataBunch
     def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  procs=None, **kwargs)->'TabularList':
+        super().__init__(range_of(items), **kwargs)
         #dataframe is in xtra, items is just a range of index
         if cat_names is None:  cat_names = []
         if cont_names is None: cont_names = []
-        super().__init__(range_of(items), **kwargs)
         self.cat_names,self.cont_names,self.procs = cat_names,cont_names,procs
+        self.copy_new += ['cat_names', 'cont_names', 'procs']
 
     @classmethod
     def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, procs=None, **kwargs)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
         return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df, **kwargs)
-
-    def new(self, items:Iterator, **kwargs)->'TabularList':
-        return super().new(items=items, cat_names=self.cat_names, cont_names=self.cont_names, procs=self.procs, **kwargs)
 
     def get(self, o):
         codes = [] if self.codes is None else self.codes[o]

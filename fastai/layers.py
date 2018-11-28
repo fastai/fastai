@@ -44,7 +44,7 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
 def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, bn:bool=True, use_activ:bool=True,
-               leaky:float=None, transpose:bool=False, wn:bool=False, init:Callable=nn.init.kaiming_normal_):
+               leaky:float=None, transpose:bool=False, wn:bool=False, init:Callable=nn.init.kaiming_normal_, bn_zero=False):
     if padding is None: padding = (ks-1)//2 if not transpose else 0
     if wn: bn=False
     if bias is None:
@@ -55,7 +55,12 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     layers = [conv]
     if use_activ:
         layers.append(nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True))
-    if bn: layers.append(nn.BatchNorm2d(nf))
+    if bn:
+        bn_l = nn.BatchNorm2d(nf)
+        with torch.no_grad():
+            bn_l.bias.fill_(1e-3)
+            bn_l.weight.fill_(0. if bn_zero else 1.)
+        layers.append(bn_l)
     return nn.Sequential(*layers)
 
 class AdaptiveConcatPool2d(nn.Module):
