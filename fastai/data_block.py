@@ -98,6 +98,7 @@ class ItemList():
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`."
+        path = Path(path)
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, cols=cols, **kwargs)
 
