@@ -24,7 +24,7 @@ conda install -v -c fastai fastai
 
 Here is a little example to understand the `conda` package dependency conflict:
 
-Let's assume anaconda.org has these 5 packages:
+Let's assume anaconda.org has 3 packages: `A`, `B` and `P`, and some of them have multiple release versions:
 
 ```
 package A==1.0.17 depends on package P==1.0.5
