@@ -7,10 +7,8 @@ from ..basic_train import Learner, LearnerCallback
 __all__ = ['LRFinder']
 
 class LRFinder(LearnerCallback):
-    """Causes `learn` to go on a mock training from `start_lr` to `end_lr` for `num_it` iterations.
-       Training is interrupted if the loss diverges. Weights changes are reverted after run complete."""
+    "Causes `learn` to go on a mock training from `start_lr` to `end_lr` for `num_it` iterations."
     def __init__(self, learn:Learner, start_lr:float=1e-7, end_lr:float=10, num_it:int=100, stop_div:bool=True):
-        "Initialize schedule of learning rates"
         super().__init__(learn)
         self.data,self.stop_div = learn.data,stop_div
         self.sched = Stepper((start_lr, end_lr), num_it, annealing_exp)

@@ -83,7 +83,6 @@ class DataBunch():
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate):
-        "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
@@ -142,7 +141,7 @@ class DataBunch():
         return x,y
 
     def one_item(self, item, detach:bool=False, denorm:bool=False):
-        "Get ìtem` into a batch. Optionally `detach` and `denorm`."
+        "Get `item` into a batch. Optionally `detach` and `denorm`."
         ds = self.single_ds
         ds.set_item(item)
         res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)

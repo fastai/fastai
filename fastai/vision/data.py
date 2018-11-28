@@ -92,15 +92,17 @@ def channel_view(x:Tensor)->Tensor:
     return x.transpose(0,1).contiguous().view(x.shape[1],-1)
 
 class ImageDataBunch(DataBunch):
+    "DataBunch suitable for computer vision."
     _square_show = True
 
     @classmethod
-    def create_from_ll(cls, dss:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
+    def create_from_ll(cls, lls:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                 test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, **kwargs)->'ImageDataBunch':
-        dss = dss.transform(tfms=ds_tfms, size=size, **kwargs)
-        if test is not None: dss.add_test_folder(test)
-        return dss.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device)
+        "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
+        lls = lls.transform(tfms=ds_tfms, size=size, **kwargs)
+        if test is not None: lls.add_test_folder(test)
+        return lls.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
@@ -117,7 +119,7 @@ class ImageDataBunch(DataBunch):
     def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='',
                 **kwargs:Any)->'ImageDataBunch':
-        "Create from a DataFrame."
+        "Create from a `DataFrame` `df`."
         src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
                 .random_split_by_pct(valid_pct)
                 .label_from_df(sep=sep, cols=label_col))
@@ -127,7 +129,7 @@ class ImageDataBunch(DataBunch):
     def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
             fn_col:int=0, label_col:int=1, suffix:str='',
             header:Optional[Union[int,str]]='infer', **kwargs:Any)->'ImageDataBunch':
-        "Create from a csv file."
+        "Create from a csv file in `path/csv_labels`."
         path = Path(path)
         df = pd.read_csv(path/csv_labels, header=header)
         return cls.from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct,
@@ -135,16 +137,19 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, **kwargs):
+        "Create from list of `fnames` in `path`."
         src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct).label_from_list(labels)
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
     def from_name_func(cls, path:PathOrStr, fnames:FilePathList, label_func:Callable, valid_pct:float=0.2, **kwargs):
+        "Create from list of `fnames` in `path` with `label_func`."
         src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct)
         return cls.create_from_ll(src.label_from_func(label_func), **kwargs)
 
     @classmethod
     def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:float=0.2, **kwargs):
+        "Create from list of `fnames` in `path` with re expression `pat`."
         pat = re.compile(pat)
         def _get_label(fn): return pat.search(str(fn)).group(1)
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
@@ -189,13 +194,7 @@ def resize_to(img, targ_sz:int, use_min:bool=False):
 
 def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,int]]=None, dest:Path=None, n_channels:int=3,
                  interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None, resume:bool=False, **kwargs):
-    """Check if the image in `file` exists, it can be opened and has `n_channels`.
-    If `delete=True`:
-    (1) removes `file` if any of the verifications fails
-    (2) saves a modified version of `file` w/o EXIF data if the latter is broken
-    If `max_size` is specifided, image is resized to the same ratio so that both sizes are less than `max_size`,
-    using `interp`. Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are passed
-    to PIL.Image.save."""
+    "Check if the image in `file` exists, maybe resize it and copy it in `dest`."
     try:
         # deal with partially broken images as indicated by PIL warnings
         with warnings.catch_warnings():
@@ -233,12 +232,7 @@ def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,i
 def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int]=None,
                   dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
                   resume:bool=None, **kwargs):
-    """Check if the image in `path` exists, can be opened and has `n_channels`.
-    If `n_channels` is 3 – it'll try to convert image to RGB. If `delete`, removes it if it fails.
-    If `resume` – it will skip already existent images in `dest`.  If `max_size` is specifided,
-    image is resized to the same ratio so that both sizes are less than `max_size`, using `interp`.
-    Result is stored in `dest`, `ext` forces an extension type, `img_format` and `kwargs` are
-    passed to PIL.Image.save. Use `max_workers` CPUs."""
+    "Check if the images in `path` aren't broken, maybe resize them and copy it in `dest`."
     path = Path(path)
     if resume is None and dest == '.': resume=False
     dest = path/Path(dest)
@@ -249,12 +243,15 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     parallel(func, files, max_workers=max_workers)
 
 class ImageItemList(ItemList):
+    "`ItemList` suitable for computre vision."
     _bunch,_square_show = ImageDataBunch,True
     def __post_init__(self):
         super().__post_init__()
         self.sizes={}
 
-    def open(self, fn): return open_image(fn)
+    def open(self, fn): 
+        "Open image in `fn`, subclass and overwrite for custom behavior."
+        return open_image(fn)
 
     def get(self, i):
         fn = super().get(i)
@@ -279,6 +276,7 @@ class ImageItemList(ItemList):
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name:str, header:str='infer', **kwargs)->'ItemList':
+        "Get the filenames in `path/csv_name` opened with `header`."
         path = Path(path)
         df = pd.read_csv(path/csv_name, header=header)
         return cls.from_df(df, path=path, **kwargs)
@@ -286,7 +284,7 @@ class ImageItemList(ItemList):
     def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
     
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
-        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
         rows = int(math.sqrt(len(xs)))
         fig, axs = plt.subplots(rows,rows,figsize=figsize)
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
@@ -294,8 +292,7 @@ class ImageItemList(ItemList):
         plt.tight_layout()
 
     def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
-        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`.
-        `kwargs` are passed to the show method."""
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
         figsize = ifnone(figsize, (6,3*len(xs)))
         fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
         fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
@@ -304,6 +301,7 @@ class ImageItemList(ItemList):
             x.show(ax=axs[i,1], y=z, **kwargs)
 
 class ObjectCategoryProcessor(MultiCategoryProcessor):
+    "`PreProcessor` for labelled bounding boxes."
     def __init__(self, ds:ItemList, pad_idx:int=0):
         self.pad_idx = pad_idx
         super().__init__(ds)
@@ -315,6 +313,7 @@ class ObjectCategoryProcessor(MultiCategoryProcessor):
     def process_one(self,item): return [item[0], [self.c2i.get(o,None) for o in item[1]]]
 
     def generate_classes(self, items):
+        "Generate classes from unique `items` and add `background`."
         classes = super().generate_classes([o[1] for o in items])
         classes = ['background'] + list(classes)
         return classes
@@ -328,6 +327,7 @@ def _get_size(xs,i):
     return size
 
 class ObjectCategoryList(MultiCategoryList):
+    "`ItemList` for labelled bounding boxes."
     _processor = ObjectCategoryProcessor
 
     def get(self, i):
@@ -340,13 +340,17 @@ class ObjectCategoryList(MultiCategoryList):
         bboxes,labels = bboxes[i:],labels[i:]
         return ImageBBox.create(*x.size, bboxes, labels=labels, classes=self.classes, scale=False)
 
-class ObjectItemList(ImageItemList): _label_cls = ObjectCategoryList
+class ObjectItemList(ImageItemList): 
+    "`ItemList` suitable for object detection."
+    _label_cls = ObjectCategoryList
 
 class SegmentationProcessor(PreProcessor):
+    "`PreProcessor` that stores the classes for segmentation."
     def __init__(self, ds:ItemList): self.classes = ds.classes
     def process(self, ds:ItemList):  ds.classes,ds.c = self.classes,len(self.classes)
 
 class SegmentationLabelList(ImageItemList):
+    "`ItemList` for segmentation masks."
     _processor=SegmentationProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
@@ -359,13 +363,17 @@ class SegmentationLabelList(ImageItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
-class SegmentationItemList(ImageItemList): _label_cls = SegmentationLabelList
+class SegmentationItemList(ImageItemList): 
+    "`ItemList` suitable for segmentation tasks."
+    _label_cls = SegmentationLabelList
 
 class PointsProcessor(PreProcessor):
+    "`PreProcessor` that stores the number of targets for point regression."
     def __init__(self, ds:ItemList): self.c = len(ds.items[0].reshape(-1))
     def process(self, ds:ItemList):  ds.c = self.c
 
 class PointsItemList(ItemList):
+    "`ItemList` for points."
     _processor = PointsProcessor
 
     def __post_init__(self): self.loss_func = MSELossFlat()
@@ -378,11 +386,12 @@ class PointsItemList(ItemList):
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
 class ImageImageList(ImageItemList): 
+     "`ItemList` suitable for `Image` to `Image` tasks."
     _label_cls = ImageItemList
     _square_show=False
     
     def show_xys(self, xs, ys, figsize:Tuple[int,int]=None, **kwargs):
-        "Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method."
+        "Show the `xs` (inputs) and `ys`(targets)  on a figure of `figsize`."
         figsize = ifnone(figsize, (6,3*len(xs)))
         fig, axs = plt.subplots(len(xs),2,figsize=figsize)
         for i, (x,y) in enumerate(zip(xs,ys)):
@@ -391,8 +400,7 @@ class ImageImageList(ImageItemList):
         plt.tight_layout()
 
     def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
-        """Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`.
-        `kwargs` are passed to the show method."""
+        "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
         figsize = ifnone(figsize, (9,3*len(xs)))
         fig,axs = plt.subplots(len(xs), 3, figsize=figsize)
         fig.suptitle('Input / Prediction / Target', weight='bold', size=14)

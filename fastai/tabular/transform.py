@@ -20,10 +20,9 @@ def add_datepart(df, fldname, drop=True, time=False):
     df[targ_pre + 'Elapsed'] = fld.astype(np.int64) // 10 ** 9
     if drop: df.drop(fldname, axis=1, inplace=True)
 
-
 @dataclass
 class TabularProc():
-    "A transform for tabular dataframes."
+    "A processor for tabular dataframes."
     cat_names:StrList
     cont_names:StrList
 
@@ -41,7 +40,6 @@ class TabularProc():
 
 class Categorify(TabularProc):
     "Transform the categorical variables to that type."
-
     def apply_train(self, df:DataFrame):
         self.categories = {}
         for n in self.cat_names:
@@ -60,7 +58,6 @@ class FillMissing(TabularProc):
     fill_strategy:FillStrategy=FillStrategy.MEDIAN
     add_col:bool=True
     fill_val:float=0.
-
     def apply_train(self, df:DataFrame):
         self.na_dict = {}
         for name in self.cont_names:
@@ -83,8 +80,7 @@ class FillMissing(TabularProc):
                 df.loc[:,name] = df.loc[:,name].fillna(self.na_dict[name])
 
 class Normalize(TabularProc):
-    "Transform the categorical variables to that type."
-
+    "Normalize the continuous variables."
     def apply_train(self, df:DataFrame):
         self.means,self.stds = {},{}
         for n in self.cont_names:

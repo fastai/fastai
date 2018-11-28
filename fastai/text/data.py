@@ -19,6 +19,7 @@ class LanguageModelLoader():
         self.first,self.i,self.iter = True,0,0
         self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
         self.max_len,self.num_workers = max_len,0
+        self.init_kwargs = dict(bs=bs, bptt=bptt, backwards=backwards, shuffle=shuffle, max_len=max_len)
 
     def __iter__(self):
         if getattr(self.dataset, 'item', None) is not None:
@@ -102,8 +103,7 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
             NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
 
 class TextDataBunch(DataBunch):
-    """General class to get a `DataBunch` for NLP. You should use one of its subclass, `TextLMDataBunch` or
-    `TextClasDataBunch`."""
+    "General class to get a `DataBunch` for NLP. Subclassed by `TextLMDataBunch` and `TextClasDataBunch`."
     _batch_first=False
     
     def save(self, cache_name:PathOrStr='tmp'):
@@ -123,7 +123,7 @@ class TextDataBunch(DataBunch):
                  test_ids:Collection[Collection[int]]=None, train_lbls:Collection[Union[int,float]]=None,
                  valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
-        "Create a `TextDataBunch` from ids, labels and a dictionary."
+        "Create a `TextDataBunch` from ids, labels and a `vocab`."
         src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[ToIntsProcessor()]),
                         TextList(valid_ids, vocab, path=path, processor=[ToIntsProcessor()]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
@@ -226,15 +226,12 @@ def open_text(fn:PathOrStr, enc='utf-8'):
     with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
+    "Basic item for text data."
     def __init__(self, ids, text): self.data,self.text = ids,text
     def __str__(self):  return str(self.text)
 
-class LMLabel(CategoryList):
-    def predict(self, res): return res
-        
-    def reconstruct(self,t:Tensor): return 0
-
 class TokenizeProcessor(PreProcessor):
+    "`PreProcessor` that tokenizes the texts in `ds`."
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
@@ -247,6 +244,7 @@ class TokenizeProcessor(PreProcessor):
         ds.items = tokens
 
 class NumericalizeProcessor(PreProcessor):
+    "`PreProcessor` that numericalizes the tokens in `ds`."
     def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
         vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
@@ -257,15 +255,18 @@ class NumericalizeProcessor(PreProcessor):
         ds.vocab = self.vocab
         super().process(ds)
 
+#TODO: Refactor
 class ToIntsProcessor(PreProcessor):
+    "`PreProcessor` that converts the ids in propers int array."
     def process_one(self, item):  return np.array(item, dtype=np.int64)
 
-
 class OpenFileProcessor(PreProcessor):
+    "`PreProcessor` that opens the filenames and read the texts."
     def process_one(self,item):
         return open_text(item) if isinstance(item, Path) else item
 
 class TextList(ItemList):
+    "Basic `ItemList` for text data."
     _bunch = TextClasDataBunch
     _processor = [TokenizeProcessor, NumericalizeProcessor]
     _is_lm = False
@@ -299,7 +300,7 @@ class TextList(ItemList):
         return super().from_folder(path=path, extensions=extensions, processor=processor, **kwargs)
     
     def show_xys(self, xs, ys, max_len:int=70)->None:
-        "Show the `xs` and `ys`. `max_len` is the maximum number of tokens displayed."
+        "Show the `xs` (inputs) and `ys` (targets). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
         items = [['idx','text']] if self._is_lm else [['text','target']]
         for i, (x,y) in enumerate(zip(xs,ys)):
@@ -317,6 +318,7 @@ class TextList(ItemList):
         display(HTML(text2html_table(items,  [85,7.5,7.5])))
     
 class LMTextList(TextList):
+    "Special `TextList` for a language model."
     _bunch = TextLMDataBunch
     _is_lm = True
     _label_cls = EmptyLabel

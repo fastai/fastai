@@ -24,6 +24,7 @@ model_meta = {
     models.resnet152:{**_resnet_meta}}
 
 def cnn_config(arch):
+    "Get the metadata associated with `arch`."
     torch.backends.cudnn.benchmark = True
     return model_meta.get(arch, _default_meta)
 
@@ -33,8 +34,7 @@ def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Mo
             else body_fn(model) if body_fn else model)
 
 def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, bn_final:bool=False):
-    """Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes.
-    :param ps: dropout, can be a single float or a list for each layer."""
+    "Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes."
     lin_ftrs = [nf, 512, nc] if lin_ftrs is None else [nf] + lin_ftrs + [nc]
     ps = listify(ps)
     if len(ps)==1: ps = [ps[0]/2] * (len(lin_ftrs)-2) + ps
@@ -75,16 +75,15 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, all_wn:boo
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, sigmoid:bool=None):
-        if sigmoid is not None: warnings.warn("`sigmoid` argument is deprecated, the learner now always return the probabilities")
+    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor):
         self.data,self.probs,self.y_true,self.losses = data,probs,y_true,losses
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
-    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, sigmoid:bool=None, tta=False):
+    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
         "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
         preds = learn.TTA(with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds, sigmoid=sigmoid)
+        return cls(learn.data, *preds)
 
     def top_losses(self, k:int=None, largest=True):
         "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
@@ -117,10 +116,7 @@ class ClassificationInterpretation():
 
     def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2,
                               slice_size:int=None, **kwargs)->None:
-        """Plot the confusion matrix, with `title` and using `cmap`. If `normalize`, plots the percentages with
-        `norm_dec` digits. `slice_size` can be used to avoid out of memory error if your set is too big.
-        `kawrgs` are passed to `plt.figure`.
-        """
+        "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
         plt.figure(**kwargs)
@@ -141,7 +137,7 @@ class ClassificationInterpretation():
         plt.xlabel('Predicted')
 
     def most_confused(self, min_val:int=1, slice_size:int=None)->Collection[Tuple[str,str,int]]:
-        "Sorted descending list of largest non-diagonal entries of confusion matrix"
+        "Sorted descending list of largest non-diagonal entries of confusion matrix."
         cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
         res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
@@ -149,8 +145,9 @@ class ClassificationInterpretation():
         return sorted(res, key=itemgetter(2), reverse=True)
 
 class GANLearner(Learner):
-
+    "`Learner` overwriting `predict` and `show_results` for GANs."
     def add_gan_trainer(self, cb):
+        "Add the `GanTrainer` callback cb."
         self.gan_trainer = cb
         self.callbacks.append(cb)
 
@@ -170,11 +167,7 @@ class GANLearner(Learner):
 
 def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None, noise_size:int=None, wgan:bool=False,
                 **kwargs):
-    """Create a `GANLearner` from `data` with a `generator` and a `discriminator`. If `noise_size` is set, the GAN will generate
-    fakes from a noise of this size, otherwise it'll use the inputs in data. If `wgan` is set to `True`, overrides the
-    loss functions for a WGAN. `loss_funcD` and `loss_funcG` are used for discriminator and the generator. `kwargs`
-    are passed to the `Learner` init.
-    """
+    "Create a `GANLearner` from `data` with a `generator` and a `discriminator`."
     gan = models.GAN(generator, discriminator)
     learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
     if wgan: loss_funcD,loss_funcG = WassersteinLoss(),noop

@@ -20,16 +20,20 @@ class CSVLogger(LearnerCallback):
         "Read the content of saved file"
         return pd.read_csv(self.path)
 
-    def on_train_begin(self, metrics_names: StrList, **kwargs: Any) -> None:
+    def on_train_begin(self, **kwargs: Any) -> None:
+        "Prepare file with metric names."
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.file = self.path.open('w')
         self.file.write(','.join(self.learn.recorder.names) + '\n')
 
     def on_epoch_end(self, epoch: int, smooth_loss: Tensor, last_metrics: MetricsList, **kwargs: Any) -> bool:
+        "Add a line with `epoch` number, `smooth_loss` and `last_metrics`."
         last_metrics = ifnone(last_metrics, [])
         stats = [str(stat) if isinstance(stat, int) else f'{stat:.6f}'
                  for name, stat in zip(self.learn.recorder.names, [epoch, smooth_loss] + last_metrics)]
         str_stats = ','.join(stats)
         self.file.write(str_stats + '\n')
 
-    def on_train_end(self, **kwargs: Any) -> None:  self.file.close()
+    def on_train_end(self, **kwargs: Any) -> None:  
+        "Close the file."
+        self.file.close()
