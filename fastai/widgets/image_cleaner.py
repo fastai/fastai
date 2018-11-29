@@ -29,8 +29,7 @@ class DatasetFormatter():
     def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
         "Gets the indices for the most similar images in `ds_type` dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
-        if ds_type == DatasetType.Train: dl = DataLoader(learn.data.train_ds,
-            batch_size=learn.dl(DatasetType.Train).batch_size, shuffle=False, collate_fn=data_collate)
+        if ds_type == DatasetType.Train: dl = learn.data.train_dl.new(shuffle=False)
         else: dl = learn.dl(ds_type)
 
         ds_actns = cls.get_actns(learn, hook=hook, dl=dl, **kwargs)
@@ -59,15 +58,7 @@ class DatasetFormatter():
         if torch.equal(t1, t2): self_sim = True
         print('Computing similarities...')
 
-        sims = np.zeros((t1.shape[0], t2.shape[0]))
-        for idx1 in progress_bar(range(t1.shape[0])):
-            for idx2 in range(t2.shape[0]):
-                if not self_sim or idx1>idx2:
-                    ex1 = t1[idx1,:]
-                    ex2 = t2[idx2,:]
-                    sims[idx1][idx2] = sim_func(ex1,ex2)
-                else:
-                    sims[idx1][idx2] = 0
+        sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0 for idx1 in progress_bar(range(t1.shape[0])) for idx2 in range(t2.shape[0])]
         return np.array(sims)
 
     def largest_indices(arr, n):

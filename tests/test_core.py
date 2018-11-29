@@ -27,6 +27,12 @@ def test_ifnone():
     assert ifnone(1, 5)    == 1
     assert ifnone(0, 5)    == 0
 
+def test_chunks():
+    ls = [0,1,2,3]
+    assert([a for a in chunks(ls, 2)] == [[0,1],[2,3]])
+    assert([a for a in chunks(ls, 4)] == [[0,1,2,3]])
+    assert([a for a in chunks(ls, 1)] == [[0],[1],[2],[3]])
+
 def test_uniqueify():
     assert uniqueify([1,1,3,3,5]) == [1,3,5]
     assert uniqueify([1,3,5])     == [1,3,5]

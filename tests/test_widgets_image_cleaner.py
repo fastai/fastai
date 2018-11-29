@@ -11,7 +11,7 @@ def data():
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
     return data
 
-@pytest.mark.skip(reason="Francisco needs to fix me.")
+@pytest.mark.xfail(reason = "Expected Fail, lengths should be the same.")
 def test_image_cleaner_index_length_mismatch(data):
     with pytest.raises(AssertionError) as e:
         n = len(data.valid_ds)
@@ -19,13 +19,10 @@ def test_image_cleaner_index_length_mismatch(data):
 
 def test_image_cleaner_length_correct(data):
     n = len(data.valid_ds)
-    ImageCleaner(data.valid_ds, np.arange(n))       
-        
-@pytest.mark.xfail(reason = "Expected Fail, Dataset should be passed instead.")                   
+    ImageCleaner(data.valid_ds, np.arange(n))
+
+@pytest.mark.xfail(reason = "Expected Fail, Dataset should be passed instead.")
 def test_image_cleaner_wrong_input_type(data):
     n = len(data.valid_ds)
     ImageCleaner(data, np.arange(n))
-    
 
-    
- 
