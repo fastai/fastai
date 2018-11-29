@@ -34,6 +34,31 @@ def bn_drop_lin(n_in:int, n_out:int, bn:bool=True, p:float=0., actn:Optional[nn.
     if actn is not None: layers.append(actn)
     return layers
 
+def conv1d(ni:int, no:int, ks:int=1, stride:int=1, padding:int=0, bias:bool=False):
+    "Create and iniialize `nn.Conv1d` layer
+    conv = nn.Conv1d(ni, no, ks, stride=stride, padding=padding, bias=bias)
+    nn.init.kaiming_normal_(conv.weight)
+    if bias: conv.bias.data.zero_()
+    return spectral_norm(conv)
+
+class SelfAttention(nn.Module):
+    "Self attention layer for 2d."
+    def __init__(self, n_channels:int):
+        super().__init__()
+        self.query = conv1d(n_channels, n_channels//8)
+        self.key   = conv1d(n_channels, n_channels//8)
+        self.value = conv1d(n_channels, n_channels)
+        self.gamma = nn.Parameter(tensor([0.]))
+        
+    def forward(self, x):
+        #Notations from https://arxiv.org/pdf/1805.08318.pdf
+        size = x.size()
+        x = x.view(*size[:2],-1)
+        f,g,h = self.query(x),self.key(x),self.value(x)
+        beta = F.softmax(torch.bmm(f.permute(0,2,1).contiguous(), g), dim=1)
+        o = self.gamma * torch.bmm(h, beta) + x
+        return o.view(*size)
+
 def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
     "Create and initialize `nn.Conv2d` layer. `padding` defaults to `ks//2`."
     if padding is None: padding = ks//2
@@ -47,7 +72,7 @@ NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
 
 def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None,
                norm_type:Optional[NormType]=NormType.Batch,  use_activ:bool=True, leaky:float=None,
-               transpose:bool=False, init:Callable=nn.init.kaiming_normal_):
+               transpose:bool=False, init:Callable=nn.init.kaiming_normal_, self_attention:bool=False):
     "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and batchnorm (if `bn`) layers."
     if padding is None: padding = (ks-1)//2 if not transpose else 0
     bn = norm_type in (NormType.Batch, NormType.BatchZero)
@@ -65,6 +90,7 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
             bn_l.bias.fill_(1e-3)
             bn_l.weight.fill_(0. if norm_type==NormType.BatchZero else 1.)
         layers.append(bn_l)
+    if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
 class SequentialResBlock(nn.Module):
