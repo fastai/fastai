@@ -136,11 +136,11 @@ def icnr(x, scale=2, init=nn.init.kaiming_normal_):
 
 class PixelShuffle_ICNR(nn.Module):
     "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
-    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, spectral:bool=True):
+    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, norm_type=NormType.Weight):
         super().__init__()
         nf = ifnone(nf, ni)
         self.conv = conv2d(ni, nf * (scale**2), ks=1, bias=True)
-        self.conv = (spectral_norm if spectral else weight_norm)(self.conv)
+        self.conv = (spectral_norm if norm_type==NormType.Spectral else weight_norm)(self.conv)
         icnr(self.conv.weight)
         self.shuf = nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel
