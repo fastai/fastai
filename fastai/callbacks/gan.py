@@ -50,6 +50,7 @@ class GANTrainer(LearnerCallback):
     
     def on_batch_begin(self, **kwargs):
         "Clamp the weights with `self.clip`."
+        if self.clip is None: return
         for p in self.learn.model.discriminator.parameters(): 
             p.data.clamp_(-self.clip, self.clip)
         
@@ -62,14 +63,14 @@ class GANTrainer(LearnerCallback):
         self.dlosses.append(self.smoothenerD.smooth)
         return loss
     
-    def on_batch_end(self, last_input, **kwargs):
+    def on_batch_end(self, last_input, last_target, **kwargs):
         "Trains one step of the generator every `self.n_disc_iter(self.gen_iters)` steps of the discriminator."
         self.disc_iters += 1
         if self.disc_iters == self.n_disc_iter(self.gen_iters):
             self.disc_iters = 0
             self._set_trainable(True)
-            pred = self.learn.model(self.learn.model(self.input_fake(last_input), gen=True)).mean().view(1)[0]
-            loss = self.loss_funcG(pred)
+            pred = self.learn.model(self.learn.model(self.input_fake(last_input), gen=True))
+            loss = self.loss_funcG(pred, last_target)
             self.smoothenerG.add_value(loss.detach().cpu())
             self.glosses.append(self.smoothenerG.smooth)
             self.learn.model.generator.zero_grad()

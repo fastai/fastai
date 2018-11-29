@@ -138,8 +138,8 @@ class MSELossFlat(nn.MSELoss):
         return super().forward(input.view(-1), target.view(-1))
 
 class NoopLoss(nn.Module):
-    "Just returns the `output`."
-    def forward(self, output, target): return output[0]
+    "Just returns the mean of the `output`."
+    def forward(self, output, target): return output.mean()
 
 class WassersteinLoss(nn.Module):
     "For WGAN."

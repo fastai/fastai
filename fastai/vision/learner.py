@@ -170,7 +170,7 @@ def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None
     "Create a `GANLearner` from `data` with a `generator` and a `discriminator`."
     gan = models.GAN(generator, discriminator)
     learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
-    if wgan: loss_funcD,loss_funcG = WassersteinLoss(),noop
+    if wgan: loss_funcD,loss_funcG = WassersteinLoss(),NoopLoss()
     if noise_size is None: cb = GANTrainer(learn, loss_funcD, loss_funcG)
     else: cb = NoisyGANTrainer(learn, loss_funcD, loss_funcG, bs=data.batch_size, noise_sz=noise_size)
     learn.add_gan_trainer(cb)
