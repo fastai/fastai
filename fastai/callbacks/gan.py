@@ -22,6 +22,7 @@ class GANTrainer(LearnerCallback):
     loss_funcD:LossFunction=WassersteinLoss()
     loss_funcG:LossFunction=NoopLoss()
     n_disc_iter:Callable=standard_disc_iter
+    div_lr_gen:float=1.
     clip:float=0.01
     beta:float=0.98
     
@@ -29,7 +30,7 @@ class GANTrainer(LearnerCallback):
         requires_grad(self.learn.model.generator, gen)
         requires_grad(self.learn.model.discriminator, not gen)
         if gen:
-            self.opt_gen.lr, self.opt_gen.mom = self.learn.opt.lr, self.learn.opt.mom
+            self.opt_gen.lr, self.opt_gen.mom = self.learn.opt.lr/self.div_lr_gen, self.learn.opt.mom
             self.opt_gen.wd, self.opt_gen.beta = self.learn.opt.wd, self.learn.opt.beta
     
     def input_fake(self, last_input, grad:bool=True):
