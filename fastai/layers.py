@@ -35,7 +35,7 @@ def bn_drop_lin(n_in:int, n_out:int, bn:bool=True, p:float=0., actn:Optional[nn.
     return layers
 
 def conv1d(ni:int, no:int, ks:int=1, stride:int=1, padding:int=0, bias:bool=False):
-    "Create and iniialize `nn.Conv1d` layer
+    "Create and iniialize `nn.Conv1d` layer."
     conv = nn.Conv1d(ni, no, ks, stride=stride, padding=padding, bias=bias)
     nn.init.kaiming_normal_(conv.weight)
     if bias: conv.bias.data.zero_()
