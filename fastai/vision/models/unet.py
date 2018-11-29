@@ -35,7 +35,8 @@ class UnetBlock(nn.Module):
 
 class DynamicUnet(nn.Sequential):
     "Create a U-Net from a given architecture."
-    def __init__(self, encoder:nn.Module, n_classes:int, n_factors:int=1, blur:bool=False, blur_final=True, **kwargs):
+    def __init__(self, encoder:nn.Module, n_classes:int, blur:bool=False, blur_final=True, 
+                 self_attention:bool=False, **kwargs):
         imsize = (256,256)
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
@@ -52,8 +53,9 @@ class DynamicUnet(nn.Sequential):
             not_final = i!=len(sfs_idxs)-1
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
             do_blur = blur and (not_final or blur_final)
-            unet_block = UnetBlock(up_in_c * (1 if i==0 else n_factors), x_in_c, self.sfs[i]*n_factors,
-                                   final_div=not_final, blur=blur, **kwargs).eval()
+            sa = self_attention and (i==len(sfs_idxs)-3)
+            unet_block = UnetBlock(up_in_c, x_in_c, self.sfs[i], 
+                                   final_div=not_final, blur=blur, self_attention=sa, **kwargs).eval()
             layers.append(unet_block)
             x = unet_block(x)
 
