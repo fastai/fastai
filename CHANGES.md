@@ -15,11 +15,13 @@ of that change.
 ### New:
 
 - `SequentialResBlock` to easily create resnet blocks
+- `Learner.load` and `Learner.save` will also load/save the optimizer state
 
 ### Changed:
 
 - `ImageItemList` now takes optional `convert_mode`
 - `Image.show` now uses `defaults.cmap` if no `cmap` passed
+- `Learner.fit` no longer creates a new optimizer at each call
 
 ### Fixed:
 
