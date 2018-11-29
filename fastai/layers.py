@@ -2,7 +2,7 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
+           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType',
            'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
 
 class Lambda(nn.Module):
@@ -43,16 +43,19 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
     "Create `nn.ConvTranspose2d` layer."
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
-def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, bn:bool=True, use_activ:bool=True,
-               leaky:float=None, transpose:bool=False, wn:bool=False, init:Callable=nn.init.kaiming_normal_, bn_zero=False):
+NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
+
+def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None,
+               norm_type:Optional[NormType]=NormType.Batch,  use_activ:bool=True, leaky:float=None,
+               transpose:bool=False, init:Callable=nn.init.kaiming_normal_):
     "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and batchnorm (if `bn`) layers."
     if padding is None: padding = (ks-1)//2 if not transpose else 0
-    if wn: bn=False
-    if bias is None:
-        bias = not bn
+    bn = norm_type in (NormType.Batch, NormType.BatchZero)
+    if bias is None: bias = not bn
     conv_func = nn.ConvTranspose2d if transpose else nn.Conv2d
     conv = init_default(conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), init)
-    if wn: conv = weight_norm(conv)
+    if   norm_type==NormType.Weight:   conv = weight_norm(conv)
+    elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
     if use_activ:
         layers.append(nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True))
@@ -60,7 +63,7 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
         bn_l = nn.BatchNorm2d(nf)
         with torch.no_grad():
             bn_l.bias.fill_(1e-3)
-            bn_l.weight.fill_(0. if bn_zero else 1.)
+            bn_l.weight.fill_(0. if norm_type==NormType.BatchZero else 1.)
         layers.append(bn_l)
     return nn.Sequential(*layers)
 
@@ -107,10 +110,11 @@ def icnr(x, scale=2, init=nn.init.kaiming_normal_):
 
 class PixelShuffle_ICNR(nn.Module):
     "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
-    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False):
+    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, spectral:bool=True):
         super().__init__()
         nf = ifnone(nf, ni)
-        self.conv = weight_norm(conv2d(ni, nf * (scale**2), ks=1, bias=True))
+        self.conv = conv2d(ni, nf * (scale**2), ks=1, bias=True)
+        self.conv = (spectral_norm if spectral else weight_norm)(self.conv)
         icnr(self.conv.weight)
         self.shuf = nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel
@@ -144,7 +148,7 @@ class NoopLoss(nn.Module):
 class WassersteinLoss(nn.Module):
     "For WGAN."
     def forward(self, real, fake): return real[0] - fake[0]
-    
+
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:
     "CNN with `conv_layer` defined by `actns`, `kernel_szs` and `strides`, plus batchnorm if `bn`."
@@ -152,7 +156,7 @@ def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
     kernel_szs = ifnone(kernel_szs, [3]*nl)
     strides    = ifnone(strides   , [2]*nl)
     layers = [conv_layer(actns[i], actns[i+1], kernel_szs[i], stride=strides[i],
-              bn=(bn and i<(len(strides)-1))) for i in range_of(strides)]
+              norm_type=(NormType.Batch if bn and i<(len(strides)-1) else None)) for i in range_of(strides)]
     layers.append(PoolFlatten())
     return nn.Sequential(*layers)
 
