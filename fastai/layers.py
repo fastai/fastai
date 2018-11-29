@@ -138,7 +138,7 @@ def icnr(x, scale=2, init=nn.init.kaiming_normal_):
 
 class PixelShuffle_ICNR(nn.Module):
     "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
-    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, norm_type=NormType.Weight):
+    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, norm_type=NormType.Weight, leaky:float=None):
         super().__init__()
         nf = ifnone(nf, ni)
         self.conv = conv2d(ni, nf * (scale**2), ks=1, bias=True)
@@ -152,9 +152,10 @@ class PixelShuffle_ICNR(nn.Module):
         k = torch.zeros(nf, nf, scale,scale)
         for i in range(nf): k[i,i] = t
         self.k = nn.Parameter(k, requires_grad=False)
+        self.relu = relu(True, leaky=leaky)
 
     def forward(self,x):
-        x = self.shuf(F.relu(self.conv(x)))
+        x = self.shuf(self.relu(self.conv(x)))
         if self.blur: x = F.conv2d(self.pad(x), self.k)
         return x
 

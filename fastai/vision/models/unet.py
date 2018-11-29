@@ -31,7 +31,7 @@ class UnetBlock(nn.Module):
         ssh = s.shape[-2:]
         if ssh != up_out.shape[-2:]:
             up_out = F.interpolate(up_out, s.shape[-2:], mode='nearest')
-        cat_x = relu(torch.cat([up_out, self.bn1(s)], dim=1))
+        cat_x = self.relu(torch.cat([up_out, self.bn1(s)], dim=1))
         return self.conv2(self.conv1(cat_x))
 
 class DynamicUnet(nn.Sequential):
