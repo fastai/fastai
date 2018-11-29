@@ -251,7 +251,7 @@ class ImageItemList(ItemList):
         self.copy_new.append('convert_mode')
         self.sizes={}
 
-    def open(self, fn): 
+    def open(self, fn):
         "Open image in `fn`, subclass and overwrite for custom behavior."
         return open_image(fn, convert_mode=self.convert_mode)
 
@@ -285,19 +285,18 @@ class ImageItemList(ItemList):
 
     def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
 
-    def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+    def show_xys(self, xs, ys, imgsize:int=4, **kwargs):
         "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
         rows = int(math.sqrt(len(xs)))
-        fig, axs = plt.subplots(rows,rows,figsize=figsize)
+        axs = subplots(rows, rows, imgsize=imgsize)
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
 
-    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
-        figsize = ifnone(figsize, (6,3*len(xs)))
-        fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
-        fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
+        title = 'Ground truth / Predictions'
+        axs = subplots(len(xs), 2, imgsize=imgsize, title=title, weight='bold', size=14)
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], y=y, **kwargs)
             x.show(ax=axs[i,1], y=z, **kwargs)
@@ -342,7 +341,7 @@ class ObjectCategoryList(MultiCategoryList):
         bboxes,labels = bboxes[i:],labels[i:]
         return ImageBBox.create(*x.size, bboxes, labels=labels, classes=self.classes, scale=False)
 
-class ObjectItemList(ImageItemList): 
+class ObjectItemList(ImageItemList):
     "`ItemList` suitable for object detection."
     _label_cls = ObjectCategoryList
 
@@ -365,7 +364,7 @@ class SegmentationLabelList(ImageItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
-class SegmentationItemList(ImageItemList): 
+class SegmentationItemList(ImageItemList):
     "`ItemList` suitable for segmentation tasks."
     _label_cls = SegmentationLabelList
 
@@ -387,26 +386,25 @@ class PointsItemList(ItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
-class ImageImageList(ImageItemList): 
+class ImageImageList(ImageItemList):
     "`ItemList` suitable for `Image` to `Image` tasks."
     _label_cls = ImageItemList
     _square_show=False
 
-    def show_xys(self, xs, ys, figsize:Tuple[int,int]=None, **kwargs):
+    def show_xys(self, xs, ys, imgsize:int=4, **kwargs):
         "Show the `xs` (inputs) and `ys`(targets)  on a figure of `figsize`."
-        figsize = ifnone(figsize, (6,3*len(xs)))
-        fig, axs = plt.subplots(len(xs),2,figsize=figsize)
+        axs = subplots(len(xs), 2, imgsize=imgsize)
         for i, (x,y) in enumerate(zip(xs,ys)):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,1], **kwargs)
         plt.tight_layout()
 
-    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
-        figsize = ifnone(figsize, (9,3*len(xs)))
-        fig,axs = plt.subplots(len(xs), 3, figsize=figsize)
-        fig.suptitle('Input / Prediction / Target', weight='bold', size=14)
+        title = 'Input / Prediction / Target'
+        axs = subplots(len(xs), 3, imgsize=imgsize, title=title, weight='bold', size=14)
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,2], **kwargs)
             z.show(ax=axs[i,1], **kwargs)
+

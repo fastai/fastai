@@ -9,7 +9,7 @@ def AvgFlatten():
 
 def basic_discriminator(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0):
     "A basic discriminator for images `n_channels` x `in_size` x `in_size`."
-    layers = [conv_layer(n_channels, n_features, 4, 2, 1, bn=False, leaky=0.2)]
+    layers = [conv_layer(n_channels, n_features, 4, 2, 1, norm_type=None, leaky=0.2)]
     cur_size, cur_ftrs = in_size//2, n_features
     layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=0.2) for _ in range(n_extra_layers)]))
     while cur_size > 4:
