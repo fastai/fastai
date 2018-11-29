@@ -61,18 +61,18 @@ defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.d
 AdamW = partial(optim.Adam, betas=(0.9,0.99))
 
 def tensor(x:Any, *rest)->Tensor:
-    "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly"
+    "Like `torch.as_tensor`, but handle lists too, and can pass multiple vector elements directly."
     if len(rest): x = (x,)+rest
     # XXX: Pytorch bug in dataloader using num_workers>0; TODO: create repro and report
     if is_listy(x) and len(x)==0: return tensor(0)
     return torch.tensor(x) if is_listy(x) else as_tensor(x)
 
 def np_address(x:np.ndarray)->int:
-    "Address of `x` in memory"
+    "Address of `x` in memory."
     return x.__array_interface__['data'][0]
 
 def to_detach(b:Tensors, cpu:bool=True):
-    "Recursively detach lists of tensors in `b `, puts them on the CPU if `cpu=True`."
+    "Recursively detach lists of tensors in `b `; put them on the CPU if `cpu=True`."
     if is_listy(b): return [to_detach(o, cpu) for o in b]
     return (b.detach().cpu() if cpu else b.detach()) if isinstance(b,Tensor) else b
 
@@ -87,7 +87,7 @@ def to_cpu(b:ItemsList):
     return b.cpu() if isinstance(b,Tensor) else b
 
 def to_device(b:Tensors, device:torch.device):
-    "Ensure `b` is on `device`."
+    "Recursively put `b` on `device`."
     device = ifnone(device, defaults.device)
     if is_listy(b): return [to_device(o, device) for o in b]
     return b.to(device)
@@ -113,7 +113,7 @@ def children(m:nn.Module)->ModuleList:
     return list(m.children())
 
 def num_children(m:nn.Module)->int:
-    "Get number of children modules in module `m`."
+    "Get number of children modules in `m`."
     return len(children(m))
 
 def range_children(m:nn.Module)->Iterator[int]:
@@ -130,7 +130,7 @@ def last_layer(m:nn.Module)->nn.Module:
     return flatten_model(m)[-1]
 
 def split_model_idx(model:nn.Module, idxs:Collection[int])->ModuleList:
-    "Split `model` according to the indices in `idxs`."
+    "Split `model` according to the indexes in `idxs`."
     layers = flatten_model(model)
     if idxs[0] != 0: idxs = [0] + idxs
     if idxs[-1] != len(layers): idxs.append(len(layers))
@@ -148,7 +148,7 @@ def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]],
 
 #TODO: add the test to put bias with bn layers
 def split_bn_bias(layer_groups:ModuleList)->ModuleList:
-    "Sort each layer in  `layer_groups` into batchnorm (`bn_types`) and non-batchnorm groups."
+    "Split the layers in `layer_groups` into batchnorm (`bn_types`) and non-batchnorm groups."
     split_groups = []
     for l in layer_groups:
         l1,l2 = [],[]
@@ -166,7 +166,7 @@ def set_bn_eval(m:nn.Module)->None:
         set_bn_eval(l)
 
 def to_half(b:Collection[Tensor])->Collection[Tensor]:
-    "`b` = [x,y] -> [x.half(),y] (half precision)"
+    "Set the input of batch `b` to half precision."
     return [b[0].half(), b[1]]
 
 def bn2float(module:nn.Module)->nn.Module:
@@ -180,13 +180,14 @@ def model2half(model:nn.Module)->nn.Module:
     return bn2float(model.half())
 
 def init_default(m:nn.Module, func:LayerFunc=nn.init.kaiming_normal_)->None:
+    "Initialize `m` weights with `func` and set `bias` to 0."
     if func:
         if hasattr(m, 'weight'): func(m.weight)
         if hasattr(m, 'bias') and hasattr(m.bias, 'data'): m.bias.data.fill_(0.)
     return m
 
 def cond_init(m:nn.Module, init_func:LayerFunc):
-    "Initialize the non-batchnorm layers of `m` with `init_func`"
+    "Initialize the non-batchnorm layers of `m` with `init_func`."
     if (not isinstance(m, bn_types)) and requires_grad(m): init_default(m, init_func)
 
 def apply_leaf(m:nn.Module, f:LayerFunc):
@@ -206,7 +207,7 @@ def in_channels(m:nn.Module) -> List[int]:
     raise Exception('No weight layer')
 
 def calc_loss(y_pred:Tensor, y_true:Tensor, loss_func:LossFunction):
-    "Calculate loss between `y_pred` and `y_true` using `loss_class` and `bs`."
+    "Calculate loss between `y_pred` and `y_true` using `loss_func`."
     if hasattr(loss_func, 'reduction'):
         old_red = getattr(loss_func, 'reduction')
         setattr(loss_func, 'reduction', 'none')
@@ -229,14 +230,19 @@ def np2model_tensor(a):
     return res.type(dtype)
 
 def _pca(x, k=2):
+    "Compute PCA of `x` with `k` dimensions."
     x = x-torch.mean(x,0)
     U,S,V = torch.svd(x.t())
     return torch.mm(x,U[:,:k])
 torch.Tensor.pca = _pca
 
-def trange_of(x): return torch.arange(len(x))
+def trange_of(x): 
+    "Create a tensor from `range_of(x)`."
+    return torch.arange(len(x))
 
-def to_np(x): return x.data.cpu().numpy()
+def to_np(x): 
+    "Convert a tensor to a numpy array."
+    return x.data.cpu().numpy()
 
 # monkey patching to allow matplotlib to plot tensors
 def tensor__array__(self, dtype=None):
@@ -247,15 +253,17 @@ Tensor.__array__ = tensor__array__
 Tensor.ndim = property(lambda x: len(x.shape))
 
 class FloatItem(ItemBase):
+    "Basic class for float items."
     def __init__(self,obj): self.data,self.obj = tensor(obj),obj
     def __str__(self): return str(self.obj)
 
 def grab_idx(x,i,batch_first:bool=True):
+    "Grab the `i`-th batch in `x`, `batch_first` stating the batch dimension."
     if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())
     else:           return ([o[:,i].cpu() for o in x] if is_listy(x) else x[:,i].cpu())
 
 def logit(x:Tensor)->Tensor:
-    "Logit of `x`, clamped to avoid inf"
+    "Logit of `x`, clamped to avoid inf."
     x = x.clamp(1e-7, 1-1e-7)
     return -(1/x-1).log()
 
@@ -275,12 +283,14 @@ def log_uniform(low, high, size:Optional[List[int]]=None)->FloatOrTensor:
     return exp(res) if size is None else res.exp_()
 
 def rand_bool(p:float, size:Optional[List[int]]=None)->BoolOrTensor:
-    "Draw 1 or shape=`size` random booleans (True occuring probability `p`)."
+    "Draw 1 or shape=`size` random booleans (`True` occuring with probability `p`)."
     return uniform(0,1,size)<p
 
 def uniform_int(low:int, high:int, size:Optional[List[int]]=None)->IntOrTensor:
     "Generate int or tensor `size` of ints between `low` and `high` (included)."
     return random.randint(low,high) if size is None else torch.randint(low,high+1,size)
 
-def one_param(m: nn.Module)->Tensor: return next(m.parameters())
+def one_param(m: nn.Module)->Tensor: 
+    "Return the first parameter of `m`."
+    return next(m.parameters())
 

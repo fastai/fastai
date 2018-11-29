@@ -17,7 +17,6 @@ class BaseTokenizer():
 
 class SpacyTokenizer(BaseTokenizer):
     "Wrapper around a spacy tokenizer to make it a `BaseTokenizer`."
-
     def __init__(self, lang:str):
         self.tok = spacy.blank(lang)
 
@@ -82,7 +81,7 @@ default_spec_tok = [BOS, FLD, UNK, PAD]
 default_post_rules = [replace_all_caps, deal_caps]
 
 class Tokenizer():
-    "Put together rules, a tokenizer function and a language to tokenize text with multiprocessing."
+    "Put together rules and a tokenizer function to tokenize text with multiprocessing."
     def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', pre_rules:ListRules=None,
                  post_rules:ListRules=None, special_cases:Collection[str]=None, n_cpus:int=None):
         self.tok_func,self.lang,self.special_cases = tok_func,lang,special_cases
@@ -98,7 +97,7 @@ class Tokenizer():
         return res
 
     def process_text(self, t:str, tok:BaseTokenizer) -> List[str]:
-        "Processe one text `t` with tokenizer `tok`."
+        "Process one text `t` with tokenizer `tok`."
         for rule in self.pre_rules: t = rule(t)
         toks = tok.tokenizer(t)
         for rule in self.post_rules: toks = rule(toks)
@@ -118,7 +117,6 @@ class Tokenizer():
 
 class Vocab():
     "Contain the correspondance between numbers and tokens and numericalize."
-
     def __init__(self, itos:Dict[int,str]):
         self.itos = itos
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})

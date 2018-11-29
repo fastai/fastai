@@ -12,6 +12,7 @@ class MixUpCallback(Callback):
     stack_y:bool=True
         
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
+        "Applies mixup to `last_input` and `last_target` if `train`."
         if not train: return
         lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
         lambd = np.concatenate([lambd[:,None], 1-lambd[:,None]], 1).max(1)
@@ -31,7 +32,7 @@ class MixUpCallback(Callback):
         return (new_input, new_target)  
 
 class MixUpLoss(nn.Module):
-    "Adapt the loss function to go with mixup."
+    "Adapt the loss function `crit` to go with mixup."
     
     def __init__(self, crit):
         super().__init__()

@@ -42,7 +42,7 @@ def get_preds(model:nn.Module, dl:DataLoader, pbar:Optional[PBar]=None, cb_handl
 
 def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_handler:Optional[CallbackHandler]=None,
              pbar:Optional[PBar]=None, average=True, n_batch:Optional[int]=None)->Iterator[Tuple[Union[Tensor,int],...]]:
-    "Calculate loss and metrics for the validation set."
+    "Calculate `loss_func` of `model` on `dl` in evaluation mode."
     model.eval()
     with torch.no_grad():
         val_losses,nums = [],[]
@@ -68,7 +68,7 @@ def train_epoch(model:nn.Module, dl:DataLoader, opt:optim.Optimizer, loss_func:L
 
 def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer,
         data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
-    "Fit the `model` on `data` and learn using `loss` and `opt`."
+    "Fit the `model` on `data` and learn using `loss_func` and `opt`."
     cb_handler = CallbackHandler(callbacks, metrics)
     pbar = master_bar(range(epochs))
     cb_handler.on_train_begin(epochs, pbar=pbar, metrics=metrics)
@@ -116,7 +116,7 @@ def _loss_func2activ(loss_func):
 
 @dataclass
 class Learner():
-    "Train `model` using `data` to minimize `loss_func` with optimizer `opt_func`."
+    "Trainer for `model` using `data` to minimize `loss_func` with optimizer `opt_func`."
     data:DataBunch
     model:nn.Module
     opt_func:Callable=AdamW
@@ -145,7 +145,7 @@ class Learner():
     def init(self, init): apply_init(self.model, init)
 
     def lr_range(self, lr:Union[float,slice])->np.ndarray:
-        "Build differential learning rates."
+        "Build differential learning rates from `lr`."
         if not isinstance(lr,slice): return lr
         if lr.start: res = even_mults(lr.start, lr.stop, len(self.layer_groups))
         else: res = [lr.stop/10]*(len(self.layer_groups)-1) + [lr.stop]
@@ -207,13 +207,13 @@ class Learner():
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
                   pbar:Optional[PBar]=None) -> List[Tensor]:
-        "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
+        "Return predictions and targets on `ds_type` dataset."
         lf = self.loss_func if with_loss else None
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
     def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None) -> List[Tensor]:
-        "Return output of the model on one batch from valid, train, or test set, depending on `ds_type`."
+        "Return output of the model on one batch from `ds_type` dataset."
         if batch: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
@@ -228,10 +228,10 @@ class Learner():
                           cb_handler=CallbackHandler(self.callbacks))
         return loss
 
-    def predict(self, img:ItemBase, **kwargs):
-        "Return prect class, label and probabilities for `img`."
+    def predict(self, item:ItemBase, **kwargs):
+        "Return prect class, label and probabilities for `item`."
         self.callbacks.append(RecordOnCPU())
-        batch = self.data.one_item(img)
+        batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
         pred = res[0]
         x = self.callbacks[-1].input
@@ -281,7 +281,7 @@ class Learner():
         ds.x.show_xyzs(xs, ys, zs, **kwargs)
 
 class RecordOnCPU(Callback):
-    "Stores the `input` and `target` going through the model on the CPU."
+    "Store the `input` and `target` going through the model on the CPU."
     def on_batch_begin(self, last_input,last_target,**kwargs):
         self.input,self.target = to_cpu(last_input),to_cpu(last_target)
 
@@ -347,9 +347,11 @@ class Recorder(LearnerCallback):
         self.pbar.write('  '.join(str_stats), table=True)
 
     def add_metrics(self, metrics):
+        "Add `metrics` to the inner stats."
         self._added_mets = metrics
 
     def add_metric_names(self, names):
+        "Add `names` to the inner metric names."
         self._added_met_names = names
 
     def plot_lr(self, show_moms=False)->None:

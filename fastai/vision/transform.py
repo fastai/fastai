@@ -58,10 +58,13 @@ def jitter(c, magnitude:uniform):
     return c
 
 @TfmPixel
-def flip_lr(x): return x.flip(2)
+def flip_lr(x): 
+    "Flip `x` horizontally."
+    return x.flip(2)
 
 @TfmAffine
 def flip_affine() -> TfmAffine:
+    "Flip `x` horizontally."
     return [[-1, 0, 0.],
             [0,  1, 0],
             [0,  0, 1.]]

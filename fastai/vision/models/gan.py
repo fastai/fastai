@@ -4,9 +4,11 @@ from ...layers import *
 __all__ = ['basic_discriminator', 'basic_generator', 'GAN', 'CycleGAN', 'CycleGanLoss', 'AdaptiveLoss']
 
 def AvgFlatten():
+    "Takes the average of the input."
     return Lambda(lambda x: x.mean(0).view(1))
 
 def basic_discriminator(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0):
+    "A basic discriminator for images `n_channels` x `in_size` x `in_size`."
     layers = [conv_layer(n_channels, n_features, 4, 2, 1, bn=False, leaky=0.2)]
     cur_size, cur_ftrs = in_size//2, n_features
     layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=0.2) for _ in range(n_extra_layers)]))
@@ -17,6 +19,7 @@ def basic_discriminator(in_size:int, n_channels:int, n_features:int=64, n_extra_
     return nn.Sequential(*layers)
 
 def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:int=64, n_extra_layers=0):
+    "A basic generator from `noise_sz` to images `n_channels` x `in_size` x `in_size`."
     cur_size, cur_ftrs = 4, n_features//2
     while cur_size < in_size:  cur_size *= 2; cur_ftrs *= 2
     layers = [conv_layer(noise_sz, cur_ftrs, 4, 1, transpose=True)]

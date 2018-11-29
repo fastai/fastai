@@ -5,7 +5,6 @@ __all__ = ['TabularModel']
 
 class TabularModel(nn.Module):
     "Basic model for tabular data."
-
     def __init__(self, emb_szs:ListSizes, n_cont:int, out_sz:int, layers:Collection[int], ps:Collection[float]=None,
                  emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, bn_final:bool=False):
         super().__init__()

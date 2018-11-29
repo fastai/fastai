@@ -5,7 +5,7 @@ from .callback import *
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','Fbeta_binary']
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True) -> Rank0Tensor:
-    "Computes the f_beta between preds and targets"
+    "Computes the f_beta between `y_pred` and `y_true` in a multi-classification task."
     beta2 = beta**2
     if sigmoid: y_pred = y_pred.sigmoid()
     y_pred = (y_pred>thresh).float()
@@ -22,7 +22,7 @@ def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool
     return ((y_pred>thresh)==y_true.byte()).float().mean()
 
 def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
-    "Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems."
+    "Dice coefficient metric for binary target. If `iou=True`, return iou metric."
     n = targs.shape[0]
     input = input.argmax(dim=1).view(n,-1)
     targs = targs.view(n,-1)
@@ -51,7 +51,7 @@ def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
 
 @dataclass
 class Fbeta_binary(Callback):
-    "Computes the fbeta between preds and targets for single-label classification"
+    "Computes the fbeta between preds and targets for single-classification."
     beta2: int = 2
     eps: float = 1e-9
     clas:int=1
