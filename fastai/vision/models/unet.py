@@ -13,7 +13,8 @@ def _get_sfs_idxs(sizes:Sizes) -> List[int]:
 
 class UnetBlock(nn.Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
-    def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True, blur:bool=False, **kwargs):
+    def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True, blur:bool=False, 
+                 self_attention:bool=False,**kwargs):
         super().__init__()
         self.hook = hook
         self.shuf = PixelShuffle_ICNR(up_in_c, up_in_c//2, blur=blur, **kwargs)
@@ -21,7 +22,7 @@ class UnetBlock(nn.Module):
         ni = up_in_c//2 + x_in_c
         nf = ni if final_div else ni//2
         self.conv1 = conv_layer(ni, nf, **kwargs)
-        self.conv2 = conv_layer(nf, nf, **kwargs)
+        self.conv2 = conv_layer(nf, nf, self_attention=self_attention, **kwargs)
 
     def forward(self, up_in:Tensor) -> Tensor:
         s = self.hook.stored
@@ -51,7 +52,7 @@ class DynamicUnet(nn.Sequential):
             not_final = i!=len(sfs_idxs)-1
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
             do_blur = blur and (not_final or blur_final)
-            unet_block = UnetBlock(up_in_c * (1 if i==0 else n_factors), x_in_c, self.sfs[i]*n_factors, 7
+            unet_block = UnetBlock(up_in_c * (1 if i==0 else n_factors), x_in_c, self.sfs[i]*n_factors,
                                    final_div=not_final, blur=blur, **kwargs).eval()
             layers.append(unet_block)
             x = unet_block(x)
