@@ -63,6 +63,14 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
         layers.append(bn_l)
     return nn.Sequential(*layers)
 
+class SequentialResBlock(nn.Module):
+    "A resnet block using an `nn.Sequential` containing `layers`"
+    def __init__(self, *layers):
+        super().__init__()
+        self.layers = nn.Sequential(*layers)
+
+    def forward(self, x): return x + self.layers(x)
+
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
     def __init__(self, sz:Optional[int]=None):
