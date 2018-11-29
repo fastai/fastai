@@ -6,7 +6,7 @@ from pandas.api.types import is_string_dtype, is_numeric_dtype
 from sklearn.ensemble import forest
 from sklearn.tree import export_graphviz
 
-import platform;
+from platform import *;
 
 
 def set_plot_sizes(sml, med, big):
@@ -19,7 +19,7 @@ def set_plot_sizes(sml, med, big):
     plt.rc('figure', titlesize=big)  # fontsize of the figure title
 
 def parallel_trees(m, fn, n_jobs=8):
-    if(platform.system() == 'Windows'):
+    if(system() == 'Windows'):
         return list(ThreadPoolExecutor(n_jobs).map(fn, m.estimators_))
     else:
         return list(ProcessPoolExecutor(n_jobs).map(fn, m.estimators_))
