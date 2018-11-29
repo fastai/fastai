@@ -49,6 +49,15 @@ class OptimWrapper():
     def zero_grad(self)->None:
         "Clear optimizer gradients."
         self.opt.zero_grad()
+        
+    #Passthrough to the inner opt.
+    def __getattr__(self,k:str)->Any: return getattr(self.opt, k, None)
+    
+    def clear(self):
+        "Reset the state of the inner optimizer."
+        sd = self.state_dict()
+        sd['state'] = {}
+        self.load_state_dict(sd)
 
     #Hyperparameters as properties
     @property
