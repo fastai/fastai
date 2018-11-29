@@ -4,10 +4,10 @@ from .basic_data import *
 from .callback import *
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
-           'get_preds', 'default_lr', 'default_wd']
+           'get_preds']
 
-default_lr = slice(3e-3)
-default_wd = 1e-2
+defaults.lr = slice(3e-3)
+defaults.wd = 1e-2
 
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
@@ -124,7 +124,7 @@ class Learner():
     metrics:Collection[Callable]=None
     true_wd:bool=True
     bn_wd:bool=True
-    wd:Floats=default_wd
+    wd:Floats=defaults.wd
     train_bn:bool=True
     path:str = None
     model_dir:str = 'models'
@@ -151,12 +151,13 @@ class Learner():
         else: res = [lr.stop/10]*(len(self.layer_groups)-1) + [lr.stop]
         return np.array(res)
 
-    def fit(self, epochs:int, lr:Union[Floats,slice]=default_lr,
+    def fit(self, epochs:int, lr:Union[Floats,slice]=defaults.lr,
             wd:Floats=None, callbacks:Collection[Callback]=None)->None:
         "Fit the model on this learner with `lr` learning rate, `wd` weight decay for `epochs` with `callbacks`."
         lr = self.lr_range(lr)
         if wd is None: wd = self.wd
-        self.create_opt(lr, wd)
+        if not getattr(self, 'opt', False): self.create_opt(lr, wd)
+        else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
         fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
             callbacks=self.callbacks+callbacks)
@@ -164,7 +165,7 @@ class Learner():
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
         "Create optimizer with `lr` learning rate and `wd` weight decay."
         self.opt = OptimWrapper.create(self.opt_func, lr, self.layer_groups, wd=wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
-
+        
     def split(self, split_on:SplitFuncOrIdxList)->None:
         "Split the model at `split_on`."
         if isinstance(split_on,Callable): split_on = split_on(self.model)
@@ -188,21 +189,30 @@ class Learner():
 
     def __del__(self): del(self.model, self.data)
 
-    def save(self, name:PathOrStr, return_path:bool=False)->Union[None,str]:
-        "Save model with `name` to `self.model_dir`, and return path if `return_path`."
+    def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
+        "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
-        torch.save(self.model.state_dict(), path)
+        if not with_opt: state = self.model.state_dict()
+        else: state = {'model': self.model.state_dict(), 'opt':self.opt.state_dict()}
+        torch.save(state, path)
         if return_path: return path
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid):
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True):
-        "Load model `name` from `self.model_dir` using `device`, defaulting to `self.data.device`."
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None):
+        "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
         if device is None: device = self.data.device
-        self.model.load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device),
-                                   strict=strict)
+        state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
+        if set(state.keys()) == {'model', 'opt'}:
+            self.model.load_state_dict(state['model'], strict=strict)
+            if ifnone(with_opt,True): 
+                if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
+                self.opt.load_state_dict(state['opt'])
+        else:
+            if with_opt: warn("Saved filed doesn't contain an optimizer state.")
+            self.model.load_state_dict(state, strict=strict)
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,

@@ -18,10 +18,12 @@ of that change.
 
 ### Changed:
 
+- `Learner.load` and `Learner.save` will also load/save the optimizer state
 - `ImageItemList` now takes optional `convert_mode`
 - `Image.show` now uses `defaults.cmap` if no `cmap` passed
 - `bn` param in `conv_layer` replaced by `norm_type` which takes `NormType` enum
 - unet kwargs are passed down to `conv_layer`
+- `Learner.fit` no longer creates a new optimizer at each call
 
 ### Fixed:
 
