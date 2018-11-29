@@ -14,11 +14,12 @@ of that change.
 
 ### New:
 
+- `SequentialResBlock` to easily create resnet blocks
+
 ### Changed:
 
 - `ImageItemList` now takes optional `convert_mode`
 - `Image.show` now uses `defaults.cmap` if no `cmap` passed
-- `ItemList` subclasses can now add to `copy_new` list for any attributes that need to be saved on `new()`
 
 ### Fixed:
 
@@ -31,13 +32,6 @@ of that change.
 - `add_datepart`
 - `DeviceDataLoader.new` method to get a copy of a `DeviceDataLoader` while changing an attribute
 - `DataBunch.batch_size` allows to change the batch size of all the dataloaders
-
-### Changed:
-
-### Fixed:
-
-
->>>>>>> d4b7b3161aa8de4f54da61612e3ff941dd73a408
 
 ## 1.0.29 (2018-11-27)
 
