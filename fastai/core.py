@@ -52,6 +52,10 @@ def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
 
+def chunks(self, l, n):
+    "Yield successive `n`-sized chunks from `l`."
+    for i in range(0, len(l), n): yield l[i:i+n]
+
 def to_int(b:Any)->Union[int,List[int]]:
     "Convert `b` to an int or list of ints (if `is_listy`); raises exception if not convertible"
     if is_listy(b): return [to_int(x) for x in b]
