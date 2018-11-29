@@ -13,15 +13,16 @@ def _get_sfs_idxs(sizes:Sizes) -> List[int]:
 
 class UnetBlock(nn.Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
-    def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True, blur:bool=False, **kwargs):
+    def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True, blur:bool=False, leaky:float=None, **kwargs):
         super().__init__()
         self.hook = hook
-        self.shuf = PixelShuffle_ICNR(up_in_c, up_in_c//2, blur=blur, **kwargs)
+        self.shuf = PixelShuffle_ICNR(up_in_c, up_in_c//2, blur=blur, leaky=leaky, **kwargs)
         self.bn1 = nn.BatchNorm2d(x_in_c)
         ni = up_in_c//2 + x_in_c
         nf = ni if final_div else ni//2
-        self.conv1 = conv_layer(ni, nf, **kwargs)
-        self.conv2 = conv_layer(nf, nf, **kwargs)
+        self.conv1 = conv_layer(ni, nf, leaky=leaky, **kwargs)
+        self.conv2 = conv_layer(nf, nf, leaky=leaky, **kwargs)
+        self.relu = relu(leaky=leaky)
 
     def forward(self, up_in:Tensor) -> Tensor:
         s = self.hook.stored
@@ -29,7 +30,7 @@ class UnetBlock(nn.Module):
         ssh = s.shape[-2:]
         if ssh != up_out.shape[-2:]:
             up_out = F.interpolate(up_out, s.shape[-2:], mode='nearest')
-        cat_x = F.relu(torch.cat([up_out, self.bn1(s)], dim=1))
+        cat_x = relu(torch.cat([up_out, self.bn1(s)], dim=1))
         return self.conv2(self.conv1(cat_x))
 
 class DynamicUnet(nn.Sequential):

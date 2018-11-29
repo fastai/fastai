@@ -2,7 +2,7 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType',
+           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
            'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
 
 class Lambda(nn.Module):
@@ -43,6 +43,9 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
     "Create `nn.ConvTranspose2d` layer."
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
+def relu(inplace:bool=False, leaky:float=None):
+    return nn.LeakyReLU(inplace=inplace, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=inplace)
+
 NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
 
 def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None,
@@ -57,8 +60,7 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     if   norm_type==NormType.Weight:   conv = weight_norm(conv)
     elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
-    if use_activ:
-        layers.append(nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True))
+    if use_activ: layers.append(relu(True, leaky=leaky))
     if bn:
         bn_l = nn.BatchNorm2d(nf)
         with torch.no_grad():

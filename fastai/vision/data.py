@@ -285,18 +285,18 @@ class ImageItemList(ItemList):
 
     def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
 
-    def show_xys(self, xs, ys, imgsize:int=4, **kwargs):
+    def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
         rows = int(math.sqrt(len(xs)))
-        axs = subplots(rows, rows, imgsize=imgsize)
+        axs = subplots(rows, rows, imgsize=imgsize, figsize=figsize)
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
 
-    def show_xyzs(self, xs, ys, zs, imgsize:int=4, **kwargs):
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
         title = 'Ground truth / Predictions'
-        axs = subplots(len(xs), 2, imgsize=imgsize, title=title, weight='bold', size=14)
+        axs = subplots(len(xs), 2, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=14)
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], y=y, **kwargs)
             x.show(ax=axs[i,1], y=z, **kwargs)
@@ -391,18 +391,18 @@ class ImageImageList(ImageItemList):
     _label_cls = ImageItemList
     _square_show=False
 
-    def show_xys(self, xs, ys, imgsize:int=4, **kwargs):
+    def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show the `xs` (inputs) and `ys`(targets)  on a figure of `figsize`."
-        axs = subplots(len(xs), 2, imgsize=imgsize)
+        axs = subplots(len(xs), 2, imgsize=imgsize, figsize=figsize)
         for i, (x,y) in enumerate(zip(xs,ys)):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,1], **kwargs)
         plt.tight_layout()
 
-    def show_xyzs(self, xs, ys, zs, imgsize:int=4, **kwargs):
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
         title = 'Input / Prediction / Target'
-        axs = subplots(len(xs), 3, imgsize=imgsize, title=title, weight='bold', size=14)
+        axs = subplots(len(xs), 3, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=14)
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,2], **kwargs)
