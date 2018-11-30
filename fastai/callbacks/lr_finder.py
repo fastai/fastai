@@ -29,7 +29,7 @@ class LRFinder(LearnerCallback):
         "Determine if loss has runaway and we should stop."
         if iteration==0 or smooth_loss < self.best_loss: self.best_loss = smooth_loss
         self.opt.lr = self.sched.step()
-        if self.sched.is_done or (self.stop_div and smooth_loss > 4*self.best_loss):
+        if self.sched.is_done or (self.stop_div and (smooth_loss > 4*self.best_loss or torch.isnan(smooth_loss))):
             #We use the smoothed loss to decide on the stopping since it's less shaky.
             self.stop=True
             return True
