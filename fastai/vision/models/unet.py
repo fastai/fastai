@@ -18,7 +18,7 @@ class UnetBlock(nn.Module):
         super().__init__()
         self.hook = hook
         self.shuf = PixelShuffle_ICNR(up_in_c, up_in_c//2, blur=blur, leaky=leaky, **kwargs)
-        self.bn1 = nn.BatchNorm2d(x_in_c)
+        self.bn = batchnorm_2d(x_in_c)
         ni = up_in_c//2 + x_in_c
         nf = ni if final_div else ni//2
         self.conv1 = conv_layer(ni, nf, leaky=leaky, **kwargs)
@@ -31,7 +31,7 @@ class UnetBlock(nn.Module):
         ssh = s.shape[-2:]
         if ssh != up_out.shape[-2:]:
             up_out = F.interpolate(up_out, s.shape[-2:], mode='nearest')
-        cat_x = self.relu(torch.cat([up_out, self.bn1(s)], dim=1))
+        cat_x = self.relu(torch.cat([up_out, self.bn(s)], dim=1))
         return self.conv2(self.conv1(cat_x))
 
 class DynamicUnet(nn.Sequential):
@@ -41,6 +41,7 @@ class DynamicUnet(nn.Sequential):
         imsize = (256,256)
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
+        # TODO: add x-connection from input, then add extra output conv or resblock
         self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
         x = dummy_eval(encoder, imsize).detach()
 
@@ -48,7 +49,7 @@ class DynamicUnet(nn.Sequential):
         middle_conv = nn.Sequential(conv_layer(ni, ni*2, **kwargs),
                                     conv_layer(ni*2, ni, **kwargs)).eval()
         x = middle_conv(x)
-        layers = [encoder, nn.BatchNorm2d(ni), nn.ReLU(), middle_conv]
+        layers = [encoder, batchnorm_2d(ni), nn.ReLU(), middle_conv]
 
         for i,idx in enumerate(sfs_idxs):
             not_final = i!=len(sfs_idxs)-1
@@ -62,7 +63,7 @@ class DynamicUnet(nn.Sequential):
 
         ni = x.shape[1]
         if imsize != sfs_szs[0][-2:]: layers.append(PixelShuffle_ICNR(ni, **kwargs))
-        layers.append(conv_layer(ni, n_classes, ks=1, use_activ=False, norm_type=None))
+        layers.append(conv_layer(ni, n_classes, ks=1, use_activ=False, norm_type=NormType.Batch))
         super().__init__(*layers)
 
     def __del__(self):

@@ -3,7 +3,7 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
            'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
-           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
+           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -25,6 +25,15 @@ def Flatten()->Tensor:
 def PoolFlatten()->nn.Sequential:
     "Apply `nn.AdaptiveAvgPool2d` to `x` and then flatten the result."
     return nn.Sequential(nn.AdaptiveAvgPool2d(1), Flatten())
+
+NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
+
+def batchnorm_2d(nf:int, norm_type:NormType=NormType.Batch):
+    bn = nn.BatchNorm2d(nf)
+    with torch.no_grad():
+        bn.bias.fill_(1e-3)
+        bn.weight.fill_(0. if norm_type==NormType.BatchZero else 1.)
+    return bn
 
 def bn_drop_lin(n_in:int, n_out:int, bn:bool=True, p:float=0., actn:Optional[nn.Module]=None):
     "Sequence of batchnorm (if `bn`), dropout (with `p`) and linear (`n_in`,`n_out`) layers followed by `actn`."
@@ -71,8 +80,6 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
 def relu(inplace:bool=False, leaky:float=None):
     return nn.LeakyReLU(inplace=inplace, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=inplace)
 
-NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
-
 def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None,
                norm_type:Optional[NormType]=NormType.Batch,  use_activ:bool=True, leaky:float=None,
                transpose:bool=False, init:Callable=nn.init.kaiming_normal_, self_attention:bool=False):
@@ -86,12 +93,7 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
     if use_activ: layers.append(relu(True, leaky=leaky))
-    if bn:
-        bn_l = nn.BatchNorm2d(nf)
-        with torch.no_grad():
-            bn_l.bias.fill_(1e-3)
-            bn_l.weight.fill_(0. if norm_type==NormType.BatchZero else 1.)
-        layers.append(bn_l)
+    if bn: layers.append(batchnorm_2d(nf, norm_type=norm_type))
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
@@ -141,23 +143,19 @@ class PixelShuffle_ICNR(nn.Module):
     def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, norm_type=NormType.Weight, leaky:float=None):
         super().__init__()
         nf = ifnone(nf, ni)
-        self.conv = conv2d(ni, nf * (scale**2), ks=1, bias=True)
-        self.conv = (spectral_norm if norm_type==NormType.Spectral else weight_norm)(self.conv)
-        icnr(self.conv.weight)
+        self.conv = conv_layer(ni, nf*(scale**2), ks=1, norm_type=norm_type, use_activ=False)
+        icnr(self.conv[0].weight)
         self.shuf = nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel
-        self.blur = blur
+        # "Super-Resolution using Convolutional Neural Networks without Any Checkerboard Artifacts"
+        # - https://arxiv.org/abs/1806.02658 
         self.pad = nn.ReplicationPad2d((1,0,1,0))
-        t = torch.ones(scale,scale)/(scale**2)
-        k = torch.zeros(nf, nf, scale,scale)
-        for i in range(nf): k[i,i] = t
-        self.k = nn.Parameter(k, requires_grad=False)
+        self.blur = nn.AvgPool2d(2, stride=1)
         self.relu = relu(True, leaky=leaky)
 
     def forward(self,x):
         x = self.shuf(self.relu(self.conv(x)))
-        if self.blur: x = F.conv2d(self.pad(x), self.k)
-        return x
+        return self.blur(self.pad(x)) if self.blur else x
 
 class CrossEntropyFlat(nn.CrossEntropyLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."

@@ -15,6 +15,7 @@ of that change.
 ### New:
 
 - `SequentialResBlock` to easily create resnet blocks
+- `batchnorm_2d` wrapper for batchnorm with init
 
 ### Changed:
 
@@ -24,6 +25,7 @@ of that change.
 - `bn` param in `conv_layer` replaced by `norm_type` which takes `NormType` enum
 - unet kwargs are passed down to `conv_layer`
 - `Learner.fit` no longer creates a new optimizer at each call
+- Add batchnorm to end of unet
 
 ### Fixed:
 
