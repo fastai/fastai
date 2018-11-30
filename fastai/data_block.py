@@ -17,7 +17,7 @@ def _get_files(parent, p, f, extensions):
     return res
 
 def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
-    "Return list of files in `c` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
+    "Return list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
     if recurse:
         res = []
         for p,d,f in os.walk(path):
@@ -30,6 +30,7 @@ def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=Fals
         return _get_files(path, path, f, extensions)
 
 class PreProcessor():
+    "Basic class for a processor that will be applied to items at the end of the data block API."
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
     def process_one(self, item:Any):         return item
     def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
@@ -45,22 +46,27 @@ class ItemList():
         self.items,self.x = array(items, dtype=object),x
         self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
+        self.copy_new = ['x', 'label_cls', 'path']
         self.__post_init__()
 
     def __post_init__(self): pass
     def __len__(self)->int: return len(self.items) or 1
-    def get(self, i)->Any: return self.items[i]
+    def get(self, i)->Any:  
+        "Subclass if you want to customize how to create item `i` from `self.items`."
+        return self.items[i]
     def __repr__(self)->str:
         items = [self[i] for i in range(min(5,len(self.items)))]
         return f'{self.__class__.__name__} ({len(self)} items)\n{items}...\nPath: {self.path}'
 
     def process(self, processor=None):
+        "Apply `processor` or `self.processor` to `self`."
         if processor is not None: self.processor = processor
         self.processor = listify(self.processor)
         for p in self.processor: p.process(self)
         return self
 
     def process_one(self, item, processor=None):
+        "Apply `processor` or `self.processor` to `item`."
         if processor is not None: self.processor = processor
         self.processor = listify(self.processor)
         for p in self.processor: item = p.process_one(item)
@@ -75,8 +81,10 @@ class ItemList():
         return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
 
     def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':
+        "Create a new `ItemList` from `items`, keeping the same attributes."
         processor = ifnone(processor, self.processor)
-        return self.__class__(items=items, processor=processor, path=self.path, x=self.x, label_cls=self.label_cls, **kwargs)
+        copy_d = {o:getattr(self,o) for o in self.copy_new}
+        return self.__class__(items=items, processor=processor, **copy_d, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
         if isinstance(try_int(idxs), int): return self.get(idxs)
@@ -84,7 +92,7 @@ class ItemList():
 
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
-        "Get the list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
+        "Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         path = Path(path)
         return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
 
@@ -98,18 +106,18 @@ class ItemList():
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`."
-        df = pd.read_csv(path/csv_name, header=header)
+        df = pd.read_csv(Path(path)/csv_name, header=header)
         return cls.from_df(df, path=path, cols=cols, **kwargs)
 
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
     def _relative_item_paths(self):   return [self._relative_item_path(i) for i in range_of(self.items)]
 
     def to_text(self, fn:str):
-        "Save `self.items` to `fn` in `self.path`"
+        "Save `self.items` to `fn` in `self.path`."
         with open(self.path/fn, 'w') as f: f.writelines([f'{o}\n' for o in self._relative_item_paths()])
 
     def filter_by_func(self, func:Callable)->'ItemList':
-        "Only keeps elements for which `func` returns `True`."
+        "Only keep elements for which `func` returns `True`."
         self.items = array([o for o in self.items if func(o)])
         return self
 
@@ -124,7 +132,7 @@ class ItemList():
         return self.filter_by_func(_inner)
 
     def filter_by_rand(self, p:float, seed:int=None):
-        "Keep random sample of `items` with probability `p`"
+        "Keep random sample of `items` with probability `p` and an optional `seed`."
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
 
@@ -150,24 +158,23 @@ class ItemList():
         return self.split_by_idxs(self._get_by_folder(train), self._get_by_folder(valid))
 
     def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
-        "Split the items randomly by putting `valid_pct` in the validation set. Set the `seed` in numpy if passed."
+        "Split the items randomly by putting `valid_pct` in the validation set, optional `seed` can be passed."
         if seed is not None: np.random.seed(seed)
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
         return self.split_by_idx(rand_idx[:cut])
 
     def split_by_valid_func(self, func:Callable)->'ItemLists':
-        "Split the data by result of `func` (which returns `True` for validation set)"
+        "Split the data by result of `func` (which returns `True` for validation set)."
         valid_idx = [i for i,o in enumerate(self.items) if func(o)]
         return self.split_by_idx(valid_idx)
 
     def split_by_files(self, valid_names:'ItemList')->'ItemLists':
         "Split the data by using the names in `valid_names` for validation."
-        #valid_idx = [i for i,o in enumerate(self.items) if o[0] in valid_names]
         return self.split_by_valid_func(lambda o: o.name in valid_names)
 
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'ItemLists':
-        "Split the data by using the file names in `fname` for the validation set. `path` will override `self.path`."
+        "Split the data by using the names in `fname` for the validation set. `path` will override `self.path`."
         path = Path(ifnone(path, self.path))
         valid_names = loadtxt_str(self.path/fname)
         return self.split_by_files(valid_names)
@@ -178,6 +185,7 @@ class ItemList():
         return self.split_by_idx(valid_idx)
 
     def get_label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
+        "Return `label_cls` or guess one from the first element of `labels`."
         if label_cls is not None:               return label_cls
         if self.label_cls is not None:          return self.label_cls
         it = index_row(labels,0)
@@ -188,7 +196,7 @@ class ItemList():
         return self.__class__
 
     def label_from_list(self, labels:Iterator, **kwargs)->'LabelList':
-        "Label `self.items` with `labels` using `label_cls`"
+        "Label `self.items` with `labels`."
         labels = array(labels, dtype=object)
         label_cls = self.get_label_cls(labels, **kwargs)
         y = label_cls(labels, path=self.path, **kwargs)
@@ -227,12 +235,14 @@ class ItemList():
         return self.label_from_func(_inner, **kwargs)
 
 class EmptyLabelList(ItemList):
+    "Basic `ItemList` for dummy labels."
     def get(self, i): return EmptyLabel()
     def reconstruct(self, t:Tensor, x:Tensor=None):
         if len(t.size()) == 0: return EmptyLabel()
         return self.x.reconstruct(t,x) if has_arg(self.x.reconstruct, 'x') else self.x.reconstruct(t)
 
 class CategoryProcessor(PreProcessor):
+    "Processor that create `classes` from `ds.items` and handle the mapping."
     def __init__(self, ds:ItemList): self.create_classes(ds.classes)
 
     def create_classes(self, classes):
@@ -255,6 +265,7 @@ class CategoryProcessor(PreProcessor):
     def __setstate__(self, state:dict): self.create_classes(state['classes'])
 
 class CategoryListBase(ItemList):
+    "Basic `ItemList` for classification."
     def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
         self.classes=classes
         super().__init__(items, **kwargs)
@@ -266,6 +277,7 @@ class CategoryListBase(ItemList):
         return super().new(items, classes=ifnone(classes, self.classes), **kwargs)
 
 class CategoryList(CategoryListBase):
+    "Basic `ItemList` for single classification labels."
     _processor=CategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, classes=classes, **kwargs)
@@ -282,6 +294,7 @@ class CategoryList(CategoryListBase):
         return Category(t, self.classes[t])
 
 class MultiCategoryProcessor(CategoryProcessor):
+    "Processor that create `classes` from `ds.items` and handle the mapping."
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
 
     def generate_classes(self, items):
@@ -293,6 +306,7 @@ class MultiCategoryProcessor(CategoryProcessor):
         return classes
 
 class MultiCategoryList(CategoryListBase):
+    "Basic `ItemList` for multi-classification labels."
     _processor=MultiCategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
         if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
@@ -312,14 +326,13 @@ class MultiCategoryList(CategoryListBase):
         return MultiCategory(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
+    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if True"
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
+        self.copy_new.append('log')
         self.c = self.items.shape[1] if len(self.items.shape) > 1 else 1
         self.loss_func = MSELossFlat()
-
-    def new(self, items,**kwargs):
-        return super().new(items, log=self.log, **kwargs)
 
     def get(self, i):
         o = super().get(i)
@@ -328,7 +341,7 @@ class FloatList(ItemList):
     def reconstruct(self,t): return FloatItem(t.item())
 
 class ItemLists():
-    "A `ItemList` for each of `train` and `valid` (optional `test`)"
+    "An `ItemList` for each of `train` and `valid` (optional `test`)."
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):
         self.path,self.train,self.valid,self.test = Path(path),train,valid,test
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
@@ -382,13 +395,16 @@ class ItemLists():
         return self
 
 class LabelLists(ItemLists):
+    "A `LabelList` for each of `train` and `valid` (optional `test`)."
     def get_processors(self):
+        "Read the default class processors if none have been set."
         procs_x,procs_y = listify(self.train.x._processor),listify(self.train.y._processor)
         xp = ifnone(self.train.x.processor, [p(ds=self.train.x) for p in procs_x])
         yp = ifnone(self.train.y.processor, [p(ds=self.train.y) for p in procs_y])
         return xp,yp
 
     def process(self):
+        "Process the inner datasets."
         xp,yp = self.get_processors()
         for i,ds in enumerate(self.lists): ds.process(xp, yp, filter_missing_y=i==0)
         return self
@@ -399,7 +415,7 @@ class LabelLists(ItemLists):
         return self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, **kwargs)
 
     def add_test(self, items:Iterator, label:Any=None):
-        "Add test set containing items from `items` and an arbitrary `label`"
+        "Add test set containing `items` with an arbitrary `label`"
         # if no label passed, use label of first training item
         if label is None: label = self.train[0][1].obj
         labels = [label for _ in range_of(items)]
@@ -408,12 +424,12 @@ class LabelLists(ItemLists):
         return self
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from folder `test_folder` and an arbitrary `label`."
+        "Add test set containing items from `test_folder` and an arbitrary `label`."
         items = self.x.__class__.from_folder(self.path/test_folder)
         return self.add_test(items.items, label=label)
 
 class LabelList(Dataset):
-    "A list of inputs and labels. Contain methods to split it in `ItemLists`."
+    "A list of inputs `x` and labels `y` with optional `tfms`."
     def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
         self.x,self.y,self.tfm_y = x,y,tfm_y
         self.y.x = x
@@ -421,12 +437,18 @@ class LabelList(Dataset):
         self.transform(tfms, **kwargs)
 
     def __len__(self)->int: return len(self.x) if self.item is None else 1
-    def set_item(self,item): self.item = self.x.process_one(item)
-    def clear_item(self): self.item = None
+    def set_item(self,item): 
+        "For inference, will replace the dataset with one that only contains `item`."
+        self.item = self.x.process_one(item)
+    def clear_item(self):
+        "Clear the item set in `set_item`."
+        self.item = None
     def __repr__(self)->str:
         x = f'{self.x}' # force this to happen first
         return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'
-    def predict(self, res): return self.y.predict(res)
+    def predict(self, res): 
+        "Delegates predict call on `res` to `self.y`."
+        return self.y.predict(res)
 
     @property
     def c(self): return self.y.c
@@ -453,11 +475,11 @@ class LabelList(Dataset):
         else: return self.new(self.x[idxs], self.y[idxs])
 
     def to_df(self)->None:
-        "Create `pd.DataFrame` containing `items` from `self.x` and `self.y`"
+        "Create `pd.DataFrame` containing `items` from `self.x` and `self.y`."
         return pd.DataFrame(dict(x=self.x._relative_item_paths(), y=[str(o) for o in self.y]))
 
     def to_csv(self, dest:str)->None:
-        "Save `self.to_df()` to a CSV file in `self.path`/`dest`"
+        "Save `self.to_df()` to a CSV file in `self.path`/`dest`."
         self.to_df().to_csv(self.path/dest, index=False)
 
     def export(self, fn:PathOrStr):
@@ -476,7 +498,7 @@ class LabelList(Dataset):
         return cls(x, y, tfms=tfms, tfm_y=tfm_y, **kwargs).process()
 
     def process(self, xp=None, yp=None, filter_missing_y:bool=False):
-        "Launch the preprocessing on `xp` and `yp`."
+        "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
         if filter_missing_y and (getattr(self.x, 'filter_missing_y', None)):
             filt = array([o is None for o in self.y])
@@ -491,7 +513,7 @@ class LabelList(Dataset):
         return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
 
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
-        "Set the `tfms` and `` tfm_y` value to be applied to the inputs and targets."
+        "Set the `tfms` and `tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs
         if tfm_y is not None:  self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
         return self
@@ -505,6 +527,7 @@ class LabelList(Dataset):
 
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+    "Load an empty `DataBunch` from the exported file in `path/fname` with optional `tfms`."
     ds = LabelList.load_empty(path/fname, tfms=(None if tfms is None else tfms[1]), tfm_y=tfm_y, **kwargs)
     return cls.create(ds,ds,path=path)
 

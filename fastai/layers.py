@@ -2,8 +2,8 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn',
-           'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
+           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
+           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -19,44 +19,91 @@ def ResizeBatch(*size:int) -> Tensor:
     return Lambda(lambda x: x.view((-1,)+size))
 
 def Flatten()->Tensor:
-    "Flattens `x` to a single dimension, often used at the end of a model."
+    "Flatten `x` to a single dimension, often used at the end of a model."
     return Lambda(lambda x: x.view((x.size(0), -1)))
 
 def PoolFlatten()->nn.Sequential:
     "Apply `nn.AdaptiveAvgPool2d` to `x` and then flatten the result."
     return nn.Sequential(nn.AdaptiveAvgPool2d(1), Flatten())
 
+NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
+
+def batchnorm_2d(nf:int, norm_type:NormType=NormType.Batch):
+    bn = nn.BatchNorm2d(nf)
+    with torch.no_grad():
+        bn.bias.fill_(1e-3)
+        bn.weight.fill_(0. if norm_type==NormType.BatchZero else 1.)
+    return bn
+
 def bn_drop_lin(n_in:int, n_out:int, bn:bool=True, p:float=0., actn:Optional[nn.Module]=None):
-    "`n_in`->bn->dropout->linear(`n_in`,`n_out`)->`actn`"
+    "Sequence of batchnorm (if `bn`), dropout (with `p`) and linear (`n_in`,`n_out`) layers followed by `actn`."
     layers = [nn.BatchNorm1d(n_in)] if bn else []
     if p != 0: layers.append(nn.Dropout(p))
     layers.append(nn.Linear(n_in, n_out))
     if actn is not None: layers.append(actn)
     return layers
 
+def conv1d(ni:int, no:int, ks:int=1, stride:int=1, padding:int=0, bias:bool=False):
+    "Create and iniialize `nn.Conv1d` layer."
+    conv = nn.Conv1d(ni, no, ks, stride=stride, padding=padding, bias=bias)
+    nn.init.kaiming_normal_(conv.weight)
+    if bias: conv.bias.data.zero_()
+    return spectral_norm(conv)
+
+class SelfAttention(nn.Module):
+    "Self attention layer for 2d."
+    def __init__(self, n_channels:int):
+        super().__init__()
+        self.query = conv1d(n_channels, n_channels//8)
+        self.key   = conv1d(n_channels, n_channels//8)
+        self.value = conv1d(n_channels, n_channels)
+        self.gamma = nn.Parameter(tensor([0.]))
+        
+    def forward(self, x):
+        #Notations from https://arxiv.org/pdf/1805.08318.pdf
+        size = x.size()
+        x = x.view(*size[:2],-1)
+        f,g,h = self.query(x),self.key(x),self.value(x)
+        beta = F.softmax(torch.bmm(f.permute(0,2,1).contiguous(), g), dim=1)
+        o = self.gamma * torch.bmm(h, beta) + x
+        return o.view(*size)
+
 def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
-    "Create `nn.Conv2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size. `padding` defaults to `k//2`."
+    "Create and initialize `nn.Conv2d` layer. `padding` defaults to `ks//2`."
     if padding is None: padding = ks//2
     return init_default(nn.Conv2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias), init)
 
 def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=False) -> nn.ConvTranspose2d:
-    "Create `nn.ConvTranspose2d` layer: `ni` inputs, `nf` outputs, `ks` kernel size, `stride`: stride. `padding` defaults to 0."
+    "Create `nn.ConvTranspose2d` layer."
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
-def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, bn:bool=True, use_activ:bool=True,
-               leaky:float=None, transpose:bool=False, wn:bool=False, init:Callable=nn.init.kaiming_normal_):
+def relu(inplace:bool=False, leaky:float=None):
+    return nn.LeakyReLU(inplace=inplace, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=inplace)
+
+def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None,
+               norm_type:Optional[NormType]=NormType.Batch,  use_activ:bool=True, leaky:float=None,
+               transpose:bool=False, init:Callable=nn.init.kaiming_normal_, self_attention:bool=False):
+    "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and batchnorm (if `bn`) layers."
     if padding is None: padding = (ks-1)//2 if not transpose else 0
-    if wn: bn=False
-    if bias is None:
-        bias = not bn
+    bn = norm_type in (NormType.Batch, NormType.BatchZero)
+    if bias is None: bias = not bn
     conv_func = nn.ConvTranspose2d if transpose else nn.Conv2d
     conv = init_default(conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), init)
-    if wn: conv = weight_norm(conv)
+    if   norm_type==NormType.Weight:   conv = weight_norm(conv)
+    elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
-    if use_activ:
-        layers.append(nn.LeakyReLU(inplace=True, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=True))
-    if bn: layers.append(nn.BatchNorm2d(nf))
+    if use_activ: layers.append(relu(True, leaky=leaky))
+    if bn: layers.append(batchnorm_2d(nf, norm_type=norm_type))
+    if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
+
+class SequentialResBlock(nn.Module):
+    "A resnet block using an `nn.Sequential` containing `layers`"
+    def __init__(self, *layers):
+        super().__init__()
+        self.layers = nn.Sequential(*layers)
+
+    def forward(self, x): return x + self.layers(x)
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
@@ -93,24 +140,22 @@ def icnr(x, scale=2, init=nn.init.kaiming_normal_):
 
 class PixelShuffle_ICNR(nn.Module):
     "Upsample by `scale` from `ni` filters to `nf` (default `ni`), using `nn.PixelShuffle`, `icnr` init, and `weight_norm`."
-    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False):
+    def __init__(self, ni:int, nf:int=None, scale:int=2, blur:bool=False, norm_type=NormType.Weight, leaky:float=None):
         super().__init__()
         nf = ifnone(nf, ni)
-        self.conv = weight_norm(conv2d(ni, nf * (scale**2), ks=1, bias=True))
-        icnr(self.conv.weight)
+        self.conv = conv_layer(ni, nf*(scale**2), ks=1, norm_type=norm_type, use_activ=False)
+        icnr(self.conv[0].weight)
         self.shuf = nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel
-        self.blur = blur
+        # "Super-Resolution using Convolutional Neural Networks without Any Checkerboard Artifacts"
+        # - https://arxiv.org/abs/1806.02658 
         self.pad = nn.ReplicationPad2d((1,0,1,0))
-        t = torch.ones(scale,scale)/(scale**2)
-        k = torch.zeros(nf, nf, scale,scale)
-        for i in range(nf): k[i,i] = t
-        self.k = nn.Parameter(k, requires_grad=False)
+        self.blur = nn.AvgPool2d(2, stride=1)
+        self.relu = relu(True, leaky=leaky)
 
     def forward(self,x):
-        x = self.shuf(F.relu(self.conv(x)))
-        if self.blur: x = F.conv2d(self.pad(x), self.k)
-        return x
+        x = self.shuf(self.relu(self.conv(x)))
+        return self.blur(self.pad(x)) if self.blur else x
 
 class CrossEntropyFlat(nn.CrossEntropyLoss):
     "Same as `nn.CrossEntropyLoss`, but flattens input and target."
@@ -124,13 +169,13 @@ class MSELossFlat(nn.MSELoss):
         return super().forward(input.view(-1), target.view(-1))
 
 class NoopLoss(nn.Module):
-    "Just returns the `output`."
-    def forward(self, output, target): return output[0]
+    "Just returns the mean of the `output`."
+    def forward(self, output, target): return output.mean()
 
 class WassersteinLoss(nn.Module):
     "For WGAN."
     def forward(self, real, fake): return real[0] - fake[0]
-    
+
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:
     "CNN with `conv_layer` defined by `actns`, `kernel_szs` and `strides`, plus batchnorm if `bn`."
@@ -138,7 +183,7 @@ def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
     kernel_szs = ifnone(kernel_szs, [3]*nl)
     strides    = ifnone(strides   , [2]*nl)
     layers = [conv_layer(actns[i], actns[i+1], kernel_szs[i], stride=strides[i],
-              bn=(bn and i<(len(strides)-1))) for i in range_of(strides)]
+              norm_type=(NormType.Batch if bn and i<(len(strides)-1) else None)) for i in range_of(strides)]
     layers.append(PoolFlatten())
     return nn.Sequential(*layers)
 

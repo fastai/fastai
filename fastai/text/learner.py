@@ -16,7 +16,7 @@ default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
                    'classifier': np.array([0.4,0.5,0.05,0.3,0.4])}
 
 def convert_weights(wgts:Weights, stoi_wgts:Dict[str,int], itos_new:Collection[str]) -> Weights:
-    "Convert the model weights to go with a new vocabulary."
+    "Convert the model `wgts` to go with a new vocabulary."
     dec_bias, enc_wgts = wgts['1.decoder.bias'], wgts['0.encoder.weight']
     bias_m, wgts_m = dec_bias.mean(0), enc_wgts.mean(0)
     new_w = enc_wgts.new_zeros((len(itos_new),enc_wgts.size(1))).zero_()
@@ -85,6 +85,7 @@ class RNNLearner(Learner):
 
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
+
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         pbar = master_bar(range(n_words))
@@ -125,7 +126,7 @@ class LanguageLearner(RNNLearner):
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
-    "Create a `Learner` with a language model."
+    "Create a `Learner` with a language model from `data`."
     dps = default_dropout['language'] * drop_mult
     vocab_size = len(data.vocab.itos)
     model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
@@ -145,7 +146,7 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
 def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None,
                ps:Collection[float]=None, **kwargs) -> 'TextClassifierLearner':
-    "Create a RNN classifier."
+    "Create a RNN classifier from `data`."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
     if ps is None:  ps = [0.1]

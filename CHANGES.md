@@ -10,17 +10,34 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-
-
-## 1.0.30.dev0 (Work In Progress)
+## 1.0.31.dev0 (Work In Progress)
 
 ### New:
 
+- `SequentialResBlock` to easily create resnet blocks
+- `batchnorm_2d` wrapper for batchnorm with init
+
 ### Changed:
+
+- `Learner.load` and `Learner.save` will also load/save the optimizer state
+- `ImageItemList` now takes optional `convert_mode`
+- `Image.show` now uses `defaults.cmap` if no `cmap` passed
+- `bn` param in `conv_layer` replaced by `norm_type` which takes `NormType` enum
+- unet kwargs are passed down to `conv_layer`
+- `Learner.fit` no longer creates a new optimizer at each call
+- Add batchnorm to end of unet
 
 ### Fixed:
 
 
+## 1.0.30 (2018-11-28)
+
+### New:
+
+- `Learner.summary`
+- `add_datepart`
+- `DeviceDataLoader.new` method to get a copy of a `DeviceDataLoader` while changing an attribute
+- `DataBunch.batch_size` allows to change the batch size of all the dataloaders
 
 ## 1.0.29 (2018-11-27)
 

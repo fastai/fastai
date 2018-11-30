@@ -174,21 +174,42 @@ Replace `1.0.7` with the version you're trying to install. (Without version it'l
 
 ### Can't install the latest fastai conda package
 
-Say there is `fastai-1.0.12` out there, but when you run:
+If you execute:
 
 ```
 conda install -c fastai fastai
 ```
 
-It installs only `fastai-1.0.6`.
+and conda installs not the latest `fastai` version, but an older one, that means your conda environment has a conflict of dependencies with another previously installed package, that pinned one of its dependencies to a fixed version and only `fastai` older version's dependencies agree with that fixed version number. Unfortunately, conda is not user-friendly enough to tell you that. You may have to add the option `-v`, `-vv`, or `-vvv` after `conda install` and look through the verbose output to find out which package causes the conflict.
 
-This means that you previously installed some conda package that for example requires `spacy <=2.0.15`, and now you're trying to install `fastai==1.0.12` which requires  `spacy==2.0.16` there is a conflict, and conda will search older `fastai` packages until it finds one where the dependencies don't conflict. And `fastai-1.0.6` happens to be that.
+```
+conda install -v -c fastai fastai
+```
 
-One solution is to find the package that causes a dependency conflict and update/remove it.  Unfortunately the `conda` client doesn't tell you where the conflict lies and silently downgrades or tells you it can't install it. So there is no easy way to find out which package causes the conflict.
+Here is a little example to understand the `conda` package dependency conflict:
 
-A much simpler solution is to create a fresh conda environment and not install anything there, other than `fastai` and its requirements, and keep it that way. If you do that, you will not have any such conflicts in the future. Of course, you can install other packages into that environment, but keep track of what you install so that you could revert them in the future if such conflict arises again.
+Let's assume anaconda.org has 3 packages: `A`, `B` and `P`, and some of them have multiple release versions:
 
-And of course it'd be nice if `conda` could just tell the user which package causes the conflict.
+```
+package A==1.0.17 depends on package P==1.0.5
+package B==1.0.06 depends on package P==1.0.5
+package B==1.0.29 depends on package P==1.0.6
+package P==1.0.5
+package P==1.0.6
+```
+
+If you installed `A==1.0.17` via conda, and are now trying to install `conda install B`, conda will install an older `B==1.0.6`, rather than the latest `B==1.0.29`, because the latter needs a higher version of `P`. conda can't install `B==1.0.29` because then it'll break the dependency requirements of the previously installed package `A`, which needs `P==1.0.5`. However, if conda installs `B==1.0.6` there is no conflict, as both `A==1.0.17` and `B==1.0.6` agree on dependency `P==1.0.5`.
+
+It'd have been nice for `conda` to just tell us that: there is a newer package `B` available, but it can't install it because it conflicts on dependency with package `A` which needs package `P` of such and such version. But, alas, this is not the case.
+
+One solution to this problem is to ask conda to install a specific version of the package (e.g. `fastai 1.0.29`):
+```
+conda install -c fastai fastai==1.0.29
+```
+It will usually then tell you if it needs to downgrade/upgrade/remove some other packages, that prevent it from installing normally.
+
+In general it is the best to create a new dedicated conda environment for `fastai` and not install anything there, other than `fastai` and its requirements, and keep it that way. If you do that, you will not have any such conflicts in the future. Of course, you can install other packages into that environment, but keep track of what you install so that you could revert them in the future if such conflict arises again.
+
 
 
 

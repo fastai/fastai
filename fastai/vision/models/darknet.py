@@ -4,16 +4,15 @@ from ...layers import *
 __all__ = ['Darknet', 'ResLayer']
 
 def conv_bn_lrelu(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
-    "Create Conv2d->BatchNorm2d->LeakyReLu layer: `ni` input, `nf` out filters, `ks` kernel, `stride`:stride."
+    "Create a seuence Conv2d->BatchNorm2d->LeakyReLu layer."
     return nn.Sequential(
         nn.Conv2d(ni, nf, kernel_size=ks, bias=False, stride=stride, padding=ks//2),
         nn.BatchNorm2d(nf),
         nn.LeakyReLU(negative_slope=0.1, inplace=True))
 
 class ResLayer(nn.Module):
-    "Resnet style `ResLayer`"
+    "Resnet style layer with `ni` inputs."
     def __init__(self, ni:int):
-        "create ResLayer with `ni` inputs"
         super().__init__()
         self.conv1=conv_bn_lrelu(ni, ni//2, ks=1)
         self.conv2=conv_bn_lrelu(ni//2, ni, ks=3)

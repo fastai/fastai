@@ -14,7 +14,7 @@ __all__ = ['DatasetFormatter', 'ImageCleaner']
 class DatasetFormatter():
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, ds_type:DatasetType=DatasetType.Valid, **kwargs):
-        "Formats images with padding for top losses from learner `learn`, using dataset type `ds_type`, with option to limit to `n_imgs` returned."
+        "Formats images with padding for top losses from`learn`, using `ds_type` dataset."
         dl = learn.dl(ds_type)
         if not n_imgs: n_imgs = len(dl.dataset)
         _,_,val_losses = learn.get_preds(ds_type, with_loss=True)
@@ -22,12 +22,12 @@ class DatasetFormatter():
         return cls.padded_ds(dl.dataset, **kwargs), idxs
 
     def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
-        "For a LabelList `ll_input`, resize each image in `ll_input` to size `size` by optional cropping (`do_crop`) or padding with `padding_mode`."
+        "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
         return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
     @classmethod
     def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
-        "Gets the indices for the most similar images in a dataset"
+        "Gets the indices for the most similar images in `ds_type` dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
         if ds_type == DatasetType.Train: dl = DataLoader(learn.data.train_ds,
             batch_size=learn.dl(DatasetType.Train).batch_size, shuffle=False, collate_fn=data_collate)
@@ -54,7 +54,7 @@ class DatasetFormatter():
 
     @staticmethod
     def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0)):
-        "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices. t1` and `t2` should have dimensions [n_embeddings, n_features]"
+        "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices."
         self_sim = False
         if torch.equal(t1, t2): self_sim = True
         print('Computing similarities...')
@@ -71,8 +71,8 @@ class DatasetFormatter():
         return np.array(sims)
 
     def largest_indices(arr, n):
-        'https://stackoverflow.com/questions/6910641/how-do-i-get-indices-of-n-maximum-values-in-a-numpy-array'
-        "Returns the n largest indices from a numpy array."
+        "Returns the `n` largest indices from a numpy array `arr`."
+        #https://stackoverflow.com/questions/6910641/how-do-i-get-indices-of-n-maximum-values-in-a-numpy-array
         flat = arr.flatten()
         indices = np.argpartition(flat, -n)[-n:]
         indices = indices[np.argsort(-flat[indices])]
@@ -80,13 +80,13 @@ class DatasetFormatter():
 
     @classmethod
     def sort_idxs(cls, similarities):
-        "Sorts similarities and returns the indexes in pairs ordered by highest similarity"
+        "Sorts `similarities` and return the indexes in pairs ordered by highest similarity."
         idxs = cls.largest_indices(similarities, len(similarities))
         idxs = [(idxs[0][i], idxs[1][i]) for i in range(len(idxs[0]))]
         return [e for l in idxs for e in l]
 
 class ImageCleaner():
-    "Displays images with their current label. If image is junk data or labeled incorrectly, allows user to delete image or move image to properly labeled folder."
+    "Display images with their current label."
     def __init__(self, dataset, fns_idxs, batch_size:int=5, duplicates=False, start=0, end=40):
         self._all_images,self._batch = [],[]
         self._batch_size = batch_size
@@ -102,12 +102,12 @@ class ImageCleaner():
 
     @classmethod
     def make_img_widget(cls, img, layout=Layout(), format='jpg'):
-        "Returns an image widget for specified file name."
+        "Returns an image widget for specified file name `img`."
         return widgets.Image(value=img, format=format, layout=layout)
 
     @classmethod
     def make_button_widget(cls, label, file_path=None, handler=None, style=None, layout=Layout(width='auto')):
-        "Returns a Button widget with specified handler"
+        "Return a Button widget with specified `handler`."
         btn = widgets.Button(description=label, layout=layout)
         if handler is not None: btn.on_click(handler)
         if style is not None: btn.button_style = style
@@ -118,30 +118,34 @@ class ImageCleaner():
     @classmethod
     def make_dropdown_widget(cls, description='Description', options=['Label 1', 'Label 2'], value='Label 1',
                             file_path=None, layout=Layout(), handler=None):
+        "Return a Dropdown widget with specified `handler`."
         dd = widgets.Dropdown(description=description, options=options, value=value, layout=layout)
         if file_path is not None: dd.file_path = file_path
         if handler is not None: dd.observe(handler, names=['value'])
         return dd
 
     @classmethod
-    def make_horizontal_box(cls, children, layout=Layout()): return widgets.HBox(children, layout=layout)
+    def make_horizontal_box(cls, children, layout=Layout()): 
+        "Make a horizontal box with `children` and `layout`."
+        return widgets.HBox(children, layout=layout)
 
     @classmethod
     def make_vertical_box(cls, children, layout=Layout(), duplicates=False):
+        "Make a vertical box with `children` and `layout`."
         if not duplicates: return widgets.VBox(children, layout=layout)
         else: return widgets.VBox([children[0], children[2]], layout=layout)
 
     def chunks(self, l, n):
-        'https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks'
         "Yield successive n-sized chunks from l."
+        #https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
     def create_image_list(self, dataset, fns_idxs, start, end):
-        "Creates a list of images, filenames and labels but first removing files that are not supposed to be displayed"
+        "Create a list of images, filenames and labels but first removing files that are not supposed to be displayed."
         items = dataset.x.items
         if self._duplicates:
-            chunked_idxs = self.chunks(fns_idxs, 2)
+            chunked_idxs = chunks(fns_idxs, 2)
             chunked_idxs = [chunk for chunk in chunked_idxs if Path(items[chunk[0]]).is_file() and Path(items[chunk[1]]).is_file()]
             return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk][start:end]
         else:
@@ -149,14 +153,14 @@ class ImageCleaner():
                     Path(items[i]).is_file()]
 
     def relabel(self, change):
-        "Relabel images by moving from parent dir with old label `class_old` to parent dir with new label `class_new`"
+        "Relabel images by moving from parent dir with old label `class_old` to parent dir with new label `class_new`."
         class_new,class_old,file_path = change.new,change.old,change.owner.file_path
         fp = Path(file_path)
         parent = fp.parents[1]
         self._csv_dict[fp] = self._labels.index(class_new)
 
     def next_batch(self, _):
-        "Handler for 'Next Batch' button click. Deletes all flagged images and renders next batch."
+        "Handler for 'Next Batch' button click. Delete all flagged images and renders next batch."
         for img_widget, delete_btn, fp, in self._batch:
             fp = delete_btn.file_path
             if (delete_btn.flagged_for_delete == True):
@@ -167,7 +171,7 @@ class ImageCleaner():
         self.render()
 
     def on_delete(self, btn):
-        "Flags this image as delete or keep."
+        "Flag this image as delete or keep."
         btn.button_style = "" if btn.flagged_for_delete else "danger"
         btn.flagged_for_delete = not btn.flagged_for_delete
 
@@ -180,7 +184,7 @@ class ImageCleaner():
         return len(self._all_images) == 0
 
     def get_widgets(self, duplicates):
-        "Create and format widget set"
+        "Create and format widget set."
         widgets = []
         for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
             img_widget = self.make_img_widget(img, layout=Layout(height='250px', width='300px'))
@@ -194,7 +198,7 @@ class ImageCleaner():
         return widgets
 
     def batch_contains_deleted(self):
-        "Checks if current batch contains already deleted images"
+        "Check if current batch contains already deleted images."
         if not self._duplicates: return False
         imgs = [self._all_images[:self._batch_size][0][1], self._all_images[:self._batch_size][1][1]]
         return any(img in self._deleted_fns for img in imgs)
@@ -209,7 +213,7 @@ class ImageCleaner():
         return self.csv_path
 
     def render(self):
-        "Re-render Jupyter cell for batch of images"
+        "Re-render Jupyter cell for batch of images."
         clear_output()
         if self.empty() and self._skipped>0:
             display(f'No images to show :). {self._skipped} pairs were '

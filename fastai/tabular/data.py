@@ -11,16 +11,18 @@ __all__ = ['TabularDataBunch', 'TabularLine', 'TabularList', 'TabularProcessor',
 
 OptTabTfms = Optional[Collection[TabularProc]]
 
-def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
-#def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
+#def emb_sz_rule(n_cat:int)->int: return min(50, (n_cat//2)+1)
+def emb_sz_rule(n_cat:int)->int: return min(600, round(1.6 * n_cat**0.56))
 
 def def_emb_sz(classes, n, sz_dict=None):
+    "Pick an embedding size for `n` dependinf on `classes` if not given in `sz_dict`."
     sz_dict = ifnone(sz_dict, {})
     n_cat = len(classes[n])
     sz = sz_dict.get(n, int(emb_sz_rule(n_cat)))  # rule of thumb
     return n_cat,sz
 
 class TabularLine(ItemBase):
+    "Basic item for tabular data."
     def __init__(self, cats, conts, classes, names):
         self.cats,self.conts,self.classes,self.names = cats,conts,classes,names
         self.data = [tensor(cats), tensor(conts)]
@@ -34,6 +36,7 @@ class TabularLine(ItemBase):
         return res
 
 class TabularProcessor(PreProcessor):
+    "Regroup the `procs` in one `PreProcessor`."
     def __init__(self, ds:ItemBase=None, procs=None):
         procs = ifnone(procs, ds.procs if ds is not None else None)
         self.procs = listify(procs)
@@ -82,7 +85,7 @@ class TabularDataBunch(DataBunch):
     @classmethod
     def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, **kwargs)->DataBunch:
-        "Create a `DataBunch` from train/valid/test dataframes."
+        "Create a `DataBunch` from `df` and `valid_idx` with `dep_var`."
         cat_names = ifnone(cat_names, [])
         cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
         procs = listify(procs)
@@ -92,24 +95,23 @@ class TabularDataBunch(DataBunch):
                            .databunch())
 
 class TabularList(ItemList):
+    "Basic `ItemList` for tabular data."
     _item_cls=TabularLine
     _processor=TabularProcessor
     _bunch=TabularDataBunch
     def __init__(self, items:Iterator, cat_names:OptStrList=None, cont_names:OptStrList=None,
                  procs=None, **kwargs)->'TabularList':
+        super().__init__(range_of(items), **kwargs)
         #dataframe is in xtra, items is just a range of index
         if cat_names is None:  cat_names = []
         if cont_names is None: cont_names = []
-        super().__init__(range_of(items), **kwargs)
         self.cat_names,self.cont_names,self.procs = cat_names,cont_names,procs
+        self.copy_new += ['cat_names', 'cont_names', 'procs']
 
     @classmethod
     def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, procs=None, **kwargs)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
         return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df, **kwargs)
-
-    def new(self, items:Iterator, **kwargs)->'TabularList':
-        return super().new(items=items, cat_names=self.cat_names, cont_names=self.cont_names, procs=self.procs, **kwargs)
 
     def get(self, o):
         codes = [] if self.codes is None else self.codes[o]
@@ -124,7 +126,7 @@ class TabularList(ItemList):
         return self._item_cls(t[0], t[1], self.classes, self.col_names)
 
     def show_xys(self, xs, ys)->None:
-        "Show the `xs` and `ys`."
+        "Show the `xs` (inputs) and `ys` (targets)."
         from IPython.display import display, HTML
         items = [xs[0].names + ['target']]
         for i, (x,y) in enumerate(zip(xs,ys)):

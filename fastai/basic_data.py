@@ -1,9 +1,21 @@
 "`fastai.data` loads and manages datasets with `DataBunch`"
 from .torch_core import *
-from .layers import MSELossFlat
+from torch.utils.data.dataloader import default_collate
 
 DatasetType = Enum('DatasetType', 'Train Valid Test Single')
 __all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType']
+
+old_dl_init = torch.utils.data.DataLoader.__init__
+
+def intercept_args(self, dataset, batch_size=1, shuffle=False, sampler=None, batch_sampler=None,
+                 num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
+                 timeout=0, worker_init_fn=None):
+    self.init_kwargs = {'batch_size':batch_size, 'shuffle':shuffle, 'sampler':sampler, 'batch_sampler':batch_sampler,
+                        'num_workers':num_workers, 'collate_fn':collate_fn, 'pin_memory':pin_memory, 
+                        'drop_last': drop_last, 'timeout':timeout, 'worker_init_fn':worker_init_fn}
+    old_dl_init(self, dataset, **self.init_kwargs)
+    
+torch.utils.data.DataLoader.__init__ = intercept_args
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
@@ -26,7 +38,9 @@ class DeviceDataLoader():
     @property
     def batch_size(self):   return self.dl.batch_size
     @batch_size.setter
-    def batch_size(self,v): self.dl.batch_size = v
+    def batch_size(self,v): 
+        new_kwargs = {**self.dl.init_kwargs, 'batch_size':v, 'collate_fn':self.collate_fn}
+        self.dl = DataLoader(self.dl.dataset, **new_kwargs)
 
     @property
     def num_workers(self):   return self.dl.num_workers
@@ -35,6 +49,12 @@ class DeviceDataLoader():
 
     def add_tfm(self,tfm:Callable)->None:    self.tfms.append(tfm)
     def remove_tfm(self,tfm:Callable)->None: self.tfms.remove(tfm)
+        
+    def new(self, **kwargs):
+        "Create a new copy of `self` with `kwargs` replacing current values."
+        new_kwargs = {**self.dl.init_kwargs, **kwargs}
+        return DeviceDataLoader(DataLoader(self.dl.dataset, **new_kwargs), self.device, self.tfms,
+                                self.collate_fn, self.skip_size1)
 
     def proc_batch(self,b:Tensor)->Tensor:
         "Proces batch `b` of `TensorImage`."
@@ -63,7 +83,6 @@ class DataBunch():
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate):
-        "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
@@ -122,7 +141,7 @@ class DataBunch():
         return x,y
 
     def one_item(self, item, detach:bool=False, denorm:bool=False):
-        "Get ìtem` into a batch. Optionally `detach` and `denorm`."
+        "Get `item` into a batch. Optionally `detach` and `denorm`."
         ds = self.single_ds
         ds.set_item(item)
         res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
@@ -148,8 +167,6 @@ class DataBunch():
     @property
     def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset
     @property
-    def test_ds(self)->Dataset: return self.test_dl.dl.dataset
-    @property
     def single_ds(self)->Dataset: return self.single_dl.dl.dataset
     @property
     def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
@@ -158,3 +175,9 @@ class DataBunch():
     def test_ds(self)->Dataset:
         return self.test_dl.dl.dataset if self.test_dl is not None else None
 
+    @property
+    def batch_size(self):   return self.train_dl.batch_size
+    @batch_size.setter
+    def batch_size(self,v):
+        self.train_dl.batch_size,self.valid_dl.batch_size = v,v
+        if self.test_dl is not None: self.test_dl.batch_size = v 
