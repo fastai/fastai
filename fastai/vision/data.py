@@ -154,6 +154,12 @@ class ImageDataBunch(DataBunch):
         def _get_label(fn): return pat.search(str(fn)).group(1)
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
+    @staticmethod
+    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
+        "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
+        sd = ImageItemList([], path=path).split_by_idx([])
+        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
+
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
         funcs = ifnone(funcs, [torch.mean,torch.std])
