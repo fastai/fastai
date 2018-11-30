@@ -253,7 +253,7 @@ class CategoryProcessor(PreProcessor):
         "Generate classes from `items` by taking the sorted unique values."
         return uniqueify(items)
 
-    def process_one(self,item): return self.c2i.get(item,None)
+    def process_one(self,item): return np.int64(self.c2i.get(item,None))
 
     def process(self, ds):
         if self.classes is None: self.create_classes(self.generate_classes(ds.items))
