@@ -26,6 +26,7 @@ of that change.
 - unet kwargs are passed down to `conv_layer`
 - `Learner.fit` no longer creates a new optimizer at each call
 - Add batchnorm to end of unet
+- Restore `ImageDataBunch.single_from_classes`
 
 ### Fixed:
 
