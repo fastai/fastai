@@ -29,9 +29,11 @@ of that change.
 - Restore `ImageDataBunch.single_from_classes`
 - `ItemList.set_item` is now a context manager, so you don't need to call `clear_item`
 - Removed `ItemList.clear_item`
+- Init `torch.set_num_threads(4)` to avoid OpenMP process creation overhead
 
 ### Fixed:
 
+- `Tokenizer` wasn't using >1 thread
 
 ## 1.0.30 (2018-11-28)
 

@@ -318,7 +318,7 @@ class TextList(ItemList):
 class LMLabel(CategoryList):
     def predict(self, res): return res
     def reconstruct(self,t:Tensor): return 0
-        
+
 class LMTextList(TextList):
     "Special `TextList` for a language model."
     _bunch = TextLMDataBunch
