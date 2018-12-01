@@ -58,7 +58,9 @@ class DatasetFormatter():
         if torch.equal(t1, t2): self_sim = True
         print('Computing similarities...')
 
-        sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0 for idx1 in progress_bar(range(t1.shape[0])) for idx2 in range(t2.shape[0])]
+        sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0
+                for idx1 in progress_bar(range(t1.shape[0]))
+                for idx2 in range(t2.shape[0])]
         return np.array(sims)
 
     def largest_indices(arr, n):
