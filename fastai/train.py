@@ -10,7 +10,7 @@ def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
     return partial(OneCycleScheduler, lr_max=lr_max, **kwargs)
 
-def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=default_lr, 
+def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr, 
                   moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, 
                   wd:float=None, callbacks:Optional[CallbackList]=None, **kwargs)->None:
     "Fit a model following the 1cycle policy."

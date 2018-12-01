@@ -65,23 +65,23 @@ def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Normalize `x` with `mean` and `std`."
     return (x-mean[...,None,None]) / std[...,None,None]
 
-def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
+def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor, do_x:bool=True)->TensorImage:
     "Denormalize `x` with `mean` and `std`."
-    return x.cpu()*std[...,None,None] + mean[...,None,None]
+    return x.cpu()*std[...,None,None] + mean[...,None,None] if do_x else x.cpu()
 
-def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Tensor,Tensor]:
+def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_x:bool=True, do_y:bool=False)->Tuple[Tensor,Tensor]:
     "`b` = `x`,`y` - normalize `x` array of imgs and `do_y` optionally `y`."
     x,y = b
     mean,std = mean.to(x.device),std.to(x.device)
-    x = normalize(x,mean,std)
+    if do_x: x = normalize(x,mean,std)
     if do_y and len(y.shape) == 4: y = normalize(y,mean,std)
     return x,y
 
-def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_y:bool=False)->Tuple[Callable,Callable]:
+def normalize_funcs(mean:FloatTensor, std:FloatTensor, do_x:bool=True, do_y:bool=False)->Tuple[Callable,Callable]:
     "Create normalize/denormalize func using `mean` and `std`, can specify `do_y` and `device`."
     mean,std = tensor(mean),tensor(std)
-    return (partial(_normalize_batch, mean=mean, std=std, do_y=do_y),
-            partial(denormalize,      mean=mean, std=std))
+    return (partial(_normalize_batch, mean=mean, std=std, do_x=do_x, do_y=do_y),
+            partial(denormalize,      mean=mean, std=std, do_x=do_x))
 
 cifar_stats = ([0.491, 0.482, 0.447], [0.247, 0.243, 0.261])
 imagenet_stats = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -154,18 +154,24 @@ class ImageDataBunch(DataBunch):
         def _get_label(fn): return pat.search(str(fn)).group(1)
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
+    @staticmethod
+    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
+        "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
+        sd = ImageItemList([], path=path).split_by_idx([])
+        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
+
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
         funcs = ifnone(funcs, [torch.mean,torch.std])
         x = self.one_batch(ds_type=DatasetType.Valid, denorm=False)[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
-    def normalize(self, stats:Collection[Tensor]=None, do_y:bool=None)->None:
+    def normalize(self, stats:Collection[Tensor]=None, do_x:bool=True, do_y:bool=False)->None:
         "Add normalize transform using `stats` (defaults to `DataBunch.batch_stats`)"
         if getattr(self,'norm',False): raise Exception('Can not call normalize twice')
         if stats is None: self.stats = self.batch_stats()
         else:             self.stats = stats
-        self.norm,self.denorm = normalize_funcs(*self.stats, do_y=do_y)
+        self.norm,self.denorm = normalize_funcs(*self.stats, do_x=do_x, do_y=do_y)
         self.add_tfm(self.norm)
         return self
 
@@ -251,7 +257,7 @@ class ImageItemList(ItemList):
         self.copy_new.append('convert_mode')
         self.sizes={}
 
-    def open(self, fn): 
+    def open(self, fn):
         "Open image in `fn`, subclass and overwrite for custom behavior."
         return open_image(fn, convert_mode=self.convert_mode)
 
@@ -285,19 +291,18 @@ class ImageItemList(ItemList):
 
     def reconstruct(self, t:Tensor): return Image(t.clamp(min=0,max=1))
 
-    def show_xys(self, xs, ys, figsize:Tuple[int,int]=(9,10), **kwargs):
+    def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
         rows = int(math.sqrt(len(xs)))
-        fig, axs = plt.subplots(rows,rows,figsize=figsize)
+        axs = subplots(rows, rows, imgsize=imgsize, figsize=figsize)
         for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
 
-    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
-        figsize = ifnone(figsize, (6,3*len(xs)))
-        fig,axs = plt.subplots(len(xs), 2, figsize=figsize)
-        fig.suptitle('Ground truth / Predictions', weight='bold', size=14)
+        title = 'Ground truth / Predictions'
+        axs = subplots(len(xs), 2, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=14)
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], y=y, **kwargs)
             x.show(ax=axs[i,1], y=z, **kwargs)
@@ -342,7 +347,7 @@ class ObjectCategoryList(MultiCategoryList):
         bboxes,labels = bboxes[i:],labels[i:]
         return ImageBBox.create(*x.size, bboxes, labels=labels, classes=self.classes, scale=False)
 
-class ObjectItemList(ImageItemList): 
+class ObjectItemList(ImageItemList):
     "`ItemList` suitable for object detection."
     _label_cls = ObjectCategoryList
 
@@ -365,7 +370,7 @@ class SegmentationLabelList(ImageItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
     def reconstruct(self, t:Tensor): return ImageSegment(t)
 
-class SegmentationItemList(ImageItemList): 
+class SegmentationItemList(ImageItemList):
     "`ItemList` suitable for segmentation tasks."
     _label_cls = SegmentationLabelList
 
@@ -387,26 +392,25 @@ class PointsItemList(ItemList):
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
-class ImageImageList(ImageItemList): 
+class ImageImageList(ImageItemList):
     "`ItemList` suitable for `Image` to `Image` tasks."
     _label_cls = ImageItemList
     _square_show=False
 
-    def show_xys(self, xs, ys, figsize:Tuple[int,int]=None, **kwargs):
+    def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show the `xs` (inputs) and `ys`(targets)  on a figure of `figsize`."
-        figsize = ifnone(figsize, (6,3*len(xs)))
-        fig, axs = plt.subplots(len(xs),2,figsize=figsize)
+        axs = subplots(len(xs), 2, imgsize=imgsize, figsize=figsize)
         for i, (x,y) in enumerate(zip(xs,ys)):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,1], **kwargs)
         plt.tight_layout()
 
-    def show_xyzs(self, xs, ys, zs, figsize:Tuple[int,int]=None, **kwargs):
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
-        figsize = ifnone(figsize, (9,3*len(xs)))
-        fig,axs = plt.subplots(len(xs), 3, figsize=figsize)
-        fig.suptitle('Input / Prediction / Target', weight='bold', size=14)
+        title = 'Input / Prediction / Target'
+        axs = subplots(len(xs), 3, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=14)
         for i,(x,y,z) in enumerate(zip(xs,ys,zs)):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,2], **kwargs)
             z.show(ax=axs[i,1], **kwargs)
+

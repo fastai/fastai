@@ -11,10 +11,10 @@ def intercept_args(self, dataset, batch_size=1, shuffle=False, sampler=None, bat
                  num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
                  timeout=0, worker_init_fn=None):
     self.init_kwargs = {'batch_size':batch_size, 'shuffle':shuffle, 'sampler':sampler, 'batch_sampler':batch_sampler,
-                        'num_workers':num_workers, 'collate_fn':collate_fn, 'pin_memory':pin_memory, 
+                        'num_workers':num_workers, 'collate_fn':collate_fn, 'pin_memory':pin_memory,
                         'drop_last': drop_last, 'timeout':timeout, 'worker_init_fn':worker_init_fn}
     old_dl_init(self, dataset, **self.init_kwargs)
-    
+
 torch.utils.data.DataLoader.__init__ = intercept_args
 
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
@@ -38,7 +38,7 @@ class DeviceDataLoader():
     @property
     def batch_size(self):   return self.dl.batch_size
     @batch_size.setter
-    def batch_size(self,v): 
+    def batch_size(self,v):
         new_kwargs = {**self.dl.init_kwargs, 'batch_size':v, 'collate_fn':self.collate_fn}
         self.dl = DataLoader(self.dl.dataset, **new_kwargs)
 
@@ -49,7 +49,7 @@ class DeviceDataLoader():
 
     def add_tfm(self,tfm:Callable)->None:    self.tfms.append(tfm)
     def remove_tfm(self,tfm:Callable)->None: self.tfms.remove(tfm)
-        
+
     def new(self, **kwargs):
         "Create a new copy of `self` with `kwargs` replacing current values."
         new_kwargs = {**self.dl.init_kwargs, **kwargs}
@@ -68,7 +68,7 @@ class DeviceDataLoader():
         for b in self.dl:
             y = b[1][0] if is_listy(b[1]) else b[1]
             if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)
-                
+
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
                tfms:Collection[Callable]=tfms, num_workers:int=defaults.cpus, collate_fn:Callable=data_collate, **kwargs:Any):
@@ -143,10 +143,8 @@ class DataBunch():
     def one_item(self, item, detach:bool=False, denorm:bool=False):
         "Get `item` into a batch. Optionally `detach` and `denorm`."
         ds = self.single_ds
-        ds.set_item(item)
-        res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
-        ds.clear_item()
-        return res
+        with ds.set_item(item):
+            return self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
 
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
@@ -180,4 +178,4 @@ class DataBunch():
     @batch_size.setter
     def batch_size(self,v):
         self.train_dl.batch_size,self.valid_dl.batch_size = v,v
-        if self.test_dl is not None: self.test_dl.batch_size = v 
+        if self.test_dl is not None: self.test_dl.batch_size = v

@@ -333,7 +333,9 @@ def scale_vars(df, mapper):
 def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
     """ proc_df takes a data frame df and splits off the response variable, and
-    changes the df into an entirely numeric dataframe.
+    changes the df into an entirely numeric dataframe. For each column of df 
+    which is not in skip_flds nor in ignore_flds, na values are replaced by the
+    median value of the column.
 
     Parameters:
     -----------

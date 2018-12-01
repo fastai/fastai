@@ -52,7 +52,7 @@ def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
 
-def chunks(self, l, n):
+def chunks(l:Collection, n:int)->Iterable:
     "Yield successive `n`-sized chunks from `l`."
     for i in range(0, len(l), n): yield l[i:i+n]
 
@@ -282,4 +282,12 @@ def parallel(func, arr:Collection, max_workers:int=None):
         with ProcessPoolExecutor(max_workers=max_workers) as ex:
             futures = [ex.submit(func,o,i) for i,o in enumerate(arr)]
             for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): pass
+
+def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, title=None, **kwargs):
+    "Like `plt.subplots` but with consistent axs shape, `kwargs` passed to `fig.suptitle` with `title`"
+    figsize = ifnone(figsize, (imgsize*cols, imgsize*rows))
+    fig, axs = plt.subplots(rows,cols,figsize=figsize)
+    if (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
+    if title is not None: fig.suptitle(title, **kwargs)
+    return array(axs)
 

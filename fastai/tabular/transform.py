@@ -78,6 +78,9 @@ class FillMissing(TabularProc):
                     df.loc[:,name+'_na'] = pd.isnull(df[name])
                     if name+'_na' not in self.cat_names: self.cat_names.append(name+'_na')
                 df.loc[:,name] = df.loc[:,name].fillna(self.na_dict[name])
+            elif pd.isnull(df[name]).sum() != 0:
+                raise Exception(f"""There are nan values in field {name} but there were none in the training set. 
+                Please fix those manually.""")
 
 class Normalize(TabularProc):
     "Normalize the continuous variables."

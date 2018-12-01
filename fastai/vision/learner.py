@@ -61,12 +61,14 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
 
-def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, all_wn:bool=False, blur_final:bool=True,
-                 split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False, **kwargs:Any)->None:
-    "Build Unet learners."
+def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
+                 norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
+                 **kwargs:Any)->None:
+    "Build Unet learners. `kwargs` are passed down to `conv_layer`."
     meta = cnn_config(arch)
     body = create_body(arch(pretrained), meta['cut'])
-    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, all_wn=all_wn, blur=blur, blur_final=blur_final), data.device)
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
+                                              norm_type=norm_type), data.device)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
@@ -170,7 +172,7 @@ def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None
     "Create a `GANLearner` from `data` with a `generator` and a `discriminator`."
     gan = models.GAN(generator, discriminator)
     learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
-    if wgan: loss_funcD,loss_funcG = WassersteinLoss(),noop
+    if wgan: loss_funcD,loss_funcG = WassersteinLoss(),NoopLoss()
     if noise_size is None: cb = GANTrainer(learn, loss_funcD, loss_funcG)
     else: cb = NoisyGANTrainer(learn, loss_funcD, loss_funcG, bs=data.batch_size, noise_sz=noise_size)
     learn.add_gan_trainer(cb)
