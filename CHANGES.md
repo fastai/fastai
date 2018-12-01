@@ -18,11 +18,20 @@ of that change.
 - `ImageCleaner` with duplicates=True to use as a duplicate detector
 - `DatasetFormatter.from_similars()` to feed the most similar indexes into `ImageCleaner`
 - `chunks` to separate a Collection into smaller iterables
+- `batchnorm_2d` wrapper for batchnorm with init
 
 ### Changed:
 
+- `Learner.load` and `Learner.save` will also load/save the optimizer state
 - `ImageItemList` now takes optional `convert_mode`
 - `Image.show` now uses `defaults.cmap` if no `cmap` passed
+- `bn` param in `conv_layer` replaced by `norm_type` which takes `NormType` enum
+- unet kwargs are passed down to `conv_layer`
+- `Learner.fit` no longer creates a new optimizer at each call
+- Add batchnorm to end of unet
+- Restore `ImageDataBunch.single_from_classes`
+- `ItemList.set_item` is now a context manager, so you don't need to call `clear_item`
+- Removed `ItemList.clear_item`
 
 ### Fixed:
 

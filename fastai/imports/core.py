@@ -21,12 +21,14 @@ from operator import attrgetter, itemgetter
 from pathlib import Path
 from spacy.symbols import ORTH
 from warnings import warn
-
-#for type annotations
+from contextlib import contextmanager
 from fastprogress.fastprogress import MasterBar, ProgressBar
 from matplotlib.patches import Patch
-from numbers import Number
 from pandas import Series, DataFrame
+
+#for type annotations
+from numbers import Number
 from typing import Any, AnyStr, Callable, Collection, Dict, Hashable, Iterator, List, Mapping, NewType, Optional
 from typing import Sequence, Tuple, TypeVar, Union
 from types import SimpleNamespace
+

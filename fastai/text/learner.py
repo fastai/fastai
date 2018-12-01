@@ -91,9 +91,8 @@ class LanguageLearner(RNNLearner):
         pbar = master_bar(range(n_words))
         ds = self.data.single_dl.dataset
         for _ in pbar:
-            ds.set_item(text)
-            res = self.pred_batch(ds_type=DatasetType.Single)[-1]
-            ds.clear_item()
+            with ds.set_item(text):
+                res = self.pred_batch(ds_type=DatasetType.Single)[-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(temperature)
