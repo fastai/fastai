@@ -437,12 +437,14 @@ class LabelList(Dataset):
         self.transform(tfms, **kwargs)
 
     def __len__(self)->int: return len(self.x) if self.item is None else 1
-    def set_item(self,item): 
+
+    @contextmanager
+    def set_item(self,item):
         "For inference, will replace the dataset with one that only contains `item`."
         self.item = self.x.process_one(item)
-    def clear_item(self):
-        "Clear the item set in `set_item`."
+        yield None
         self.item = None
+
     def __repr__(self)->str:
         x = f'{self.x}' # force this to happen first
         return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'

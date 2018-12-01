@@ -27,6 +27,8 @@ of that change.
 - `Learner.fit` no longer creates a new optimizer at each call
 - Add batchnorm to end of unet
 - Restore `ImageDataBunch.single_from_classes`
+- `ItemList.set_item` is now a context manager, so you don't need to call `clear_item`
+- Removed `ItemList.clear_item`
 
 ### Fixed:
 

@@ -143,10 +143,8 @@ class DataBunch():
     def one_item(self, item, detach:bool=False, denorm:bool=False):
         "Get `item` into a batch. Optionally `detach` and `denorm`."
         ds = self.single_ds
-        ds.set_item(item)
-        res = self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
-        ds.clear_item()
-        return res
+        with ds.set_item(item):
+            return self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
 
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
