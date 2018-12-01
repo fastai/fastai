@@ -111,6 +111,13 @@ class ItemList():
 
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
     def _relative_item_paths(self):   return [self._relative_item_path(i) for i in range_of(self.items)]
+                
+    def use_partial_data(self, sample_pct:float=1.0, seed:int=None)->'ItemList':
+        "Use only a sample of the full dataset.  "
+        if seed is not None: np.random.seed(seed)
+        rand_idx = np.random.permutation(range_of(self))
+        cut = int(sample_pct * len(self))
+        return self[rand_idx[:cut]]
 
     def to_text(self, fn:str):
         "Save `self.items` to `fn` in `self.path`."
