@@ -27,6 +27,9 @@ of that change.
 ### New:
 
 - `SequentialResBlock` to easily create resnet blocks
+- `ImageCleaner` with duplicates=True to use as a duplicate detector
+- `DatasetFormatter.from_similars()` to feed the most similar indexes into `ImageCleaner`
+- `chunks` to separate a Collection into smaller iterables
 - `batchnorm_2d` wrapper for batchnorm with init
 
 ### Changed:
