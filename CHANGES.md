@@ -18,8 +18,11 @@ of that change.
 
 ### Changed:
 
+- `TabularDatBunch.from_df` accepts a `test_df` argument
+
 ### Fixed:
 
+- `LanguageLearner.predict` now returns better text predictions
 
 
 ## 1.0.31 (2018-12-01)
