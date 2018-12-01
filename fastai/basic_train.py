@@ -227,6 +227,7 @@ class Learner():
         if batch: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
+        cb_handler.on_train_begin(1, None, None)
         cb_handler.on_batch_begin(xb,yb, train=False)
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
         return _loss_func2activ(self.loss_func)(preds[0])
