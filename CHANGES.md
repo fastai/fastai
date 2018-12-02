@@ -12,7 +12,19 @@ of that change.
 
 
 
-## 1.0.32.dev0 (Work In Progress)
+
+
+## 1.0.33.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.32 (2018-12-02)
 
 ### New:
 
