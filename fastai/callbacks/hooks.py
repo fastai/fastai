@@ -171,10 +171,10 @@ def model_summary(m:Collection[nn.Module], n:int=70):
     for layer, size, params, trainable in info:
         total_params += int(params)
         total_trainable_params += int(params) * trainable
-        params, size, trainable = str(params),str(list(size)), str(trainable)
+        params, size, trainable = str(params), str(list(size)), str(trainable)
         print(f"{layer:<20} {size:<20} {params:<10} {trainable:<10}")
         print("_" * n)
-    print("\n", Total params: ", total_params)
+    print("\nTotal params: ", total_params)
     print("Total trainable params: ", total_trainable_params)
     print("Total non-trainable params: ", total_params - total_trainable_params)
 
