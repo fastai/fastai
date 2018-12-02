@@ -23,7 +23,7 @@ class DatasetFormatter():
 
     def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
         "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
-        return ll_input.transform(tfms=([crop_pad()], [crop_pad()]), size=size, do_crop=do_crop, padding_mode=padding_mode)
+        return ll_input.transform(tfms=crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
     @classmethod
     def from_similars(cls, learn, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
