@@ -26,7 +26,7 @@ class DatasetFormatter():
         return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
     @classmethod
-    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
+    def from_similars(cls, learn, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
         "Gets the indices for the most similar images in `ds_type` dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
         if ds_type == DatasetType.Train: dl = learn.data.train_dl.new(shuffle=False)
