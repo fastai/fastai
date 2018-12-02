@@ -23,10 +23,10 @@ class DatasetFormatter():
 
     def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
         "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
-        return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
+        return ll_input.transform(tfms=([crop_pad()], [crop_pad()]), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
     @classmethod
-    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
+    def from_similars(cls, learn, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
         "Gets the indices for the most similar images in `ds_type` dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
         if ds_type == DatasetType.Train: dl = learn.data.train_dl.new(shuffle=False)
@@ -38,7 +38,7 @@ class DatasetFormatter():
         return cls.padded_ds(dl, **kwargs), idxs
 
     @staticmethod
-    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4):
+    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4, **kwargs):
         "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
         pool = pool(pool_dim)
         print('Getting activations...')
@@ -52,7 +52,7 @@ class DatasetFormatter():
         return pool(torch.cat(actns)).view(len(dl.x), -1)
 
     @staticmethod
-    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0)):
+    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0), **kwargs):
         "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices."
         self_sim = False
         if torch.equal(t1, t2): self_sim = True
