@@ -31,6 +31,14 @@ def learn():
     learn.fit(3,1)
     return learn
 
+def n_params(learn): return sum([len(pg['params']) for pg in learn.opt.opt.param_groups])
+
+def test_opt_params(learn):
+    learn.freeze()
+    assert n_params(learn) == 2
+    learn.unfreeze()
+    assert n_params(learn) == 6
+
 @pytest.mark.slow
 def manual_seed(seed=42):
     torch.manual_seed(seed)
