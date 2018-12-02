@@ -177,15 +177,18 @@ class Learner():
             for l in g:
                 if not self.train_bn or not isinstance(l, bn_types): requires_grad(l, False)
         for g in self.layer_groups[n:]: requires_grad(g, True)
+        self.create_opt(defaults.lr)
 
     def freeze(self)->None:
         "Freeze up to last layer."
         assert(len(self.layer_groups)>1)
         self.freeze_to(-1)
+        self.create_opt(defaults.lr)
 
     def unfreeze(self):
         "Unfreeze entire model."
         self.freeze_to(0)
+        self.create_opt(defaults.lr)
 
     def __del__(self): del(self.model, self.data)
 
