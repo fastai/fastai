@@ -21,7 +21,7 @@ def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool
     if sigmoid: y_pred = y_pred.sigmoid()
     return ((y_pred>thresh)==y_true.byte()).float().mean()
 
-def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
+def dice(input:FloatTensor, targs:LongTensor, iou:bool=False)->Rank0Tensor:
     "Dice coefficient metric for binary target. If `iou=True`, return iou metric."
     n = targs.shape[0]
     input = input.argmax(dim=1).view(n,-1)
@@ -31,7 +31,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
     else: return intersect / (union-intersect+1.0)
 
-def accuracy(input:Tensor, targs:Tensor)->Rank0Tensor:
+def accuracy(input:Tensor, targs:LongTensor)->Rank0Tensor:
     "Compute accuracy with `targs` when `input` is bs * n_classes."
     n = targs.shape[0]
     input = input.argmax(dim=-1).view(n,-1)
@@ -42,8 +42,9 @@ def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
     "1 - `accuracy`"
     return 1-accuracy(input, targs)
 
-def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
+def exp_rmspe(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
+    assert pred.numel() == targ.numel(), "Expected same numbers of elements in pred & targ"
     if len(pred.shape)==2: pred=pred.squeeze(1)
     pred, targ = torch.exp(pred), torch.exp(targ)
     pct_var = (targ - pred)/targ

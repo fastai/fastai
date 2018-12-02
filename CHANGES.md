@@ -10,7 +10,22 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.31.dev0 (Work In Progress)
+
+
+## 1.0.32.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+- `TabularDatBunch.from_df` accepts a `test_df` argument
+
+### Fixed:
+
+- `LanguageLearner.predict` now returns better text predictions
+
+
+## 1.0.31 (2018-12-01)
 
 ### New:
 
@@ -32,9 +47,11 @@ of that change.
 - Restore `ImageDataBunch.single_from_classes`
 - `ItemList.set_item` is now a context manager, so you don't need to call `clear_item`
 - Removed `ItemList.clear_item`
+- Init `torch.set_num_threads(4)` to avoid OpenMP process creation overhead
 
 ### Fixed:
 
+- `Tokenizer` wasn't using >1 thread
 
 ## 1.0.30 (2018-11-28)
 

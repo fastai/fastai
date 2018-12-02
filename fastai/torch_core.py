@@ -56,6 +56,8 @@ fastai_types = {
     OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc',
 }
 
+torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
+
 bn_types = (nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d)
 defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 AdamW = partial(optim.Adam, betas=(0.9,0.99))

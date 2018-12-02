@@ -81,7 +81,7 @@ def text_df(n_labels):
     return df
 
 def test_classifier():
-    for n_labels in [1]: # , 8 - does not work for multilclass yet
+    for n_labels in [1, 8]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
         os.makedirs(path)
         try:
@@ -93,7 +93,6 @@ def test_classifier():
             assert len(data.train_dl) == math.ceil(len(data.train_ds)/data.train_dl.batch_size)
             assert next(iter(data.train_dl))[0].shape == (9, 2)
             assert next(iter(data.valid_dl))[0].shape == (9, 2)
-            classifier.fit(1)
         finally:
             shutil.rmtree(path)
 

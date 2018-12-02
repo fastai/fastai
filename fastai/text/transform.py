@@ -88,7 +88,7 @@ class Tokenizer():
         self.pre_rules  = ifnone(pre_rules,  default_pre_rules )
         self.post_rules = ifnone(post_rules, default_post_rules)
         self.special_cases = special_cases if special_cases else default_spec_tok
-        self.n_cpus = n_cpus or min(defaults.cpus//2,1)
+        self.n_cpus = ifnone(n_cpus, defaults.cpus)
 
     def __repr__(self) -> str:
         res = f'Tokenizer {self.tok_func.__name__} in {self.lang} with the following rules:\n'
