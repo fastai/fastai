@@ -23,6 +23,8 @@ of that change.
 ### Fixed:
 
 - `LanguageLearner.predict` now returns better text predictions
+- Unfreezing layers didn't create a new optimizer so the unfrozen layers weren't training
+- Bug in `TextDataBunch` with a mistmatched test set was causing problems on the validation set
 
 
 ## 1.0.31 (2018-12-01)
