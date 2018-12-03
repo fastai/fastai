@@ -22,6 +22,8 @@ of that change.
 
 ### Fixed:
 
+- `Learner.load` won't throw an error when trying to load an optimizer state of the wrong size, and silently ignore that optimizer state loading
+
 
 
 ## 1.0.32 (2018-12-02)

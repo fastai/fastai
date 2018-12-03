@@ -212,7 +212,8 @@ class Learner():
             self.model.load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True): 
                 if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
-                self.opt.load_state_dict(state['opt'])
+                try:    self.opt.load_state_dict(state['opt'])
+                except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             self.model.load_state_dict(state, strict=strict)
