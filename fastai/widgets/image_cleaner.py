@@ -214,10 +214,11 @@ class ImageCleaner():
             return self.write_csv()
         elif self.empty():
             display('No images to show :)')
-            return self.write_csv()
+            self.write_csv()
         if self.batch_contains_deleted():
             self.next_batch(None)
             self._skipped += 1
         else:
+            self.write_csv()
             display(self.make_horizontal_box(self.get_widgets(self._duplicates)))
             display(self.make_button_widget('Next Batch', handler=self.next_batch, style="primary"))
