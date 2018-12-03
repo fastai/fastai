@@ -72,8 +72,8 @@ class CycleGANModel(BaseModel):
         input_A = input['A' if AtoB else 'B']
         input_B = input['B' if AtoB else 'A']
         if len(self.gpu_ids) > 0:
-            input_A = input_A.cuda(self.gpu_ids[0], async=True)
-            input_B = input_B.cuda(self.gpu_ids[0], async=True)
+            input_A = input_A.cuda(self.gpu_ids[0], non_blocking=True)
+            input_B = input_B.cuda(self.gpu_ids[0], non_blocking=True)
         self.input_A = input_A
         self.input_B = input_B
         self.image_paths = input['A_paths' if AtoB else 'B_paths']

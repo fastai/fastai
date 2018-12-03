@@ -28,7 +28,7 @@ class TestModel(BaseModel):
         # we need to use single_dataset mode
         input_A = input['A']
         if len(self.gpu_ids) > 0:
-            input_A = input_A.cuda(self.gpu_ids[0], async=True)
+            input_A = input_A.cuda(self.gpu_ids[0], non_blocking=True)
         self.input_A = input_A
         self.image_paths = input['A_paths']
 
