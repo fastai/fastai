@@ -80,15 +80,15 @@ class DatasetFormatter():
 
 class ImageCleaner():
     "Display images with their current label."
-    def __init__(self, dataset, fns_idxs, batch_size:int=5, duplicates=False, start=0, end=40):
+    def __init__(self, dataset, fns_idxs, path, batch_size:int=5, duplicates=False, start=0, end=40):
         self._all_images,self._batch = [],[]
+        self._path = path
         self._batch_size = batch_size
         if duplicates: self._batch_size = 2
         self._duplicates = duplicates
         self._labels = dataset.classes
         self._all_images = self.create_image_list(dataset, fns_idxs, start, end)
         self._csv_dict = {dataset.x.items[i]: dataset.y[i] for i in range(len(dataset))}
-        self.csv_path = None
         self._deleted_fns = []
         self._skipped = 0
         self.render()
@@ -198,12 +198,14 @@ class ImageCleaner():
 
     def write_csv(self):
         # Get first element's file path so we write CSV to same directory as our data
-        self.csv_path = Path('./cleaned.csv')
-        with open(self.csv_path, 'w') as f:
+        csv_path = self._path/'cleaned.csv'
+        with open(csv_path, 'w') as f:
             csv_writer = csv.writer(f)
+            csv_writer.writerow(['name','label'])
             for pair in self._csv_dict.items():
+                pair = [os.path.relpath(pair[0], self._path), pair[1]]
                 csv_writer.writerow(pair)
-        return self.csv_path
+        return csv_path
 
     def render(self):
         "Re-render Jupyter cell for batch of images."
