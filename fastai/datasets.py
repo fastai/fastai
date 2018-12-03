@@ -5,7 +5,7 @@ __all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'ur
 MODEL_URL = 'http://files.fast.ai/models/'
 URL = 'http://files.fast.ai/data/examples/'
 class URLs():
-    "Global constants will datasets or models URLs."
+    "Global constants for dataset and model URLs."
     LOCAL_PATH = Path.cwd()
     S3 = 'https://s3.amazonaws.com/fast-ai-'
     S3_IMAGE = f'{S3}imageclas/'
