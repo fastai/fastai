@@ -21,7 +21,7 @@ class DatasetFormatter():
         idxs = torch.topk(val_losses, n_imgs)[1]
         return cls.padded_ds(dl.dataset, **kwargs), idxs
 
-    def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
+    def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros', **kwargs):
         "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
         return ll_input.transform(tfms=crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
 
@@ -61,7 +61,7 @@ class DatasetFormatter():
         sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0
                 for idx1 in progress_bar(range(t1.shape[0]))
                 for idx2 in range(t2.shape[0])]
-        return np.array(sims)
+        return np.array(sims).reshape((t1.shape[0], t2.shape[0]))
 
     def largest_indices(arr, n):
         "Returns the `n` largest indices from a numpy array `arr`."
