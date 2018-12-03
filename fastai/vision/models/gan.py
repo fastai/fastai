@@ -18,16 +18,16 @@ def basic_discriminator(in_size:int, n_channels:int, n_features:int=64, n_extra_
     layers += [conv2d(cur_ftrs, 1, 4, padding=0), AvgFlatten()]
     return nn.Sequential(*layers)
 
-def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:int=64, n_extra_layers=0):
+def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:int=64, n_extra_layers=0, **kwargs):
     "A basic generator from `noise_sz` to images `n_channels` x `in_size` x `in_size`."
     cur_size, cur_ftrs = 4, n_features//2
     while cur_size < in_size:  cur_size *= 2; cur_ftrs *= 2
-    layers = [conv_layer(noise_sz, cur_ftrs, 4, 1, transpose=True)]
+    layers = [conv_layer(noise_sz, cur_ftrs, 4, 1, transpose=True, **kwargs)]
     cur_size = 4
     while cur_size < in_size // 2:
-        layers.append(conv_layer(cur_ftrs, cur_ftrs//2, 4, 2, 1, transpose=True))
+        layers.append(conv_layer(cur_ftrs, cur_ftrs//2, 4, 2, 1, transpose=True, **kwargs))
         cur_ftrs //= 2; cur_size *= 2
-    layers += [conv_layer(cur_ftrs, cur_ftrs, 3, 1, 1, transpose=True) for _ in range(n_extra_layers)]
+    layers += [conv_layer(cur_ftrs, cur_ftrs, 3, 1, 1, transpose=True, **kwargs) for _ in range(n_extra_layers)]
     layers += [conv2d_trans(cur_ftrs, n_channels, 4, 2, 1, bias=False), nn.Tanh()]
     return nn.Sequential(*layers)
 

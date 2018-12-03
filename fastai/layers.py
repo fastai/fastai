@@ -66,7 +66,7 @@ class SelfAttention(nn.Module):
         f,g,h = self.query(x),self.key(x),self.value(x)
         beta = F.softmax(torch.bmm(f.permute(0,2,1).contiguous(), g), dim=1)
         o = self.gamma * torch.bmm(h, beta) + x
-        return o.view(*size)
+        return o.view(*size).contiguous()
 
 def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
     "Create and initialize `nn.Conv2d` layer. `padding` defaults to `ks//2`."
@@ -93,7 +93,8 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
     if use_activ: layers.append(relu(True, leaky=leaky))
-    if bn: layers.append(batchnorm_2d(nf, norm_type=norm_type))
+    if bn: layers.append(nn.BatchNorm2d(nf))
+        #layers.append(batchnorm_2d(nf, norm_type=norm_type))
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
