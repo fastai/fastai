@@ -121,7 +121,7 @@ def total_params(m:nn.Module)->int:
     if hasattr(m, "weight") and hasattr(m.weight, "size"):
          params += m.weight.numel()
          trainable = m.weight.requires_grad
-    if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
+    if hasattr(m, "bias") and hasattr(m.bias, "size"): params += m.bias.numel()
     return params, trainable
 
 def hook_params(modules:Collection[nn.Module])->Hooks:
