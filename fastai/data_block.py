@@ -16,14 +16,16 @@ def _get_files(parent, p, f, extensions):
            and (extensions is None or f'.{o.split(".")[-1].lower()}' in extensions)]
     return res
 
-def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False)->FilePathList:
-    "Return list of files in `path` that have a suffix in `extensions`. `recurse` determines if we search subfolders."
+def get_files(path:PathOrStr, extensions:Collection[str]=None, recurse:bool=False,
+              include:Optional[Collection[str]]=None)->FilePathList:
+    "Return list of files in `path` that have a suffix in `extensions`; optionally `recurse`."
     if recurse:
         res = []
         for p,d,f in os.walk(path):
-                # skip hidden dirs
-                d[:] = [o for o in d if not o.startswith('.')]
-                res += _get_files(path, p, f, extensions)
+            # skip hidden dirs
+            if include is not None: d[:] = [o for o in d if o in include]
+            else:                   d[:] = [o for o in d if not o.startswith('.')]
+            res += _get_files(path, p, f, extensions)
         return res
     else:
         f = [o.name for o in os.scandir(path) if o.is_file()]
@@ -91,10 +93,11 @@ class ItemList():
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
     @classmethod
-    def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True, **kwargs)->'ItemList':
+    def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True,
+                    include:Optional[Collection[str]]=None, **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`. `recurse` determines if we search subfolders."
         path = Path(path)
-        return cls(get_files(path, extensions, recurse=recurse), path=path, **kwargs)
+        return cls(get_files(path, extensions, recurse=recurse, include=include), path=path, **kwargs)
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, **kwargs)->'ItemList':

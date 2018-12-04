@@ -2,10 +2,9 @@
 from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger',
-           'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
-           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss',
-           'WassersteinLoss', 'SelfAttention']
+           'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
+           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
+           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -20,9 +19,10 @@ def ResizeBatch(*size:int) -> Tensor:
     "Layer that resizes x to `size`, good for connecting mismatched layers."
     return Lambda(lambda x: x.view((-1,)+size))
 
-def Flatten()->Tensor:
-    "Flatten `x` to a single dimension, often used at the end of a model."
-    return Lambda(lambda x: x.view((x.size(0), -1)))
+def Flatten(full:bool=False)->Tensor:
+    "Flatten `x` to a single dimension, often used at the end of a model. `full` for rank-1 tensor"
+    func = (lambda x: x.view(-1)) if full else (lambda x: x.view(x.size(0), -1))
+    return Lambda(func)
 
 def PoolFlatten()->nn.Sequential:
     "Apply `nn.AdaptiveAvgPool2d` to `x` and then flatten the result."
@@ -60,9 +60,9 @@ class SelfAttention(nn.Module):
         self.key   = conv1d(n_channels, n_channels//8)
         self.value = conv1d(n_channels, n_channels)
         self.gamma = nn.Parameter(tensor([0.]))
-        
+
     def forward(self, x):
-        #Notations from https://arxiv.org/pdf/1805.08318.pdf
+        #Notation from https://arxiv.org/pdf/1805.08318.pdf
         size = x.size()
         x = x.view(*size[:2],-1)
         f,g,h = self.query(x),self.key(x),self.value(x)
@@ -150,7 +150,7 @@ class PixelShuffle_ICNR(nn.Module):
         self.shuf = nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel
         # "Super-Resolution using Convolutional Neural Networks without Any Checkerboard Artifacts"
-        # - https://arxiv.org/abs/1806.02658 
+        # - https://arxiv.org/abs/1806.02658
         self.pad = nn.ReplicationPad2d((1,0,1,0))
         self.blur = nn.AvgPool2d(2, stride=1)
         self.relu = relu(True, leaky=leaky)
@@ -161,22 +161,29 @@ class PixelShuffle_ICNR(nn.Module):
 
 class FlattenedLoss():
     "Same as `func`, but flattens input and target."
-    def __init__(self, func, *args, axis:int=-1, **kwargs):
-        self.func,self.axis = func(*args,**kwargs),axis
+    def __init__(self, func, *args, axis:int=-1, floatify:bool=False, is_2d:bool=True, **kwargs):
+        self.func,self.axis,self.floatify,self.is_2d = func(*args,**kwargs),axis,floatify,is_2d
 
-    def __call__(self, input:Tensor, target:Tensor)->Rank0Tensor:
+    @property
+    def reduction(self): return self.func.reduction
+    @reduction.setter
+    def reduction(self, v): self.func.reduction = v
+
+    def __call__(self, input:Tensor, target:Tensor, **kwargs)->Rank0Tensor:
         input = input.transpose(self.axis,-1).contiguous()
         target = target.transpose(self.axis,-1).contiguous()
-        return self.func.__call__(input.view(-1,input.shape[-1]), target.view(-1))
+        if self.floatify: target = target.float()
+        input = input.view(-1,input.shape[-1]) if self.is_2d else input.view(-1)
+        return self.func.__call__(input, target.view(-1), **kwargs)
 
 def CrossEntropyFlat(*args, axis:int=-1, **kwargs):
     return FlattenedLoss(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
 
-def BCEWithLogitsFlat(*args, axis:int=-1, **kwargs):
-    return FlattenedLoss(nn.BCEWithLogitsLoss, *args, axis=axis, **kwargs)
+def BCEWithLogitsFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
+    return FlattenedLoss(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
-def BCEFlat(*args, axis:int=-1, **kwargs):
-    return FlattenedLoss(nn.BCELoss, *args, axis=axis, **kwargs)
+def BCEFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
+    return FlattenedLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 class MSELossFlat(nn.MSELoss):
     "Same as `nn.MSELoss`, but flattens input and target."
