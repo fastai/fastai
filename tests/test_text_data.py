@@ -30,9 +30,9 @@ def text_files(path, labels):
 def test_from_folder():
     path = untar_data(URLs.IMDB_SAMPLE)
     text_files(path, ['pos', 'neg'])
-    data = (TextList.from_folder(path/'temp')                           
+    data = (TextList.from_folder(path/'temp')
                .random_split_by_pct(0.1)
-               .label_from_folder()           
+               .label_from_folder()
                .databunch())
     assert (len(data.train_ds) + len(data.valid_ds)) == 80
     assert set(data.classes) == {'neg', 'pos'}
@@ -54,12 +54,12 @@ def test_from_csv_and_from_df():
     assert len(data2.classes) == 2
     x,y = data2.train_ds[0]
     assert len(y.data) == 2
-    assert '@fastdotai' in data2.train_ds.vocab.itos,  "It seems that our custom tokenzier was not used by TextClasDataBunch"
+    assert '@fastdotai' in data2.train_ds.vocab.itos,  "custom tokenzier not used by TextClasDataBunch"
     text_csv_file(path/'tmp.csv', ['neg','pos'])
     data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"])
     assert len(data3.classes) == 1
     data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)
-    assert len(data4.train_ds.vocab.itos) == 7 # 5 + 2 (special UNK and PAD token)
+    assert 5 <= len(data4.train_ds.vocab.itos) <= 5+8 # +(8 special tokens - UNK/BOS/etc)
 
     # Test that the tokenizer parameter is used in from_csv
     data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"],
@@ -83,7 +83,7 @@ def df_test_collate(data):
     x,y = next(iter(data.train_dl))
     assert x.size(0) == 8
     assert x[0,-1] == 1
-    
+
 def test_load_and_save_test():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos'])

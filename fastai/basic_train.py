@@ -95,11 +95,17 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     finally: cb_handler.on_train_end(exception)
 
 loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=-1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
-    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': partial(F.softmax, dim=1),
+    'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid,
 }
 
 def _loss_func2activ(loss_func):
+    if getattr(loss_func,'keywords',None):
+        if not loss_func.keywords.get('log_input', True): return
+    # flattened loss
+    loss_func = getattr(loss_func, 'func', loss_func)
+    # could have a partial inside flattened loss!
+    loss_func = getattr(loss_func, 'func', loss_func)
     cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name == 'mix_up_loss':
         loss_func = loss_func.crit
@@ -107,9 +113,6 @@ def _loss_func2activ(loss_func):
     if cls_name in loss_func_name2activ:
         if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
         return loss_func_name2activ[cls_name]
-    if hasattr(loss_func, 'func'):
-        if loss_func.func.__name__ == 'poisson_nll_loss' and (not loss_func.keywords.get('log_input', True)): return
-        loss_func = loss_func.func
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
         return loss_func_name2activ[loss_func.__name__]
     return noop
@@ -165,7 +168,7 @@ class Learner():
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
         "Create optimizer with `lr` learning rate and `wd` weight decay."
         self.opt = OptimWrapper.create(self.opt_func, lr, self.layer_groups, wd=wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
-        
+
     def split(self, split_on:SplitFuncOrIdxList)->None:
         "Split the model at `split_on`."
         if isinstance(split_on,Callable): split_on = split_on(self.model)
@@ -210,7 +213,7 @@ class Learner():
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             self.model.load_state_dict(state['model'], strict=strict)
-            if ifnone(with_opt,True): 
+            if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
                 self.opt.load_state_dict(state['opt'])
         else:

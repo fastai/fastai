@@ -361,7 +361,7 @@ class SegmentationLabelList(ImageItemList):
     _processor=SegmentationProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, **kwargs)
-        self.classes,self.loss_func = classes,CrossEntropyFlat()
+        self.classes,self.loss_func = classes,CrossEntropyFlat(axis=1)
 
     def new(self, items, classes=None, **kwargs):
         return self.new(items, ifnone(classes, self.classes), **kwargs)

@@ -11,14 +11,13 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
-
 ## 1.0.33.dev0 (Work In Progress)
 
 ### New:
 
 ### Changed:
+
+- Language models now use flattened loss, instead of flattening y in data loader
 
 ### Fixed:
 

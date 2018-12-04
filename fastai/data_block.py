@@ -1,6 +1,6 @@
 from .torch_core import *
 from .basic_data import *
-from .layers import MSELossFlat
+from .layers import *
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
            'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor']
@@ -288,7 +288,7 @@ class CategoryList(CategoryListBase):
     _processor=CategoryProcessor
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         super().__init__(items, classes=classes, **kwargs)
-        self.loss_func = F.cross_entropy
+        self.loss_func = CrossEntropyFlat()
 
     def get(self, i):
         o = self.items[i]
@@ -318,7 +318,7 @@ class MultiCategoryList(CategoryListBase):
     def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
         if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
         super().__init__(items, classes=classes, **kwargs)
-        self.loss_func = F.binary_cross_entropy_with_logits
+        self.loss_func = BCEWithLogitsFlat()
 
     def get(self, i):
         o = self.items[i]

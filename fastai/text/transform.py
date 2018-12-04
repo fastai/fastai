@@ -1,12 +1,13 @@
 "NLP data processing; tokenizes text and creates vocab indexes"
 from ..torch_core import *
 
-__all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'fix_html', 'replace_all_caps', 'replace_rep', 'replace_wrep', 
-           'rm_useless_spaces', 'spec_add_spaces', 'BOS', 'FLD', 'UNK', 'PAD', 'TK_MAJ', 'TK_UP', 'TK_REP', 'TK_REP', 'TK_WREP', 
+__all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'fix_html', 'replace_all_caps', 'replace_rep', 'replace_wrep',
+           'rm_useless_spaces', 'spec_add_spaces', 'BOS', 'FLD', 'UNK', 'PAD', 'TK_MAJ', 'TK_UP', 'TK_REP', 'TK_REP', 'TK_WREP',
            'default_pre_rules', 'default_post_rules', 'default_spec_tok', 'deal_caps']
 
 BOS,FLD,UNK,PAD = 'xxbos','xxfld','xxunk','xxpad'
 TK_MAJ,TK_UP,TK_REP,TK_WREP = 'xxmaj','xxup','xxrep','xxwrep'
+TOK_XX = [UNK,PAD,BOS,FLD,TK_MAJ,TK_UP,TK_REP,TK_WREP]
 
 
 class BaseTokenizer():
@@ -128,20 +129,21 @@ class Vocab():
     def textify(self, nums:Collection[int], sep=' ') -> List[str]:
         "Convert a list of `nums` to their tokens."
         return sep.join([self.itos[i] for i in nums])
-        
+
     def __getstate__(self):
         return {'itos':self.itos}
-    
+
     def __setstate__(self, state:dict):
         self.itos = state['itos']
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
-    
+
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of tokens."
         freq = Counter(p for o in tokens for p in o)
         itos = [o for o,c in freq.most_common(max_vocab) if c > min_freq]
-        itos.insert(0, PAD)
-        if UNK in itos: itos.remove(UNK)
-        itos.insert(0, UNK)
+        for o in reversed(TOK_XX):
+            if o in itos: itos.remove(o)
+            itos.insert(0, o)
         return cls(itos)
+

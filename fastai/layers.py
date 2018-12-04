@@ -1,9 +1,10 @@
 "`fastai.layers` provides essential functions to building and modifying `model` architectures"
 from .torch_core import *
 
-__all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
-           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
+__all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'BCEFlat', 'BCEWithLogitsFlat', 'Debugger',
+           'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
+           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
+           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -157,11 +158,24 @@ class PixelShuffle_ICNR(nn.Module):
         x = self.shuf(self.relu(self.conv(x)))
         return self.blur(self.pad(x)) if self.blur else x
 
-class CrossEntropyFlat(nn.CrossEntropyLoss):
-    "Same as `nn.CrossEntropyLoss`, but flattens input and target."
-    def forward(self, input:Tensor, target:Tensor) -> Rank0Tensor:
-        n,c,*_ = input.shape
-        return super().forward(input.view(n, c, -1), target.view(n, -1))
+class FlattenedLoss():
+    "Same as `func`, but flattens input and target."
+    def __init__(self, func, *args, axis:int=-1, **kwargs):
+        self.func,self.axis = func(*args,**kwargs),axis
+
+    def __call__(self, input:Tensor, target:Tensor)->Rank0Tensor:
+        input = input.transpose(self.axis,-1).contiguous()
+        target = target.transpose(self.axis,-1).contiguous()
+        return self.func.__call__(input.view(-1,input.shape[-1]), target.view(-1))
+
+def CrossEntropyFlat(*args, axis:int=-1, **kwargs):
+    return FlattenedLoss(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
+
+def BCEWithLogitsFlat(*args, axis:int=-1, **kwargs):
+    return FlattenedLoss(nn.BCEWithLogitsLoss, *args, axis=axis, **kwargs)
+
+def BCEFlat(*args, axis:int=-1, **kwargs):
+    return FlattenedLoss(nn.BCELoss, *args, axis=axis, **kwargs)
 
 class MSELossFlat(nn.MSELoss):
     "Same as `nn.MSELoss`, but flattens input and target."
