@@ -121,9 +121,7 @@ def total_params(m:nn.Module)->int:
     if hasattr(m, "weight") and hasattr(m.weight, "size"):
          params += m.weight.numel()
          trainable = m.weight.requires_grad
-        #  print(m.weight.requires_grad)
     if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
-    
     return params, trainable
 
 def hook_params(modules:Collection[nn.Module])->Hooks:
@@ -145,8 +143,6 @@ def params_size(m: nn.Module, size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hook
     output_size = [(o.stored.shape) for o in hooks_outputs]
     params = [o.stored for o in hooks_params]
     params, trainables = map(list,zip(*params))
-
-    # import pdb; pdb.set_trace()
     return (output_size, params, trainables, hooks)
 
 def get_layer_name(layer:nn.Module)->str:
