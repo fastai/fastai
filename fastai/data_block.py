@@ -51,7 +51,7 @@ class ItemList():
 
     def __post_init__(self): pass
     def __len__(self)->int: return len(self.items) or 1
-    def get(self, i)->Any:  
+    def get(self, i)->Any:
         "Subclass if you want to customize how to create item `i` from `self.items`."
         return self.items[i]
     def __repr__(self)->str:
@@ -111,7 +111,7 @@ class ItemList():
 
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
     def _relative_item_paths(self):   return [self._relative_item_path(i) for i in range_of(self.items)]
-                
+
     def use_partial_data(self, sample_pct:float=1.0, seed:int=None)->'ItemList':
         "Use only a sample of `sample_pct`of the full dataset and an optional `seed`."
         if seed is not None: np.random.seed(seed)
@@ -354,7 +354,7 @@ class ItemLists():
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
 
     def __repr__(self)->str:
-        return f'{self.__class__.__name__};\nTrain: {self.train};\nValid: {self.valid};\nTest: {self.test}'
+        return f'{self.__class__.__name__};\n\nTrain: {self.train};\n\nValid: {self.valid};\n\nTest: {self.test}'
 
     def __getattr__(self, k):
         ft = getattr(self.train, k)
@@ -455,7 +455,7 @@ class LabelList(Dataset):
     def __repr__(self)->str:
         x = f'{self.x}' # force this to happen first
         return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'
-    def predict(self, res): 
+    def predict(self, res):
         "Delegates predict call on `res` to `self.y`."
         return self.y.predict(res)
 
@@ -541,4 +541,3 @@ def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, 
     return cls.create(ds,ds,path=path)
 
 DataBunch.load_empty = _databunch_load_empty
-

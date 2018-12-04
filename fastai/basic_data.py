@@ -95,7 +95,7 @@ class DataBunch():
         self.path = Path(path)
 
     def __repr__(self)->str:
-        return f'{self.__class__.__name__};\nTrain: {self.train_ds};\nValid: {self.valid_ds};\nTest: {self.test_ds}'
+        return f'{self.__class__.__name__};\n\nTrain: {self.train_ds};\n\nValid: {self.valid_ds};\n\nTest: {self.test_ds}'
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
