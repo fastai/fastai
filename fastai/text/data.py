@@ -115,7 +115,9 @@ class TextDataBunch(DataBunch):
         np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
         np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
         np.save(cache_path/f'valid_lbl.npy', self.valid_ds.y.items)
-        if self.test_dl is not None: np.save(cache_path/f'test_ids.npy', self.test_ds.x.items)
+        if self.test_dl is not None: 
+           np.save(cache_path/f'test_ids.npy', self.test_ds.x.items)
+           np.save(cache_path/f'test_lbl.npy', self.test_ds.y.items)
         if hasattr(self.train_ds, 'classes'): save_texts(cache_path/'classes.txt', self.train_ds.classes)
 
     @classmethod
