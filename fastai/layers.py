@@ -1,10 +1,11 @@
 "`fastai.layers` provides essential functions to building and modifying `model` architectures"
 from .torch_core import *
 
-__all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'BCEFlat', 'BCEWithLogitsFlat', 'Debugger',
-           'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
-           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
-           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
+__all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger',
+           'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
+           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
+           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss',
+           'WassersteinLoss', 'SelfAttention']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -67,7 +68,7 @@ class SelfAttention(nn.Module):
         f,g,h = self.query(x),self.key(x),self.value(x)
         beta = F.softmax(torch.bmm(f.permute(0,2,1).contiguous(), g), dim=1)
         o = self.gamma * torch.bmm(h, beta) + x
-        return o.view(*size)
+        return o.view(*size).contiguous()
 
 def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
     "Create and initialize `nn.Conv2d` layer. `padding` defaults to `ks//2`."
