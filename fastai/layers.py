@@ -3,7 +3,8 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
            'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
-           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
+           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss',
+           'SelfAttention']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -93,8 +94,7 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
     if use_activ: layers.append(relu(True, leaky=leaky))
-    if bn: layers.append(nn.BatchNorm2d(nf))
-        #layers.append(batchnorm_2d(nf, norm_type=norm_type))
+    if bn: layers.append(batchnorm_2d(nf, norm_type=norm_type))
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
