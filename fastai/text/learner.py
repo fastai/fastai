@@ -68,6 +68,7 @@ class RNNLearner(Learner):
         old_itos = pickle.load(open(itos_fname, 'rb'))
         old_stoi = {v:k for k,v in enumerate(old_itos)}
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
+        if 'model' in wgts: wgts = wgts['model']
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts)
 
