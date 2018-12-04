@@ -117,10 +117,12 @@ def num_features_model(m:nn.Module)->int:
     return model_sizes(m)[-1][1]
 
 def total_params(m:nn.Module)->int:
-    params = 0
-    if hasattr(m, "weight") and hasattr(m.weight, "size"): params += m.weight.numel()
-    if hasattr(m, "bias") and hasattr(m.bias, "size"):     params += m.bias.numel()
-    return params
+    params, trainable = 0, False
+    if hasattr(m, "weight") and hasattr(m.weight, "size"):
+         params += m.weight.numel()
+         trainable = m.weight.requires_grad
+    if hasattr(m, "bias") and hasattr(m.bias, "size"): params += m.bias.numel()
+    return params, trainable
 
 def hook_params(modules:Collection[nn.Module])->Hooks:
     return Hooks(modules, lambda m, i, o: total_params(m))
@@ -136,11 +138,12 @@ def params_size(m: nn.Module, size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hook
     else: raise TypeError('You should either pass in a Learner or nn.Module')
     hooks_outputs = hook_outputs(flatten_model(m))
     hooks_params = hook_params(flatten_model(m))
-    x = m.eval()(*x) if is_listy(x) else m.eval()(x)
     hooks = zip(hooks_outputs, hooks_params)
-    res = [(o[0].stored.shape, o[1].stored) for o in hooks]
-    output_size, params = map(list, zip(*res))
-    return (output_size, params, hooks)
+    x = m.eval()(*x) if is_listy(x) else m.eval()(x)
+    output_size = [(o.stored.shape) for o in hooks_outputs]
+    params = [o.stored for o in hooks_params]
+    params, trainables = map(list,zip(*params))
+    return (output_size, params, trainables, hooks)
 
 def get_layer_name(layer:nn.Module)->str:
     return str(layer.__class__).split(".")[-1].split("'")[0]
@@ -148,24 +151,28 @@ def get_layer_name(layer:nn.Module)->str:
 def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     func = lambda m:list(map(get_layer_name, flatten_model(m)))
     layers_names = func(m.model) if isinstance(m, Learner) else func(m)
-    layers_sizes, layers_params, _ = params_size(m)
-    layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params'])
-    return list(map(layer_info, layers_names, layers_sizes, layers_params))
+    layers_sizes, layers_params, layers_trainable, _ = params_size(m)
+    layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params', 'Trainable'])
+    return list(map(layer_info, layers_names, layers_sizes, layers_params, layers_trainable))
 
-def model_summary(m:Collection[nn.Module], n:int=80):
+def model_summary(m:Collection[nn.Module], n:int=70):
     "Print a summary of `m` using a output text width of `n` chars"
     info = layers_info(m)
-    header = ["Layer (type)", "Output Shape", "Param #"]
+    header = ["Layer (type)", "Output Shape", "Param #", "Trainable"]
     print("=" * n)
-    print(f"{header[0]:<25}  {header[1]:<20} {header[2]:<10}")
+    print(f"{header[0]:<20} {header[1]:<20} {header[2]:<10} {header[3]:<10}")
     print("=" * n)
     total_params = 0
-    for layer, size, params in info:
+    total_trainable_params = 0
+    for layer, size, params, trainable in info:
         total_params += int(params)
-        params,size = str(params),str(list(size))
-        print(f"{layer:<25} {size:<20} {params:<20}")
+        total_trainable_params += int(params) * trainable
+        params, size, trainable = str(params), str(list(size)), str(trainable)
+        print(f"{layer:<20} {size:<20} {params:<10} {trainable:<10}")
         print("_" * n)
-    print("Total params: ", total_params)
+    print("\nTotal params: ", total_params)
+    print("Total trainable params: ", total_trainable_params)
+    print("Total non-trainable params: ", total_params - total_trainable_params)
 
 Learner.summary = model_summary
 
