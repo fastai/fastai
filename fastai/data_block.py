@@ -518,12 +518,6 @@ class LabelList(Dataset):
         self.x.process(xp)
         return self
 
-    @classmethod
-    def from_lists(cls, path:PathOrStr, inputs, labels)->'LabelList':
-        "Create a `LabelList` in `path` with `inputs` and `labels`."
-        inputs,labels = np.array(inputs),np.array(labels)
-        return cls(np.concatenate([inputs[:,None], labels[:,None]], 1), path)
-
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
         "Set the `tfms` and `tfm_y` value to be applied to the inputs and targets."
         self.tfms,self.tfmargs = tfms,kwargs

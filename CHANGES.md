@@ -15,6 +15,8 @@ of that change.
 
 ### New:
 
+- `Learner.interpret` is a shortcut to `ClassificationLearner.from_learner`.
+
 ### Changed:
 
 - Language models now use flattened loss, instead of flattening y in data loader
