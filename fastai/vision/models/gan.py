@@ -1,13 +1,13 @@
 from ...torch_core import *
 from ...layers import *
 
-__all__ = ['basic_discriminator', 'basic_generator', 'GAN', 'CycleGAN', 'CycleGanLoss', 'AdaptiveLoss']
+__all__ = ['basic_critic', 'basic_generator', 'GAN', 'CycleGAN', 'CycleGanLoss', 'AdaptiveLoss']
 
 def AvgFlatten():
     "Takes the average of the input."
     return Lambda(lambda x: x.mean(0).view(1))
 
-def basic_discriminator(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0, **kwargs):
+def basic_critic(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0, **kwargs):
     "A basic discriminator for images `n_channels` x `in_size` x `in_size`."
     layers = [conv_layer(n_channels, n_features, 4, 2, 1, leaky=0.2, norm_type=None, **kwargs)]#norm_type=None?
     cur_size, cur_ftrs = in_size//2, n_features
