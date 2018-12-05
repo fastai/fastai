@@ -437,7 +437,7 @@ class LabelLists(ItemLists):
         return self
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from `test_folder` and an arbitrary `label`."
+        "Add test set containing items from `test_folder` and an arbitrary `label`. No labels will be collected if available. Instead, either the passed `label` or a first label from train_ds will be used for all entries. If you want to use the test dataset with labels, you probably need to use it as a valid set, via split_by_folder(train='train', valid='test')"
         items = self.x.__class__.from_folder(self.path/test_folder)
         return self.add_test(items.items, label=label)
 
