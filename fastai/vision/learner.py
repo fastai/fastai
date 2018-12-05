@@ -147,9 +147,10 @@ class ClassificationInterpretation():
         return sorted(res, key=itemgetter(2), reverse=True)
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+    "a shortcut for getting the ClassificationInterpretation object from learner"
     return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
 Learner.interpret = _learner_interpret
-    
+
 class GANLearner(Learner):
     "`Learner` overwriting `predict` and `show_results` for GANs."
     def add_gan_trainer(self, cb):
