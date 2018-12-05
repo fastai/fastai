@@ -35,7 +35,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
 
 requirements = to_list("""
-    fastprogress>=0.1.17
+    fastprogress>=0.1.18
     matplotlib
     numpy>=1.12
     pandas
