@@ -263,7 +263,10 @@ class CategoryProcessor(PreProcessor):
         "Generate classes from `items` by taking the sorted unique values."
         return uniqueify(items)
 
-    def process_one(self,item): return self.c2i.get(item,None)
+    def process_one(self,item): 
+        try: return self.c2i.get(item)
+        except: 
+            raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
 
     def process(self, ds):
         if self.classes is None: self.create_classes(self.generate_classes(ds.items))
