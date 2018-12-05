@@ -284,8 +284,8 @@ class Learner():
         if norm:
             x = self.data.denorm(x)
             if norm.keywords.get('do_y',True):
-                y     = self.data.denorm(y)
-                preds = self.data.denorm(preds)
+                y     = self.data.denorm(y, do_x=True)
+                preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
         preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
