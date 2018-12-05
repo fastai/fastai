@@ -147,7 +147,7 @@ class ClassificationInterpretation():
         return sorted(res, key=itemgetter(2), reverse=True)
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
-    return ClassificationInterpretation(learn, ds_type=ds_type, tta=tta)
+    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
 Learner.interpret = _learner_interpret
     
 class GANLearner(Learner):
