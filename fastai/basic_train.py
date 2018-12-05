@@ -306,8 +306,9 @@ class RecordOnCPU(Callback):
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
     learn: Learner
-    def __post_init__(self):
-        if self.cb_name: setattr(self.learn, self.cb_name, self)
+    def __post_init__(self): setattr(self.learn, self.cb_name, self)
+
+    def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
