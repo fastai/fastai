@@ -167,10 +167,10 @@ class GANLearner(Learner):
         xs = [self.data.train_ds.x.reconstruct(o) for o in out[:rows*rows]]
         self.data.train_ds.x.show_xys(xs, [EmptyLabel()] * (rows*rows))
 
-def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None, noise_size:int=None, wgan:bool=False,
+def gan_learner(data, generator, critic, loss_funcD=None, loss_funcG=None, noise_size:int=None, wgan:bool=False,
                 **kwargs):
-    "Create a `GANLearner` from `data` with a `generator` and a `discriminator`."
-    gan = models.GAN(generator, discriminator)
+    "Create a `GANLearner` from `data` with a `generator` and a `critic`."
+    gan = models.GAN(generator, critic)
     learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
     if wgan: loss_funcD,loss_funcG = WassersteinLoss(),NoopLoss()
     if noise_size is None: cb = GANTrainer(learn, loss_funcD, loss_funcG)
