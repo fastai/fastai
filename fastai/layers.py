@@ -96,6 +96,7 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     layers = [conv]
     if use_activ: layers.append(relu(True, leaky=leaky))
     if bn: layers.append(batchnorm_2d(nf, norm_type=norm_type))
+    #if bn: layers.append(nn.BatchNorm2d(nf))
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
