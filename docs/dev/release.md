@@ -1231,7 +1231,7 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    In `setup.py`:
 
    ```
-   requirements = "dataclasses ; python_version<'3.7'", ...
+   requirements = ["dataclasses ; python_version<'3.7'", "fastprogress>=0.1.18", ...]
    ```
    Here `; python_version<'3.7'` instructs the wheel to use a dependency on `dataclasses` only for python versions lesser than `3.7`.
 
