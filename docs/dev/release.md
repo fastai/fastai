@@ -1235,6 +1235,7 @@ Here is how to specify conditional dependencies, e.g. depending on python versio
    ```
    Here `; python_version<'3.7'` instructs the wheel to use a dependency on `dataclasses` only for python versions lesser than `3.7`.
 
+   This recent syntax requires `setuptools>=36.2` on the build system. For more info [see](https://hynek.me/articles/conditional-python-dependencies/).
 
 
 
