@@ -3,8 +3,6 @@
 
 """The setup script."""
 
-import sys
-from pathlib import Path
 from setuptools import setup, find_packages
 
 # note: version is maintained inside fastai/version.py
