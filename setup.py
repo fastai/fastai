@@ -8,13 +8,13 @@ from setuptools import setup, find_packages
 # note: version is maintained inside fastai/version.py
 exec(open('fastai/version.py').read())
 
-with open('README.md') as readme_file:   readme = readme_file.read()
+with open('README.md') as readme_file: readme = readme_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
 ### normal dependencies ###
 #
-# important: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
+# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
 #
 # these get resolved and installed via either of these two:
 #
@@ -27,7 +27,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # - temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
 #
 # notes:
-# - bottleneck and numexpr - are performance-improvement extras for numpy
+# - bottleneck and numexpr are performance-improvement extras for numpy
 #
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
@@ -62,9 +62,13 @@ requirements = to_list("""
 #
 # these, including the normal dependencies, get installed with:
 #
+#   pip install fastai[dev]
+#
+# or via an editable install:
+#
 #   pip install -e .[dev]
 #
-# some of the listed modules appear in test_requirements as well, explained below.
+# some of the listed modules appear in test_requirements as well, as explained below.
 #
 dev_requirements = { 'dev' : to_list("""
     coverage
