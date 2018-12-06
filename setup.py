@@ -54,8 +54,6 @@ requirements = to_list("""
     dataclasses ; python_version<'3.7'
 """)
 
-if sys.version_info < (3,7): requirements.append('dataclasses')
-
 ### developer dependencies ###
 #
 # anything else that's not required by a user to run the library, but
@@ -87,8 +85,11 @@ dev_requirements = { 'dev' : to_list("""
 """) }
 
 ### setup dependencies ###
+# need at least setuptools>=36.2 to support syntax:
+#   dataclasses ; python_version<'3.7'
 setup_requirements = to_list("""
     pytest-runner
+    setuptools>=36.2
 """)
 
 # notes:

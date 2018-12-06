@@ -15,11 +15,9 @@ of that change.
 
 ## 1.0.34.dev0 (Work In Progress)
 
-### New:
-
-### Changed:
-
 ### Fixed:
+
+- pypi wheel `dataclasses` dependency for py3.6 is there again
 
 
 
