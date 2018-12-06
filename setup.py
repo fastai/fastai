@@ -51,6 +51,7 @@ requirements = to_list("""
     torchvision-nightly
     typing
     pyyaml
+    dataclasses ; python_version<'3.7'
 """)
 
 if sys.version_info < (3,7): requirements.append('dataclasses')
