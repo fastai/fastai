@@ -81,7 +81,8 @@ sidebar_d = {
         'Custom ItemList': '/tutorial.itemlist',
     },
     'Doc authoring': {
-        'Overview': '/gen_doc',
+        'Instructions': '/gen_doc_main',
+        'gen_doc': '/gen_doc',
         'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',
         'gen_doc.nbdoc': '/gen_doc.nbdoc',
         'gen_doc.convert2html': '/gen_doc.convert2html',
