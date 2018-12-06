@@ -75,6 +75,11 @@ sidebar_d = {
         'core': '/core',
         'torch_core': '/torch_core',
     },
+    'Tutorials': {
+        'Look at data': '/tutorial.data',
+        'Inference Learner': '/tutorial.inference',
+        'Custom ItemList': '/tutorial.itemlist',
+    },
     'Doc authoring': {
         'Overview': '/gen_doc',
         'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',

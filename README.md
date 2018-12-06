@@ -35,7 +35,7 @@ It's highly recommended you install `fastai` and its dependencies in a virtual e
 
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
-More advanced installation issues, such as installing only partial dependencies are covered in a dedicated [installation doc](https://docs.fast.ai/installation.html).
+More advanced installation issues, such as installing only partial dependencies are covered in a dedicated [installation doc](https://docs.fast.ai/install.html).
 
 ### Conda Install
 
@@ -54,6 +54,8 @@ More advanced installation issues, such as installing only partial dependencies 
    conda install -c fastai torchvision-nightly-cpu
    conda install -c fastai fastai
    ```
+
+   On MacOS for non-GPU build install `pytorch-nightly` and `torchvision-nightly` instead of `pytorch-nightly-cpu` and `torchvision-nightly-cpu`.
 
 Note that JPEG decoding can be a bottleneck, particularly if you have a fast CPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
@@ -143,7 +145,7 @@ If for any reason you can't use the prepackaged packages and have to build from 
 
 ## Installation Issues
 
-If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please refer to the [troubleshooting document](https://docs-dev.fast.ai/troubleshoot.html).
+If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please refer to the [troubleshooting document](https://docs.fast.ai/troubleshoot.html).
 
 If you encounter installation problems with conda, make sure you have the latest `conda` client (`conda install` will do an update too):
 ```bash

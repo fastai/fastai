@@ -35,7 +35,7 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
 
 requirements = to_list("""
-    fastprogress>=0.1.15
+    fastprogress>=0.1.18
     matplotlib
     numpy>=1.12
     pandas
@@ -51,9 +51,8 @@ requirements = to_list("""
     torchvision-nightly
     typing
     pyyaml
+    dataclasses ; python_version<'3.7'
 """)
-
-if sys.version_info < (3,7): requirements.append('dataclasses')
 
 ### developer dependencies ###
 #
@@ -86,8 +85,11 @@ dev_requirements = { 'dev' : to_list("""
 """) }
 
 ### setup dependencies ###
+# need at least setuptools>=36.2 to support syntax:
+#   dataclasses ; python_version<'3.7'
 setup_requirements = to_list("""
     pytest-runner
+    setuptools>=36.2
 """)
 
 # notes:

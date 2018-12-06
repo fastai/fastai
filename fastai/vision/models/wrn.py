@@ -15,6 +15,7 @@ def bn_relu_conv(ni, nf, ks, stride, init_zero=False):
     return nn.Sequential(bn_initzero, nn.ReLU(inplace=True), conv2d(ni, nf, ks, stride))
 
 class BasicBlock(nn.Module):
+    "Block to from a wide ResNet."
     def __init__(self, ni, nf, stride, drop_p=0.0):
         super().__init__()
         self.bn = nn.BatchNorm2d(ni)
@@ -35,6 +36,7 @@ def _make_group(N, ni, nf, block, stride, drop_p):
     return [block(ni if i == 0 else nf, nf, stride if i == 0 else 1, drop_p) for i in range(N)]
 
 class WideResNet(nn.Module):
+    "Wide ResNet with `num_groups` and a width of `k`."
     def __init__(self, num_groups:int, N:int, num_classes:int, k:int=1, drop_p:float=0.0, start_nf:int=16):
         super().__init__()
         n_channels = [start_nf]
@@ -51,4 +53,6 @@ class WideResNet(nn.Module):
     def forward(self, x): return self.features(x)
 
 
-def wrn_22(): return WideResNet(num_groups=3, N=3, num_classes=10, k=6, drop_p=0.)
+def wrn_22(): 
+    "Wide ResNet with 22 layers."
+    return WideResNet(num_groups=3, N=3, num_classes=10, k=6, drop_p=0.)

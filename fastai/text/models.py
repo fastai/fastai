@@ -116,7 +116,7 @@ class RNNCore(nn.Module):
             raw_outputs.append(raw_output)
             if l != self.n_layers - 1: raw_output = hid_dp(raw_output)
             outputs.append(raw_output)
-        self.hidden = to_detach(new_hidden)
+        self.hidden = to_detach(new_hidden, cpu=False)
         return raw_outputs, outputs
 
     def _one_hidden(self, l:int)->Tensor:
@@ -133,7 +133,6 @@ class RNNCore(nn.Module):
 
 class LinearDecoder(nn.Module):
     "To go on top of a RNNCore module and create a Language Model."
-
     initrange=0.1
 
     def __init__(self, n_out:int, n_hid:int, output_p:float, tie_encoder:nn.Module=None, bias:bool=True):

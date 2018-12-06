@@ -18,7 +18,7 @@ def test_multi_iter_broken(path):
 def test_multi_iter(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
     data.normalize()
-    for i in range(2): x,y = data.train_dl.one_batch()
+    for i in range(2): x,y = data.one_batch()
 
 def test_clean_tear_down(path):
     docstr = "test DataLoader iter doesn't get stuck"
@@ -29,10 +29,10 @@ def test_clean_tear_down(path):
 
 def test_normalize(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
-    x,y = data.valid_dl.one_batch()
+    x,y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     m,s = x.mean(),x.std()
     data.normalize()
-    x,y = data.valid_dl.one_batch()
+    x,y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     assert abs(x.mean()) < abs(m)
     assert abs(x.std()-1) < abs(m-1)
 
@@ -40,9 +40,9 @@ def test_normalize(path):
 
 def test_denormalize(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
-    original_x, y = data.valid_dl.one_batch()
+    original_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     data.normalize()
-    normalized_x, y = data.valid_dl.one_batch()
+    normalized_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
     denormalized = denormalize(normalized_x, original_x.mean(), original_x.std())
-    assert round(original_x.mean().item(), 4) == round(denormalized.mean().item(), 4)
-    assert round(original_x.std().item(), 4) == round(denormalized.std().item(), 4)
+    assert round(original_x.mean().item(), 3) == round(denormalized.mean().item(), 3)
+    assert round(original_x.std().item(), 3) == round(denormalized.std().item(), 3)
