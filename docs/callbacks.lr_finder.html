@@ -79,9 +79,9 @@ summary: "Implementation of the LR Range test from Leslie Smith"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lr_find"><code>lr_find</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L22" class="source_link">[source]</a></h4><blockquote><p><code>lr_find</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>Floats</code>=<code>1e-07</code>, <code>end_lr</code>:<code>Floats</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="lr_find"><code>lr_find</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L23" class="source_link">[source]</a></h4><blockquote><p><code>lr_find</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>Floats</code>=<code>1e-07</code>, <code>end_lr</code>:<code>Floats</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
-<p>Explore lr from <code>start_lr</code> to <code>end_lr</code> over <code>num_it</code> iterations in <code>learn</code>. If <code>stop_div</code>, stops when loss explodes.</p>
+<p>Explore lr from <code>start_lr</code> to <code>end_lr</code> over <code>num_it</code> iterations in <code>learn</code>. If <code>stop_div</code>, stops when loss diverges.</p>
 
 </div>
 
@@ -283,7 +283,7 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="LRFinder"><code>class</code> <code>LRFinder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L9" class="source_link">[source]</a></h2><blockquote><p><code>LRFinder</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>start_lr</code>:<code>float</code>=<code>1e-07</code>, <code>end_lr</code>:<code>float</code>=<code>10</code>, <code>num_it</code>:<code>int</code>=<code>100</code>, <code>stop_div</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
-<p>Causes <code>learn</code> to go on a mock training from <code>start_lr</code> to <code>end_lr</code> for <code>num_it</code> iterations. Training is interrupted if the loss diverges. Weights changes are reverted after run complete.</p>
+<p>Causes <code>learn</code> to go on a mock training from <code>start_lr</code> to <code>end_lr</code> for <code>num_it</code> iterations.</p>
 
 </div>
 
@@ -302,7 +302,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L41" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Cleanup learn model weights disturbed during LRFind exploration.</p>
 
@@ -323,7 +323,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>iteration</code>:<code>int</code>, <code>smooth_loss</code>:<code>TensorOrNumber</code>, <code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L28" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>iteration</code>:<code>int</code>, <code>smooth_loss</code>:<code>TensorOrNumber</code>, <code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Determine if loss has runaway and we should stop.</p>
 
@@ -344,7 +344,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L22" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>pbar</code>, <code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>pbar</code>, <code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Initialize optimizer and learner hyperparameters.</p>
 
@@ -365,7 +365,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LRFinder.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="LRFinder.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/lr_finder.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Tell Learner if we need to stop.</p>
 

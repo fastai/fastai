@@ -47,9 +47,9 @@ summary: "Training in mixed precision implementation"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L32" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L33" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
-<p>Transform <code>learn</code> in FP16 precision.</p>
+<p>Put <code>learn</code> in FP16 precision mode.</p>
 
 </div>
 
@@ -149,7 +149,7 @@ epoch  train loss  valid loss  accuracy
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="MixedPrecision.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>:<code>Rank0Tensor</code>, <code>kwargs</code>:<code>Any</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Scale gradients up by <code>loss_scale</code> to prevent underflow.</p>
+<p>Scale gradients up by <code>self.loss_scale</code> to prevent underflow.</p>
 
 </div>
 
