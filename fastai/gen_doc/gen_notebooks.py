@@ -327,7 +327,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, document_new
             print(f'Updating notebook {doc_path}. Please wait...')
             link_nb(doc_path)
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=True)
-        if update_html: 
+        if update_html:
             check_nbconvert_version()
             html_fn = html_path/doc_path.with_suffix('.html').name
             if not force and html_fn.is_file():
