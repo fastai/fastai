@@ -27,7 +27,6 @@ class DeviceDataLoader():
     device: torch.device
     tfms: List[Callable]=None
     collate_fn: Callable=data_collate
-    skip_size1:bool=False
     def __post_init__(self):
         self.dl.collate_fn=self.collate_fn
         self.tfms = listify(self.tfms)
@@ -54,7 +53,7 @@ class DeviceDataLoader():
         "Create a new copy of `self` with `kwargs` replacing current values."
         new_kwargs = {**self.dl.init_kwargs, **kwargs}
         return DeviceDataLoader(DataLoader(self.dl.dataset, **new_kwargs), self.device, self.tfms,
-                                self.collate_fn, self.skip_size1)
+                                self.collate_fn)
 
     def proc_batch(self,b:Tensor)->Tensor:
         "Proces batch `b` of `TensorImage`."
@@ -64,10 +63,9 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        assert not self.skip_size1 or self.batch_size > 1, "Batch size cannot be one if skip_size1 is set to True"
         for b in self.dl:
             y = b[1][0] if is_listy(b[1]) else b[1]
-            if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)
+            yield self.proc_batch(b)
 
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
@@ -88,7 +86,7 @@ class DataBunch():
         assert not isinstance(train_dl,DeviceDataLoader)
         def _create_dl(dl, **kwargs):
             return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
-        self.train_dl = _create_dl(train_dl, skip_size1=True)
+        self.train_dl = _create_dl(train_dl)
         self.valid_dl = _create_dl(valid_dl)
         self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
         self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
@@ -105,7 +103,7 @@ class DataBunch():
         datasets = [train_ds,valid_ds]
         if test_ds is not None: datasets.append(test_ds)
         val_bs = bs
-        dls = [DataLoader(*o, num_workers=num_workers) for o in
+        dls = [DataLoader(d, b, shuffle=s, drop_last=(s and b>1), num_workers=num_workers) for d,b,s in
                zip(datasets, (bs,val_bs,val_bs), (True,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
