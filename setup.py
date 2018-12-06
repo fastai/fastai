@@ -35,23 +35,23 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
 
 requirements = to_list("""
+    bottleneck
+    cymem==2.0.2
+    dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
     matplotlib
+    numexpr
     numpy>=1.12
     pandas
-    bottleneck
-    numexpr
     Pillow
+    pyyaml
+    regex
     requests
     scipy
     spacy==2.0.16
-    regex
     thinc==6.12.0
-    cymem==2.0.2
     torchvision-nightly
     typing
-    pyyaml
-    dataclasses ; python_version<'3.7'
 """)
 
 ### developer dependencies ###
@@ -71,17 +71,17 @@ requirements = to_list("""
 dev_requirements = { 'dev' : to_list("""
     coverage
     distro
+    ipython
+    jupyter
     jupyter_contrib_nbextensions
+    nbconvert>=5.4
+    nbformat
+    notebook>=5.7.0
     pip>=9.0.1
     pipreqs>=0.4.9
     pytest
-    wheel>=0.30.0
-    ipython
-    jupyter
-    notebook>=5.7.0
-    nbconvert>=5.4
-    nbformat
     traitlets
+    wheel>=0.30.0
 """) }
 
 ### setup dependencies ###
