@@ -90,6 +90,10 @@ def test_interp(learn):
     losses,idxs = interp.top_losses()
     assert len(learn.data.valid_ds)==len(losses)==len(idxs)
 
+def test_interp_shortcut(learn):
+    interp = learn.interpret()
+    losses,idxs = interp.top_losses()
+    assert len(learn.data.valid_ds)==len(losses)==len(idxs)
+
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)
-
