@@ -348,7 +348,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, document_new
         update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, document_new_fns=document_new_fns,
                          update_nb_links=update_nb_links, html_path=html_path)
     elif source_path.is_dir():
-        for f in Path(source_path).glob('*.ipynb'):
+        for f in sorted(Path(source_path).glob('*.ipynb')):
             update_notebooks(f, dest_path=dest_path, update_html=update_html, document_new_fns=document_new_fns,
                              update_nb_links=update_nb_links, html_path=html_path)
     else: print('Could not resolve source file:', source_path)
