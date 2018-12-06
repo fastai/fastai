@@ -66,11 +66,7 @@ def get_global_vars(mod):
     return d
 
 def write_nb(nb, nb_path, mode='w'):
-    try:
-        with open(nb_path, mode) as f: f.write(nbformat.writes(nb, version=4))
-    except Exception as e:
-        print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
-        json.dump(nb, open(nb_path, mode), indent=1)
+    with open(nb_path, mode) as f: f.write(nbformat.writes(nbformat.from_dict(nb), version=4))
 
 class ExecuteShowDocPreprocessor(ExecutePreprocessor):
     "An ExecutePreprocessor that only executes show_doc cells"
