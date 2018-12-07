@@ -1,7 +1,7 @@
 from ...torch_core import *
 from ...layers import *
 
-__all__ = ['basic_critic', 'basic_generator', 'GAN', 'CycleGAN', 'CycleGanLoss', 'AdaptiveLoss']
+__all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'CycleGAN', 'CycleGanLoss', 'AdaptiveLoss']
 
 def AvgFlatten():
     "Takes the average of the input."
@@ -31,14 +31,37 @@ def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:in
     layers += [conv2d_trans(cur_ftrs, n_channels, 4, 2, 1, bias=False), nn.Tanh()]
     return nn.Sequential(*layers)
 
-class GAN(nn.Module):
+class GANModule(nn.Module):
     "Wrapper around a `generator` and a `critic` to create a GAN."
-    def __init__(self, generator:nn.Module, critic:nn.Module):
+    def __init__(self, generator:nn.Module=None, critic:nn.Module=None, gen_mode:bool=False):
         super().__init__()
-        self.generator,self.critic = generator,critic
+        self.gen_mode = gen_mode
+        if generator: self.generator,self.critic = generator,critic
+    
+    def forward(self, *args):
+        return self.generator(*args) if self.gen_mode else self.critic(*args)
 
-    def forward(self, x, gen=False):
-        return self.generator(x) if gen else self.critic(x)
+    def switch(self, gen_mode:bool=None):
+        "Put the model in generator mode if `gen_mode`, in critic mode otherwise."
+        self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
+        
+class GANLoss(GANModule):
+    "Wrapper around `loss_funcC` (for the critic) and `loss_funcG` (for the generator)."
+    def __init__(self, loss_funcG:Callable, loss_funcC:Callable, gan_model:GANModule):
+        super().__init__()
+        self.loss_funcG,self.loss_funcC,self.gan_model = loss_funcG,loss_funcC,gan_model
+        
+    def generator(self, output, target):
+        "Evaluate the `output` with the critic then uses `self.loss_funcG` to combine it with `target`."
+        fake_pred = self.gan_model.critic(output)
+        return self.loss_funcG(fake_pred, target, output)
+    
+    def critic(self, real_pred, input):
+        "Create some `fake_pred` with the generator from `input` and compare them to `real_pred` in `self.loss_funcD`."
+        fake = self.gan_model.generator(input.requires_grad_(False)).requires_grad_(True)
+        fake_pred = self.gan_model.critic(fake)
+        return self.loss_funcC(real_pred, fake_pred)        
+        
 
 def convT_norm_relu(ch_in:int, ch_out:int, norm_layer:nn.Module, ks:int=3, stride:int=2, bias:bool=True):
     return [nn.ConvTranspose2d(ch_in, ch_out, kernel_size=ks, stride=stride, padding=1, output_padding=1, bias=bias),

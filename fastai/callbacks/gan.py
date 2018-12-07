@@ -1,99 +1,118 @@
 from ..torch_core import *
 from ..callback import *
-from ..layers import NoopLoss, WassersteinLoss
 from ..basic_train import Learner, LearnerCallback
 
-__all__ = ['CycleGANTrainer', 'GANTrainer', 'NoisyGANTrainer', 'create_noise', 'first_disc_iter', 'standard_disc_iter']
+__all__ = ['CycleGANTrainer', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher']
 
-def create_noise(x, b, noise_sz):
-    "Create a normal noise of size `b` x `noise_sz` of the same type as `x`."
-    return x.new(b, noise_sz, 1, 1).normal_(0, 1)
-
-def first_disc_iter(gen_iter):
-    return 100 if (gen_iter < 25 or gen_iter%500 == 0) else 5
-
-def standard_disc_iter(gen_iter):
-    return 100 if gen_iter%500 == 0 else 5
-
-@dataclass
 class GANTrainer(LearnerCallback):
-    "`LearnerCallback` that handles GAN Training."
+    "Handles GAN Training."
     _order=-20
-    loss_funcD:LossFunction=WassersteinLoss()
-    loss_funcG:LossFunction=NoopLoss()
-    n_disc_iter:Callable=standard_disc_iter
-    div_lr_gen:float=1.
-    clip:float=0.01
-    beta:float=0.98
+    def __init__(self, learn:Learner, switch_eval:bool=False, clip:float=None, beta:float=0.98, gen_first:bool=False):
+        super().__init__(learn)
+        self.switch_eval,self.clip,self.beta,self.gen_first = switch_eval,clip,beta,gen_first
+        self.generator,self.critic = self.model.generator,self.model.critic
 
-    def _set_trainable(self, gen=False):
-        requires_grad(self.learn.model.generator, gen)
-        requires_grad(self.learn.model.critic, not gen)
-        if gen:
-            self.opt_gen.lr, self.opt_gen.mom = self.learn.opt.lr/self.div_lr_gen, self.learn.opt.mom
-            self.opt_gen.wd, self.opt_gen.beta = self.learn.opt.wd, self.learn.opt.beta
-
-    def input_fake(self, last_input, grad:bool=True):
-        "Subclass if needed to create an input for the generator."
-        return last_input.detach().requires_grad_(grad)
-
+    def _set_trainable(self):
+        train_model = self.generator if     self.gen_mode else self.critic
+        loss_model  = self.generator if not self.gen_mode else self.critic
+        requires_grad(train_model, True)
+        requires_grad(loss_model, False)
+        if self.switch_eval:
+            train_model.train()
+            loss_model.eval()
+    
     def on_train_begin(self, **kwargs):
-        "Create the optimizers for the generator and disciminator."
-        self.opt_gen = self.learn.opt.new([nn.Sequential(*flatten_model(self.learn.model.generator))])
-        self.opt_disc = self.learn.opt.new([nn.Sequential(*flatten_model(self.learn.model.critic))])
-        self.learn.opt.opt = self.opt_disc.opt
-        self.disc_iters, self.gen_iters = 0, 0
-        self._set_trainable()
-        self.dlosses,self.glosses = [],[]
-        self.smoothenerG,self.smoothenerD = SmoothenValue(self.beta),SmoothenValue(self.beta)
-        self.learn.recorder.no_val=True
-        self.learn.recorder.add_metric_names(['gen_loss', 'disc_loss'])
-
-    def on_batch_begin(self, **kwargs):
-        "Clamp the weights with `self.clip`."
-        if self.clip is None: return
-        for p in self.learn.model.critic.parameters():
-            p.data.clamp_(-self.clip, self.clip)
-
-    def on_backward_begin(self, last_output, last_input, **kwargs):
-        "Compute `self.loss_funcD` on `last_output` and fake generated from `last_input`."
-        fake = self.learn.model(self.input_fake(last_input, grad=False), gen=True)
-        fake.requires_grad_(True)
-        loss = self.loss_funcD(last_output, self.learn.model(fake))
-        self.smoothenerD.add_value(loss.detach().cpu())
-        self.dlosses.append(self.smoothenerD.smooth)
-        return loss
-
-    def on_batch_end(self, last_input, last_target, **kwargs):
-        "Trains one step of the generator every `self.n_disc_iter(self.gen_iters)` steps of the critic."
-        self.disc_iters += 1
-        if self.disc_iters == self.n_disc_iter(self.gen_iters):
-            self.disc_iters = 0
-            self._set_trainable(True)
-            pred = self.learn.model(self.learn.model(self.input_fake(last_input), gen=True))
-            loss = self.loss_funcG(pred, last_target)
-            self.smoothenerG.add_value(loss.detach().cpu())
+        "Create the optimizers for the generator and disciminator if necessary."
+        if not getattr(self,'opt_gen',None):
+            self.opt_gen = self.opt.new([nn.Sequential(*flatten_model(self.generator))])
+        else: self.opt_gen.lr,self.opt_gen.wd = self.opt.lr,self.opt.wd
+        if not getattr(self,'opt_critic',None):
+            self.opt_critic = self.opt.new([nn.Sequential(*flatten_model(self.critic))])
+        else: self.opt_critic.lr,self.opt_critic.wd = self.opt.lr,self.opt.wd
+        self.gen_mode = self.gen_first
+        self.switch(self.gen_mode)
+        self.closses,self.glosses = [],[]
+        self.smoothenerG,self.smoothenerC = SmoothenValue(self.beta),SmoothenValue(self.beta)
+        self.recorder.no_val=True
+        self.recorder.add_metric_names(['gen_loss', 'disc_loss'])
+        self.imgs,self.titles = [],[]
+    
+    def on_train_end(self, **kwargs): 
+        "Switch in generator mode for showing results."
+        self.switch(gen_mode=True)
+        
+    def on_batch_begin(self, last_input, last_target, **kwargs):
+        "Clamp the weights with `self.clip` if it's not None."
+        if self.clip is not None:
+            for p in self.critic.parameters(): p.data.clamp_(-self.clip, self.clip)
+        return (last_input,last_target) if self.gen_mode else (last_target, last_input)
+        
+    def on_backward_begin(self, last_loss, last_output, **kwargs):
+        "Record `last_loss` in the proper list."
+        last_loss = last_loss.detach().cpu()
+        if self.gen_mode:
+            self.smoothenerG.add_value(last_loss)
             self.glosses.append(self.smoothenerG.smooth)
-            self.learn.model.generator.zero_grad()
-            loss.backward()
-            self.opt_gen.step()
-            self.gen_iters += 1
-            self._set_trainable()
+            self.last_gen = last_output.detach().cpu()
+        else:
+            self.smoothenerC.add_value(last_loss)
+            self.closses.append(self.smoothenerC.smooth)
+    
+    def on_epoch_begin(self, epoch, **kwargs):
+        "Put the critic or the generator back to eval if necessary."
+        self.switch(self.gen_mode)
 
-    def on_epoch_end(self, **kwargs):
-        "Put the various losses in the recorder."
-        self.learn.recorder.add_metrics([self.smoothenerG.smooth,self.smoothenerD.smooth])
+    def on_epoch_end(self, pbar, epoch, **kwargs):
+        "Put the various losses in the recorder and show a sample image."
+        self.recorder.add_metrics([getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
+        #if hasattr(self, 'last_gen'):
+        #    self.imgs.append(Image(self.last_gen[0]/2 + 0.5))
+        #    self.titles.append(f'Epoch {epoch}')
+        #    pbar.show_imgs(self.imgs, self.titles)
+    
+    def switch(self, gen_mode:bool=None):
+        "Switch the model, if `gen_mode` is provided, in the desired mode."
+        self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
+        self.opt.opt = self.opt_gen.opt if self.gen_mode else self.opt_critic.opt
+        self._set_trainable()
+        self.model.switch(gen_mode)
+        self.loss_func.switch(gen_mode)
 
 @dataclass
-class NoisyGANTrainer(GANTrainer):
-    "GAN trainer that creates random noise for the generator inputs."
-    _order=-20
-    bs:int=64
-    noise_sz:int=100
+class FixedGANSwitcher(LearnerCallback):
+    "Switcher to do `n_crit` iterations of the critic then `n_gen` iterations of the generator."
+    n_crit:Union[int,Callable]=1
+    n_gen:Union[int,Callable]=1
+    
+    def on_train_begin(self, **kwargs):
+        "Initiate the iteration counts."
+        self.n_c,self.n_g = 0,0
+    
+    def on_batch_end(self, iteration, **kwargs):
+        "Switch the model if necessary."
+        if self.learn.gan_trainer.gen_mode: 
+            self.n_g += 1
+            n_iter,n_in,n_out = self.n_gen,self.n_c,self.n_g
+        else:
+            self.n_c += 1
+            n_iter,n_in,n_out = self.n_crit,self.n_g,self.n_c
+        target = n_iter if isinstance(n_iter, int) else n_iter(n_in)
+        if target == n_out: 
+            self.learn.gan_trainer.switch()
+            self.n_c,self.n_g = 0,0
 
-    def input_fake(self, last_input, grad:bool=True):
-        return create_noise(last_input, self.bs, self.noise_sz).requires_grad_(grad)
-
+class AdaptiveGANSwitcher(LearnerCallback):
+    "Switcher that goes back to generator/discriminator when the loes goes below `gen_thresh`\`crit_thresh`." 
+    gen_thresh:float=None
+    critic_thresh:float=None
+    
+    def on_batch_end(self, last_loss, **kwargs):
+        "Switch the model if necessary."
+        if self.gan_trainer.gen_mode: 
+            if self.gen_thresh  is not None and last_loss < self.gen_thresh:    self.gan_trainer.switch()
+        else:
+            if self.crit_thresh is not None and last_loss < self.critic_thresh: self.gan_trainer.switch()
+            
 class CycleGANTrainer(LearnerCallback):
     "`LearnerCallback` that handles cycleGAN Training."
     _order=-20
