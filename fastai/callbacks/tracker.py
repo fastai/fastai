@@ -43,6 +43,8 @@ class TrackerCallback(LearnerCallback):
 
     def get_monitor_value(self):
         "Pick the monitored value."
+        if monitor=='trn_loss' and len(self.learn.recorder.losses) == 0: return None
+        elif len(self.learn.recorder.val_losses) == 0: return None
         values = {'trn_loss':self.learn.recorder.losses[-1:][0].cpu().numpy(),
                   'val_loss':self.learn.recorder.val_losses[-1:][0]}
         for i, name in enumerate(self.learn.recorder.names[3:]):
@@ -100,7 +102,8 @@ class SaveModelCallback(TrackerCallback):
 
     def on_train_end(self, **kwargs):
         "Load the best model."
-        if self.every=="improvement": self.learn.load(f'{self.name}')
+        if self.every=="improvement" and (path/f'{self.learn.model_dir}/{self.name}.pth').is_file():
+            self.learn.load(f'{self.name}')
 
 @dataclass
 class ReduceLROnPlateauCallback(TrackerCallback):
