@@ -1,10 +1,12 @@
 from ..torch_core import *
 from ..layers import *
 from ..callback import *
+from ..basic_data import *
 from ..basic_train import Learner, LearnerCallback
 from .image import Image
 
-__all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher']
+__all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher',
+           'GANLearner']
 
 def AvgFlatten():
     "Takes the average of the input."
@@ -176,3 +178,42 @@ class AdaptiveGANSwitcher(LearnerCallback):
         else:
             if self.crit_thresh is None:         self.gan_trainer.switch()
             elif last_loss < self.critic_thresh: self.gan_trainer.switch()
+                
+def gan_loss_from_func(loss_gen, loss_crit, weights_gen:Tuple[float,float]=None):
+    "Define loss functions for a GAN from `loss_gen` and `loss_crit`."
+    def _loss_G(fake_pred, output, target, weights_gen=weights_gen):
+        ones = fake_pred.new_ones(fake_pred.shape[0])
+        weights_gen = ifnone(weights_gen, (1.,1.))
+        return weights_gen[0] * loss_critic(fake_pred, ones) + weights_gen[1] * loss_gen(output, target)
+    
+    def _loss_C(real_pred, fake_pred):
+        ones  = real_pred.new_ones (real_pred.shape[0])
+        zeros = fake_pred.new_zeros(fake_pred.shape[0])
+        return (loss_crit(real_pred, ones) + loss_crit(fake_pred, zeros)) / 2
+    
+    return _loss_G, _loss_C
+
+class GANLearner(Learner):
+    "A `Learner` suitable for GANs."
+    def __init__(self, data:DataBunch, generator:nn.Module, critic:nn.Module, gen_loss_func:LossFunction, 
+                 crit_loss_func:LossFunction, switcher:Callback=None, gen_first:bool=False, switch_eval:bool=True, 
+                 show_img:bool=True, clip:float=None, **kwargs):
+        gan = GANModule(generator, critic)
+        loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
+        switcher = ifnone(switcher, partial(FixedGANSwitcher, n_crit=5, n_gen=1))
+        super().__init__(data, gan, loss_func=loss_func, callback_fns=[switcher], **kwargs)
+        trainer = GANTrainer(self, clip=clip, switch_eval=switch_eval, show_img=show_img)
+        self.gan_trainer = trainer
+        self.callbacks.append(trainer)
+        
+    @classmethod
+    def from_learners(cls, learn_gen:Learner, learn_crit:Learner, switcher:Callback=None, 
+                      weights_gen:Tuple[float,float]=None, **kwargs):
+        "Create a GAN from `learn_gen` and `learn_crit`."
+        losses = gan_loss_from_func(learn_gen.loss_func, learn_crit.loss_func, weights_gen=weights_gen)
+        return cls(learn_gen.data, learn_gen.model, learn_crit.model, *losses, switcher=switcher, **kwargs)
+    
+    @classmethod
+    def wgan(cls, data:DataBunch, generator:nn.Module, critic:nn.Module, switcher:Callback=None, clip:float=0.01, **kwargs):
+        "Create a WGAN from `data`, `generator` and `critic`."
+        return cls(data, generator, critic, NoopLoss(), WassersteinLoss(), switcher=switcher, clip=clip, **kwargs)
