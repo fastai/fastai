@@ -170,12 +170,13 @@ Several minutes after the push you will see the updated documents at https://doc
 
 ### Updating an existing function/class
 
-To take care of updating any of the function and class's arguments and the docstring that's already been added before.
+To take care of updating any changes in the API's arguments and docstrings that are already in the API docs, execute (we are using `data_block` as an example here):
 
 ```
 tools/build-docs --update-nb-links docs_src/data_block.ipynb
 ```
 
+and then as in the previous section, check the diff, commit and push.
 
 
 
