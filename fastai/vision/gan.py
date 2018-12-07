@@ -1,8 +1,69 @@
 from ..torch_core import *
+from ..layers import *
 from ..callback import *
 from ..basic_train import Learner, LearnerCallback
+from .image import Image
 
-__all__ = ['CycleGANTrainer', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher']
+__all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher']
+
+def AvgFlatten():
+    "Takes the average of the input."
+    return Lambda(lambda x: x.mean(0).view(1))
+
+def basic_critic(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0, **kwargs):
+    "A basic critic for images `n_channels` x `in_size` x `in_size`."
+    layers = [conv_layer(n_channels, n_features, 4, 2, 1, leaky=0.2, norm_type=None, **kwargs)]#norm_type=None?
+    cur_size, cur_ftrs = in_size//2, n_features
+    layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=0.2, **kwargs) for _ in range(n_extra_layers)]))
+    while cur_size > 4:
+        layers.append(conv_layer(cur_ftrs, cur_ftrs*2, 4, 2, 1, leaky=0.2, **kwargs))
+        cur_ftrs *= 2 ; cur_size //= 2
+    layers += [conv2d(cur_ftrs, 1, 4, padding=0), AvgFlatten()]
+    return nn.Sequential(*layers)
+
+def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:int=64, n_extra_layers=0, **kwargs):
+    "A basic generator from `noise_sz` to images `n_channels` x `in_size` x `in_size`."
+    cur_size, cur_ftrs = 4, n_features//2
+    while cur_size < in_size:  cur_size *= 2; cur_ftrs *= 2
+    layers = [conv_layer(noise_sz, cur_ftrs, 4, 1, transpose=True, **kwargs)]
+    cur_size = 4
+    while cur_size < in_size // 2:
+        layers.append(conv_layer(cur_ftrs, cur_ftrs//2, 4, 2, 1, transpose=True, **kwargs))
+        cur_ftrs //= 2; cur_size *= 2
+    layers += [conv_layer(cur_ftrs, cur_ftrs, 3, 1, 1, transpose=True, **kwargs) for _ in range(n_extra_layers)]
+    layers += [conv2d_trans(cur_ftrs, n_channels, 4, 2, 1, bias=False), nn.Tanh()]
+    return nn.Sequential(*layers)
+
+class GANModule(nn.Module):
+    "Wrapper around a `generator` and a `critic` to create a GAN."
+    def __init__(self, generator:nn.Module=None, critic:nn.Module=None, gen_mode:bool=False):
+        super().__init__()
+        self.gen_mode = gen_mode
+        if generator: self.generator,self.critic = generator,critic
+    
+    def forward(self, *args):
+        return self.generator(*args) if self.gen_mode else self.critic(*args)
+
+    def switch(self, gen_mode:bool=None):
+        "Put the model in generator mode if `gen_mode`, in critic mode otherwise."
+        self.gen_mode = (not self.gen_mode) if gen_mode is None else gen_mode
+        
+class GANLoss(GANModule):
+    "Wrapper around `loss_funcC` (for the critic) and `loss_funcG` (for the generator)."
+    def __init__(self, loss_funcG:Callable, loss_funcC:Callable, gan_model:GANModule):
+        super().__init__()
+        self.loss_funcG,self.loss_funcC,self.gan_model = loss_funcG,loss_funcC,gan_model
+        
+    def generator(self, output, target):
+        "Evaluate the `output` with the critic then uses `self.loss_funcG` to combine it with `target`."
+        fake_pred = self.gan_model.critic(output)
+        return self.loss_funcG(fake_pred, target, output)
+    
+    def critic(self, real_pred, input):
+        "Create some `fake_pred` with the generator from `input` and compare them to `real_pred` in `self.loss_funcD`."
+        fake = self.gan_model.generator(input.requires_grad_(False)).requires_grad_(True)
+        fake_pred = self.gan_model.critic(fake)
+        return self.loss_funcC(real_pred, fake_pred)  
 
 class GANTrainer(LearnerCallback):
     "Handles GAN Training."
@@ -65,10 +126,10 @@ class GANTrainer(LearnerCallback):
     def on_epoch_end(self, pbar, epoch, **kwargs):
         "Put the various losses in the recorder and show a sample image."
         self.recorder.add_metrics([getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
-        #if hasattr(self, 'last_gen'):
-        #    self.imgs.append(Image(self.last_gen[0]/2 + 0.5))
-        #    self.titles.append(f'Epoch {epoch}')
-        #    pbar.show_imgs(self.imgs, self.titles)
+        if hasattr(self, 'last_gen'):
+            self.imgs.append(Image(self.last_gen[0]/2 + 0.5))
+            self.titles.append(f'Epoch {epoch}')
+            pbar.show_imgs(self.imgs, self.titles)
     
     def switch(self, gen_mode:bool=None):
         "Switch the model, if `gen_mode` is provided, in the desired mode."
@@ -109,63 +170,8 @@ class AdaptiveGANSwitcher(LearnerCallback):
     def on_batch_end(self, last_loss, **kwargs):
         "Switch the model if necessary."
         if self.gan_trainer.gen_mode: 
-            if self.gen_thresh  is not None and last_loss < self.gen_thresh:    self.gan_trainer.switch()
+            if self.gen_thresh  is None:      self.gan_trainer.switch()
+            elif last_loss < self.gen_thresh: self.gan_trainer.switch()
         else:
-            if self.crit_thresh is not None and last_loss < self.critic_thresh: self.gan_trainer.switch()
-            
-class CycleGANTrainer(LearnerCallback):
-    "`LearnerCallback` that handles cycleGAN Training."
-    _order=-20
-    def _set_trainable(self, D_A=False, D_B=False):
-        gen = (not D_A) and (not D_B)
-        requires_grad(self.learn.model.G_A, gen)
-        requires_grad(self.learn.model.G_B, gen)
-        requires_grad(self.learn.model.D_A, D_A)
-        requires_grad(self.learn.model.D_B, D_B)
-        if not gen:
-            self.opt_D_A.lr, self.opt_D_A.mom = self.learn.opt.lr, self.learn.opt.mom
-            self.opt_D_A.wd, self.opt_D_A.beta = self.learn.opt.wd, self.learn.opt.beta
-            self.opt_D_B.lr, self.opt_D_B.mom = self.learn.opt.lr, self.learn.opt.mom
-            self.opt_D_B.wd, self.opt_D_B.beta = self.learn.opt.wd, self.learn.opt.beta
-
-    def on_train_begin(self, **kwargs):
-        "Create the various optimizers."
-        self.G_A,self.G_B = self.learn.model.G_A,self.learn.model.G_B
-        self.D_A,self.D_B = self.learn.model.D_A,self.learn.model.D_B
-        self.crit = self.learn.loss_func.crit
-        self.opt_G = self.learn.opt.new([nn.Sequential(*flatten_model(self.G_A), *flatten_model(self.G_B))])
-        self.opt_D_A = self.learn.opt.new([nn.Sequential(*flatten_model(self.D_A))])
-        self.opt_D_B = self.learn.opt.new([nn.Sequential(*flatten_model(self.D_B))])
-        self.learn.opt.opt = self.opt_G.opt
-        self._set_trainable()
-        self.names = ['idt_loss', 'gen_loss', 'cyc_loss', 'da_loss', 'db_loss']
-        self.learn.recorder.no_val=True
-        self.learn.recorder.add_metric_names(self.names)
-        self.smootheners = {n:SmoothenValue(0.98) for n in self.names}
-
-    def on_batch_begin(self, last_input, **kwargs):
-        "Register the `last_input` in the loss function."
-        self.learn.loss_func.set_input(last_input)
-
-    def on_batch_end(self, last_input, last_output, **kwargs):
-        "Steps through the generators then each of the critics."
-        self.G_A.zero_grad(); self.G_B.zero_grad()
-        fake_A, fake_B = last_output[0].detach(), last_output[1].detach()
-        real_A, real_B = last_input
-        self._set_trainable(D_A=True)
-        self.D_A.zero_grad()
-        loss_D_A = 0.5 * (self.crit(self.D_A(real_A), True) + self.crit(self.D_A(fake_A), False))
-        loss_D_A.backward()
-        self.opt_D_A.step()
-        self._set_trainable(D_B=True)
-        self.D_B.zero_grad()
-        loss_D_B = 0.5 * (self.crit(self.D_B(real_B), True) + self.crit(self.D_B(fake_B), False))
-        loss_D_B.backward()
-        self.opt_D_B.step()
-        self._set_trainable()
-        metrics = self.learn.loss_func.metrics + [loss_D_A, loss_D_B]
-        for n,m in zip(self.names,metrics): self.smootheners[n].add_value(m)
-
-    def on_epoch_end(self, **kwargs):
-        "Put the various losses in the recorder."
-        self.learn.recorder.add_metrics([s.smooth for k,s in self.smootheners.items()])
+            if self.crit_thresh is None:         self.gan_trainer.switch()
+            elif last_loss < self.critic_thresh: self.gan_trainer.switch()

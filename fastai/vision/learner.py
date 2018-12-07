@@ -7,7 +7,6 @@ from . import models
 from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
-from ..callbacks.gan import GANTrainer
 
 __all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner']
 # By default split models between first and second layer
