@@ -97,7 +97,7 @@ class LanguageLearner(RNNLearner):
             res = self.pred_batch(batch=(xb,yb))[-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
-            if temperature != 1.: res.div_(temperature)
+            if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
             text += f' {self.data.vocab.itos[idx]}'
         return text

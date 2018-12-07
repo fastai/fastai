@@ -219,7 +219,7 @@ class TextClasDataBunch(TextDataBunch):
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             lengths = [len(t) for t in ds.x.items]
-            sampler = SortSampler(ds.x, key=lambda t: lengths[t])
+            sampler = SortSampler(ds.x, key=lengths.__getitem__)
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
 
