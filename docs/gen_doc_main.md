@@ -179,6 +179,21 @@ tools/build-docs --update-nb-links docs_src/data_block.ipynb
 and then as in the previous section, check the diff, commit and push.
 
 
+### Borked rendering
+
+If after `git pull` you load, e.g. `docs_src/data_block.ipynb` in jupyter notebook and you get a bunch of cryptic entries like:
+
+```
+<IPython.core.display.Markdown object>
+<IPython.core.display.Markdown object>
+<IPython.core.display.Markdown object>
+```
+instead of the API documentation entries, executing:
+```
+tools/build-docs --update-nb-links docs_src/data_block.ipynb
+```
+and then reloading the notebook fixes the problem.
+
 
 ## Building the documentation website
 
