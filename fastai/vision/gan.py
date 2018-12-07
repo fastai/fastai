@@ -177,7 +177,7 @@ class AdaptiveGANSwitcher(LearnerCallback):
             if self.gen_thresh  is None:      self.gan_trainer.switch()
             elif last_loss < self.gen_thresh: self.gan_trainer.switch()
         else:
-            if self.crit_thresh is None:         self.gan_trainer.switch()
+            if self.critic_thresh is None:       self.gan_trainer.switch()
             elif last_loss < self.critic_thresh: self.gan_trainer.switch()
                 
 def gan_loss_from_func(loss_gen, loss_crit, weights_gen:Tuple[float,float]=None):
@@ -185,7 +185,7 @@ def gan_loss_from_func(loss_gen, loss_crit, weights_gen:Tuple[float,float]=None)
     def _loss_G(fake_pred, output, target, weights_gen=weights_gen):
         ones = fake_pred.new_ones(fake_pred.shape[0])
         weights_gen = ifnone(weights_gen, (1.,1.))
-        return weights_gen[0] * loss_critic(fake_pred, ones) + weights_gen[1] * loss_gen(output, target)
+        return weights_gen[0] * loss_crit(fake_pred, ones) + weights_gen[1] * loss_gen(output, target)
     
     def _loss_C(real_pred, fake_pred):
         ones  = real_pred.new_ones (real_pred.shape[0])
