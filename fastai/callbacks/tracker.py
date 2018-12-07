@@ -43,6 +43,8 @@ class TrackerCallback(LearnerCallback):
 
     def get_monitor_value(self):
         "Pick the monitored value."
+        if monitor=='trn_loss' and len(self.learn.recorder.losses) == 0: return None
+        elif len(self.learn.recorder.val_losses) == 0: return None
         values = {'trn_loss':self.learn.recorder.losses[-1:][0].cpu().numpy(),
                   'val_loss':self.learn.recorder.val_losses[-1:][0]}
         for i, name in enumerate(self.learn.recorder.names[3:]):
@@ -93,7 +95,7 @@ class SaveModelCallback(TrackerCallback):
         "Compare the value monitored to its best score and maybe save the model."
         if self.every=="epoch": self.learn.save(f'{self.name}_{epoch}')
         else: #every="improvement"
-            current = self.get_monitor_value() if len(self.learn.recorder.val_losses) > 0 else None
+            current = self.get_monitor_value()
             if current is not None and self.operator(current, self.best):
                 self.best = current
                 self.learn.save(f'{self.name}')
