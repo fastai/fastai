@@ -68,9 +68,10 @@ class GANLoss(GANModule):
 class GANTrainer(LearnerCallback):
     "Handles GAN Training."
     _order=-20
-    def __init__(self, learn:Learner, switch_eval:bool=False, clip:float=None, beta:float=0.98, gen_first:bool=False):
+    def __init__(self, learn:Learner, switch_eval:bool=False, clip:float=None, beta:float=0.98, gen_first:bool=False, 
+                 show_img:bool=True):
         super().__init__(learn)
-        self.switch_eval,self.clip,self.beta,self.gen_first = switch_eval,clip,beta,gen_first
+        self.switch_eval,self.clip,self.beta,self.gen_first,self.show_img = switch_eval,clip,beta,gen_first,show_img
         self.generator,self.critic = self.model.generator,self.model.critic
 
     def _set_trainable(self):
@@ -126,7 +127,7 @@ class GANTrainer(LearnerCallback):
     def on_epoch_end(self, pbar, epoch, **kwargs):
         "Put the various losses in the recorder and show a sample image."
         self.recorder.add_metrics([getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
-        if hasattr(self, 'last_gen'):
+        if hasattr(self, 'last_gen') and self.show_img:
             self.imgs.append(Image(self.last_gen[0]/2 + 0.5))
             self.titles.append(f'Epoch {epoch}')
             pbar.show_imgs(self.imgs, self.titles)
