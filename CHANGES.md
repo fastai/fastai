@@ -167,12 +167,6 @@ of that change.
 
 - ItemLists can now set `self.filter_missing_y` to automatically remove items from LabelLists  training set that can't be labeled
 - revert xxmaj token and `deal_caps` rule
-- `download_url` Now reads the get request with iter_content which is robust to 'content-length' errors.
--
-### Fixed:
-- `TextDataset` has now two subclasses for the preprocessing steps and doesn't do that preprocesing automatically.
-- `TextDataBunch` doesn't save the result of preprocessing automatically, you have to use `TextDataBunch.save`.
-- `RNNLearner.classifier` is now `text_classifier_learner` and `RNN_Learner.language_model` is now `language_model_learner`.
 
 ### Fixed:
 
