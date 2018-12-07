@@ -2053,7 +2053,7 @@ summary: "The data block API"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="LabelLists.add_test"><code>add_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L430" class="source_link">[source]</a></h4><blockquote><p><code>add_test</code>(<code>items</code>:<code>Iterator</code>, <code>label</code>:<code>Any</code>=<code>None</code>)</p>
 </blockquote>
-<p>Add test set containing <code>items</code> with an arbitrary <code>label</code></p>
+<p>Add test set containing <code>items</code> with an arbitrary <code>label</code>.</p>
 
 </div>
 
@@ -2092,7 +2092,7 @@ summary: "The data block API"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="LabelLists.add_test_folder"><code>add_test_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L439" class="source_link">[source]</a></h4><blockquote><p><code>add_test_folder</code>(<code>test_folder</code>:<code>str</code>=<code>'test'</code>, <code>label</code>:<code>Any</code>=<code>None</code>)</p>
 </blockquote>
-<p>Add test set containing items from <code>test_folder</code> and an arbitrary <code>label</code>. No labels will be collected if available. Instead, either the passed <code>label</code> or a first label from train_ds will be used for all entries. If you want to use the test dataset with labels, you probably need to use it as a valid set, via split_by_folder(train='train', valid='test')</p>
+<p>Add test set containing items from <code>test_folder</code> and an arbitrary <code>label</code>.</p>
 
 </div>
 
@@ -2101,6 +2101,17 @@ summary: "The data block API"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Important</strong>! No labels will be collected if available. Instead, either the passed <code>label</code> argument or a first label from <code>train_ds</code> will be used for all entries of this dataset.</p>
+<p>In the <code>fastai</code> framework <code>test</code> datasets have no labels - this is the unknown data to be predicted.</p>
+<p>If you want to use the <code>test</code> dataset with labels, you probably need to use it as a validation set, as in:</p>
+
+<pre><code>split_by_folder(train='train', valid='test')</code></pre>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -2151,7 +2162,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelList"><code>class</code> <code>LabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L444" class="source_link">[source]</a></h3><blockquote><p><code>LabelList</code>(<code>x</code>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <code>y</code>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <code>tfms</code>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>tfm_y</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
+<h3 id="LabelList"><code>class</code> <code>LabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L445" class="source_link">[source]</a></h3><blockquote><p><code>LabelList</code>(<code>x</code>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <code>y</code>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <code>tfms</code>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>tfm_y</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
 </blockquote>
 
 </div>
@@ -2178,7 +2189,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.export"><code>export</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L500" class="source_link">[source]</a></h4><blockquote><p><code>export</code>(<code>fn</code>:<code>PathOrStr</code>)</p>
+<h4 id="LabelList.export"><code>export</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L501" class="source_link">[source]</a></h4><blockquote><p><code>export</code>(<code>fn</code>:<code>PathOrStr</code>)</p>
 </blockquote>
 <p>Export the minimal state and save it in <code>fn</code> to load an empty version for inference.</p>
 
@@ -2199,7 +2210,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.transform_y"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L530" class="source_link">[source]</a></h4><blockquote><p><code>transform_y</code>(<code>tfms</code>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="LabelList.transform_y"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L531" class="source_link">[source]</a></h4><blockquote><p><code>transform_y</code>(<code>tfms</code>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 <p>Set <code>tfms</code> to be applied to the targets only.</p>
 
@@ -2220,7 +2231,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L507" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<code>fn</code>:<code>PathOrStr</code>, <code>tfms</code>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>tfm_y</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>)</p>
+<h4 id="LabelList.load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L508" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<code>fn</code>:<code>PathOrStr</code>, <code>tfms</code>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>tfm_y</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>)</p>
 </blockquote>
 <p>Load the sate in <code>fn</code> to create an empty <a href="/data_block.html#LabelList"><code>LabelList</code></a> for inference.</p>
 
@@ -2241,7 +2252,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.to_df"><code>to_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L492" class="source_link">[source]</a></h4><blockquote><p><code>to_df</code>()</p>
+<h4 id="LabelList.to_df"><code>to_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L493" class="source_link">[source]</a></h4><blockquote><p><code>to_df</code>()</p>
 </blockquote>
 <p>Create <code>pd.DataFrame</code> containing <code>items</code> from <code>self.x</code> and <code>self.y</code>.</p>
 
@@ -2262,7 +2273,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.to_csv"><code>to_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L496" class="source_link">[source]</a></h4><blockquote><p><code>to_csv</code>(<code>dest</code>:<code>str</code>)</p>
+<h4 id="LabelList.to_csv"><code>to_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L497" class="source_link">[source]</a></h4><blockquote><p><code>to_csv</code>(<code>dest</code>:<code>str</code>)</p>
 </blockquote>
 <p>Save <code>self.to_df()</code> to a CSV file in <code>self.path</code>/<code>dest</code>.</p>
 

@@ -263,9 +263,9 @@ class CategoryProcessor(PreProcessor):
         "Generate classes from `items` by taking the sorted unique values."
         return uniqueify(items)
 
-    def process_one(self,item): 
+    def process_one(self,item):
         try: return self.c2i.get(item)
-        except: 
+        except:
             raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
 
     def process(self, ds):
@@ -428,7 +428,7 @@ class LabelLists(ItemLists):
         return self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, **kwargs)
 
     def add_test(self, items:Iterator, label:Any=None):
-        "Add test set containing `items` with an arbitrary `label`"
+        "Add test set containing `items` with an arbitrary `label`."
         # if no label passed, use label of first training item
         if label is None: label = self.train[0][1].obj
         labels = [label for _ in range_of(items)]
@@ -437,7 +437,8 @@ class LabelLists(ItemLists):
         return self
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):
-        "Add test set containing items from `test_folder` and an arbitrary `label`. No labels will be collected if available. Instead, either the passed `label` or a first label from train_ds will be used for all entries. If you want to use the test dataset with labels, you probably need to use it as a valid set, via split_by_folder(train='train', valid='test')"
+        "Add test set containing items from `test_folder` and an arbitrary `label`."
+        # note: labels will be ignored if available in the test dataset
         items = self.x.__class__.from_folder(self.path/test_folder)
         return self.add_test(items.items, label=label)
 
