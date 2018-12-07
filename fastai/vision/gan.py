@@ -165,6 +165,7 @@ class FixedGANSwitcher(LearnerCallback):
             self.learn.gan_trainer.switch()
             self.n_c,self.n_g = 0,0
 
+@dataclass
 class AdaptiveGANSwitcher(LearnerCallback):
     "Switcher that goes back to generator/discriminator when the loes goes below `gen_thresh`\`crit_thresh`." 
     gen_thresh:float=None
