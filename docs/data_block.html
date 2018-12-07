@@ -903,7 +903,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemList"><code>class</code> <code>ItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L40" class="source_link">[source]</a></h3><blockquote><p><code>ItemList</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>label_cls</code>:<code>Callable</code>=<code>None</code>, <code>xtra</code>:<code>Any</code>=<code>None</code>, <code>processor</code>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<code>None</code>, <code>x</code>:<code>ItemList</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h3 id="ItemList"><code>class</code> <code>ItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L40" class="source_link">[source]</a></h3><blockquote><p><code>ItemList</code>(<code>items</code>:<code>Iterator</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>label_cls</code>:<code>Callable</code>=<code>None</code>, <code>xtra</code>:<code>Any</code>=<code>None</code>, <code>processor</code>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<code>None</code>, <code>x</code>:<code>ItemList</code>=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
 
 </div>
@@ -1556,7 +1556,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemList.label_from_list"><code>label_from_list</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L208" class="source_link">[source]</a></h4><blockquote><p><code>label_from_list</code>(<code>labels</code>:<code>Iterator</code>[<code>T_co</code>], <code>kwargs</code>) → <code>LabelList</code></p>
+<h4 id="ItemList.label_from_list"><code>label_from_list</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L208" class="source_link">[source]</a></h4><blockquote><p><code>label_from_list</code>(<code>labels</code>:<code>Iterator</code>, <code>kwargs</code>) → <code>LabelList</code></p>
 </blockquote>
 <p>Label <code>self.items</code> with <code>labels</code>.</p>
 
@@ -1718,7 +1718,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CategoryList"><code>class</code> <code>CategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L292" class="source_link">[source]</a></h3><blockquote><p><code>CategoryList</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>classes</code>:<code>Collection</code>[<code>T_co</code>]=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a></p>
+<h3 id="CategoryList"><code>class</code> <code>CategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L292" class="source_link">[source]</a></h3><blockquote><p><code>CategoryList</code>(<code>items</code>:<code>Iterator</code>, <code>classes</code>:<code>Collection</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a></p>
 </blockquote>
 <p>Basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for single classification labels.</p>
 
@@ -1746,7 +1746,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MultiCategoryList"><code>class</code> <code>MultiCategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L321" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategoryList</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>classes</code>:<code>Collection</code>[<code>T_co</code>]=<code>None</code>, <code>sep</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a></p>
+<h3 id="MultiCategoryList"><code>class</code> <code>MultiCategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L321" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategoryList</code>(<code>items</code>:<code>Iterator</code>, <code>classes</code>:<code>Collection</code>=<code>None</code>, <code>sep</code>:<code>str</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a></p>
 </blockquote>
 <p>Basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for multi-classification labels.</p>
 
@@ -1774,7 +1774,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FloatList"><code>class</code> <code>FloatList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L341" class="source_link">[source]</a></h3><blockquote><p><code>FloatList</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>log</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+<h3 id="FloatList"><code>class</code> <code>FloatList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L341" class="source_link">[source]</a></h3><blockquote><p><code>FloatList</code>(<code>items</code>:<code>Iterator</code>, <code>log</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> suitable for storing the floats in items for regression. Will add a <code>log</code> if True</p>
 
@@ -1818,7 +1818,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PreProcessor"><code>class</code> <code>PreProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L34" class="source_link">[source]</a></h3><blockquote><p><code>PreProcessor</code>(<code>ds</code>:<code>Collection</code>[<code>T_co</code>]=<code>None</code>)</p>
+<h3 id="PreProcessor"><code>class</code> <code>PreProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L34" class="source_link">[source]</a></h3><blockquote><p><code>PreProcessor</code>(<code>ds</code>:<code>Collection</code>=<code>None</code>)</p>
 </blockquote>
 <p>Basic class for a processor that will be applied to items at the end of the data block API.</p>
 
@@ -1866,7 +1866,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PreProcessor.process"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L38" class="source_link">[source]</a></h4><blockquote><p><code>process</code>(<code>ds</code>:<code>Collection</code>[<code>T_co</code>])</p>
+<h4 id="PreProcessor.process"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L38" class="source_link">[source]</a></h4><blockquote><p><code>process</code>(<code>ds</code>:<code>Collection</code>)</p>
 </blockquote>
 
 </div>
@@ -2051,7 +2051,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.add_test"><code>add_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L430" class="source_link">[source]</a></h4><blockquote><p><code>add_test</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>label</code>:<code>Any</code>=<code>None</code>)</p>
+<h4 id="LabelLists.add_test"><code>add_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L430" class="source_link">[source]</a></h4><blockquote><p><code>add_test</code>(<code>items</code>:<code>Iterator</code>, <code>label</code>:<code>Any</code>=<code>None</code>)</p>
 </blockquote>
 <p>Add test set containing <code>items</code> with an arbitrary <code>label</code></p>
 
@@ -2310,7 +2310,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemLists.label_from_lists"><code>label_from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L385" class="source_link">[source]</a></h4><blockquote><p><code>label_from_lists</code>(<code>train_labels</code>:<code>Iterator</code>[<code>T_co</code>], <code>valid_labels</code>:<code>Iterator</code>[<code>T_co</code>], <code>label_cls</code>:<code>Callable</code>=<code>None</code>, <code>kwargs</code>) → <code>LabelList</code></p>
+<h4 id="ItemLists.label_from_lists"><code>label_from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L385" class="source_link">[source]</a></h4><blockquote><p><code>label_from_lists</code>(<code>train_labels</code>:<code>Iterator</code>, <code>valid_labels</code>:<code>Iterator</code>, <code>label_cls</code>:<code>Callable</code>=<code>None</code>, <code>kwargs</code>) → <code>LabelList</code></p>
 </blockquote>
 <p>Use the labels in <code>train_labels</code> and <code>valid_labels</code> to label the data. <code>label_cls</code> will overwrite the default.</p>
 

@@ -3,20 +3,18 @@
 
 """The setup script."""
 
-import sys
-from pathlib import Path
 from setuptools import setup, find_packages
 
 # note: version is maintained inside fastai/version.py
 exec(open('fastai/version.py').read())
 
-with open('README.md') as readme_file:   readme = readme_file.read()
+with open('README.md') as readme_file: readme = readme_file.read()
 
 def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
 ### normal dependencies ###
 #
-# important: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
+# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
 #
 # these get resolved and installed via either of these two:
 #
@@ -29,31 +27,30 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 # - temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
 #
 # notes:
-# - bottleneck and numexpr - are performance-improvement extras for numpy
+# - bottleneck and numexpr are performance-improvement extras for numpy
 #
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
 
 requirements = to_list("""
+    bottleneck
+    cymem==2.0.2
+    dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
     matplotlib
+    numexpr
     numpy>=1.12
     pandas
-    bottleneck
-    numexpr
     Pillow
+    pyyaml
+    regex
     requests
     scipy
     spacy==2.0.16
-    regex
     thinc==6.12.0
-    cymem==2.0.2
     torchvision-nightly
     typing
-    pyyaml
 """)
-
-if sys.version_info < (3,7): requirements.append('dataclasses')
 
 ### developer dependencies ###
 #
@@ -65,29 +62,36 @@ if sys.version_info < (3,7): requirements.append('dataclasses')
 #
 # these, including the normal dependencies, get installed with:
 #
+#   pip install fastai[dev]
+#
+# or via an editable install:
+#
 #   pip install -e .[dev]
 #
-# some of the listed modules appear in test_requirements as well, explained below.
+# some of the listed modules appear in test_requirements as well, as explained below.
 #
 dev_requirements = { 'dev' : to_list("""
     coverage
     distro
+    ipython
+    jupyter
     jupyter_contrib_nbextensions
+    nbconvert>=5.4
+    nbformat
+    notebook>=5.7.0
     pip>=9.0.1
     pipreqs>=0.4.9
     pytest
-    wheel>=0.30.0
-    ipython
-    jupyter
-    notebook>=5.7.0
-    nbconvert>=5.4
-    nbformat
     traitlets
+    wheel>=0.30.0
 """) }
 
 ### setup dependencies ###
+# need at least setuptools>=36.2 to support syntax:
+#   dataclasses ; python_version<'3.7'
 setup_requirements = to_list("""
     pytest-runner
+    setuptools>=36.2
 """)
 
 # notes:

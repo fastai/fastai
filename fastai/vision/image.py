@@ -255,6 +255,7 @@ class ImagePoints(Image):
     def device(self)->torch.device: return self._flow.flow.device
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
+    def _repr_image_format(self, format_str): return None
 
     @property
     def flow(self)->FlowField:
@@ -597,4 +598,3 @@ def show_all(imgs:Collection[Image], r:int=1, c:Optional[int]=None, figsize=(12,
     imgs = listify(imgs)
     if c is None: c = len(imgs)//r
     for i,ax in plot_flat(r,c,figsize): imgs[i].show(ax)
-

@@ -207,7 +207,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EarlyStoppingCallback"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L52" class="source_link">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>, <code>patience</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="EarlyStoppingCallback"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L55" class="source_link">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>, <code>patience</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that terminates training when monitored quantity stops improving.</p>
 
@@ -345,7 +345,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveModelCallback"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L77" class="source_link">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>every</code>:<code>str</code>=<code>'improvement'</code>, <code>name</code>:<code>str</code>=<code>'bestmodel'</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="SaveModelCallback"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L82" class="source_link">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>every</code>:<code>str</code>=<code>'improvement'</code>, <code>name</code>:<code>str</code>=<code>'bestmodel'</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that saves the model when monitored quantity is best.</p>
 
@@ -373,7 +373,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateauCallback"><code>class</code> <code>ReduceLROnPlateauCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L99" class="source_link">[source]</a></h2><blockquote><p><code>ReduceLROnPlateauCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>patience</code>:<code>int</code>=<code>0</code>, <code>factor</code>:<code>float</code>=<code>0.2</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h2 id="ReduceLROnPlateauCallback"><code>class</code> <code>ReduceLROnPlateauCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L106" class="source_link">[source]</a></h2><blockquote><p><code>ReduceLROnPlateauCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>patience</code>:<code>int</code>=<code>0</code>, <code>factor</code>:<code>float</code>=<code>0.2</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
 
@@ -401,7 +401,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrackerCallback"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L26" class="source_link">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="TrackerCallback"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L27" class="source_link">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> that keeps track of the best value in <code>monitor</code>.</p>
 
