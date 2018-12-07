@@ -1211,6 +1211,34 @@ The same can be repeated for getting test requirements, just repeat the same pro
 
 
 
+### Conditional Dependencies
+
+Here is how to specify conditional dependencies, e.g. depending on python version:
+
+* Conda
+
+   In `meta.yaml`:
+   ```
+     run:
+       - dataclasses # [py36]
+       - fastprogress >=0.1.18
+       [...]
+   ```
+   Here `# [py36]` tells `conda-build` that this requirement is only for python3.6, it's not a comment.
+
+* Pypi
+
+   In `setup.py`:
+
+   ```
+   requirements = ["dataclasses ; python_version<'3.7'", "fastprogress>=0.1.18", ...]
+   ```
+   Here `; python_version<'3.7'` instructs the wheel to use a dependency on `dataclasses` only for python versions lesser than `3.7`.
+
+   This recent syntax requires `setuptools>=36.2` on the build system. For more info [see](https://hynek.me/articles/conditional-python-dependencies/).
+
+
+
 ## CI/CD
 
 ### Azure DevOps CI (CPU-only)

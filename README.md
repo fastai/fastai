@@ -196,6 +196,15 @@ conda install conda
    You can find a complete table with all variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
 
 
+
+## Updates
+
+In order to update your environment, simply install `fastai` in exactly the same way you did the initial installation.
+
+Top level files `environment.yml` and `environment-cpu.yml` belong to the old fastai (0.7). `conda env update` is no longer the way to update your `fastai-1.x` environment. These files remain because the fastai course-v2 video instructions rely on this setup. Eventually, once fastai course-v3 p1 and p2 will be completed, they will probably be moved to where they belong - under `old/`.
+
+
+
 ## History
 
 A detailed history of changes can be found [here](https://github.com/fastai/fastai/blob/master/CHANGES.md).

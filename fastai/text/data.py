@@ -162,9 +162,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from DataFrames."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
-        if classes is None and label_cols:
-            if len(label_cols) == 0:   classes = [0]
-            elif len(label_cols) > 1:  classes = label_cols
+        if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
@@ -221,7 +219,7 @@ class TextClasDataBunch(TextDataBunch):
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             lengths = [len(t) for t in ds.x.items]
-            sampler = SortSampler(ds.x, key=lambda t: lengths[t])
+            sampler = SortSampler(ds.x, key=lengths.__getitem__)
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
 

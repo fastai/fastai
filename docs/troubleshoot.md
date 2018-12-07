@@ -330,6 +330,7 @@ If you use the [developer setup](https://github.com/fastai/fastai/blob/master/RE
 ```
 cd path/to/your/fastai/clone
 git pull
+pip install -e .[dev]
 ```
 
 Sometimes jupyter notebooks get messed up, and `git pull` might fail with an error like:

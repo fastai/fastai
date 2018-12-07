@@ -193,11 +193,11 @@ class MSELossFlat(nn.MSELoss):
 
 class NoopLoss(nn.Module):
     "Just returns the mean of the `output`."
-    def forward(self, output, target): return output.mean()
+    def forward(self, output, *args): return output.mean()
 
 class WassersteinLoss(nn.Module):
     "For WGAN."
-    def forward(self, real, fake): return real[0] - fake[0]
+    def forward(self, real, fake): return real.mean() - fake.mean()
 
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:
