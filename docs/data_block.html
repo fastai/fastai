@@ -2108,7 +2108,36 @@ summary: "The data block API"
 <p>In the <code>fastai</code> framework <code>test</code> datasets have no labels - this is the unknown data to be predicted.</p>
 <p>If you want to use the <code>test</code> dataset with labels, you probably need to use it as a validation set, as in:</p>
 
-<pre><code>split_by_folder(train='train', valid='test')</code></pre>
+<pre><code>data_test = (ImageItemList.from_folder(path)
+        .split_by_folder(train='train', valid='test')
+        .label_from_folder()
+        ...)</code></pre>
+<p>Another approach, where you do use a normal validation set, and then when the training is over, you just want to validate the test set w/ labels as a validation set, you can do this:</p>
+
+<pre><code>tfms = []
+path = Path('data').resolve()
+data = (ImageItemList.from_folder(path)
+        .split_by_pct()
+        .label_from_folder()
+        .transform(tfms)
+        .databunch()
+        .normalize() ) 
+learn = create_cnn(data, models.resnet50, metrics=accuracy)
+learn.fit_one_cycle(5,1e-2)
+
+# now replace the validation dataset entry with the test dataset as a new validation dataset: 
+# everything is exactly the same, except replacing `split_by_pct` w/ `split_by_folder` 
+# (or perhaps you were already using the latter, so simply switch to valid='test')
+data_test = (ImageItemList.from_folder(path)
+        .split_by_folder(train='train', valid='test')
+        .label_from_folder()
+        .transform(tfms)
+        .databunch()
+        .normalize()
+       ) 
+learn.data = data_test
+learn.validate()</code></pre>
+<p>Of course, your data block can be totally different, this is just an example.</p>
 
 </div>
 </div>
