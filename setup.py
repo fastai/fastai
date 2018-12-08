@@ -46,7 +46,7 @@ requirements = to_list("""
     regex
     cymem
     torchvision
-    pytorch
+    torch
     typing
 """)
 
