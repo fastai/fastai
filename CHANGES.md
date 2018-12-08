@@ -13,9 +13,7 @@ of that change.
 
 
 
-
-
-## 1.0.35.dev0 (Work In Progress)
+## 1.0.36.dev0 (Work In Progress)
 
 ### New:
 
@@ -25,12 +23,18 @@ of that change.
 
 
 
+## 1.0.35 (2018-12-08)
+
+### Changed:
+
+- Update deps to release version of pytorch v1
+
+
 ## 1.0.34 (2018-12-06)
 
 ### Fixed:
 
 - pypi wheel `dataclasses` dependency for py3.6 is there again
-
 
 
 ## 1.0.33 (2018-12-05)
@@ -51,8 +55,6 @@ of that change.
 
 
 ## 1.0.32 (2018-12-02)
-
-### New:
 
 ### Changed:
 

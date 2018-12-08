@@ -39,25 +39,12 @@ More advanced installation issues, such as installing only partial dependencies 
 
 ### Conda Install
 
-* GPU
+```bash
+conda install -c pytorch pytorch torchvision
+conda install -c fastai fastai
+```
 
-   ```bash
-   conda install -c pytorch pytorch-nightly cuda92
-   conda install -c fastai torchvision-nightly
-   conda install -c fastai fastai
-   ```
-
-* CPU
-
-   ```bash
-   conda install -c pytorch pytorch-nightly-cpu
-   conda install -c fastai torchvision-nightly-cpu
-   conda install -c fastai fastai
-   ```
-
-   On MacOS for non-GPU build install `pytorch-nightly` and `torchvision-nightly` instead of `pytorch-nightly-cpu` and `torchvision-nightly-cpu`.
-
-Note that JPEG decoding can be a bottleneck, particularly if you have a fast CPU. You can optionally install an optimized JPEG decoder as follows (Linux):
+Note that JPEG decoding can be a bottleneck, particularly if you have a fast GPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
 ```bash
 conda uninstall --force jpeg libtiff -y
@@ -65,26 +52,12 @@ conda install -c conda-forge libjpeg-turbo
 CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall pillow-simd
 ```
 
-
 ### PyPI Install
 
-* GPU
-
-   ```bash
-   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
-   pip install fastai
-   ```
-
-* CPU
-
-   ```bash
-   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-   pip install fastai
-   ```
-
-NB: this set will also fetch `torchvision-nightly`, which supports `torch-1.x`.
-
-
+```bash
+pip install torch torchvision
+pip install fastai
+```
 
 ### Developer Install
 
@@ -166,35 +139,31 @@ conda install conda
 
    Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
 
-   As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
+   As of this moment pytorch.org's 1.0 version supports:
 
     | Platform | GPU    | CPU    |
     |----------|--------|--------|
     | linux    | binary | binary |
     | mac      | source | binary |
-    | windows  | source | source |
+    | windows  | binary | binary |
 
    Legend: `binary` = can be installed directly, `source` = needs to be built from source.
 
-   This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
-
    If there is no `pytorch` preview conda or pip package available for your system, you may still be able to [build it from source](https://pytorch.org/get-started/locally/).
-
-   Alternatively, please consider installing and using the very solid "0.7.x" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
 
 4. How do you know which pytorch cuda version build to choose?
 
-   It depends on the version of the installed NVIDIA driver. Here are the requirements for CUDA versions supported by pre-built `pytorch-nightly` releases:
+   It depends on the version of the installed NVIDIA driver. Here are the requirements for CUDA versions supported by pre-built `pytorch` releases:
 
     | CUDA Toolkit | NVIDIA (Linux x86_64) |
     |--------------|-----------------------|
+    | CUDA 10.0    | >= 410.00             |
     | CUDA 9.2     | >= 396.26             |
     | CUDA 9.0     | >= 384.81             |
     | CUDA 8.0     | >= 367.48             |
 
    So if your NVIDIA driver is less than 384, then you can only use `cuda80`. Of course, you can upgrade your drivers to more recent ones if your card supports it.
    You can find a complete table with all variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
-
 
 
 ## Updates

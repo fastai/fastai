@@ -21,16 +21,11 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #   pip install fastai
 #   pip install -e .
 #
-# XXX: to fix later in time:
-# - require torch>=1.0.0 once it's released, for now get the user to install it explicitly
-# - using a workaround for torchvision, once torch-1.0.0 is out and a new torchvision depending on it is released switch to torchvision>=0.2.2
-# - temporarily pinning spacy and its dependencies (regex, thinc, and cymem) to have a stable environment during the course duration.
-#
 # notes:
 # - bottleneck and numexpr are performance-improvement extras for numpy
 #
 # dependencies to skip for now:
-# - cupy - is only required for QRNNs - sgguger thinks later he will get rid of this dep.
+# - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
 
 requirements = to_list("""
     bottleneck
@@ -48,7 +43,10 @@ requirements = to_list("""
     scipy
     spacy==2.0.16
     thinc==6.12.0
-    torchvision-nightly
+    regex
+    cymem
+    torchvision
+    torch
     typing
 """)
 

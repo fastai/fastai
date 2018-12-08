@@ -53,8 +53,8 @@ jobs:
     # Install dependencies and fastai git HEAD or PR
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
-      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-      # test that we can install fastai package (and torchvision)
+      pip install torch torchvision
+      # test that we can install fastai package
       pip install fastai
       pip uninstall -y fastai
       # install editable fastai, which tests the HEAD or PR
@@ -145,8 +145,7 @@ jobs:
       conda install -y conda
       conda install -y pip setuptools
       # pytorch + torchvision
-      conda install -y -c pytorch pytorch-nightly-cpu
-      conda install -y -c fastai torchvision-nightly-cpu
+      conda install -y -c pytorch pytorch torchvision
       # test that we can install fastai package
       conda install -y -c fastai fastai
       conda uninstall -y fastai
@@ -318,9 +317,7 @@ jobs:
       conda install -y conda
       conda install -y pip setuptools
       # pytorch + torchvision
-      # pytorch on osx doesn't ship GPU builds, so pytorch-nightly is pytorch-nightly-cpu. while the latter package exists, it's not maintained since 20181014
-      conda install -y -c pytorch pytorch-nightly
-      conda install -y -c fastai torchvision-nightly
+      conda install -y -c pytorch pytorch torchvision
       # test that we can install fastai package
       conda install -y -c fastai fastai
       conda uninstall -y fastai
