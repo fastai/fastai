@@ -20,7 +20,7 @@ despite having `nvidia-smi` working just fine. Which means that `pytorch` can't 
 
 note: `pytorch` installs itself as `torch`. So we refer to the project and its packages as `pytorch`, but inside python we use it as `torch`.
 
-First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch-nightly` with `cuda92` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
+First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
 
 The only thing you to need to ensure is that you have a correctly configured NVIDIA driver, which usually you can test by running: `nvidia-smi` in your console.
 

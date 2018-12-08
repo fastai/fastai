@@ -15,27 +15,27 @@ First, install `fastai` without its dependencies, and then install the dependenc
 
 ```
 pip install --no-deps fastai
-pip install "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" ...
+pip install "fastprogress>=0.1.18" "matplotlib" "numpy>=1.12" ...
 ```
 this will work with conda too:
 
 ```
 conda install --no-deps -c fastai fastai
-conda install -c fastai "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" ...
+conda install -c fastai "fastprogress>=0.1.18" "matplotlib" "numpy>=1.12" ...
 ```
 
-Don't forget to add `-c fastai` for the conda installs, e.g. it's needed for `torchvision-nightly`.
+Don't forget to add `-c fastai` for the conda installs, e.g. it's needed for `torchvision`.
 
 Below you will find the groups of dependencies for you to choose from. `fastai.base` is mandatory, the rest are optional:
 
 ```
 fastai.base:
 
-  "fastprogress>=0.1.15" "matplotlib" "numpy>=1.12" "pandas" "bottleneck" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml"
+  "fastprogress>=0.1.18" "matplotlib" "numpy>=1.12" "pandas" "bottleneck" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml"
 
 fastai.text:
 
-  "spacy==2.0.16" "regex" "thinc==6.12.0" "cymem==2.0.2"
+  "spacy" "regex" "thinc" "cymem"
 
 fastai.text.qrnn:
 
@@ -43,5 +43,6 @@ fastai.text.qrnn:
 
 fastai.vision:
 
-  "torchvision-nightly"
+  "torchvision"
+
 ```

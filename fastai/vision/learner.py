@@ -27,8 +27,10 @@ def cnn_config(arch):
     torch.backends.cudnn.benchmark = True
     return model_meta.get(arch, _default_meta)
 
-def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
+def create_body(arch:Callable, pretrained:bool=True, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
     "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
+    model = arch(pretrained)
+    if not cut and not body_fn: cut = cnn_config(arch)['cut']
     return (nn.Sequential(*list(model.children())[:cut]) if cut
             else body_fn(model) if body_fn else model)
 
@@ -50,7 +52,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
                 bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learners."
     meta = cnn_config(arch)
-    body = create_body(arch(pretrained), ifnone(cut,meta['cut']))
+    body = create_body(arch, pretrained, cut)
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
     model = nn.Sequential(body, head)
@@ -65,7 +67,7 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
                  self_attention:bool=False, **kwargs:Any)->None:
     "Build Unet learners. `kwargs` are passed down to `conv_layer`."
     meta = cnn_config(arch)
-    body = create_body(arch(pretrained), meta['cut'])
+    body = create_body(arch, pretrained)
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
                                               self_attention=self_attention, norm_type=norm_type), data.device)
     learn = Learner(data, model, **kwargs)
