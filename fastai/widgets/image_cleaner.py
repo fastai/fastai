@@ -13,20 +13,32 @@ __all__ = ['DatasetFormatter', 'ImageCleaner']
 
 class DatasetFormatter():
     @classmethod
-    def from_toplosses(cls, learn, n_imgs=None, ds_type:DatasetType=DatasetType.Valid, **kwargs):
-        "Formats images with padding for top losses from`learn`, using `ds_type` dataset."
-        dl = learn.dl(ds_type)
-        if not n_imgs: n_imgs = len(dl.dataset)
-        _,_,val_losses = learn.get_preds(ds_type, with_loss=True)
-        idxs = torch.topk(val_losses, n_imgs)[1]
-        return cls.padded_ds(dl.dataset, **kwargs), idxs
-
-    def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros'):
-        "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
-        return ll_input.transform(crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
+    def from_toplosses(cls, learn, n_imgs=None, **kwargs):
+        "Gets indices with top losses for both training and validation sets in `learn`."
+        train_ds, train_idxs = cls.get_toplosses_idxs(learn, n_imgs, DatasetType.Train, **kwargs)
+        return train_ds, train_idxs
 
     @classmethod
-    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
+    def get_toplosses_idxs(cls, learn, n_imgs, ds_type:DatasetType, **kwargs):
+        "Sorts `ds_type` dataset by top losses and returns dataset and sorted indices."
+        dl = learn.dl(ds_type)
+        if not n_imgs: n_imgs = len(dl.dataset)
+        _,_,top_losses = learn.get_preds(ds_type, with_loss=True)
+        idxs = torch.topk(top_losses, n_imgs)[1]
+        return cls.padded_ds(dl.dataset, **kwargs), idxs
+
+    def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros', **kwargs):
+        "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
+        return ll_input.transform(tfms=crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
+
+    @classmethod
+    def from_similars(cls, learn, layer_ls:list=[0, 7, 2], **kwargs):
+        "Gets the indices for the most similar images in training and validation datasets"
+        train_ds, train_idxs = cls.get_similars_idxs(learn, layer_ls, DatasetType.Train, **kwargs)
+        return train_ds, train_idxs
+
+    @classmethod
+    def get_similars_idxs(cls, learn, layer_ls, ds_type, **kwargs):
         "Gets the indices for the most similar images in `ds_type` dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
         if ds_type == DatasetType.Train: dl = learn.data.train_dl.new(shuffle=False)
@@ -38,7 +50,7 @@ class DatasetFormatter():
         return cls.padded_ds(dl, **kwargs), idxs
 
     @staticmethod
-    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4):
+    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4, **kwargs):
         "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
         pool = pool(pool_dim)
         print('Getting activations...')
@@ -52,7 +64,7 @@ class DatasetFormatter():
         return pool(torch.cat(actns)).view(len(dl.x), -1)
 
     @staticmethod
-    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0)):
+    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0), **kwargs):
         "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices."
         self_sim = False
         if torch.equal(t1, t2): self_sim = True
@@ -61,7 +73,7 @@ class DatasetFormatter():
         sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0
                 for idx1 in progress_bar(range(t1.shape[0]))
                 for idx2 in range(t2.shape[0])]
-        return np.array(sims)
+        return np.array(sims).reshape((t1.shape[0], t2.shape[0]))
 
     def largest_indices(arr, n):
         "Returns the `n` largest indices from a numpy array `arr`."
@@ -80,15 +92,15 @@ class DatasetFormatter():
 
 class ImageCleaner():
     "Display images with their current label."
-    def __init__(self, dataset, fns_idxs, batch_size:int=5, duplicates=False, start=0, end=40):
+    def __init__(self, dataset, fns_idxs, path, batch_size:int=5, duplicates=False):
         self._all_images,self._batch = [],[]
+        self._path = path
         self._batch_size = batch_size
         if duplicates: self._batch_size = 2
         self._duplicates = duplicates
         self._labels = dataset.classes
-        self._all_images = self.create_image_list(dataset, fns_idxs, start, end)
+        self._all_images = self.create_image_list(dataset, fns_idxs)
         self._csv_dict = {dataset.x.items[i]: dataset.y[i] for i in range(len(dataset))}
-        self.csv_path = None
         self._deleted_fns = []
         self._skipped = 0
         self.render()
@@ -118,7 +130,7 @@ class ImageCleaner():
         return dd
 
     @classmethod
-    def make_horizontal_box(cls, children, layout=Layout()): 
+    def make_horizontal_box(cls, children, layout=Layout()):
         "Make a horizontal box with `children` and `layout`."
         return widgets.HBox(children, layout=layout)
 
@@ -134,13 +146,13 @@ class ImageCleaner():
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    def create_image_list(self, dataset, fns_idxs, start, end):
+    def create_image_list(self, dataset, fns_idxs):
         "Create a list of images, filenames and labels but first removing files that are not supposed to be displayed."
         items = dataset.x.items
         if self._duplicates:
             chunked_idxs = chunks(fns_idxs, 2)
             chunked_idxs = [chunk for chunk in chunked_idxs if Path(items[chunk[0]]).is_file() and Path(items[chunk[1]]).is_file()]
-            return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk][start:end]
+            return  [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for chunk in chunked_idxs for i in chunk]
         else:
             return [(dataset.x[i]._repr_jpeg_(), items[i], self._labels[dataset.y[i].data]) for i in fns_idxs if
                     Path(items[i]).is_file()]
@@ -150,7 +162,7 @@ class ImageCleaner():
         class_new,class_old,file_path = change.new,change.old,change.owner.file_path
         fp = Path(file_path)
         parent = fp.parents[1]
-        self._csv_dict[fp] = self._labels.index(class_new)
+        self._csv_dict[fp] = class_new
 
     def next_batch(self, _):
         "Handler for 'Next Batch' button click. Delete all flagged images and renders next batch."
@@ -198,23 +210,26 @@ class ImageCleaner():
 
     def write_csv(self):
         # Get first element's file path so we write CSV to same directory as our data
-        self.csv_path = Path('./cleaned.csv')
-        with open(self.csv_path, 'w') as f:
+        # TODO: Write only new changes to CSV
+        csv_path = self._path/'cleaned.csv'
+        with open(csv_path, 'w') as f:
             csv_writer = csv.writer(f)
+            csv_writer.writerow(['name','label'])
             for pair in self._csv_dict.items():
+                pair = [os.path.relpath(pair[0], self._path), pair[1]]
                 csv_writer.writerow(pair)
-        return self.csv_path
+        return csv_path
 
     def render(self):
         "Re-render Jupyter cell for batch of images."
         clear_output()
+        self.write_csv()
         if self.empty() and self._skipped>0:
-            display(f'No images to show :). {self._skipped} pairs were '
+            return display(f'No images to show :). {self._skipped} pairs were '
                     f'skipped since at least one of the images was deleted by the user.')
-            return self.write_csv()
         elif self.empty():
-            display('No images to show :)')
-            return self.write_csv()
+            return display('No images to show :)')
+        
         if self.batch_contains_deleted():
             self.next_batch(None)
             self._skipped += 1

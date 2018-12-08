@@ -66,9 +66,9 @@ class Fbeta_binary(Callback):
         y_pred = last_output.argmax(dim=1)
         y_true = last_target.float()
         
-        self.TP += ((y_pred==clas) * (y_true==clas)).float().sum()
-        self.total_y_pred += (y_pred==clas).float().sum()
-        self.total_y_true += (y_true==clas).float().sum()
+        self.TP += ((y_pred==self.clas) * (y_true==self.clas)).float().sum()
+        self.total_y_pred += (y_pred==self.clas).float().sum()
+        self.total_y_true += (y_true==self.clas).float().sum()
     
     def on_epoch_end(self, **kwargs):
         beta2=self.beta2**2
