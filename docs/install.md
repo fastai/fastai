@@ -6,6 +6,24 @@ title: Installation
 
 Please refer to [README](https://github.com/fastai/fastai/blob/master/README.md#installation) for bulk of the instructions
 
+## CPU build
+
+Generally pytorch GPU build should work fine on machines that don't have a CUDA-capable GPU, and will just use the CPU. However, you can install CPU-only versions of Pytorch if needed:
+
+* conda
+
+   ```bash
+   conda install -c pytorch pytorch-cpu torchvision-cpu
+   conda install -c fastai fastai
+   ```
+
+* pip
+
+   ```bash
+   pip install http://download.pytorch.org/whl/cpu/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
+   pip install fastai
+   ```
+
 
 ## Custom Dependencies
 

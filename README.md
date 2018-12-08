@@ -39,23 +39,12 @@ More advanced installation issues, such as installing only partial dependencies 
 
 ### Conda Install
 
-* GPU
+```bash
+conda install -c pytorch pytorch torchvision
+conda install -c fastai fastai
+```
 
-   ```bash
-   conda install -c pytorch pytorch torchvision
-   conda install -c fastai fastai
-   ```
-
-* CPU
-
-   ```bash
-   conda install -c pytorch pytorch-cpu torchvision-cpu
-   conda install -c fastai fastai
-   ```
-
-   On MacOS for non-GPU build install `pytorch` and `torchvision` instead of `pytorch-cpu` and `torchvision-cpu`.
-
-Note that JPEG decoding can be a bottleneck, particularly if you have a fast CPU. You can optionally install an optimized JPEG decoder as follows (Linux):
+Note that JPEG decoding can be a bottleneck, particularly if you have a fast GPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
 ```bash
 conda uninstall --force jpeg libtiff -y
@@ -63,23 +52,12 @@ conda install -c conda-forge libjpeg-turbo
 CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall pillow-simd
 ```
 
-
 ### PyPI Install
 
-* GPU
-
-   ```bash
-   pip install torch torchvision
-   pip install fastai
-   ```
-
-* CPU
-
-   ```bash
-   pip install http://download.pytorch.org/whl/cpu/torch-1.0.0-cp36-cp36m-linux_x86_64.whl
-   pip install fastai
-   ```
-
+```bash
+pip install torch torchvision
+pip install fastai
+```
 
 ### Developer Install
 
