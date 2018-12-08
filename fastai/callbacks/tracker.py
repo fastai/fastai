@@ -43,7 +43,7 @@ class TrackerCallback(LearnerCallback):
 
     def get_monitor_value(self):
         "Pick the monitored value."
-        if monitor=='trn_loss' and len(self.learn.recorder.losses) == 0: return None
+        if self.monitor=='trn_loss' and len(self.learn.recorder.losses) == 0: return None
         elif len(self.learn.recorder.val_losses) == 0: return None
         values = {'trn_loss':self.learn.recorder.losses[-1:][0].cpu().numpy(),
                   'val_loss':self.learn.recorder.val_losses[-1:][0]}

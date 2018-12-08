@@ -59,10 +59,10 @@ requirements:
     - python
     - requests
     - scipy
-    - spacy
-    - regex
-    - thinc
-    - cymem
+    - spacy ==2.0.16
+    - regex ==2018.8.29
+    - thinc ==6.12.0
+    - cymem ==2.0.2
     - typing
     - pyyaml
     - pytorch >=1.0

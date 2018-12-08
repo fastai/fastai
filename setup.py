@@ -41,11 +41,12 @@ requirements = to_list("""
     regex
     requests
     scipy
-    spacy
+    spacy==2.0.16
+    thinc==6.12.0
     regex
-    thinc
     cymem
     torchvision
+    pytorch
     typing
 """)
 
