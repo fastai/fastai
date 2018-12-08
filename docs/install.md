@@ -13,7 +13,7 @@ Generally pytorch GPU build should work fine on machines that don't have a CUDA-
 * conda
 
    ```bash
-   conda install -c pytorch pytorch-cpu torchvision-cpu
+   conda install -c pytorch pytorch-cpu torchvision
    conda install -c fastai fastai
    ```
 
