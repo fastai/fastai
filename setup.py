@@ -38,12 +38,11 @@ requirements = to_list("""
     pandas
     Pillow
     pyyaml
-    regex
+    regex==2018.01.10
     requests
     scipy
     spacy==2.0.16
     thinc==6.12.0
-    regex
     cymem
     torchvision
     torch
