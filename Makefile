@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda dist-conda upload-conda test bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist upload release commit-release-push tag-version-push
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs git-not-dirty git-pull help release tag-version-push test test-install-conda test-installtest-install-pyp upload upload-conda upload-pypi
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -275,7 +275,7 @@ backport-check: ## backport to master check
 
 ##@ Testing new package installation
 
-test-install: ## test conda/pip package by installing that version them
+test-install: ## test installing this version of the conda/pip packages
 	@echo "\n\n*** [$(cur_branch)] Branch check (needing release branch)"
 	@if [ "$(cur_branch)" = "master" ]; then\
 		echo "Error: you are not on the release branch, to switch to it do:\n  git checkout release-1.0.??\nafter adjusting the version number. Also possible that:\n  git checkout - \nwill do the trick, if you just switched from it. And then repeat:\n  make test-install\n";\
@@ -284,6 +284,13 @@ test-install: ## test conda/pip package by installing that version them
 		echo "You're on the release branch, good";\
 	fi
 
+	${MAKE} test-install-pypi
+	${MAKE} test-install-conda
+
+	@echo "\n\n*** Install the editable version to return to dev work"
+	pip install -e .[dev]
+
+test-install-pypi: ## test installing this version of the pip package
 	@echo "\n\n*** Install/uninstall $(version) pip version"
 	@pip uninstall -y fastai
 
@@ -293,6 +300,7 @@ test-install: ## test conda/pip package by installing that version them
 	pip install fastai==$(version)
 	pip uninstall -y fastai
 
+test-install-conda: ## test installing this version of the conda package
 	@echo "\n\n*** Install/uninstall $(version) conda version"
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
 
@@ -301,9 +309,6 @@ test-install: ## test conda/pip package by installing that version them
 
 	conda install -y -c fastai fastai==$(version)
 	conda uninstall -y fastai
-
-	@echo "\n\n*** Install the editable version to return to dev work"
-	pip install -e .[dev]
 
 ##@ CHANGES.md file targets
 
