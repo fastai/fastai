@@ -17,9 +17,11 @@ of that change.
 
 ### New:
 
-- `SequentialResBlock`, `res_block`, and `dense_block` to more easily create resnet and densenet architectures
+- `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
 
 ### Changed:
+
+- Experimental cross-connection from raw input plus extra resblock at end of unet
 
 ### Fixed:
 
@@ -81,7 +83,6 @@ of that change.
 
 ### New:
 
-- `SequentialResBlock` to easily create resnet blocks
 - `ImageCleaner` with duplicates=True to use as a duplicate detector
 - `DatasetFormatter.from_similars()` to feed the most similar indexes into `ImageCleaner`
 - `chunks` to separate a Collection into smaller iterables

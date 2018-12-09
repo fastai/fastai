@@ -5,7 +5,7 @@ __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat'
            'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
            'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
            'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention',
-           'SequentialResBlock', 'res_block', 'dense_block']
+           'SequentialEx', 'MergeLayer', 'res_block']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -100,18 +100,40 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
-class SequentialResBlock(nn.Module):
-    "A resnet block using an `nn.Sequential` containing `layers`, densenet-style concat if `dense`"
-    def __init__(self, *layers, dense:bool=False):
+class SequentialEx(nn.Module):
+    "Like `nn.Sequential`, but with ModuleList semantics, and can access module input"
+    def __init__(self, *layers):
         super().__init__()
-        self.layers,self.dense = nn.Sequential(*layers),dense
+        self.layers = nn.ModuleList(layers)
 
     def forward(self, x):
-        res = self.layers(x)
-        return torch.cat([x,res], dim=1) if self.dense else res + x
+        res = x
+        for l in self.layers:
+            res.orig = x
+            nres = l(res)
+            # We have to remove res.orig to avoid hanging refs and therefore memory leaks
+            res.orig = None
+            res = nres
+        return res
 
-def res_block(nf):   return SequentialResBlock(conv_layer(nf,nf), conv_layer(nf,nf, bn_zero=True))
-def dense_block(nf): return SequentialResBlock(conv_layer(nf,nf), conv_layer(nf,nf), dense=True)
+    def __getitem__(self,i): return self.layers[i]
+    def append(self,l): return self.layers.append(l)
+    def extend(self,l): return self.layers.extend(l)
+    def insert(self,i,l): return self.layers.insert(i,l)
+
+class MergeLayer(nn.Module):
+    def __init__(self, dense:bool=False):
+        super().__init__()
+        self.dense=dense
+
+    def forward(self, x): return torch.cat([x,x.orig], dim=1) if self.dense else (x+x.orig)
+
+def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, **kwargs):
+    norm2 = norm_type
+    if not dense and (norm_type==NormType.Batch): norm2 = NormType.BatchZero
+    return SequentialEx(conv_layer(nf,nf,norm_type=norm_type, **kwargs),
+                      conv_layer(nf,nf,norm_type=norm2, **kwargs),
+                      MergeLayer(dense))
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
