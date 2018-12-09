@@ -64,12 +64,12 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
 
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
-                 self_attention:bool=False, **kwargs:Any)->None:
+                 self_attention:bool=False, sigmoid:bool=False, **kwargs:Any)->None:
     "Build Unet learners. `kwargs` are passed down to `conv_layer`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained)
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
-                                              self_attention=self_attention, norm_type=norm_type), data.device)
+                self_attention=self_attention, sigmoid=sigmoid, norm_type=norm_type), data.device)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()

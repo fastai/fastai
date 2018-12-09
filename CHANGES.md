@@ -23,6 +23,7 @@ of that change.
 
 ### Fixed:
 
+- `sigmoid` argument for unet output activation function
 
 
 ## 1.0.36 (2018-12-08)
