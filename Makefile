@@ -330,11 +330,11 @@ bump-patch: ## bump patch level unless has .devX, then don't bump, but remove .d
 
 bump: bump-patch ## alias to bump-patch (as it's used often)
 
-bump-minor: ## bump minor level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3+1, $$4); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+bump-minor: ## bump minor level; remove .devX if any
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, 0); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
-bump-major: ## bump major level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2+1, $$3, $$4); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+bump-major: ## bump major level; remove .devX if any
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, 0, 0); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-post-release: ## add .post1 or bump post-release level .post2, .post3, ...
 	@perl -pi -e 's{((\d+\.\d+\.\d+)(\.\w+\d+)?)}{do { $$o=$$1; $$b=$$2; $$l=$$3||".post0"}; $$l=~s/(\d+)$$/$$1+1/e; $$n="$$b$$l"; print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n}e' $(version_file)
@@ -345,10 +345,10 @@ bump-patch-dev: ## bump patch level and add .dev0
 bump-dev: bump-patch-dev ## alias to bump-patch-dev (as it's used often)
 
 bump-minor-dev: ## bump minor level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, $$4, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, 0, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-major-dev: ## bump major level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, $$3, $$4, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, 0, 0, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 
 
