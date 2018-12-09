@@ -29,7 +29,6 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 
 requirements = to_list("""
     bottleneck
-    cymem==2.0.2
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
     matplotlib
@@ -38,13 +37,9 @@ requirements = to_list("""
     pandas
     Pillow
     pyyaml
-    regex
     requests
     scipy
     spacy==2.0.16
-    thinc==6.12.0
-    regex
-    cymem
     torchvision
     torch
     typing
