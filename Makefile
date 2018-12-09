@@ -242,14 +242,14 @@ commit-version: ## commit and tag the release
 	git commit -m "starting release branch: $(version)" $(version_file)
 	$(call echo_cur_branch)
 
-commit-release-push: ## commit and tag the release
+commit-release-push: ## commit CHANGES.md, push/set upstream
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
 	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push --set-upstream origin release-$(version)
 
-tag-version-push:
+tag-version-push: ## tag the release
 	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"
 	git tag -a $(version) -m "$(version)" && git push origin tag $(version)
 
