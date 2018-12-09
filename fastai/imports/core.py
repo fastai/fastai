@@ -27,7 +27,7 @@ from pandas import Series, DataFrame
 
 import pkg_resources
 pkg_resources.require("fastprogress>=0.1.18")
-from fastprogress.fastprogress import MasterBar, ProgressBar
+from fastprogress.fastprogress import master_bar, progress_bar
 
 #for type annotations
 from numbers import Number
