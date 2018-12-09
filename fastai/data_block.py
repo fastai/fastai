@@ -430,8 +430,9 @@ class LabelLists(ItemLists):
     def add_test(self, items:Iterator, label:Any=None):
         "Add test set containing `items` with an arbitrary `label`."
         # if no label passed, use label of first training item
-        if label is None: label = self.train[0][1].obj
-        labels = [label for _ in range_of(items)]
+        if label is None:
+            if len(self.items)>0: label = self.train[0][1].obj
+        labels = [label] * len(items)
         if isinstance(items, ItemList): self.test = self.valid.new(items.items, labels, xtra=items.xtra)
         else: self.test = self.valid.new(items, labels)
         return self
@@ -441,6 +442,13 @@ class LabelLists(ItemLists):
         # note: labels will be ignored if available in the test dataset
         items = self.x.__class__.from_folder(self.path/test_folder)
         return self.add_test(items.items, label=label)
+
+    @classmethod
+    def load_empty(cls, fn:PathOrStr, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+        train_ds = LabelList.load_empty(fn, tfms=tfms[0], tfm_y=tfm_y, **kwargs)
+        valid_ds = LabelList.load_empty(fn, tfms=tfms[1], tfm_y=tfm_y, **kwargs)
+        return LabelLists(valid_ds.path, train=train_ds, valid=valid_ds)
+
 
 class LabelList(Dataset):
     "A list of inputs `x` and labels `y` with optional `tfms`."
@@ -487,6 +495,7 @@ class LabelList(Dataset):
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
             if hasattr(self, 'tfms_y') and self.tfm_y and self.item is None:
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
+            if y is None: y=0
             return x,y
         else: return self.new(self.x[idxs], self.y[idxs])
 
@@ -538,7 +547,8 @@ class LabelList(Dataset):
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
     "Load an empty `DataBunch` from the exported file in `path/fname` with optional `tfms`."
-    ds = LabelList.load_empty(path/fname, tfms=(None if tfms is None else tfms[1]), tfm_y=tfm_y, **kwargs)
-    return cls.create(ds,ds,path=path)
+    sd = LabelLists.load_empty(path/fname, tfms=tfms, tfm_y=tfm_y, **kwargs)
+    return sd.databunch()
 
 DataBunch.load_empty = _databunch_load_empty
+

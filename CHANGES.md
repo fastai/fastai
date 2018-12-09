@@ -17,10 +17,7 @@ of that change.
 
 ### New:
 
-### Changed:
-
-### Fixed:
-
+- `LabelLists.load_empty` (most useful for adding test sets for inference)
 
 
 ## 1.0.35 (2018-12-08)

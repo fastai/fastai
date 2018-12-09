@@ -68,7 +68,7 @@ class DeviceDataLoader():
     def __iter__(self):
         "Process and returns items from `DataLoader`."
         for b in self.dl:
-            y = b[1][0] if is_listy(b[1]) else b[1]
+            #y = b[1][0] if is_listy(b[1]) else b[1] # XXX: Why is this line here?
             yield self.proc_batch(b)
 
     @classmethod
