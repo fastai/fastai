@@ -92,7 +92,7 @@ make release-branch-create && make commit-version
 make master-branch-switch
 make bump-dev && make changes-dev-cycle
 make commit-dev-cycle-push
-make prev-branch-switch && make commit-tag-push
+make prev-branch-switch && make commit-release-push && make tag-version-push
 make dist && make upload
 make test-install
 make backport-check
@@ -202,10 +202,11 @@ We are ready to make the new release branch:
 3. finalize CHANGES.md (remove empty items) - version and date (could be automated)
 
 
-4. git tag with version, commit and push CHANGES.md and version.py
+4. commit and push CHANGES.md; tag and push version
 
     ```
-    make commit-tag-push          # git commit CHANGES.md; git tag; git push
+    make commit-release-push      # git commit CHANGES.md; git push --set-upstream
+    make tag-version-push         # git tag; git push
     ```
 
 5. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.

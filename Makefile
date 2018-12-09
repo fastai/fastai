@@ -185,7 +185,8 @@ release: ## do it all (other than testing)
 	${MAKE} changes-dev-cycle
 	${MAKE} commit-dev-cycle-push
 	${MAKE} prev-branch-switch
-	${MAKE} commit-tag-push
+	${MAKE} commit-release-push
+	${MAKE} tag-version-push
 	${MAKE} dist
 	${MAKE} upload
 	${MAKE} test-install
@@ -241,15 +242,18 @@ commit-version: ## commit and tag the release
 	git commit -m "starting release branch: $(version)" $(version_file)
 	$(call echo_cur_branch)
 
-commit-tag-push: ## commit and tag the release
+commit-release-push: ## commit and tag the release
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
 	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push --set-upstream origin release-$(version)
 
+tag-version-push:
 	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"
 	git tag -a $(version) -m "$(version)" && git push origin tag $(version)
+
+
 
 # check whether there any commits besides fastai/version.py and CHANGES.md
 # from the point of branching of release-$(version) till its HEAD. If
