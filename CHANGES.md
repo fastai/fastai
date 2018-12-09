@@ -22,7 +22,7 @@ of that change.
 ### Changed:
 
 - Experimental cross-connection from raw input plus extra resblock at end of unet
-- Add a manual check for the version of fastprogress (in case or pip installs)
+- Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
 
 ### Fixed:
 
