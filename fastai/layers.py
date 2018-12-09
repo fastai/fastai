@@ -4,7 +4,8 @@ from .torch_core import *
 __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger',
            'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
            'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
-           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention']
+           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention',
+           'SequentialResBlock', 'res_block', 'dense_block']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -100,12 +101,17 @@ def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bo
     return nn.Sequential(*layers)
 
 class SequentialResBlock(nn.Module):
-    "A resnet block using an `nn.Sequential` containing `layers`"
-    def __init__(self, *layers):
+    "A resnet block using an `nn.Sequential` containing `layers`, densenet-style concat if `dense`"
+    def __init__(self, *layers, dense:bool=False):
         super().__init__()
-        self.layers = nn.Sequential(*layers)
+        self.layers,self.dense = nn.Sequential(*layers),dense
 
-    def forward(self, x): return x + self.layers(x)
+    def forward(self, x):
+        res = self.layers(x)
+        return torch.cat([x,res], dim=1) if self.dense else res + x
+
+def res_block(nf):   return SequentialResBlock(conv_layer(nf,nf), conv_layer(nf,nf, bn_zero=True))
+def dense_block(nf): return SequentialResBlock(conv_layer(nf,nf), conv_layer(nf,nf), dense=True)
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."

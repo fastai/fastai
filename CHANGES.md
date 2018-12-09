@@ -13,11 +13,11 @@ of that change.
 
 
 
-
-
 ## 1.0.37.dev0 (Work In Progress)
 
 ### New:
+
+- `SequentialResBlock`, `res_block`, and `dense_block` to more easily create resnet and densenet architectures
 
 ### Changed:
 
