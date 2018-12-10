@@ -3,7 +3,6 @@
 
 """The setup script."""
 
-import re
 from setuptools import setup, find_packages
 
 # note: version is maintained inside fastai/version.py
@@ -11,12 +10,7 @@ exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file: readme = readme_file.read()
 
-# helper functions to make it easier to list dependencies not as a python list, but vertically w/ optional built-in comments to why a certain version of the dependency is listed
-def cleanup(x):
-    x = x.strip()               # whitespace
-    x = re.sub(r' *#.*', '', x) # comments
-    return x
-def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines())))
+def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
 
 ### normal dependencies ###
 #
@@ -27,26 +21,30 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 #   pip install fastai
 #   pip install -e .
 #
+# notes:
+# - bottleneck and numexpr are performance-improvement extras for numpy
+#
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
 #
 # XXX: when spacy==2.0.18 is on anaconda channel, put it in place (it's already on pypi) and remove its deps: cymem, regex, thinc (and update meta.yaml with the same)
 requirements = to_list("""
-    bottleneck           # performance-improvement for numpy
-    cymem==2.0.2         # remove once spacy==2.0.18 is on anaconda channel
+    bottleneck
+    cymem
+    cymem==2.0.2
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
     matplotlib
-    numexpr              # performance-improvement for numpy
+    numexpr
     numpy>=1.12
     pandas
     Pillow
     pyyaml
-    regex==2018.01.10    # remove once spacy==2.0.18 is on anaconda channel
+    regex==2018.01.10
     requests
     scipy
     spacy==2.0.16
-    thinc==6.12.0        # remove once spacy==2.0.18 is on anaconda channel
+    thinc==6.12.0
     torch
     torchvision
     typing

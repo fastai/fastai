@@ -11,8 +11,6 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
 ## 1.0.37.dev0 (Work In Progress)
 
 ### New:
@@ -28,6 +26,7 @@ of that change.
 ### Fixed:
 
 - `sigmoid` argument for unet output activation function
+- Most transforms (except `singledispatch` ones) can now be used in Windows with `num_workers`>0
 - `Image.apply_tfms` doesn't accept any kwargs anymore.
 
 
