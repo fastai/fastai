@@ -65,7 +65,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
                  self_attention:bool=False, sigmoid:bool=False, last_cross:bool=True, **kwargs:Any)->None:
-    "Build Unet learners. `kwargs` are passed down to `conv_layer`."
+    "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained)
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
@@ -148,6 +148,6 @@ class ClassificationInterpretation():
         return sorted(res, key=itemgetter(2), reverse=True)
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
-    "a shortcut for getting the ClassificationInterpretation object from learner"
+    "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
     return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
 Learner.interpret = _learner_interpret
