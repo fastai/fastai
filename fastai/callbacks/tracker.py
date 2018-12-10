@@ -21,6 +21,7 @@ class TerminateOnNaNCallback(Callback):
             return True
 
     def on_epoch_end(self, **kwargs:Any)->None:
+        "Stop the training if necessary."
         return self.stop
 
 @dataclass

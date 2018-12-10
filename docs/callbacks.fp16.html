@@ -87,13 +87,25 @@ summary: "Training in mixed precision implementation"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-1      0.172265    0.146274    0.947498  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.154570</th>
+    <th>0.126972</th>
+    <th>0.956820</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -133,7 +145,13 @@ epoch  train loss  valid loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You don't have to call the following functions yourself - they're called by the callback framework automatically. They're just documented here so you can see exactly what the callback is doing.</p>
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't have to call the following functions yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
 
 </div>
 </div>
