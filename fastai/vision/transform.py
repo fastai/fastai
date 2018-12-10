@@ -110,8 +110,7 @@ def _pad_image_points(x, padding:int, mode='reflection'):
     return _pad_coord(x, padding, padding, mode)
 
 def _pad(x, padding:int, mode='reflection'):
-    if isinstance(x, ImagePoints): f_pad = _pad_image_points
-    else: f_pad = _pad_default
+    f_pad = _pad_image_points if isinstance(x, ImagePoints) else  _pad_default
     return f_pad(x, padding, mode)
 
 pad = TfmPixel(_pad, order=-10)
@@ -136,8 +135,7 @@ def _crop_image_points(x, size, row_pct=0.5, col_pct=0.5):
     return x
 
 def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
-    if isinstance(x, ImagePoints): f_crop = _crop_image_points
-    else: f_crop = _crop_default
+    f_crop = _crop_image_points if isinstance(x, ImagePoints) else _crop_default
     return f_crop(x, size, row_pct, col_pct)
 
 crop = TfmPixel(_crop)
@@ -168,8 +166,7 @@ def _crop_pad_image_points(x, size, padding_mode='reflection', row_pct = 0.5, co
     return crop(x,(rows,cols), row_pct, col_pct)
 
 def _crop_pad(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
-    if isinstance(x, ImagePoints): f_crop_pad = _crop_pad_image_points
-    else: f_crop_pad = _crop_pad_default
+    f_crop_pad = _crop_pad_image_points if isinstance(x, ImagePoints) else _crop_pad_default
     return f_crop_pad(x, size, padding_mode, row_pct, col_pct)
 
 crop_pad = TfmCrop(_crop_pad)
