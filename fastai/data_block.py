@@ -58,7 +58,7 @@ class ItemList():
         return self.items[i]
     def __repr__(self)->str:
         items = [self[i] for i in range(min(5,len(self.items)))]
-        return f'{self.__class__.__name__} ({len(self)} items)\n{items}...\nPath: {self.path}'
+        return f'{self.__class__.__name__} ({len(self.items)} items)\n{items}...\nPath: {self.path}'
 
     def process(self, processor=None):
         "Apply `processor` or `self.processor` to `self`."
@@ -146,6 +146,10 @@ class ItemList():
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
 
+    def no_split(self): 
+        "Don't split the data and create an empty validation set."
+        return self._split(self.path, self, self[[]])
+    
     def split_by_list(self, train, valid):
         "Split the data between `train` and `valid`."
         return self._split(self.path, train, valid)
@@ -444,11 +448,11 @@ class LabelLists(ItemLists):
         return self.add_test(items.items, label=label)
 
     @classmethod
-    def load_empty(cls, fn:PathOrStr, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
-        train_ds = LabelList.load_empty(fn, tfms=tfms[0], tfm_y=tfm_y, **kwargs)
-        valid_ds = LabelList.load_empty(fn, tfms=tfms[1], tfm_y=tfm_y, **kwargs)
-        return LabelLists(valid_ds.path, train=train_ds, valid=valid_ds)
-
+    def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+        path = Path(path)
+        train_ds = LabelList.load_empty(path/fn, tfms=tfms[0], tfm_y=tfm_y, **kwargs)
+        valid_ds = LabelList.load_empty(path/fn, tfms=tfms[1], tfm_y=tfm_y, **kwargs)
+        return LabelLists(path, train=train_ds, valid=valid_ds)
 
 class LabelList(Dataset):
     "A list of inputs `x` and labels `y` with optional `tfms`."
@@ -547,7 +551,7 @@ class LabelList(Dataset):
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
     "Load an empty `DataBunch` from the exported file in `path/fname` with optional `tfms`."
-    sd = LabelLists.load_empty(path/fname, tfms=tfms, tfm_y=tfm_y, **kwargs)
+    sd = LabelLists.load_empty(path, fname=fname, tfms=tfms, tfm_y=tfm_y, **kwargs)
     return sd.databunch()
 
 DataBunch.load_empty = _databunch_load_empty

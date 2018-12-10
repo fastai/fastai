@@ -18,6 +18,7 @@ of that change.
 ### New:
 
 - `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
+- `no_split` method in the data block API
 
 ### Changed:
 
