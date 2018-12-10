@@ -67,7 +67,11 @@ def tensor(x:Any, *rest)->Tensor:
     if len(rest): x = (x,)+rest
     # XXX: Pytorch bug in dataloader using num_workers>0; TODO: create repro and report
     if is_listy(x) and len(x)==0: return tensor(0)
-    return torch.tensor(x) if is_listy(x) else as_tensor(x)
+    res = torch.tensor(x) if is_listy(x) else as_tensor(x)
+    if res.dtype is torch.int32:
+        warn('Tensor is int32: upgrading to int64; for better performance use int64 input')
+        return res.long()
+    return res
 
 def np_address(x:np.ndarray)->int:
     "Address of `x` in memory."

@@ -239,11 +239,13 @@ def try_int(o:Any)->Any:
     try: return int(o)
     except: return o
 
-def array(a, *args, **kwargs)->np.ndarray:
+def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators"
     if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):
         a = list(a)
-    return np.array(a, *args, **kwargs)
+    if np.int_==np.int32 and dtype is None and is_listy(a) and len(a) and isinstance(a[0],int):
+        dtype=np.int64
+    return np.array(a, dtype=dtype, **kwargs)
 
 class EmptyLabel(ItemBase):
     "Should be used for a dummy label."
