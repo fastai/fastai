@@ -146,10 +146,10 @@ class ItemList():
         if seed is not None: np.random.seed(seed)
         return self.filter_by_func(lambda o: rand_bool(p))
 
-    def no_split(self): 
+    def no_split(self):
         "Don't split the data and create an empty validation set."
         return self._split(self.path, self, self[[]])
-    
+
     def split_by_list(self, train, valid):
         "Split the data between `train` and `valid`."
         return self._split(self.path, train, valid)
@@ -173,6 +173,7 @@ class ItemList():
 
     def random_split_by_pct(self, valid_pct:float=0.2, seed:int=None)->'ItemLists':
         "Split the items randomly by putting `valid_pct` in the validation set, optional `seed` can be passed."
+        if valid_pct==0.: return self.no_split()
         if seed is not None: np.random.seed(seed)
         rand_idx = np.random.permutation(range_of(self))
         cut = int(valid_pct * len(self))
