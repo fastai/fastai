@@ -25,8 +25,11 @@ of that change.
 
 ### Fixed:
 
+- Windows fixes, including:
+  - Most transforms can now be used in Windows with `num_workers`>0
+  - Avoid recusion error with data blocks API
+  - Try to avoid default `np.int32` creation where possible
 - `sigmoid` argument for unet output activation function
-- Most transforms (except `singledispatch` ones) can now be used in Windows with `num_workers`>0
 - `Image.apply_tfms` doesn't accept any kwargs anymore.
 
 

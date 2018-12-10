@@ -40,8 +40,7 @@ More advanced installation issues, such as installing only partial dependencies 
 ### Conda Install
 
 ```bash
-conda install -c pytorch pytorch torchvision
-conda install -c fastai fastai
+conda install -c pytorch -c fastai fastai
 ```
 
 Note that JPEG decoding can be a bottleneck, particularly if you have a fast GPU. You can optionally install an optimized JPEG decoder as follows (Linux):
@@ -55,13 +54,12 @@ CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall pillow-simd
 ### PyPI Install
 
 ```bash
-pip install torch torchvision
 pip install fastai
 ```
 
 ### Developer Install
 
-First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the **same package manager you used to install it**, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
+First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the same package manager you used to install it, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
 
 
 ```bash

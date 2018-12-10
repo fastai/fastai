@@ -394,8 +394,7 @@ class PointsItemList(ItemList):
 
 class ImageImageList(ImageItemList):
     "`ItemList` suitable for `Image` to `Image` tasks."
-    _label_cls = ImageItemList
-    _square_show=False
+    _label_cls,_square_show = ImageItemList,False
 
     def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show the `xs` (inputs) and `ys`(targets)  on a figure of `figsize`."
