@@ -156,7 +156,7 @@ have this notebook run quickly.</div>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">LabelLists</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">mnist</span><span class="o">/</span><span class="s1">&#39;export.pkl&#39;</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">LabelLists</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">mnist</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 <span class="n">empty_data</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">databunch</span><span class="p">()</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
 </pre></div>
 
@@ -213,7 +213,7 @@ have this notebook run quickly.</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(Category 3, tensor(0), tensor([9.9988e-01, 1.2266e-04]))</pre>
+<pre>(Category 7, tensor(1), tensor([0.4091, 0.5909]))</pre>
 </div>
 
 </div>
@@ -234,7 +234,7 @@ have this notebook run quickly.</div>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">LabelLists</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">mnist</span><span class="o">/</span><span class="s1">&#39;export.pkl&#39;</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">add_test_folder</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sd</span> <span class="o">=</span> <span class="n">LabelLists</span><span class="o">.</span><span class="n">load_empty</span><span class="p">(</span><span class="n">mnist</span><span class="p">,</span> <span class="n">tfms</span><span class="o">=</span><span class="n">tfms</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">add_test_folder</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <span class="n">empty_data</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">databunch</span><span class="p">()</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">imagenet_stats</span><span class="p">)</span>
 </pre></div>
 
@@ -284,11 +284,11 @@ have this notebook run quickly.</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[3.0461e-01, 6.9539e-01],
-        [9.9994e-01, 5.5281e-05],
-        [9.6485e-01, 3.5154e-02],
-        [1.0000e+00, 1.4565e-06],
-        [3.5496e-02, 9.6450e-01]])</pre>
+<pre>tensor([[0.9773, 0.0227],
+        [0.0059, 0.9941],
+        [0.9504, 0.0496],
+        [0.0119, 0.9881],
+        [0.9961, 0.0039]])</pre>
 </div>
 
 </div>
@@ -419,10 +419,10 @@ have this notebook run quickly.</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(MultiCategory artisinal_mine;blooming;clear,
- tensor([0., 1., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.]),
- tensor([0.0718, 0.5221, 0.4107, 0.6174, 0.8453, 0.2236, 0.2077, 0.3132, 0.2700,
-         0.0921, 0.4660, 0.2593, 0.3535, 0.1961]))</pre>
+<pre>(MultiCategory clear;cloudy,
+ tensor([0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.]),
+ tensor([0.0640, 0.1826, 0.1772, 0.3691, 0.7191, 0.5150, 0.2237, 0.2568, 0.4952,
+         0.0298, 0.4338, 0.2676, 0.3499, 0.2123]))</pre>
 </div>
 
 </div>
@@ -458,10 +458,10 @@ have this notebook run quickly.</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(MultiCategory artisinal_mine;bare_ground;blooming;clear;habitation;primary;selective_logging,
- tensor([0., 1., 1., 1., 1., 0., 0., 1., 0., 0., 1., 0., 1., 0.]),
- tensor([0.0718, 0.5221, 0.4107, 0.6174, 0.8453, 0.2236, 0.2077, 0.3132, 0.2700,
-         0.0921, 0.4660, 0.2593, 0.3535, 0.1961]))</pre>
+<pre>(MultiCategory blooming;clear;cloudy;haze;primary;selective_logging,
+ tensor([0., 0., 0., 1., 1., 1., 0., 0., 1., 0., 1., 0., 1., 0.]),
+ tensor([0.0640, 0.1826, 0.1772, 0.3691, 0.7191, 0.5150, 0.2237, 0.2568, 0.4952,
+         0.0298, 0.4338, 0.2676, 0.3499, 0.2123]))</pre>
 </div>
 
 </div>
