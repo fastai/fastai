@@ -88,15 +88,15 @@ class Image(ItemBase):
             return str_buffer.getvalue()
 
     def apply_tfms(self, tfms:TfmList, do_resolve:bool=True, xtra:Optional[Dict[Callable,dict]]=None,
-                   size:Optional[Union[int,TensorImageSize]]=None, mult:int=32,
-                   resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
+                   size:Optional[Union[int,TensorImageSize]]=None, resize_method:ResizeMethod=ResizeMethod.CROP,
+                   mult:int=32, padding_mode:str='reflection', mode:str='bilinear')->TensorImage:
         "Apply all `tfms` to the `Image`, if `do_resolve` picks value for random args."
         if not (tfms or xtra or size): return self
         xtra = ifnone(xtra, {})
         tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
         if do_resolve: _resolve_tfms(tfms)
         x = self.clone()
-        x.set_sample(padding_mode=padding_mode, **kwargs)
+        x.set_sample(padding_mode=padding_mode, mode=mode)
         if size is not None:
             crop_target = _get_crop_target(size, mult=mult)
             if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
