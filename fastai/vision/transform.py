@@ -101,29 +101,31 @@ def _pad_coord(x, row_pad:int, col_pad:int, mode='zeros'):
     x.flow = FlowField((h+2*row_pad, w+2*col_pad) , x.flow.flow * pad[None])
     return x
 
-@singledispatch
-def _pad(x, padding:int, mode='reflection'):
+def _pad_default(x, padding:int, mode='reflection'):
     "Pad `x` with `padding` pixels. `mode` fills in space ('zeros','reflection','border')."
     mode = _pad_mode_convert[mode]
     return F.pad(x[None], (padding,)*4, mode=mode)[0]
-pad = TfmPixel(_pad, order=-10)
 
-@pad.register(ImagePoints)
-def _(x, padding:int, mode='reflection'):
+def _pad_image_points(x, padding:int, mode='reflection'):
     return _pad_coord(x, padding, padding, mode)
 
-@singledispatch
-def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
+def _pad(x, padding:int, mode='reflection'):
+    if isinstance(x, ImagePoints): f_pad = _pad_image_points
+    else: f_pad = _pad_default
+    return f_pad(x, padding, mode)
+
+pad = TfmPixel(_pad, order=-10)
+
+
+def _crop_default(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     "Crop `x` to `size` pixels. `row_pct`,`col_pct` select focal point of crop."
     size = listify(size,2)
     rows,cols = size
     row = int((x.size(1)-rows+1) * row_pct)
     col = int((x.size(2)-cols+1) * col_pct)
     return x[:, row:row+rows, col:col+cols].contiguous()
-crop = TfmPixel(_crop)
 
-@crop.register(ImagePoints)
-def _(x, size, row_pct=0.5, col_pct=0.5):
+def _crop_image_points(x, size, row_pct=0.5, col_pct=0.5):
     h,w = x.size
     rows,cols = listify(size, 2)
     x.flow.flow.mul_(torch.Tensor([w/cols, h/rows])[None])
@@ -133,9 +135,15 @@ def _(x, size, row_pct=0.5, col_pct=0.5):
     x.size = (rows, cols)
     return x
 
-@singledispatch
-def _crop_pad(x, size, padding_mode='reflection',
-             row_pct:uniform = 0.5, col_pct:uniform = 0.5):
+def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
+    if isinstance(x, ImagePoints): f_crop = _crop_image_points
+    else: f_crop = _crop_default
+    return f_crop(x, size, row_pct, col_pct)
+
+crop = TfmPixel(_crop)
+
+
+def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
     padding_mode = _pad_mode_convert[padding_mode]
     size = listify(size,2)
@@ -149,10 +157,8 @@ def _crop_pad(x, size, padding_mode='reflection',
     col = int((x.size(2)-cols+1)*col_pct)
     x = x[:, row:row+rows, col:col+cols]
     return x.contiguous() # without this, get NaN later - don't know why
-crop_pad = TfmCrop(_crop_pad)
 
-@crop_pad.register(ImagePoints)
-def _(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
+def _crop_pad_image_points(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
     size = listify(size,2)
     rows,cols = size
     if x.size[0]<rows or x.size[1]<cols:
@@ -160,6 +166,13 @@ def _(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
         col_pad = max((cols-x.size[1]+1)//2, 0)
         x = _pad_coord(x, row_pad, col_pad)
     return crop(x,(rows,cols), row_pct, col_pct)
+
+def _crop_pad(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
+    if isinstance(x, ImagePoints): f_crop_pad = _crop_pad_image_points
+    else: f_crop_pad = _crop_pad_default
+    return f_crop_pad(x, size, padding_mode, row_pct, col_pct)
+
+crop_pad = TfmCrop(_crop_pad)
 
 rand_pos = {'row_pct':(0,1), 'col_pct':(0,1)}
 

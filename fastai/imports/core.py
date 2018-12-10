@@ -12,7 +12,7 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
-from functools import partial, reduce, singledispatch
+from functools import partial, reduce
 from pdb import set_trace
 from matplotlib import patches, patheffects
 from numpy import array, cos, exp, log, sin, tan, tanh
