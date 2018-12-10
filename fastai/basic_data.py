@@ -161,7 +161,8 @@ class DataBunch():
 
     def export(self, fname:str='export.pkl'):
         "Export the minimal state of `self` for inference in `self.path/fname`."
-        self.valid_ds.export(self.path/fname)
+        xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
+        self.valid_ds.export(self.path/fname, **xtra)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset

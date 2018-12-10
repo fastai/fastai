@@ -430,7 +430,11 @@ class LabelLists(ItemLists):
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
         "Create an `DataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `DataBunch.create`."
         path = Path(ifnone(path, self.path))
-        return self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, **kwargs)
+        data = self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, **kwargs)
+        if getattr(self, 'normalize', False):#In case a normalization was serialized
+            norm = self.normalize
+            data.normalize((norm['mean'], norm['std']), do_x=norm['do_x'], do_y=norm['do_y'])
+        return data
 
     def add_test(self, items:Iterator, label:Any=None):
         "Add test set containing `items` with an arbitrary `label`."
@@ -449,10 +453,10 @@ class LabelLists(ItemLists):
         return self.add_test(items.items, label=label)
 
     @classmethod
-    def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+    def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl'):
         path = Path(path)
-        train_ds = LabelList.load_empty(path/fn, tfms=tfms[0], tfm_y=tfm_y, **kwargs)
-        valid_ds = LabelList.load_empty(path/fn, tfms=tfms[1], tfm_y=tfm_y, **kwargs)
+        train_ds = LabelList.load_empty(path/fn)
+        valid_ds = LabelList.load_empty(path/fn)
         return LabelLists(path, train=train_ds, valid=valid_ds)
 
 class LabelList(Dataset):
@@ -514,20 +518,27 @@ class LabelList(Dataset):
         "Save `self.to_df()` to a CSV file in `self.path`/`dest`."
         self.to_df().to_csv(self.path/dest, index=False)
 
-    def export(self, fn:PathOrStr):
+    def export(self, fn:PathOrStr, **kwargs):
         "Export the minimal state and save it in `fn` to load an empty version for inference."
         state = {'x_cls':self.x.__class__, 'x_proc':self.x.processor,
                  'y_cls':self.y.__class__, 'y_proc':self.y.processor,
-                 'path':self.path}
+                 'path':self.path, 'tfms':self.tfms, 'tfm_y':self.tfm_y, 'tfmargs':self.tfmargs}
+        if hasattr(self, 'tfms_y'):    state['tfms_y']    = self.tfms_y
+        if hasattr(self, 'tfmargs_y'): state['tfmargs_y'] = self.tfmargs_y 
+        state = {**state, **kwargs}
         pickle.dump(state, open(fn, 'wb'))
 
     @classmethod
-    def load_empty(cls, fn:PathOrStr, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+    def load_empty(cls, fn:PathOrStr):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
         state = pickle.load(open(fn, 'rb'))
         x = state['x_cls']([], path=state['path'], processor=state['x_proc'])
         y = state['y_cls']([], path=state['path'], processor=state['y_proc'])
-        return cls(x, y, tfms=tfms, tfm_y=tfm_y, **kwargs).process()
+        res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()
+        if state.get('tfms_y', False):    res.tfms_y    = state['tfms_y']
+        if state.get('tfmargs_y', False): res.tfmargs_y = state['tfmargs_y']
+        if state.get('normalize', False): res.normalize = state['normalize']
+        return res
 
     def process(self, xp=None, yp=None, filter_missing_y:bool=False):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
@@ -552,9 +563,9 @@ class LabelList(Dataset):
         return self
 
 @classmethod
-def _databunch_load_empty(cls, path, fname:str='export.pkl', tfms:TfmList=None, tfm_y:bool=False, **kwargs):
+def _databunch_load_empty(cls, path, fname:str='export.pkl'):
     "Load an empty `DataBunch` from the exported file in `path/fname` with optional `tfms`."
-    sd = LabelLists.load_empty(path, fname=fname, tfms=tfms, tfm_y=tfm_y, **kwargs)
+    sd = LabelLists.load_empty(path, fn=fname)
     return sd.databunch()
 
 DataBunch.load_empty = _databunch_load_empty
