@@ -38,7 +38,7 @@ class UnetBlock(nn.Module):
 class DynamicUnet(SequentialEx):
     "Create a U-Net from a given architecture."
     def __init__(self, encoder:nn.Module, n_classes:int, blur:bool=False, blur_final=True,
-                 self_attention:bool=False, sigmoid:bool=False, **kwargs):
+                 self_attention:bool=False, sigmoid:bool=False, last_cross:bool=True, **kwargs):
         imsize = (256,256)
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
@@ -63,9 +63,10 @@ class DynamicUnet(SequentialEx):
 
         ni = x.shape[1]
         if imsize != sfs_szs[0][-2:]: layers.append(PixelShuffle_ICNR(ni, **kwargs))
-        layers.append(MergeLayer(dense=True))
-        ni += 3
-        layers.append(res_block(ni, **kwargs))
+        if last_cross:
+            layers.append(MergeLayer(dense=True))
+            ni += 3
+            layers.append(res_block(ni, **kwargs))
         layers += [conv_layer(ni, n_classes, ks=1, use_activ=False, **kwargs)]
         if sigmoid: layers.append(nn.Sigmoid())
         super().__init__(*layers)
