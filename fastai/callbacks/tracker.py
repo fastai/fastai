@@ -102,7 +102,7 @@ class SaveModelCallback(TrackerCallback):
 
     def on_train_end(self, **kwargs):
         "Load the best model."
-        if self.every=="improvement" and (path/f'{self.learn.model_dir}/{self.name}.pth').is_file():
+        if self.every=="improvement" and (self.learn.path/f'{self.learn.model_dir}/{self.name}.pth').is_file():
             self.learn.load(f'{self.name}')
 
 @dataclass

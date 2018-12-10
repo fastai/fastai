@@ -86,7 +86,7 @@ class GANTrainer(LearnerCallback):
             loss_model.eval()
 
     def on_train_begin(self, **kwargs):
-        "Create the optimizers for the generator and disciminator if necessary."
+        "Create the optimizers for the generator and critic if necessary, initialize smootheners."
         if not getattr(self,'opt_gen',None):
             self.opt_gen = self.opt.new([nn.Sequential(*flatten_model(self.generator))])
         else: self.opt_gen.lr,self.opt_gen.wd = self.opt.lr,self.opt.wd
@@ -106,7 +106,7 @@ class GANTrainer(LearnerCallback):
         self.switch(gen_mode=True)
 
     def on_batch_begin(self, last_input, last_target, **kwargs):
-        "Clamp the weights with `self.clip` if it's not None."
+        "Clamp the weights with `self.clip` if it's not None, return the correct input."
         if self.clip is not None:
             for p in self.critic.parameters(): p.data.clamp_(-self.clip, self.clip)
         return (last_input,last_target) if self.gen_mode else (last_target, last_input)
@@ -167,7 +167,7 @@ class FixedGANSwitcher(LearnerCallback):
 
 @dataclass
 class AdaptiveGANSwitcher(LearnerCallback):
-    "Switcher that goes back to generator/discriminator when the loes goes below `gen_thresh`\`crit_thresh`."
+    "Switcher that goes back to generator/critic when the loes goes below `gen_thresh`/`crit_thresh`."
     gen_thresh:float=None
     critic_thresh:float=None
 

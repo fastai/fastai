@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: clean clean-test clean-pyc clean-build docs help clean-pypi clean-build-pypi clean-pyc-pypi clean-test-pypi dist-pypi upload-pypi clean-conda clean-build-conda clean-pyc-conda clean-test-conda dist-conda upload-conda test tag bump bump-minor bump-major bump-dev bump-minor-dev bump-major-dev commit-tag git-pull git-not-dirty test-install dist-pypi-bdist dist-pypi-sdist upload release
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs git-not-dirty git-pull help release tag-version-push test test-install-conda test-installtest-install-pyp upload upload-conda upload-pypi
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -185,7 +185,8 @@ release: ## do it all (other than testing)
 	${MAKE} changes-dev-cycle
 	${MAKE} commit-dev-cycle-push
 	${MAKE} prev-branch-switch
-	${MAKE} commit-tag-push
+	${MAKE} commit-release-push
+	${MAKE} tag-version-push
 	${MAKE} dist
 	${MAKE} upload
 	${MAKE} test-install
@@ -241,15 +242,18 @@ commit-version: ## commit and tag the release
 	git commit -m "starting release branch: $(version)" $(version_file)
 	$(call echo_cur_branch)
 
-commit-tag-push: ## commit and tag the release
+commit-release-push: ## commit CHANGES.md, push/set upstream
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
 	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push --set-upstream origin release-$(version)
 
+tag-version-push: ## tag the release
 	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"
 	git tag -a $(version) -m "$(version)" && git push origin tag $(version)
+
+
 
 # check whether there any commits besides fastai/version.py and CHANGES.md
 # from the point of branching of release-$(version) till its HEAD. If
@@ -271,7 +275,7 @@ backport-check: ## backport to master check
 
 ##@ Testing new package installation
 
-test-install: ## test conda/pip package by installing that version them
+test-install: ## test installing this version of the conda/pip packages
 	@echo "\n\n*** [$(cur_branch)] Branch check (needing release branch)"
 	@if [ "$(cur_branch)" = "master" ]; then\
 		echo "Error: you are not on the release branch, to switch to it do:\n  git checkout release-1.0.??\nafter adjusting the version number. Also possible that:\n  git checkout - \nwill do the trick, if you just switched from it. And then repeat:\n  make test-install\n";\
@@ -280,6 +284,13 @@ test-install: ## test conda/pip package by installing that version them
 		echo "You're on the release branch, good";\
 	fi
 
+	${MAKE} test-install-pypi
+	${MAKE} test-install-conda
+
+	@echo "\n\n*** Install the editable version to return to dev work"
+	pip install -e .[dev]
+
+test-install-pypi: ## test installing this version of the pip package
 	@echo "\n\n*** Install/uninstall $(version) pip version"
 	@pip uninstall -y fastai
 
@@ -289,6 +300,7 @@ test-install: ## test conda/pip package by installing that version them
 	pip install fastai==$(version)
 	pip uninstall -y fastai
 
+test-install-conda: ## test installing this version of the conda package
 	@echo "\n\n*** Install/uninstall $(version) conda version"
 	@# skip, throws error when uninstalled @conda uninstall -y fastai
 
@@ -297,9 +309,6 @@ test-install: ## test conda/pip package by installing that version them
 
 	conda install -y -c fastai fastai==$(version)
 	conda uninstall -y fastai
-
-	@echo "\n\n*** Install the editable version to return to dev work"
-	pip install -e .[dev]
 
 ##@ CHANGES.md file targets
 
@@ -314,29 +323,33 @@ changes-dev-cycle: ## insert new template + version
 
 ##@ Version bumping
 
-# Support semver, but using python's .dev0 instead of -dev0
+# Support semver, but using python's .dev0/.post0 instead of -dev0/-post0
 
-bump-patch: ## bump patch-level unless has .devX, then don't bump, but remove .devX
+bump-major: ## bump major level; remove .devX if any
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, 0, 0); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+
+bump-minor: ## bump minor level; remove .devX if any
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, 0); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+
+bump-patch: ## bump patch level unless has .devX, then don't bump, but remove .devX
 	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3, $$4+1); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump: bump-patch ## alias to bump-patch (as it's used often)
 
-bump-minor: ## bump minor-level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2, $$3+1, $$4); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+bump-post-release: ## add .post1 or bump post-release level .post2, .post3, ...
+	@perl -pi -e 's{((\d+\.\d+\.\d+)(\.\w+\d+)?)}{do { $$o=$$1; $$b=$$2; $$l=$$3||".post0"}; $$l=~s/(\d+)$$/$$1+1/e; $$n="$$b$$l"; print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n}e' $(version_file)
 
-bump-major: ## bump major-level unless has .devX, then don't bump, but remove .devX
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=$$5 ? join(".", $$2, $$3, $$4) :join(".", $$2+1, $$3, $$4); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+bump-major-dev: ## bump major level and add .dev0
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, 0, 0, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
-bump-patch-dev: ## bump patch-level and add .dev0
+bump-minor-dev: ## bump minor level and add .dev0
+	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, 0, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
+
+bump-patch-dev: ## bump patch level and add .dev0
 	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3, $$4+1, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 bump-dev: bump-patch-dev ## alias to bump-patch-dev (as it's used often)
 
-bump-minor-dev: ## bump minor-level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2, $$3+1, $$4, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
-
-bump-major-dev: ## bump major-level and add .dev0
-	@perl -pi -e 's|((\d+)\.(\d+).(\d+)(\.\w+\d+)?)|$$o=$$1; $$n=join(".", $$2+1, $$3, $$4, "dev0"); print STDERR "\n\n*** [$(cur_branch)] Changing version: $$o => $$n\n"; $$n |e' $(version_file)
 
 
 ##@ Coverage

@@ -73,6 +73,8 @@ git checkout <desired commit>
 
 then **do not use the automated process**, since it resets to `master` branch. Use the step-by-step process instead, which is already instrumented for this special case. (But we could change the fully automated release to support this way too if need be).
 
+If you need to make a hotfix to an already released version, follow the [Hotfix Release Process](#hotfix-release-process) instructions.
+
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
 ```
@@ -92,7 +94,7 @@ make release-branch-create && make commit-version
 make master-branch-switch
 make bump-dev && make changes-dev-cycle
 make commit-dev-cycle-push
-make prev-branch-switch && make commit-tag-push
+make prev-branch-switch && make commit-release-push && make tag-version-push
 make dist && make upload
 make test-install
 make backport-check
@@ -202,10 +204,11 @@ We are ready to make the new release branch:
 3. finalize CHANGES.md (remove empty items) - version and date (could be automated)
 
 
-4. git tag with version, commit and push CHANGES.md and version.py
+4. commit and push CHANGES.md; tag and push version
 
     ```
-    make commit-tag-push          # git commit CHANGES.md; git tag; git push
+    make commit-release-push      # git commit CHANGES.md; git push --set-upstream
+    make tag-version-push         # git tag; git push
     ```
 
 5. build the packages. Note that this step can take a very long time (15 mins or more). It's important that before you run it you remove or move away any large files or directories that aren't part of the release (e.g. `data`, `tmp`, `models`, and `checkpoints`), and move them back when done.
@@ -776,17 +779,17 @@ You can either edit `fastai/version.py` and change the version number by hand.
 
 Or run one of these `make` targets:
 
-Target             | Function
--------------------| --------------------------------------------
-bump-major         | bump major-level unless has .devX, then don't bump, but remove .devX
-bump-minor         | bump minor-level unless has .devX, then don't bump, but remove .devX
-bump-patch         | bump patch-level unless has .devX, then don't bump, but remove .devX
-bump               | alias to bump-patch (as it's used often)
-bump-major-dev     | bump major-level and add .dev0
-bump-minor-dev     | bump minor-level and add .dev0
-bump-patch-dev     | bump patch-level and add .dev0
-bump-dev           | alias to bump-patch-dev (as it's used often)
-
+Target            | Function
+------------------| --------------------------------------------
+bump-major        | bump major level; remove .devX if any
+bump-minor        | bump minor level; remove .devX if any
+bump-patch        | bump patch level unless has .devX, then don't bump, but remove .devX
+bump              | alias to bump-patch (as it's used often)
+bump-post-release | add .post1 or bump post-release level .post2, .post3, ...
+bump-major-dev    | bump major level and add .dev0
+bump-minor-dev    | bump minor level and add .dev0
+bump-patch-dev    | bump patch level and add .dev0
+bump-dev          | alias to bump-patch-dev (as it's used often)
 
 e.g.:
 
@@ -927,6 +930,93 @@ Careful with this as it'll reset any modified files, probably `git stash` first 
 
 Once, things were fixed, `git push`, etc...
 
+
+
+
+## Hotfix Release Process
+
+If something found to be wrong in the last release, yet the HEAD is unstable to make a new release, instead apply the fix to the branch of the desired release and make a new hotfix release of that branch. Follow these step-by-step instructions to accomplish that:
+
+1. Start with the desired branch.
+
+   For example if the last release was `1.0.36`
+
+   ```
+   git checkout release-1.0.36
+   ```
+
+2. Apply desired fixes, document them in `CHANGES.md` and commit/push all changes to the branch.
+
+3. Test.
+
+   ```
+   make test
+   ```
+
+4. Adjust version.
+
+   According to [PEP-0440](https://www.python.org/dev/peps/pep-0440/#post-releases) add `.post1` to the version, or if it already was a `.postX`, increment its version:
+   ```
+   make bump-post-release
+   ```
+
+5. Commit and push all the changes to the branch.
+
+   ```
+   make commit-dev-cycle-push
+   ```
+
+6. Make a new tag with the new version.
+
+   ```
+   make tag-version-push
+   ```
+
+7. Make updated release.
+
+   ```
+   make dist
+   make upload
+   ```
+
+   or if only conda release is needed (e.g. only a dependencies fix):
+   ```
+   make dist-conda
+   make upload-conda
+   ```
+
+   or if only pypi release is needed (e.g. only a dependencies fix):
+
+   ```
+   make dist-pypi
+   make upload-pypi
+   ```
+
+8. Test release.
+
+   If you made a release on both platforms:
+   ```
+   make test-install
+   ```
+   If the hotfix was made only for pypi:
+   ```
+   make test-install-pypi
+   ```
+   or for conda:
+   ```
+   make test-install-conda
+   ```
+
+
+9. Don't forget to switch back to the master branch for continued development.
+
+   ```
+   make master-branch-switch
+   ```
+
+
+
+## Release Making Related Topics
 
 ### Run Install Tests In A Fresh Environment
 

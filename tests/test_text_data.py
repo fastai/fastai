@@ -44,9 +44,9 @@ def special_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")
 def test_from_csv_and_from_df():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos']) #"fast ai is a cool project", "hello world"
-    data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols=["text"])
+    data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df[:20], label_cols=0, text_cols=["text"])
     assert len(data1.classes) == 2
-
+    x,y = next(iter(data1.valid_dl)) # Will fail if the SortSampler keys get messed up between train and valid. 
     df = text_df(['neg','pos','neg pos'])
     data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
                                   label_cols=0, text_cols=["text"], label_delim=' ',

@@ -3,6 +3,7 @@
 
 """The setup script."""
 
+import re
 from setuptools import setup, find_packages
 
 # note: version is maintained inside fastai/version.py
@@ -10,7 +11,12 @@ exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file: readme = readme_file.read()
 
-def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
+# helper functions to make it easier to list dependencies not as a python list, but vertically w/ optional built-in comments to why a certain version of the dependency is listed
+def cleanup(x):
+    x = x.strip()               # whitespace
+    x = re.sub(r' *#.*', '', x) # comments
+    return x
+def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines())))
 
 ### normal dependencies ###
 #
@@ -21,32 +27,28 @@ def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines()
 #   pip install fastai
 #   pip install -e .
 #
-# notes:
-# - bottleneck and numexpr are performance-improvement extras for numpy
-#
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
-
+#
+# XXX: when spacy==2.0.18 is on anaconda channel, put it in place (it's already on pypi) and remove its deps: cymem, regex, thinc (and update meta.yaml with the same)
 requirements = to_list("""
-    bottleneck
-    cymem==2.0.2
+    bottleneck           # performance-improvement for numpy
+    cymem==2.0.2         # remove once spacy==2.0.18 is on anaconda channel
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
     matplotlib
-    numexpr
+    numexpr              # performance-improvement for numpy
     numpy>=1.12
     pandas
     Pillow
     pyyaml
-    regex
+    regex==2018.01.10    # remove once spacy==2.0.18 is on anaconda channel
     requests
     scipy
     spacy==2.0.16
-    thinc==6.12.0
-    regex
-    cymem
-    torchvision
+    thinc==6.12.0        # remove once spacy==2.0.18 is on anaconda channel
     torch
+    torchvision
     typing
 """)
 

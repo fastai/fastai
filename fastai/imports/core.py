@@ -12,7 +12,6 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
-from fastprogress import master_bar, progress_bar
 from functools import partial, reduce, singledispatch
 from pdb import set_trace
 from matplotlib import patches, patheffects
@@ -25,6 +24,10 @@ from contextlib import contextmanager
 from fastprogress.fastprogress import MasterBar, ProgressBar
 from matplotlib.patches import Patch
 from pandas import Series, DataFrame
+
+import pkg_resources
+pkg_resources.require("fastprogress>=0.1.18")
+from fastprogress.fastprogress import master_bar, progress_bar
 
 #for type annotations
 from numbers import Number

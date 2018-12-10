@@ -95,6 +95,9 @@ entries:
           title: vision.data
           url: /vision.data.html
         - output: web,pdf
+          title: vision.gan
+          url: /vision.gan.html
+        - output: web,pdf
           title: vision.model overview
           url: /vision.models.html
         - output: web,pdf

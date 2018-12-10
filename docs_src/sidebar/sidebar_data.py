@@ -42,6 +42,7 @@ sidebar_d = {
                 'vision.transform': '/vision.transform',
                 'vision.image': '/vision.image',
                 'vision.data': '/vision.data',
+                'vision.gan': '/vision.gan',
                 'vision.model overview': '/vision.models',
                 'vision.models.unet': '/vision.models.unet',
                 'vision.widgets': '/widgets'

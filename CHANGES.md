@@ -16,15 +16,18 @@ of that change.
 ### New:
 
 - `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
+- `no_split` method in the data block API
 
 ### Changed:
 
 - Experimental cross-connection from raw input plus extra resblock at end of unet
+- Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
 
 ### Fixed:
 
 - `sigmoid` argument for unet output activation function
 - Most transforms (except `singledispatch` ones) can now be used in Windows with `num_workers`>0
+- `Image.apply_tfms` doesn't accept any kwargs anymore.
 
 
 ## 1.0.36 (2018-12-08)
