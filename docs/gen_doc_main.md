@@ -179,6 +179,16 @@ tools/build-docs --update-nb-links docs_src/data_block.ipynb
 and then as in the previous section, check the diff, commit and push.
 
 
+### Creating a new documentation notebook from existing module
+
+If a fastai.* module already exists but there is no associated documentation notebook (docs_src/*.ipynb), you can generate one by running the following:
+
+```
+tools/build-docs fastai.subpackage.module
+```
+
+This will create a skeleton documentation notebook - `docs_src/subpackage.module.ipynb`. It will populate with all the module methods. These will need to be documented.
+
 ### Borked rendering
 
 If after `git pull` you load, e.g. `docs_src/data_block.ipynb` in jupyter notebook and you get a bunch of cryptic entries like:
@@ -244,9 +254,13 @@ python tools/build-docs
 ```
 
 To update specific `*ipynb` nbs:
-
 ```bash
 python tools/build-docs docs_src/notebook1.ipynb docs_src/notebook2.ipynb ...
+```
+
+To update specific `fastai.*` module:
+```bash
+python tools/build-docs fastai.subpackage1.module1 fastai.subpackage2.module2 ...
 ```
 
 To force a rebuild of all notebooks and not just the modified ones, use the `-f` option.
