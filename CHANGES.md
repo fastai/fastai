@@ -22,6 +22,7 @@ of that change.
 
 - Experimental cross-connection from raw input plus extra resblock at end of unet
 - Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
+- `DataBunch.export` now serializes everything (transforms and normalization included)
 
 ### Fixed:
 
