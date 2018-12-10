@@ -28,6 +28,7 @@ of that change.
 ### Fixed:
 
 - `sigmoid` argument for unet output activation function
+- `Image.apply_tfms` doesn't accept any kwargs anymore.
 
 
 ## 1.0.36 (2018-12-08)
