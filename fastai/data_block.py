@@ -35,7 +35,7 @@ class PreProcessor():
     "Basic class for a processor that will be applied to items at the end of the data block API."
     def __init__(self, ds:Collection=None):  self.ref_ds = ds
     def process_one(self, item:Any):         return item
-    def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items],'int64')
+    def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
 class ItemList():
     _bunch,_processor,_label_cls,_square_show = DataBunch,None,None,False
