@@ -378,6 +378,7 @@ class ItemLists():
         def _inner(*args, **kwargs):
             self.train = ft(*args, **kwargs)
             assert isinstance(self.train, LabelList)
+            kwargs['label_cls'] = self.train.y.__class__
             self.valid = fv(*args, **kwargs)
             self.__class__ = LabelLists
             self.process()
