@@ -19,7 +19,7 @@ of that change.
 - `no_split` method in the data block API
 - `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
 - `DataBunch` performs a sanity check after its initialization and will throw a warning if something is wrong with the data.
-- More GAN stuff: `gan_critic`, `AdaptiveLoss`, `accuracy_thresh_expand`
+- More GAN stuff: `gan_critic`, `AdaptiveLoss`, `accuracy_thresh_expand`, and `GANDiscriminativeLR`
 
 ### Changed:
 

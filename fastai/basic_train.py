@@ -253,7 +253,7 @@ class Learner():
         return loss
 
     def predict(self, item:ItemBase, **kwargs):
-        "Return prect class, label and probabilities for `item`."
+        "Return predicted class, label and probabilities for `item`."
         self.callbacks.append(RecordOnCPU())
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)

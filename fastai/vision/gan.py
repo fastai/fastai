@@ -130,10 +130,15 @@ class GANTrainer(LearnerCallback):
     def on_epoch_end(self, pbar, epoch, **kwargs):
         "Put the various losses in the recorder and show a sample image."
         self.recorder.add_metrics([getattr(self.smoothenerG,'smooth',None),getattr(self.smoothenerC,'smooth',None)])
-        if hasattr(self, 'last_gen') and self.show_img:
-            self.imgs.append(Image(self.last_gen[0]/2 + 0.5))
-            self.titles.append(f'Epoch {epoch}')
-            pbar.show_imgs(self.imgs, self.titles)
+        if not hasattr(self, 'last_gen') or not self.show_img: return
+        data = self.learn.data
+        img = self.last_gen[0]
+        norm = getattr(data,'norm',False)
+        if norm and norm.keywords.get('do_y',False): img = self.data.denorm(img)
+        img = data.reconstruct(img)
+        self.imgs.append(img)
+        self.titles.append(f'Epoch {epoch}')
+        pbar.show_imgs(self.imgs, self.titles)
 
     def switch(self, gen_mode:bool=None):
         "Switch the model, if `gen_mode` is provided, in the desired mode."
@@ -265,6 +270,19 @@ def gan_critic(n_channels:int=3, nf:int=128, n_blocks:int=3, p:int=0.15):
         Flatten()]
     return nn.Sequential(*layers)
 
+@dataclass
+class GANDiscriminativeLR(LearnerCallback):
+    "`Callback` that handles multiplying the learning rate by `mult_lr` for the critic."
+    mult_lr:float = 5.
+
+    def on_batch_begin(self, train, **kwargs):
+        "Multiply the current lr if necessary."
+        if not self.learn.gan_trainer.gen_mode and train: self.learn.opt.lr *= self.mult_lr
+
+    def on_step_end(self, **kwargs):
+        "Put the LR back to its value if necessary."
+        if not self.learn.gan_trainer.gen_mode: self.learn.opt.lr /= self.mult_lr
+
 class AdaptiveLoss(nn.Module):
     def __init__(self, crit):
         super().__init__()
@@ -277,3 +295,4 @@ def accuracy_thresh_expand(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmo
     "Compute accuracy when `y_pred` and `y_true` are the same size."
     if sigmoid: y_pred = y_pred.sigmoid()
     return ((y_pred>thresh)==y_true[:,None].expand_as(y_pred).byte()).float().mean()
+
