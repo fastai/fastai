@@ -193,7 +193,7 @@ class DataBunch():
     def sanity_check(self):
         "Check the underlying data in the training set can be properly loaded."
         final_message = "You can deactivate this warning by passing `no_check=True`."
-        if getattr(self.train_dl, 'batch_sampler', True): return
+        if len(self.train_ds.items) == 0 or getattr(self.train_dl, 'batch_sampler', True): return
         idx = next(iter(self.train_dl.batch_sampler))
         try: samples = [self.train_ds[i] for i in idx]
         except: 

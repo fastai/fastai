@@ -10,7 +10,8 @@ sidebar_d = {
     'Getting started': {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
         'Installation Extras': '/install',
-        'Troubleshooting': '/troubleshoot'
+        'Troubleshooting': '/troubleshoot',
+        'Performance': '/performance'
     },
     'Training': {
         'Overview': '/training',

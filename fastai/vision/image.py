@@ -433,6 +433,7 @@ class Transform():
         "Create a transform for `func` and assign it an priority `order`, attach to `Image` class."
         if order is not None: self.order=order
         self.func=func
+        self.func.__name__ = func.__name__[1:] #To remove the _ that begins every transform function.
         functools.update_wrapper(self, self.func)
         self.func.__annotations__['return'] = Image
         self.params = copy(func.__annotations__)
