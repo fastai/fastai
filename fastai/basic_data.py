@@ -84,7 +84,7 @@ class DataBunch():
 
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
-                 collate_fn:Callable=data_collate):
+                 collate_fn:Callable=data_collate, no_check:bool=False):
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
@@ -94,6 +94,7 @@ class DataBunch():
         self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
         self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
+        if not no_check: self.sanity_check()
 
     def __repr__(self)->str:
         return f'{self.__class__.__name__};\n\nTrain: {self.train_ds};\n\nValid: {self.valid_ds};\n\nTest: {self.test_ds}'
@@ -108,13 +109,13 @@ class DataBunch():
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-               collate_fn:Callable=data_collate)->'DataBunch':
+               collate_fn:Callable=data_collate, no_check:bool=False)->'DataBunch':
         "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=s, drop_last=(s and b>1), num_workers=num_workers) for d,b,s in
                zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False))]
-        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
+        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
 
@@ -188,3 +189,21 @@ class DataBunch():
     def batch_size(self,v):
         self.train_dl.batch_size,self.valid_dl.batch_size = v,v
         if self.test_dl is not None: self.test_dl.batch_size = v
+
+    def sanity_check(self):
+        final_message = "You can deactivate this warning by passing `no_check=True`."
+        idx = next(iter(self.train_dl.batch_sampler))
+        try: samples = [self.train_ds[i] for i in idx]
+        except: 
+            warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i in {idx}")
+            print(final_message)
+            return
+        try: batch = self.collate_fn(samples)
+        except: 
+            message = "It's not possible to collate samples of your dataset together in a batch."
+            try: 
+                shapes = [[o[i].data.shape for o in samples] for i in range(2)]
+                message += f'\nShapes of the inputs/targets:\n{shapes}'
+            except: pass
+            warn(message)
+            print(final_message)
