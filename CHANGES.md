@@ -17,12 +17,15 @@ of that change.
 
 - `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
 - `no_split` method in the data block API
+- `sigmoid_range` function to scale sigmoid to given range
 
 ### Changed:
 
 - Experimental cross-connection from raw input plus extra resblock at end of unet
 - Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
 - `DataBunch.export` now serializes everything (transforms and normalization included)
+- `DataBunch` now has `fix_dl` attr, which is same data as `train_dl` but without shuffle or train tfms
+- `pred_batch` now has `reconstruct` param, which will reconstruct each prediction into an object
 
 ### Fixed:
 

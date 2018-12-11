@@ -14,10 +14,10 @@ class CollabLine(TabularLine):
         super().__init__(cats, conts, classes, names)
         self.data = [self.data[0][0],self.data[0][1]]
 
-class CollabList(TabularList): 
+class CollabList(TabularList):
     "Base `ItemList` for collaborative filtering, subclasses `TabularList`."
     _item_cls,_label_cls = CollabLine,FloatList
-    
+
     def reconstruct(self, t:Tensor): return CollabLine(t, [], self.classes, self.col_names)
 
 class EmbeddingNN(TabularModel):

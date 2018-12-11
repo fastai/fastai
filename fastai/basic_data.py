@@ -46,10 +46,10 @@ class DeviceDataLoader():
     @num_workers.setter
     def num_workers(self,v): self.dl.num_workers = v
 
-    def add_tfm(self,tfm:Callable)->None:    
+    def add_tfm(self,tfm:Callable)->None:
         "Add `tfm` to `self.tfms`."
         self.tfms.append(tfm)
-    def remove_tfm(self,tfm:Callable)->None: 
+    def remove_tfm(self,tfm:Callable)->None:
         "Remove `tfm` from `self.tfms`."
         self.tfms.remove(tfm)
 
@@ -82,7 +82,7 @@ class DataBunch():
     "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
     _batch_first=True
 
-    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
+    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate):
         self.tfms = listify(tfms)
@@ -90,8 +90,7 @@ class DataBunch():
         assert not isinstance(train_dl,DeviceDataLoader)
         def _create_dl(dl, **kwargs):
             return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
-        self.train_dl = _create_dl(train_dl)
-        self.valid_dl = _create_dl(valid_dl)
+        self.train_dl,self.valid_dl,self.fix_dl = map(_create_dl, [train_dl,valid_dl,fix_dl])
         self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
         self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
@@ -99,16 +98,22 @@ class DataBunch():
     def __repr__(self)->str:
         return f'{self.__class__.__name__};\n\nTrain: {self.train_ds};\n\nValid: {self.valid_ds};\n\nTest: {self.test_ds}'
 
+    @staticmethod
+    def _init_ds(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None):
+        fix_ds = valid_ds.new(train_ds.x, train_ds.y) # train_ds, but without training tfms
+        datasets = [train_ds,valid_ds,fix_ds]
+        if test_ds is not None: datasets.append(test_ds)
+        return datasets
+
     @classmethod
-    def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
+    def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                collate_fn:Callable=data_collate)->'DataBunch':
         "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
-        datasets = [train_ds,valid_ds]
-        if test_ds is not None: datasets.append(test_ds)
+        datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=s, drop_last=(s and b>1), num_workers=num_workers) for d,b,s in
-               zip(datasets, (bs,val_bs,val_bs), (True,False,False))]
+               zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False))]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
@@ -122,20 +127,20 @@ class DataBunch():
 
     @property
     def dls(self):
-        res = [self.train_dl, self.valid_dl, self.single_dl]
+        res = [self.train_dl, self.valid_dl, self.fix_dl, self.single_dl]
         return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.add_tfm(tfm)
 
-    def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True)->Collection[Tensor]:
+    def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True, cpu:bool=True)->Collection[Tensor]:
         "Get one batch from the data loader of `ds_type`. Optionally `detach` and `denorm`."
         dl = self.dl(ds_type)
         w = self.num_workers
         self.num_workers = 0
         try:     x,y = next(iter(dl))
         finally: self.num_workers = w
-        if detach: x,y = to_detach(x),to_detach(y)
+        if detach: x,y = to_detach(x,cpu=cpu),to_detach(y,cpu=cpu)
         norm = getattr(self,'norm',False)
         if denorm and norm:
             x = self.denorm(x)

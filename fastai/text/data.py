@@ -200,8 +200,7 @@ class TextLMDataBunch(TextDataBunch):
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
-        datasets = [train_ds,valid_ds]
-        if test_ds is not None: datasets.append(test_ds)
+        datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         dataloaders = [LanguageModelLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
         return cls(*dataloaders, path=path)
 
@@ -211,8 +210,7 @@ class TextClasDataBunch(TextDataBunch):
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs=64, pad_idx=1, pad_first=True,
                **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
-        datasets = [train_ds,valid_ds]
-        if test_ds is not None: datasets.append(test_ds)
+        datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
         train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, **kwargs)

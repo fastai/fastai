@@ -128,12 +128,17 @@ class MergeLayer(nn.Module):
 
     def forward(self, x): return torch.cat([x,x.orig], dim=1) if self.dense else (x+x.orig)
 
-def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, **kwargs):
+def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, bottle:bool=False, **kwargs):
     norm2 = norm_type
     if not dense and (norm_type==NormType.Batch): norm2 = NormType.BatchZero
-    return SequentialEx(conv_layer(nf,nf,norm_type=norm_type, **kwargs),
-                      conv_layer(nf,nf,norm_type=norm2, **kwargs),
+    nf_inner = nf//2 if bottle else nf
+    return SequentialEx(conv_layer(nf, nf_inner, norm_type=norm_type, **kwargs),
+                      conv_layer(nf_inner, nf, norm_type=norm2, **kwargs),
                       MergeLayer(dense))
+
+def sigmoid_range(x, x_min, x_max):
+    # Sigmoid function with range `(x_min,x_max)`
+    return torch.sigmoid(x) * (x_max - x_min) + x_min
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."

@@ -80,7 +80,9 @@ def np_address(x:np.ndarray)->int:
 def to_detach(b:Tensors, cpu:bool=True):
     "Recursively detach lists of tensors in `b `; put them on the CPU if `cpu=True`."
     if is_listy(b): return [to_detach(o, cpu) for o in b]
-    return (b.detach().cpu() if cpu else b.detach()) if isinstance(b,Tensor) else b
+    if not isinstance(b,Tensor): return b
+    b = b.detach()
+    return b.cpu() if cpu else b
 
 def to_data(b:ItemsList):
     "Recursively map lists of items in `b ` to their wrapped data."
