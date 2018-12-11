@@ -156,7 +156,6 @@ conda install conda
     | CUDA Toolkit | NVIDIA (Linux x86_64) |
     |--------------|-----------------------|
     | CUDA 10.0    | >= 410.00             |
-    | CUDA 9.2     | >= 396.26             |
     | CUDA 9.0     | >= 384.81             |
     | CUDA 8.0     | >= 367.48             |
 
