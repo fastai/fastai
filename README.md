@@ -162,6 +162,15 @@ conda install conda
    So if your NVIDIA driver is less than 384, then you can only use `cuda80`. Of course, you can upgrade your drivers to more recent ones if your card supports it.
    You can find a complete table with all variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
 
+If you use NVIDIA driver 410+, you most likely need to install the cuda100 pytorch variant, by:
+```bash
+conda install -c pytorch pytorch cuda100
+```
+or if you need a lower version (`cuda90` is installed by default), use:
+```bash
+conda install -c pytorch pytorch cuda80
+```
+For other options refer to the complete list of [the available pytorch variants](https://pytorch.org/get-started/locally/).
 
 ## Updates
 
