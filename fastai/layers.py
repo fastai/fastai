@@ -3,9 +3,9 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger',
            'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
-           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
+           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'trunc_normal_',
            'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention',
-           'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range', 'SigmoidRange', 'PartialLayer']
+           'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range', 'SigmoidRange', 'PartialLayer', 'FlattenedLoss']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -32,6 +32,7 @@ def PoolFlatten()->nn.Sequential:
 NormType = Enum('NormType', 'Batch BatchZero Weight Spectral')
 
 def batchnorm_2d(nf:int, norm_type:NormType=NormType.Batch):
+    "A batchnorm2d layer with `nf` features initialized depending on `norm_type`."
     bn = nn.BatchNorm2d(nf)
     with torch.no_grad():
         bn.bias.fill_(1e-3)
@@ -81,6 +82,7 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
     return nn.ConvTranspose2d(ni, nf, kernel_size=ks, stride=stride, padding=padding, bias=bias)
 
 def relu(inplace:bool=False, leaky:float=None):
+    "Return a relu activation, maybe `leaky` and `inplace`."
     return nn.LeakyReLU(inplace=inplace, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=inplace)
 
 def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, is_1d:bool=False,
@@ -122,6 +124,7 @@ class SequentialEx(nn.Module):
     def insert(self,i,l): return self.layers.insert(i,l)
 
 class MergeLayer(nn.Module):
+    "Merge a shortcut with the result of the module by adding them or concatenating thme if `dense=True`."
     def __init__(self, dense:bool=False):
         super().__init__()
         self.dense=dense
@@ -129,6 +132,7 @@ class MergeLayer(nn.Module):
     def forward(self, x): return torch.cat([x,x.orig], dim=1) if self.dense else (x+x.orig)
 
 def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, bottle:bool=False, **kwargs):
+    "Resnet block of `nf` features."
     norm2 = norm_type
     if not dense and (norm_type==NormType.Batch): norm2 = NormType.BatchZero
     nf_inner = nf//2 if bottle else nf
@@ -136,18 +140,20 @@ def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch,
                       conv_layer(nf_inner, nf, norm_type=norm2, **kwargs),
                       MergeLayer(dense))
 
-def sigmoid_range(x, x_min, x_max):
-    # Sigmoid function with range `(x_min,x_max)`
-    return torch.sigmoid(x) * (x_max - x_min) + x_min
+def sigmoid_range(x, low, high):
+    "Sigmoid function with range `(low, high)`"
+    return torch.sigmoid(x) * (high - low) + low
 
 class SigmoidRange(nn.Module):
-    def __init__(self, low, hi):
+    "Sigmoid module with range `(low,x_max)`"
+    def __init__(self, low, high):
         super().__init__()
-        self.low,self.hi = low,hi
+        self.low,self.high = low,high
     def forward(self, x):
-        return sigmoid_range(x, self.low, self.hi)
+        return sigmoid_range(x, self.low, self.high)
 
 class PartialLayer(nn.Module):
+    "Layer that applies `partial(func, **kwargs)`."
     def __init__(self, func, **kwargs):
         super().__init__()
         self.repr = f'{func}({kwargs})'
@@ -171,16 +177,8 @@ class Debugger(nn.Module):
         set_trace()
         return x
 
-def std_upsample_head(c, *nfs:Collection[int]) -> nn.Module:
-    "Create a sequence of upsample layers."
-    return nn.Sequential(
-        nn.ReLU(),
-        *(conv_layer(nfs[i],nfs[i+1],ks=2, stride=2, padding=0, transpose=True) for i in range(4)),
-        conv2d_trans(nfs[-1], c)
-    )
-
 def icnr(x, scale=2, init=nn.init.kaiming_normal_):
-    "ICNR init."
+    "ICNR init of `x`, with `scale` and `init` function."
     ni,nf,h,w = x.shape
     ni2 = int(ni/(scale**2))
     k = init(torch.zeros([ni2,nf,h,w])).transpose(0, 1)
@@ -226,18 +224,20 @@ class FlattenedLoss():
         return self.func.__call__(input, target.view(-1), **kwargs)
 
 def CrossEntropyFlat(*args, axis:int=-1, **kwargs):
+    "Same as `nn.CrossEntropyLoss`, but flattens input and target."
     return FlattenedLoss(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
 
 def BCEWithLogitsFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
+    "Same as `nn.BCEWithLogitsLoss`, but flattens input and target."
     return FlattenedLoss(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 def BCEFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
+    "Same as `nn.BCELoss`, but flattens input and target."
     return FlattenedLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
-class MSELossFlat(nn.MSELoss):
+def MSELossFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
     "Same as `nn.MSELoss`, but flattens input and target."
-    def forward(self, input:Tensor, target:Tensor) -> Rank0Tensor:
-        return super().forward(input.view(-1), target.view(-1))
+    return FlattenedLoss(nn.MSELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 class NoopLoss(nn.Module):
     "Just returns the mean of the `output`."
