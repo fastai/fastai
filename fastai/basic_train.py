@@ -238,8 +238,11 @@ class Learner():
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
         res = _loss_func2activ(self.loss_func)(preds[0])
         if not reconstruct: return res
-        res = res.detach()
+        res = res.detach().cpu()
         ds = self.dl(ds_type).dataset
+        norm = getattr(self.data, 'norm', False)
+        if norm and norm.keywords.get('do_y',False):
+            res = self.data.denorm(res, do_x=True)
         return [ds.reconstruct(o) for o in res]
 
     def backward(self, item):
@@ -279,6 +282,7 @@ class Learner():
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, **kwargs):
         "Show `rows` result of predictions on `ds_type` dataset."
         #TODO: get read of has_arg x and split_kwargs_by_func if possible
+        #TODO: simplify this and refactor with pred_batch(...reconstruct=True)
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
@@ -287,7 +291,7 @@ class Learner():
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
-            if norm.keywords.get('do_y',True):
+            if norm.keywords.get('do_y',False):
                 y     = self.data.denorm(y, do_x=True)
                 preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
