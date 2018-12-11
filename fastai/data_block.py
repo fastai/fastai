@@ -188,7 +188,8 @@ class ItemList():
 
     def split_by_files(self, valid_names:'ItemList')->'ItemLists':
         "Split the data by using the names in `valid_names` for validation."
-        return self.split_by_valid_func(lambda o: o.name in valid_names)
+        if isinstance(self.items[0], Path): return self.split_by_valid_func(lambda o: o.name in valid_names)
+        else: return self.split_by_valid_func(lambda o: os.path.basename(o) in valid_names)
 
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'ItemLists':
         "Split the data by using the names in `fname` for the validation set. `path` will override `self.path`."
