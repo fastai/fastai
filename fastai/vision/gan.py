@@ -6,7 +6,7 @@ from ..basic_train import Learner, LearnerCallback
 from .image import Image
 
 __all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher',
-           'GANLearner']
+           'GANLearner', 'gan_critic', 'AdaptiveLoss', 'accuracy_thresh_expand']
 
 def AvgFlatten():
     "Takes the average of the input."
@@ -218,4 +218,39 @@ class GANLearner(Learner):
     def wgan(cls, data:DataBunch, generator:nn.Module, critic:nn.Module, switcher:Callback=None, clip:float=0.01, **kwargs):
         "Create a WGAN from `data`, `generator` and `critic`."
         return cls(data, generator, critic, NoopLoss(), WassersteinLoss(), switcher=switcher, clip=clip, **kwargs)
+
+
+_conv_args = dict(leaky=0.2, norm_type=NormType.Spectral)
+
+def _conv(ni:int, nf:int, ks:int=3, stride:int=1, **kwargs):
+    return conv_layer(ni, nf, ks=ks, stride=stride, **_conv_args, **kwargs)
+
+def gan_critic(n_channels:int=3, nf:int=128, n_blocks:int=3, p:int=0.15):
+    layers = [
+        _conv(n_channels, nf, ks=4, stride=2),
+        nn.Dropout2d(p/2),
+        res_block(nf, dense=True,**_conv_args)]
+    nf *= 2 # after dense block
+    for i in range(n_blocks):
+        layers += [
+            nn.Dropout2d(p),
+            _conv(nf, nf*2, ks=4, stride=2, self_attention=(i==0))]
+        nf *= 2
+    layers += [
+        _conv(nf, 1, ks=4, bias=False, padding=0, use_activ=False),
+        Flatten()]
+    return nn.Sequential(*layers)
+
+class AdaptiveLoss(nn.Module):
+    def __init__(self, crit):
+        super().__init__()
+        self.crit = crit
+
+    def forward(self, output, target):
+        return self.crit(output, target[:,None].expand_as(output).float())
+
+def accuracy_thresh_expand(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool=True)->Rank0Tensor:
+    "Compute accuracy when `y_pred` and `y_true` are the same size."
+    if sigmoid: y_pred = y_pred.sigmoid()
+    return ((y_pred>thresh)==y_true[:,None].expand_as(y_pred).byte()).float().mean()
 
