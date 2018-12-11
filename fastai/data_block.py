@@ -38,9 +38,9 @@ class PreProcessor():
     def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
 class ItemList():
+    "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     _bunch,_processor,_label_cls,_square_show = DataBunch,None,None,False
 
-    "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     def __init__(self, items:Iterator, path:PathOrStr='.',
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
         self.path = Path(path)
@@ -260,7 +260,7 @@ class EmptyLabelList(ItemList):
         return self.x.reconstruct(t,x) if has_arg(self.x.reconstruct, 'x') else self.x.reconstruct(t)
 
 class CategoryProcessor(PreProcessor):
-    "Processor that create `classes` from `ds.items` and handle the mapping."
+    "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
     def __init__(self, ds:ItemList): self.create_classes(ds.classes)
 
     def create_classes(self, classes):
@@ -315,7 +315,7 @@ class CategoryList(CategoryListBase):
         return Category(t, self.classes[t])
 
 class MultiCategoryProcessor(CategoryProcessor):
-    "Processor that create `classes` from `ds.items` and handle the mapping."
+    "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
     def process_one(self,item): return [self.c2i.get(o,None) for o in item]
 
     def generate_classes(self, items):
@@ -347,7 +347,7 @@ class MultiCategoryList(CategoryListBase):
         return MultiCategory(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
-    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if True"
+    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if thif flag is `True`."
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
@@ -458,6 +458,7 @@ class LabelLists(ItemLists):
 
     @classmethod
     def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl'):
+        "Create a `LabelLists` with empty sets from the serialzed file in `path/fn`."
         path = Path(path)
         train_ds = LabelList.load_empty(path/fn)
         valid_ds = LabelList.load_empty(path/fn)
@@ -475,7 +476,7 @@ class LabelList(Dataset):
 
     @contextmanager
     def set_item(self,item):
-        "For inference, will replace the dataset with one that only contains `item`."
+        "For inference, will briefly replace the dataset with one that only contains `item`."
         self.item = self.x.process_one(item)
         yield None
         self.item = None
