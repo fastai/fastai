@@ -92,7 +92,7 @@ class TabularDataBunch(DataBunch):
         procs = listify(procs)
         src = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                            .split_by_idx(valid_idx)
-                           .label_from_df(cols=dep_var, classes=None))
+                           .label_from_df(cols=dep_var, classes=classes))
         if test_df is not None: src.add_test(TabularList.from_df(test_df, cat_names=cat_names, cont_names=cont_names,
                                                                  processor = src.train.x.processor))
         return src.databunch(**kwargs)
