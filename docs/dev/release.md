@@ -779,17 +779,17 @@ You can either edit `fastai/version.py` and change the version number by hand.
 
 Or run one of these `make` targets:
 
-Target            | Function
-------------------| --------------------------------------------
-bump-major        | bump major level; remove .devX if any
-bump-minor        | bump minor level; remove .devX if any
-bump-patch        | bump patch level unless has .devX, then don't bump, but remove .devX
-bump              | alias to bump-patch (as it's used often)
-bump-post-release | add .post1 or bump post-release level .post2, .post3, ...
-bump-major-dev    | bump major level and add .dev0
-bump-minor-dev    | bump minor level and add .dev0
-bump-patch-dev    | bump patch level and add .dev0
-bump-dev          | alias to bump-patch-dev (as it's used often)
+   Target            | Function
+   ------------------| --------------------------------------------
+   bump-major        | bump major level; remove .devX if any
+   bump-minor        | bump minor level; remove .devX if any
+   bump-patch        | bump patch level unless has .devX, then don't bump, but remove .devX
+   bump              | alias to bump-patch (as it's used often)
+   bump-post-release | add .post1 or bump post-release level .post2, .post3, ...
+   bump-major-dev    | bump major level and add .dev0
+   bump-minor-dev    | bump minor level and add .dev0
+   bump-patch-dev    | bump patch level and add .dev0
+   bump-dev          | alias to bump-patch-dev (as it's used often)
 
 e.g.:
 
