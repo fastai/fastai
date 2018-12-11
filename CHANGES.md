@@ -34,7 +34,8 @@ of that change.
   - Avoid recusion error with data blocks API
   - Try to avoid default `np.int32` creation where possible
 - `y_range` for unet output activation
-- `Image.apply_tfms` doesn't accept any kwargs anymore.
+- `Image.apply_tfms` doesn't accept any kwargs anymore
+- `split_from_files` works with `from_df`/`from_csv`
 
 
 ## 1.0.36 (2018-12-08)
