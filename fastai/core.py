@@ -148,8 +148,11 @@ class ItemBase():
     "Base item type in the fastai library."
     def __init__(self, data:Any): self.data=self.obj=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
-    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
+    def show(self, ax:plt.Axes, **kwargs): 
+        "Subclass this method if you want to customize the way this `ItemBase` is shown on `ax`."
+        ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
+        "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception('Not implemented')
         return self
 
