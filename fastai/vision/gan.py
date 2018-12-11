@@ -4,9 +4,10 @@ from ..callback import *
 from ..basic_data import *
 from ..basic_train import Learner, LearnerCallback
 from .image import Image
+from .data import ImageItemList
 
 __all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher',
-           'GANLearner']
+           'GANLearner', 'NoisyItem', 'GANItemList']
 
 def AvgFlatten():
     "Takes the average of the input."
@@ -219,3 +220,26 @@ class GANLearner(Learner):
         "Create a WGAN from `data`, `generator` and `critic`."
         return cls(data, generator, critic, NoopLoss(), WassersteinLoss(), switcher=switcher, clip=clip, **kwargs)
 
+class NoisyItem(ItemBase):
+    "An random `ItemBase` of size `noise_sz`."
+    def __init__(self, noise_sz): self.obj,self.data = noise_sz,torch.randn(noise_sz, 1, 1)
+    def __str__(self):  return ''
+    def apply_tfms(self, tfms, **kwargs): return self
+
+class GANItemList(ImageItemList):
+    "`ItemList` suitable for GANs."
+    _label_cls = ImageItemList
+    
+    def __init__(self, items, noise_sz:int=100, **kwargs):
+        super().__init__(items, **kwargs)
+        self.noise_sz = noise_sz
+        self.copy_new.append('noise_sz')
+    
+    def get(self, i): return NoisyItem(self.noise_sz)
+    def reconstruct(self, t): return NoisyItem(t.size(0))
+    
+    def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
+        super().show_xys(ys, xs, imgsize=imgsize, figsize=figsize, **kwargs)
+        
+    def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
+        super().show_xys(zs, xs, imgsize=imgsize, figsize=figsize, **kwargs)
