@@ -45,7 +45,8 @@ class ItemList():
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
-        self.items,self.x = array(items, dtype=object),x
+        self.items,self.x = items,x
+        if not isinstance(self.items,np.ndarray): self.items = array(self.items, dtype=object)
         self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
         self.copy_new = ['x', 'label_cls', 'path']
@@ -89,7 +90,8 @@ class ItemList():
         return self.__class__(items=items, processor=processor, **copy_d, **kwargs)
 
     def __getitem__(self,idxs:int)->Any:
-        if isinstance(try_int(idxs), int): return self.get(idxs)
+        idxs = try_int(idxs)
+        if isinstance(idxs, numbers.Integral): return self.get(idxs)
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
     @classmethod
@@ -206,7 +208,7 @@ class ItemList():
         it = index_row(labels,0)
         if sep is not None:                     return MultiCategoryList
         if isinstance(it, (float, np.float32)): return FloatList
-        if isinstance(try_int(it), (str,int)):  return CategoryList
+        if isinstance(try_int(it), (str,numbers.Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList
         return self.__class__
 
@@ -499,7 +501,8 @@ class LabelList(Dataset):
         if hasattr(self,'y'): return getattr(self.y, k)
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
-        if isinstance(try_int(idxs), int):
+        idxs = try_int(idxs)
+        if isinstance(idxs, numbers.Integral):
             if self.item is None: x,y = self.x[idxs],self.y[idxs]
             else:                 x,y = self.item   ,0
             if self.tfms:

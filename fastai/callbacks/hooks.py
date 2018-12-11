@@ -100,7 +100,7 @@ class ActivationStats(HookCallback):
 def dummy_batch(m: nn.Module, size:tuple=(64,64))->Tensor:
     "Create a dummy batch to go through `m` with `size`."
     ch_in = in_channels(m)
-    return one_param(m).new(1, ch_in, *size).zero_().requires_grad_(False)
+    return one_param(m).new(1, ch_in, *size).requires_grad_(False).uniform_(-1.,1.)
 
 def dummy_eval(m:nn.Module, size:tuple=(64,64)):
     "Pass a `dummy_batch` in evaluation mode in `m` with `size`."

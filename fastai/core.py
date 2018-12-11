@@ -236,6 +236,7 @@ def split_kwargs_by_func(kwargs, func):
 
 def try_int(o:Any)->Any:
     "Try to convert `o` to int, default to `o` if not possible."
+    if isinstance(o, collections.Sized) or getattr(o,'__array_interface__',False): return o
     try: return int(o)
     except: return o
 

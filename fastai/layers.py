@@ -5,7 +5,7 @@ __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat'
            'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
            'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
            'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention',
-           'SequentialEx', 'MergeLayer', 'res_block']
+           'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range', 'SigmoidRange', 'PartialLayer']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -139,6 +139,22 @@ def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch,
 def sigmoid_range(x, x_min, x_max):
     # Sigmoid function with range `(x_min,x_max)`
     return torch.sigmoid(x) * (x_max - x_min) + x_min
+
+class SigmoidRange(nn.Module):
+    def __init__(self, low, hi):
+        super().__init__()
+        self.low,self.hi = low,hi
+    def forward(self, x):
+        return sigmoid_range(x, self.low, self.hi)
+
+class PartialLayer(nn.Module):
+    def __init__(self, func, **kwargs):
+        super().__init__()
+        self.repr = f'{func}({kwargs})'
+        self.func = partial(func, **kwargs)
+
+    def forward(self, x): return self.func(x)
+    def __repr__(self): return self.repr
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."

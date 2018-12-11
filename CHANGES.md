@@ -17,7 +17,7 @@ of that change.
 
 - `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
 - `no_split` method in the data block API
-- `sigmoid_range` function to scale sigmoid to given range
+- `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
 
 ### Changed:
 
@@ -33,7 +33,7 @@ of that change.
   - Most transforms can now be used in Windows with `num_workers`>0
   - Avoid recusion error with data blocks API
   - Try to avoid default `np.int32` creation where possible
-- `sigmoid` argument for unet output activation function
+- `y_range` for unet output activation
 - `Image.apply_tfms` doesn't accept any kwargs anymore.
 
 
