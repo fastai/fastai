@@ -495,10 +495,10 @@ class LabelList(Dataset):
             return self.new(self.x.new(x, **kwargs), self.y.new(y, **kwargs)).process()
 
     def __getattr__(self,k:str)->Any:
-        if hasattr(self,'x'):
+        if 'x' in self.__dict__:
             res = getattr(self.x, k, None)
             if res is not None: return res
-        if hasattr(self,'y'): return getattr(self.y, k)
+        if 'y' in self.__dict__: return getattr(self.y, k)
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         idxs = try_int(idxs)
