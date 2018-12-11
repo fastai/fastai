@@ -84,7 +84,7 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
                 loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if hasattr(data,'valid_dl') and data.valid_dl is not None and data.valid_ds is not None:
+            if hasattr(data,'valid_dl') and data.valid_dl is not None and len(data.valid_ds.items) > 0:
                 val_loss = validate(model, data.valid_dl, loss_func=loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
@@ -95,11 +95,17 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     finally: cb_handler.on_train_end(exception)
 
 loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy_flat': partial(F.softmax, dim=1),
-    'cross_entropy': partial(F.softmax, dim=1), 'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': partial(F.softmax, dim=1),
+    'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid,
 }
 
 def _loss_func2activ(loss_func):
+    if getattr(loss_func,'keywords',None):
+        if not loss_func.keywords.get('log_input', True): return
+    # flattened loss
+    loss_func = getattr(loss_func, 'func', loss_func)
+    # could have a partial inside flattened loss!
+    loss_func = getattr(loss_func, 'func', loss_func)
     cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name == 'mix_up_loss':
         loss_func = loss_func.crit
@@ -107,9 +113,6 @@ def _loss_func2activ(loss_func):
     if cls_name in loss_func_name2activ:
         if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
         return loss_func_name2activ[cls_name]
-    if hasattr(loss_func, 'func'):
-        if loss_func.func.__name__ == 'poisson_nll_loss' and (not loss_func.keywords.get('log_input', True)): return
-        loss_func = loss_func.func
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
         return loss_func_name2activ[loss_func.__name__]
     return noop
@@ -165,7 +168,7 @@ class Learner():
     def create_opt(self, lr:Floats, wd:Floats=0.)->None:
         "Create optimizer with `lr` learning rate and `wd` weight decay."
         self.opt = OptimWrapper.create(self.opt_func, lr, self.layer_groups, wd=wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
-        
+
     def split(self, split_on:SplitFuncOrIdxList)->None:
         "Split the model at `split_on`."
         if isinstance(split_on,Callable): split_on = split_on(self.model)
@@ -177,15 +180,18 @@ class Learner():
             for l in g:
                 if not self.train_bn or not isinstance(l, bn_types): requires_grad(l, False)
         for g in self.layer_groups[n:]: requires_grad(g, True)
+        self.create_opt(defaults.lr)
 
     def freeze(self)->None:
         "Freeze up to last layer."
         assert(len(self.layer_groups)>1)
         self.freeze_to(-1)
+        self.create_opt(defaults.lr)
 
     def unfreeze(self):
         "Unfreeze entire model."
         self.freeze_to(0)
+        self.create_opt(defaults.lr)
 
     def __del__(self): del(self.model, self.data)
 
@@ -207,9 +213,10 @@ class Learner():
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             self.model.load_state_dict(state['model'], strict=strict)
-            if ifnone(with_opt,True): 
+            if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
-                self.opt.load_state_dict(state['opt'])
+                try:    self.opt.load_state_dict(state['opt'])
+                except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             self.model.load_state_dict(state, strict=strict)
@@ -222,14 +229,21 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False) -> List[Tensor]:
         "Return output of the model on one batch from `ds_type` dataset."
-        if batch: xb,yb = batch
+        if batch is not None: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
         cb_handler.on_batch_begin(xb,yb, train=False)
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
-        return _loss_func2activ(self.loss_func)(preds[0])
+        res = _loss_func2activ(self.loss_func)(preds[0])
+        if not reconstruct: return res
+        res = res.detach().cpu()
+        ds = self.dl(ds_type).dataset
+        norm = getattr(self.data, 'norm', False)
+        if norm and norm.keywords.get('do_y',False):
+            res = self.data.denorm(res, do_x=True)
+        return [ds.reconstruct(o) for o in res]
 
     def backward(self, item):
         "Pass `item` through the model and computes the gradient. Useful if `backward_hooks` are attached."
@@ -268,6 +282,7 @@ class Learner():
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, **kwargs):
         "Show `rows` result of predictions on `ds_type` dataset."
         #TODO: get read of has_arg x and split_kwargs_by_func if possible
+        #TODO: simplify this and refactor with pred_batch(...reconstruct=True)
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
@@ -276,9 +291,9 @@ class Learner():
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
-            if norm.keywords.get('do_y',True):
-                y     = self.data.denorm(y)
-                preds = self.data.denorm(preds)
+            if norm.keywords.get('do_y',False):
+                y     = self.data.denorm(y, do_x=True)
+                preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
         preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
@@ -299,8 +314,9 @@ class RecordOnCPU(Callback):
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
     learn: Learner
-    def __post_init__(self):
-        if self.cb_name: setattr(self.learn, self.cb_name, self)
+    def __post_init__(self): setattr(self.learn, self.cb_name, self)
+
+    def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
@@ -320,7 +336,7 @@ class Recorder(LearnerCallback):
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
         self.names += metrics_names
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
-        self.pbar.write('  '.join(self.names), table=True)
+        self.pbar.write(self.names, table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
     def on_batch_begin(self, train, **kwargs:Any)->None:
@@ -351,10 +367,8 @@ class Recorder(LearnerCallback):
         "Format stats before printing."
         str_stats = []
         for name,stat in zip(self.names,stats):
-            t = '' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}'
-            t += ' ' * (len(name) - len(t))
-            str_stats.append(t)
-        self.pbar.write('  '.join(str_stats), table=True)
+            str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
+        self.pbar.write(str_stats, table=True)
 
     def add_metrics(self, metrics):
         "Add `metrics` to the inner stats."

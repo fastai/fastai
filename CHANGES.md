@@ -10,11 +10,91 @@ Note that the top-most release is changes in the unreleased master branch on
 Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
-## 1.0.31.dev0 (Work In Progress)
+
+## 1.0.37.dev0 (Work In Progress)
 
 ### New:
 
-- `SequentialResBlock` to easily create resnet blocks
+- `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
+- `no_split` method in the data block API
+- `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
+
+### Changed:
+
+- Experimental cross-connection from raw input plus extra resblock at end of unet
+- Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
+- `DataBunch.export` now serializes everything (transforms and normalization included)
+- `DataBunch` now has `fix_dl` attr, which is same data as `train_dl` but without shuffle or train tfms
+- `pred_batch` now has `reconstruct` param, which will reconstruct each prediction into an object
+
+### Fixed:
+
+- Windows fixes, including:
+  - Most transforms can now be used in Windows with `num_workers`>0
+  - Avoid recusion error with data blocks API
+  - Try to avoid default `np.int32` creation where possible
+- `y_range` for unet output activation
+- `Image.apply_tfms` doesn't accept any kwargs anymore.
+
+
+## 1.0.36 (2018-12-08)
+
+### New:
+
+- `LabelLists.load_empty` (most useful for adding test sets for inference)
+
+
+## 1.0.35 (2018-12-08)
+
+### Changed:
+
+- Update deps to release version of pytorch v1
+
+
+## 1.0.34 (2018-12-06)
+
+### Fixed:
+
+- pypi wheel `dataclasses` dependency for py3.6 is there again
+
+
+## 1.0.33 (2018-12-05)
+
+### New:
+
+- `Learner.interpret` is a shortcut to `ClassificationLearner.from_learner`.
+
+### Changed:
+
+- Language models now use flattened loss, instead of flattening y in data loader
+- `ItemList.from_folder` now has an `include` parameter to only include certain folders
+
+### Fixed:
+
+- `Learner.load` won't throw an error when trying to load an optimizer state of
+  the wrong size, and silently ignore that optimizer state loading
+
+
+## 1.0.32 (2018-12-02)
+
+### Changed:
+
+- `TabularDatBunch.from_df` accepts a `test_df` argument
+
+### Fixed:
+
+- `LanguageLearner.predict` now returns better text predictions
+- Unfreezing layers didn't create a new optimizer so the unfrozen layers weren't training
+- Bug in `TextDataBunch` with a mistmatched test set was causing problems on the validation set
+
+
+## 1.0.31 (2018-12-01)
+
+### New:
+
+- `ImageCleaner` with duplicates=True to use as a duplicate detector
+- `DatasetFormatter.from_similars()` to feed the most similar indexes into `ImageCleaner`
+- `chunks` to separate a Collection into smaller iterables
 - `batchnorm_2d` wrapper for batchnorm with init
 
 ### Changed:
@@ -26,9 +106,14 @@ of that change.
 - unet kwargs are passed down to `conv_layer`
 - `Learner.fit` no longer creates a new optimizer at each call
 - Add batchnorm to end of unet
+- Restore `ImageDataBunch.single_from_classes`
+- `ItemList.set_item` is now a context manager, so you don't need to call `clear_item`
+- Removed `ItemList.clear_item`
+- Init `torch.set_num_threads(4)` to avoid OpenMP process creation overhead
 
 ### Fixed:
 
+- `Tokenizer` wasn't using >1 thread
 
 ## 1.0.30 (2018-11-28)
 

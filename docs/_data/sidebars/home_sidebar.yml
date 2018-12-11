@@ -95,6 +95,9 @@ entries:
           title: vision.data
           url: /vision.data.html
         - output: web,pdf
+          title: vision.gan
+          url: /vision.gan.html
+        - output: web,pdf
           title: vision.model overview
           url: /vision.models.html
         - output: web,pdf
@@ -180,7 +183,10 @@ entries:
     title: Tutorials
   - folderitems:
     - output: web,pdf
-      title: Overview
+      title: Instructions
+      url: /gen_doc_main.html
+    - output: web,pdf
+      title: gen_doc
       url: /gen_doc.html
     - output: web,pdf
       title: gen_doc.gen_notebooks

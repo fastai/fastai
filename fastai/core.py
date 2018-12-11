@@ -236,14 +236,17 @@ def split_kwargs_by_func(kwargs, func):
 
 def try_int(o:Any)->Any:
     "Try to convert `o` to int, default to `o` if not possible."
+    if isinstance(o, collections.Sized) or getattr(o,'__array_interface__',False): return o
     try: return int(o)
     except: return o
 
-def array(a, *args, **kwargs)->np.ndarray:
+def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators"
     if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):
         a = list(a)
-    return np.array(a, *args, **kwargs)
+    if np.int_==np.int32 and dtype is None and is_listy(a) and len(a) and isinstance(a[0],int):
+        dtype=np.int64
+    return np.array(a, dtype=dtype, **kwargs)
 
 class EmptyLabel(ItemBase):
     "Should be used for a dummy label."
@@ -288,6 +291,6 @@ def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]
     figsize = ifnone(figsize, (imgsize*cols, imgsize*rows))
     fig, axs = plt.subplots(rows,cols,figsize=figsize)
     if (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
-    fig.suptitle(title, **kwargs)
+    if title is not None: fig.suptitle(title, **kwargs)
     return array(axs)
 

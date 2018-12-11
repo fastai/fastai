@@ -1,6 +1,7 @@
 import pytest
 from fastai import *
 from fastai.vision import *
+import pickle
 
 def _print_data(data): print(len(data.train_ds),len(data.valid_ds))
 def _check_data(data, t, v):
@@ -63,6 +64,21 @@ def test_coco():
             .random_split_by_pct()
             .label_from_func(get_y_func)
             .transform(get_transforms(), tfm_y=True)
+            .databunch(bs=16, collate_fn=bb_pad_collate))
+    _check_data(data, 160, 40)
+
+def test_coco_pickle():
+    coco = untar_data(URLs.COCO_TINY)
+    images, lbl_bbox = get_annotations(coco/'train.json')
+    img2bbox = dict(zip(images, lbl_bbox))
+    get_y_func = lambda o:img2bbox[o.name]
+    tfms = get_transforms()
+    pickle_tfms = pickle.dumps(tfms)
+    unpickle_tfms = pickle.loads(pickle_tfms)
+    data = (ObjectItemList.from_folder(coco)
+            .random_split_by_pct()
+            .label_from_func(get_y_func)
+            .transform(unpickle_tfms, tfm_y=True)
             .databunch(bs=16, collate_fn=bb_pad_collate))
     _check_data(data, 160, 40)
 

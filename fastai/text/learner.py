@@ -68,6 +68,7 @@ class RNNLearner(Learner):
         old_itos = pickle.load(open(itos_fname, 'rb'))
         old_stoi = {v:k for k,v in enumerate(old_itos)}
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
+        if 'model' in wgts: wgts = wgts['model']
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts)
 
@@ -88,15 +89,15 @@ class LanguageLearner(RNNLearner):
 
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
-        pbar = master_bar(range(n_words))
         ds = self.data.single_dl.dataset
-        for _ in pbar:
-            ds.set_item(text)
-            res = self.pred_batch(ds_type=DatasetType.Single)[-1]
-            ds.clear_item()
+        self.model.reset()
+        for _ in progress_bar(range(n_words), leave=False):
+            xb, yb = self.data.one_item(text)
+            xb = xb.view(-1,1)
+            res = self.pred_batch(batch=(xb,yb))[-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
-            if temperature != 1.: res.pow_(temperature)
+            if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
             text += f' {self.data.vocab.itos[idx]}'
         return text

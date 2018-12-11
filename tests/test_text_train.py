@@ -31,6 +31,14 @@ def learn():
     learn.fit(3,1)
     return learn
 
+def n_params(learn): return sum([len(pg['params']) for pg in learn.opt.opt.param_groups])
+
+def test_opt_params(learn):
+    learn.freeze()
+    assert n_params(learn) == 2
+    learn.unfreeze()
+    assert n_params(learn) == 6
+    
 @pytest.mark.slow
 def manual_seed(seed=42):
     torch.manual_seed(seed)
@@ -81,7 +89,7 @@ def text_df(n_labels):
     return df
 
 def test_classifier():
-    for n_labels in [1]: # , 8 - does not work for multilclass yet
+    for n_labels in [1, 8]:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'tmp')
         os.makedirs(path)
         try:
@@ -93,11 +101,10 @@ def test_classifier():
             assert len(data.train_dl) == math.ceil(len(data.train_ds)/data.train_dl.batch_size)
             assert next(iter(data.train_dl))[0].shape == (9, 2)
             assert next(iter(data.valid_dl))[0].shape == (9, 2)
-            classifier.fit(1)
         finally:
             shutil.rmtree(path)
 
-# XXX: may be move into its own test module?
+# TODO: may be move into its own test module?
 import gc
 # everything created by this function should be freed at its exit
 def clean_destroy_block():
@@ -116,3 +123,4 @@ def test_mem_leak():
     assert gc_collected == 0
     garbage_after = len(gc.garbage)  # again, should be 0, or == garbage_before
     assert garbage_after == 0
+

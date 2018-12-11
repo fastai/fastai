@@ -7,9 +7,8 @@ from . import models
 from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
-from ..callbacks.gan import GANTrainer, NoisyGANTrainer
 
-__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner', 'GANLearner', 'gan_learner']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -28,8 +27,10 @@ def cnn_config(arch):
     torch.backends.cudnn.benchmark = True
     return model_meta.get(arch, _default_meta)
 
-def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
+def create_body(arch:Callable, pretrained:bool=True, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
     "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
+    model = arch(pretrained)
+    if not cut and not body_fn: cut = cnn_config(arch)['cut']
     return (nn.Sequential(*list(model.children())[:cut]) if cut
             else body_fn(model) if body_fn else model)
 
@@ -51,7 +52,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
                 bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learners."
     meta = cnn_config(arch)
-    body = create_body(arch(pretrained), ifnone(cut,meta['cut']))
+    body = create_body(arch, pretrained, cut)
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
     model = nn.Sequential(body, head)
@@ -63,12 +64,14 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
 
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
-                 **kwargs:Any)->None:
-    "Build Unet learners. `kwargs` are passed down to `conv_layer`."
+                 self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
+                 bottle:bool=False, **kwargs:Any)->None:
+    "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
-    body = create_body(arch(pretrained), meta['cut'])
+    body = create_body(arch, pretrained)
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
-                                              norm_type=norm_type), data.device)
+          self_attention=self_attention, y_range=y_range, norm_type=norm_type, last_cross=last_cross,
+          bottle=bottle), data.device)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
@@ -146,34 +149,7 @@ class ClassificationInterpretation():
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
 
-class GANLearner(Learner):
-    "`Learner` overwriting `predict` and `show_results` for GANs."
-    def add_gan_trainer(self, cb):
-        "Add the `GanTrainer` callback cb."
-        self.gan_trainer = cb
-        self.callbacks.append(cb)
-
-    def predict(self):
-        "Predict one batch of fake images."
-        x,y = next(iter(self.data.train_dl))
-        out = self.model(self.gan_trainer.input_fake(x, grad=False), gen=True)
-        norm = getattr(self.data,'norm',False)
-        if norm: out = self.data.denorm(out)
-        return out.detach().cpu()
-
-    def show_results(self, rows:int=5, figsize=(10,10)):
-        "Show `rows` by `rows` fake images with `figsize`."
-        out = self.predict()
-        xs = [self.data.train_ds.x.reconstruct(o) for o in out[:rows*rows]]
-        self.data.train_ds.x.show_xys(xs, [EmptyLabel()] * (rows*rows))
-
-def gan_learner(data, generator, discriminator, loss_funcD=None, loss_funcG=None, noise_size:int=None, wgan:bool=False,
-                **kwargs):
-    "Create a `GANLearner` from `data` with a `generator` and a `discriminator`."
-    gan = models.GAN(generator, discriminator)
-    learn = GANLearner(data, gan, loss_func=NoopLoss(), **kwargs)
-    if wgan: loss_funcD,loss_funcG = WassersteinLoss(),NoopLoss()
-    if noise_size is None: cb = GANTrainer(learn, loss_funcD, loss_funcG)
-    else: cb = NoisyGANTrainer(learn, loss_funcD, loss_funcG, bs=data.batch_size, noise_sz=noise_size)
-    learn.add_gan_trainer(cb)
-    return learn
+def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+    "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
+    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
+Learner.interpret = _learner_interpret

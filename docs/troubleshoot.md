@@ -20,7 +20,7 @@ despite having `nvidia-smi` working just fine. Which means that `pytorch` can't 
 
 note: `pytorch` installs itself as `torch`. So we refer to the project and its packages as `pytorch`, but inside python we use it as `torch`.
 
-First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch-nightly` with `cuda92` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
+First, starting with `pytorch-1.0.x` it doesn't matter which CUDA version you have installed on your system, always try first to install the latest `pytorch` - it has all the required libraries built into the package. However, note, that you most likely will **need 396.xx+ driver for `pytorch` built with `cuda92`**. For older drivers you will probably need to install `pytorch` with `cuda90` or ever earlier.
 
 The only thing you to need to ensure is that you have a correctly configured NVIDIA driver, which usually you can test by running: `nvidia-smi` in your console.
 
@@ -212,7 +212,18 @@ In general it is the best to create a new dedicated conda environment for `fasta
 
 
 
+### Conflicts between BLAS libraries
 
+If you use `numpy` and `pytorch` that are linked against different Basic Linear Algebra Subprograms (BLAS) libraries you may experience segfaults if the two libraries conflict with each other. Ideally all the modules that you use (`scipy` too) should be linked against the same BLAS implementation. Currently the main implementations are OpenBLAS, MKL, ATLAS.
+
+To check what library the packages are linked against use:
+
+```
+python -c 'import numpy; numpy.__config__.show()'
+python -c 'import scipy; scipy.__config__.show()'
+python -c 'import sklearn._build_utils; print(sklearn._build_utils.get_blas_info())'
+```
+XXX: pytorch?
 
 
 ### Dedicated environment
@@ -319,6 +330,7 @@ If you use the [developer setup](https://github.com/fastai/fastai/blob/master/RE
 ```
 cd path/to/your/fastai/clone
 git pull
+pip install -e .[dev]
 ```
 
 Sometimes jupyter notebooks get messed up, and `git pull` might fail with an error like:
@@ -392,6 +404,39 @@ python -m ipykernel install --user --name fastai-3.6 --display-name "Python (fas
 ```
 See also [Kernels for different environments](https://ipython.readthedocs.io/en/stable/install/kernel_install.html#kernels-for-different-environments).
 
+
+## CUDA Errors
+
+### cuda runtime error (59) : device-side assert triggered
+
+CUDA's default environment allows sending commands to GPU in asynchronous mode - i.e. without waiting to check whether they were successful, thus tremendously speeding up the execution. The side effect is that if anything goes wrong, the context is gone and it's impossible to tell what the error was. That's when you get this generic error, which means that something went wrong on the GPU, but the program can't tell what.
+
+To debug this issue, the non-blocking CUDA mode needs to be turned off, which will slow everything down, but you will get the proper error message. You can accomplish that using several approaches:
+
+* create a cell at the very top of the notebook.
+   ```
+   import os
+   os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
+   ```
+   Then restart the kernel and run the notebook as usual. Now you should get a meaningful error.
+
+* or alternatively set it globally for all notebooks by restarting `jupyter notebook` as:
+   ```
+   CUDA_LAUNCH_BLOCKING=1 jupyter notebook
+   ```
+   except this will affect all notebooks. The error messages will go into the notebook's log.
+
+* or run the program on CPU by either removing `cuda()/to(device)` calls, or by using the following first cell of your notebook and restarting the kernel:
+   ```
+   import os
+   os.environ['CUDA_VISIBLE_DEVICES']=''
+   ```
+   but this can be very very slow, and it's possible that it won't be even possible if the error only happens when run on GPU.
+
+Of course, if you're not using `jupyter notebook` then you can just set the env vars in your bash:
+   ```
+   CUDA_LAUNCH_BLOCKING=1 my_pytorch_script.py
+   ```
 
 ## Support
 

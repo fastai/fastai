@@ -85,20 +85,67 @@ summary: "Implementation of mixup"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:18
-epoch  train loss  valid loss  accuracy
-0      0.154147    0.132811    0.953876  (00:02)
-1      0.114623    0.088874    0.970069  (00:02)
-2      0.087302    0.082290    0.975466  (00:02)
-3      0.055337    0.041746    0.986261  (00:02)
-4      0.046112    0.053610    0.980864  (00:02)
-5      0.036025    0.032832    0.989205  (00:02)
-6      0.034067    0.038534    0.985770  (00:02)
-7      0.029102    0.024582    0.992149  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:18 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.132250</th>
+    <th>0.108760</th>
+    <th>0.967615</th>
+  </tr>
+  <tr>
+    <th>2</th>
+    <th>0.079454</th>
+    <th>0.063933</th>
+    <th>0.974485</th>
+  </tr>
+  <tr>
+    <th>3</th>
+    <th>0.072200</th>
+    <th>0.056744</th>
+    <th>0.978901</th>
+  </tr>
+  <tr>
+    <th>4</th>
+    <th>0.051909</th>
+    <th>0.033266</th>
+    <th>0.990186</th>
+  </tr>
+  <tr>
+    <th>5</th>
+    <th>0.042649</th>
+    <th>0.032464</th>
+    <th>0.990186</th>
+  </tr>
+  <tr>
+    <th>6</th>
+    <th>0.029114</th>
+    <th>0.025201</th>
+    <th>0.991659</th>
+  </tr>
+  <tr>
+    <th>7</th>
+    <th>0.036100</th>
+    <th>0.024817</th>
+    <th>0.992640</th>
+  </tr>
+  <tr>
+    <th>8</th>
+    <th>0.027903</th>
+    <th>0.022772</th>
+    <th>0.992149</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -176,20 +223,67 @@ The last trick we have to apply with this is that there can be some duplicates w
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:22
-epoch  train loss  valid loss  accuracy
-0      0.372338    0.166498    0.951423  (00:02)
-1      0.349636    0.145830    0.965653  (00:02)
-2      0.333157    0.112585    0.977920  (00:02)
-3      0.318903    0.104405    0.982336  (00:02)
-4      0.317793    0.111996    0.988224  (00:02)
-5      0.315467    0.095693    0.986261  (00:02)
-6      0.312827    0.091224    0.990186  (00:02)
-7      0.309499    0.088683    0.991168  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.366344</th>
+    <th>0.158342</th>
+    <th>0.964181</th>
+  </tr>
+  <tr>
+    <th>2</th>
+    <th>0.337388</th>
+    <th>0.128554</th>
+    <th>0.975957</th>
+  </tr>
+  <tr>
+    <th>3</th>
+    <th>0.320826</th>
+    <th>0.113704</th>
+    <th>0.978901</th>
+  </tr>
+  <tr>
+    <th>4</th>
+    <th>0.324693</th>
+    <th>0.107733</th>
+    <th>0.985770</th>
+  </tr>
+  <tr>
+    <th>5</th>
+    <th>0.313855</th>
+    <th>0.096272</th>
+    <th>0.986752</th>
+  </tr>
+  <tr>
+    <th>6</th>
+    <th>0.307254</th>
+    <th>0.091801</th>
+    <th>0.988224</th>
+  </tr>
+  <tr>
+    <th>7</th>
+    <th>0.306570</th>
+    <th>0.088187</th>
+    <th>0.989205</th>
+  </tr>
+  <tr>
+    <th>8</th>
+    <th>0.300454</th>
+    <th>0.080446</th>
+    <th>0.991168</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -214,6 +308,7 @@ epoch  train loss  valid loss  accuracy
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L7" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<code>learner</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>alpha</code>:<code>float</code>=<code>0.4</code>, <code>stack_x</code>:<code>bool</code>=<code>False</code>, <code>stack_y</code>:<code>bool</code>=<code>True</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
+<p>Callback that creates the mixed-up input and target.</p>
 
 </div>
 
@@ -230,6 +325,19 @@ epoch  train loss  valid loss  accuracy
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -241,6 +349,7 @@ epoch  train loss  valid loss  accuracy
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L14" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>last_input</code>, <code>last_target</code>, <code>train</code>, <code>kwargs</code>)</p>
 </blockquote>
+<p>Applies mixup to <code>last_input</code> and <code>last_target</code> if <code>train</code>.</p>
 
 </div>
 
@@ -282,8 +391,9 @@ epoch  train loss  valid loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L33" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L34" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
+<p>Adapt the loss function <code>crit</code> to go with mixup.</p>
 
 </div>
 
@@ -292,13 +402,6 @@ epoch  train loss  valid loss  accuracy
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a loss function from <code>crit</code> that is compatible with MixUp.</p>
-
-</div>
-</div>
 </div>
 </div>
  

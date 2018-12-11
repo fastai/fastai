@@ -6,7 +6,7 @@ from .data_block import *
 from .layers import *
 from .tabular import *
 
-__all__ = ['EmbeddingDotBias', 'collab_learner', 'CollabDataBunch', 'CollabLine', 'CollabList']
+__all__ = ['EmbeddingDotBias', 'EmbeddingNN', 'collab_learner', 'CollabDataBunch', 'CollabLine', 'CollabList', 'CollabLearner']
 
 class CollabLine(TabularLine):
     "Base item for collaborative filtering, subclasses `TabularLine`."
@@ -14,10 +14,10 @@ class CollabLine(TabularLine):
         super().__init__(cats, conts, classes, names)
         self.data = [self.data[0][0],self.data[0][1]]
 
-class CollabList(TabularList): 
+class CollabList(TabularList):
     "Base `ItemList` for collaborative filtering, subclasses `TabularList`."
     _item_cls,_label_cls = CollabLine,FloatList
-    
+
     def reconstruct(self, t:Tensor): return CollabLine(t, [], self.classes, self.col_names)
 
 class EmbeddingNN(TabularModel):
@@ -44,6 +44,7 @@ class EmbeddingDotBias(nn.Module):
         return torch.sigmoid(res) * (self.y_range[1]-self.y_range[0]) + self.y_range[0]
 
 class CollabDataBunch(DataBunch):
+    "Base `DataBunch` for collaborative filtering."
     @classmethod
     def from_df(cls, ratings:DataFrame, pct_val:float=0.2, user_name:Optional[str]=None, item_name:Optional[str]=None,
                 rating_name:Optional[str]=None, test:DataFrame=None, seed=None, **kwargs):

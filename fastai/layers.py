@@ -1,9 +1,11 @@
 "`fastai.layers` provides essential functions to building and modifying `model` architectures"
 from .torch_core import *
 
-__all__ = ['AdaptiveConcatPool2d', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger', 'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch',
-           'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer', 'embedding', 'simple_cnn', 'NormType', 'relu',
-           'batchnorm_2d', 'std_upsample_head', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss']
+__all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger',
+           'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
+           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'std_upsample_head', 'trunc_normal_',
+           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention',
+           'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range', 'SigmoidRange', 'PartialLayer']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -18,9 +20,10 @@ def ResizeBatch(*size:int) -> Tensor:
     "Layer that resizes x to `size`, good for connecting mismatched layers."
     return Lambda(lambda x: x.view((-1,)+size))
 
-def Flatten()->Tensor:
-    "Flatten `x` to a single dimension, often used at the end of a model."
-    return Lambda(lambda x: x.view((x.size(0), -1)))
+def Flatten(full:bool=False)->Tensor:
+    "Flatten `x` to a single dimension, often used at the end of a model. `full` for rank-1 tensor"
+    func = (lambda x: x.view(-1)) if full else (lambda x: x.view(x.size(0), -1))
+    return Lambda(func)
 
 def PoolFlatten()->nn.Sequential:
     "Apply `nn.AdaptiveAvgPool2d` to `x` and then flatten the result."
@@ -58,15 +61,15 @@ class SelfAttention(nn.Module):
         self.key   = conv1d(n_channels, n_channels//8)
         self.value = conv1d(n_channels, n_channels)
         self.gamma = nn.Parameter(tensor([0.]))
-        
+
     def forward(self, x):
-        #Notations from https://arxiv.org/pdf/1805.08318.pdf
+        #Notation from https://arxiv.org/pdf/1805.08318.pdf
         size = x.size()
         x = x.view(*size[:2],-1)
         f,g,h = self.query(x),self.key(x),self.value(x)
         beta = F.softmax(torch.bmm(f.permute(0,2,1).contiguous(), g), dim=1)
         o = self.gamma * torch.bmm(h, beta) + x
-        return o.view(*size)
+        return o.view(*size).contiguous()
 
 def conv2d(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias=False, init:LayerFunc=nn.init.kaiming_normal_) -> nn.Conv2d:
     "Create and initialize `nn.Conv2d` layer. `padding` defaults to `ks//2`."
@@ -80,30 +83,78 @@ def conv2d_trans(ni:int, nf:int, ks:int=2, stride:int=2, padding:int=0, bias=Fal
 def relu(inplace:bool=False, leaky:float=None):
     return nn.LeakyReLU(inplace=inplace, negative_slope=leaky) if leaky is not None else nn.ReLU(inplace=inplace)
 
-def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None,
+def conv_layer(ni:int, nf:int, ks:int=3, stride:int=1, padding:int=None, bias:bool=None, is_1d:bool=False,
                norm_type:Optional[NormType]=NormType.Batch,  use_activ:bool=True, leaky:float=None,
                transpose:bool=False, init:Callable=nn.init.kaiming_normal_, self_attention:bool=False):
     "Create a sequence of convolutional (`ni` to `nf`), ReLU (if `use_activ`) and batchnorm (if `bn`) layers."
     if padding is None: padding = (ks-1)//2 if not transpose else 0
     bn = norm_type in (NormType.Batch, NormType.BatchZero)
     if bias is None: bias = not bn
-    conv_func = nn.ConvTranspose2d if transpose else nn.Conv2d
+    conv_func = nn.ConvTranspose2d if transpose else nn.Conv1d if is_1d else nn.Conv2d
     conv = init_default(conv_func(ni, nf, kernel_size=ks, bias=bias, stride=stride, padding=padding), init)
     if   norm_type==NormType.Weight:   conv = weight_norm(conv)
     elif norm_type==NormType.Spectral: conv = spectral_norm(conv)
     layers = [conv]
     if use_activ: layers.append(relu(True, leaky=leaky))
-    if bn: layers.append(batchnorm_2d(nf, norm_type=norm_type))
+    if bn: layers.append((nn.BatchNorm1d if is_1d else nn.BatchNorm2d)(nf))
     if self_attention: layers.append(SelfAttention(nf))
     return nn.Sequential(*layers)
 
-class SequentialResBlock(nn.Module):
-    "A resnet block using an `nn.Sequential` containing `layers`"
+class SequentialEx(nn.Module):
+    "Like `nn.Sequential`, but with ModuleList semantics, and can access module input"
     def __init__(self, *layers):
         super().__init__()
-        self.layers = nn.Sequential(*layers)
+        self.layers = nn.ModuleList(layers)
 
-    def forward(self, x): return x + self.layers(x)
+    def forward(self, x):
+        res = x
+        for l in self.layers:
+            res.orig = x
+            nres = l(res)
+            # We have to remove res.orig to avoid hanging refs and therefore memory leaks
+            res.orig = None
+            res = nres
+        return res
+
+    def __getitem__(self,i): return self.layers[i]
+    def append(self,l): return self.layers.append(l)
+    def extend(self,l): return self.layers.extend(l)
+    def insert(self,i,l): return self.layers.insert(i,l)
+
+class MergeLayer(nn.Module):
+    def __init__(self, dense:bool=False):
+        super().__init__()
+        self.dense=dense
+
+    def forward(self, x): return torch.cat([x,x.orig], dim=1) if self.dense else (x+x.orig)
+
+def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, bottle:bool=False, **kwargs):
+    norm2 = norm_type
+    if not dense and (norm_type==NormType.Batch): norm2 = NormType.BatchZero
+    nf_inner = nf//2 if bottle else nf
+    return SequentialEx(conv_layer(nf, nf_inner, norm_type=norm_type, **kwargs),
+                      conv_layer(nf_inner, nf, norm_type=norm2, **kwargs),
+                      MergeLayer(dense))
+
+def sigmoid_range(x, x_min, x_max):
+    # Sigmoid function with range `(x_min,x_max)`
+    return torch.sigmoid(x) * (x_max - x_min) + x_min
+
+class SigmoidRange(nn.Module):
+    def __init__(self, low, hi):
+        super().__init__()
+        self.low,self.hi = low,hi
+    def forward(self, x):
+        return sigmoid_range(x, self.low, self.hi)
+
+class PartialLayer(nn.Module):
+    def __init__(self, func, **kwargs):
+        super().__init__()
+        self.repr = f'{func}({kwargs})'
+        self.func = partial(func, **kwargs)
+
+    def forward(self, x): return self.func(x)
+    def __repr__(self): return self.repr
 
 class AdaptiveConcatPool2d(nn.Module):
     "Layer that concats `AdaptiveAvgPool2d` and `AdaptiveMaxPool2d`."
@@ -148,7 +199,7 @@ class PixelShuffle_ICNR(nn.Module):
         self.shuf = nn.PixelShuffle(scale)
         # Blurring over (h*w) kernel
         # "Super-Resolution using Convolutional Neural Networks without Any Checkerboard Artifacts"
-        # - https://arxiv.org/abs/1806.02658 
+        # - https://arxiv.org/abs/1806.02658
         self.pad = nn.ReplicationPad2d((1,0,1,0))
         self.blur = nn.AvgPool2d(2, stride=1)
         self.relu = relu(True, leaky=leaky)
@@ -157,11 +208,31 @@ class PixelShuffle_ICNR(nn.Module):
         x = self.shuf(self.relu(self.conv(x)))
         return self.blur(self.pad(x)) if self.blur else x
 
-class CrossEntropyFlat(nn.CrossEntropyLoss):
-    "Same as `nn.CrossEntropyLoss`, but flattens input and target."
-    def forward(self, input:Tensor, target:Tensor) -> Rank0Tensor:
-        n,c,*_ = input.shape
-        return super().forward(input.view(n, c, -1), target.view(n, -1))
+class FlattenedLoss():
+    "Same as `func`, but flattens input and target."
+    def __init__(self, func, *args, axis:int=-1, floatify:bool=False, is_2d:bool=True, **kwargs):
+        self.func,self.axis,self.floatify,self.is_2d = func(*args,**kwargs),axis,floatify,is_2d
+
+    @property
+    def reduction(self): return self.func.reduction
+    @reduction.setter
+    def reduction(self, v): self.func.reduction = v
+
+    def __call__(self, input:Tensor, target:Tensor, **kwargs)->Rank0Tensor:
+        input = input.transpose(self.axis,-1).contiguous()
+        target = target.transpose(self.axis,-1).contiguous()
+        if self.floatify: target = target.float()
+        input = input.view(-1,input.shape[-1]) if self.is_2d else input.view(-1)
+        return self.func.__call__(input, target.view(-1), **kwargs)
+
+def CrossEntropyFlat(*args, axis:int=-1, **kwargs):
+    return FlattenedLoss(nn.CrossEntropyLoss, *args, axis=axis, **kwargs)
+
+def BCEWithLogitsFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
+    return FlattenedLoss(nn.BCEWithLogitsLoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
+
+def BCEFlat(*args, axis:int=-1, floatify:bool=True, **kwargs):
+    return FlattenedLoss(nn.BCELoss, *args, axis=axis, floatify=floatify, is_2d=False, **kwargs)
 
 class MSELossFlat(nn.MSELoss):
     "Same as `nn.MSELoss`, but flattens input and target."
@@ -170,11 +241,11 @@ class MSELossFlat(nn.MSELoss):
 
 class NoopLoss(nn.Module):
     "Just returns the mean of the `output`."
-    def forward(self, output, target): return output.mean()
+    def forward(self, output, *args): return output.mean()
 
 class WassersteinLoss(nn.Module):
     "For WGAN."
-    def forward(self, real, fake): return real[0] - fake[0]
+    def forward(self, real, fake): return real.mean() - fake.mean()
 
 def simple_cnn(actns:Collection[int], kernel_szs:Collection[int]=None,
                strides:Collection[int]=None, bn=False) -> nn.Sequential:
