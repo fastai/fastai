@@ -139,7 +139,7 @@ class Vocab():
 
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
-        "Create a vocabulary from a set of tokens."
+        "Create a vocabulary from a set of `tokens`."
         freq = Counter(p for o in tokens for p in o)
         itos = [o for o,c in freq.most_common(max_vocab) if c > min_freq]
         for o in reversed(TOK_XX):

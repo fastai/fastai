@@ -45,7 +45,7 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
     return groups
 
 class RNNLearner(Learner):
-    "Basic class for a Learner in RNN."
+    "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  adjust:bool=False, alpha:float=2., beta:float=1., metrics=None, **kwargs):
         super().__init__(data, model, **kwargs)
