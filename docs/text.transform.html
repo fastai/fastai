@@ -57,6 +57,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Tokenizer"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L84" class="source_link">[source]</a></h2><blockquote><p><code>Tokenizer</code>(<code>tok_func</code>:<code>Callable</code>=<code>'SpacyTokenizer'</code>, <code>lang</code>:<code>str</code>=<code>'en'</code>, <code>pre_rules</code>:<code>ListRules</code>=<code>None</code>, <code>post_rules</code>:<code>ListRules</code>=<code>None</code>, <code>special_cases</code>:<code>StrList</code>=<code>None</code>, <code>n_cpus</code>:<code>int</code>=<code>None</code>)</p>
 </blockquote>
+<p>Put together rules and a tokenizer function to tokenize text with multiprocessing.</p>
 
 </div>
 
@@ -68,10 +69,11 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This class will process texts by appling them the <code>rules</code> then tokenizing them with <code>tok_func(lang)</code>. <code>special_cases</code> are a list of tokens passed as special to the tokenizer and <code>n_cpus</code> is the number of cpus to use for multi-processing (by default, half the cpus available). We don't directly pass a tokenizer for multi-processing purposes: each process needs to initiate a tokenizer of its own. The rules and special_cases default to</p>
-<p><code>default_rules = [fix_html, replace_rep, replace_wrep, deal_caps, spec_add_spaces, rm_useless_spaces]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L78">[source]</a></div></p>
+<p>This class will process texts by appling them the <code>pre_rules</code>, tokenizing them with <code>tok_func(lang)</code> and then applying the <code>post_rules</code>. <code>special_cases</code> are a list of tokens passed as special to the tokenizer and <code>n_cpus</code> is the number of cpus to use for multi-processing (by default, half the cpus available). We don't directly pass a tokenizer for multi-processing purposes: each process needs to initiate a tokenizer of its own. The rules and special_cases default to</p>
+<p><code>default_pre_rules = [fix_html, replace_rep, replace_wrep, spec_add_spaces, rm_useless_spaces]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L80">[source]</a></div></p>
+<p><code>default_post_rules = [replace_all_caps, deal_caps]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L82">[source]</a></div></p>
 <p>and</p>
-<p><code>default_spec_tok = [BOS, FLD, UNK, PAD]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L79">[source]</a></div></p>
+<p><code>default_spec_tok = [BOS, FLD, UNK, PAD]</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L81">[source]</a></div></p>
 
 </div>
 </div>
@@ -207,7 +209,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;this is a extremely well - made film . the acting , script and camera - work are all first - rate . the music is good , too , though it is mostly early in the film , when things are still relatively cheery . there are no really superstars in the cast , though several faces will be familiar . the entire cast does an excellent job with the script . \n\n but it is hard to watch , because there is no good end to a situation like the one presented . it is now fashionable to blame the british for setting hindus and muslims against each other , and then cruelly separating them into two countries . there is some merit in this view , but it \&#39;s also true that no one forced hindus and muslims in the region to mistreat each other as they did around the time of partition . it seems more likely that the british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . but it is never painted as a black - and - white case . there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n there is redemption of a sort , in the end , when puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . but by that point , she has no option that is without great pain for her . \n\n this film carries the message that both muslims and hindus have their grave faults , and also that both can be dignified and caring people . the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the india / pakistan border . in that sense , it is similar to &#34; mr &amp; mrs iyer &#34; . \n\n in the end , we were glad to have seen the film , even though the resolution was heartbreaking . if the uk and us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
+<pre>&#39;xxmaj this is a extremely well - made film . xxmaj the acting , script and camera - work are all first - rate . xxmaj the music is good , too , though it is mostly early in the film , when things are still relatively cheery . xxmaj there are no really superstars in the cast , though several faces will be familiar . xxmaj the entire cast does an excellent job with the script . \n\n xxmaj but it is hard to watch , because there is no good end to a situation like the one presented . xxmaj it is now fashionable to blame the xxmaj british for setting xxmaj hindus and xxmaj muslims against each other , and then cruelly separating them into two countries . xxmaj there is some merit in this view , but it \&#39;s also true that no one forced xxmaj hindus and xxmaj muslims in the region to mistreat each other as they did around the time of partition . xxmaj it seems more likely that the xxmaj british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n xxmaj the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . xxmaj but it is never painted as a black - and - white case . xxmaj there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n xxmaj there is redemption of a sort , in the end , when xxmaj puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . xxmaj but by that point , she has no option that is without great pain for her . \n\n xxmaj this film carries the message that both xxmaj muslims and xxmaj hindus have their grave faults , and also that both can be dignified and caring people . xxmaj the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the xxmaj india / xxmaj pakistan border . xxmaj in that sense , it is similar to &#34; xxmaj mr &amp; xxmaj mrs xxmaj iyer &#34; . \n\n xxmaj in the end , we were glad to have seen the film , even though the resolution was heartbreaking . xxmaj if the xxup uk and xxup us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
 </div>
 
 </div>
@@ -247,7 +249,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;this is a extremely well - made film . the acting , script and camera - work are all first - rate . the music is good , too , though it is mostly early in the film , when things are still relatively cheery . there are no really superstars in the cast , though several faces will be familiar . the entire cast does an excellent job with the script . \n\n but it is hard to watch , because there is no good end to a situation like the one presented . it is now fashionable to blame the british for setting hindus and muslims against each other , and then cruelly separating them into two countries . there is some merit in this view , but it \&#39;s also true that no one forced hindus and muslims in the region to mistreat each other as they did around the time of partition . it seems more likely that the british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . but it is never painted as a black - and - white case . there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n there is redemption of a sort , in the end , when puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . but by that point , she has no option that is without great pain for her . \n\n this film carries the message that both muslims and hindus have their grave faults , and also that both can be dignified and caring people . the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the india / pakistan border . in that sense , it is similar to &#34; mr &amp; mrs iyer &#34; . \n\n in the end , we were glad to have seen the film , even though the resolution was heartbreaking . if the uk and us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
+<pre>&#39;xxmaj this is a extremely well - made film . xxmaj the acting , script and camera - work are all first - rate . xxmaj the music is good , too , though it is mostly early in the film , when things are still relatively cheery . xxmaj there are no really superstars in the cast , though several faces will be familiar . xxmaj the entire cast does an excellent job with the script . \n\n xxmaj but it is hard to watch , because there is no good end to a situation like the one presented . xxmaj it is now fashionable to blame the xxmaj british for setting xxmaj hindus and xxmaj muslims against each other , and then cruelly separating them into two countries . xxmaj there is some merit in this view , but it \&#39;s also true that no one forced xxmaj hindus and xxmaj muslims in the region to mistreat each other as they did around the time of partition . xxmaj it seems more likely that the xxmaj british simply saw the tensions between the religions and were clever enough to exploit them to their own ends . \n\n xxmaj the result is that there is much cruelty and inhumanity in the situation and this is very unpleasant to remember and to see on the screen . xxmaj but it is never painted as a black - and - white case . xxmaj there is baseness and nobility on both sides , and also the hope for change in the younger generation . \n\n xxmaj there is redemption of a sort , in the end , when xxmaj puro has to make a hard choice between a man who has ruined her life , but also truly loved her , and her family which has disowned her , then later come looking for her . xxmaj but by that point , she has no option that is without great pain for her . \n\n xxmaj this film carries the message that both xxmaj muslims and xxmaj hindus have their grave faults , and also that both can be dignified and caring people . xxmaj the reality of partition makes that realisation all the more wrenching , since there can never be real reconciliation across the xxmaj india / xxmaj pakistan border . xxmaj in that sense , it is similar to &#34; xxmaj mr &amp; xxmaj mrs xxmaj iyer &#34; . \n\n xxmaj in the end , we were glad to have seen the film , even though the resolution was heartbreaking . xxmaj if the xxup uk and xxup us could deal with their own histories of racism with this kind of frankness , they would certainly be better off .&#39;</pre>
 </div>
 
 </div>
@@ -387,7 +389,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Rules are just functions that take a string and return the modified string. This allows you to customize the list of <code>default_rules</code> as you please. Those <code>default_rules</code> are:</p>
+<p>Rules are just functions that take a string and return the modified string. This allows you to customize the list of <code>default_pre_rules</code> or <code>default_post_rules</code> as you please. Those are:</p>
 
 </div>
 </div>
@@ -732,6 +734,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Vocab"><code>class</code> <code>Vocab</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L119" class="source_link">[source]</a></h2><blockquote><p><code>Vocab</code>(<code>itos</code>:<code>StrList</code>)</p>
 </blockquote>
+<p>Contain the correspondance between numbers and tokens and numericalize.</p>
 
 </div>
 
@@ -743,7 +746,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Contain the correspondance between numbers and tokens and numericalize. <code>itos</code> contains the id to token correspondance.</p>
+<p><code>itos</code> contains the id to token correspondance.</p>
 
 </div>
 </div>
@@ -759,6 +762,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="Vocab.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L140" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>tokens</code>:<code>Tokens</code>, <code>max_vocab</code>:<code>int</code>, <code>min_freq</code>:<code>int</code>) → <code>Vocab</code></p>
 </blockquote>
+<p>Create a vocabulary from a set of <code>tokens</code>.</p>
 
 </div>
 
@@ -770,7 +774,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/text.transform.html#Vocab"><code>Vocab</code></a> dictionary from a set of <code>tokens</code>. Only keeps <code>max_vocab</code> tokens, and only if they appear at least <code>min_freq</code> times, set the rest to <code>UNK</code>.</p>
+<p>Only keeps <code>max_vocab</code> tokens, and only if they appear at least <code>min_freq</code> times, set the rest to <code>UNK</code>.</p>
 
 </div>
 </div>

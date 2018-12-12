@@ -48,9 +48,9 @@ def test_points():
     points = [tensor([b[0][0][0], b[0][0][1]]) for b in lbl_bbox]
     img2pnts = dict(zip(images, points))
     get_y_func = lambda o:img2pnts[o.name]
-    data = (ImageItemList.from_folder(coco)
+    data = (PointsItemList.from_folder(coco)
             .random_split_by_pct()
-            .label_from_func(get_y_func, label_cls=PointsItemList)
+            .label_from_func(get_y_func)
             .transform(get_transforms(), tfm_y=True)
             .databunch())
     _check_data(data,160,40)

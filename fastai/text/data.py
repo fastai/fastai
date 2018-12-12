@@ -226,7 +226,7 @@ def open_text(fn:PathOrStr, enc='utf-8'):
     with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
-    "Basic item for text data."
+    "Basic item for <code>text</code> data in numericalized `ids`."
     def __init__(self, ids, text): self.data,self.text = ids,text
     def __str__(self):  return str(self.text)
 

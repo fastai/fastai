@@ -210,7 +210,7 @@ def df_names_to_idx(names:IntsOrStrs, df:DataFrame):
 def one_hot(x:Collection[int], c:int):
     "One-hot encode `x` with `c` classes."
     res = np.zeros((c,), np.float32)
-    res[x] = 1.
+    res[np.array(x)] = 1.
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:

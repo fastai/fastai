@@ -20,6 +20,7 @@ of that change.
 - `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
 - `DataBunch` performs a sanity check after its initialization and will throw a warning if something is wrong with the data.
 - More GAN stuff: `gan_critic`, `AdaptiveLoss`, `accuracy_thresh_expand`, and `GANDiscriminativeLR`
+- Support for one-hot encoded labels in multiclassification problems
 
 ### Changed:
 
@@ -28,6 +29,7 @@ of that change.
 - `DataBunch.export` now serializes everything (transforms and normalization included)
 - `DataBunch` now has `fix_dl` attr, which is same data as `train_dl` but without shuffle or train tfms
 - `pred_batch` now has `reconstruct` param, which will reconstruct each prediction into an object
+- `Learner.show_results` gives a better output for image classification tasks
 
 ### Fixed:
 

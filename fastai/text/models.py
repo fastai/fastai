@@ -5,11 +5,11 @@ __all__ = ['EmbeddingDropout', 'LinearDecoder', 'MultiBatchRNNCore', 'PoolingLin
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'get_language_model', 'get_rnn_classifier']
 
 def dropout_mask(x:Tensor, sz:Collection[int], p:float):
-    "Return a dropout mask of the same type as x, size sz, with probability p to cancel an element."
+    "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
     return x.new(*sz).bernoulli_(1-p).div_(1-p)
 
 class RNNDropout(nn.Module):
-    "Dropout that is consistent on the seq_len dimension."
+    "Dropout with probability `p` that is consistent on the seq_len dimension."
 
     def __init__(self, p:float=0.5):
         super().__init__()
@@ -52,7 +52,7 @@ class WeightDropout(nn.Module):
         if hasattr(self.module, 'reset'): self.module.reset()
 
 class EmbeddingDropout(nn.Module):
-    "Apply dropout in the embedding layer by zeroing out some elements of the embedding vector."
+    "Apply dropout with probabily `embed_p` to an embedding layer `emb`."
 
     def __init__(self, emb:nn.Module, embed_p:float):
         super().__init__()

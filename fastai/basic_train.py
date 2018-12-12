@@ -283,6 +283,7 @@ class Learner():
         "Show `rows` result of predictions on `ds_type` dataset."
         #TODO: get read of has_arg x and split_kwargs_by_func if possible
         #TODO: simplify this and refactor with pred_batch(...reconstruct=True)
+        if self.data.train_ds.x._square_show_res: rows = rows ** 2
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)

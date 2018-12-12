@@ -45,7 +45,7 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
     return groups
 
 class RNNLearner(Learner):
-    "Basic class for a Learner in RNN."
+    "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  adjust:bool=False, alpha:float=2., beta:float=1., metrics=None, **kwargs):
         super().__init__(data, model, **kwargs)
@@ -106,10 +106,8 @@ class LanguageLearner(RNNLearner):
         from IPython.display import display, HTML
         "Show `rows` result of predictions on `ds_type` dataset."
         ds = self.dl(ds_type).dataset
-        self.callbacks.append(RecordOnCPU())
-        preds = self.pred_batch(ds_type)
-        x,y = self.callbacks[-1].input,self.callbacks[-1].target
-        self.callbacks = self.callbacks[:-1]
+        x,y = self.data.one_batch(ds_type, detach=False, denorm=False)
+        preds = self.pred_batch(batch=(x,y))
         y = y.view(*x.size())
         z = preds.view(*x.size(),-1).argmax(dim=2)
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
