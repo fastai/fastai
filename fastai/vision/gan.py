@@ -136,7 +136,7 @@ class GANTrainer(LearnerCallback):
         img = self.last_gen[0]
         norm = getattr(data,'norm',False)
         if norm and norm.keywords.get('do_y',False): img = self.data.denorm(img)
-        img = data.reconstruct(img)
+        img = data.train_ds.y.reconstruct(img)
         self.imgs.append(img)
         self.titles.append(f'Epoch {epoch}')
         pbar.show_imgs(self.imgs, self.titles)
