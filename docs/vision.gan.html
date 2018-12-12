@@ -1,0 +1,803 @@
+---
+
+title: vision.gan
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "All the modules and callbacks necessary to train a GAN"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="GANs">GANs<a class="anchor-link" href="#GANs">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>GAN stands for <a href="https://arxiv.org/pdf/1406.2661.pdf">Generative Adversarial Nets</a> and were invented by Ian Goodfellow. The concept is that we will train two models at the same time: a generator and a critic. The generator will try to make new images similar to the ones in our dataset, and the critic's job will try to classify real images from the fake ones the generator does. The generator returns images, the discriminator a feature map (it can be a single number depending on the input size). Usually the discriminator will be trained to retun 0. everywhere for fake images and 1. everywhere for real ones.</p>
+<p>This module contains all the necessary function to create a GAN.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We train them against each other in the sense that at each step (more or less), we:</p>
+<ol>
+<li>Freeze the generator and train the discriminator for one step by:<ul>
+<li>getting one batch of true images (let's call that <code>real</code>)</li>
+<li>generating one batch of fake images (let's call that <code>fake</code>)</li>
+<li>have the discriminator evaluate each batch and compute a loss function from that; the important part is that it rewards positively the detection of real images and penalizes the fake ones</li>
+<li>update the weights of the discriminator with the gradients of this loss</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li>Freeze the discriminator and train the generator for one step by:<ul>
+<li>generating one batch of fake images</li>
+<li>evaluate the discriminator on it</li>
+<li>return a loss that rewards posisitivly the discriminator thinking those are real images; the important part is that it rewards positively the detection of real images and penalizes the fake ones</li>
+<li>update the weights of the generator with the gradients of this loss</li>
+</ul>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GANLearner"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L204" class="source_link">[source]</a></h2><blockquote><p><code>GANLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>generator</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>critic</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>gen_loss_func</code>:<code>LossFunction</code>, <code>crit_loss_func</code>:<code>LossFunction</code>, <code>switcher</code>:<a href="/callback.html#Callback"><code>Callback</code></a>=<code>None</code>, <code>gen_first</code>:<code>bool</code>=<code>False</code>, <code>switch_eval</code>:<code>bool</code>=<code>True</code>, <code>show_img</code>:<code>bool</code>=<code>True</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+</blockquote>
+<p>A <a href="/basic_train.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the general constructor to create a GAN, you might want to use one of the factory methods that are easier to use. Create a GAN from <a href="/vision.data.html#vision.data"><code>data</code></a>, a <code>generator</code> and a <code>critic</code>. The <a href="/vision.data.html#vision.data"><code>data</code></a> should have the inputs the <code>generator</code> will expect and the images wanted as targets.</p>
+<p><code>gen_loss_func</code> is the loss function that will be applied to the <code>generator</code>. It takes three argument <code>fake_pred</code>, <code>target</code>, <code>output</code> and should return a rank 0 tensor. <code>output</code> is the result of the <code>generator</code> applied to the input (the xs of the batch), <code>target</code> is the ys of the batch and <code>fake_pred</code> is the result of the <code>discriminator</code> being given <code>output</code>. <code>output</code>and <code>target</code> can be used to add a specific loss to the GAN loss (pixel loss, feature loss) and for a good training of the gan, the loss should encourage <code>fake_pred</code> to be as close to 1 as possible (the <code>generator</code> is trained to fool the <code>critic</code>).</p>
+<p><code>crit_loss_func</code> is the loss function that will be applied to the <code>critic</code>. It takes two arguments <code>real_pred</code> and <code>fake_pred</code>. <code>real_pred</code> is the result of the <code>critic</code> on the target images (the ys of the batch) and <code>fake_pred</code> is the result of the <code>critic</code> applied on a batch of fake, generated byt the <code>generator</code> from the xs of the batch.</p>
+<p><code>switcher</code> is a <a href="/callback.html#Callback"><code>Callback</code></a> that should tell the GAN when to switch from critic to generator and vice versa. By default it does 5 iterations of the critic for 1 iteration of the generator. The model begins the training with the <code>generator</code> if <code>gen_first=True</code>. If <code>switch_eval=True</code>, the model that isn't trained is switched on eval mode (left in training mode otherwise, which means some statistics like the running mean in batchnorm layers are updated, or the dropouts are applied).</p>
+<p><code>clip</code> should be set to a certain value if one wants to clip the weights (see the <a href="https://arxiv.org/pdf/1701.07875.pdf">Wassertein GAN</a> for instance).</p>
+<p>If <code>show_img=True</code>, one image generated by the GAN is shown at the end of each epoch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Factory-methods">Factory methods<a class="anchor-link" href="#Factory-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANLearner.from_learners"><code>from_learners</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L217" class="source_link">[source]</a></h4><blockquote><p><code>from_learners</code>(<code>learn_gen</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>learn_crit</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>switcher</code>:<a href="/callback.html#Callback"><code>Callback</code></a>=<code>None</code>, <code>weights_gen</code>:<code>Point</code>=<code>None</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Create a GAN from <code>learn_gen</code> and <code>learn_crit</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Directly creates a <a href="/vision.gan.html#GANLearner"><code>GANLearner</code></a> from two <a href="/basic_train.html#Learner"><code>Learner</code></a>: one for the <code>generator</code> and one for the <code>critic</code>. The <code>switcher</code> and all <code>kwargs</code> will be passed to the initialization of <a href="/vision.gan.html#GANLearner"><code>GANLearner</code></a> along with the following loss functions:</p>
+<ul>
+<li><code>loss_func_crit</code> is the mean of <code>learn_crit.loss_func</code> applied to <code>real_pred</code> and a target of ones with <code>learn_crit.loss_func</code> applied to <code>fake_pred</code> and a target of zeros</li>
+<li><code>loss_func_gen</code> is the mean of <code>learn_crit.loss_func</code> applied to <code>fake_pred</code> and a target of ones (to full the discriminator) with <code>learn_gen.loss_func</code> applied to <code>output</code> and <code>target</code>. The weights of each of those contributions can be passed in <code>weights_gen</code> (default is 1. and 1.)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANLearner.wgan"><code>wgan</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L224" class="source_link">[source]</a></h4><blockquote><p><code>wgan</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>generator</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>critic</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>switcher</code>:<a href="/callback.html#Callback"><code>Callback</code></a>=<code>None</code>, <code>clip</code>:<code>float</code>=<code>0.01</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Create a WGAN from <code>data</code>, <code>generator</code> and <code>critic</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Wasserstein GAN is detailed in [this article]. <code>switcher</code> and the <code>kwargs</code> will be passed to the <a href="/vision.gan.html#GANLearner"><code>GANLearner</code></a> init, <code>clip</code>is the weight clipping.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Switchers">Switchers<a class="anchor-link" href="#Switchers">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In any GAN training, you will need to tell the <a href="/basic_train.html#Learner"><code>Learner</code></a> when to switch from generator to critic and vice versa. The two following <a href="/callback.html#Callback"><code>Callback</code></a> are examples to help you with that.</p>
+<p>As usual, don't call the <code>on_something</code> methods directly, the fastai library will do it for you during training.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="FixedGANSwitcher"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L153" class="source_link">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>n_crit</code>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<code>1</code>, <code>n_gen</code>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<code>1</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="FixedGANSwitcher.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>)</p>
+</blockquote>
+<p>Initiate the iteration counts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="FixedGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>iteration</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Switch the model if necessary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="AdaptiveGANSwitcher"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L176" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>gen_thresh</code>:<code>float</code>=<code>None</code>, <code>critic_thresh</code>:<code>float</code>=<code>None</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Switcher that goes back to generator/critic when the loes goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="AdaptiveGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L181" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>last_loss</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Switch the model if necessary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Discriminative-LR">Discriminative LR<a class="anchor-link" href="#Discriminative-LR">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to train your critic at a different learning rate than the generator, this will let you do it automatically (even if you have a learning rate schedule).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="GANDiscriminativeLR"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L276" class="source_link">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>mult_lr</code>:<code>float</code>=<code>5.0</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p><a href="/callback.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANDiscriminativeLR.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L280" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>train</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Multiply the current lr if necessary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANDiscriminativeLR.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L284" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>)</p>
+</blockquote>
+<p>Put the LR back to its value if necessary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Specific-models">Specific models<a class="anchor-link" href="#Specific-models">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="basic_critic"><code>basic_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>basic_critic</code>(<code>in_size</code>:<code>int</code>, <code>n_channels</code>:<code>int</code>, <code>n_features</code>:<code>int</code>=<code>64</code>, <code>n_extra_layers</code>:<code>int</code>=<code>0</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>A basic critic for images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This model contains a first 4 by 4 convolutional layer of stride 2 from <code>n_channels</code> to <code>n_features</code> followed by <code>n_extra_layers</code> 3 by 3 convolutional layer of stride 1. Then we put as many 4 by 4 convolutional layer of stride 2 with a number of features multiplied by 2 at each stage so that the <code>in_size</code> becomes 1. <code>kwargs</code> can be used to customize the convolutional layers and are passed to <a href="/layers.html#conv_layer"><code>conv_layer</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="basic_generator"><code>basic_generator</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L28" class="source_link">[source]</a></h4><blockquote><p><code>basic_generator</code>(<code>in_size</code>:<code>int</code>, <code>n_channels</code>:<code>int</code>, <code>noise_sz</code>:<code>int</code>=<code>100</code>, <code>n_features</code>:<code>int</code>=<code>64</code>, <code>n_extra_layers</code>=<code>0</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>A basic generator from <code>noise_sz</code> to images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This model contains a first 4 by 4 transposed convolutional layer of stride 1 from <code>noise_size</code> to the last numbers of features of the corresponding critic. Then we put as many 4 by 4 transposed convolutional layer of stride 2 with a number of features divided by 2 at each stage so that the image ends up being of height and widht <code>in_size//2</code>. At the end, we add<code>n_extra_layers</code> 3 by 3 convolutional layer of stride 1. The last layer is a transpose convolution of size 4 by 4 and stride 2 followed by <code>tanh</code>. <code>kwargs</code> can be used to customize the convolutional layers and are passed to <a href="/layers.html#conv_layer"><code>conv_layer</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gan_critic"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L258" class="source_link">[source]</a></h4><blockquote><p><code>gan_critic</code>(<code>n_channels</code>:<code>int</code>=<code>3</code>, <code>nf</code>:<code>int</code>=<code>128</code>, <code>n_blocks</code>:<code>int</code>=<code>3</code>, <code>p</code>:<code>int</code>=<code>0.15</code>)</p>
+</blockquote>
+<p>Critic to train a <code>GAN</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GANTrainer"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L72" class="source_link">[source]</a></h2><blockquote><p><code>GANTrainer</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>switch_eval</code>:<code>bool</code>=<code>False</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>beta</code>:<code>float</code>=<code>0.98</code>, <code>gen_first</code>:<code>bool</code>=<code>False</code>, <code>show_img</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+</blockquote>
+<p>Handles GAN Training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> that will be responsible to handle the two different optimizers (one for the generator and one for the critic), and do all the work behind the scenes so that the generator (or the critic) are in training mode with parameters requirement gradients each time we switch.</p>
+<p><code>switch_eval=True</code> means that the <a href="/vision.gan.html#GANTrainer"><code>GANTrainer</code></a> will put the model that isn't training into eval mode (if it's <code>False</code> its running statistics like in batchnorm layers will be updated and dropout will be applied). <code>clip</code> is the clipping applied to the weights (if not <code>None</code>). <code>beta</code> is the coefficient for the moving averages as the <a href="/vision.gan.html#GANTrainer"><code>GANTrainer</code></a>tracks separately the generator loss and the critic loss. <code>gen_first=True</code> means the training begins with the generator (with the critic if it's <code>False</code>). If <code>show_img=True</code> we show a generated image at the end of each epoch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L144" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<code>gen_mode</code>:<code>bool</code>=<code>None</code>)</p>
+</blockquote>
+<p>Switch the model, if <code>gen_mode</code> is provided, in the desired mode.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If <code>gen_mode</code> is left as <code>None</code>, just put the model in the other mode (critic if it was in generator mode and vice versa).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>)</p>
+</blockquote>
+<p>Create the optimizers for the generator and critic if necessary, initialize smootheners.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<code>epoch</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Put the critic or the generator back to eval if necessary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>last_input</code>, <code>last_target</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Clamp the weights with <code>self.clip</code> if it's not None, return the correct input.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>, <code>last_output</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Record <code>last_loss</code> in the proper list.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>pbar</code>, <code>epoch</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Put the various losses in the recorder and show a sample image.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANTrainer.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L106" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>)</p>
+</blockquote>
+<p>Switch in generator mode for showing results.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Specific-modules">Specific modules<a class="anchor-link" href="#Specific-modules">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="GANModule"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L41" class="source_link">[source]</a></h3><blockquote><p><code>GANModule</code>(<code>generator</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<code>None</code>, <code>critic</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<code>None</code>, <code>gen_mode</code>:<code>bool</code>=<code>False</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If <code>gen_mode</code> is left as <code>None</code>, just put the model in the other mode (critic if it was in generator mode and vice versa).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANModule.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<code>gen_mode</code>:<code>bool</code>=<code>None</code>)</p>
+</blockquote>
+<p>Put the model in generator mode if <code>gen_mode</code>, in critic mode otherwise.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="GANLoss"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L55" class="source_link">[source]</a></h3><blockquote><p><code>GANLoss</code>(<code>loss_funcG</code>:<code>Callable</code>, <code>loss_funcC</code>:<code>Callable</code>, <code>gan_model</code>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
+</blockquote>
+<p>Wrapper around <code>loss_funcC</code> (for the critic) and <code>loss_funcG</code> (for the generator).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="AdaptiveLoss"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L288" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-Block-API">Data Block API<a class="anchor-link" href="#Data-Block-API">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="NoisyItem"><code>class</code> <code>NoisyItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L229" class="source_link">[source]</a></h3><blockquote><p><code>NoisyItem</code>(<code>noise_sz</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+<p>An random <a href="/core.html#ItemBase"><code>ItemBase</code></a> of size <code>noise_sz</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="GANItemList"><code>class</code> <code>GANItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L235" class="source_link">[source]</a></h3><blockquote><p><code>GANItemList</code>(<code>items</code>, <code>noise_sz</code>:<code>int</code>=<code>100</code>, <code>kwargs</code>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+</blockquote>
+<p><code>ItemList</code> suitable for GANs.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L247" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<code>xs</code>, <code>ys</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Show the <code>xs</code> (inputs) and <code>ys</code> (targets) on a figure of <code>figsize</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GANItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L250" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<code>xs</code>, <code>ys</code>, <code>zs</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Show <code>xs</code> (inputs), <code>ys</code> (targets) and <code>zs</code> (predictions) on a figure of <code>figsize</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+

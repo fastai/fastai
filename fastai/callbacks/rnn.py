@@ -15,15 +15,16 @@ class RNNTrainer(Callback):
     adjust:bool=True
         
     def on_epoch_begin(self, **kwargs):
+        "Reset the hidden state of the model."
         self.learn.model.reset()
 
     def on_loss_begin(self, last_output:Tuple[Tensor,Tensor,Tensor], **kwargs):
-        #Save the extra outputs for later and only returns the true output.
+        "Save the extra outputs for later and only returns the true output."
         self.raw_out,self.out = last_output[1],last_output[2]
         return last_output[0]
 
     def on_backward_begin(self, last_loss:Rank0Tensor, last_input:Tensor, **kwargs):
-        #Adjusts the lr to the bptt selected
+        "Adjusts the lr to the sequence length and applies AR and TAR to `last_loss`."
         if self.adjust: self.learn.opt.lr *= last_input.size(0) / self.bptt
         #AR and TAR
         if self.alpha != 0.:  last_loss += (self.alpha * self.out[-1].pow(2).mean()).sum()

@@ -40,7 +40,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>accuracy</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>accuracy</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>LongTensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
 
@@ -61,8 +61,27 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>This metric is intended for classification of objects belonging to a single class.</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="accuracy_thresh"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.5</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
+<p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> are the same size.</p>
 
 </div>
 
@@ -74,7 +93,7 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> for multi-label models, based on comparing predictions to <code>thresh</code>, <code>sigmoid</code> will be applied to <code>y_pred</code> if the corresponding flag is True.</p>
+<p>Prediction are compared to <code>thresh</code> after <code>sigmoid</code> is maybe applied. Then we count the numbers that match the targets.</p>
 
 </div>
 </div>
@@ -88,9 +107,27 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>, <code>iou</code>:<code>bool</code>=<code>False</code>) → <code>Rank0Tensor</code></p>
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>This function is intended for one-hot-encoded targets (often in a multiclassification problem).</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<code>input</code>:<code>FloatTensor</code>, <code>targs</code>:<code>LongTensor</code>, <code>iou</code>:<code>bool</code>=<code>False</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems.</p>
+<p>Dice coefficient metric for binary target. If <code>iou=True</code>, return iou metric.</p>
 
 </div>
 
@@ -130,9 +167,30 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
+<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<code>pred</code>:<code>FloatTensor</code>, <code>targ</code>:<code>FloatTensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
 <h4 id="fbeta"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>fbeta</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.2</code>, <code>beta</code>:<code>float</code>=<code>2</code>, <code>eps</code>:<code>float</code>=<code>1e-09</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Computes the f_beta between preds and targets</p>
+<p>Computes the f_beta between <code>y_pred</code> and <code>y_true</code> in a multi-classification task.</p>
 
 </div>
 
@@ -144,7 +202,7 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>See the <a href="https://en.wikipedia.org/wiki/F1_score">F1 score wikipedia page</a> for details.</p>
+<p><code>beta</code> determines the value of the fbeta applied, <code>eps</code> is there for numeric stability. If <code>sigmoid=True</code>, a sigmoid is applied to the predictions before comparing them to <code>thresh</code> then to the targets. See the <a href="https://en.wikipedia.org/wiki/F1_score">F1 score wikipedia page</a> for details on the fbeta score.</p>
 
 </div>
 </div>
@@ -158,9 +216,27 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<code>pred</code>:<code>Tensor</code>, <code>targ</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>This function is intended for one-hot-encoded targets (often in a multiclassification problem).</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="Fbeta_binary"><code>class</code> <code>Fbeta_binary</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L54" class="source_link">[source]</a></h3><blockquote><p><code>Fbeta_binary</code>(<code>beta2</code>:<code>int</code>=<code>2</code>, <code>eps</code>:<code>float</code>=<code>1e-09</code>, <code>clas</code>:<code>int</code>=<code>1</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
-<p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
+<p>Computes the fbeta between preds and targets for single-classification.</p>
 
 </div>
 

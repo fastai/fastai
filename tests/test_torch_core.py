@@ -65,6 +65,10 @@ def test_split_model():
     pool = split_model(m,[m[2][0]])[1][0]
     assert pool == m[2][0], "Did not properly split at adaptive pooling layer"
 
+def test_split_bn_bias():
+    bn_group = split_bn_bias(simple_cnn((1, 1, 1), bn=True))[1]
+    assert len(bn_group) > 0 and isinstance(bn_group[0], bn_types)
+
 def test_set_bn_eval():
     m = simple_cnn(b,bn=True)
     requires_grad(m,False)

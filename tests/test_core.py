@@ -6,12 +6,15 @@ from tempfile import TemporaryDirectory
 def test_cpus(): assert num_cpus() >= 1
 
 @pytest.mark.parametrize("p, q, expected", [
+    (None, None, []),
+    ('hi', None, ['hi']),
+    ([1,2],None, [1,2]),
     (5  , 1    , [5]),
     (5  , [1,1], [5, 5]),
     ([5], 1    , [5]),
     ([5], [1,1], [5, 5]),
-    ("ab"  , "cd"        , ["a", "b"]),
-    ("ab"  , ["cd", "ef"], ["a", "b"]),
+    ("ab"  , "cd"        , ["ab", "ab"]),
+    ("ab"  , ["cd", "ef"], ["ab", "ab"]),
     (["ab"], "cd"        , ["ab", "ab"]),
     (["ab"], ["cd", "ef"], ["ab", "ab"]),
 ])
@@ -23,6 +26,12 @@ def test_ifnone():
     assert ifnone(5, None) == 5
     assert ifnone(1, 5)    == 1
     assert ifnone(0, 5)    == 0
+
+def test_chunks():
+    ls = [0,1,2,3]
+    assert([a for a in chunks(ls, 2)] == [[0,1],[2,3]])
+    assert([a for a in chunks(ls, 4)] == [[0,1,2,3]])
+    assert([a for a in chunks(ls, 1)] == [[0],[1],[2],[3]])
 
 def test_uniqueify():
     assert uniqueify([1,1,3,3,5]) == [1,3,5]

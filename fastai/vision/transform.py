@@ -9,23 +9,26 @@ __all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'dihedral_a
 
 _pad_mode_convert = {'reflection':'reflect', 'zeros':'constant', 'border':'replicate'}
 
-@TfmLighting
-def brightness(x, change:uniform):
+#NB: Although TfmLighting etc can be used as decorators, that doesn't work in Windows,
+#    so we do it manually for now.
+
+def _brightness(x, change:uniform):
     "Apply `change` in brightness of image `x`."
     return x.add_(scipy.special.logit(change))
+brightness = TfmLighting(_brightness)
 
-@TfmLighting
-def contrast(x, scale:log_uniform):
+def _contrast(x, scale:log_uniform):
     "Apply `scale` to contrast of image `x`."
     return x.mul_(scale)
+contrast = TfmLighting(_contrast)
 
-@TfmAffine
-def rotate(degrees:uniform):
+def _rotate(degrees:uniform):
     "Rotate image by `degrees`."
     angle = degrees * math.pi / 180
     return [[cos(angle), -sin(angle), 0.],
             [sin(angle),  cos(angle), 0.],
             [0.        ,  0.        , 1.]]
+rotate = TfmAffine(_rotate)
 
 def _get_zoom_mat(sw:float, sh:float, c:float, r:float)->AffineMatrix:
     "`sw`,`sh` scale width,height - `c`,`r` focus col,row."
@@ -33,16 +36,15 @@ def _get_zoom_mat(sw:float, sh:float, c:float, r:float)->AffineMatrix:
             [0, sh,  r],
             [0,  0, 1.]]
 
-@TfmAffine
-def zoom(scale:uniform=1.0, row_pct:uniform=0.5, col_pct:uniform=0.5):
+def _zoom(scale:uniform=1.0, row_pct:uniform=0.5, col_pct:uniform=0.5):
     "Zoom image by `scale`. `row_pct`,`col_pct` select focal point of zoom."
     s = 1-1/scale
     col_c = s * (2*col_pct - 1)
     row_c = s * (2*row_pct - 1)
     return _get_zoom_mat(1/scale, 1/scale, col_c, row_c)
+zoom = TfmAffine(_zoom)
 
-@TfmAffine
-def squish(scale:uniform=1.0, row_pct:uniform=0.5, col_pct:uniform=0.5):
+def _squish(scale:uniform=1.0, row_pct:uniform=0.5, col_pct:uniform=0.5):
     "Squish image by `scale`. `row_pct`,`col_pct` select focal point of zoom."
     if scale <= 1:
         col_c = (1-scale) * (2*col_pct - 1)
@@ -50,24 +52,27 @@ def squish(scale:uniform=1.0, row_pct:uniform=0.5, col_pct:uniform=0.5):
     else:
         row_c = (1-1/scale) * (2*row_pct - 1)
         return _get_zoom_mat(1, 1/scale, 0., row_c)
+squish = TfmAffine(_squish)
 
-@TfmCoord
-def jitter(c, magnitude:uniform):
+def _jitter(c, magnitude:uniform):
     "Replace pixels by random neighbors at `magnitude`."
     c.flow.add_((torch.rand_like(c.flow)-0.5)*magnitude*2)
     return c
+jitter = TfmCoord(_jitter)
 
-@TfmPixel
-def flip_lr(x): return x.flip(2)
+def _flip_lr(x):
+    "Flip `x` horizontally."
+    return x.flip(2)
+flip_lr = TfmPixel(_flip_lr)
 
-@TfmAffine
-def flip_affine() -> TfmAffine:
+def _flip_affine() -> TfmAffine:
+    "Flip `x` horizontally."
     return [[-1, 0, 0.],
             [0,  1, 0],
             [0,  0, 1.]]
+flip_affine = TfmAffine(_flip_affine)
 
-@TfmPixel
-def dihedral(x, k:partial(uniform_int,0,8)):
+def _dihedral(x, k:partial(uniform_int,0,8)):
     "Randomly flip `x` image based on `k`."
     flips=[]
     if k&1: flips.append(1)
@@ -75,9 +80,9 @@ def dihedral(x, k:partial(uniform_int,0,8)):
     if flips: x = torch.flip(x,flips)
     if k&4: x = x.transpose(1,2)
     return x.contiguous()
+dihedral = TfmPixel(_dihedral)
 
-@TfmAffine
-def dihedral_affine(k:partial(uniform_int,0,8)):
+def _dihedral_affine(k:partial(uniform_int,0,8)):
     "Randomly flip `x` image based on `k`."
     x = -1 if k&1 else 1
     y = -1 if k&2 else 1
@@ -87,6 +92,7 @@ def dihedral_affine(k:partial(uniform_int,0,8)):
     return [[x, 0, 0.],
             [0, y, 0],
             [0, 0, 1.]]
+dihedral_affine = TfmAffine(_dihedral_affine)
 
 def _pad_coord(x, row_pad:int, col_pad:int, mode='zeros'):
     #TODO: implement other padding modes than zeros?
@@ -95,20 +101,22 @@ def _pad_coord(x, row_pad:int, col_pad:int, mode='zeros'):
     x.flow = FlowField((h+2*row_pad, w+2*col_pad) , x.flow.flow * pad[None])
     return x
 
-@partial(TfmPixel, order=-10)
-@singledispatch
-def pad(x, padding:int, mode='reflection'):
+def _pad_default(x, padding:int, mode='reflection'):
     "Pad `x` with `padding` pixels. `mode` fills in space ('zeros','reflection','border')."
     mode = _pad_mode_convert[mode]
     return F.pad(x[None], (padding,)*4, mode=mode)[0]
 
-@pad.register(ImagePoints)
-def _(x, padding:int, mode='reflection'):
+def _pad_image_points(x, padding:int, mode='reflection'):
     return _pad_coord(x, padding, padding, mode)
 
-@TfmPixel
-@singledispatch
-def crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
+def _pad(x, padding:int, mode='reflection'):
+    f_pad = _pad_image_points if isinstance(x, ImagePoints) else  _pad_default
+    return f_pad(x, padding, mode)
+
+pad = TfmPixel(_pad, order=-10)
+
+
+def _crop_default(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     "Crop `x` to `size` pixels. `row_pct`,`col_pct` select focal point of crop."
     size = listify(size,2)
     rows,cols = size
@@ -116,8 +124,7 @@ def crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     col = int((x.size(2)-cols+1) * col_pct)
     return x[:, row:row+rows, col:col+cols].contiguous()
 
-@crop.register(ImagePoints)
-def _(x, size, row_pct=0.5, col_pct=0.5):
+def _crop_image_points(x, size, row_pct=0.5, col_pct=0.5):
     h,w = x.size
     rows,cols = listify(size, 2)
     x.flow.flow.mul_(torch.Tensor([w/cols, h/rows])[None])
@@ -127,10 +134,14 @@ def _(x, size, row_pct=0.5, col_pct=0.5):
     x.size = (rows, cols)
     return x
 
-@TfmCrop
-@singledispatch
-def crop_pad(x, size, padding_mode='reflection',
-             row_pct:uniform = 0.5, col_pct:uniform = 0.5):
+def _crop(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
+    f_crop = _crop_image_points if isinstance(x, ImagePoints) else _crop_default
+    return f_crop(x, size, row_pct, col_pct)
+
+crop = TfmPixel(_crop)
+
+
+def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
     padding_mode = _pad_mode_convert[padding_mode]
     size = listify(size,2)
@@ -142,12 +153,10 @@ def crop_pad(x, size, padding_mode='reflection',
         x = F.pad(x[None], (col_pad,col_pad,row_pad,row_pad), mode=padding_mode)[0]
     row = int((x.size(1)-rows+1)*row_pct)
     col = int((x.size(2)-cols+1)*col_pct)
-
     x = x[:, row:row+rows, col:col+cols]
     return x.contiguous() # without this, get NaN later - don't know why
 
-@crop_pad.register(ImagePoints)
-def _(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
+def _crop_pad_image_points(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
     size = listify(size,2)
     rows,cols = size
     if x.size[0]<rows or x.size[1]<cols:
@@ -155,6 +164,12 @@ def _(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
         col_pad = max((cols-x.size[1]+1)//2, 0)
         x = _pad_coord(x, row_pad, col_pad)
     return crop(x,(rows,cols), row_pct, col_pct)
+
+def _crop_pad(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
+    f_crop_pad = _crop_pad_image_points if isinstance(x, ImagePoints) else _crop_pad_default
+    return f_crop_pad(x, size, padding_mode, row_pct, col_pct)
+
+crop_pad = TfmCrop(_crop_pad)
 
 rand_pos = {'row_pct':(0,1), 'col_pct':(0,1)}
 
@@ -204,27 +219,26 @@ def _apply_perspective(coords:FlowField, coeffs:Points)->FlowField:
 
 _orig_pts = [[-1,-1], [-1,1], [1,-1], [1,1]]
 
-def _perspective_warp(c:FlowField, targ_pts:Points, invert=False):
+def _do_perspective_warp(c:FlowField, targ_pts:Points, invert=False):
     "Apply warp to `targ_pts` from `_orig_pts` to `c` `FlowField`."
     if invert: return _apply_perspective(c, _find_coeffs(targ_pts, _orig_pts))
     return _apply_perspective(c, _find_coeffs(_orig_pts, targ_pts))
 
-@TfmCoord
-def perspective_warp(c, magnitude:partial(uniform,size=8)=0, invert=False):
+def _perspective_warp(c, magnitude:partial(uniform,size=8)=0, invert=False):
     "Apply warp of `magnitude` to `c`."
     magnitude = magnitude.view(4,2)
     targ_pts = [[x+m for x,m in zip(xs, ms)] for xs, ms in zip(_orig_pts, magnitude)]
-    return _perspective_warp(c, targ_pts, invert)
+    return _do_perspective_warp(c, targ_pts, invert)
+perspective_warp = TfmCoord(_perspective_warp)
 
-@TfmCoord
-def symmetric_warp(c, magnitude:partial(uniform,size=4)=0, invert=False):
+def _symmetric_warp(c, magnitude:partial(uniform,size=4)=0, invert=False):
     "Apply symmetric warp of `magnitude` to `c`."
     m = listify(magnitude, 4)
     targ_pts = [[-1-m[3],-1-m[1]], [-1-m[2],1+m[1]], [1+m[3],-1-m[0]], [1+m[2],1+m[0]]]
-    return _perspective_warp(c, targ_pts, invert)
+    return _do_perspective_warp(c, targ_pts, invert)
+symmetric_warp = TfmCoord(_symmetric_warp)
 
-@TfmCoord
-def tilt(c, direction:uniform_int, magnitude:uniform=0, invert=False):
+def _tilt(c, direction:uniform_int, magnitude:uniform=0, invert=False):
     "Tilt `c` field with random `direction` and `magnitude`."
     orig_pts = [[-1,-1], [-1,1], [1,-1], [1,1]]
     if direction == 0:   targ_pts = [[-1,-1], [-1,1], [1,-1-magnitude], [1,1+magnitude]]
@@ -233,9 +247,9 @@ def tilt(c, direction:uniform_int, magnitude:uniform=0, invert=False):
     elif direction == 3: targ_pts = [[-1-magnitude,-1], [-1,1], [1+magnitude,-1], [1,1]]
     coeffs = _find_coeffs(targ_pts, _orig_pts) if invert else _find_coeffs(_orig_pts, targ_pts)
     return _apply_perspective(c, coeffs)
+tilt = TfmCoord(_tilt)
 
-@TfmCoord
-def skew(c, direction:uniform_int, magnitude:uniform=0, invert=False):
+def _skew(c, direction:uniform_int, magnitude:uniform=0, invert=False):
     "Skew `c` field with random `direction` and `magnitude`."
     orig_pts = [[-1,-1], [-1,1], [1,-1], [1,1]]
     if direction == 0:   targ_pts = [[-1-magnitude,-1], [-1,1], [1,-1], [1,1]]
@@ -248,6 +262,7 @@ def skew(c, direction:uniform_int, magnitude:uniform=0, invert=False):
     elif direction == 7: targ_pts = [[-1,-1], [-1,1], [1,-1], [1,1+magnitude]]
     coeffs = _find_coeffs(targ_pts, _orig_pts) if invert else _find_coeffs(_orig_pts, targ_pts)
     return _apply_perspective(c, coeffs)
+skew = TfmCoord(_skew)
 
 def get_transforms(do_flip:bool=True, flip_vert:bool=False, max_rotate:float=10., max_zoom:float=1.1,
                    max_lighting:float=0.2, max_warp:float=0.2, p_affine:float=0.75,
@@ -280,13 +295,13 @@ def _compute_zs_mat(sz:TensorImageSize, scale:float, squish:float,
     if orig_ratio > 1: return _get_zoom_mat(1/orig_ratio**2, 1, 0, 0.)
     else:              return _get_zoom_mat(1, orig_ratio**2, 0, 0.)
 
-@TfmCoord
-def zoom_squish(c, scale:uniform=1.0, squish:uniform=1.0, invert:rand_bool=False,
+def _zoom_squish(c, scale:uniform=1.0, squish:uniform=1.0, invert:rand_bool=False,
                 row_pct:uniform=0.5, col_pct:uniform=0.5):
     #This is intended for scale, squish and invert to be of size 10 (or whatever) so that the transform
     #can try a few zoom/squishes before falling back to center crop (like torchvision.RandomResizedCrop)
     m = _compute_zs_mat(c.size, scale, squish, invert, row_pct, col_pct)
     return _affine_mult(c, FloatTensor(m))
+zoom_squish = TfmCoord(_zoom_squish)
 
 def rand_resize_crop(size:int, max_scale:float=2., ratios:Tuple[float,float]=(0.75,1.33)):
     "Randomly resize and crop the image to a ratio in `ratios` after a zoom of `max_scale`."

@@ -16,14 +16,13 @@ def learn():
     data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
             .split_by_idx(list(range(800,1000)))
             .label_from_df(cols=dep_var)
-            .add_test(test, label=0)
-            .databunch())
-    learn = get_tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
+            .add_test(test)
+            .databunch(num_workers=1))
+    learn = tabular_learner(data, layers=[200,100], emb_szs={'native-country': 10}, metrics=accuracy)
     learn.fit_one_cycle(2, 1e-2)
     return learn
 
-def test_accuracy(learn):
-    assert learn.validate()[1] > 0.7
+def test_accuracy(learn): assert learn.validate()[1] > 0.7
 
 def test_same_categories(learn):
     x_train,y_train = learn.data.train_ds[0]
@@ -62,3 +61,16 @@ def test_normalize(learn):
     for i in np.random.randint(800,1000, (20,)):
         x,y = learn.data.test_ds[i-800]
         assert np.abs(x.conts[0] - (df.loc[i, c] - mean) / (1e-7 + std)) < 1e-6
+
+def test_empty_cont():
+    df = pd.read_csv(path/'adult.csv')
+    procs = [FillMissing, Categorify, Normalize]
+    dep_var = '>=50k'
+    cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
+    data = (TabularList.from_df(df, path=path, cat_names=cat_names, procs=procs)
+            .split_by_idx(list(range(990,1000)))
+            .label_from_df(cols=dep_var).databunch(num_workers=1))
+    learn = tabular_learner(data, layers=[10], metrics=accuracy)
+    learn.fit_one_cycle(1, 1e-1)
+    assert learn.validate()[1] > 0.5
+

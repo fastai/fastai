@@ -8,7 +8,7 @@ from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
 
-__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -23,17 +23,19 @@ model_meta = {
     models.resnet152:{**_resnet_meta}}
 
 def cnn_config(arch):
+    "Get the metadata associated with `arch`."
     torch.backends.cudnn.benchmark = True
     return model_meta.get(arch, _default_meta)
 
-def create_body(model:nn.Module, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
+def create_body(arch:Callable, pretrained:bool=True, cut:Optional[int]=None, body_fn:Callable[[nn.Module],nn.Module]=None):
     "Cut off the body of a typically pretrained `model` at `cut` or as specified by `body_fn`."
+    model = arch(pretrained)
+    if not cut and not body_fn: cut = cnn_config(arch)['cut']
     return (nn.Sequential(*list(model.children())[:cut]) if cut
             else body_fn(model) if body_fn else model)
 
-def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5):
-    """Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes.
-    :param ps: dropout, can be a single float or a list for each layer."""
+def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5, bn_final:bool=False):
+    "Model head that takes `nf` features, runs through `lin_ftrs`, and about `nc` classes."
     lin_ftrs = [nf, 512, nc] if lin_ftrs is None else [nf] + lin_ftrs + [nc]
     ps = listify(ps)
     if len(ps)==1: ps = [ps[0]/2] * (len(lin_ftrs)-2) + ps
@@ -41,18 +43,18 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
     layers = [AdaptiveConcatPool2d(), Flatten()]
     for ni,no,p,actn in zip(lin_ftrs[:-1],lin_ftrs[1:],ps,actns):
         layers += bn_drop_lin(ni,no,True,p,actn)
+    if bn_final: layers.append(nn.BatchNorm1d(lin_ftrs[-1], momentum=0.01))
     return nn.Sequential(*layers)
 
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                classification:bool=True, **kwargs:Any)->Learner:
+                bn_final:bool=False, **kwargs:Any)->Learner:
     "Build convnet style learners."
-    assert classification, 'Regression CNN not implemented yet, bug us on the forums if you want this!'
     meta = cnn_config(arch)
-    body = create_body(arch(pretrained), ifnone(cut,meta['cut']))
+    body = create_body(arch, pretrained, cut)
     nf = num_features_model(body) * 2
-    head = custom_head or create_head(nf, data.c, lin_ftrs, ps)
+    head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
     model = nn.Sequential(body, head)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
@@ -60,33 +62,33 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
     apply_init(model[1], nn.init.kaiming_normal_)
     return learn
 
-@classmethod
-def Learner_create_unet(cls, data:DataBunch, arch:Callable, pretrained:bool=True,
-             split_on:Optional[SplitFuncOrIdxList]=None, **kwargs:Any)->None:
-    "Build Unet learners."
+def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
+                 norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
+                 self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
+                 bottle:bool=False, **kwargs:Any)->None:
+    "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
-    body = create_body(arch(pretrained), meta['cut'])
-    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c), data.device)
+    body = create_body(arch, pretrained)
+    model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
+          self_attention=self_attention, y_range=y_range, norm_type=norm_type, last_cross=last_cross,
+          bottle=bottle), data.device)
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[2], nn.init.kaiming_normal_)
     return learn
 
-Learner.create_unet = Learner_create_unet
-
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, sigmoid:bool=None):
-        if sigmoid is not None: warnings.warn("`sigmoid` argument is deprecated, the learner now always return the probabilities")
+    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor):
         self.data,self.probs,self.y_true,self.losses = data,probs,y_true,losses
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
-    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, sigmoid:bool=None, tta=False):
+    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
         "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
         preds = learn.TTA(with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds, sigmoid=sigmoid)
+        return cls(learn.data, *preds)
 
     def top_losses(self, k:int=None, largest=True):
         "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
@@ -109,20 +111,17 @@ class ClassificationInterpretation():
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
         if slice_size is None: cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-        else: 
+        else:
             cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
             for i in range(0, self.y_true.shape[0], slice_size):
-                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None]) 
+                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None])
                             & (self.y_true[i:i+slice_size]==x[:,None,None])).sum(2)
                 torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2, 
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2,
                               slice_size:int=None, **kwargs)->None:
-        """Plot the confusion matrix, with `title` and using `cmap`. If `normalize`, plots the percentages with
-        `norm_dec` digits. `slice_size` can be used to avoid out of memory error if your set is too big.
-        `kawrgs` are passed to `plt.figure`.
-        """
+        "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
         plt.figure(**kwargs)
@@ -143,9 +142,14 @@ class ClassificationInterpretation():
         plt.xlabel('Predicted')
 
     def most_confused(self, min_val:int=1, slice_size:int=None)->Collection[Tuple[str,str,int]]:
-        "Sorted descending list of largest non-diagonal entries of confusion matrix"
+        "Sorted descending list of largest non-diagonal entries of confusion matrix."
         cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
         res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
+
+def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+    "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
+    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
+Learner.interpret = _learner_interpret

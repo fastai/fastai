@@ -47,9 +47,9 @@ summary: "Training in mixed precision implementation"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L33" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
-<p>Transform <code>learn</code> in FP16 precision.</p>
+<p>Put <code>learn</code> in FP16 precision mode.</p>
 
 </div>
 
@@ -87,13 +87,25 @@ summary: "Training in mixed precision implementation"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-1      0.172265    0.146274    0.947498  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.154570</th>
+    <th>0.126972</th>
+    <th>0.956820</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -133,7 +145,13 @@ epoch  train loss  valid loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You don't have to call the following functions yourself - they're called by the callback framework automatically. They're just documented here so you can see exactly what the callback is doing.</p>
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't have to call the following functions yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
 
 </div>
 </div>
@@ -149,7 +167,7 @@ epoch  train loss  valid loss  accuracy
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="MixedPrecision.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>:<code>Rank0Tensor</code>, <code>kwargs</code>:<code>Any</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Scale gradients up by <code>loss_scale</code> to prevent underflow.</p>
+<p>Scale gradients up by <code>self.loss_scale</code> to prevent underflow.</p>
 
 </div>
 

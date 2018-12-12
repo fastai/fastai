@@ -18,7 +18,7 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This module defines the main class to handle tabular data in the fastai library: <a href="/tabular.data.html#TabularDataset"><code>TabularDataset</code></a>. As always, there is also a helper function to quickly get your data.</p>
-<p>To allow you to easily create a <a href="/basic_train.html#Learner"><code>Learner</code></a> for your data, it provides <a href="/tabular.data.html#get_tabular_learner"><code>get_tabular_learner</code></a>.</p>
+<p>To allow you to easily create a <a href="/basic_train.html#Learner"><code>Learner</code></a> for your data, it provides <a href="/tabular.data.html#tabular_learner"><code>tabular_learner</code></a>.</p>
 
 </div>
 </div>
@@ -35,8 +35,9 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularDataBunch"><code>class</code> <code>TabularDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L107" class="source_link">[source]</a></h2><blockquote><p><code>TabularDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="TabularDataBunch"><code>class</code> <code>TabularDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L82" class="source_link">[source]</a></h2><blockquote><p><code>TabularDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>fix_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
+<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> suitable for tabular data.</p>
 
 </div>
 
@@ -226,7 +227,24 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The initialization of <a href="/tabular.data.html#TabularDataBunch"><code>TabularDataBunch</code></a> is the same as <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> so you really want to use the facotry method instead.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">TabularDataBunch</span><span class="o">.</span><span class="n">from_df</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -235,8 +253,9 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L109" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>, <code>df</code>:<code>DataFrame</code>, <code>dep_var</code>:<code>str</code>, <code>valid_idx</code>:<code>Collection</code>[<code>int</code>], <code>procs</code>:<code>Optional</code>[<code>Collection</code>[<a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a>]]=<code>None</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>classes</code>:<code>Collection</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TabularDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L85" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>path</code>, <code>df</code>:<code>DataFrame</code>, <code>dep_var</code>:<code>str</code>, <code>valid_idx</code>:<code>Collection</code>[<code>int</code>], <code>procs</code>:<code>Optional</code>[<code>Collection</code>[<a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a>]]=<code>None</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>classes</code>:<code>Collection</code>[<code>T_co</code>]=<code>None</code>, <code>test_df</code>=<code>None</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
+<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>df</code> and <code>valid_idx</code> with <code>dep_var</code>.</p>
 
 </div>
 
@@ -248,8 +267,8 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Creates a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> in <code>path</code> from <code>train_df</code>, <code>valid_df</code> and optionally <code>test_df</code>. The dependent variable is <code>dep_var</code>, while the categorical and continuous variables are in the <code>cat_names</code> columns and <code>cont_names</code> columns respectively. If <code>cont_names</code> is None then we assume all variables that aren't dependent or categorical are continuous. The <a href="/tabular.transform.html#TabularTransform"><code>TabularTransform</code></a> in <code>tfms</code> are applied to the dataframes as preprocessing, then the categories are replaced by their codes+1 (leaving 0 for <code>nan</code>) and the continuous variables are normalized. You can pass the <code>stats</code> to use for that step. If <code>log_output</code> is True, the dependant variable is replaced by its log.</p>
-<p>Note that the transforms should be passed as <code>Callable</code>: the actual initialization with <code>cat_names</code> and <code>cont_names</code> is done inside.</p>
+<p>Optionally, use <code>test_df</code> for the test set. The dependent variable is <code>dep_var</code>, while the categorical and continuous variables are in the <code>cat_names</code> columns and <code>cont_names</code> columns respectively. If <code>cont_names</code> is None then we assume all variables that aren't dependent or categorical are continuous. The <a href="/tabular.data.html#TabularProcessor"><code>TabularProcessor</code></a> in <code>procs</code> are applied to the dataframes as preprocessing, then the categories are replaced by their codes+1 (leaving 0 for <code>nan</code>) and the continuous variables are normalized.</p>
+<p>Note that the <a href="/tabular.data.html#TabularProcessor"><code>TabularProcessor</code></a> should be passed as <code>Callable</code>: the actual initialization with <code>cat_names</code> and <code>cont_names</code> is done during the preprocessing.</p>
 
 </div>
 </div>
@@ -270,7 +289,7 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can then easily create a <a href="/basic_train.html#Learner"><code>Learner</code></a> for this data with <a href="/tabular.data.html#get_tabular_learner"><code>get_tabular_learner</code></a>.</p>
+<p>You can then easily create a <a href="/basic_train.html#Learner"><code>Learner</code></a> for this data with <a href="/tabular.data.html#tabular_learner"><code>tabular_learner</code></a>.</p>
 
 </div>
 </div>
@@ -284,7 +303,7 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_tabular_learner"><code>get_tabular_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>get_tabular_learner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>layers</code>:<code>Collection</code>[<code>int</code>], <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>metrics</code>=<code>None</code>, <code>ps</code>:<code>Collection</code>[<code>float</code>]=<code>None</code>, <code>emb_drop</code>:<code>float</code>=<code>0.0</code>, <code>y_range</code>:<code>OptRange</code>=<code>None</code>, <code>use_bn</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>)</p>
+<h4 id="tabular_learner"><code>tabular_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L155" class="source_link">[source]</a></h4><blockquote><p><code>tabular_learner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>layers</code>:<code>Collection</code>[<code>int</code>], <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>metrics</code>=<code>None</code>, <code>ps</code>:<code>Collection</code>[<code>float</code>]=<code>None</code>, <code>emb_drop</code>:<code>float</code>=<code>0.0</code>, <code>y_range</code>:<code>OptRange</code>=<code>None</code>, <code>use_bn</code>:<code>bool</code>=<code>True</code>, <code>kwargs</code>)</p>
 </blockquote>
 <p>Get a <a href="/basic_train.html#Learner"><code>Learner</code></a> using <code>data</code>, with <code>metrics</code>, including a <a href="/tabular.models.html#TabularModel"><code>TabularModel</code></a> created using the remaining params.</p>
 
@@ -312,8 +331,9 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularList"><code>class</code> <code>TabularList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L56" class="source_link">[source]</a></h2><blockquote><p><code>TabularList</code>(<code>items</code>:<code>Iterator</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>processor</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+<h2 id="TabularList"><code>class</code> <code>TabularList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L100" class="source_link">[source]</a></h2><blockquote><p><code>TabularList</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) → <code>TabularList</code> :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
+<p>Basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for tabular data.</p>
 
 </div>
 
@@ -339,7 +359,7 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularList.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>df</code>:<code>DataFrame</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>kwargs</code>) → <code>ItemList</code></p>
+<h4 id="TabularList.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L114" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>df</code>:<code>DataFrame</code>, <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) → <code>ItemList</code></p>
 </blockquote>
 <p>Get the list of inputs in the <code>col</code> of <code>path/csv_name</code>.</p>
 
@@ -360,7 +380,7 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularList.get_emb_szs"><code>get_emb_szs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>get_emb_szs</code>(<code>sz_dict</code>)</p>
+<h4 id="TabularList.get_emb_szs"><code>get_emb_szs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>get_emb_szs</code>(<code>sz_dict</code>=<code>None</code>)</p>
 </blockquote>
 <p>Return the default embedding sizes suitable for this data or takes the ones in <code>sz_dict</code>.</p>
 
@@ -381,7 +401,49 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularLine"><code>class</code> <code>TabularLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L29" class="source_link">[source]</a></h2><blockquote><p><code>TabularLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h4 id="TabularList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<code>xs</code>, <code>ys</code>)</p>
+</blockquote>
+<p>Show the <code>xs</code> (inputs) and <code>ys</code> (targets).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TabularList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L143" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<code>xs</code>, <code>ys</code>, <code>zs</code>)</p>
+</blockquote>
+<p>Show <code>xs</code> (inputs), <code>ys</code> (targets) and <code>zs</code> (predictions).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TabularLine"><code>class</code> <code>TabularLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L24" class="source_link">[source]</a></h2><blockquote><p><code>TabularLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
 
 </div>
@@ -408,29 +470,9 @@ summary: "Base class to deal with tabular data and get a DataBunch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularLine.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<code>idxs</code>:<code>Collection</code>[<code>int</code>], <code>rows</code>:<code>int</code>, <code>ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>kwargs</code>)</p>
+<h2 id="TabularProcessor"><code>class</code> <code>TabularProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L38" class="source_link">[source]</a></h2><blockquote><p><code>TabularProcessor</code>(<code>ds</code>:<a href="/core.html#ItemBase"><code>ItemBase</code></a>=<code>None</code>, <code>procs</code>=<code>None</code>) :: <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a></p>
 </blockquote>
-<p>Show the data in <code>idxs</code> on a few <code>rows</code> from <code>ds</code>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularProcessor"><code>class</code> <code>TabularProcessor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py#L79" class="source_link">[source]</a></h2><blockquote><p><code>TabularProcessor</code>(<code>procs</code>=<code>None</code>) :: <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a></p>
-</blockquote>
+<p>Regroup the <code>procs</code> in one <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>.</p>
 
 </div>
 
