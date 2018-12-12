@@ -237,12 +237,6 @@ def split_kwargs_by_func(kwargs, func):
     func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}
     return func_kwargs, kwargs
 
-def try_int(o:Any)->Any:
-    "Try to convert `o` to int, default to `o` if not possible."
-    if isinstance(o, collections.Sized) or getattr(o,'__array_interface__',False): return o
-    try: return int(o)
-    except: return o
-
 def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators"
     if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):

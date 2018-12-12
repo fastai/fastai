@@ -533,7 +533,7 @@ class LabelList(Dataset):
                  'y_cls':self.y.__class__, 'y_proc':self.y.processor,
                  'path':self.path, 'tfms':self.tfms, 'tfm_y':self.tfm_y, 'tfmargs':self.tfmargs}
         if hasattr(self, 'tfms_y'):    state['tfms_y']    = self.tfms_y
-        if hasattr(self, 'tfmargs_y'): state['tfmargs_y'] = self.tfmargs_y 
+        if hasattr(self, 'tfmargs_y'): state['tfmargs_y'] = self.tfmargs_y
         state = {**state, **kwargs}
         pickle.dump(state, open(fn, 'wb'))
 

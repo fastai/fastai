@@ -38,7 +38,7 @@ def test_opt_params(learn):
     assert n_params(learn) == 2
     learn.unfreeze()
     assert n_params(learn) == 6
-    
+
 @pytest.mark.slow
 def manual_seed(seed=42):
     torch.manual_seed(seed)

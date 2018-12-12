@@ -149,8 +149,8 @@ class SigmoidRange(nn.Module):
     def __init__(self, low, high):
         super().__init__()
         self.low,self.high = low,high
-    def forward(self, x):
-        return sigmoid_range(x, self.low, self.high)
+
+    def forward(self, x): return sigmoid_range(x, self.low, self.high)
 
 class PartialLayer(nn.Module):
     "Layer that applies `partial(func, **kwargs)`."
