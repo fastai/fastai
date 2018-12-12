@@ -1,6 +1,7 @@
 "Utility functions to help deal with user environment"
 from ..imports.torch import *
 from ..core import *
+import fastprogress
 
 __all__ = ['show_install']
 
@@ -21,9 +22,10 @@ def show_install(show_nvidia_smi:bool=False):
 
     rep.append(["=== Software ===", None])
 
-    rep.append(["python version", platform.python_version()])
-    rep.append(["fastai version", fastai.__version__])
-    rep.append(["torch version",  torch.__version__])
+    rep.append(["python", platform.python_version()])
+    rep.append(["fastai", fastai.__version__])
+    rep.append(["fastprogress", fastprogress.__version__])
+    rep.append(["torch",  torch.__version__])
 
     # nvidia-smi
     cmd = "nvidia-smi"
@@ -46,16 +48,14 @@ def show_install(show_nvidia_smi:bool=False):
         match = re.findall(r'Driver Version: +(\d+\.\d+)', smi)
         if match: rep.append(["nvidia driver", match[0]])
 
-    rep.append(["torch cuda ver", torch.version.cuda])
-    rep.append(["torch cuda is",
-                "available" if torch.cuda.is_available() else "**Not available** "])
+    available = "available" if torch.cuda.is_available() else "**Not available** "
+    rep.append(["torch cuda", f"{torch.version.cuda} / is {available}"])
 
     # no point reporting on cudnn if cuda is not available, as it
     # seems to be enabled at times even on cpu-only setups
     if torch.cuda.is_available():
-        rep.append(["torch cudnn ver", torch.backends.cudnn.version()])
-        rep.append(["torch cudnn is",
-                "enabled" if torch.backends.cudnn.enabled else "**Not enabled** "])
+        enabled = "enabled" if torch.backends.cudnn.enabled else "**Not enabled** "
+        rep.append(["torch cudnn", f"{torch.backends.cudnn.version()} / is {enabled}"])
 
     rep.append(["\n=== Hardware ===", None])
 
@@ -79,7 +79,7 @@ def show_install(show_nvidia_smi:bool=False):
 
     torch_gpu_cnt = torch.cuda.device_count()
     if torch_gpu_cnt:
-        rep.append(["torch available", torch_gpu_cnt])
+        rep.append(["torch devices", torch_gpu_cnt])
         # information for each gpu
         for i in range(torch_gpu_cnt):
             rep.append([f"  - gpu{i}", (f"{gpu_total_mem[i]}MB | " if gpu_total_mem else "") + torch.cuda.get_device_name(i)])
