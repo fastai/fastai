@@ -7,7 +7,8 @@ from .image import Image
 from .data import ImageItemList
 
 __all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher',
-           'GANLearner', 'NoisyItem', 'GANItemList', 'gan_critic', 'AdaptiveLoss', 'accuracy_thresh_expand']
+           'GANLearner', 'NoisyItem', 'GANItemList', 'gan_critic', 'AdaptiveLoss', 'accuracy_thresh_expand',
+           'GANDiscriminativeLR']
 
 def AvgFlatten():
     "Takes the average of the input."
