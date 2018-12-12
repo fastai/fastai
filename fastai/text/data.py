@@ -213,7 +213,7 @@ class TextClasDataBunch(TextDataBunch):
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
-        train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, **kwargs)
+        train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, drop_last=True, **kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             lengths = [len(t) for t in ds.x.items]
