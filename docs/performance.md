@@ -14,7 +14,7 @@ To deploy it see [these instructions](http://docs.fast.ai/callbacks.fp16.html).
 
 ## Faster Image Processing
 
-## libjpeg-turbo - faster compression/decompression libjpeg replacement
+### libjpeg-turbo - faster compression/decompression libjpeg replacement
 
 [`libjpeg-turbo`](https://libjpeg-turbo.org/) is a JPEG image codec that uses SIMD instructions (MMX, SSE2, AVX2, NEON, AltiVec). On x86 platforms it accelerates baseline JPEG compression and decompression and progressive JPEG compression. `libjpeg-turbo` is generally 2-6x as fast as libjpeg, all else being equal.
 
@@ -25,11 +25,11 @@ Here is its [git-repo](https://github.com/libjpeg-turbo/libjpeg-turbo).
 The `Pillow-SIMD` entry provides extra information about `libjpeg-turbo`.
 
 
-## Pillow-SIMD
+### Pillow-SIMD
 
 There is a faster `Pillow` version out there.
 
-### Background
+#### Background
 
 First, there was PIL (Python Image Library). And then its development was abandoned.
 
@@ -39,7 +39,7 @@ Relatively recently, [Pillow-SIMD](https://github.com/uploadcare/pillow-simd) wa
 
 `Pillow-SIMD` currently works only on the x86 platform. That's the main reason it's a fork of Pillow and not backported to `Pillow` - the latter is committed to support many other platforms/architectures where SIMD-support is lacking. The `Pillow-SIMD` release cycle is made so that its versions are identical Pillow's and the functionality is identical, except `Pillow-SIMD` speeds up some of them (e.g. resize).
 
-### Installation
+#### Installation
 
 To install `Pillow-SIMD`, first remove `pil`, `pillow` and `jpeg` packages:
 
@@ -58,7 +58,7 @@ CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall
 
 Since this is a forked drop-in replacement, however, the package managers don't know they have `Pillow`-like package installed, so if any update happens that triggers an update of `Pillow`, conda/pip will overwrite `Pillow-SIMD` reverting to the less speedy solution. So it's worthwhile checking your run-time setup that you're indeed using `Pillow-SIMD` in your code.
 
-### How to check whether you're running `Pillow` or `Pillow-SIMD`?
+#### How to check whether you're running `Pillow` or `Pillow-SIMD`?
 
 ```
 python -c "from PIL import Image; print(Image.PILLOW_VERSION)"
@@ -66,7 +66,7 @@ python -c "from PIL import Image; print(Image.PILLOW_VERSION)"
 ```
 According to the author, if `PILLOW_VERSION` has a postfix, it is `Pillow-SIMD`. (Assuming that `Pillow` will never make a `.postX` release).
 
-### Is JPEG compression SIMD-optimized?
+#### Is JPEG compression SIMD-optimized?
 
 `libjpeg-turbo` replacement for `libjpeg` is SIMD-optimized. In order to get `Pillow` or its faster fork `Pillow-SIMD` to use `libjpeg-turbo`, the latter needs to be already installed during the former's compilation time. Once `Pillow` is compiled/installed, it no longer matters which `libjpeg` version is installed in your virtual environment or system-wide, as long as the same `libjpeg` library remains at the same location as it was during the compilation time (it's dynamically linked).
 
@@ -110,6 +110,6 @@ And we no longer can tell which of the two will be loaded at run-time and have t
 
 Also, if `libjpeg-turbo` and `libjpeg` happen to have the same version number, even if you built `Pillow` or `Pillow-SIMD` against `libjpeg-turbo`, but then later installed the default `jpeg` with exactly the same version you will end up with the slower version.
 
-### How to tell whether `Pillow-SIMD` is using `libjpeg-turbo`?
+#### How to tell whether `Pillow-SIMD` is using `libjpeg-turbo`?
 
 It's complicated - here is some [WIP](https://github.com/python-pillow/Pillow/issues/3492).
