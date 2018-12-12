@@ -29,6 +29,7 @@ of that change.
 - `DataBunch.export` now serializes everything (transforms and normalization included)
 - `DataBunch` now has `fix_dl` attr, which is same data as `train_dl` but without shuffle or train tfms
 - `pred_batch` now has `reconstruct` param, which will reconstruct each prediction into an object
+- `Learner.show_results` gives a better output for image classification tasks
 
 ### Fixed:
 
