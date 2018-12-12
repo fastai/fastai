@@ -318,6 +318,7 @@ class LearnerCallback(Callback):
     def __post_init__(self): setattr(self.learn, self.cb_name, self)
 
     def __getattr__(self,k): return getattr(self.learn, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
