@@ -39,7 +39,7 @@ class PreProcessor():
 
 class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
-    _bunch,_processor,_label_cls,_square_show = DataBunch,None,None,False
+    _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
     def __init__(self, items:Iterator, path:PathOrStr='.',
                  label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
