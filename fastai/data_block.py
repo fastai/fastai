@@ -273,7 +273,7 @@ class CategoryProcessor(PreProcessor):
 
     def process_one(self,item):
         try: return self.c2i[item]
-        except KeyError:
+        except:
             raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
 
     def process(self, ds):
