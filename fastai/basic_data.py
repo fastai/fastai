@@ -20,6 +20,9 @@ torch.utils.data.DataLoader.__init__ = intercept_args
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
 
+def DataLoader___setstate__(dl, data:Any): dl.__dict__.update(data)
+DataLoader.__setstate__ = DataLoader___setstate__
+
 @dataclass
 class DeviceDataLoader():
     "Bind a `DataLoader` to a `torch.device`."
@@ -33,6 +36,7 @@ class DeviceDataLoader():
 
     def __len__(self)->int: return len(self.dl)
     def __getattr__(self,k:str)->Any: return getattr(self.dl, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     @property
     def batch_size(self):   return self.dl.batch_size
@@ -118,6 +122,7 @@ class DataBunch():
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
