@@ -1,3 +1,5 @@
+import pytest
+
 from fastai import *
 
 def chk(a,b): assert np.array_equal(a,b)
@@ -71,3 +73,23 @@ def test_multi_category():
     exp[c2i[t[1]]] = 1.
     chk(y[1].data, exp)
 
+def test_category_processor_existing_class():
+    c1 = [1,3,2,3,1]
+    c2 = list('cabbc')
+    df = pd.DataFrame(dict(c1=c1,c2=c2))
+
+    l1 = ItemList.from_df(df, col=0)
+    sd = l1.split_by_idx([2, 4])
+    ll = sd.label_from_df(1)
+    ll.y.processor[0].process_one('a')
+
+def test_category_processor_non_existing_class():
+    c1 = [1,3,2,3,1]
+    c2 = list('cabbc')
+    df = pd.DataFrame(dict(c1=c1,c2=c2))
+
+    l1 = ItemList.from_df(df, col=0)
+    sd = l1.split_by_idx([2, 4])
+    ll = sd.label_from_df(1)
+    with pytest.raises(Exception):
+        ll.y.processor[0].process_one('d')
