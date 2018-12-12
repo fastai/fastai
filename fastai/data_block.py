@@ -275,7 +275,7 @@ class CategoryProcessor(PreProcessor):
         return uniqueify(items)
 
     def process_one(self,item):
-        try: return self.c2i.get(item)
+        try: return self.c2i[item]
         except:
             raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
 
