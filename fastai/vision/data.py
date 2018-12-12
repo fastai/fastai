@@ -11,7 +11,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 __all__ = ['get_image_files', 'denormalize', 'get_annotations', 'ImageDataBunch',
            'ImageItemList', 'normalize', 'normalize_funcs', 'resize_to',
            'channel_view', 'mnist_stats', 'cifar_stats', 'imagenet_stats', 'download_images',
-           'verify_images', 'bb_pad_collate', 'ImageImageList',
+           'verify_images', 'bb_pad_collate', 'ImageImageList', 'PointsLabelList',
            'ObjectCategoryList', 'ObjectItemList', 'SegmentationLabelList', 'SegmentationItemList', 'PointsItemList']
 
 image_extensions = set(k for k,v in mimetypes.types_map.items() if v.startswith('image/'))
@@ -133,7 +133,7 @@ class ImageDataBunch(DataBunch):
         path = Path(path)
         df = pd.read_csv(path/csv_labels, header=header)
         return cls.from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct,
-                fn_col=fn_col, label_col=label_col, suffix=suffix, header=header, **kwargs)
+                fn_col=fn_col, label_col=label_col, suffix=suffix, **kwargs)
 
     @classmethod
     def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, **kwargs):
@@ -249,7 +249,7 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     parallel(func, files, max_workers=max_workers)
 
 class ImageItemList(ItemList):
-    "`ItemList` suitable for computre vision."
+    "`ItemList` suitable for computer vision."
     _bunch,_square_show,_square_show_res = ImageDataBunch,True,True
     def __init__(self, *args, convert_mode='RGB', **kwargs):
         super().__init__(*args, **kwargs)
