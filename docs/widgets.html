@@ -64,10 +64,44 @@ sidebar: home_sidebar
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learner</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
-<span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="n">DatasetFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">from_toplosses</span><span class="p">(</span><span class="n">learner</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">Valid</span><span class="p">)</span>
+<span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="n">DatasetFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">from_toplosses</span><span class="p">(</span><span class="n">learner</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-4-6099362b9b5c&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> learner <span class="ansi-blue-fg">=</span> create_cnn<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">,</span> models<span class="ansi-blue-fg">.</span>resnet18<span class="ansi-blue-fg">,</span> metrics<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">[</span>accuracy<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>ds<span class="ansi-blue-fg">,</span> idxs <span class="ansi-blue-fg">=</span> DatasetFormatter<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>from_toplosses<span class="ansi-blue-fg">(</span>learner<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/fastai/fastai/widgets/image_cleaner.py</span> in <span class="ansi-cyan-fg">from_toplosses</span><span class="ansi-blue-fg">(cls, learn, n_imgs, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     16</span>     <span class="ansi-green-fg">def</span> from_toplosses<span class="ansi-blue-fg">(</span>cls<span class="ansi-blue-fg">,</span> learn<span class="ansi-blue-fg">,</span> n_imgs<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span>         <span class="ansi-blue-fg">&#34;Gets indices with top losses for both training and validation sets in `learn`.&#34;</span>
+<span class="ansi-green-fg">---&gt; 18</span><span class="ansi-red-fg">         </span>train_ds<span class="ansi-blue-fg">,</span> train_idxs <span class="ansi-blue-fg">=</span> cls<span class="ansi-blue-fg">.</span>get_toplosses_idxs<span class="ansi-blue-fg">(</span>learn<span class="ansi-blue-fg">,</span> n_imgs<span class="ansi-blue-fg">,</span> DatasetType<span class="ansi-blue-fg">.</span>Train<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     19</span>         <span class="ansi-green-fg">return</span> train_ds<span class="ansi-blue-fg">,</span> train_idxs
+<span class="ansi-green-intense-fg ansi-bold">     20</span> 
+
+<span class="ansi-green-fg">~/fastai/fastai/widgets/image_cleaner.py</span> in <span class="ansi-cyan-fg">get_toplosses_idxs</span><span class="ansi-blue-fg">(cls, learn, n_imgs, ds_type, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     25</span>         <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> n_imgs<span class="ansi-blue-fg">:</span> n_imgs <span class="ansi-blue-fg">=</span> len<span class="ansi-blue-fg">(</span>dl<span class="ansi-blue-fg">.</span>dataset<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     26</span>         _<span class="ansi-blue-fg">,</span>_<span class="ansi-blue-fg">,</span>top_losses <span class="ansi-blue-fg">=</span> learn<span class="ansi-blue-fg">.</span>get_preds<span class="ansi-blue-fg">(</span>ds_type<span class="ansi-blue-fg">,</span> with_loss<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 27</span><span class="ansi-red-fg">         </span>idxs <span class="ansi-blue-fg">=</span> torch<span class="ansi-blue-fg">.</span>topk<span class="ansi-blue-fg">(</span>top_losses<span class="ansi-blue-fg">,</span> n_imgs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">     28</span>         <span class="ansi-green-fg">return</span> cls<span class="ansi-blue-fg">.</span>padded_ds<span class="ansi-blue-fg">(</span>dl<span class="ansi-blue-fg">.</span>dataset<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> idxs
+<span class="ansi-green-intense-fg ansi-bold">     29</span> 
+
+<span class="ansi-red-fg">RuntimeError</span>: invalid argument 2: k not in range for dimension at /opt/conda/conda-bld/pytorch_1544176307774/work/aten/src/TH/generic/THTensorMoreMath.cpp:1185</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -94,22 +128,6 @@ sidebar: home_sidebar
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7fafb02a3630&gt;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 

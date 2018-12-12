@@ -42,8 +42,9 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DynamicUnet"><code>class</code> <code>DynamicUnet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L37" class="source_link">[source]</a></h2><blockquote><p><code>DynamicUnet</code>(<code>encoder</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>n_classes</code>:<code>int</code>, <code>blur</code>:<code>bool</code>=<code>False</code>, <code>blur_final</code>=<code>True</code>, <code>self_attention</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h2 id="DynamicUnet"><code>class</code> <code>DynamicUnet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L38" class="source_link">[source]</a></h2><blockquote><p><code>DynamicUnet</code>(<code>encoder</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>n_classes</code>:<code>int</code>, <code>blur</code>:<code>bool</code>=<code>False</code>, <code>blur_final</code>=<code>True</code>, <code>self_attention</code>:<code>bool</code>=<code>False</code>, <code>y_range</code>:<code>OptRange</code>=<code>None</code>, <code>last_cross</code>:<code>bool</code>=<code>True</code>, <code>bottle</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="/layers.html#SequentialEx"><code>SequentialEx</code></a></p>
 </blockquote>
+<p>Create a U-Net from a given architecture.</p>
 
 </div>
 
@@ -55,7 +56,8 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Builds a U-Net from a given <code>encoder</code> (that can be a pretrained model) and with a final output of <code>n_classes</code>. During the initialization, it uses <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a> to determine the intermediate features sizes by passing a dummy input throught the model.</p>
+<p>This U-Net will sit on top of an <code>encoder</code> (that can be a pretrained model) and with a final output of <code>n_classes</code>. During the initialization, it uses <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a> to determine the intermediate features sizes by passing a dummy input throught the model and crate the upward path automatically.</p>
+<p><code>blur</code> is used to avoid checkerboard artifacts at each layer, <code>blur_final</code> is pecific to the last layer. <code>self_attention</code> determines if we use a self attention layer at the third block before the end. If <code>y_range</code> is passed, the last activations go through a sigmoid rescaled to that range. <code>last_cross</code> determines if we use a cross-connection with the direct input of the model, and in this case <code>bottle</code> flags if we use a bottleneck or not for that skip connection.</p>
 
 </div>
 </div>
@@ -71,6 +73,7 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="UnetBlock"><code>class</code> <code>UnetBlock</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L14" class="source_link">[source]</a></h2><blockquote><p><code>UnetBlock</code>(<code>up_in_c</code>:<code>int</code>, <code>x_in_c</code>:<code>int</code>, <code>hook</code>:<a href="/callbacks.hooks.html#Hook"><code>Hook</code></a>, <code>final_div</code>:<code>bool</code>=<code>True</code>, <code>blur</code>:<code>bool</code>=<code>False</code>, <code>leaky</code>:<code>float</code>=<code>None</code>, <code>self_attention</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
+<p>A quasi-UNet block, using <code>PixelShuffle_ICNR upsampling</code>.</p>
 
 </div>
 
@@ -82,7 +85,7 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Builds a U-Net block that receives the output of the last block to be upsampled (size <code>up_in_c</code>) and the activations features from an intermediate layer of the <code>encoder</code> (size <code>x_in_c</code>, this is the lateral connection). The <code>hook</code> is set to this intermediate layer to store the output needed for this block.</p>
+<p>This block receives the output of the last block to be upsampled (size <code>up_in_c</code>) and the activations features from an intermediate layer of the <code>encoder</code> (size <code>x_in_c</code>, this is the lateral connection). The <code>hook</code> is set to this intermediate layer to store the output needed for this block. <code>final_div</code> determines if we devide the number of features by 2 with the upsampling, <code>blur</code> is to avoid checkerboard artifacts. If <code>leaky</code> is set, use a leaky ReLU with a slope equals to that parameter instead of a ReLU, and <code>self_attention</code> determines if we use a self-attention layer. <code>kwargs</code> are passed to <a href="/layers.html#conv_layer"><code>conv_layer</code></a>.</p>
 
 </div>
 </div>

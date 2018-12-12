@@ -135,7 +135,7 @@ class GANTrainer(LearnerCallback):
         data = self.learn.data
         img = self.last_gen[0]
         norm = getattr(data,'norm',False)
-        if norm and norm.keywords.get('do_y',False): img = self.data.denorm(img)
+        if norm and norm.keywords.get('do_y',False): img = data.denorm(img)
         img = data.train_ds.y.reconstruct(img)
         self.imgs.append(img)
         self.titles.append(f'Epoch {epoch}')
@@ -245,9 +245,11 @@ class GANItemList(ImageItemList):
     def reconstruct(self, t): return NoisyItem(t.size(0))
     
     def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
+        "Shows `ys` (target images) on a figure of `figsize`."
         super().show_xys(ys, xs, imgsize=imgsize, figsize=figsize, **kwargs)
         
     def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
+        "Shows `zs` (generated images) on a figure of `figsize`."
         super().show_xys(zs, xs, imgsize=imgsize, figsize=figsize, **kwargs)
 
 _conv_args = dict(leaky=0.2, norm_type=NormType.Spectral)

@@ -291,7 +291,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANDiscriminativeLR"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L276" class="source_link">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>mult_lr</code>:<code>float</code>=<code>5.0</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="GANDiscriminativeLR"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L278" class="source_link">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>mult_lr</code>:<code>float</code>=<code>5.0</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p><a href="/callback.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
 
@@ -312,7 +312,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANDiscriminativeLR.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L280" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>train</code>, <code>kwargs</code>)</p>
+<h4 id="GANDiscriminativeLR.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>train</code>, <code>kwargs</code>)</p>
 </blockquote>
 <p>Multiply the current lr if necessary.</p>
 
@@ -333,7 +333,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANDiscriminativeLR.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L284" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>)</p>
+<h4 id="GANDiscriminativeLR.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L286" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>)</p>
 </blockquote>
 <p>Put the LR back to its value if necessary.</p>
 
@@ -416,7 +416,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gan_critic"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L258" class="source_link">[source]</a></h4><blockquote><p><code>gan_critic</code>(<code>n_channels</code>:<code>int</code>=<code>3</code>, <code>nf</code>:<code>int</code>=<code>128</code>, <code>n_blocks</code>:<code>int</code>=<code>3</code>, <code>p</code>:<code>int</code>=<code>0.15</code>)</p>
+<h4 id="gan_critic"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L260" class="source_link">[source]</a></h4><blockquote><p><code>gan_critic</code>(<code>n_channels</code>:<code>int</code>=<code>3</code>, <code>nf</code>:<code>int</code>=<code>128</code>, <code>n_blocks</code>:<code>int</code>=<code>3</code>, <code>p</code>:<code>int</code>=<code>0.15</code>)</p>
 </blockquote>
 <p>Critic to train a <code>GAN</code>.</p>
 
@@ -696,9 +696,30 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveLoss"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L288" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="AdaptiveLoss"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L290" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="accuracy_thresh_expand"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L299" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.5</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Compute accuracy after expanding <code>y_true</code> to the size of <code>y_pred</code>.</p>
 
 </div>
 
@@ -756,6 +777,13 @@ summary: "All the modules and callbacks necessary to train a GAN"
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Inputs will be <a href="/vision.gan.html#NoisyItem"><code>NoisyItem</code></a> of <code>noise_sz</code> while the default class for target is <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a>.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -767,7 +795,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="GANItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L247" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<code>xs</code>, <code>ys</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
-<p>Show the <code>xs</code> (inputs) and <code>ys</code> (targets) on a figure of <code>figsize</code>.</p>
+<p>Shows <code>ys</code> (target images) on a figure of <code>figsize</code>.</p>
 
 </div>
 
@@ -786,9 +814,9 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L250" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<code>xs</code>, <code>ys</code>, <code>zs</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="GANItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L251" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<code>xs</code>, <code>ys</code>, <code>zs</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
 </blockquote>
-<p>Show <code>xs</code> (inputs), <code>ys</code> (targets) and <code>zs</code> (predictions) on a figure of <code>figsize</code>.</p>
+<p>Shows <code>zs</code> (generated images) on a figure of <code>figsize</code>.</p>
 
 </div>
 

@@ -41,6 +41,7 @@ summary: "Overview of the models used for CV in fastai"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="Darknet"><code>class</code> <code>Darknet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/darknet.py#L22" class="source_link">[source]</a></h2><blockquote><p><code>Darknet</code>(<code>num_blocks</code>:<code>Collection</code>[<code>int</code>], <code>num_classes</code>:<code>int</code>, <code>nf</code>=<code>32</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
+<p><a href="https://github.com/pjreddie/darknet">https://github.com/pjreddie/darknet</a></p>
 
 </div>
 
@@ -68,6 +69,7 @@ summary: "Overview of the models used for CV in fastai"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="WideResNet"><code>class</code> <code>WideResNet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/wrn.py#L38" class="source_link">[source]</a></h2><blockquote><p><code>WideResNet</code>(<code>num_groups</code>:<code>int</code>, <code>N</code>:<code>int</code>, <code>num_classes</code>:<code>int</code>, <code>k</code>:<code>int</code>=<code>1</code>, <code>drop_p</code>:<code>float</code>=<code>0.0</code>, <code>start_nf</code>:<code>int</code>=<code>16</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
+<p>Wide ResNet with <code>num_groups</code> and a width of <code>k</code>.</p>
 
 </div>
 
@@ -79,7 +81,7 @@ summary: "Overview of the models used for CV in fastai"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a wide resnet with blocks <code>num_groups</code> groups, each containing blocks of size <code>N</code>. <code>k</code> is the width of the resnet, <code>start_nf</code> the initial number of features. Dropout of <code>drop_p</code> is applied at the end of each block.</p>
+<p>Eeach group contains blocks of size <code>N</code>. <code>start_nf</code> the initial number of features. Dropout of <code>drop_p</code> is applied at the end of each block.</p>
 
 </div>
 </div>
@@ -107,7 +109,7 @@ summary: "Overview of the models used for CV in fastai"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Creates a wide resnet for CIFAR-10 with <code>num_groups=3</code>, <code>N=3</code>, <code>k=6</code> and <code>drop_p=0.</code>.</p>
+<p>This is a <a href="/vision.models.wrn.html#WideResNet"><code>WideResNet</code></a> with <code>num_groups=3</code>, <code>N=3</code>, <code>k=6</code> and <code>drop_p=0.</code>.</p>
 
 </div>
 </div>

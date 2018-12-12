@@ -261,7 +261,7 @@ Total time: 00:03 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CollabDataBunch"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L46" class="source_link">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="CollabDataBunch"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L46" class="source_link">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>fix_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 <p>Base <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for collaborative filtering.</p>
 
@@ -313,6 +313,97 @@ Total time: 00:03 <p><table style='width:300px; margin-bottom:10px'>
 <h2 id="Model-and-Learner">Model and <a href="/basic_train.html#Learner"><code>Learner</code></a><a class="anchor-link" href="#Model-and-Learner">&#182;</a></h2>
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="CollabLearner"><code>class</code> <code>CollabLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L61" class="source_link">[source]</a></h3><blockquote><p><code>CollabLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>opt_func</code>:<code>Callable</code>=<code>'Adam'</code>, <code>loss_func</code>:<code>Callable</code>=<code>None</code>, <code>metrics</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>true_wd</code>:<code>bool</code>=<code>True</code>, <code>bn_wd</code>:<code>bool</code>=<code>True</code>, <code>wd</code>:<code>Floats</code>=<code>0.01</code>, <code>train_bn</code>:<code>bool</code>=<code>True</code>, <code>path</code>:<code>str</code>=<code>None</code>, <code>model_dir</code>:<code>str</code>=<code>'models'</code>, <code>callback_fns</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>callbacks</code>:<code>Collection</code>[<a href="/callback.html#Callback"><code>Callback</code></a>]=<code>&lt;factory&gt;</code>, <code>layer_groups</code>:<code>ModuleList</code>=<code>None</code>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+</blockquote>
+<p><a href="/basic_train.html#Learner"><code>Learner</code></a> suitable for collaborative filtering.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a subclass of <a href="/basic_train.html#Learner"><code>Learner</code></a> that just introduces helper functions to analyze results, the initialization is the same as a regular <a href="/basic_train.html#Learner"><code>Learner</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CollabLearner.bias"><code>bias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>bias</code>(<code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>is_item</code>:<code>bool</code>=<code>True</code>)</p>
+</blockquote>
+<p>Bias for item or user (based on <code>is_item</code>) for all in <code>arr</code>. (Set model to <code>cpu</code> and no grad.)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CollabLearner.get_idx"><code>get_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>get_idx</code>(<code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>is_item</code>:<code>bool</code>=<code>True</code>)</p>
+</blockquote>
+<p>Fetch item or user (based on <code>is_item</code>) for all in <code>arr</code>. (Set model to <code>cpu</code> and no grad.)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CollabLearner.weight"><code>weight</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L79" class="source_link">[source]</a></h4><blockquote><p><code>weight</code>(<code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>is_item</code>:<code>bool</code>=<code>True</code>)</p>
+</blockquote>
+<p>Bias for item or user (based on <code>is_item</code>) for all in <code>arr</code>. (Set model to <code>cpu</code> and no grad.)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -379,7 +470,7 @@ Total time: 00:03 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L85" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>wd</code>:<code>float</code>=<code>0.01</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L86" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>wd</code>:<code>float</code>=<code>0.01</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Create a Learner for collaborative filtering on <code>data</code>.</p>
 
