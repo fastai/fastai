@@ -101,4 +101,4 @@ So if `libjpeg-turbo` and `jpeg` happen to have the same version number, even if
 
 ### How to tell whether `Pillow-SIMD` is using `libjpeg-turbo`?
 
-It's complicated - here is some WIP: https://github.com/python-pillow/Pillow/issues/3492
+It's complicated - here is some [WIP](https://github.com/python-pillow/Pillow/issues/3492).
