@@ -162,10 +162,12 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from DataFrames."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
-        if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
+        is_multi = (is_listy(label_cols) and len(label_cols) > 1)
+        if classes is None and is_multi: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
+        if cls==TextLMDataBunch: src = src.label_for_lm()  
+        else: src = src.label_from_df(cols=label_cols, classes=classes, sep=label_delim, one_hot=is_multi)
         if test_df is not None: src.add_test(TextList.from_df(test_df, path, cols=text_cols))
         return src.databunch(**kwargs)
 

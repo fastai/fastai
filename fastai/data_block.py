@@ -224,6 +224,9 @@ class ItemList():
     def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        if is_listy(cols) and len(cols) > 1: 
+            new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
+            kwargs = {**new_kwargs, **kwargs}
         return self.label_from_list(labels, **kwargs)
 
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
@@ -329,14 +332,20 @@ class MultiCategoryProcessor(CategoryProcessor):
 class MultiCategoryList(CategoryListBase):
     "Basic `ItemList` for multi-classification labels."
     _processor=MultiCategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
+    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, one_hot:bool=False, **kwargs):
         if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
         super().__init__(items, classes=classes, **kwargs)
+        if one_hot: 
+            assert classes is not None, "Please provide class names with `classes=...`"
+            self.processor = []
         self.loss_func = BCEWithLogitsFlat()
+        self.one_hot = one_hot
+        self.copy_new += ['one_hot']
 
     def get(self, i):
         o = self.items[i]
         if o is None: return None
+        if self.one_hot: return self.reconstruct(o.astype(np.float32))
         return MultiCategory(one_hot(o, self.c), [self.classes[p] for p in o], o)
 
     def analyze_pred(self, pred, thresh:float=0.5):
