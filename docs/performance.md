@@ -97,7 +97,18 @@ grep libjpeg.so jpeg-9b-h024ee3a_2.json
 ```
 I find that it's `lib/libjpeg.so.9.2.0` (`~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.9.2.0`).
 
-So if `libjpeg-turbo` and `jpeg` happen to have the same version number, even if you built `Pillow` or `Pillow-SIMD` against `libjpeg-turbo`, but then later installed the default `jpeg` with exactly the same version you will end up with the slower version.
+However, we now have an issue of the resolver showing both libraries:
+
+```
+cd ~/anaconda3/envs/pytorch-dev/lib/python3.6/site-packages/PIL/
+ldd  _imaging.cpython-36m-x86_64-linux-gnu.so | grep libjpeg
+        libjpeg.so.8 => ~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.8
+        libjpeg.so.9 => ~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.9
+```
+
+And we no longer can tell which of the two will be loaded at run-time and have to inspect `/dev/<pid>/maps` instead.
+
+Also, if `libjpeg-turbo` and `libjpeg` happen to have the same version number, even if you built `Pillow` or `Pillow-SIMD` against `libjpeg-turbo`, but then later installed the default `jpeg` with exactly the same version you will end up with the slower version.
 
 ### How to tell whether `Pillow-SIMD` is using `libjpeg-turbo`?
 
