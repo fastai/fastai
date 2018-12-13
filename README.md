@@ -46,11 +46,11 @@ conda install -c pytorch -c fastai fastai
 Note that JPEG decoding can be a bottleneck, particularly if you have a fast GPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
 ```bash
-conda uninstall --force jpeg -y
+conda uninstall --force jpeg libtiff -y
 conda install -c conda-forge libjpeg-turbo
-CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall pillow-simd
+CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall --no-binary :all: --compile pillow-simd
 ```
-For the full story see [Pillow-SIMD](https://docs.fast.ai/performance.html#installation).
+If you only care about faster JPEG decompression, it can be `pillow` or `pillow-simd` in the last command above, the latter speeds up other image processing operations. For the full story see [Pillow-SIMD](https://docs.fast.ai/performance.html#faster-image-processing).
 
 ### PyPI Install
 
