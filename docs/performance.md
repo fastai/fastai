@@ -122,7 +122,7 @@ Here are the detailed instructions, with an optional `TIFF` support:
 
 5. Since this is a forked drop-in replacement, however, the package managers don't know they have `Pillow`-replacement package installed, so if any update happens that triggers an update of `Pillow`, `conda`/`pip` will overwrite `Pillow-SIMD` reverting to the less speedy `Pillow` solution. So it's worthwhile checking your run-time setup that you're indeed using `Pillow-SIMD` in your code.
 
-
+   That means that every time you update the `fastai` conda package you will have to rebuild `Pillow-SIMD`.
 
 #### How to check whether you're running `Pillow` or `Pillow-SIMD`?
 
