@@ -126,7 +126,7 @@ class DataBunch():
                 self.test_dl if ds_type == DatasetType.Test else
                 self.valid_dl if ds_type == DatasetType.Valid else
                 self.single_dl if ds_type == DatasetType.Single else
-                self.fix_fl)
+                self.fix_dl)
 
     @property
     def dls(self):

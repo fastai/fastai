@@ -15,15 +15,15 @@ class DatasetFormatter():
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, **kwargs):
         "Gets indices with top losses for both training and validation sets in `learn`."
-        train_ds, train_idxs = cls.get_toplosses_idxs(learn, n_imgs, DatasetType.Train, **kwargs)
+        train_ds, train_idxs = cls.get_toplosses_idxs(learn, n_imgs, **kwargs)
         return train_ds, train_idxs
 
     @classmethod
-    def get_toplosses_idxs(cls, learn, n_imgs, ds_type:DatasetType, **kwargs):
+    def get_toplosses_idxs(cls, learn, n_imgs, **kwargs):
         "Sorts `ds_type` dataset by top losses and returns dataset and sorted indices."
-        dl = learn.dl(ds_type)
+        dl = learn.data.fix_dl
         if not n_imgs: n_imgs = len(dl.dataset)
-        _,_,top_losses = learn.get_preds(ds_type, with_loss=True)
+        _,_,top_losses = learn.get_preds(ds_type=DatasetType.Fix, with_loss=True)
         idxs = torch.topk(top_losses, n_imgs)[1]
         return cls.padded_ds(dl.dataset, **kwargs), idxs
 
@@ -34,15 +34,14 @@ class DatasetFormatter():
     @classmethod
     def from_similars(cls, learn, layer_ls:list=[0, 7, 2], **kwargs):
         "Gets the indices for the most similar images in training and validation datasets"
-        train_ds, train_idxs = cls.get_similars_idxs(learn, layer_ls, DatasetType.Train, **kwargs)
+        train_ds, train_idxs = cls.get_similars_idxs(learn, layer_ls, **kwargs)
         return train_ds, train_idxs
 
     @classmethod
-    def get_similars_idxs(cls, learn, layer_ls, ds_type, **kwargs):
+    def get_similars_idxs(cls, learn, layer_ls, **kwargs):
         "Gets the indices for the most similar images in `ds_type` dataset"
         hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
-        if ds_type == DatasetType.Train: dl = learn.data.train_dl.new(shuffle=False)
-        else: dl = learn.dl(ds_type)
+        dl = learn.data.fix_dl
 
         ds_actns = cls.get_actns(learn, hook=hook, dl=dl, **kwargs)
         similarities = cls.comb_similarity(ds_actns, ds_actns, **kwargs)
