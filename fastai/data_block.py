@@ -319,7 +319,7 @@ class CategoryList(CategoryListBase):
 
 class MultiCategoryProcessor(CategoryProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
-    def process_one(self,item): return [self.c2i.get(o,None) for o in item]
+    def process_one(self,item): return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
 
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."
