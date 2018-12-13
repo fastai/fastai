@@ -60,8 +60,7 @@ pip install fastai
 
 ### Developer Install
 
-First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the same package manager you used to install it, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
-
+The following instructions will result in a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs), so that you can `git pull` at any time and your environment will automatically get the updates:
 
 ```bash
 git clone https://github.com/fastai/fastai
@@ -70,7 +69,9 @@ tools/run-after-git-clone
 pip install -e .[dev]
 ```
 
-You can test that the build works by starting the jupyter notebook:
+Note that this will install the `cuda9.0` `pytorch` build via default dependencies. If you need a higher or lower `cudaXX` build, following the instructions [here]( https://pytorch.org/get-started/locally/), to install the desired `pytorch` build.
+
+Next, you can test that the build works by starting the jupyter notebook:
 
 ```bash
 jupyter notebook
