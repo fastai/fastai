@@ -88,7 +88,7 @@ Here is the quick version that includes all the steps w/o the explanations. If y
 
 ```
 make tools-update
-make master-branch-switch && make git-not-dirty
+make master-branch-switch && make sanity-check
 make test
 make bump && make changes-finalize
 make release-branch-create && make commit-version
@@ -135,10 +135,13 @@ The starting point of the workflow is a dev version of the master branch. For th
     make master-branch-switch    # git checkout master
     ```
 
-4. check-dirty - git cleanup/stash/commit so there is nothing in the way
+4. do sanity checks:
+
+    * check-dirty - git cleanup/stash/commit so there is nothing in the way
+    * version number is not messed up
 
     ```
-    make git-not-dirty || echo "Commit changes before proceeding"
+    make sanity-check
     ```
 
 5. pick a starting point

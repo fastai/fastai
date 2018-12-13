@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs git-not-dirty git-pull help release tag-version-push test test-install-conda test-installtest-install-pyp upload upload-conda upload-pypi
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-install-conda test-installtest-install-pyp upload upload-conda upload-pypi
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -174,7 +174,7 @@ tools-update: ## install/update build tools
 release: ## do it all (other than testing)
 	${MAKE} tools-update
 	${MAKE} master-branch-switch
-	${MAKE} git-not-dirty
+	${MAKE} sanity-check
 	${MAKE} test
 	${MAKE} bump
 	${MAKE} changes-finalize
@@ -201,7 +201,7 @@ git-pull: ## git pull
 	git pull
 	git status
 
-git-not-dirty:
+sanity-check:
 	@echo "*** Checking that everything is committed"
 	@if [ -n "$(shell git status -s)" ]; then\
 		echo "git status is not clean. You have uncommitted git files";\
@@ -209,6 +209,9 @@ git-not-dirty:
 	else\
 		echo "git status is clean";\
     fi
+
+	@echo "*** Checking master branch version: should always be: X.Y.Z.dev0"
+	@perl -le '$$_=shift; /\.dev0$/ ? print "Good initial version: $$_" : die "Bad initial version: $$_, expecting \.dev0"' $(version)
 
 prev-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
