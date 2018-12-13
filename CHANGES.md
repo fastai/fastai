@@ -21,6 +21,7 @@ of that change.
 - `DataBunch` performs a sanity check after its initialization and will throw a warning if something is wrong with the data.
 - More GAN stuff: `gan_critic`, `AdaptiveLoss`, `accuracy_thresh_expand`, and `GANDiscriminativeLR`
 - Support for one-hot encoded labels in multiclassification problems
+- Add `Dataset.Fix` (same as train but with `shuffle=False`, `drop_last=False` and valid transforms)
 
 ### Changed:
 
