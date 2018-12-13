@@ -202,7 +202,7 @@ git-pull: ## git pull
 	git status
 
 sanity-check:
-	@echo "*** Checking that everything is committed"
+	@echo "\n\n*** Checking that everything is committed"
 	@if [ -n "$(shell git status -s)" ]; then\
 		echo "git status is not clean. You have uncommitted git files";\
 		exit 1;\
@@ -210,8 +210,8 @@ sanity-check:
 		echo "git status is clean";\
     fi
 
-	@echo "*** Checking master branch version: should always be: X.Y.Z.dev0"
-	perl -le '$$_=shift; /\.dev0$$/ ? print "Good initial version: $$_" : die "Bad initial version: $$_, expecting \.dev0"' $(version)
+	@echo "\n\n*** Checking master branch version: should always be: X.Y.Z.dev0"
+	@perl -le '$$_=shift; $$v="initial version: $$_"; /\.dev0$$/ ? print "Good $$v" : die "Bad $vv, expecting \.dev0"' $(version)
 
 prev-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
