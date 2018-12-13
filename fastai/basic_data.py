@@ -2,7 +2,7 @@
 from .torch_core import *
 from torch.utils.data.dataloader import default_collate
 
-DatasetType = Enum('DatasetType', 'Train Valid Test Single')
+DatasetType = Enum('DatasetType', 'Train Valid Test Single Fix')
 __all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType']
 
 old_dl_init = torch.utils.data.DataLoader.__init__
@@ -121,10 +121,12 @@ class DataBunch():
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
+        #TODO: refactor
         return (self.train_dl if ds_type == DatasetType.Train else
                 self.test_dl if ds_type == DatasetType.Test else
                 self.valid_dl if ds_type == DatasetType.Valid else
-                self.single_dl)
+                self.single_dl if ds_type == DatasetType.Single else
+                self.fix_fl)
 
     @property
     def dls(self):
