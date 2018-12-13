@@ -967,7 +967,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
 5. Commit and push all the changes to the branch.
 
    ```
-   make commit-dev-cycle-push
+   make commit-hotfix-push
    ```
 
 6. Make a new tag with the new version.
