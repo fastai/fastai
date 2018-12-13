@@ -21,6 +21,9 @@ entries:
     - output: web,pdf
       title: Performance
       url: /performance.html
+    - output: web,pdf
+      title: Support
+      url: /support.html
     output: web
     title: Getting started
   - folderitems:
