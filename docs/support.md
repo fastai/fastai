@@ -10,11 +10,13 @@ Most issues, in particular problems with your code, should be discussed at the [
 
 If you are pretty sure you found a bug in the `fastai` software please submit a bug report using [github issue tracker](https://github.com/fastai/fastai/issues).
 
-Feature requests are best posted on the [forums](https://forums.fast.ai/).
+Feature requests are best discussed on the [forums](https://forums.fast.ai/).
 
-It's always a good idea to search the forums to see whether someone else has reported a similar issue. Usually, it will help you find a solution much faster.
+It's always a good idea to search the forums to see whether someone else has already reported a similar issue. Usually, it will help you find a solution much faster.
 
-If the problem is not strictly related to `fastai` codebase, but to packages that it depends on (e.g., `pytorch`, `torchvision`, `spacy`, `numpy`), often you can find solutions by searching for the error messages from the stack trace on google or your favoriate search engine.
+If the problem is not strictly related to the `fastai` codebase, but to modules it depends on (e.g., `pytorch`, `torchvision`, `spacy`, `numpy`), often you can find solutions by searching for the error messages from the error stack trace on google or your favourite search engine.
+
+
 
 ## Reporting Installation Issues
 
@@ -36,7 +38,6 @@ Before making a new issue report, please:
 5. Search [forums](https://forums.fast.ai/) for a similar issues already reported.
 
 If you still can't find a resolution, please post a comment in this [thread](https://forums.fast.ai/t/fastai-v1-install-issues-thread/24111/1).
-
 
 If the issue is still relevant, make sure to include in your post:
 
@@ -64,7 +65,9 @@ If the issue is still relevant, make sure to include in your post:
 
 If the resulting output is very long, please paste it to https://pastebin.com/ and include a link to your paste
 
-## Do's and Don'ts:
+
+
+## Do's and Don'ts
 
 * please do not send screenshots with trace/error messages - we can't copy-n-paste from the images, instead paste them verbatim into your post and use the markdown gui menu so that it's code-formatted.
 
@@ -74,9 +77,13 @@ If the resulting output is very long, please paste it to https://pastebin.com/ a
 
     So that the error messages will be in English. You can run `locale` to see which locales you have installed.
 
-## Bug Reports and PRs
 
-If you found a bug and know how to fix it please submit a PR with the fix [here](https://github.com/fastai/fastai/pulls).
+
+## PRs
+
+If you found a bug and know how to fix it, please, submit a PR with the fix [here](https://github.com/fastai/fastai/pulls).
+
+If you'd like to contribute a new feature, please, discuss it on the [forums](https://forums.fast.ai/) first.
 
 Make sure to read [CONTRIBUTING](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md).
 
