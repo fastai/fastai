@@ -78,7 +78,7 @@ If you need to make a hotfix to an already released version, follow the [Hotfix 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
 ```
-make release 2>&1 | tee log.`date +"%Y-%m-%d-%H:%M:%S"`.log
+make release 2>&1 | tee release-`date +"%Y-%m-%d-%H:%M:%S"`.log
 ```
 Ideally, don't remove the part that saves the full log - you might need it later.
 
