@@ -31,16 +31,6 @@ of that change.
 
 ### New:
 
-### Changed:
-
-### Fixed:
-
-
-
-## 1.0.36 (2018-12-13)
-
-### New:
-
 - `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
 - `no_split` method in the data block API
 - `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
