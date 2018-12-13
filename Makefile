@@ -211,7 +211,7 @@ sanity-check:
     fi
 
 	@echo "*** Checking master branch version: should always be: X.Y.Z.dev0"
-	@perl -le '$$_=shift; /\.dev0$/ ? print "Good initial version: $$_" : die "Bad initial version: $$_, expecting \.dev0"' $(version)
+	perl -le '$$_=shift; /\.dev0$$/ ? print "Good initial version: $$_" : die "Bad initial version: $$_, expecting \.dev0"' $(version)
 
 prev-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
