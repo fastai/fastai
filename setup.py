@@ -40,6 +40,7 @@ requirements = to_list("""
     numexpr              # performance-improvement for numpy
     numpy>=1.12
     pandas
+    packaging
     Pillow
     pyyaml
     regex==2018.01.10    # remove once spacy==2.0.18 is on anaconda channel

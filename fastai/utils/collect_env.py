@@ -3,7 +3,7 @@ from ..imports.torch import *
 from ..core import *
 import fastprogress
 
-__all__ = ['show_install']
+__all__ = ['show_install', 'perf_checks']
 
 def get_env(name):
     "Return env var value if it's defined and not an empty string, or return Unknown"
@@ -132,3 +132,27 @@ def show_install(show_nvidia_smi:bool=False):
         print("Optional package(s) to enhance the diagnostics can be installed with:")
         print(f"pip install {' '.join(opt_mods)}")
         print("Once installed, re-run this utility to get the additional information")
+
+
+
+def perf_checks():
+    " Suggest to user what improvements they could do to their setup to speed things up"
+
+    # libjpeg_turbo check
+    from PIL import features, Image
+    from packaging import version
+
+    print("\n*** libjpeg-turbo status")
+    if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
+        if features.check_feature('libjpeg_turbo'):
+            print("libjpeg-turbo is on")
+        else:
+            print("libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
+    else:
+        print(f"libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
+
+    print("\n*** Pillow-SIMD status")
+    if re.search(r'\.post\d+', Image.PILLOW_VERSION):
+        print("Running Pillow-SIMD")
+    else:
+        print("Running Pillow; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")

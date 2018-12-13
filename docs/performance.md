@@ -4,6 +4,13 @@ title: Performance Tips and Tricks
 
 This document will show you how to speed things up and get more out of your GPU/CPU.
 
+## Automated Performance Checks
+
+To check your setup for recommended performance improvements, run:
+```
+python -c "import fastai; fastai.perf_checks()"
+```
+
 ## Mixed Precision Training
 
 Combined FP16/FP32 training can tremendously improve training speed and use less GPU RAM. For theory behind it see this [thread](https://forums.fast.ai/t/mixed-precision-training/20720/3)
@@ -176,6 +183,28 @@ And we no longer can tell which of the two will be loaded at run-time and have t
 
 Also, if `libjpeg-turbo` and `libjpeg` happen to have the same version number, even if you built `Pillow` or `Pillow-SIMD` against `libjpeg-turbo`, but then later installed the default `jpeg` with exactly the same version you will end up with the slower version.
 
-#### How to tell whether `Pillow-SIMD` is using `libjpeg-turbo`?
+#### How to tell whether `Pillow` or `Pillow-SIMD` is using `libjpeg-turbo`?
 
-It's complicated - here is some [WIP](https://github.com/python-pillow/Pillow/issues/3492).
+You need `Pillow>=5.4.0` to accomplish the following:
+
+```
+python -c "from PIL import features; print(features.check_feature('libjpeg_turbo'))"
+True
+```
+
+And a version-proof check:
+
+```
+from PIL import features, Image
+from packaging import version
+
+if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
+    if features.check_feature('libjpeg_turbo'):
+        print("libjpeg-turbo is on")
+    else:
+        print("libjpeg-turbo is not on")
+else:
+    print(f"libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
+```
+
+XXX: (will need to add `packaging` into dependencies, but it's already a dependency of setuptools.

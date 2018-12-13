@@ -19,6 +19,8 @@ of that change.
 
 ### New:
 
+- perf_checks() - performance improvements recommendations
+
 ### Changed:
 
 ### Fixed:
