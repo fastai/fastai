@@ -104,7 +104,7 @@ def test_classifier():
         finally:
             shutil.rmtree(path)
 
-# XXX: may be move into its own test module?
+# TODO: may be move into its own test module?
 import gc
 # everything created by this function should be freed at its exit
 def clean_destroy_block():
@@ -123,3 +123,4 @@ def test_mem_leak():
     assert gc_collected == 0
     garbage_after = len(gc.garbage)  # again, should be 0, or == garbage_before
     assert garbage_after == 0
+

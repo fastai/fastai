@@ -2,7 +2,7 @@
 from .torch_core import *
 from torch.utils.data.dataloader import default_collate
 
-DatasetType = Enum('DatasetType', 'Train Valid Test Single')
+DatasetType = Enum('DatasetType', 'Train Valid Test Single Fix')
 __all__ = ['DataBunch', 'DeviceDataLoader', 'DatasetType']
 
 old_dl_init = torch.utils.data.DataLoader.__init__
@@ -27,7 +27,6 @@ class DeviceDataLoader():
     device: torch.device
     tfms: List[Callable]=None
     collate_fn: Callable=data_collate
-    skip_size1:bool=False
     def __post_init__(self):
         self.dl.collate_fn=self.collate_fn
         self.tfms = listify(self.tfms)
@@ -47,14 +46,18 @@ class DeviceDataLoader():
     @num_workers.setter
     def num_workers(self,v): self.dl.num_workers = v
 
-    def add_tfm(self,tfm:Callable)->None:    self.tfms.append(tfm)
-    def remove_tfm(self,tfm:Callable)->None: self.tfms.remove(tfm)
+    def add_tfm(self,tfm:Callable)->None:
+        "Add `tfm` to `self.tfms`."
+        self.tfms.append(tfm)
+    def remove_tfm(self,tfm:Callable)->None:
+        "Remove `tfm` from `self.tfms`."
+        self.tfms.remove(tfm)
 
     def new(self, **kwargs):
         "Create a new copy of `self` with `kwargs` replacing current values."
         new_kwargs = {**self.dl.init_kwargs, **kwargs}
         return DeviceDataLoader(DataLoader(self.dl.dataset, **new_kwargs), self.device, self.tfms,
-                                self.collate_fn, self.skip_size1)
+                                self.collate_fn)
 
     def proc_batch(self,b:Tensor)->Tensor:
         "Proces batch `b` of `TensorImage`."
@@ -64,80 +67,87 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        assert not self.skip_size1 or self.batch_size > 1, "Batch size cannot be one if skip_size1 is set to True"
         for b in self.dl:
-            y = b[1][0] if is_listy(b[1]) else b[1]
-            if not self.skip_size1 or y.size(0) != 1: yield self.proc_batch(b)
+            #y = b[1][0] if is_listy(b[1]) else b[1] # XXX: Why is this line here?
+            yield self.proc_batch(b)
 
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
                tfms:Collection[Callable]=tfms, num_workers:int=defaults.cpus, collate_fn:Callable=data_collate, **kwargs:Any):
-        "Create DeviceDataLoader from `dataset` with `batch_size` and `shuffle`: processs using `num_workers`."
+        "Create DeviceDataLoader from `dataset` with `bs` and `shuffle`: processs using `num_workers`."
         return cls(DataLoader(dataset, batch_size=bs, shuffle=shuffle, num_workers=num_workers, **kwargs),
                    device=device, tfms=tfms, collate_fn=collate_fn)
 
 class DataBunch():
+    "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
     _batch_first=True
 
-    "Bind `train_dl`,`valid_dl` and`test_dl` to `device`. tfms are DL tfms (normalize). `path` is for models."
-    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, test_dl:Optional[DataLoader]=None,
+    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
-                 collate_fn:Callable=data_collate):
+                 collate_fn:Callable=data_collate, no_check:bool=False):
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
         def _create_dl(dl, **kwargs):
             return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
-        self.train_dl = _create_dl(train_dl, skip_size1=True)
-        self.valid_dl = _create_dl(valid_dl)
+        self.train_dl,self.valid_dl,self.fix_dl = map(_create_dl, [train_dl,valid_dl,fix_dl])
         self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
         self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
+        if not no_check: self.sanity_check()
 
     def __repr__(self)->str:
-        return f'{self.__class__.__name__};\nTrain: {self.train_ds};\nValid: {self.valid_ds};\nTest: {self.test_ds}'
+        return f'{self.__class__.__name__};\n\nTrain: {self.train_ds};\n\nValid: {self.valid_ds};\n\nTest: {self.test_ds}'
+
+    @staticmethod
+    def _init_ds(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None):
+        fix_ds = valid_ds.new(train_ds.x, train_ds.y) # train_ds, but without training tfms
+        datasets = [train_ds,valid_ds,fix_ds]
+        if test_ds is not None: datasets.append(test_ds)
+        return datasets
 
     @classmethod
-    def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Dataset=None, path:PathOrStr='.', bs:int=64,
+    def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-               collate_fn:Callable=data_collate)->'DataBunch':
-        "`DataBunch` factory. `bs` batch size, `tfms` for `Dataset`, `tfms` for `DataLoader`."
-        datasets = [train_ds,valid_ds]
-        if test_ds is not None: datasets.append(test_ds)
+               collate_fn:Callable=data_collate, no_check:bool=False)->'DataBunch':
+        "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
+        datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = bs
-        dls = [DataLoader(*o, num_workers=num_workers) for o in
-               zip(datasets, (bs,val_bs,val_bs), (True,False,False))]
-        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn)
+        dls = [DataLoader(d, b, shuffle=s, drop_last=(s and b>1), num_workers=num_workers) for d,b,s in
+               zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False))]
+        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
+        #TODO: refactor
         return (self.train_dl if ds_type == DatasetType.Train else
                 self.test_dl if ds_type == DatasetType.Test else
                 self.valid_dl if ds_type == DatasetType.Valid else
-                self.single_dl)
+                self.single_dl if ds_type == DatasetType.Single else
+                self.fix_dl)
 
     @property
     def dls(self):
-        res = [self.train_dl, self.valid_dl, self.single_dl]
+        res = [self.train_dl, self.valid_dl, self.fix_dl, self.single_dl]
         return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.add_tfm(tfm)
 
-    def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True)->Collection[Tensor]:
+    def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True, cpu:bool=True)->Collection[Tensor]:
         "Get one batch from the data loader of `ds_type`. Optionally `detach` and `denorm`."
         dl = self.dl(ds_type)
         w = self.num_workers
         self.num_workers = 0
         try:     x,y = next(iter(dl))
         finally: self.num_workers = w
-        if detach: x,y = to_detach(x),to_detach(y)
+        if detach: x,y = to_detach(x,cpu=cpu),to_detach(y,cpu=cpu)
         norm = getattr(self,'norm',False)
         if denorm and norm:
             x = self.denorm(x)
-            if norm.keywords.get('do_y',False): y = self.denorm(y)
+            if norm.keywords.get('do_y',False): y = self.denorm(y, do_x=True)
         return x,y
 
     def one_item(self, item, detach:bool=False, denorm:bool=False):
@@ -158,7 +168,9 @@ class DataBunch():
         self.train_ds.x.show_xys(xs, ys, **kwargs)
 
     def export(self, fname:str='export.pkl'):
-        self.valid_ds.export(self.path/fname)
+        "Export the minimal state of `self` for inference in `self.path/fname`."
+        xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
+        self.valid_ds.export(self.path/fname, **xtra)
 
     @property
     def train_ds(self)->Dataset: return self.train_dl.dl.dataset
@@ -179,3 +191,23 @@ class DataBunch():
     def batch_size(self,v):
         self.train_dl.batch_size,self.valid_dl.batch_size = v,v
         if self.test_dl is not None: self.test_dl.batch_size = v
+
+    def sanity_check(self):
+        "Check the underlying data in the training set can be properly loaded."
+        final_message = "You can deactivate this warning by passing `no_check=True`."
+        if len(self.train_ds.items) == 0 or getattr(self.train_dl, 'batch_sampler', True): return
+        idx = next(iter(self.train_dl.batch_sampler))
+        try: samples = [self.train_ds[i] for i in idx]
+        except: 
+            warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i in {idx}")
+            print(final_message)
+            return
+        try: batch = self.collate_fn(samples)
+        except: 
+            message = "It's not possible to collate samples of your dataset together in a batch."
+            try: 
+                shapes = [[o[i].data.shape for o in samples] for i in range(2)]
+                message += f'\nShapes of the inputs/targets:\n{shapes}'
+            except: pass
+            warn(message)
+            print(final_message)

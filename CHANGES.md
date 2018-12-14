@@ -14,9 +14,12 @@ of that change.
 
 
 
-## 1.0.33.dev0 (Work In Progress)
+
+## 1.0.38.dev0 (Work In Progress)
 
 ### New:
+
+- `check_perf` - performance improvement recommendations
 
 ### Changed:
 
@@ -24,9 +27,77 @@ of that change.
 
 
 
-## 1.0.32 (2018-12-02)
+## 1.0.37 (2018-12-13)
 
 ### New:
+
+- `SequentialEx`, `MergeLayer`, and `res_block` to more easily create resnet and densenet architectures
+- `no_split` method in the data block API
+- `sigmoid_range` function to scale sigmoid to given range, along with `SigmoidRange` layer
+- `DataBunch` performs a sanity check after its initialization and will throw a warning if something is wrong with the data.
+- More GAN stuff: `gan_critic`, `AdaptiveLoss`, `accuracy_thresh_expand`, and `GANDiscriminativeLR`
+- Support for one-hot encoded labels in multiclassification problems
+- Add `Dataset.Fix` (same as train but with `shuffle=False`, `drop_last=False` and valid transforms)
+
+### Changed:
+
+- Experimental cross-connection from raw input plus extra resblock at end of unet
+- Add an execution-time check for a specific version of fastprogress (`git pull` fastai updates)
+- `DataBunch.export` now serializes everything (transforms and normalization included)
+- `DataBunch` now has `fix_dl` attr, which is same data as `train_dl` but without shuffle or train tfms
+- `pred_batch` now has `reconstruct` param, which will reconstruct each prediction into an object
+- `Learner.show_results` gives a better output for image classification tasks
+
+### Fixed:
+
+- Windows fixes, including:
+  - Most transforms can now be used in Windows with `num_workers`>0
+  - Avoid recusion error with data blocks API
+  - Try to avoid default `np.int32` creation where possible
+- `y_range` for unet output activation
+- `Image.apply_tfms` doesn't accept any kwargs anymore
+- `split_from_files` works with `from_df`/`from_csv`
+
+
+## 1.0.36 (2018-12-08)
+
+### New:
+
+- `LabelLists.load_empty` (most useful for adding test sets for inference)
+
+
+## 1.0.35 (2018-12-08)
+
+### Changed:
+
+- Update deps to release version of pytorch v1
+
+
+## 1.0.34 (2018-12-06)
+
+### Fixed:
+
+- pypi wheel `dataclasses` dependency for py3.6 is there again
+
+
+## 1.0.33 (2018-12-05)
+
+### New:
+
+- `Learner.interpret` is a shortcut to `ClassificationLearner.from_learner`.
+
+### Changed:
+
+- Language models now use flattened loss, instead of flattening y in data loader
+- `ItemList.from_folder` now has an `include` parameter to only include certain folders
+
+### Fixed:
+
+- `Learner.load` won't throw an error when trying to load an optimizer state of
+  the wrong size, and silently ignore that optimizer state loading
+
+
+## 1.0.32 (2018-12-02)
 
 ### Changed:
 
@@ -43,7 +114,6 @@ of that change.
 
 ### New:
 
-- `SequentialResBlock` to easily create resnet blocks
 - `ImageCleaner` with duplicates=True to use as a duplicate detector
 - `DatasetFormatter.from_similars()` to feed the most similar indexes into `ImageCleaner`
 - `chunks` to separate a Collection into smaller iterables

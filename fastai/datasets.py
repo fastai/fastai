@@ -35,6 +35,7 @@ class URLs():
     CAMVID = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY = f'{URL}camvid_tiny'
     BIWI_HEAD_POSE = f"{S3_IMAGELOC}biwi_head_pose"
+    LSUN_BEDROOMS = f'{S3_IMAGE}bedroom'
 
 #TODO: This can probably be coded more shortly and nicely.
 class Config():

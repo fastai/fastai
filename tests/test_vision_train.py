@@ -46,7 +46,7 @@ def no_bar():
 @pytest.fixture(scope="module")
 def learn():
     path = untar_data(URLs.MNIST_TINY)
-    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), num_workers=2)
     data.normalize()
     learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate],
                                  callback_fns=[callbacks.CSVLogger])
@@ -84,6 +84,16 @@ def test_preds(learn):
         pred_class,pred_idx,outputs = learn.predict(img)
         if outputs[int(label)] > outputs[1-int(label)]: return
     assert False, 'Failed to predict correct class'
+
+def test_interp(learn):
+    interp = ClassificationInterpretation.from_learner(learn)
+    losses,idxs = interp.top_losses()
+    assert len(learn.data.valid_ds)==len(losses)==len(idxs)
+
+def test_interp_shortcut(learn):
+    interp = learn.interpret()
+    losses,idxs = interp.top_losses()
+    assert len(learn.data.valid_ds)==len(losses)==len(idxs)
 
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)

@@ -148,8 +148,11 @@ class ItemBase():
     "Base item type in the fastai library."
     def __init__(self, data:Any): self.data=self.obj=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
-    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
+    def show(self, ax:plt.Axes, **kwargs): 
+        "Subclass this method if you want to customize the way this `ItemBase` is shown on `ax`."
+        ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
+        "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception('Not implemented')
         return self
 
@@ -207,7 +210,7 @@ def df_names_to_idx(names:IntsOrStrs, df:DataFrame):
 def one_hot(x:Collection[int], c:int):
     "One-hot encode `x` with `c` classes."
     res = np.zeros((c,), np.float32)
-    res[x] = 1.
+    res[listify(x)] = 1.
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
@@ -234,16 +237,13 @@ def split_kwargs_by_func(kwargs, func):
     func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}
     return func_kwargs, kwargs
 
-def try_int(o:Any)->Any:
-    "Try to convert `o` to int, default to `o` if not possible."
-    try: return int(o)
-    except: return o
-
-def array(a, *args, **kwargs)->np.ndarray:
+def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators"
     if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):
         a = list(a)
-    return np.array(a, *args, **kwargs)
+    if np.int_==np.int32 and dtype is None and is_listy(a) and len(a) and isinstance(a[0],int):
+        dtype=np.int64
+    return np.array(a, dtype=dtype, **kwargs)
 
 class EmptyLabel(ItemBase):
     "Should be used for a dummy label."

@@ -43,14 +43,20 @@ def code_esc(s): return f'`{s}`'
 
 def type_repr(t):
     if t in _typing_names: return link_type(t, _typing_names[t])
+    if isinstance(t, partial): return partial_repr(t)
     if hasattr(t, '__forward_arg__'): return link_type(t.__forward_arg__)
     elif getattr(t, '__args__', None):
         args = t.__args__
         if len(args)==2 and args[1] == type(None):
             return f'`Optional`\[{type_repr(args[0])}\]'
-        reprs = ', '.join([type_repr(o) for o in t.__args__])
+        reprs = ', '.join([type_repr(o) for o in args])
         return f'{link_type(t)}\[{reprs}\]'
     else: return link_type(t)
+
+def partial_repr(t):
+    args = (t.func,) + t.args + tuple([f'k={link_type(v)}' for k,v in t.keywords.items()])
+    reprs = ', '.join([link_type(o) for o in args])
+    return f'<code>partial(</code>{reprs}<code>)</code>'
 
 def anno_repr(a): return type_repr(a)
 

@@ -45,7 +45,7 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
     return groups
 
 class RNNLearner(Learner):
-    "Basic class for a Learner in RNN."
+    "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  adjust:bool=False, alpha:float=2., beta:float=1., metrics=None, **kwargs):
         super().__init__(data, model, **kwargs)
@@ -68,6 +68,7 @@ class RNNLearner(Learner):
         old_itos = pickle.load(open(itos_fname, 'rb'))
         old_stoi = {v:k for k,v in enumerate(old_itos)}
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
+        if 'model' in wgts: wgts = wgts['model']
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
         self.model.load_state_dict(wgts)
 
@@ -96,7 +97,7 @@ class LanguageLearner(RNNLearner):
             res = self.pred_batch(batch=(xb,yb))[-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
-            if temperature != 1.: res.div_(temperature)
+            if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
             text += f' {self.data.vocab.itos[idx]}'
         return text
@@ -105,10 +106,8 @@ class LanguageLearner(RNNLearner):
         from IPython.display import display, HTML
         "Show `rows` result of predictions on `ds_type` dataset."
         ds = self.dl(ds_type).dataset
-        self.callbacks.append(RecordOnCPU())
-        preds = self.pred_batch(ds_type)
-        x,y = self.callbacks[-1].input,self.callbacks[-1].target
-        self.callbacks = self.callbacks[:-1]
+        x,y = self.data.one_batch(ds_type, detach=False, denorm=False)
+        preds = self.pred_batch(batch=(x,y))
         y = y.view(*x.size())
         z = preds.view(*x.size(),-1).argmax(dim=2)
         xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]

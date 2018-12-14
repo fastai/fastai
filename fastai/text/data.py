@@ -14,8 +14,8 @@ text_extensions = {'.txt'}
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
     def __init__(self, dataset:LabelList, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False,
-                 max_len:int=25):
-        self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
+                 max_len:int=25, p_bptt:int=0.95):
+        self.dataset,self.bs,self.bptt,self.backwards,self.shuffle,self.p_bptt = dataset,bs,bptt,backwards,shuffle,p_bptt
         self.first,self.i,self.iter = True,0,0
         self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
         self.max_len,self.num_workers = max_len,0
@@ -30,7 +30,7 @@ class LanguageModelLoader():
         while self.i < self.n-1 and self.iter<len(self):
             if self.first and self.i == 0: self.first,seq_len = False,self.bptt + self.max_len
             else:
-                bptt = self.bptt if np.random.random() < 0.95 else self.bptt / 2.
+                bptt = self.bptt if np.random.random() < self.p_bptt else self.bptt / 2.
                 seq_len = max(5, int(np.random.normal(bptt, 5)))
                 seq_len = min(seq_len, self.bptt + self.max_len)
             res = self.get_batch(self.i, seq_len)
@@ -38,7 +38,7 @@ class LanguageModelLoader():
             self.iter += 1
             yield res
 
-    def __len__(self) -> int: return (self.n-1) // self.bptt
+    def __len__(self) -> int: return int(math.ceil((self.n-1) / self.bptt))
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
 
     @property
@@ -56,7 +56,7 @@ class LanguageModelLoader():
     def get_batch(self, i:int, seq_len:int) -> Tuple[LongTensor, LongTensor]:
         "Create a batch at `i` of a given `seq_len`."
         seq_len = min(seq_len, len(self.data) - 1 - i)
-        return self.data[i:i+seq_len], self.data[i+1:i+1+seq_len].contiguous().view(-1)
+        return self.data[i:i+seq_len], self.data[i+1:i+1+seq_len]#.contiguous().view(-1)
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
@@ -162,9 +162,7 @@ class TextDataBunch(DataBunch):
         "Create a `TextDataBunch` from DataFrames."
         p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
         processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
-        if classes is None and label_cols:
-            if len(label_cols) == 0:   classes = [0]
-            elif len(label_cols) > 1:  classes = label_cols
+        if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
@@ -202,8 +200,7 @@ class TextLMDataBunch(TextDataBunch):
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
-        datasets = [train_ds,valid_ds]
-        if test_ds is not None: datasets.append(test_ds)
+        datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         dataloaders = [LanguageModelLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
         return cls(*dataloaders, path=path)
 
@@ -213,15 +210,14 @@ class TextClasDataBunch(TextDataBunch):
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs=64, pad_idx=1, pad_first=True,
                **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
-        datasets = [train_ds,valid_ds]
-        if test_ds is not None: datasets.append(test_ds)
+        datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
-        train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, **kwargs)
+        train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, drop_last=True, **kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             lengths = [len(t) for t in ds.x.items]
-            sampler = SortSampler(ds.x, key=lambda t: lengths[t])
+            sampler = SortSampler(ds.x, key=lengths.__getitem__)
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, collate_fn=collate_fn)
 
@@ -230,7 +226,7 @@ def open_text(fn:PathOrStr, enc='utf-8'):
     with open(fn,'r', encoding = enc) as f: return ''.join(f.readlines())
 
 class Text(ItemBase):
-    "Basic item for text data."
+    "Basic item for <code>text</code> data in numericalized `ids`."
     def __init__(self, ids, text): self.data,self.text = ids,text
     def __str__(self):  return str(self.text)
 

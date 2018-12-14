@@ -74,7 +74,7 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mf">1e4</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e4</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -86,14 +86,25 @@ summary: "Callbacks that take decisions depending on the evolution of metrics du
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:04
-epoch  train_loss  valid_loss  accuracy
-1      nan         nan         0.504416  (00:02)
-2      nan         nan         0.504416  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>nan</th>
+    <th>nan</th>
+    <th>0.495584</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -131,16 +142,13 @@ epoch  train_loss  valid_loss  accuracy
 
     <div>
         <style>
-        	/* Turns off some styling */
-        	progress {
-
-            	/* gets rid of default border in Firefox and Opera. */
-            	border: none;
-
-            	/* Needs to be in here for Safari polyfill so background images work as expected. */
-            	background-size: auto;
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
             }
-
             .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
                 background: #F44336;
             }
@@ -156,29 +164,23 @@ epoch  train_loss  valid_loss  accuracy
     <th>valid_loss</th>
     <th>accuracy</th>
   </tr>
-  <tr>
-
-  </tr>
 </table>
 
 
     <div>
         <style>
-        	/* Turns off some styling */
-        	progress {
-
-            	/* gets rid of default border in Firefox and Opera. */
-            	border: none;
-
-            	/* Needs to be in here for Safari polyfill so background images work as expected. */
-            	background-size: auto;
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
             }
-
             .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
                 background: #F44336;
             }
         </style>
-      <progress value='0' class='progress-bar-interrupted' max='22', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      <progress value='0' class='progress-bar-interrupted' max='32', style='width:300px; height:20px; vertical-align: middle;'></progress>
       Interrupted
     </div>
     
@@ -198,6 +200,19 @@ epoch  train_loss  valid_loss  accuracy
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -207,7 +222,49 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="EarlyStoppingCallback"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L52" class="source_link">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>, <code>patience</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h4 id="TerminateOnNaNCallback.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>last_loss</code>, <code>epoch</code>, <code>num_batch</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Test if <code>last_loss</code> is NaN and interrupts training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TerminateOnNaNCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L23" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Stop the training if necessary.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="EarlyStoppingCallback"><code>class</code> <code>EarlyStoppingCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L58" class="source_link">[source]</a></h2><blockquote><p><code>EarlyStoppingCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>, <code>patience</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that terminates training when monitored quantity stops improving.</p>
 
@@ -251,22 +308,19 @@ epoch  train_loss  valid_loss  accuracy
 
     <div>
         <style>
-        	/* Turns off some styling */
-        	progress {
-
-            	/* gets rid of default border in Firefox and Opera. */
-            	border: none;
-
-            	/* Needs to be in here for Safari polyfill so background images work as expected. */
-            	background-size: auto;
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
             }
-
             .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
                 background: #F44336;
             }
         </style>
-      <progress value='3' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      6.00% [3/50 00:06<01:49]
+      <progress value='4' class='' max='50', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      8.00% [4/50 00:09<01:49]
     </div>
     
 <table style='width:300px; margin-bottom:10px'>
@@ -278,46 +332,46 @@ epoch  train_loss  valid_loss  accuracy
   </tr>
   <tr>
     <th>1</th>
-    <th>0.692837</th>
-    <th>0.692778</th>
-    <th>0.496565</th>
+    <th>0.694346</th>
+    <th>0.697105</th>
+    <th>0.504907</th>
   </tr>
   <tr>
     <th>2</th>
-    <th>0.692831</th>
-    <th>0.692778</th>
-    <th>0.496565</th>
+    <th>0.694370</th>
+    <th>0.697105</th>
+    <th>0.504907</th>
   </tr>
   <tr>
     <th>3</th>
-    <th>0.692877</th>
-    <th>0.692778</th>
-    <th>0.496565</th>
+    <th>0.695692</th>
+    <th>0.697105</th>
+    <th>0.504907</th>
   </tr>
   <tr>
-
+    <th>4</th>
+    <th>0.694920</th>
+    <th>0.697105</th>
+    <th>0.504907</th>
   </tr>
 </table>
 
 
     <div>
         <style>
-        	/* Turns off some styling */
-        	progress {
-
-            	/* gets rid of default border in Firefox and Opera. */
-            	border: none;
-
-            	/* Needs to be in here for Safari polyfill so background images work as expected. */
-            	background-size: auto;
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
             }
-
             .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
                 background: #F44336;
             }
         </style>
-      <progress value='22' class='' max='22', style='width:300px; height:20px; vertical-align: middle;'></progress>
-      100.00% [22/22 00:00<00:00]
+      <progress value='32' class='' max='32', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [32/32 00:00<00:00]
     </div>
     
 </div>
@@ -327,9 +381,43 @@ epoch  train_loss  valid_loss  accuracy
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Epoch 4: early stopping
+<pre>Epoch 5: early stopping
 </pre>
 </div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="EarlyStoppingCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L67" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Initialize inner arguments.</p>
+
+</div>
+
 </div>
 
 </div>
@@ -345,7 +433,28 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SaveModelCallback"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L77" class="source_link">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>every</code>:<code>str</code>=<code>'improvement'</code>, <code>name</code>:<code>str</code>=<code>'bestmodel'</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h4 id="EarlyStoppingCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>epoch</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Compare the value monitored to its best score and maybe stop training.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SaveModelCallback"><code>class</code> <code>SaveModelCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L85" class="source_link">[source]</a></h2><blockquote><p><code>SaveModelCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>every</code>:<code>str</code>=<code>'improvement'</code>, <code>name</code>:<code>str</code>=<code>'bestmodel'</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that saves the model when monitored quantity is best.</p>
 
@@ -364,6 +473,19 @@ epoch  train_loss  valid_loss  accuracy
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -373,7 +495,49 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ReduceLROnPlateauCallback"><code>class</code> <code>ReduceLROnPlateauCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L99" class="source_link">[source]</a></h2><blockquote><p><code>ReduceLROnPlateauCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>patience</code>:<code>int</code>=<code>0</code>, <code>factor</code>:<code>float</code>=<code>0.2</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
+<h4 id="SaveModelCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>epoch</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Compare the value monitored to its best score and maybe save the model.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="SaveModelCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L104" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>)</p>
+</blockquote>
+<p>Load the best model.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ReduceLROnPlateauCallback"><code>class</code> <code>ReduceLROnPlateauCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L110" class="source_link">[source]</a></h2><blockquote><p><code>ReduceLROnPlateauCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>, <code>patience</code>:<code>int</code>=<code>0</code>, <code>factor</code>:<code>float</code>=<code>0.2</code>, <code>min_delta</code>:<code>int</code>=<code>0</code>) :: <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/callbacks.tracker.html#TrackerCallback"><code>TrackerCallback</code></a> that reduces learning rate when a metric has stopped improving.</p>
 
@@ -392,6 +556,19 @@ epoch  train_loss  valid_loss  accuracy
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -401,9 +578,106 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TrackerCallback"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L26" class="source_link">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h4 id="ReduceLROnPlateauCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Initialize inner arguments.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ReduceLROnPlateauCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L125" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>epoch</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Compare the value monitored to its best and maybe reduce lr.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="TrackerCallback"><code>class</code> <code>TrackerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L28" class="source_link">[source]</a></h2><blockquote><p><code>TrackerCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>monitor</code>:<code>str</code>=<code>'val_loss'</code>, <code>mode</code>:<code>str</code>=<code>'auto'</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> that keeps track of the best value in <code>monitor</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TrackerCallback.get_monitor_value"><code>get_monitor_value</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>get_monitor_value</code>()</p>
+</blockquote>
+<p>Pick the monitored value.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TrackerCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L41" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Initializes the best value.</p>
 
 </div>
 

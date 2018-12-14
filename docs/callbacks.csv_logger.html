@@ -78,15 +78,41 @@ summary: "Callbacks that saves the tracked metrics during training"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:01
-epoch  train_loss  valid_loss  accuracy  error_rate
-1      0.677579    0.630915    0.929900  0.070100    (00:00)
-2      0.596842    0.341453    0.928469  0.071531    (00:00)
-3      0.470232    0.203056    0.938484  0.061516    (00:00)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:01 <p><table style='width:375px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+    <th>error_rate</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.586522</th>
+    <th>0.433411</th>
+    <th>0.935622</th>
+    <th>0.064378</th>
+  </tr>
+  <tr>
+    <th>2</th>
+    <th>0.448884</th>
+    <th>0.187622</th>
+    <th>0.949928</th>
+    <th>0.050072</th>
+  </tr>
+  <tr>
+    <th>3</th>
+    <th>0.345840</th>
+    <th>0.130823</th>
+    <th>0.957082</th>
+    <th>0.042918</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -120,12 +146,14 @@ epoch  train_loss  valid_loss  accuracy  error_rate
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/train&#39;),
+<pre>[PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/labels.csv&#39;),
+ PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/export.pkl&#39;),
  PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/test&#39;),
- PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/labels.csv&#39;),
- PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/valid&#39;),
+ PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/train&#39;),
  PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/history.csv&#39;),
- PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/models&#39;)]</pre>
+ PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/models&#39;),
+ PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/cleaned.csv&#39;),
+ PosixPath(&#39;/home/ubuntu/.fastai/data/mnist_tiny/valid&#39;)]</pre>
 </div>
 
 </div>
@@ -210,30 +238,106 @@ epoch  train_loss  valid_loss  accuracy  error_rate
     <tr>
       <th>0</th>
       <td>1</td>
-      <td>2.286365</td>
-      <td>2.216762</td>
-      <td>0.505007</td>
-      <td>0.494993</td>
+      <td>0.586522</td>
+      <td>0.433411</td>
+      <td>0.935622</td>
+      <td>0.064378</td>
     </tr>
     <tr>
       <th>1</th>
       <td>2</td>
-      <td>2.168981</td>
-      <td>1.867415</td>
-      <td>0.505007</td>
-      <td>0.494993</td>
+      <td>0.448884</td>
+      <td>0.187622</td>
+      <td>0.949928</td>
+      <td>0.050072</td>
     </tr>
     <tr>
       <th>2</th>
       <td>3</td>
-      <td>2.028238</td>
-      <td>1.743607</td>
-      <td>0.505007</td>
-      <td>0.494993</td>
+      <td>0.345840</td>
+      <td>0.130823</td>
+      <td>0.957082</td>
+      <td>0.042918</td>
     </tr>
   </tbody>
 </table>
 </div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calback-methods">Calback methods<a class="anchor-link" href="#Calback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CSVLogger.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L23" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Prepare file with metric names.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CSVLogger.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L29" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>epoch</code>:<code>int</code>, <code>smooth_loss</code>:<code>Tensor</code>, <code>last_metrics</code>:<code>MetricsList</code>, <code>kwargs</code>:<code>Any</code>) → <code>bool</code></p>
+</blockquote>
+<p>Add a line with <code>epoch</code> number, <code>smooth_loss</code> and <code>last_metrics</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CSVLogger.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+<p>Close the file.</p>
+
 </div>
 
 </div>
