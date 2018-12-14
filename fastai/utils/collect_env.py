@@ -196,13 +196,13 @@ def check_perf():
         "367.48":  "8.0",
     }
     print("\n*** CUDA status")
-    pynvml.nvmlInit()
-    nvidia_ver = pynvml.nvmlSystemGetDriverVersion().decode('utf-8')
-    cuda_ver   = torch.version.cuda
-    max_cuda = "8.0"
-    for k in sorted(nvidia2cuda.keys()):
-        if version.parse(nvidia_ver) > version.parse(k): max_cuda = nvidia2cuda[k]
     if torch.cuda.is_available():
+        pynvml.nvmlInit()
+        nvidia_ver = pynvml.nvmlSystemGetDriverVersion().decode('utf-8')
+        cuda_ver   = torch.version.cuda
+        max_cuda = "8.0"
+        for k in sorted(nvidia2cuda.keys()):
+            if version.parse(nvidia_ver) > version.parse(k): max_cuda = nvidia2cuda[k]
         if version.parse(str(max_cuda)) <= version.parse(cuda_ver):
             print(f"✔ Running the latest CUDA {cuda_ver} with NVIDIA driver {nvidia_ver}")
         else:
