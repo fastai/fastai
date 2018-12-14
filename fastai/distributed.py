@@ -1,5 +1,7 @@
 from .torch_core import *
 from .basic_train import Learner,LearnerCallback
+from torch.nn.parallel import DistributedDataParallel
+from torch.utils.data.distributed import DistributedSampler
 
 __all__ = ['DistributedRecorder', 'DistributedTrainer', 'read_metrics']
 
@@ -13,7 +15,7 @@ class DistributedTrainer(LearnerCallback):
     
     def on_train_begin(self, **kwargs):
         self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id], output_device=self.cuda_id)
-        train_sampler = torch.utils.data.distributed.DistributedSampler(self.learn.data.train_ds)
+        train_sampler = DistributedSampler(self.learn.data.train_ds)
         self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=train_sampler)
         self.learn.data.train_dl.add_tfm(make_async)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
@@ -43,7 +45,8 @@ class DistributedRecorder(LearnerCallback):
         np.save(cache_path/f'metrics_{self.cuda_id}', stats)
         
 def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp'):
-    learn.callbacks.append([DistributedTrainer(learn, cuda_id), DistributedRecorder(learn, cuda_id, cache_dir)])
+    learn.callbacks.append(DistributedTrainer(learn, cuda_id))
+    learn.callbacks.append(DistributedRecorder(learn, cuda_id, cache_dir))
     return learn
 
 Learner.distributed = _learner_distributed
@@ -51,7 +54,7 @@ Learner.distributed = _learner_distributed
 def read_metrics(cache_path:PathOrStr, n_gpus:int, reduce:bool=True):
     losses,metrics = [],[]
     for i in range(n_gpus):
-        losses.append(np.load(cache_path/'losses_{i}.npy')[None])
-        metrics.append(np.load(cache_path/'metrics_{i}.npy')[None])
+        losses.append(np.load(cache_path/f'losses_{i}.npy')[None])
+        metrics.append(np.load(cache_path/f'metrics_{i}.npy')[None])
     losses,metrics = np.concatenate(losses,0),np.concatenate(metrics,0)
     return (losses.mean(0),metrics.mean(0)) if reduce else (losses,metrics)
