@@ -210,4 +210,4 @@ def check_perf():
     else:
         print(f"❓ Running cpu-only torch version, CUDA check is not relevant")
 
-    print("Refer to https://docs.fast.ai/performance.html to make sense out of these checks and suggestions.")
+    print("\nRefer to https://docs.fast.ai/performance.html to make sense out of these checks and suggestions.")
