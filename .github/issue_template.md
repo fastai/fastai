@@ -1,3 +1,4 @@
+<!-- BEFORE POSTING AN ISSUE PLEASE MAKE SURE TO READ: https://docs.fast.ai/support.html -->
 
 <!-- **Please note**: Installation issues should be reported here:
 

@@ -11,7 +11,24 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.37.dev0 (Work In Progress)
+
+
+
+
+## 1.0.38.dev0 (Work In Progress)
+
+### New:
+
+- `check_perf` - performance improvement recommendations
+- `distributed` module with helper functions to quickly launch a distributed training
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.37 (2018-12-13)
 
 ### New:
 

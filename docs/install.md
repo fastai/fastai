@@ -49,7 +49,7 @@ Below you will find the groups of dependencies for you to choose from. `fastai.b
 ```
 fastai.base:
 
-   "matplotlib" "numpy>=1.12" "pandas" "fastprogress>=0.1.18" "bottleneck" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml" "pytorch"
+   "matplotlib" "numpy>=1.12" "pandas" "fastprogress>=0.1.18" "bottleneck" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml" "pytorch" "packaging" "nvidia-ml-py3"
 
 fastai.text:
 

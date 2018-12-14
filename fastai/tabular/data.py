@@ -87,7 +87,7 @@ class TabularDataBunch(DataBunch):
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, 
                 test_df=None, **kwargs)->DataBunch:
         "Create a `DataBunch` from `df` and `valid_idx` with `dep_var`."
-        cat_names = ifnone(cat_names, [])
+        cat_names = ifnone(cat_names, []).copy()
         cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
         procs = listify(procs)
         src = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)

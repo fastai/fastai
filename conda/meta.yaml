@@ -55,6 +55,8 @@ requirements:
     - pandas
     - bottleneck
     - numexpr
+    - nvidia-ml-py3
+    - packaging
     - pillow
     - python
     - requests
@@ -113,4 +115,3 @@ extra:
     - setuptools >=0.39
     - twine >=1.12
   recipe-maintainers: ''
-

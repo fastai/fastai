@@ -71,94 +71,6 @@ of them for start and stop).</div>
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="GeneralScheduler"><code>class</code> <code>GeneralScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/general_sched.py#L21" class="source_link">[source]</a></h2><blockquote><p><code>GeneralScheduler</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>phases</code>:<code>Collection</code>[<a href="/callbacks.general_sched.html#TrainingPhase"><code>TrainingPhase</code></a>]) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
-</blockquote>
-<p>Schedule multiple <a href="/callbacks.general_sched.html#TrainingPhase"><code>TrainingPhase</code></a> for a <a href="/basic_train.html#Learner"><code>Learner</code></a>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="GeneralScheduler.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/general_sched.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>train</code>, <code>kwargs</code>:<code>Any</code>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Takes a step in the current phase and prepare the hyperparameters for the next batch.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="GeneralScheduler.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/general_sched.py#L26" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>n_epochs</code>:<code>int</code>, <code>kwargs</code>:<code>Any</code>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Initiates the hyperparameters to the start values of the first phase.</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's make an example by using this to code <a href="https://arxiv.org/abs/1608.03983">SGD with warm restarts</a>.</p>
@@ -298,6 +210,94 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="GeneralScheduler"><code>class</code> <code>GeneralScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/general_sched.py#L21" class="source_link">[source]</a></h2><blockquote><p><code>GeneralScheduler</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>phases</code>:<code>Collection</code>[<a href="/callbacks.general_sched.html#TrainingPhase"><code>TrainingPhase</code></a>]) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+<p>Schedule multiple <a href="/callbacks.general_sched.html#TrainingPhase"><code>TrainingPhase</code></a> for a <a href="/basic_train.html#Learner"><code>Learner</code></a>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GeneralScheduler.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/general_sched.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>train</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Takes a step in the current phase and prepare the hyperparameters for the next batch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GeneralScheduler.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/general_sched.py#L26" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>n_epochs</code>:<code>int</code>, <code>kwargs</code>:<code>Any</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Initiates the hyperparameters to the start values of the first phase.</p>
+
+</div>
+</div>
 </div>
 </div>
  

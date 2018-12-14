@@ -319,7 +319,7 @@ class CategoryList(CategoryListBase):
 
 class MultiCategoryProcessor(CategoryProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
-    def process_one(self,item): return [self.c2i.get(o,None) for o in item]
+    def process_one(self,item): return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
 
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."
@@ -509,6 +509,8 @@ class LabelList(Dataset):
     def __getattr__(self,k:str)->Any:
         x = super().__getattribute__('x')
         res = getattr(x, k, None)
+        if isinstance(res, Callable):
+            assert 'split' not in res.__name__, "You should split your data before labelling it."
         if res is not None: return res
         y = super().__getattribute__('y')
         res = getattr(y, k, None)

@@ -329,7 +329,7 @@ class Recorder(LearnerCallback):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val = False
+        self.no_val,self.silent = False,False
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
@@ -337,7 +337,7 @@ class Recorder(LearnerCallback):
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
         self.names += metrics_names
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
-        self.pbar.write(self.names, table=True)
+        if not self.silent: self.pbar.write(self.names, table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
     def on_batch_begin(self, train, **kwargs:Any)->None:
@@ -369,7 +369,7 @@ class Recorder(LearnerCallback):
         str_stats = []
         for name,stat in zip(self.names,stats):
             str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
-        self.pbar.write(str_stats, table=True)
+        if not self.silent: self.pbar.write(str_stats, table=True)
 
     def add_metrics(self, metrics):
         "Add `metrics` to the inner stats."

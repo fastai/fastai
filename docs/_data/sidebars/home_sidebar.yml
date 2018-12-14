@@ -21,6 +21,9 @@ entries:
     - output: web,pdf
       title: Performance
       url: /performance.html
+    - output: web,pdf
+      title: Support
+      url: /support.html
     output: web
     title: Getting started
   - folderitems:
@@ -172,6 +175,12 @@ entries:
       url: /torch_core.html
     output: web
     title: Core
+  - folderitems:
+    - output: web,pdf
+      title: Helpers
+      url: /utils.collect_env.html
+    output: web
+    title: Utils
   - folderitems:
     - output: web,pdf
       title: Look at data

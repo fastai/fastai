@@ -11,7 +11,8 @@ sidebar_d = {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
         'Installation Extras': '/install',
         'Troubleshooting': '/troubleshoot',
-        'Performance': '/performance'
+        'Performance': '/performance',
+        'Support': '/support'
     },
     'Training': {
         'Overview': '/training',
@@ -76,6 +77,9 @@ sidebar_d = {
         'datasets': '/datasets',
         'core': '/core',
         'torch_core': '/torch_core',
+    },
+    'Utils': {
+        'Helpers': '/utils.collect_env'
     },
     'Tutorials': {
         'Look at data': '/tutorial.data',

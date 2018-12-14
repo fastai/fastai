@@ -12,7 +12,7 @@ def test_tensor_with_list():
     assert torch.all(r==exp)
 
 def test_tensor_with_ndarray():
-    b=np.array(a)
+    b=np.array(a, dtype=np.int64)
     r = tensor(b)
     assert np_address(r.numpy()) == np_address(b)
     assert torch.all(r==exp)
