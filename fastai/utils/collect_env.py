@@ -138,21 +138,48 @@ def show_install(show_nvidia_smi:bool=False):
 def perf_checks():
     " Suggest to user what improvements they could do to their setup to speed things up"
 
-    # libjpeg_turbo check
     from PIL import features, Image
     from packaging import version
+    import pynvml
 
+    # libjpeg_turbo check
     print("\n*** libjpeg-turbo status")
     if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
         if features.check_feature('libjpeg_turbo'):
-            print("libjpeg-turbo is on")
+            print("✔ libjpeg-turbo is on")
         else:
-            print("libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
+            print("✘ libjpeg-turbo is not on. It's recommended you install libjpeg-turbo to speed up JPEG decoding. See https://docs.fast.ai/performance.html#libjpeg-turbo")
     else:
-        print(f"libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
+        print(f"❓ libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
 
+    # Pillow-SIMD check
     print("\n*** Pillow-SIMD status")
     if re.search(r'\.post\d+', Image.PILLOW_VERSION):
-        print("Running Pillow-SIMD")
+        print(f"✔ Running Pillow-SIMD {Image.PILLOW_VERSION}")
     else:
-        print("Running Pillow; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")
+        print(f"✘ Running Pillow {Image.PILLOW_VERSION}; It's recommended you install Pillow-SIMD to speed up image resizing and other operations. See https://docs.fast.ai/performance.html#pillow-simd")
+
+    # CUDA version check
+    # compatibility table: k: min nvidia ver is required for v: cuda ver
+    # note: windows nvidia driver version is slightly higher, see:
+    # https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html
+    # note: add new entries if pytorch starts supporting new cudaXX
+    nvidia2cuda = {
+        "410.00": "10.0",
+        "384.81":  "9.0",
+        "367.48":  "8.0",
+    }
+    print("\n*** CUDA status")
+    pynvml.nvmlInit()
+    nvidia_ver = pynvml.nvmlSystemGetDriverVersion().decode('utf-8')
+    cuda_ver   = torch.version.cuda
+    max_cuda = "8.0"
+    for k in sorted(nvidia2cuda.keys()):
+        if version.parse(nvidia_ver) > version.parse(k): max_cuda = nvidia2cuda[k]
+    if torch.cuda.is_available():
+        if version.parse(str(max_cuda)) <= version.parse(cuda_ver):
+            print(f"✔ Running the latest CUDA {cuda_ver} with NVIDIA driver {nvidia_ver}")
+        else:
+            print(f"✘ You are running pytorch built against cuda {cuda_ver}, your NVIDIA driver {nvidia_ver} supports cuda10. See https://pytorch.org/get-started/locally/ to install pytorch built against the faster CUDA version.")
+    else:
+        print(f"❓ Running cpu-only torch version, CUDA check is not relevant")

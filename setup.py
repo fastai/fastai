@@ -39,6 +39,7 @@ requirements = to_list("""
     matplotlib
     numexpr              # performance-improvement for numpy
     numpy>=1.12
+    nvidia-ml-py3
     pandas
     packaging
     Pillow
