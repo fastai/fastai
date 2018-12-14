@@ -63,6 +63,8 @@ pip3 install nvidia-ml-py3
 conda install nvidia-ml-py3 -c fastai
 ```
 
+This library is now a `fastai` dependency, so you can use it directly.
+
 Examples:
 
 Print the memory stats for the first GPU card:
