@@ -78,6 +78,9 @@ sidebar_d = {
         'core': '/core',
         'torch_core': '/torch_core',
     },
+    'Utils': {
+        'Helpers': '/utils.collect_env'
+    },
     'Tutorials': {
         'Look at data': '/tutorial.data',
         'Inference Learner': '/tutorial.inference',

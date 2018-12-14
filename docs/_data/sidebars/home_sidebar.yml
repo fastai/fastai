@@ -177,6 +177,12 @@ entries:
     title: Core
   - folderitems:
     - output: web,pdf
+      title: Helpers
+      url: /utils.collect_env.html
+    output: web
+    title: Utils
+  - folderitems:
+    - output: web,pdf
       title: Look at data
       url: /tutorial.data.html
     - output: web,pdf
