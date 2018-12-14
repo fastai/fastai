@@ -196,3 +196,8 @@ if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
 else:
     print(f"libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
 ```
+
+
+## GPU Performance
+
+See [GPU Memory Notes](https://docs.fast.ai/dev/gpu.html#gpu-memory-notes).
