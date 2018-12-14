@@ -20,6 +20,7 @@ of that change.
 ### New:
 
 - `check_perf` - performance improvement recommendations
+- `distributed` module with helper functions to quickly launch a distributed training
 
 ### Changed:
 
