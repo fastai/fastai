@@ -19,7 +19,7 @@ of that change.
 
 ### New:
 
-- perf_checks() - performance improvements recommendations
+- `check_perf` - performance improvement recommendations
 
 ### Changed:
 

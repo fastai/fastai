@@ -8,7 +8,7 @@ This document will show you how to speed things up and get more out of your GPU/
 
 To check your setup for recommended performance improvements, run:
 ```
-python -c "import fastai; fastai.perf_checks()"
+python -c "import fastai; fastai.check_perf()"
 ```
 
 ## Mixed Precision Training
