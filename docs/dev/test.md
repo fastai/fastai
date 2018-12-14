@@ -116,6 +116,22 @@ Plugins:
    ```
 
 
+* Run tests in parallel:
+
+   This can speed up the total execution time of the test suite.
+   ```
+   pip install pytest-xdist
+   ```
+   ```
+   $ time pytest
+   real    0m51.069s
+   $ time pytest -n 6
+   real    0m26.940s
+   ```
+   That's twice the speed of the normal sequential execution!
+
+   We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
+
 
 * Run tests in a random order:
 
@@ -411,4 +427,3 @@ jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook exam
 ```
 
 This set is examples and there is no pass/fail other than visual observation.
-
