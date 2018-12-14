@@ -277,9 +277,10 @@ class ImageItemList(ItemList):
     def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='', **kwargs)->'ItemList':
         "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
+        sep = os.path.sep
         res = super().from_df(df, path=path, cols=cols, **kwargs)
-        res.items = np.char.add(np.char.add(f'{folder}/', res.items.astype(str)), suffix)
-        res.items = np.char.add(f'{res.path}/', res.items)
+        res.items = np.char.add(np.char.add(f'{folder}{sep}', res.items.astype(str)), suffix)
+        res.items = np.char.add(f'{res.path}{sep}', res.items)
         return res
 
     @classmethod
