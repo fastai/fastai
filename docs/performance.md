@@ -148,15 +148,15 @@ However, if at a later time something triggers a conda or pip update on `Pillow`
 Here is how you can see that the `PIL` library is dynamically linked to `libjpeg.so`:
 
 ```
-cd ~/anaconda3/envs/pytorch-dev/lib/python3.6/site-packages/PIL/
+cd ~/anaconda3/envs/fastai/lib/python3.6/site-packages/PIL/
 ldd  _imaging.cpython-36m-x86_64-linux-gnu.so | grep libjpeg
-        libjpeg.so.8 => ~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.8
+        libjpeg.so.8 => ~/anaconda3/envs/fastai/lib/libjpeg.so.8
 ```
 
-and `~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.8` was installed by `conda install -c conda-forge libjpeg-turbo`. We know that from:
+and `~/anaconda3/envs/fastai/lib/libjpeg.so.8` was installed by `conda install -c conda-forge libjpeg-turbo`. We know that from:
 
 ```
-cd  ~/anaconda3/envs/pytorch-dev/conda-meta/
+cd  ~/anaconda3/envs/fastai/conda-meta/
 grep libjpeg.so libjpeg-turbo-2.0.1-h470a237_0.json
 ```
 
@@ -164,28 +164,18 @@ If I now install the normal `libjpeg` and do the same check on the `jpeg`'s pack
 
 ```
 conda install jpeg
-cd  ~/anaconda3/envs/pytorch-dev/conda-meta/
+cd  ~/anaconda3/envs/fastai/conda-meta/
 grep libjpeg.so jpeg-9b-h024ee3a_2.json
 
 ```
-I find that it's `lib/libjpeg.so.9.2.0` (`~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.9.2.0`).
+I find that it's `lib/libjpeg.so.9.2.0` (`~/anaconda3/envs/fastai/lib/libjpeg.so.9.2.0`).
 
-However, we now have an issue of the resolver showing both libraries:
-
-```
-cd ~/anaconda3/envs/pytorch-dev/lib/python3.6/site-packages/PIL/
-ldd  _imaging.cpython-36m-x86_64-linux-gnu.so | grep libjpeg
-        libjpeg.so.8 => ~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.8
-        libjpeg.so.9 => ~/anaconda3/envs/pytorch-dev/lib/libjpeg.so.9
-```
-
-And we no longer can tell which of the two will be loaded at run-time and have to inspect `/dev/<pid>/maps` instead.
-
-Also, if `libjpeg-turbo` and `libjpeg` happen to have the same version number, even if you built `Pillow` or `Pillow-SIMD` against `libjpeg-turbo`, but then later installed the default `jpeg` with exactly the same version you will end up with the slower version.
+Also, if `libjpeg-turbo` and `libjpeg` happen to have the same version number, even if you built `Pillow` or `Pillow-SIMD` against `libjpeg-turbo`, but then later replaced it with the default `jpeg` with exactly the same version you will end up with the slower version, since the linking happens at build time. But so far that risk appears to be small, as of this writing, `libjpeg-turbo` releases are in the 8.x versions, whereas `jpeg`'s are in 9.x's.
 
 #### How to tell whether `Pillow` or `Pillow-SIMD` is using `libjpeg-turbo`?
 
-You need `Pillow>=5.4.0` to accomplish the following:
+You need `Pillow>=5.4.0` to accomplish the following (install from github until then:
+`pip install git+https://github.com/python-pillow/Pillow`).
 
 ```
 python -c "from PIL import features; print(features.check_feature('libjpeg_turbo'))"
@@ -206,5 +196,3 @@ if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
 else:
     print(f"libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
 ```
-
-XXX: (will need to add `packaging` into dependencies, but it's already a dependency of setuptools.
