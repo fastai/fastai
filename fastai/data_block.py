@@ -1,6 +1,7 @@
 from .torch_core import *
 from .basic_data import *
 from .layers import *
+from numbers import Integral
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
            'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor']
@@ -91,7 +92,7 @@ class ItemList():
 
     def __getitem__(self,idxs:int)->Any:
         idxs = try_int(idxs)
-        if isinstance(idxs, numbers.Integral): return self.get(idxs)
+        if isinstance(idxs, Integral): return self.get(idxs)
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
     @classmethod
@@ -209,7 +210,7 @@ class ItemList():
         it = index_row(labels,0)
         if sep is not None:                     return MultiCategoryList
         if isinstance(it, (float, np.float32)): return FloatList
-        if isinstance(try_int(it), (str,numbers.Integral)):  return CategoryList
+        if isinstance(try_int(it), (str, Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList
         return self.__class__
 
@@ -519,7 +520,7 @@ class LabelList(Dataset):
 
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         idxs = try_int(idxs)
-        if isinstance(idxs, numbers.Integral):
+        if isinstance(idxs, Integral):
             if self.item is None: x,y = self.x[idxs],self.y[idxs]
             else:                 x,y = self.item   ,0
             if self.tfms:
