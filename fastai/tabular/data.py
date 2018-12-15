@@ -134,9 +134,11 @@ class TabularList(ItemList):
         items = [xs[0].names + ['target']]
         for i, (x,y) in enumerate(zip(xs,ys)):
             res = []
-            for c, n in zip(x.cats, x.names[:len(x.cats)]):
+            cats = x.cats if len(x.cats.size()) > 0 else []
+            conts = x.conts if len(x.conts.size()) > 0 else []
+            for c, n in zip(cats, x.names[:len(cats)]):
                 res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in x.conts] + [str(y)]
+            res += [f'{c:.4f}' for c in conts] + [str(y)]
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
 
@@ -146,9 +148,11 @@ class TabularList(ItemList):
         items = [xs[0].names + ['target', 'prediction']]
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             res = []
-            for c, n in zip(x.cats, x.names[:len(x.cats)]):
+            cats = x.cats if len(x.cats.size()) > 0 else []
+            conts = x.conts if len(x.conts.size()) > 0 else []
+            for c, n in zip(cats, x.names[:len(cats)]):
                 res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
+            res += [f'{c:.4f}' for c in conts] + [str(y),str(z)]
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
 
