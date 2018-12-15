@@ -104,10 +104,8 @@ def test_find_classes():
     classes = ['class_0', 'class_1', 'class_2']
     for class_num in classes:
         os.mkdir(path/class_num)
-    try:
-        assert find_classes(path)==[Path('./classes_test/class_0').resolve(),Path('./classes_test/class_1').resolve(),Path('./classes_test/class_2').resolve()]
-    finally:
-        shutil.rmtree(path)
+    try: assert [o.name for o in find_classes(path)]==classes
+    finally: shutil.rmtree(path)
 
 def test_arrays_split():
     a = arrays_split([0,3],[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'])

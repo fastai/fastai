@@ -124,3 +124,14 @@ def test_mem_leak():
     garbage_after = len(gc.garbage)  # again, should be 0, or == garbage_before
     assert garbage_after == 0
 
+def test_order_preds():
+    path, df_trn, df_val = prep_human_numbers()
+    df_val.labels = np.random.randint(0,5,(len(df_val),))
+    data_clas = (TextList.from_df(df_val, path, cols='texts')
+                .split_by_idx(list(range(200)))
+                .label_from_df(cols='labels')
+                .databunch())
+    learn = text_classifier_learner(data_clas)
+    preds = learn.get_preds(ordered=True)
+    true_value = np.array([learn.data.train_ds.c2i[o] for o in df_val.iloc[:200,0]])
+    np.all(true_value==preds[1].numpy())
