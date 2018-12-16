@@ -8,7 +8,10 @@ At the moment there are only a few automated tests, so we need to start expandin
 
 We use [pytest](https://docs.pytest.org/en/latest/). Here is a complete [pytest API reference](https://docs.pytest.org/en/latest/reference.html).
 
-The tests have been configured to automatically run against the git checked out `fastai` repository and not pre-installed `fastai`.
+The tests have been configured to automatically run against the `fastai` directory inside the `fastai` git repository and not pre-installed `fastai`. i.e. `tests/test_*` work with `../fastai`.
+
+
+## Running Tests
 
 ### Choosing which tests to run
 
@@ -69,14 +72,7 @@ More ways: https://docs.pytest.org/en/latest/usage.html
 
 For nuances of configuring pytest's repo-wide behavior see [collection](https://docs.pytest.org/en/latest/example/pythoncollection.html).
 
-### Writing tests
 
-When writing tests:
-
-- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
-- Use module scope fixtures to run init code that can be shared amongst tests
-- Avoid pretrained models, since they have to be downloaded from the internet to run the test
-- Create some minimal data for your test, or use data already in repo's data/ directory
 
 ### Clearing state
 
@@ -86,6 +82,22 @@ CI builds and when isolation is important (against speed), cache should be clear
    pytest --cache-clear tests
    ```
 
+
+### Running tests in parallel
+
+This can speed up the total execution time of the test suite.
+   ```
+   pip install pytest-xdist
+   ```
+   ```
+   $ time pytest
+   real    0m51.069s
+   $ time pytest -n 6
+   real    0m26.940s
+   ```
+That's twice the speed of the normal sequential execution!
+
+We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
 
 
 ### Test order and repetition
@@ -115,22 +127,6 @@ Plugins:
    pytest --count=10 --repeat-scope=function tests
    ```
 
-
-* Run tests in parallel:
-
-   This can speed up the total execution time of the test suite.
-   ```
-   pip install pytest-xdist
-   ```
-   ```
-   $ time pytest
-   real    0m51.069s
-   $ time pytest -n 6
-   real    0m26.940s
-   ```
-   That's twice the speed of the normal sequential execution!
-
-   We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
 
 
 * Run tests in a random order:
@@ -212,6 +208,7 @@ which tells `torch` to use the 2nd GPU. Instead, if you'd like to run a test loc
 
 
 
+
 ### Report each sub-test name and its progress
 
 For a single or a group of tests via `pytest` (after `pip install pytest-pspec`):
@@ -234,7 +231,7 @@ This also means that meaningful names for each sub-test are important.
 
 During test execution any output sent to `stdout` and `stderr` is captured. If a test or a setup method fails, its according captured output will usually be shown along with the failure traceback.
 
-To disable capturing and get the output normally use `-s` or `--capture=no`:
+To disable output capturing and to get the `stdout` and `stderr` normally, use `-s` or `--capture=no`:
 
    ```
    pytest -s tests/test_core.py
@@ -275,11 +272,15 @@ Creating a URL for a whole test session log:
 
 
 
-# Writing Tests
 
-XXX: Needs to be written. Contributions are welcome.
+## Writing Tests
 
-Until then look at the existing tests.
+When writing tests:
+
+- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
+- Use module scope fixtures to run init code that can be shared amongst tests
+- Avoid pretrained models, since they have to be downloaded from the internet to run the test
+- Create some minimal data for your test, or use data already in repo's data/ directory
 
 
 
@@ -359,6 +360,9 @@ Implementation:
 More details, example and ways are [here](https://docs.pytest.org/en/latest/skipping.html).
 
 
+
+
+
 ### Getting reproducible results
 
 In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
@@ -376,6 +380,20 @@ In some situations you may want to remove randomness for your tests. To get iden
    ```
    random.seed(42)
    ```
+
+
+
+
+### Debugging tests
+
+
+To start a debugger at the point of the warning, do this:
+
+```
+pytest tests/test_vision_data_block.py -W error::UserWarning --pdb
+```
+
+
 
 ## Coverage
 
