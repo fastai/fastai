@@ -22,6 +22,10 @@ of that change.
 
 ### New:
 
+- `fastai.script` module contains a simple decorator for quickly creating CLIs
+- `setup_distrib` does all setup required for distributed training for you
+- Sample training scripts for MNIST sample (single GPU) and CIFAR10 (multi-GPU fp16) in `examples`
+- `fastai.launch` module for simplified single-machine multi-GPU training
 - `check_perf` - performance improvement recommendations
 - `distributed` module with helper functions to quickly launch a distributed training
 
