@@ -167,6 +167,30 @@ cd ~/github/fastai
 pip install -e .[dev]
 ```
 
+Also, note, that `conda` can also perform an editable install:
+
+```
+cd ~/github/fastai
+conda develop .
+python -c 'import sys, pprint; pprint.pprint(sys.path)'
+['',
+ '~/.local/lib/python3.6/site-packages',
+ '~/anaconda3/envs/fastai/lib/python3.6/site-packages',
+ '~/github/fastai']
+```
+
+It does exactly the same as pip, except it performs it by editing `~/anaconda3/envs/fastai/lib/python3.6/site-packages/conda.pth`.
+
+So, you may think that it's better to use this approach if conda is your preferred way.
+
+We don't recommend using this approach, because, it doesn't play well with conda's normal installs (a normal conda package install will supersede the editable install at run time). Unlike pip, conda's normal packages are oblivious of their editable versions and vice versa - so you end up with having both and only one working. Moreover, conda doesn't support extra dependencies implemented by pip (`dev` dependencies).
+
+To uninstall the editable conda version you must use:
+
+```
+cd ~/github/fastai
+conda develop -u .
+```
 
 
 ## `fastai` Versions and Timeline
