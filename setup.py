@@ -33,6 +33,7 @@ requirements = to_list("""
     cymem==2.0.2         # remove once spacy==2.0.18 is on anaconda channel
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
+    google_images_download
     matplotlib
     numexpr              # performance-improvement for numpy
     numpy>=1.12

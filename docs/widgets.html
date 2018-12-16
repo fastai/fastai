@@ -60,6 +60,19 @@ sidebar: home_sidebar
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">error_rate</span><span class="p">)</span>
 </pre></div>
 
@@ -77,41 +90,6 @@ sidebar: home_sidebar
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea ">
-Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
-  <tr>
-    <th>epoch</th>
-    <th>train_loss</th>
-    <th>valid_loss</th>
-    <th>error_rate</th>
-  </tr>
-  <tr>
-    <th>1</th>
-    <th>0.189243</th>
-    <th>0.111312</th>
-    <th>0.038763</th>
-  </tr>
-  <tr>
-    <th>2</th>
-    <th>0.108558</th>
-    <th>0.081179</th>
-    <th>0.027969</th>
-  </tr>
-</table>
-
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -204,19 +182,94 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="ImageDownloader">ImageDownloader<a class="anchor-link" href="#ImageDownloader">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> widget gives you a way to quickly bootstrap your image dataset without leaving the notebook. It searches and downloads images that match the search criteria and resolution / quality requirements and stores them on your filesystem within the provided <code>path</code>.</p>
+<p>Images for each search query (or label) are stored in a separate folder within <code>path</code>. For example, if you pupulate <code>tiger</code> with a <code>path</code> setup to <code>./data</code>, you'll get a folder <code>./data/tiger/</code> with the tiger images in it.</p>
 
-<div class="output_area">
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./image_downloader_data&#39;</span><span class="p">)</span>
+<span class="n">ImageDownloader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
 
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_cleaner.ImageCleaner at 0x7f75cac064a8&gt;</pre>
+    </div>
+</div>
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After populating images with <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a>, you can get a an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> by calling <code>ImageDataBunch.from_folder(path, size=size)</code>, or using the data block API.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">src</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+       <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">))</span>
+<span class="n">db</span>  <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 

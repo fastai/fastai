@@ -50,6 +50,7 @@ requirements:
   run:
     - dataclasses # [py36]
     - fastprogress >=0.1.18
+    - google_images_download
     - matplotlib
     - numpy >=1.12
     - pandas
