@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.vision import *
 from fastai.vision.data import verify_image
 import PIL

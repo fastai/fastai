@@ -1,5 +1,5 @@
 import pytest
-from fastai import *
+from fastai.basics import *
 from fastai.metrics import *
 
 p1 = torch.Tensor([0,1,0,0,0]).expand(5,-1)

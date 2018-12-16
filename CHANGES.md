@@ -11,11 +11,14 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
-
-
 ## 1.0.38.dev0 (Work In Progress)
+
+### Breaking changes:
+
+- If you want to import basic fastai functionality without an application, you
+  should now use `from fastai.basics import *` instead of `from fastai import
+  *`. (However note that you now don't need either, when using a functionality,
+  as mentioned in *Changed* below)
 
 ### New:
 
@@ -24,8 +27,10 @@ of that change.
 
 ### Changed:
 
-### Fixed:
+- When importing an application such as `from fastai.vision import *` you no
+  longer need to also `from fastai import *`
 
+### Fixed:
 
 
 ## 1.0.37 (2018-12-13)

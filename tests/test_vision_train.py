@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.vision import *
 from io import StringIO
 from contextlib import redirect_stdout

@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.text import *
 
 def text_df(labels):

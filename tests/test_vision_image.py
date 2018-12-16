@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.vision import *
 
 def test_rle_encode_with_array():

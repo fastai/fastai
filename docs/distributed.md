@@ -9,7 +9,6 @@ If you have multiple GPUs, the most reliable way to use all of them for a traini
 Distributed training doesn't work in a notebook, so first, clean up your experiments notebook and prepare a script to run the training. For instance, here is a minimal script that trains a wide resnet on CIFAR10.
 
 ``` python
-from fastai import *
 from fastai.vision import *
 from fastai.vision.models.wrn import wrn_22
 
@@ -47,7 +46,6 @@ This will add the additional callbacks that will make sure your model and your d
 Now you can save your scriptn here is what the full example looks like:
 
 ``` python
-from fastai import *
 from fastai.vision import *
 from fastai.vision.models.wrn import wrn_22
 from fastai.distributed import *

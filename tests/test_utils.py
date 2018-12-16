@@ -18,3 +18,4 @@ def test_check_perf(capsys):
     #print(captured.out)
     match = re.findall(rf'Running Pillow.*?{Image.PILLOW_VERSION}', captured.out)
     assert match
+
