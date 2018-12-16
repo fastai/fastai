@@ -418,7 +418,7 @@ To run a subset:
 
 There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai/blob/master/docs_src/nbval/README.md).
 
-### fastai/examples/*ipynb
+### examples/*ipynb
 
 You can run each of these interactively in jupyter, or as CLI:
 
