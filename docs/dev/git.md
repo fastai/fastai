@@ -51,6 +51,12 @@ For more details run:
 
 While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the `fastai` package.
 
+And now we also have a python version of the same:
+```
+curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch-py
+chmod a+x fastai-make-pr-branch-py
+./fastai-make-pr-branch-py https your-github-username fastai new-feature
+```
 
 ### Step 1. Start With a Synced Fork Checkout
 
@@ -184,12 +190,12 @@ It's very important that you **always work inside a branch**. If you make any co
 
    No matter which repository you contribute to, unless you have already done so install the developer prerequisites:
 
-   Use an existing checkout, or:
+   Use an existing checkout, or make one:
    ```
-   git clone https://github.com/fastai/fastai
-   cd fastai
+   git clone https://github.com/fastai/fastai fastai-fork
+   cd fastai-fork
    ```
-   and install the dev prerequisites:
+   and make an editable install with the developer prerequisites:
    ```
    pip install -e .[dev]
    ```
@@ -199,7 +205,7 @@ It's very important that you **always work inside a branch**. If you make any co
    Move into the root of the repository where your PR branch is and run:
 
    ```
-   tools/run-after-git-clone
+   tools/run-after-git-clone # or python tools\run-after-git-clone on windows
    ```
 
 ### Step 4. Write Your Code
