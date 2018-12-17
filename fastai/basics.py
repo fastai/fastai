@@ -8,7 +8,6 @@ from .metrics import *
 from .torch_core import *
 from .train import *
 from .datasets import *
-from .utils.collect_env import *
 from .version import *
 from . import callbacks
 

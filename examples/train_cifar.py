@@ -9,7 +9,7 @@ def main(
     gpu:Param("GPU to run on", str)=None,
 ):
     gpu = setup_distrib(gpu)
-    n_gpu = os.environ.get("WORLD_SIZE", 1)
+    n_gpu = int(os.environ.get("WORLD_SIZE", 1))
     path = url2path(URLs.CIFAR)
     ds_tfms = ([*rand_pad(4, 32), flip_lr(p=0.5)], [])
     data = ImageDataBunch.from_folder(path, valid='test', ds_tfms=ds_tfms, bs=512//n_gpu,

@@ -38,7 +38,7 @@ def call_parse(func):
     if name == "__main__":
         args = anno_parser(func).parse_args()
         func(**args.__dict__)
-    else: return f
+    else: return func
 
 def call_plac(f):
     "Decorator to create a simple CLI from `func` using `plac`"
