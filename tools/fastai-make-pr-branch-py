@@ -2,8 +2,19 @@
 """
 This program will checkout a forked version of the original repository, sync it with the original, create a new branch and set it up for a PR.
 
-Some shell wrappers are taken from:
-    https://github.com/pytorch/pytorch/blob/master/torch/utils/collect_env.py
+usage:
+
+{me} auth user_name repo_name new_branch_name
+
+parameters:
+
+  auth:   ssh or https (use ssh if your github account is setup to use ssh
+  user:   your github username
+  repo:   repository name to fork/use
+  branch: name of the branch to create
+
+example:
+
 
 """
 import argparse
@@ -202,6 +213,10 @@ def print_instructions(args, need_clone):
 # Shell wrappers
 # --------------
 
+# some ideas are taken from:
+#
+#   https://github.com/pytorch/pytorch/blob/master/torch/utils/collect_env.py
+#
 
 def run(command):
     print(f'running: {command}')
