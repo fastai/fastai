@@ -186,7 +186,19 @@ It's very important that you **always work inside a branch**. If you make any co
 
 ### Step 3. Prepare Your Checkout
 
-1. Install the prerequisites.
+1. Uninstall preinstalled `fastai`
+
+   In order for you to be able to test your code against this particular `fastai` checkout, first make sure to uninstall the released version of `fastai` that you may have already installed.
+
+   ```
+   conda uninstall -y fastai
+   ```
+
+   If you previously installed `fastai` via `pip` you don't need to uninstall it - `pip` will automatically do it for you when you install `fastai` in the next step.
+
+   Also this is probably a good time for you to deepen your understanding of [Editable installs](https://docs.fast.ai/dev/develop.html#editable-install-explained).
+
+2. Install the prerequisites.
 
    No matter which repository you contribute to, unless you have already done so install the developer prerequisites:
 
@@ -200,7 +212,7 @@ It's very important that you **always work inside a branch**. If you make any co
    pip install -e ".[dev]"
    ```
 
-2. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
+3. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
 
    Move into the root of the repository where your PR branch is and run:
 
