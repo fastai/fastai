@@ -194,6 +194,8 @@ It's very important that you **always work inside a branch**. If you make any co
    pip install -e .[dev]
    ```
 
+   *Note: if you are using zsh as your default shell, the last command will not work for you. Simply execute `bash` before running it.*
+
 2. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
 
    Move into the root of the repository where your PR branch is and run:
