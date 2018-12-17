@@ -21,7 +21,6 @@ import sys
 if sys.hexversion < 0x03060000: sys.exit("!!! Please re-run this script with python-3.6 or higher")
 
 import os, argparse, subprocess
-from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-e', '--enable',  action="store_true", help="Trust repo-wide .gitconfig (default action)")
@@ -44,11 +43,9 @@ def validate_script():
         if result.stderr: print(f"Error: {result.stderr.decode('utf-8')}")
 
 def write_config():
-    path = Path("tools")
     is_windows = hasattr(sys, 'getwindowsversion')
-    cmd = "tools/fastai-nbstripout" if not is_windows else f"{sys.executable} {path/'fastai-nbstripout'}"
-    filename = ".gitconfig"
-    with open(filename, 'w') as f:
+    cmd = "tools/fastai-nbstripout" if not is_windows else f"{sys.executable} tools\\fastai-nbstripout"
+    with open(".gitconfig", 'w') as f:
         f.write(f"""# You need to enable this configuration once after checking out the repo
 # for the first time (assuming you checked it out into fastai/ dir):
 #
