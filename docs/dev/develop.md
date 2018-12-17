@@ -91,7 +91,7 @@ and its [examples](https://pip.pypa.io/en/stable/reference/pip_install/#examples
 
 This section will demonstrate how the editable installs works with `fastai`, including some important nuances that are important to understand.
 
-First, make sure you're in the correct python environment (`conda activate fastai`, or whatever you called your environment if any, perhaps you're using a system-wide install, then you don't need to activate anything, though it's much safer to use a dedicated virtual env for working with `fastai`).
+First, make sure you're in the correct [python environment]https://docs.fast.ai/install.html#virtual-environment) (`conda activate fastai`, or whatever you called your environment if any, perhaps you're using a system-wide install, then you don't need to activate anything, though it's much safer to use a dedicated virtual env for working with `fastai`).
 
 Let's start by uninstalling `fastai`:
 ```
