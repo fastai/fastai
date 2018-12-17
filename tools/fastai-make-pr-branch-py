@@ -15,6 +15,14 @@ parameters:
 
 example:
 
+  {me} ssh my-github-username fastai new-feature-branch
+
+notes:
+
+- if the original repository has been already forked, it'll be done by the program (it will ask you for your github password)
+- if the program is run from a directory that already contains a checked out git repository that matches the parameters, it will re-use it instead of making a new checkout
+- if the requested branch already exists it'll reuse it
+- if the master is out of sync with the original master it'll sync it first
 
 """
 import argparse
@@ -23,7 +31,6 @@ from os.path import basename, exists
 from textwrap import dedent
 import sys
 from subprocess import call, PIPE, Popen
-
 
 PY3 = sys.version_info >= (3, 0)
 ME = basename(sys.argv[0])
@@ -46,30 +53,29 @@ def main():
 
 
 def parse_args():
-    parser = argparse.ArgumentParser()
+    parser = SysExitArgumentParser(usage=__doc__.format(me=ME))
     parser.add_argument(
-        '-a', '--auth',
+        'auth',
         metavar='AUTH', choices={'ssh', 'https'},
         help='ssh or https (use ssh if your github account is setup to use ssh)'
     )
     parser.add_argument(
-        '-u', '--user-name',
+        'user_name',
         metavar='USER',
         help='your github username'
     )
     parser.add_argument(
-        '-r', '--repo-name',
+        'repo_name',
         metavar='REPO',
         help='repository name to fork/use'
     )
     parser.add_argument(
-        '-b', '--new-branch-name',
+        'new_branch_name',
         metavar='BR',
         help='name of the branch to create'
     )
 
     args = parser.parse_args()
-
     args.prefix = 'git@github.com:' if args.auth == 'ssh' else 'https://github.com/'
     args.path = f'{args.repo_name}-{args.new_branch_name}'
     args.url = f'{args.prefix}{args.user_name}/{args.repo_name}.git'
@@ -121,13 +127,14 @@ def clone(url, path):
     print(f'\n\n*** Cloning {url} to {path}')
     run(f'git clone {url} {path}')
     os.chdir(path)
+    print(f'cd {path}')
 
 
 def after_git_clone(tool):
     "Run fastai after cloning tool if exists."
     if exists(tool):
         print('\n\n*** run fastai repository setup')
-        run(f'python {tool}')
+        run(f'{sys.executable} {tool}')
 
 
 def track_upstream(orig_repo_url):
@@ -160,8 +167,7 @@ def sync_with_master(args):
 
 def create_branch(new_branch_name):
     print(f"\n\n*** Creating '{new_branch_name}' branch and setting its upstream for an easy push")
-    output = run_and_return_output(f'git show-branch {new_branch_name} >/dev/null 2>&1')
-    if output:
+    if run_and_check_success(f'git show-branch {new_branch_name} >/dev/null 2>&1'):
         print(f'{new_branch_name} already exists, switching to it')
         run(f'git checkout {new_branch_name}')
     else:
@@ -178,28 +184,28 @@ def set_upstream(branch):
 def print_instructions(args, need_clone):
     switch_command = f'cd {args.path}' if need_clone else 'cd .'
     print(dedent(f'''
-    
+
         Next do:
         1. Switch to the working dir:
         {switch_command}
-        
+
         2. Validate you're on the right repo/branch:
-        
+
         echo on repo: \$(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//') branch: \$(git branch | sed -n '/\* /s///p')"
-        
+
         3. And do you work.
-        
+
         4. When you're done:
-        
+
         git add <newfiles>  # if you added new files
         git commit -a       # if you want to commit all modified/added files
         git push            # push files into {args.new_branch_name} 
-        
+
         5. Then go to:
           https://github.com/{args.user_name}/{args.repo_name}/tree/{args.new_branch_name}
-        
+
         review your changes and when you're happy with what you see, submit your PR. 
-        
+
         While it's very good to review your PR on github before submitting it, if you want to use a CLI solution, 
         there are several solutions to choose from:
         * https://github.com/github/hub"
@@ -218,13 +224,21 @@ def print_instructions(args, need_clone):
 #   https://github.com/pytorch/pytorch/blob/master/torch/utils/collect_env.py
 #
 
+class SysExitArgumentParser(argparse.ArgumentParser):
+
+    def error(self, message):
+        print(self.usage)
+        sys.exit(1)
+
+
 def run(command):
     print(f'running: {command}')
     rc, out, err = run_and_return_output(command)
     if rc != 0:
         print(err)
         sys.exit(1)
-    print(out)
+    if out.strip():
+        print(out)
 
 
 def run_and_return_output(command):
@@ -247,6 +261,7 @@ def run_and_read_all(command):
 
 
 def run_and_check_success(command):
+    print(f'running: {command}')
     rc, _, _ = run_and_return_output(command)
     return rc == 0
 
