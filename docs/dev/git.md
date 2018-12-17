@@ -189,6 +189,14 @@ It's very important that you **always work inside a branch**. If you make any co
    git clone https://github.com/fastai/fastai
    cd fastai
    ```
+
+   Uninstall any previously installed `fastai` library:
+
+   ```bash
+   pip uninstall fastai
+   conda uninstall fastai
+   ```
+
    and install the dev prerequisites:
    ```
    pip install -e .[dev]
