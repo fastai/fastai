@@ -1,7 +1,7 @@
 import pytest, torch, re, fastai
 from fastai.torch_core import *
-from fastai.utils.show import *
-from fastai.utils.perf import *
+from fastai.utils.show_install import *
+from fastai.utils.check_perf import *
 from PIL import Image
 
 def test_show_install(capsys):
