@@ -62,7 +62,7 @@ And then do an editable install, from inside the cloned `fastai` directory:
 
    ```
    cd fastai
-   pip install -e .[dev]
+   pip install -e ".[dev]"
    ```
 
 It's almost the same as:
@@ -115,7 +115,7 @@ Now let's perform an editable install for `fastai`:
 cd ~/github
 git clone https://github.com/fastai/fastai
 cd fastai
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 And let's look at  `sys.path` again:
@@ -148,7 +148,7 @@ This is not the situation with conda packages. If you do:
 ```
 conda install -c fastai fastai
 cd ~/github/fastai
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 You end up with 2 installations of `fastai`, having the conda `fastai` package loaded by python and the editable install practically invisible to python (as it will find the conda package first):
@@ -165,7 +165,7 @@ So if you script your editable installation, always make sure to uninstall any p
 pip   uninstall -y fastai
 conda uninstall -y fastai
 cd ~/github/fastai
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 Also, note, that `conda` can also perform an editable install:

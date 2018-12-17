@@ -66,7 +66,7 @@ The following instructions will result in a [pip editable install](https://pip.p
 git clone https://github.com/fastai/fastai
 cd fastai
 tools/run-after-git-clone
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 Note that this will install the `cuda9.0` `pytorch` build via default dependencies. If you need a higher or lower `cudaXX` build, following the instructions [here]( https://pytorch.org/get-started/locally/), to install the desired `pytorch` build.

@@ -197,7 +197,7 @@ It's very important that you **always work inside a branch**. If you make any co
    ```
    and make an editable install with the developer prerequisites:
    ```
-   pip install -e .[dev]
+   pip install -e ".[dev]"
    ```
 
 2. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
