@@ -79,6 +79,7 @@ dev_requirements = { 'dev' : to_list("""
     jupyter
     jupyter_contrib_nbextensions
     nbconvert>=5.4
+    nbdime                       # help with nb diff/merge
     nbformat
     notebook>=5.7.0
     pip>=9.0.1
