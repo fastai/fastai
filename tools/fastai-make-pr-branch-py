@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This program will checkout a forked version of the original repository, sync it with the original, create a new branch and set it up for a PR.
 
