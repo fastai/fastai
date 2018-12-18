@@ -19,6 +19,7 @@ of that change.
   should now use `from fastai.basics import *` instead of `from fastai import
   *`. (However note that you now don't need either, when using a functionality,
   as mentioned in *Changed* below)
+- In fastai.text batch is now the first dimension
 
 ### New:
 
@@ -28,6 +29,8 @@ of that change.
 - `fastai.launch` module for simplified single-machine multi-GPU training
 - `check_perf` - performance improvement recommendations
 - `distributed` module with helper functions to quickly launch a distributed training
+- temptative use of JIT C++ extensions to code the QRNN with `batch_first` argument, it needs a proper installation 
+  of cuda to be compiled at execution time
 
 ### Changed:
 

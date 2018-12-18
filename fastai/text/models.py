@@ -17,7 +17,7 @@ class RNNDropout(nn.Module):
 
     def forward(self, x:Tensor)->Tensor:
         if not self.training or self.p == 0.: return x
-        m = dropout_mask(x.data, (1, x.size(1), x.size(2)), self.p)
+        m = dropout_mask(x.data, (x.size(0), 1, x.size(2)), self.p)
         return x * m
 
 class WeightDropout(nn.Module):
@@ -70,10 +70,6 @@ class EmbeddingDropout(nn.Module):
         return F.embedding(words, masked_embed, self.pad_idx, self.emb.max_norm,
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
-#def _repackage_var(h:Tensors)->Tensors:
-#    "Detach h from its history."
-#    return h.detach() if type(h) == torch.Tensor else tuple(_repackage_var(v) for v in h)
-
 class RNNCore(nn.Module):
     "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182."
 
@@ -88,15 +84,15 @@ class RNNCore(nn.Module):
         self.encoder = nn.Embedding(vocab_sz, emb_sz, padding_idx=pad_token)
         self.encoder_dp = EmbeddingDropout(self.encoder, embed_p)
         if self.qrnn:
-            #Using QRNN requires cupy: https://github.com/cupy/cupy
-            from .qrnn.qrnn import QRNNLayer
+            #Using QRNN requires an installation of cuda
+            from .qrnn.qrnn1 import QRNNLayer
             self.rnns = [QRNNLayer(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
                                    save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True,
                                    use_cuda=torch.cuda.is_available()) for l in range(n_layers)]
             for rnn in self.rnns: rnn.linear = WeightDropout(rnn.linear, weight_p, layer_names=['weight'])
         else:
             self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
-                1, bidirectional=bidir) for l in range(n_layers)]
+                1, bidirectional=bidir, batch_first=True) for l in range(n_layers)]
             self.rnns = [WeightDropout(rnn, weight_p) for rnn in self.rnns]
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
@@ -104,7 +100,7 @@ class RNNCore(nn.Module):
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
     def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
-        sl,bs = input.size()
+        bs,sl = input.size()
         if bs!=self.bs:
             self.bs=bs
             self.reset()
@@ -146,7 +142,8 @@ class LinearDecoder(nn.Module):
     def forward(self, input:Tuple[Tensor,Tensor])->Tuple[Tensor,Tensor,Tensor]:
         raw_outputs, outputs = input
         output = self.output_dp(outputs[-1])
-        decoded = self.decoder(output.view(output.size(0)*output.size(1), output.size(2)))
+        decoded = self.decoder(output)
+        #decoded = self.decoder(output.contiguous().view(output.size(0)*output.size(1), output.size(2)))
         return decoded, raw_outputs, outputs
 
 class SequentialRNN(nn.Sequential):
@@ -164,14 +161,14 @@ class MultiBatchRNNCore(RNNCore):
 
     def concat(self, arrs:Collection[Tensor])->Tensor:
         "Concatenate the `arrs` along the batch dimension."
-        return [torch.cat([l[si] for l in arrs]) for si in range_of(arrs[0])]
+        return [torch.cat([l[si] for l in arrs], dim=1) for si in range_of(arrs[0])]
 
     def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
-        sl,bs = input.size()
+        bs,sl = input.size()
         self.reset()
         raw_outputs, outputs = [],[]
         for i in range(0, sl, self.bptt):
-            r, o = super().forward(input[i: min(i+self.bptt, sl)])
+            r, o = super().forward(input[:,i: min(i+self.bptt, sl)])
             if i>(sl-self.max_seq):
                 raw_outputs.append(r)
                 outputs.append(o)
@@ -191,15 +188,15 @@ class PoolingLinearClassifier(nn.Module):
     def pool(self, x:Tensor, bs:int, is_max:bool):
         "Pool the tensor along the seq_len dimension."
         f = F.adaptive_max_pool1d if is_max else F.adaptive_avg_pool1d
-        return f(x.permute(1,2,0), (1,)).view(bs,-1)
+        return f(x.transpose(1,2), (1,)).view(bs,-1)
 
     def forward(self, input:Tuple[Tensor,Tensor])->Tuple[Tensor,Tensor,Tensor]:
         raw_outputs, outputs = input
         output = outputs[-1]
-        sl,bs,_ = output.size()
+        bs,sl,_ = output.size()
         avgpool = self.pool(output, bs, False)
         mxpool = self.pool(output, bs, True)
-        x = torch.cat([output[-1], mxpool, avgpool], 1)
+        x = torch.cat([output[:,-1], mxpool, avgpool], 1)
         x = self.layers(x)
         return x, raw_outputs, outputs
 

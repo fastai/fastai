@@ -25,7 +25,7 @@ class RNNTrainer(Callback):
 
     def on_backward_begin(self, last_loss:Rank0Tensor, last_input:Tensor, **kwargs):
         "Adjusts the lr to the sequence length and applies AR and TAR to `last_loss`."
-        if self.adjust: self.learn.opt.lr *= last_input.size(0) / self.bptt
+        if self.adjust: self.learn.opt.lr *= last_input.size(1) / self.bptt
         #AR and TAR
         if self.alpha != 0.:  last_loss += (self.alpha * self.out[-1].pow(2).mean()).sum()
         if self.beta != 0.:

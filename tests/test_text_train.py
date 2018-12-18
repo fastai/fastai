@@ -98,8 +98,8 @@ def test_classifier():
             classifier = text_classifier_learner(data, bptt=10)
             assert last_layer(classifier.model).out_features == expected_classes
             assert len(data.train_dl) == math.ceil(len(data.train_ds)/data.train_dl.batch_size)
-            assert next(iter(data.train_dl))[0].shape == (9, 2)
-            assert next(iter(data.valid_dl))[0].shape == (9, 2)
+            assert next(iter(data.train_dl))[0].shape == (2, 7)
+            assert next(iter(data.valid_dl))[0].shape == (2, 7)
         finally:
             shutil.rmtree(path)
 

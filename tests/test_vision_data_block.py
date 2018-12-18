@@ -50,7 +50,6 @@ def test_points():
     data = (PointsItemList.from_folder(coco)
             .random_split_by_pct()
             .label_from_func(get_y_func)
-            .transform(get_transforms(), tfm_y=True)
             .databunch())
     _check_data(data,160,40)
 
