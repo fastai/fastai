@@ -56,7 +56,7 @@ class DeviceDataLoader():
     def new(self, **kwargs):
         "Create a new copy of `self` with `kwargs` replacing current values."
         new_kwargs = {**self.dl.init_kwargs, **kwargs}
-        return DeviceDataLoader(DataLoader(self.dl.dataset, **new_kwargs), self.device, self.tfms,
+        return DeviceDataLoader(self.dl.__class__(self.dl.dataset, **new_kwargs), self.device, self.tfms,
                                 self.collate_fn)
 
     def proc_batch(self,b:Tensor)->Tensor:
@@ -80,14 +80,14 @@ class DeviceDataLoader():
 
 class DataBunch():
     "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
-    _batch_first=True
 
-    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader, test_dl:Optional[DataLoader]=None,
+    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate, no_check:bool=False):
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
+        if fix_dl is None: fix_dl = train_dl.new(shuffle=False, drop_last=False)
         def _create_dl(dl, **kwargs):
             if dl is None: return None
             return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
@@ -159,7 +159,7 @@ class DataBunch():
         "Show a batch of data in `ds_type` on a few `rows`."
         x,y = self.one_batch(ds_type, True, True)
         if self.train_ds.x._square_show: rows = rows ** 2
-        xs = [self.train_ds.x.reconstruct(grab_idx(x, i, self._batch_first)) for i in range(rows)]
+        xs = [self.train_ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
         #TODO: get rid of has_arg if possible
         if has_arg(self.train_ds.y.reconstruct, 'x'):
             ys = [self.train_ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
