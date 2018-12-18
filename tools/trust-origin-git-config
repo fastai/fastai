@@ -44,7 +44,7 @@ def validate_script():
 
 def write_config():
     is_windows = hasattr(sys, 'getwindowsversion')
-    cmd = "tools/fastai-nbstripout" if not is_windows else f"python tools\\\\fastai-nbstripout"
+    cmd = "tools/fastai-nbstripout" if not is_windows else r"python tools\\\\fastai-nbstripout"
     with open(".gitconfig", 'w') as f:
         f.write(f"""# You need to enable this configuration once after checking out the repo
 # for the first time (assuming you checked it out into fastai/ dir):
