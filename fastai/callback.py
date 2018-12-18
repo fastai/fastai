@@ -204,7 +204,7 @@ class CallbackHandler():
         self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
         self.state_dict['train'] = train
         cbs = self.callbacks if train else self.metrics + self.callbacks
-        for cb in self.callbacks:
+        for cb in cbs:
             a = cb.on_batch_begin(**self.state_dict)
             if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
         return self.state_dict['last_input'], self.state_dict['last_target']
