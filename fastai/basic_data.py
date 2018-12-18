@@ -89,10 +89,10 @@ class DataBunch():
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
         def _create_dl(dl, **kwargs):
+            if dl is None: return None
             return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
-        self.train_dl,self.valid_dl,self.fix_dl = map(_create_dl, [train_dl,valid_dl,fix_dl])
+        self.train_dl,self.valid_dl,self.fix_dl,self.test_dl = map(_create_dl, [train_dl,valid_dl,fix_dl,test_dl])
         self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
-        self.test_dl  = _create_dl(test_dl) if test_dl is not None else None
         self.path = Path(path)
         if not no_check: self.sanity_check()
 
@@ -101,10 +101,9 @@ class DataBunch():
 
     @staticmethod
     def _init_ds(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None):
-        fix_ds = valid_ds.new(train_ds.x, train_ds.y) # train_ds, but without training tfms
-        datasets = [train_ds,valid_ds,fix_ds]
-        if test_ds is not None: datasets.append(test_ds)
-        return datasets
+        # train_ds, but without training tfms
+        fix_ds = valid_ds.new(train_ds.x, train_ds.y) if hasattr(valid_ds,'new') else None
+        return [o for o in (train_ds,valid_ds,fix_ds,test_ds) if o is not None]
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
@@ -113,8 +112,8 @@ class DataBunch():
         "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = bs
-        dls = [DataLoader(d, b, shuffle=s, drop_last=(s and b>1), num_workers=num_workers) for d,b,s in
-               zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False))]
+        dls = [DataLoader(d, b, shuffle=s, drop_last=s, num_workers=num_workers) for d,b,s in
+               zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False)) if d is not None]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)

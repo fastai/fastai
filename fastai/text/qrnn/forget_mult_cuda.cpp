@@ -3,12 +3,7 @@
 #include <vector>
 
 // CUDA forward declarations
-
-at::Tensor forget_mult_cuda_forward(
-    at::Tensor x,
-    at::Tensor f,
-    at::Tensor output,
-    bool batch_first);
+at::Tensor forget_mult_cuda_forward(at::Tensor x, at::Tensor f, at::Tensor output, bool batch_first);
 
 // C++ interface
 
@@ -16,35 +11,17 @@ at::Tensor forget_mult_cuda_forward(
 #define CHECK_CONTIGUOUS(x) AT_ASSERTM(x.is_contiguous(), #x " must be contiguous")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
-at::Tensor forget_mult_forward(
-    at::Tensor x,
-    at::Tensor f,
-    at::Tensor output,
-    bool batch_first) {
-  CHECK_INPUT(x);
-  CHECK_INPUT(f);
-  CHECK_INPUT(output);
-
+at::Tensor forget_mult_forward(at::Tensor x, at::Tensor f, at::Tensor output, bool batch_first) {
+  CHECK_INPUT(x); CHECK_INPUT(f); CHECK_INPUT(output);
   return forget_mult_cuda_forward(x, f, output, batch_first);
 }
 
-std::vector<at::Tensor> forget_mult_cuda_backward(
-    at::Tensor x,
-    at::Tensor f,
-    at::Tensor output,
-    at::Tensor grad_output,
-    bool batch_first);
+std::vector<at::Tensor> forget_mult_cuda_backward(at::Tensor x, at::Tensor f, at::Tensor output,
+                at::Tensor grad_output, bool batch_first);
 
-std::vector<at::Tensor> forget_mult_backward(
-    at::Tensor x,
-    at::Tensor f,
-    at::Tensor output,
-    at::Tensor grad_output,
-    bool batch_first) {
-  CHECK_INPUT(x);
-  CHECK_INPUT(f);
-  CHECK_INPUT(output);
-
+std::vector<at::Tensor> forget_mult_backward(at::Tensor x, at::Tensor f, at::Tensor output,
+                at::Tensor grad_output, bool batch_first) {
+  CHECK_INPUT(x); CHECK_INPUT(f); CHECK_INPUT(output);
   return forget_mult_cuda_backward(x, f, output, grad_output, batch_first);
 }
 
