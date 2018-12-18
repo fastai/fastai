@@ -91,7 +91,7 @@ The bulk of the process and setup are explained in [gen_doc.gen_notebooks](/gen_
 
 Install the prerequisites:
 ```
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 Install the `Hide Input` jupyter notebook extension:

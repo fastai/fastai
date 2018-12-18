@@ -1,6 +1,5 @@
 from pandas.core.dtypes.dtypes import CategoricalDtype
 import pytest
-from fastai import *
 from fastai.tabular import *
 
 def test_categorify():

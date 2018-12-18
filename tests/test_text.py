@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.text import *
 
 def test_rules():
@@ -17,4 +16,3 @@ def test_tokenize():
     assert toks[1][:6] == ['xxmaj', 'lorem', 'ipsum', 'dolor', 'sit', 'amet,']
     assert ' '.join(toks[2]) == "xxmaj i'm suddenly xxup shouting xxup for xxup no xxup reason"
 
-    

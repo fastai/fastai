@@ -1,6 +1,7 @@
 "Utility functions to help deal with user environment"
 from ..imports.torch import *
 from ..core import *
+from ..script import *
 import fastprogress
 import subprocess
 
@@ -8,13 +9,11 @@ __all__ = ['show_install', 'check_perf']
 
 def get_env(name):
     "Return env var value if it's defined and not an empty string, or return Unknown"
-    if name in os.environ and len(os.environ[name]):
-        return os.environ[name]
-    else:
-        return "Unknown"
+    res = os.environ.get(name,'')
+    return res if len(res) else "Unknown"
 
-def show_install(show_nvidia_smi:bool=False):
-    "Print user's setup information: python -c 'import fastai; fastai.show_install()'"
+def show_install(show_nvidia_smi:Param(opt=False, nargs='?', type=bool)=False):
+    "Print user's setup information"
 
     import platform, fastai.version
 
@@ -22,7 +21,6 @@ def show_install(show_nvidia_smi:bool=False):
     opt_mods = []
 
     rep.append(["=== Software ===", None])
-
     rep.append(["python", platform.python_version()])
     rep.append(["fastai", fastai.__version__])
     rep.append(["fastprogress", fastprogress.__version__])
@@ -31,13 +29,10 @@ def show_install(show_nvidia_smi:bool=False):
     # nvidia-smi
     cmd = "nvidia-smi"
     have_nvidia_smi = False
-    try:
-        result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
-    except:
-        pass
+    try: result = subprocess.run(cmd.split(), shell=False, check=False, stdout=subprocess.PIPE)
+    except: pass
     else:
-        if result.returncode == 0 and result.stdout:
-            have_nvidia_smi = True
+        if result.returncode == 0 and result.stdout: have_nvidia_smi = True
 
     # XXX: if nvidia-smi is not available, another check could be:
     # /proc/driver/nvidia/version on most systems, since it's the
@@ -117,13 +112,10 @@ def show_install(show_nvidia_smi:bool=False):
         print(f"{e[0]:{keylen}}", (f": {e[1]}" if e[1] is not None else ""))
 
     if have_nvidia_smi:
-        if show_nvidia_smi == True: print(f"\n{smi}")
+        if show_nvidia_smi: print(f"\n{smi}")
     else:
-        if torch_gpu_cnt:
-            # have gpu, but no nvidia-smi
-            print("no nvidia-smi is found")
-        else:
-            print("no supported gpus found on this system")
+        if torch_gpu_cnt: print("no nvidia-smi is found")
+        else: print("no supported gpus found on this system")
 
     print("```\n")
 
@@ -211,3 +203,4 @@ def check_perf():
         print(f"❓ Running cpu-only torch version, CUDA check is not relevant")
 
     print("\nRefer to https://docs.fast.ai/performance.html to make sense out of these checks and suggestions.")
+

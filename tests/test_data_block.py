@@ -1,5 +1,5 @@
 import pytest
-from fastai import *
+from fastai.basics import *
 
 def test_splitdata_datasets():
     c1,ratio,n = list('abc'),0.2,10

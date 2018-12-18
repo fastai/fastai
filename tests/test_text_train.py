@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.text import *
 
 pytestmark = pytest.mark.integration

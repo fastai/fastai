@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.vision import *
 
 def bbox2pic(corners, size):

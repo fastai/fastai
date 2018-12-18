@@ -66,7 +66,7 @@ The following instructions will result in a [pip editable install](https://pip.p
 git clone https://github.com/fastai/fastai
 cd fastai
 tools/run-after-git-clone
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 Note that this will install the `cuda9.0` `pytorch` build via default dependencies. If you need a higher or lower `cudaXX` build, following the instructions [here]( https://pytorch.org/get-started/locally/), to install the desired `pytorch` build.
@@ -84,7 +84,7 @@ Alternatively, you can do a quick CLI test:
 jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
 ```
 
-Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs/develop.md) for more details on how to contribute to the `fastai` project.
+Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [Notes For Developers](https://docs.fast.ai/dev/develop.html) for more details on how to contribute to the `fastai` project.
 
 
 

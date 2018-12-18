@@ -1,12 +1,9 @@
 "Module support for Collaborative Filtering"
-from .torch_core import *
-from .basic_train import *
-from .basic_data import *
-from .data_block import *
-from .layers import *
 from .tabular import *
+from . import tabular
 
-__all__ = ['EmbeddingDotBias', 'EmbeddingNN', 'collab_learner', 'CollabDataBunch', 'CollabLine', 'CollabList', 'CollabLearner']
+__all__ = [*tabular.__all__, 'EmbeddingDotBias', 'EmbeddingNN', 'collab_learner', 'CollabDataBunch', 'CollabLine',
+           'CollabList', 'CollabLearner']
 
 class CollabLine(TabularLine):
     "Base item for collaborative filtering, subclasses `TabularLine`."

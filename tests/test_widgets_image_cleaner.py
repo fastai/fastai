@@ -1,5 +1,5 @@
 import pytest
-from fastai import *
+from fastai.basics import *
 from fastai.vision import *
 from fastai.widgets import *
 
