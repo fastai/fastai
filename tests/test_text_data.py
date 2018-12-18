@@ -125,3 +125,17 @@ def test_from_ids_works_for_variable_length_sentences():
                                       train_ids=ids, train_lbls=lbl,
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
     text_classifier_learner(data).fit(1)
+
+def test_show_batch(capsys):
+    path = untar_data(URLs.IMDB_SAMPLE)
+    df = pd.read_csv(path/'texts.csv')
+    data_lm = TextDataBunch.from_csv(path, 'texts.csv')
+    data_lm.save()
+    data = TextDataBunch.load(path )
+    data.show_batch()
+    captured = capsys.readouterr()
+    ## missing trick to get to the body of IPython.core.display.HTML. Then could assert over string label e.g.
+    match = re.findall(r'IPython.core.display.HTML', captured.out)
+    assert match
+    shutil.rmtree(path)
+   
