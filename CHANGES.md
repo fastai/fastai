@@ -11,21 +11,30 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
-
-
 ## 1.0.38.dev0 (Work In Progress)
+
+### Breaking changes:
+
+- If you want to import basic fastai functionality without an application, you
+  should now use `from fastai.basics import *` instead of `from fastai import
+  *`. (However note that you now don't need either, when using a functionality,
+  as mentioned in *Changed* below)
 
 ### New:
 
+- `fastai.script` module contains a simple decorator for quickly creating CLIs
+- `setup_distrib` does all setup required for distributed training for you
+- Sample training scripts for MNIST sample (single GPU) and CIFAR10 (multi-GPU fp16) in `examples`
+- `fastai.launch` module for simplified single-machine multi-GPU training
 - `check_perf` - performance improvement recommendations
 - `distributed` module with helper functions to quickly launch a distributed training
 
 ### Changed:
 
-### Fixed:
+- When importing an application such as `from fastai.vision import *` you no
+  longer need to also `from fastai import *`
 
+### Fixed:
 
 
 ## 1.0.37 (2018-12-13)

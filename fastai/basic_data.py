@@ -198,14 +198,14 @@ class DataBunch():
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
         idx = next(iter(self.train_dl.batch_sampler))
         try: samples = [self.train_ds[i] for i in idx]
-        except: 
+        except:
             warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i in {idx}")
             print(final_message)
             return
         try: batch = self.collate_fn(samples)
-        except: 
+        except:
             message = "It's not possible to collate samples of your dataset together in a batch."
-            try: 
+            try:
                 shapes = [[o[i].data.shape for o in samples] for i in range(2)]
                 message += f'\nShapes of the inputs/targets:\n{shapes}'
             except: pass

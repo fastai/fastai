@@ -85,7 +85,7 @@ If you have `nvidia-smi` working and `pytorch` still can't recognize your NVIDIA
 Also note that `pytorch` will **silently fallback to CPU** if it reports `torch.cuda.is_available()` as `False`, so the only indicator of something being wrong will be that your notebooks will be running very slowly and you will hear your CPU revving up (if you are using a local system). Run:
 
 ```
-python -c 'import fastai; fastai.show_install(1)'
+python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
@@ -306,7 +306,7 @@ It's possible that your system is misconfigured and while you think you're using
 You can check that by checking the output of `import torch; print(torch.cuda.is_available())` - it should return `True` if `pytorch` sees your GPU(s). You can also see the state of your setup with:
 
 ```
-python -c 'import fastai; fastai.show_install(1)'
+python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(1)'
 ```
 which will include that check in its report.
 
@@ -330,7 +330,7 @@ If you use the [developer setup](https://github.com/fastai/fastai/blob/master/RE
 ```
 cd path/to/your/fastai/clone
 git pull
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 Sometimes jupyter notebooks get messed up, and `git pull` might fail with an error like:

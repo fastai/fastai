@@ -25,7 +25,7 @@ Generally pytorch GPU build should work fine on machines that don't have a CUDA-
    ```
 
 
-## Custom Dependencies
+## Custom dependencies
 
 If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disk space on your remote instance, here is how you can install only the dependencies that you need.
 
@@ -64,3 +64,53 @@ fastai.vision:
   "torchvision"
 
 ```
+
+
+## Virtual environment
+
+It's highly recommended to use a virtual python environment for the `fastai` project, first because you could experiment with different versions of it (e.g. stable-release vs. bleeding edge git version), but also because it's usually a bad idea to install various python package into the system-wide python, because it's so easy to break the system, if it relies on python and its 3rd party packages for its functionality.
+
+There are several implementations of python virtual environment, and the one we recommend is `conda` (anaconda), because we release our packages for this environment and pypi, as well. `conda` doesn't have all python packages available, so when that's the case we use `pip` to install whatever is missing.
+
+You will find the instructions for installing conda on each platform [here](https://docs.anaconda.com/anaconda/install/). Once you followed the instructions and installed anaconda, you're ready to build you first environment. For the sake of this example we will use an environment name `fastai`, but you can name it whatever you'd like it to be.
+
+The following will create a `fastai` env with python-3.6:
+
+```
+conda create -n fastai python=3.6
+```
+
+Now any time you'd like to work in this environment, just execute:
+
+```
+conda activate fastai
+```
+
+It's very important that you activate your environment before you start the jupyter notebook if you're using `fastai` notebooks.
+
+Say, you'd like to have another env to test fastai with python-3.7, then you'd create another one with:
+
+```
+conda create -n fastai-py37 python=3.7
+```
+
+and to activate that one, you'd call:
+
+
+```
+conda activate fastai-py37
+```
+
+If you'd like to exit the environment, do:
+
+```
+conda deactivate
+```
+
+To list out the available environments
+```
+conda env list
+```
+
+
+Also see [bash-git-prompt](https://docs.fast.ai/dev/git.html#bash-git-prompt) which will help you tell at any moment which environment you're in.

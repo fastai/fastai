@@ -1,5 +1,5 @@
 import pytest, torch, fastai
-from fastai import *
+from fastai.basics import *
 from fastai.callbacks import *
 from fastai.vision import *
 from fastai.text import *

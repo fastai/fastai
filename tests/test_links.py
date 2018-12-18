@@ -90,7 +90,6 @@ def test_link_vision_learner_priority():
     # Edge case for vision.learner.ipynb
     imports = """from fastai.gen_doc.nbdoc import *
     from fastai.vision import *
-    from fastai import *
     from fastai.vision import data
     """
 

@@ -1208,8 +1208,8 @@ platform are shown):
 * To find out why a particular package is installed (i.e. which package requires it):
 
     ```
-    conda create -n c43 conda=4.3
-    conda activate c43
+    conda create -n conda-4.3 conda=4.3
+    conda activate conda-4.3
     python -m conda search --reverse-dependency --full-name pillow
     ```
 

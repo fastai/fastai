@@ -20,7 +20,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
+<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
 <p>This being given, there are five different dropouts in the AWD-LSTM:</p>
 <ul>
 <li>the first one, embedding dropout, is applied when we look the ids of our tokens inside the embedding matrix (to transform them from numbers to a vector of float). We zero some lines of it, so random ids are sent to a vector of zeros instead of being sent to their embedding vector.</li>
@@ -163,14 +163,14 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[ 0.5133,  2.3739, -0.2393,  0.0190,  5.9955, -1.1347, -2.0073],
-        [-1.6842, -2.3767, -0.6625, -2.8638, -2.1798, -2.9583,  2.9088],
-        [ 0.0000, -0.0000,  0.0000, -0.0000, -0.0000,  0.0000, -0.0000],
-        [ 0.9257, -0.3395, -4.7028, -2.0088, -2.1644, -0.7499,  0.3336],
-        [ 0.0000, -0.0000,  0.0000,  0.0000,  0.0000, -0.0000, -0.0000],
-        [ 1.1576, -2.1401, -1.1910, -0.5666,  0.3786, -1.5003, -3.4213],
-        [-0.0000, -0.0000, -0.0000,  0.0000,  0.0000, -0.0000,  0.0000],
-        [ 0.5133,  2.3739, -0.2393,  0.0190,  5.9955, -1.1347, -2.0073]],
+<pre>tensor([[ 1.1471,  1.5351,  1.2480,  1.9189,  1.2679,  1.5982, -1.1342],
+        [-0.0000, -0.0000,  0.0000, -0.0000, -0.0000, -0.0000,  0.0000],
+        [-0.0000, -0.0000,  0.0000, -0.0000,  0.0000,  0.0000, -0.0000],
+        [ 0.0000, -0.0000, -0.0000, -0.0000, -0.0000,  0.0000, -0.0000],
+        [-0.2790, -2.4966,  3.1997, -1.3250, -3.3850, -2.1127,  0.0270],
+        [-0.0000,  0.0000,  0.0000, -0.0000,  0.0000,  0.0000,  0.0000],
+        [ 3.4471,  3.2815,  1.7153,  0.2660,  0.5009,  0.0791,  1.8560],
+        [ 1.3163,  1.1378,  2.5767,  2.1256, -3.6566,  0.7878,  0.9914]],
        grad_fn=&lt;EmbeddingBackward&gt;)</pre>
 </div>
 
@@ -223,28 +223,28 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(tensor([[[ 0.9925, -0.2256,  0.3223,  1.1966,  0.9948,  0.0428, -0.1508],
-          [-2.1964, -2.4128,  0.2171,  0.9676, -0.7302, -0.1933, -0.7311],
-          [-0.4719, -1.8729, -0.0717,  0.1136,  0.7460,  0.8771, -0.7895]],
+<pre>(tensor([[[-1.0421, -0.2499,  0.1637, -1.6212,  0.6318, -2.1821,  2.2968],
+          [-0.7097,  0.7146,  1.2609, -0.8957, -0.5307, -1.1921,  1.6192],
+          [ 0.8803, -0.5505,  0.0258,  0.6765, -0.5320, -0.2400, -0.3317]],
  
-         [[-0.1271,  1.0285,  0.9008, -1.3732,  0.0839, -1.1660, -0.3819],
-          [ 0.1187, -0.4720, -0.1045, -0.3798, -0.9119, -0.1456, -1.0454],
-          [ 1.8361, -1.0637,  0.2853,  1.9379, -0.2943, -1.4134, -1.1985]],
+         [[-0.2871, -0.1306, -0.6293,  1.5152, -0.4450,  0.5473, -0.2276],
+          [-0.7583, -0.4813, -0.7606, -0.7661,  0.9229, -1.0180, -0.4946],
+          [-0.8781,  1.5763, -0.9816, -0.1071,  0.7915, -0.8571,  0.3651]],
  
-         [[ 0.8120,  0.7239,  0.2517, -0.9598, -1.2584, -0.4002, -0.8644],
-          [-0.3155, -1.1882,  0.5829, -0.6463,  0.5759, -0.9514, -0.2117],
-          [ 1.9468, -1.2213,  0.5912, -0.4159, -0.4183, -0.2705, -0.6499]]]),
- tensor([[[ 1.4179, -0.3223,  0.4604,  1.7094,  1.4211,  0.0000, -0.0000],
-          [-0.0000, -3.4468,  0.0000,  1.3823, -1.0432, -0.0000, -1.0444],
-          [-0.6741, -2.6755, -0.1025,  0.0000,  1.0657,  1.2530, -0.0000]],
+         [[ 0.6065,  0.7646,  0.0488,  0.0786, -0.9043, -0.9047, -1.3453],
+          [-1.6446,  0.7166,  0.1842,  1.4110,  0.8893, -0.0825,  1.0348],
+          [ 1.0177,  1.1406,  0.9136,  0.5953, -0.0105,  0.1497, -0.9378]]]),
+ tensor([[[-1.4887, -0.3570,  0.2339, -2.3161,  0.0000, -3.1172,  3.2811],
+          [-0.0000,  0.0000,  1.8013, -0.0000, -0.7582, -1.7030,  2.3131],
+          [ 1.2576, -0.0000,  0.0369,  0.9665, -0.7599, -0.3429, -0.4738]],
  
-         [[-0.1815,  1.4693,  1.2868, -1.9617,  0.1198, -0.0000, -0.0000],
-          [ 0.0000, -0.6743, -0.0000, -0.5426, -1.3026, -0.0000, -1.4934],
-          [ 2.6230, -1.5195,  0.4076,  0.0000, -0.4204, -2.0191, -0.0000]],
+         [[-0.4101, -0.1865, -0.8990,  2.1646, -0.0000,  0.7819, -0.3251],
+          [-0.0000, -0.0000, -1.0865, -0.0000,  1.3184, -1.4543, -0.7065],
+          [-1.2544,  0.0000, -1.4023, -0.1531,  1.1307, -1.2244,  0.5216]],
  
-         [[ 1.1599,  1.0342,  0.3595, -1.3711, -1.7977, -0.0000, -0.0000],
-          [-0.0000, -1.6974,  0.0000, -0.9232,  0.8227, -0.0000, -0.3024],
-          [ 2.7811, -1.7447,  0.8446, -0.0000, -0.5976, -0.3864, -0.0000]]]))</pre>
+         [[ 0.8664,  1.0922,  0.0698,  0.1123, -0.0000, -1.2925, -1.9218],
+          [-0.0000,  0.0000,  0.2631,  0.0000,  1.2704, -0.1179,  1.4783],
+          [ 1.4538,  0.0000,  1.3051,  0.8504, -0.0151,  0.2139, -1.3398]]]))</pre>
 </div>
 
 </div>
@@ -304,14 +304,14 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 <div class="output_text output_subarea output_execute_result">
 <pre>Parameter containing:
-tensor([[ 0.3355, -0.0212],
-        [ 0.7019, -0.4262],
-        [-0.6695, -0.6837],
-        [-0.5267, -0.7050],
-        [-0.5731,  0.0049],
-        [-0.4302, -0.3659],
-        [ 0.6213, -0.5902],
-        [ 0.2209, -0.3167]], requires_grad=True)</pre>
+tensor([[ 0.6096,  0.3510],
+        [-0.0719,  0.0785],
+        [-0.0542, -0.1796],
+        [-0.1798,  0.3027],
+        [ 0.4550,  0.1095],
+        [ 0.2652, -0.4577],
+        [-0.2929, -0.2073],
+        [-0.5722,  0.6443]], requires_grad=True)</pre>
 </div>
 
 </div>
@@ -350,14 +350,14 @@ tensor([[ 0.3355, -0.0212],
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[ 0.5591, -0.0354],
-        [ 1.1698, -0.0000],
-        [-1.1158, -0.0000],
-        [-0.8779, -1.1749],
-        [-0.0000,  0.0082],
-        [-0.7171, -0.6099],
-        [ 1.0354, -0.0000],
-        [ 0.0000, -0.0000]], grad_fn=&lt;MulBackward0&gt;)</pre>
+<pre>tensor([[ 1.0160,  0.5850],
+        [-0.1199,  0.1309],
+        [-0.0903, -0.2993],
+        [-0.2997,  0.5045],
+        [ 0.0000,  0.1826],
+        [ 0.4420, -0.7628],
+        [-0.0000, -0.0000],
+        [-0.0000,  1.0738]], grad_fn=&lt;MulBackward0&gt;)</pre>
 </div>
 
 </div>
@@ -456,9 +456,9 @@ tensor([[ 0.3355, -0.0212],
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>tensor([[0.0000, 0.0000, 1.4286, 1.4286, 0.0000, 1.4286, 1.4286],
-        [1.4286, 0.0000, 0.0000, 1.4286, 1.4286, 1.4286, 0.0000],
-        [1.4286, 1.4286, 1.4286, 0.0000, 0.0000, 1.4286, 1.4286]])</pre>
+<pre>tensor([[0.0000, 1.4286, 0.0000, 1.4286, 0.0000, 0.0000, 1.4286],
+        [1.4286, 1.4286, 1.4286, 1.4286, 0.0000, 1.4286, 1.4286],
+        [1.4286, 1.4286, 1.4286, 0.0000, 1.4286, 1.4286, 1.4286]])</pre>
 </div>
 
 </div>

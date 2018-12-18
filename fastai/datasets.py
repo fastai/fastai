@@ -1,6 +1,6 @@
 from .core import *
 
-__all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'url2name']
+__all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'url2name', 'url2path']
 
 MODEL_URL = 'http://files.fast.ai/models/'
 URL = 'http://files.fast.ai/data/examples/'
@@ -86,7 +86,7 @@ class Config():
 
 def _expand_path(fpath): return Path(fpath).expanduser()
 def url2name(url): return url.split('/')[-1]
-def _url2path(url, data=True):
+def url2path(url, data=True):
     name = url2name(url)
     return datapath4file(name) if data else modelpath4file(name)
 def _url2tgz(url, data=True):
@@ -115,7 +115,7 @@ def download_data(url:str, fname:PathOrStr=None, data:bool=True) -> Path:
 
 def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True) -> Path:
     "Download `url` to `fname` if it doesn't exist, and un-tgz to folder `dest`."
-    dest = Path(ifnone(dest, _url2path(url, data)))
+    dest = Path(ifnone(dest, url2path(url, data)))
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
         tarfile.open(fname, 'r:gz').extractall(dest.parent)

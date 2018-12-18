@@ -1,6 +1,6 @@
 import pytest
 
-from fastai import *
+from fastai.basics import *
 
 def chk(a,b): assert np.array_equal(a,b)
 
