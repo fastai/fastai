@@ -47,7 +47,30 @@ or alternatively run:
     tools/trust-origin-git-config -t
 
 
+## Unstripped Notebook Repair
 
+If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
+
+   ```
+   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
+   tools/trust-origin-git-config -d
+   git commit -a
+   git push
+   tools/trust-origin-git-config
+   ```
+
+Inside the `course-v3` repo, it'd be the same, but the notebooks are in a different location, so:
+
+   ```
+   tools/fastai-nbstripout -d nbs/*/*ipynb
+   ```
+
+and in the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks and we strip them out differently:
+
+   ```
+   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
+   ```
 
 ## Development Editable Install
 
