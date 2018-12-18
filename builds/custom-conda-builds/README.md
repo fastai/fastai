@@ -34,6 +34,13 @@ In case there is a new version out there, the recipe was auto-generated with: ``
 
 See libjpeg-turbo/conda-build.txt
 
+
+
+## libtiff
+
+See libtiff/conda-build.txt
+
+
 ## pillow
 
 See pillow/conda-build.txt

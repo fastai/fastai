@@ -22,14 +22,18 @@ requirements:
     - python
     - pip
     - zlib
+    - libtiff
     - libjpeg-turbo
     - freetype
+    - tk
   run:
     - python
+    - libtiff
     - libjpeg-turbo
     - zlib
     - freetype
     - olefile
+    - tk
 
 test:
   imports:
