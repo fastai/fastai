@@ -30,9 +30,17 @@ then need to ask users to install torchvision=0.2.1=pyhe7f20fa_0
 In case there is a new version out there, the recipe was auto-generated with: ```conda skeleton pypi nvidia-ml-py3```, but remember to add `noarch: python` inside `build:`, since by default it'll set it to 'linux-64'.
 
 
+## libjpeg-turbo
+
+See libjpeg-turbo/conda-build.txt
+
+## pillow
+
+See pillow/conda-build.txt
+
+
+
 # to test installs cleanup first
 
     conda uninstall fastai pytorch-nightly pytorch torchvision dataclasses nvidia-ml-py3
     pip   uninstall fastai pytorch-nightly pytorch torchvision dataclasses nvidia-ml-py3
-
-

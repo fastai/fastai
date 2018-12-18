@@ -1,0 +1,4 @@
+    
+# XXX: currently hardwired version
+
+conda build recipe/meta.yaml
