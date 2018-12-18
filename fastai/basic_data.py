@@ -87,11 +87,11 @@ class DataBunch():
         self.tfms = listify(tfms)
         self.device = defaults.device if device is None else device
         assert not isinstance(train_dl,DeviceDataLoader)
-        if fix_dl is None: fix_dl = train_dl.new(shuffle=False, drop_last=False)
         def _create_dl(dl, **kwargs):
             if dl is None: return None
             return DeviceDataLoader(dl, self.device, self.tfms, collate_fn, **kwargs)
         self.train_dl,self.valid_dl,self.fix_dl,self.test_dl = map(_create_dl, [train_dl,valid_dl,fix_dl,test_dl])
+        if fix_dl is None: self.fix_dl = self.train_dl.new(shuffle=False, drop_last=False)
         self.single_dl = _create_dl(DataLoader(valid_dl.dataset, batch_size=1, num_workers=0))
         self.path = Path(path)
         if not no_check: self.sanity_check()
