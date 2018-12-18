@@ -123,8 +123,8 @@ class TextDataBunch(DataBunch):
                  valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a `vocab`."
-        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[ToIntsProcessor()]),
-                        TextList(valid_ids, vocab, path=path, processor=[ToIntsProcessor()]))
+        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
+                        TextList(valid_ids, vocab, path=path, processor=[]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
@@ -226,7 +226,7 @@ def open_text(fn:PathOrStr, enc='utf-8'):
 
 class Text(ItemBase):
     "Basic item for <code>text</code> data in numericalized `ids`."
-    def __init__(self, ids, text): self.data,self.text = ids,text
+    def __init__(self, ids, text): self.data,self.text = np.array(ids, dtype=np.int64),text
     def __str__(self):  return str(self.text)
 
 class TokenizeProcessor(PreProcessor):
@@ -253,11 +253,6 @@ class NumericalizeProcessor(PreProcessor):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         super().process(ds)
-
-#TODO: Refactor
-class ToIntsProcessor(PreProcessor):
-    "`PreProcessor` that converts the ids in propers int array."
-    def process_one(self, item):  return np.array(item, dtype=np.int64)
 
 class OpenFileProcessor(PreProcessor):
     "`PreProcessor` that opens the filenames and read the texts."
