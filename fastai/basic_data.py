@@ -82,7 +82,7 @@ class DataBunch():
     "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
     _batch_first=True
 
-    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader, test_dl:Optional[DataLoader]=None,
+    def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate, no_check:bool=False):
         self.tfms = listify(tfms)

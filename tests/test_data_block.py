@@ -14,8 +14,19 @@ def test_regression():
     data = ItemList.from_df(df, path='.', col=0).random_split_by_pct().label_from_df(cols=1).databunch()
     assert data.c==1
     assert isinstance(data.valid_ds, LabelList)
-    
+
 def test_wrong_order():
     path = untar_data(URLs.MNIST_TINY)
     with pytest.raises(Exception):
         src = ImageItemList.from_folder(path).label_from_folder().split_by_folder()
+
+class CustomDataset(Dataset):
+    def __init__(self, data_list): self.data = copy(data_list)
+    def __len__(self): return len(self.data)
+    def __getitem__(self, idx): return self.data[idx]
+
+def test_custom_dataset():
+    tr_dataset = CustomDataset([1, 2, 3])
+    val_dataset = CustomDataset([4, 5, 6])
+    data = DataBunch.create(tr_dataset, val_dataset)
+
