@@ -110,9 +110,9 @@ class LanguageLearner(RNNLearner):
         preds = self.pred_batch(batch=(x,y))
         y = y.view(*x.size())
         z = preds.view(*x.size(),-1).argmax(dim=2)
-        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
-        ys = [ds.x.reconstruct(grab_idx(y, i, self.data._batch_first)) for i in range(rows)]
-        zs = [ds.x.reconstruct(grab_idx(z, i, self.data._batch_first)) for i in range(rows)]
+        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
+        ys = [ds.x.reconstruct(grab_idx(y, i)) for i in range(rows)]
+        zs = [ds.x.reconstruct(grab_idx(z, i)) for i in range(rows)]
 
         items = [['text', 'target', 'pred']]
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
