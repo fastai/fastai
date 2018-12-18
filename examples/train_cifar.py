@@ -20,10 +20,3 @@ def main( gpu:Param("GPU to run on", str)=None ):
     learn.to_fp16()
     learn.fit_one_cycle(35, 3e-3, wd=0.4)
 
-    rank = int(os.environ.get('RANK',0))
-    if rank==0 and n_gpus>1:
-        import time; time.sleep(2)
-        cache_path = learn.path / 'tmp'
-        print(read_metrics(cache_path, n_gpus=n_gpus))
-
-
