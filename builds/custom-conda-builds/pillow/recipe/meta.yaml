@@ -2,7 +2,7 @@
 {% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
 
 package:
-  name: {{ data.name }}
+  name: {{ data.name.lower() }}
   version: {{ data.version }}
 
 source:
@@ -22,14 +22,18 @@ requirements:
     - python
     - pip
     - zlib
+    - libtiff
     - libjpeg-turbo
     - freetype
+    - tk
   run:
     - python
     - libjpeg-turbo
     - zlib
+    - libtiff
     - freetype
     - olefile
+    - tk
 
 test:
   imports:

@@ -4,7 +4,7 @@ Mostly the same (some important) notes appli as in ../simd/conda-build.txt
 
 ## Successful Builds
 
-w/ custom-built `libjpeg-turbo` conda package (via builds/custom-conda-builds/libjpeg-turbo):
+w/ custom-built `libjpeg-turbo` + libtiff conda packages (via builds/custom-conda-builds/libjpeg-turbo and builds/custom-conda-builds/libtiff):
 
 * python 3.6 + pillow-simd-dev (5.3.0.post0)
 
@@ -44,18 +44,23 @@ git apply ../pretend-pill-package.patch
 conda uninstall -y --force pillow pil jpeg libtiff
 pip   uninstall -y         pillow pil jpeg libtiff
 
-# presumes it was built locally - see builds/custom-conda-builds/libjpeg-turbo
-conda install -c ${CONDA_PREFIX}/conda-bld/ libjpeg-turbo
-# or can fetch from `fastai` conda channel
-conda install -c fastai libjpeg-turbo
+
+# presumes libjpeg-turbo libtiff were built locally - see
+# builds/custom-conda-builds/libjpeg-turbo and
+# builds/custom-conda-builds/libtiff
+conda install -c ${CONDA_PREFIX}/conda-bld/ libjpeg-turbo libtiff
+# or if they are already on fastai:
+conda install -c fastai/label/test libjpeg-turbo libtiff
 
 
 python setup.py sdist
-CFLAGS="${CFLAGS} -mavx2" MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
+CFLAGS="${CFLAGS} -mavx2" MAKEFLAGS="-j" conda-build -c fastai recipe/meta.yaml
 # add REPLACEPILLOW=1 to make into Pillow package
 
 
 ### Build against -c conda-forge libjpeg-turbo
+
+XXX: outdated - probably don't need any more?
 
 conda uninstall -y --force pillow pil jpeg libtiff
 pip   uninstall -y         pillow pil jpeg libtiff
@@ -63,7 +68,7 @@ pip   uninstall -y         pillow pil jpeg libtiff
 conda install -y -c conda-forge libjpeg-turbo
 
 python setup.py sdist
-MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
+CFLAGS="${CFLAGS} -mavx2" MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
 
 
 

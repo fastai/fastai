@@ -12,7 +12,7 @@ def get_env(name):
     res = os.environ.get(name,'')
     return res if len(res) else "Unknown"
 
-def show_install(show_nvidia_smi:Param(opt=False, nargs='?', type=bool)=False):
+def show_install(show_nvidia_smi:bool=False):
     "Print user's setup information"
 
     import platform, fastai.version
