@@ -158,7 +158,7 @@ def check_perf():
 
     # libjpeg_turbo check
     print("\n*** libjpeg-turbo status")
-    if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
+    if version.parse(Image.PILLOW_VERSION) >= version.parse("5.3.9"):
         if features.check_feature('libjpeg_turbo'):
             print("✔ libjpeg-turbo is on")
         else:
@@ -203,4 +203,3 @@ def check_perf():
         print(f"❓ Running cpu-only torch version, CUDA check is not relevant")
 
     print("\nRefer to https://docs.fast.ai/performance.html to make sense out of these checks and suggestions.")
-
