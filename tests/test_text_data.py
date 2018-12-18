@@ -75,7 +75,7 @@ def test_should_load_backwards_lm():
     lml = data.train_dl.dl
     lml.data = lml.batchify(np.concatenate([lml.dataset.x.items[i] for i in range(len(lml.dataset))]))
     batch = lml.get_batch(0, 70)
-    as_text = [data.train_ds.vocab.itos[x] for x in batch[0]]
+    as_text = [data.train_ds.vocab.itos[x] for x in batch[0][0]]
     np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
 def df_test_collate(data):

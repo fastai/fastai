@@ -1,51 +1,45 @@
 
-## Info
+Mostly the same (some important) notes appli as in ../simd/conda-build.txt
 
-This conda recipe is based on:
-https://github.com/conda-forge/pillow-feedstock
-
-I had to remove from the recipe:
-- libtiff: which needs jpeg - so to move forward need to either move it from the conda recipe - or find a libtiff built against libjpeg-turbo - or build our own libtiff conda package
-- tk: it wants some high tk[version='>=8.6.9,<8.7.0a0'], so removed that from the recipe as well.
 
 ## Successful Builds
 
 w/ custom-built `libjpeg-turbo` conda package (via builds/custom-conda-builds/libjpeg-turbo):
 
-* python 3.6 + pillow-dev (5.4.0.dev git HEAD)
-* python 3.7 + pillow-dev (5.4.0.dev git HEAD)
+* python 3.6 + pillow-simd-dev (5.3.0.post0)
 
-w/ `-c conda-forge libjpeg-turbo` (bad idea though because it taps into a whole pile of packages from `conda-forge`
-
-* python 3.6 + pillow-dev (5.4.0.dev git HEAD)
 
 
 ## Failing Builds
 
-w/ `-c conda-forge libjpeg-turbo`:
-
-* python 3.6 + pillow 5.3.0 somehow forces tk in, which relies on `jpeg` - a no go w/o additional investigation!
-* python 3.7 failing + any pillow
+* python 3.7 failing + any pillow (except current Pillow master HEAD, which works, but Pillow-SIMD is not syncing it until a new release).
 ModuleNotFoundError: No module named '_sysconfigdata_x86_64_conda_cos6_linux_gnu'
-Unresolved issue of mixing conda-forge and main channels - toolchain conflicts:
+Unresolved issue of toolchain conflicts:
 https://github.com/conda-forge/python-feedstock/issues/220
+
+
 
 ## Prep
 
 conda install -y conda-build conda-verify
-cd builds/custom-conda-builds/pillow # this dir
-git clone https://github.com/python-pillow/Pillow Pillow
-cd Pillow
+cd builds/custom-conda-builds/pillow-simd # this dir
+git clone https://github.com/uploadcare/pillow-simd/ Pillow-SIMD
+cd Pillow-SIMD
 # optionally switch to a desired release tag, otherwise you're on the bleeding edge
 # git checkout tags/5.3.0
 cp -r ../recipe .
 
+# apply patches:
 
-## Build
+1. only if pillow-simd < 5.4.0 - once pillow-simd 5.4.0.postX is released we don't need this patch anymore
+git apply ../libjpeg-turbo-feature.patch
 
-Can build against the conda-forge libjpeg-turbo, or against a locally built one (the latter is much better)
+2. Make it possible to turn Pillow-SIMD package into Pillow package (if env var REPLACEPILLOW=1 during package build)
+git apply ../pretend-pill-package.patch
 
-### Build against a custom build libjpeg-turbo conda package
+
+
+## Build against a custom build libjpeg-turbo conda package
 
 conda uninstall -y --force pillow pil jpeg libtiff
 pip   uninstall -y         pillow pil jpeg libtiff
@@ -55,13 +49,13 @@ conda install -c ${CONDA_PREFIX}/conda-bld/ libjpeg-turbo
 # or can fetch from `fastai` conda channel
 conda install -c fastai libjpeg-turbo
 
+
 python setup.py sdist
-MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
+CFLAGS="${CFLAGS} -mavx2" MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
+# add REPLACEPILLOW=1 to make into Pillow package
 
 
 ### Build against -c conda-forge libjpeg-turbo
-
-(Alternative build)
 
 conda uninstall -y --force pillow pil jpeg libtiff
 pip   uninstall -y         pillow pil jpeg libtiff
@@ -75,7 +69,7 @@ MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
 
 ## Install
 
-conda install -c ${CONDA_PREFIX}/conda-bld/ pillow
+conda install -c ${CONDA_PREFIX}/conda-bld/ pillow-simd
 
 # need to add the build channel as highest priority, otherwise the
 # package will get overridden with `conda install pillow` or any other
@@ -102,9 +96,9 @@ conda config --get channels
 Probably start with label/test:
 
 anaconda upload anaconda3/envs/xxx/conda-bld/linux-64/libjpeg-turbo-xxx.tar.bz2 -u fastai --label test
-anaconda upload anaconda3/envs/xxx/conda-bld/linux-64/pillow-xxx.tar.bz2 -u fastai --label test
+anaconda upload anaconda3/envs/xxx/conda-bld/linux-64/pillow-simd.tar.bz2 -u fastai --label test
 
 and to install from the test label:
 
 conda uninstall -y pillow libjpeg-turbo
-conda install -c fastai/label/test pillow
+conda install -c fastai/label/test pillow-simd

@@ -318,7 +318,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103_1</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
@@ -342,9 +342,9 @@ Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>5.017505</th>
-    <th>4.516659</th>
-    <th>0.231855</th>
+    <th>4.339245</th>
+    <th>4.077540</th>
+    <th>0.283568</th>
   </tr>
 </table>
 
@@ -383,7 +383,7 @@ Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:25 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:24 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -392,9 +392,9 @@ Total time: 00:25 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>4.284823</th>
-    <th>4.064550</th>
-    <th>0.275816</th>
+    <th>4.032784</th>
+    <th>3.970864</th>
+    <th>0.290228</th>
   </tr>
 </table>
 
@@ -433,7 +433,7 @@ Total time: 00:25 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This is a review about the power of the religion . while he says that&#39;</pre>
+<pre>&#34;This is a review about exceptionally worked meryl foot o&#39;dell endlessly unlikely jeepers rampage thaw&#34;</pre>
 </div>
 
 </div>
@@ -514,23 +514,23 @@ Total time: 00:25 <p><table style='width:300px; margin-bottom:10px'>
     <th>target</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 xxmaj raising xxmaj victor xxmaj vargas : a xxmaj review \n\n xxmaj you know , xxmaj raising xxmaj victor xxmaj vargas is like sticking your hands into a big , xxunk bowl of xxunk . xxmaj it 's warm and xxunk , but you 're not sure if it feels right . xxmaj try as i might , no matter how warm and xxunk xxmaj raising xxmaj</th>
-    <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxfld 1 xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come</th>
+    <th>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with</th>
     <th>positive</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style /</th>
+    <th>xxbos xxmaj now that xxmaj xxunk ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj xxunk to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject ,</th>
     <th>negative</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the xxunk - up xxunk of xxmaj new xxmaj xxunk . \n\n xxmaj the xxunk is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj xxunk</th>
+    <th>xxbos xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the xxunk - up xxunk of xxmaj new xxmaj xxunk . \n\n xxmaj the xxunk is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj xxunk , "</th>
     <th>positive</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 i really wanted to love this show . i truly , honestly did . \n\n xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj bachelor " . xxmaj with the help of his obligatory " hag " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance</th>
+    <th>xxbos xxmaj many neglect that this is n't just a classic due to the fact that it 's the first xxup 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj with graphics</th>
+    <th>positive</th>
+  </tr>
+  <tr>
+    <th>xxbos i really wanted to love this show . i truly , honestly did . \n\n xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj bachelor " . xxmaj with the help of his obligatory " xxunk " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance of love</th>
     <th>negative</th>
   </tr>
 </table>
@@ -571,9 +571,9 @@ Total time: 00:27 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.644896</th>
-    <th>0.722965</th>
-    <th>0.562189</th>
+    <th>0.623477</th>
+    <th>0.620588</th>
+    <th>0.661692</th>
   </tr>
 </table>
 
@@ -612,7 +612,7 @@ Total time: 00:27 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:40 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:30 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -621,9 +621,9 @@ Total time: 00:40 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.631892</th>
-    <th>0.647413</th>
-    <th>0.641791</th>
+    <th>0.528273</th>
+    <th>0.565025</th>
+    <th>0.736318</th>
   </tr>
 </table>
 
@@ -655,7 +655,7 @@ Total time: 00:40 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 01:02 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 01:06 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -664,9 +664,9 @@ Total time: 01:02 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.546142</th>
-    <th>0.673183</th>
-    <th>0.656716</th>
+    <th>0.487489</th>
+    <th>0.632793</th>
+    <th>0.726368</th>
   </tr>
 </table>
 
@@ -705,7 +705,7 @@ Total time: 01:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(Category positive, tensor(1), tensor([0.1956, 0.8044]))</pre>
+<pre>(Category positive, tensor(1), tensor([0.1100, 0.8900]))</pre>
 </div>
 
 </div>

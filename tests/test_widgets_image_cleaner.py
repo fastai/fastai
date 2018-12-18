@@ -8,7 +8,7 @@ np.random.seed(42)
 @pytest.fixture(scope="module")
 def data():
     path = untar_data(URLs.MNIST_TINY)
-    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), batch_size=16, num_workers=2)
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), bs=16, num_workers=2)
     return data
 
 @pytest.mark.xfail(reason = "Expected Fail, lengths should be the same.")

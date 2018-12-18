@@ -23,7 +23,7 @@ class LanguageModelLoader():
 
     def __iter__(self):
         if getattr(self.dataset, 'item', None) is not None:
-            yield LongTensor(getattr(self.dataset, 'item')).unsqueeze(1),LongTensor([0])
+            yield LongTensor(getattr(self.dataset, 'item'))[None],LongTensor([0])
         idx = np.random.permutation(len(self.dataset)) if self.shuffle else range(len(self.dataset))
         self.data = self.batchify(np.concatenate([self.dataset.x.items[i] for i in idx]))
         self.i,self.iter = 0,0
@@ -49,14 +49,14 @@ class LanguageModelLoader():
     def batchify(self, data:np.ndarray) -> LongTensor:
         "Split the corpus `data` in batches."
         nb = data.shape[0] // self.bs
-        data = np.array(data[:nb*self.bs]).reshape(self.bs, -1).T
-        if self.backwards: data=data[::-1].copy()
+        data = np.array(data[:nb*self.bs]).reshape(self.bs, -1)
+        if self.backwards: data=data[:,::-1].copy()
         return LongTensor(data)
 
     def get_batch(self, i:int, seq_len:int) -> Tuple[LongTensor, LongTensor]:
         "Create a batch at `i` of a given `seq_len`."
-        seq_len = min(seq_len, len(self.data) - 1 - i)
-        return self.data[i:i+seq_len], self.data[i+1:i+1+seq_len]#.contiguous().view(-1)
+        seq_len = min(seq_len, self.data.shape[1] - 1 - i)
+        return self.data[:,i:i+seq_len], self.data[:,i+1:i+1+seq_len]#.contiguous().view(-1)
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
@@ -91,21 +91,20 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     "Function that collect samples and adds padding."
     samples = to_data(samples)
     max_len = max([len(s[0]) for s in samples])
-    res = torch.zeros(max_len, len(samples)).long() + pad_idx
+    res = torch.zeros(len(samples), max_len).long() + pad_idx
     for i,s in enumerate(samples):
-        if pad_first: res[-len(s[0]):,i] = LongTensor(s[0])
-        else:         res[:len(s[0]):,i] = LongTensor(s[0])
+        if pad_first: res[i,-len(s[0]):] = LongTensor(s[0])
+        else:         res[i,:len(s[0]):] = LongTensor(s[0])
     return res, tensor([s[1] for s in samples])
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
-                   min_freq:int=2, mark_fields:bool=True):
+                   min_freq:int=2, mark_fields:bool=False):
     return [TokenizeProcessor(tokenizer=tokenizer, chunksize=chunksize, mark_fields=mark_fields),
             NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)]
 
 class TextDataBunch(DataBunch):
     "General class to get a `DataBunch` for NLP. Subclassed by `TextLMDataBunch` and `TextClasDataBunch`."
-    _batch_first=False
-
+   
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
@@ -124,8 +123,8 @@ class TextDataBunch(DataBunch):
                  valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from ids, labels and a `vocab`."
-        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[ToIntsProcessor()]),
-                        TextList(valid_ids, vocab, path=path, processor=[ToIntsProcessor()]))
+        src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
+                        TextList(valid_ids, vocab, path=path, processor=[]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
@@ -227,7 +226,7 @@ def open_text(fn:PathOrStr, enc='utf-8'):
 
 class Text(ItemBase):
     "Basic item for <code>text</code> data in numericalized `ids`."
-    def __init__(self, ids, text): self.data,self.text = ids,text
+    def __init__(self, ids, text): self.data,self.text = np.array(ids, dtype=np.int64),text
     def __str__(self):  return str(self.text)
 
 class TokenizeProcessor(PreProcessor):
@@ -254,11 +253,6 @@ class NumericalizeProcessor(PreProcessor):
         if self.vocab is None: self.vocab = Vocab.create(ds.items, self.max_vocab, self.min_freq)
         ds.vocab = self.vocab
         super().process(ds)
-
-#TODO: Refactor
-class ToIntsProcessor(PreProcessor):
-    "`PreProcessor` that converts the ids in propers int array."
-    def process_one(self, item):  return np.array(item, dtype=np.int64)
 
 class OpenFileProcessor(PreProcessor):
     "`PreProcessor` that opens the filenames and read the texts."

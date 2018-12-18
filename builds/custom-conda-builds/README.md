@@ -39,6 +39,11 @@ See libjpeg-turbo/conda-build.txt
 See pillow/conda-build.txt
 
 
+## pillow-simd
+
+See pillow-simd/conda-build.txt
+
+
 
 # to test installs cleanup first
 

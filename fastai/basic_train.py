@@ -297,7 +297,7 @@ class Learner():
                 preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
         preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
-        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
         if has_arg(ds.y.reconstruct, 'x'):
             ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
             zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
