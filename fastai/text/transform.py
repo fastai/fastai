@@ -3,11 +3,11 @@ from ..torch_core import *
 
 __all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'fix_html', 'replace_all_caps', 'replace_rep', 'replace_wrep',
            'rm_useless_spaces', 'spec_add_spaces', 'BOS', 'FLD', 'UNK', 'PAD', 'TK_MAJ', 'TK_UP', 'TK_REP', 'TK_REP', 'TK_WREP',
-           'default_pre_rules', 'default_post_rules', 'default_spec_tok', 'deal_caps']
+           'deal_caps']
 
 BOS,FLD,UNK,PAD = 'xxbos','xxfld','xxunk','xxpad'
 TK_MAJ,TK_UP,TK_REP,TK_WREP = 'xxmaj','xxup','xxrep','xxwrep'
-TOK_XX = [UNK,PAD,BOS,FLD,TK_MAJ,TK_UP,TK_REP,TK_WREP]
+defaults.text_spec_tok = [UNK,PAD,BOS,FLD,TK_MAJ,TK_UP,TK_REP,TK_WREP]
 
 
 class BaseTokenizer():
@@ -77,18 +77,17 @@ def deal_caps(x:Collection[str]) -> Collection[str]:
         res.append(t.lower())
     return res
 
-default_pre_rules = [fix_html, replace_rep, replace_wrep, spec_add_spaces, rm_useless_spaces]
-default_spec_tok = [BOS, FLD, UNK, PAD]
-default_post_rules = [replace_all_caps, deal_caps]
+defaults.text_pre_rules = [fix_html, replace_rep, replace_wrep, spec_add_spaces, rm_useless_spaces]
+defaults.text_post_rules = [replace_all_caps, deal_caps]
 
 class Tokenizer():
     "Put together rules and a tokenizer function to tokenize text with multiprocessing."
     def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', pre_rules:ListRules=None,
                  post_rules:ListRules=None, special_cases:Collection[str]=None, n_cpus:int=None):
         self.tok_func,self.lang,self.special_cases = tok_func,lang,special_cases
-        self.pre_rules  = ifnone(pre_rules,  default_pre_rules )
-        self.post_rules = ifnone(post_rules, default_post_rules)
-        self.special_cases = special_cases if special_cases else default_spec_tok
+        self.pre_rules  = ifnone(pre_rules,  defaults.text_pre_rules )
+        self.post_rules = ifnone(post_rules, defaults.text_post_rules)
+        self.special_cases = special_cases if special_cases else defaults.text_spec_tok
         self.n_cpus = ifnone(n_cpus, defaults.cpus)
 
     def __repr__(self) -> str:
@@ -142,7 +141,7 @@ class Vocab():
         "Create a vocabulary from a set of `tokens`."
         freq = Counter(p for o in tokens for p in o)
         itos = [o for o,c in freq.most_common(max_vocab) if c > min_freq]
-        for o in reversed(TOK_XX):
+        for o in reversed(defaults.text_spec_tok):
             if o in itos: itos.remove(o)
             itos.insert(0, o)
         return cls(itos)
