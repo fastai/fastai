@@ -102,7 +102,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is1d"><code>is1d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>is1d</code>(<code>a</code>:<code>Collection</code>) → <code>bool</code></p>
+<h4 id="is1d"><code>is1d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>is1d</code>(<code>a</code>:<code>Collection</code>[<code>T_co</code>]) → <code>bool</code></p>
 </blockquote>
 <p>Return <code>True</code> if <code>a</code> is one-dimensional</p>
 
@@ -246,7 +246,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="chunks"><code>chunks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L55" class="source_link">[source]</a></h4><blockquote><p><code>chunks</code>(<code>l</code>:<code>Collection</code>, <code>n</code>:<code>int</code>) → <code>Iterable</code></p>
+<h4 id="chunks"><code>chunks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L55" class="source_link">[source]</a></h4><blockquote><p><code>chunks</code>(<code>l</code>:<code>Collection</code>[<code>T_co</code>], <code>n</code>:<code>int</code>) → <code>Iterable</code></p>
 </blockquote>
 <p>Yield successive <code>n</code>-sized chunks from <code>l</code>.</p>
 
@@ -254,6 +254,28 @@ summary: "Basic helper functions for the fastai library"
 
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can transform a <code>Collection</code> into an <code>Iterable</code> of 'n' sized chunks by calling <a href="/core.html#chunks"><code>chunks</code></a> on it:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
