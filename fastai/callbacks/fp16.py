@@ -77,12 +77,6 @@ class MixedPrecision(Callback):
         self.learn.opt.opt = self.learn.opt_func(opt_params)
         opt.mom,opt.wd,opt.beta = mom,wd,beta
 
-    def on_train_end(self, **kwargs:Any)->None:
-        "Remove half precision transforms added at `on_train_begin`."
-        self.learn.data.train_dl.remove_tfm(to_half)
-        if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.remove_tfm(to_half)
-
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
         return last_output.float()

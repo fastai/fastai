@@ -43,13 +43,15 @@ def special_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")
 def test_from_csv_and_from_df():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos']) #"fast ai is a cool project", "hello world"
-    data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df[:20], label_cols=0, text_cols=["text"])
+    trn_df,val_df,tst_df = df.iloc[:20],df.iloc[20:],df.iloc[:10]
+    data1 = TextClasDataBunch.from_df(path, train_df=trn_df, valid_df=val_df, test_df=tst_df, label_cols=0, 
+                                      text_cols=["text"], no_check=True)
     assert len(data1.classes) == 2
     x,y = next(iter(data1.valid_dl)) # Will fail if the SortSampler keys get messed up between train and valid. 
     df = text_df(['neg','pos','neg pos'])
-    data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
+    data2 = TextClasDataBunch.from_df(path, train_df=trn_df, valid_df=val_df,
                                   label_cols=0, text_cols=["text"], label_delim=' ',
-                                  tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]))
+                                  tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]), no_check=True)
     assert len(data2.classes) == 2
     x,y = data2.train_ds[0]
     assert len(y.data) == 2
@@ -57,13 +59,8 @@ def test_from_csv_and_from_df():
     text_csv_file(path/'tmp.csv', ['neg','pos'])
     data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"])
     assert len(data3.classes) == 1
-    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)
+    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)
     assert 5 <= len(data4.train_ds.vocab.itos) <= 5+8 # +(8 special tokens - UNK/BOS/etc)
-
-    # Test that the tokenizer parameter is used in from_csv
-    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"],
-                                     tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]))
-    assert '@fastdotai' in data4.train_ds.vocab.itos, "It seems that our custom tokenzier was not used by TextClasDataBunch"
 
     os.remove(path/'tmp.csv')
 
@@ -75,7 +72,7 @@ def test_should_load_backwards_lm():
     lml = data.train_dl.dl
     lml.data = lml.batchify(np.concatenate([lml.dataset.x.items[i] for i in range(len(lml.dataset))]))
     batch = lml.get_batch(0, 70)
-    as_text = [data.train_ds.vocab.itos[x] for x in batch[0]]
+    as_text = [data.train_ds.vocab.itos[x] for x in batch[0][0]]
     np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
 def df_test_collate(data):

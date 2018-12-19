@@ -52,8 +52,11 @@ You can skip this step if you have done it once already on the system you're mak
 
     You don't really need it, as the anaconda client cashes your credentials so you need to login only infrequently.
 
+4. Install upload clients
 
-
+   ```
+   conda install anaconda-client twine
+   ```
 
 
 ## Quick Release Process

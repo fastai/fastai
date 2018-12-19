@@ -4,7 +4,8 @@ from .callbacks import *
 from .basic_data import *
 from .basic_train import *
 
-__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'mixup']
+__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32', 
+           'mixup']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -37,6 +38,13 @@ def to_fp16(learn:Learner, loss_scale:float=512., flat_master:bool=False)->Learn
     learn.callbacks.append(learn.mp_cb)
     return learn
 
+def to_fp32(learn:Learner):
+    "Put `learn` back to FP32 precision mode."
+    learn.data.train_dl.remove_tfm(to_half)
+    if hasattr(learn.data, 'valid_dl') and learn.data.valid_dl is not None:
+        learn.data.valid_dl.remove_tfm(to_half)
+    learn.model = learn.model.float()
+
 def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True) -> Learner:
     "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
     if stack_y: learn.loss_func = MixUpLoss(learn.loss_func)
@@ -46,6 +54,7 @@ def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True)
 Learner.fit_one_cycle = fit_one_cycle
 Learner.lr_find = lr_find
 Learner.to_fp16 = to_fp16
+Learner.to_fp32 = to_fp32
 Learner.mixup = mixup
 
 class ShowGraph(LearnerCallback):

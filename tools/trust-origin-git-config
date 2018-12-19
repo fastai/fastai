@@ -44,7 +44,7 @@ def validate_script():
 
 def write_config():
     is_windows = hasattr(sys, 'getwindowsversion')
-    cmd = "tools/fastai-nbstripout" if not is_windows else f"{sys.executable} tools\\fastai-nbstripout"
+    cmd = "tools/fastai-nbstripout" if not is_windows else r"python tools\\\\fastai-nbstripout"
     with open(".gitconfig", 'w') as f:
         f.write(f"""# You need to enable this configuration once after checking out the repo
 # for the first time (assuming you checked it out into fastai/ dir):
@@ -62,7 +62,7 @@ def write_config():
 # If tools/fastai-nbstripout is modified to produce a different output,
 # manually rerun all the notebooks under git:
 #
-# {cmd} -d courses/*/*ipynb examples/*ipynb
+# {cmd} -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
 # # disable the strip out filter to get git to see changes
 # git config --local --unset include.path
 # git commit -a

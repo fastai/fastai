@@ -375,7 +375,13 @@ class ItemLists():
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):
         self.path,self.train,self.valid,self.test = Path(path),train,valid,test
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
-
+    
+    def __dir__(self)->List[str]:
+        default_dir = dir(type(self)) + list(self.__dict__.keys())
+        add_ons = ['label_const', 'label_empty', 'label_from_df', 'label_from_folder', 'label_from_func', 
+                   'label_from_list', 'label_from_re']
+        return default_dir + add_ons
+           
     def __repr__(self)->str:
         return f'{self.__class__.__name__};\n\nTrain: {self.train};\n\nValid: {self.valid};\n\nTest: {self.test}'
 

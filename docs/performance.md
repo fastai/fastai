@@ -39,7 +39,7 @@ Here is its [git-repo](https://github.com/libjpeg-turbo/libjpeg-turbo).
 
 `fastai` uses `Pillow` for its image processing and you have to rebuild `Pillow` to take advantage of `libjpeg-turbo`.
 
-To learn how to rebuild `Pillow-SIMD` or `Pillow` with `libjpeg-turbo` see the `Pillow-SIMD`](#pillow-simd) entry.
+To learn how to rebuild `Pillow-SIMD` or `Pillow` with `libjpeg-turbo` see the [`Pillow-SIMD`](#pillow-simd) entry.
 
 
 ### Pillow-SIMD
@@ -196,6 +196,30 @@ if version.parse(Image.PILLOW_VERSION) >= version.parse("5.4.0"):
 else:
     print(f"libjpeg-turbo' status can't be derived - need Pillow(-SIMD)? >= 5.4.0 to tell, current version {Image.PILLOW_VERSION}")
 ```
+
+### Conda packages
+
+The `fastai` conda (test) channel has a `pillow` package built against a custom build of `libjpeg-turbo`. There are 3.6 and 3.7 linux builds:
+
+To install:
+```
+conda uninstall -y pillow libjpeg-turbo
+conda install -c fastai/label/test pillow
+```
+
+Note that this is pillow-5.4.0.dev0 build - i.e. don't use in production w/o testing.
+
+There is also `pillow-simd-5.3.0.post0` built against `libjpeg-turbo` and with avx2 - only linux/py36.
+
+```
+conda uninstall -y pillow libjpeg-turbo
+conda install -c fastai/label/test pillow-simd
+```
+
+Note that `pillow-simd` will get overwritten by `pillow` through update/install of any other package depending on `pillow`. You can fool `pillow-simd` into believing it is `pillow` and then it'll not get wiped out. You will have to [make a local build for that](https://github.com/fastai/fastai/blob/master/builds/custom-conda-builds/pillow-simd/conda-build.txt).
+
+If you have problems with these experimental packages please post [here](https://forums.fast.ai/t/performance-improvement-through-faster-software-components/32628/1), including the output of `python -m fastai.utils.check_perf` and `python -m fastai.utils.show_install` and the exact problem/errors you encountered.
+
 
 
 ## GPU Performance

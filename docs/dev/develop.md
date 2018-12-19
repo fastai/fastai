@@ -48,6 +48,51 @@ or alternatively run:
 
 
 
+### after-git-clone #2: automatically updating doc notebooks to be trusted on git pull
+
+We want the doc notebooks to be already trusted when you load them in `jupyter notebook`, so this script which should be run once upon `git clone`, will install a `git` `post-merge` hook into your local check out.
+
+The installed hook will be executed by git automatically at the end of `git pull` only if it triggered an actual merge event and that the latter was successful.
+
+To trust, run:
+
+    tools/trust-doc-nbs-install-hook
+
+You don't need to run it if you run:
+
+    tools/run-after-git-clone
+
+To distrust run:
+
+    rm .git/hooks/post-merge
+
+
+
+
+## Unstripped Notebook Repair
+
+If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
+
+   ```
+   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
+   tools/trust-origin-git-config -d
+   git commit -a
+   git push
+   tools/trust-origin-git-config
+   ```
+
+Inside the `course-v3` repo, it'd be the same, but the notebooks are in a different location, so:
+
+   ```
+   tools/fastai-nbstripout -d nbs/*/*ipynb
+   ```
+
+and in the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks and we strip them out differently:
+
+   ```
+   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
+   ```
 
 ## Development Editable Install
 
