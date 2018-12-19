@@ -101,7 +101,7 @@ class QRNNLayer(nn.Module):
         output = torch.sigmoid(o_gate) * c_gate if self.output_gate else c_gate
         if self.window > 1 and self.save_prev_x: 
             self.prevX = (X[:, -1:] if self.batch_first else X[-1:]).detach()
-        return output, (c_gate[:, -1:] if self.batch_first else c_gate[-1:])
+        return output, (c_gate[:, -1].unsqueeze(0) if self.batch_first else c_gate[-1:])
     
 class QRNN(nn.Module):
     "Apply a multiple layer Quasi-Recurrent Neural Network (QRNN) to an input sequence."
