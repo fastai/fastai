@@ -185,6 +185,12 @@ class DataBunch():
         return self.test_dl.dl.dataset if self.test_dl is not None else None
 
     @property
+    def empty_val(self)->bool:
+        if not hasattr(self, 'valid_dl') or self.valid_dl is None:            return True
+        if hasattr(self.valid_ds, 'items') and len(self.valid_ds.items) == 0: return True
+        return (len(self.valid_ds) == 0)
+    
+    @property
     def batch_size(self):   return self.train_dl.batch_size
     @batch_size.setter
     def batch_size(self,v):
