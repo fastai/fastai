@@ -39,7 +39,7 @@ Here is its [git-repo](https://github.com/libjpeg-turbo/libjpeg-turbo).
 
 `fastai` uses `Pillow` for its image processing and you have to rebuild `Pillow` to take advantage of `libjpeg-turbo`.
 
-To learn how to rebuild `Pillow-SIMD` or `Pillow` with `libjpeg-turbo` see the `Pillow-SIMD`](#pillow-simd) entry.
+To learn how to rebuild `Pillow-SIMD` or `Pillow` with `libjpeg-turbo` see the [`Pillow-SIMD`](#pillow-simd) entry.
 
 
 ### Pillow-SIMD
