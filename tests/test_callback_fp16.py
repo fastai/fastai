@@ -1,7 +1,5 @@
-import pytest, torch, fastai
-from fastai.torch_core import *
-from fastai.layers import *
-from math import isclose
+import pytest
+from fakes import *
 cuda_required = pytest.mark.skipif(not torch.cuda.is_available(),
                                 reason="cuda enabled gpu is not available")
 a3b3b3 =torch.ones([1,3,3,3])
@@ -16,10 +14,12 @@ def test_model2half():
 
 @cuda_required
 def test_model2half_forward():
-    m = simple_cnn([3,6,6],bn=True)
-    m = model2half(m)
-    bn_result = m[0].cuda().forward(a3b3b3.cuda().half()).sum()
-    assert isclose(bn_result,0,abs_tol=3e-2)
+    learn = fake_learner()
+    x,y = next(iter(learn.data.train_dl))
+    res1 = learn.model(x)
+    learn.model = model2half(learn.model)
+    res2 = learn.model(x.half())
+    assert (res2.float() - res1).abs().sum() < 0.01
 
 def test_to_half():
     t1,t2 = torch.ones([1]),torch.ones([1])
