@@ -174,8 +174,8 @@ def set_bn_eval(m:nn.Module)->None:
         set_bn_eval(l)
 
 def to_half(b:Collection[Tensor])->Collection[Tensor]:
-    "Set the input of batch `b` to half precision."
-    return [b[0].half(), b[1]]
+    "Set the input of batch `b` to half precision if isn't an int type."
+    return [b[0].half(), b[1]] if b[0].dtype != torch.int64 else b
 
 def bn2float(module:nn.Module)->nn.Module:
     "If `module` is batchnorm don't use half precision."

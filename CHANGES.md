@@ -17,10 +17,13 @@ of that change.
 
 ### New:
 
+- `Learner.to_fp32()` to go back to FP32 precision mode.
+
 ### Changed:
 
 ### Fixed:
 
+- Predictions now work in FP16 mode
 
 
 ## 1.0.38 (2018-12-18)

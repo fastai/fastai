@@ -47,7 +47,7 @@ summary: "Training in mixed precision implementation"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L33" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="to_fp16"><code>to_fp16</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>to_fp16</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>loss_scale</code>:<code>float</code>=<code>512.0</code>, <code>flat_master</code>:<code>bool</code>=<code>False</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Put <code>learn</code> in FP16 precision mode.</p>
 
@@ -165,7 +165,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixedPrecision.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>:<code>Rank0Tensor</code>, <code>kwargs</code>:<code>Any</code>) → <code>Rank0Tensor</code></p>
+<h4 id="MixedPrecision.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>:<code>Rank0Tensor</code>, <code>kwargs</code>:<code>Any</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Scale gradients up by <code>self.loss_scale</code> to prevent underflow.</p>
 
@@ -186,7 +186,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixedPrecision.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="MixedPrecision.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Convert the gradients back to FP32 and divide them by the scale.</p>
 
@@ -207,7 +207,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixedPrecision.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L86" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<code>last_output</code>:<code>Tensor</code>, <code>kwargs</code>:<code>Any</code>) → <code>Tensor</code></p>
+<h4 id="MixedPrecision.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L80" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<code>last_output</code>:<code>Tensor</code>, <code>kwargs</code>:<code>Any</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Convert half precision output to FP32 to avoid reduction overflow.</p>
 
@@ -228,7 +228,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixedPrecision.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="MixedPrecision.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Update the params from master to model and zero grad.</p>
 
@@ -252,27 +252,6 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 <h4 id="MixedPrecision.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Ensure everything is in half precision mode.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixedPrecision.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/fp16.py#L80" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>:<code>Any</code>)</p>
-</blockquote>
-<p>Remove half precision transforms added at <code>on_train_begin</code>.</p>
 
 </div>
 
