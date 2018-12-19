@@ -51,7 +51,7 @@ class DeviceDataLoader():
         self.tfms.append(tfm)
     def remove_tfm(self,tfm:Callable)->None:
         "Remove `tfm` from `self.tfms`."
-        self.tfms.remove(tfm)
+        if tfm in self.tfms: self.tfms.remove(tfm)
 
     def new(self, **kwargs):
         "Create a new copy of `self` with `kwargs` replacing current values."
