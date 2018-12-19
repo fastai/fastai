@@ -6,7 +6,9 @@ torch.backends.cudnn.benchmark = True
 
 @call_parse
 def main( gpu:Param("GPU to run on", str)=None ):
-    "Distrubuted training of CIFAR-10"
+    """Distrubuted training of CIFAR-10.
+    Fastest speed is if you run as follows:
+        python -m fastai.launch train_cifar.py"""
     gpu = setup_distrib(gpu)
     n_gpus = int(os.environ.get("WORLD_SIZE", 1))
     path = url2path(URLs.CIFAR)

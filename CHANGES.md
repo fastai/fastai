@@ -11,13 +11,25 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.38.dev0 (Work In Progress)
+
+
+## 1.0.39.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.38 (2018-12-18)
 
 ### Breaking changes:
 
 - If you want to import basic fastai functionality without an application, you
   should now use `from fastai.basics import *` instead of `from fastai import
-  *`. (However note that you now don't need either, when using a functionality,
+  *`. (However note that you now don't need either, when using an application,
   as mentioned in *Changed* below)
 - In fastai.text batch is now the first dimension
 
@@ -36,8 +48,6 @@ of that change.
 
 - When importing an application such as `from fastai.vision import *` you no
   longer need to also `from fastai import *`
-
-### Fixed:
 
 
 ## 1.0.37 (2018-12-13)
