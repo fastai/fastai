@@ -17,7 +17,7 @@ of that change.
 
 - If you want to import basic fastai functionality without an application, you
   should now use `from fastai.basics import *` instead of `from fastai import
-  *`. (However note that you now don't need either, when using a functionality,
+  *`. (However note that you now don't need either, when using an application,
   as mentioned in *Changed* below)
 - In fastai.text batch is now the first dimension
 
@@ -36,8 +36,6 @@ of that change.
 
 - When importing an application such as `from fastai.vision import *` you no
   longer need to also `from fastai import *`
-
-### Fixed:
 
 
 ## 1.0.37 (2018-12-13)

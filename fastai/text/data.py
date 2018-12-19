@@ -104,7 +104,7 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
 
 class TextDataBunch(DataBunch):
     "General class to get a `DataBunch` for NLP. Subclassed by `TextLMDataBunch` and `TextClasDataBunch`."
-   
+
     def save(self, cache_name:PathOrStr='tmp'):
         "Save the `DataBunch` in `self.path/cache_name` folder."
         os.makedirs(self.path/cache_name, exist_ok=True)
