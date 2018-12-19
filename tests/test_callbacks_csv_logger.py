@@ -16,7 +16,7 @@ def create_metrics_dataframe(learn):
 
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
-    lines = buffer.getvalue().split('\n')[:-2]
+    lines = buffer.getvalue().split('\n')[:-1]
     header, *lines = [l.strip() for l in lines if l]
     header = header.split()
     floats = [[float(x) for x in line.split()] for line in lines]
