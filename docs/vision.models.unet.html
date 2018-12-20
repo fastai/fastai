@@ -56,8 +56,8 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This U-Net will sit on top of an <code>encoder</code> (that can be a pretrained model) and with a final output of <code>n_classes</code>. During the initialization, it uses <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a> to determine the intermediate features sizes by passing a dummy input throught the model and crate the upward path automatically.</p>
-<p><code>blur</code> is used to avoid checkerboard artifacts at each layer, <code>blur_final</code> is pecific to the last layer. <code>self_attention</code> determines if we use a self attention layer at the third block before the end. If <code>y_range</code> is passed, the last activations go through a sigmoid rescaled to that range. <code>last_cross</code> determines if we use a cross-connection with the direct input of the model, and in this case <code>bottle</code> flags if we use a bottleneck or not for that skip connection.</p>
+<p>This U-Net will sit on top of an <code>encoder</code> (that can be a pretrained model) and with a final output of <code>n_classes</code>. During the initialization, it uses <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a> to determine the intermediate features sizes by passing a dummy input through the model and create the upward path automatically.</p>
+<p><code>blur</code> is used to avoid checkerboard artifacts at each layer, <code>blur_final</code> is specific to the last layer. <code>self_attention</code> determines if we use a self attention layer at the third block before the end. If <code>y_range</code> is passed, the last activations go through a sigmoid rescaled to that range. <code>last_cross</code> determines if we use a cross-connection with the direct input of the model, and in this case <code>bottle</code> flags if we use a bottleneck or not for that skip connection.</p>
 
 </div>
 </div>
