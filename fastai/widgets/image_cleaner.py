@@ -142,12 +142,6 @@ class ImageCleaner():
         if not duplicates: return widgets.VBox(children, layout=layout)
         else: return widgets.VBox([children[0], children[2]], layout=layout)
 
-    def chunks(self, l, n):
-        "Yield successive n-sized chunks from l."
-        #https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
     def create_image_list(self, dataset, fns_idxs):
         "Create a list of images, filenames and labels but first removing files that are not supposed to be displayed."
         items = dataset.x.items
