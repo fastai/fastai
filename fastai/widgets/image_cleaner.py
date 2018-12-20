@@ -15,7 +15,7 @@ class DatasetFormatter():
     "Returns a dataset with the appropriate format and file indices to be displayed."
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, **kwargs):
-        "Gets indices with top losses for both training and validation sets in `learn`."
+        "Gets indices with top losses."
         train_ds, train_idxs = cls.get_toplosses_idxs(learn, n_imgs, **kwargs)
         return train_ds, train_idxs
 
@@ -33,7 +33,7 @@ class DatasetFormatter():
         return ll_input.transform(tfms=crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
     @classmethod
     def from_similars(cls, learn, layer_ls:list=[0, 7, 2], **kwargs):
-        "Gets the indices for the most similar images in training and validation datasets"
+        "Gets the indices for the most similar images."
         train_ds, train_idxs = cls.get_similars_idxs(learn, layer_ls, **kwargs)
         return train_ds, train_idxs
 
@@ -49,7 +49,7 @@ class DatasetFormatter():
         return cls.padded_ds(dl, **kwargs), idxs
 
     @staticmethod
-    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4, **kwargs):
+    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=1, **kwargs):
         "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
         print('Getting activations...')
 
@@ -67,9 +67,9 @@ class DatasetFormatter():
 
 
     @staticmethod
-    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0), **kwargs):
+    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, **kwargs):
         # https://github.com/pytorch/pytorch/issues/11202
-        "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices."
+        "Computes the similarity function between each embedding of `t1` and `t2` matrices."
         print('Computing similarities...')
 
         w1 = t1.norm(p=2, dim=1, keepdim=True)
