@@ -47,7 +47,15 @@ summary: "Basic functions using pytorch"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>default_device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L42">[source]</a></div></p>
+<p><code>defaults.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')</code> <div style="text-align: right"><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L62">[source]</a></div></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you are trying to make fastai run on the CPU, simply change the default device: <code>defaults.device = 'cpu'</code>.</p>
+<p>Alternatively, if not using wildcard imports: <code>fastai.torch_core.defaults.device = 'cpu'</code>.</p>
 
 </div>
 </div>

@@ -393,6 +393,17 @@ To start a debugger at the point of the warning, do this:
 pytest tests/test_vision_data_block.py -W error::UserWarning --pdb
 ```
 
+### Tests requiring jupyter notebook environment
+
+If [pytest-ipynb](https://github.com/zonca/pytest-ipynb) pytest extension is installed it's possible to add `.ipynb` files to the normal test suite.
+
+Basically, you just write a normal notebook with asserts, and `pytest` just runs it, along with normal `.py` tests, reporting any assert failures normally.
+
+We currently don't have such tests, and if we add any, we will first need to make a conda package for it on the fastai channel, and then add this dependency to fastai.
+(note: I haven't researched deeply, perhaps there are other alternatives)
+
+Here is [one example](https://github.com/stas00/ipyexperiments/blob/master/tests/test_cpu.ipynb) of such test.
+
 
 
 ## Coverage
