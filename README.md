@@ -181,13 +181,16 @@ In order to update your environment, simply install `fastai` in exactly the same
 
 Top level files `environment.yml` and `environment-cpu.yml` belong to the old fastai (0.7). `conda env update` is no longer the way to update your `fastai-1.x` environment. These files remain because the fastai course-v2 video instructions rely on this setup. Eventually, once fastai course-v3 p1 and p2 will be completed, they will probably be moved to where they belong - under `old/`.
 
+## Contribution guidelines
+If you want to contribute to `fastai`, be sure to review the [contribution guidelines](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md). This project adheres to fastai's [code of conduct](https://github.com/fastai/fastai/blob/master/CODE-OF-CONDUCT.md). By participating, you are expected to uphold this code.
 
+We use GitHub issues for tracking requests and bugs, so please see [fastai forum](https://forums.fast.ai/) for general questions and discussion.
+
+The fastai project strives to abide by generally accepted best practices in open-source software development:
 
 ## History
 
 A detailed history of changes can be found [here](https://github.com/fastai/fastai/blob/master/CHANGES.md).
-
-
 
 ## Copyright
 
