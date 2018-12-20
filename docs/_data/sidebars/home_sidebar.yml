@@ -111,7 +111,7 @@ entries:
           url: /vision.models.unet.html
         - output: web,pdf
           title: vision.widgets
-          url: /widgets.html
+          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:

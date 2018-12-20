@@ -12,6 +12,7 @@ from IPython.display import clear_output, display
 __all__ = ['DatasetFormatter', 'ImageCleaner']
 
 class DatasetFormatter():
+    "Returns a dataset with the appropriate format and file indices to be displayed."
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, **kwargs):
         "Gets indices with top losses for both training and validation sets in `learn`."
@@ -92,7 +93,7 @@ class DatasetFormatter():
         return [e for l in idxs for e in l]
 
 class ImageCleaner():
-    "Display images with their current label."
+    "Displays images for relabeling or deletion and saves changes in `path` as 'cleaned.csv'."
     def __init__(self, dataset, fns_idxs, path, batch_size:int=5, duplicates=False):
         self._all_images,self._batch = [],[]
         self._path = path
