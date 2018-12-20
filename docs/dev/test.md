@@ -402,8 +402,7 @@ Basically, you just write a normal notebook with asserts, and `pytest` just runs
 We currently don't have such tests, and if we add any, we will first need to make a conda package for it on the fastai channel, and then add this dependency to fastai.
 (note: I haven't researched deeply, perhaps there are other alternatives)
 
-Here is one example of such test:
-https://github.com/stas00/ipyexperiments/blob/master/tests/test_cpu.ipynb.
+Here is [one example](https://github.com/stas00/ipyexperiments/blob/master/tests/test_cpu.ipynb) of such test.
 
 
 
