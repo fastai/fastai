@@ -50,7 +50,6 @@ class DatasetFormatter():
     @staticmethod
     def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4, **kwargs):
         "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
-        pool = pool(pool_dim)
         print('Getting activations...')
 
         actns = []
@@ -59,19 +58,23 @@ class DatasetFormatter():
             for (xb,yb) in progress_bar(dl):
                 learn.model(xb)
                 actns.append((hook.stored).cpu())
-        return pool(torch.cat(actns)).view(len(dl.x), -1)
+
+        if pool:
+            pool = pool(pool_dim)
+            return pool(torch.cat(actns)).view(len(dl.x),-1)
+        else: return torch.cat(actns).view(len(dl.x),-1)
+
 
     @staticmethod
     def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0), **kwargs):
+        # https://github.com/pytorch/pytorch/issues/11202
         "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices."
-        self_sim = False
-        if torch.equal(t1, t2): self_sim = True
         print('Computing similarities...')
 
-        sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0
-                for idx1 in progress_bar(range(t1.shape[0]))
-                for idx2 in range(t2.shape[0])]
-        return np.array(sims).reshape((t1.shape[0], t2.shape[0]))
+        w1 = t1.norm(p=2, dim=1, keepdim=True)
+        w2 = w1 if t2 is t1 else t2.norm(p=2, dim=1, keepdim=True)
+
+        return torch.mm(t1, t2.t()) / (w1 * w2.t()).clamp(min=1e-8)
 
     def largest_indices(arr, n):
         "Returns the `n` largest indices from a numpy array `arr`."
