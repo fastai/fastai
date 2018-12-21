@@ -12,10 +12,7 @@ exec(open('fastai/version.py').read())
 with open('README.md') as readme_file: readme = readme_file.read()
 
 # helper functions to make it easier to list dependencies not as a python list, but vertically w/ optional built-in comments to why a certain version of the dependency is listed
-def cleanup(x):
-    x = x.strip()               # whitespace
-    x = re.sub(r' *#.*', '', x) # comments
-    return x
+def cleanup(x): return re.sub(r' *#.*', '', x.strip()) # comments
 def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines())))
 
 ### normal dependencies ###
