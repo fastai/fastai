@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-install-conda test-installtest-install-pyp upload upload-conda upload-pypi
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-install-conda test-install test-install-pyp upload upload-conda upload-pypi install-conda-local
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -147,7 +147,7 @@ upload-conda: ## upload conda package
 	@echo "\n\n*** Uploading" conda-dist/noarch/*tar.bz2 "to fastai@anaconda.org\n"
 	anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
 
-install-conda-local: ## install the locally built package
+install-conda-local: ## install the locally built conda package
 	@echo "\n\n*** Installing the local build of" conda-dist/noarch/*tar.bz2
 	conda install -y -c ./conda-dist/ -c fastai/label/main fastai
 
