@@ -107,5 +107,5 @@ dependencies:
 #  - plotnine
   - kaggle-cli
   - ipywidgets
-#  - pdpbox<=0.1.0
+  - pdpbox<=0.1.0
   - treeinterpreter
