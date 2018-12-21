@@ -1,15 +1,14 @@
 "Regroups lr adjustment to seq_len, AR and TAR"
 from ..torch_core import *
 from ..callback import *
-from ..basic_train import Learner
+from ..basic_train import Learner, LearnerCallback
 
 __all__ = ['RNNTrainer']
 
 @dataclass
-class RNNTrainer(Callback):
+class RNNTrainer(LearnerCallback):
     "`Callback` that regroups lr adjustment to seq_len, AR and TAR."
-    learn:Learner
-    bptt:int
+    bptt:int=0
     alpha:float=0.
     beta:float=0.
     adjust:bool=True
