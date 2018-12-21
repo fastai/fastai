@@ -147,6 +147,9 @@ upload-conda: ## upload conda package
 	@echo "\n\n*** Uploading" conda-dist/noarch/*tar.bz2 "to fastai@anaconda.org\n"
 	anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
 
+install-conda-local: ## install the locally built package
+	@echo "\n\n*** Installing the local build of" conda-dist/noarch/*tar.bz2
+	conda install -c ./conda-dist/ fastai
 
 
 ##@ Combined (pip and conda)

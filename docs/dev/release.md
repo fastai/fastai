@@ -1025,6 +1025,17 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
 
 ## Release Making Related Topics
 
+### Install The Locally Build Packages
+
+If you want to install the package directly from your filesystem, e.g. to test before uploading, run:
+
+```
+make dist-conda
+make install-conda-local
+```
+
+
+
 ### Run Install Tests In A Fresh Environment
 
 While CI builds now do exactly this, it might be still useful to be able to do it manually, since CI builds are very slow to tweak and experiment with. So here is a quick copy-n-paste recipe to build one and clean it up.
