@@ -149,7 +149,7 @@ upload-conda: ## upload conda package
 
 install-conda-local: ## install the locally built package
 	@echo "\n\n*** Installing the local build of" conda-dist/noarch/*tar.bz2
-	conda install -c ./conda-dist/ fastai
+	conda install -y -c ./conda-dist/ -c fastai/label/main fastai
 
 
 ##@ Combined (pip and conda)
@@ -320,7 +320,7 @@ test-install-conda: ## test installing this version of the conda package
 	@echo "\n\n*** waiting for $(version) conda version to become visible"
 	@perl -e '$$v=shift; $$p="fastai"; $$|++; sub ok {`conda search -c fastai $$p==$$v >/dev/null 2>&1`; return $$? ? 0 : 1}; print "waiting for $$p-$$v to become available on conda\n"; $$c=0; while (not ok()) { print "\rwaiting: $$c secs"; $$c+=5;sleep 5; }; sleep 5; print "\n$$p-$$v is now available on conda\n"' $(version)
 
-	conda install -y -c fastai fastai==$(version)
+	conda install -y -c fastai/label/main fastai==$(version)
 	conda uninstall -y fastai
 
 ##@ CHANGES.md file targets
