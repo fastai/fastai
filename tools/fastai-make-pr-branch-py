@@ -31,6 +31,7 @@ from os.path import basename, exists
 from textwrap import dedent
 import sys
 from subprocess import call, PIPE, Popen
+from pathlib import Path
 
 PY3 = sys.version_info >= (3, 0)
 ME = basename(sys.argv[0])
@@ -43,7 +44,7 @@ def main():
     need_clone = clone_is_needed(args.url)
     if need_clone:
         clone(args.url, args.path)
-    after_git_clone('tools/run-after-git-clone')
+    run_after_git_clone()
     track_upstream(args.orig_repo_url)
     if was_already_forked:
         sync_with_master(args)
@@ -130,10 +131,11 @@ def clone(url, path):
     print(f'cd {path}')
 
 
-def after_git_clone(tool):
-    "Run fastai after cloning tool if exists."
-    if exists(tool):
-        print('\n\n*** run fastai repository setup')
+def run_after_git_clone():
+    "Run fastai's tools/run-after-git-clone if exists."
+    tool = Path("tools")/"run-after-git-clone"
+    if tool.exists():
+        print(f'\n\n*** run {tool}')
         run(f'{sys.executable} {tool}')
 
 
