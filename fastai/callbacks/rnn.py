@@ -27,8 +27,8 @@ class RNNTrainer(Callback):
         "Adjusts the lr to the sequence length and applies AR and TAR to `last_loss`."
         if self.adjust: self.learn.opt.lr *= last_input.size(1) / self.bptt
         #AR and TAR
-        if self.alpha != 0.:  last_loss += (self.alpha * self.out[-1].pow(2).mean()).sum()
+        if self.alpha != 0.:  last_loss += (self.alpha * self.out[-1].pow(2).mean()).sum().float()
         if self.beta != 0.:
             h = self.raw_out[-1]
-            if len(h)>1: last_loss += (self.beta * (h[1:] - h[:-1]).pow(2).mean()).sum()
+            if len(h)>1: last_loss += (self.beta * (h[1:] - h[:-1]).pow(2).mean()).sum().float()
         return last_loss
