@@ -188,7 +188,8 @@ def print_instructions(args, need_clone):
     print(dedent(f'''
 
         Next do:
-        1. Switch to the working dir:
+
+        1. Switch to the branch dir, unless you're already there:
 
         {switch_command}
 
@@ -196,7 +197,7 @@ def print_instructions(args, need_clone):
 
         echo on repo: $(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//') branch: $(git branch | sed -n '/\* /s///p')
 
-        3. And do you work.
+        3. And do your work.
 
         4. When you're done:
 
