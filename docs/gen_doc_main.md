@@ -4,82 +4,84 @@ title: Doc Maintenance
 
 ## Process for contributing to the docs
 
-If you want to help us and contribute to the docs, you just have to make modifications to the source notebooks, our scripts will then automatically convert them to HTML. There is just one script to run after cloning the fastai repo, to ensure that everything works properly. The rest of this page goes more in depth about all the functionalities this module offers, but if you just want to add a sentence or correct a typo, make a PR with the notebook changed and we'll take care of the rest.
+Here is how you can contribute to the `fastai` documentation:
 
-### Thing to run after git clone
+### Step 1. Create a `fastai` git branch
 
-Make sure you follow this recipe:
+The process of creating a branch (with fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
 
-    git clone https://github.com/fastai/fastai
-    cd fastai
-    tools/run-after-git-clone
 
-This will take care of everything that is explained in the following two sections. We'll tell you what they do, but you need to execute just this one script.
+### Step 2. Setup
 
-Note: windows users, not using bash emulation, will need to invoke the command as:
+From the fastai repo or your forked branch, install the required developer modules:
 
-    python tools\run-after-git-clone
+   ```
+   pip install -e ".[dev]"
+   ```
 
 If you're on windows, you also need to convert the Unix symlink between `docs_src\imgs` and `docs\imgs`. You will need to (1) remove `docs_src\imgs`, (2) execute `cmd.exe` as administrator, and (3) finally, in the `docs_src` folder, execute:
 
-    mklink /d imgs ..\docs\imgs
+   ```
+   cd docs_src
+   mklink /d imgs ..\docs\imgs
+   ```
 
-#### after-git-clone #1: a mandatory notebook strip out
+If you followed the fastai-specific instructions explained [here](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr), you're all set. If you made a PR branch in some other way, it's crucial that you execute:
 
-Currently we only store `source` code cells under git (and a few extra fields for documentation notebooks). If you would like to commit or submit a PR, you need to confirm to that standard.
+   ```
+   tools/run-after-git-clone  # or python tools\run-after-git-clone on windows
+   ```
 
-This is done automatically during `diff`/`commit` git operations, but you need to configure your local repository once to activate that instrumentation.
+in that branch once. You can read more about it [here](https://docs.fast.ai/dev/develop.html#things-to-run-after-git-clone).
 
-Therefore, your developing process will always start with:
 
-    tools/trust-origin-git-config
+### Step 3. Edit the documents
 
-The last command tells git to invoke configuration stored in `fastai/.gitconfig`, so your `git diff` and `git commit` invocations for this particular repository will now go via `tools/fastai-nbstripout` which will do all the work for you.
+There are two types of source files: `*ipynb` and `*md` files.
 
-You don't need to run it if you run:
+1. `*ipynb` notebook files, located under the directory `docs_src`, are the sources for most of the `*html` files on [docs.fast.ai](https://docs.fast.ai/). For example, [https://docs.fast.ai/data_block.html](https://docs.fast.ai/data_block.html) is generated from the [docs_src/data_block.ipynb](https://github.com/fastai/fastai/blob/master/docs_src/data_block.ipynb).
 
-    tools/run-after-git-clone
+   While you can use a normal editor for editing this type of files, it's difficult to edit `json`-format files and it's very easy to break them. Instead edit `*ipynb` files by opening them in your jupyter notebook environment.
 
-If you skip this configuration your commit/PR involving notebooks will not be accepted, since it'll carry in it many JSON bits which we don't want in the git repository. Those unwanted bits create collisions and lead to unnecessarily complicated and time wasting merge activities. So please do not skip this step.
+   If you were using a text editor to make changes, when you are done working on a notebook improvement, please, make sure to validate that notebook's format, by simply loading it in the jupyter notebook.
 
-Note: we can't make this happen automatically, since git will ignore a repository-stored `.gitconfig` for security reasons, unless a user will tell git to use it (and thus trust it).
+   When you finish editing a notebook, remember to save it before doing `git commit`!
 
-If you'd like to check whether you already trusted git with using `fastai/.gitconfig` please look inside `fastai/.git/config`, which should have this entry:
+   You don't need to convert your work to HTML, we will do it after your PR is accepted and merged.
 
-    [include]
-            path = ../.gitconfig
 
-or alternatively run:
+2. `*md` text files, located at `docs/*.md` and `docs/*/*.md` require no jupyter environment - i.e. they contain plain text formatted using the `markdown` format. Note, that unlike `*ipynb`, these are located in the `docs` directory. For example,  [https://docs.fast.ai/troubleshoot.html](https://docs.fast.ai/troubleshoot.html)'s source is [docs/troubleshoot.md](https://github.com/fastai/fastai/blob/master/docs/troubleshoot.md).
 
-    tools/trust-origin-git-config -t
+   Edit these files in your editor. To validate the markdown use [grip](https://github.com/joeyespo/grip) or any other markdown rendering/validating tool of your liking.
 
-#### after-git-clone #2: automatically updating doc notebooks to be trusted on git pull
+Do not edit the `docs/*html` files - those are autogenerated and if you change those, your changes will get overwritten.
 
-We want the doc notebooks to be already trusted when you load them in `jupyter notebook`, so this script which should be run once upon `git clone`, will install a `git` `post-merge` hook into your local check out.
 
-The installed hook will be executed by git automatically at the end of `git pull` only if it triggered an actual merge event and that the latter was successful.
 
-To trust run:
+### Step 4. Submit a PR with your changes.
 
-    tools/trust-doc-nbs-install-hook
+See [Submit Your PR](https://docs.fast.ai/dev/git.html#step-7-submit-your-pr).
 
-You don't need to run it if you run:
 
-    tools/run-after-git-clone
+### How the docs are created - a Visual diagram
 
-To distrust run:
+To help you understand better the documentation creation process, here is a diagram of stages each type of a document goes through after it has been edited and before the changes appear on the website:
 
-    rm .git/hooks/post-merge
+```
+1. edit    2. tools/build-docs  3. jekyll (githubpages)
+     |            |                   |
+docs_src/*.ipynb ----> docs/*.html -----> docs.fast.ai/*html
+docs/*.md ------------------------------> docs.fast.ai/*html
+```
 
-### Validate any notebooks you're contributing to
+At the end of stages 1 and 2 `git commit` and `git push` are needed, the 3rd stage happens automatically. `*md` files require no stage 2.
 
-If you were using a text editor to make changes, when you are done working on a notebook improvement, please, make sure to validate that notebook's format, by simply loading it in the jupyter notebook.
+So once your PR is merged, we rebuild the docs (using `tools/build-docs`) and then when we commit the rebuilt docs, githubpages usually updates the website automatically within a few minutes. Therefore, if you see that your changes aren't visible on the website, despite your PR being merged, it's because the seconds stage hasn't been done. It happens once a day or so, so please be patient.
 
-Alternatively, you could use a CLI JSON validation tool, e.g. [jsonlint](https://jsonlint.com/):
+If you find this section's instructions unclear or difficult to follow, please, kindly let us know in this [thread](https://forums.fast.ai/t/documentation-improvements/32550), so that we could improve them.
 
-    jsonlint-php example.ipynb
+The rest of this document goes more in depth about all the documentation generation functionalities. You don't need to read or understand any of it to make a successful contribution to the existing documents. If you just want to add some text or correct a typo, make a PR with the notebook changed and we'll take care of the rest.
 
-but it's second best, since you may have a valid JSON, but invalid notebook format, as the latter has extra requirements on which fields are valid and which are not.
 
 ## Syncing added/updated API with docs
 
