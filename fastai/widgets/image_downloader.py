@@ -1,4 +1,5 @@
 from ..core import *
+from ..vision.data import *
 from ipywidgets import widgets, Layout, Output, HBox, VBox, Text, BoundedIntText, Button, Dropdown, Box
 from IPython.display import clear_output, display
 from urllib.parse import quote
@@ -77,8 +78,8 @@ class ImageDownloader():
         if not self.validate_search_input(): return
 
         self.clear_imgs()
-        self.download_images(term, limit=limit, size=size)
-        self.display_images_widgets(self.get_preview_images_fnames(term)[:min(limit, 12)])
+        downloaded_images = google_images_parse_and_download(self._path, term, n_images=limit, size=size)
+        self.display_images_widgets(downloaded_images[:min(limit, 12)])
         self._preview_header.value = self._download_complete_heading
         self.render()
 
@@ -87,25 +88,16 @@ class ImageDownloader():
         imgs = [widgets.Image(value=open(f, 'rb').read(), width='200px') for f in fnames]
         self._img_pane.children = tuple(imgs)
 
-    def get_preview_images_fnames(self, keyword:str) -> list:
-        "Fetch all the image file paths in for a given keyword"
-        image_file_formats = ['.jpg', '.jpeg', '.png']
-        return [i for i in (self._path/keyword).iterdir()
-            if i.is_file() and i.suffix in image_file_formats]
 
-    def download_images(self, search_term:str, path:Union[Path,str]=None,
-                        limit:int=10, size:str='>400*300') -> None:
-        "Download up to `limit` images from google search with `search_term`."
-        if path is None: path = self._path
-        google_images_parse_and_download(path, search_term, size=size, n_images=limit)
-
-
-def google_images_parse_and_download(path:PathOrStr, search_term:str, size:str='>400*300', n_images:int=10, format:str='jpg', max_workers:int=8) -> None:
+def google_images_parse_and_download(path:PathOrStr, search_term:str, size:str='>400*300', n_images:int=10, format:str='jpg', max_workers:int=8) -> FilePathList:
     "Search Google for images that match the `search_term` and `size`, up to `n_images` pics. Then download them into `path` subfolder."
+    label_path = Path(path)/search_term
     search_url = google_images_search_url(search_term, size, format)
     img_tuples = google_images_parse_urls(search_url, format=format, n_images=n_images)
-    google_images_download(path, search_term, img_tuples, max_workers=max_workers)
-
+    google_images_download(label_path, img_tuples, max_workers=max_workers)
+    verify_images(label_path)
+    return get_image_files(label_path)
+    
 def google_images_url_params(size:str='>400*300', format:str='jpg') -> str:
     "Build Google Images Search Url params and return them as a string."
     size_options = {'large':'isz:l','medium':'isz:m','icon':'isz:i','>400*300':'isz:lt,islt:qsvga','>640*480':'isz:lt,islt:vga','>800*600':'isz:lt,islt:svga','>1024*768':'visz:lt,islt:xga','>2MP':'isz:lt,islt:2mp','>4MP':'isz:lt,islt:4mp','>6MP':'isz:lt,islt:6mp','>8MP':'isz:lt,islt:8mp','>10MP':'isz:lt,islt:10mp','>12MP':'isz:lt,islt:12mp','>15MP':'isz:lt,islt:15mp','>20MP':'isz:lt,islt:20mp','>40MP':'isz:lt,islt:40mp','>70MP':'isz:lt,islt:70mp'}
@@ -134,15 +126,24 @@ def google_images_parse_urls(url:str, format:str='jpg', n_images:int=10) -> list
     img_tuples = ((img_fname(d['ou']), d['ou']) for d in metadata_dicts if d['ity'] == format)
     return list(itertools.islice(img_tuples, n_images))
 
-def google_images_download(path:PathOrStr, label:str, img_tuples:list, max_workers:int=8) -> None:
-    "Downloads images to `path`/`label`."
-    os.makedirs(Path(path)/label, exist_ok=True)
-    parallel( partial(_download_single_google_image, Path(path)/label), img_tuples, max_workers=max_workers)
+def google_images_download(label_path:PathOrStr, img_tuples:list, max_workers:int=8) -> FilePathList:
+    """
+    Downloads images in `img_tuples` to `label_path`. 
+    If the directory doesn't exist, it'll be created automatically.
+    Uses `parallel` to speed things up in `max_workers` when the system has enough CPU cores.
+    If something doesn't work, try setting up `max_workers=0` to debug.
+    """
+    os.makedirs(Path(label_path), exist_ok=True)
+    parallel( partial(_download_single_google_image, label_path), img_tuples, max_workers=max_workers)
+    return get_image_files(label_path)
 
-def _download_single_google_image(dest_folder:Path, img_tuple:tuple, i:int) -> None:
-    "Downloads a single image from Google Search results to `dest_folder`."
+def _download_single_google_image(label_path:Path, img_tuple:tuple, i:int) -> None:
+    """
+    Downloads a single image from Google Search results to `label_path`
+    given an `img_tuple` that contains `(fname, url)` of an image to download.
+    `i` is just an iteration number `int`. 
+    """
     suffix = re.findall(r'\.\w+?(?=(?:\?|$))', img_tuple[1])
-    suffix = suffix[0] if len(suffix)>0  else '.jpg'
+    suffix = suffix[0].lower() if len(suffix)>0  else '.jpg'
     fname = f"{i:08d}{suffix}"
-    download_url(img_tuple[1], dest_folder/fname)
-
+    download_url(img_tuple[1], label_path/fname)
