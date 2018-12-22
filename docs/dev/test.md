@@ -362,6 +362,28 @@ More details, example and ways are [here](https://docs.pytest.org/en/latest/skip
 
 
 
+### Testing the stdout/stderr output
+
+In order to test functions that write to `stdout` and/or `stderr`, the test can access those streams using the `pytest`'s [capsys system](https://docs.pytest.org/en/latest/capture.html). Here is how this is accomplished:
+
+```
+import sys
+def print_to_stdout(s): print(s)
+def print_to_stderr(s): sys.stderr.write(s)
+def test_result_and_stdout(capsys):
+    msg = "Hello"
+    print_to_stdout(msg)
+    print_to_stderr(msg)
+    out, err = capsys.readouterr() # consume the captured output streams
+    # optional: if you want to replay the consumed streams:
+    sys.stdout.write(out)
+    sys.stderr.write(err)
+    # test:
+    assert msg in out
+    assert msg in err
+```
+
+
 
 ### Getting reproducible results
 
