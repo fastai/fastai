@@ -381,7 +381,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="index_row"><code>index_row</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L216" class="source_link">[source]</a></h4><blockquote><p><code>index_row</code>(<code>a</code>:<code>Collection</code>, <code>idxs</code>:<code>Collection</code>[<code>int</code>]) → <code>Any</code></p>
+<h4 id="index_row"><code>index_row</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L216" class="source_link">[source]</a></h4><blockquote><p><code>index_row</code>(<code>a</code>:<code>Union</code>[<code>Collection</code>[<code>T_co</code>], <code>DataFrame</code>, <code>Series</code>], <code>idxs</code>:<code>Collection</code>[<code>int</code>]) → <code>Any</code></p>
 </blockquote>
 <p>Return the slice of <code>a</code> corresponding to <code>idxs</code>.</p>
 
@@ -528,7 +528,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniqueify"><code>uniqueify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>uniqueify</code>(<code>x</code>:<code>Series</code>) → <code>List</code></p>
+<h4 id="uniqueify"><code>uniqueify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>uniqueify</code>(<code>x</code>:<code>Series</code>) → <code>List</code>[<code>T</code>]</p>
 </blockquote>
 <p>Return sorted unique values of <code>x</code>.</p>
 
@@ -708,7 +708,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L277" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<code>func</code>, <code>arr</code>:<code>Collection</code>, <code>max_workers</code>:<code>int</code>=<code>None</code>)</p>
+<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L277" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<code>func</code>, <code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>max_workers</code>:<code>int</code>=<code>None</code>)</p>
 </blockquote>
 <p>Call <code>func</code> on every element of <code>arr</code> in parallel using <code>max_workers</code>.</p>
 
@@ -729,7 +729,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="partition"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L133" class="source_link">[source]</a></h4><blockquote><p><code>partition</code>(<code>a</code>:<code>Collection</code>, <code>sz</code>:<code>int</code>) → <code>List</code>[<code>Collection</code>]</p>
+<h4 id="partition"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L133" class="source_link">[source]</a></h4><blockquote><p><code>partition</code>(<code>a</code>:<code>Collection</code>[<code>T_co</code>], <code>sz</code>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
 </blockquote>
 <p>Split iterables <code>a</code> in equal parts of size <code>sz</code></p>
 
@@ -750,7 +750,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="partition_by_cores"><code>partition_by_cores</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>partition_by_cores</code>(<code>a</code>:<code>Collection</code>, <code>n_cpus</code>:<code>int</code>) → <code>List</code>[<code>Collection</code>]</p>
+<h4 id="partition_by_cores"><code>partition_by_cores</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>partition_by_cores</code>(<code>a</code>:<code>Collection</code>[<code>T_co</code>], <code>n_cpus</code>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
 </blockquote>
 <p>Split data in <code>a</code> equally among <code>n_cpus</code> cores</p>
 
@@ -791,7 +791,7 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>All items used in fastai should subclass this. Must have a <a href="/data.html#data"><code>data</code></a> field that will be used when collating in mini-batches.</p>
+<p>All items used in fastai should subclass this. Must have a <a href="/tabular.data.html#tabular.data"><code>data</code></a> field that will be used when collating in mini-batches.</p>
 
 </div>
 </div>
@@ -805,7 +805,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemBase.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<code>tfms</code>:<code>Collection</code>, <code>kwargs</code>)</p>
+<h4 id="ItemBase.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<code>tfms</code>:<code>Collection</code>[<code>T_co</code>], <code>kwargs</code>)</p>
 </blockquote>
 <p>Subclass this method if you want to apply data augmentation with <code>tfms</code> to this <a href="/core.html#ItemBase"><code>ItemBase</code></a>.</p>
 
@@ -868,7 +868,7 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/core.html#Category"><code>Category</code></a> with an <code>obj</code> of index <a href="/data.html#data"><code>data</code></a> in a certain classes list.</p>
+<p>Create a <a href="/core.html#Category"><code>Category</code></a> with an <code>obj</code> of index <a href="/tabular.data.html#tabular.data"><code>data</code></a> in a certain classes list.</p>
 
 </div>
 </div>
@@ -917,7 +917,7 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/core.html#MultiCategory"><code>MultiCategory</code></a> with an <code>obj</code> that is a collection of labels. <a href="/data.html#data"><code>data</code></a> corresponds to the one-hot encoded labels and <code>raw</code> is a list of associated string.</p>
+<p>Create a <a href="/core.html#MultiCategory"><code>MultiCategory</code></a> with an <code>obj</code> that is a collection of labels. <a href="/tabular.data.html#tabular.data"><code>data</code></a> corresponds to the one-hot encoded labels and <code>raw</code> is a list of associated string.</p>
 
 </div>
 </div>

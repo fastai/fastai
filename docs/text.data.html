@@ -84,7 +84,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextLMDataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L199" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>, <code>valid_ds</code>, <code>test_ds</code>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TextLMDataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L199" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>, <code>valid_ds</code>, <code>test_ds</code>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 <p>Create a <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> in <code>path</code> from the <code>datasets</code> for language modelling.</p>
 
@@ -126,7 +126,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TextClasDataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L208" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>, <code>valid_ds</code>, <code>test_ds</code>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>=<code>64</code>, <code>pad_idx</code>=<code>1</code>, <code>pad_first</code>=<code>True</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="TextClasDataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/data.py#L208" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>, <code>valid_ds</code>, <code>test_ds</code>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>=<code>64</code>, <code>pad_idx</code>=<code>1</code>, <code>pad_first</code>=<code>True</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>, <code>kwargs</code>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 <p>Function that transform the <code>datasets</code> in a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for classification.</p>
 

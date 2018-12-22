@@ -69,7 +69,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L108" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>) → <code>DataBunch</code></p>
+<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L108" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>num_workers</code>:<code>int</code>=<code>8</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>) → <code>DataBunch</code></p>
 </blockquote>
 <p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>train_ds</code>, <code>valid_ds</code> and maybe <code>test_ds</code> with a batch size of <code>bs</code>.</p>
 
@@ -211,7 +211,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.sanity_check"><code>sanity_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L194" class="source_link">[source]</a></h4><blockquote><p><code>sanity_check</code>()</p>
+<h4 id="DataBunch.sanity_check"><code>sanity_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L200" class="source_link">[source]</a></h4><blockquote><p><code>sanity_check</code>()</p>
 </blockquote>
 <p>Check the underlying data in the training set can be properly loaded.</p>
 
@@ -259,7 +259,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L586" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<code>path</code>, <code>fname</code>:<code>str</code>=<code>'export.pkl'</code>)</p>
+<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L592" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<code>path</code>, <code>fname</code>:<code>str</code>=<code>'export.pkl'</code>)</p>
 </blockquote>
 <p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
 
@@ -426,7 +426,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L74" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>dataset</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>shuffle</code>:<code>bool</code>=<code>False</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>device(type='cuda')</code>, <code>tfms</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="DeviceDataLoader.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L74" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>dataset</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>shuffle</code>:<code>bool</code>=<code>False</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>device(type='cuda')</code>, <code>tfms</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>num_workers</code>:<code>int</code>=<code>8</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>kwargs</code>:<code>Any</code>)</p>
 </blockquote>
 <p>Create DeviceDataLoader from <code>dataset</code> with <code>bs</code> and <code>shuffle</code>: processs using <code>num_workers</code>.</p>
 
