@@ -193,6 +193,7 @@ sidebar: home_sidebar
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> widget gives you a way to quickly bootstrap your image dataset without leaving the notebook. It searches and downloads images that match the search criteria and resolution / quality requirements and stores them on your filesystem within the provided <code>path</code>.</p>
 <p>Images for each search query (or label) are stored in a separate folder within <code>path</code>. For example, if you pupulate <code>tiger</code> with a <code>path</code> setup to <code>./data</code>, you'll get a folder <code>./data/tiger/</code> with the tiger images in it.</p>
+<p><a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> will automatically clean up and verify the downloaded images with <a href="/vision.data.html#verify_images"><code>verify_images()</code></a> after downloading them.</p>
 
 </div>
 </div>
@@ -240,7 +241,7 @@ sidebar: home_sidebar
        <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
        <span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
        <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">))</span>
-<span class="n">db</span>  <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">db</span>  <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -266,13 +267,115 @@ sidebar: home_sidebar
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Downloading-more-than-a-hundred-images">Downloading more than a hundred images<a class="anchor-link" href="#Downloading-more-than-a-hundred-images">&#182;</a></h4><p>To fetch more than a hundred images, <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> uses <code>selenium</code> and <code>chromedriver</code> to scroll through the Google Images search results page and scrape image URLs. They're not required as dependencies by default. If you don't have them installed on your system, the widget will show you an error message.</p>
+<p>To install <code>selenium</code>, just <code>pip install selenium</code> in your fastai environment.</p>
+<p><strong>On a mac</strong>, you can install <code>chromedriver</code> with <code>brew cask install chromedriver</code>.</p>
+<p><strong>On Ubuntu</strong>
+Take a look at the latest Chromedriver version available, then something like:</p>
+
+<pre><code>wget https://chromedriver.storage.googleapis.com/2.45/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Downloading-images-in-python-scripts-outside-Jupyter-notebooks">Downloading images in python scripts outside Jupyter notebooks<a class="anchor-link" href="#Downloading-images-in-python-scripts-outside-Jupyter-notebooks">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;image_downloader_data&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">download_google_images</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;aussie shepherd&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;&gt;1024*768&#39;</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">download_google_images</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="download_google_images"><code>download_google_images</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_downloader.py#L93" class="source_link">[source]</a></h4><blockquote><p><code>download_google_images</code>(<code>path</code>:<code>PathOrStr</code>, <code>search_term</code>:<code>str</code>, <code>size</code>:<code>str</code>=<code>'&gt;400*300'</code>, <code>n_images</code>:<code>int</code>=<code>10</code>, <code>format</code>:<code>str</code>=<code>'jpg'</code>, <code>max_workers</code>:<code>int</code>=<code>8</code>, <code>timeout</code>:<code>int</code>=<code>4</code>) → <code>FilePathList</code></p>
+</blockquote>
+<p>Search for <code>n_images</code> images on Google, matching <code>search_term</code> and <code>size</code> requirements, and download them into <code>path</code>/<code>search_term</code> directory.</p>
+<p>Automatically <a href="/vision.data.html#verify_images"><code>verify_images</code></a> and return the image file names list.</p>
+<p>Uses <code>max_workers</code> threads to download and verify images.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that downloading under 100 images doesn't require any dependencies other than fastai itself, however downloading more than a hundred images <a href="/widgets.ipynb#Downloading-more-than-a-hundred-images">uses <code>selenium</code> and <code>chromedriver</code></a>.</p>
+<p><code>size</code> can be one of:</p>
+
+<pre><code>'&gt;400*300'
+'&gt;640*480'
+'&gt;800*600'
+'&gt;1024*768'
+'&gt;2MP'
+'&gt;4MP'
+'&gt;6MP'
+'&gt;8MP'
+'&gt;10MP'
+'&gt;12MP'
+'&gt;15MP'
+'&gt;20MP'
+'&gt;40MP'
+'&gt;70MP'</code></pre>
+
+</div>
+</div>
 </div>
 </div>
  
