@@ -198,8 +198,8 @@ class Learner():
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
-        if not with_opt: state = self.model.state_dict()
-        else: state = {'model': self.model.state_dict(), 'opt':self.opt.state_dict()}
+        if not with_opt: state = get_model(self.model).state_dict()
+        else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
         torch.save(state, path)
         if return_path: return path
 
@@ -212,14 +212,14 @@ class Learner():
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
-            self.model.load_state_dict(state['model'], strict=strict)
+            get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
                 try:    self.opt.load_state_dict(state['opt'])
                 except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
-            self.model.load_state_dict(state, strict=strict)
+            get_model(self.model).load_state_dict(state, strict=strict)
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,

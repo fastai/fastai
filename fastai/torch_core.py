@@ -310,3 +310,11 @@ def try_int(o:Any)->Any:
     try: return int(o)
     except: return o
 
+def get_model(model:nn.Module):
+    "Return the model maybe wrapped inside `model`."
+    return model.module if isinstance(model, nn.DataParallel) else model
+
+#Monkey-patch nn.DataParallel.reset
+def _data_parallel_reset(self): 
+    if hasattr(self.module, 'reset'): self.module.reset()
+nn.DataParallel.reset = _data_parallel_reset
