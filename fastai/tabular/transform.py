@@ -1,5 +1,6 @@
 "Cleaning and feature engineering functions for structured data"
 from ..torch_core import *
+from pandas.api.types import is_numeric_dtype
 
 __all__ = ['add_datepart', 'Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularProc']
 
@@ -92,6 +93,8 @@ class Normalize(TabularProc):
         "Comput the means and stds of `self.cont_names` columns to normalize them."
         self.means,self.stds = {},{}
         for n in self.cont_names:
+            assert is_numeric_dtype(df[n]), (f"""Cannot normalize '{n}' column as it isn't numerical.
+                Are you sure it doesn't belong in the categorical set of columns?""")
             self.means[n],self.stds[n] = df.loc[:,n].mean(),df.loc[:,n].std()
             df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])
 
