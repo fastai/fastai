@@ -16,8 +16,8 @@ def create_metrics_dataframe(learn):
 
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
-    lines = buffer.getvalue().split('\n')[:-1]
-    header, *lines = [l.strip() for l in lines if l]
+    lines = buffer.getvalue().split('\n')
+    header, *lines = [l.strip() for l in lines if l and not l.startswith('Total')]
     header = header.split()
     floats = [[float(x) for x in line.split()] for line in lines]
     records = [dict(zip(header, metrics_list)) for metrics_list in floats]
@@ -36,7 +36,7 @@ def itemize(metrics):
 
 def test_logger():
     learn = fake_learner()
-    learn.metrics = [exp_rmspe]
+    learn.metrics = [accuracy, error_rate]
     learn.callback_fns.append(callbacks.CSVLogger)
     buffer = StringIO()
     with redirect_stdout(buffer): learn.fit_one_cycle(3)
