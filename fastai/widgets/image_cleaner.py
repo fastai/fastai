@@ -49,7 +49,7 @@ class DatasetFormatter():
         return cls.padded_ds(dl, **kwargs), idxs
 
     @staticmethod
-    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=1, **kwargs):
+    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4, **kwargs):
         "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
         print('Getting activations...')
 
@@ -58,6 +58,7 @@ class DatasetFormatter():
         with torch.no_grad():
             for (xb,yb) in progress_bar(dl):
                 learn.model(xb)
+                print(hook.stored.shape)
                 actns.append((hook.stored).cpu())
 
         if pool:
