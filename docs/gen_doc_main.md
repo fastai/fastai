@@ -397,8 +397,10 @@ it will tell you which localhost url to go to to see the site.
 
 ## Cleanups
 
-Check whether we have any `doc/*html` orphans that no longer have a `docs_src/*ipynb` source files, and remove them. To detect:
+Check whether we have any `doc/*html` orphans that no longer have `docs_src/*ipynb` source files:
 
 ```
-perl -le 'for (@ARGV) { $x=$_; s#docs/(.*?)\.html#docs_src/$1.ipynb#; print "$x" unless -e $_} ' docs/*html
+perl -le 'm#docs/(.*?)\.html# && !-e "docs_src/$1.ipynb" && print for @ARGV' docs/*html
 ```
+
+and remove them from git.
