@@ -58,7 +58,6 @@ class DatasetFormatter():
         with torch.no_grad():
             for (xb,yb) in progress_bar(dl):
                 learn.model(xb)
-                print(hook.stored.shape)
                 actns.append((hook.stored).cpu())
 
         if pool:
