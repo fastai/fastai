@@ -25,6 +25,7 @@ class DistributedTrainer(LearnerCallback):
         self.learn.recorder.silent = (self.rank != 0)
 
     def on_train_end(self, **kwargs):
+        self.learn.model = self.learn.model.module
         self.learn.data.train_dl.remove_tfm(make_async)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
             self.learn.data.valid_dl.remove_tfm(make_async)
