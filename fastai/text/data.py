@@ -13,50 +13,49 @@ text_extensions = {'.txt'}
 
 class LanguageModelLoader():
     "Create a dataloader with bptt slightly changing."
-    def __init__(self, dataset:LabelList, bs:int=64, bptt:int=70, backwards:bool=False, shuffle:bool=False,
-                 max_len:int=25, p_bptt:int=0.95):
-        self.dataset,self.bs,self.bptt,self.backwards,self.shuffle,self.p_bptt = dataset,bs,bptt,backwards,shuffle,p_bptt
-        self.first,self.i,self.iter = True,0,0
-        self.n = len(np.concatenate(dataset.x.items)) // self.bs if len(dataset.x.items) > 0 else 0
-        self.max_len,self.num_workers = max_len,0
-        self.init_kwargs = dict(bs=bs, bptt=bptt, backwards=backwards, shuffle=shuffle, max_len=max_len)
-
+    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=64, bptt:int=70, backwards:bool=False, 
+                 shuffle:bool=False, drop_last:bool=False, max_len:int=25, p_bptt:int=0.95):
+        self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
+        self.drop_last,self.max_len,self.p_bptt,self.num_workers = drop_last,max_len,p_bptt,0
+        self.init_kwargs = dict(lengths=lengths, bs=bs, bptt=bptt, backwards=backwards, shuffle=shuffle, max_len=max_len)
+        self.lengths = np.array(ifnone(lengths, [len(o) for o in dataset.x.items]))
+        self.n = self.lengths.sum() // self.bs
+        self.first = True
+        
+    def __len__(self): return int(math.ceil((self.n-1) / self.bptt))
+    def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
+    
     def __iter__(self):
         if getattr(self.dataset, 'item', None) is not None:
             yield LongTensor(getattr(self.dataset, 'item'))[None],LongTensor([0])
-        idx = np.random.permutation(len(self.dataset)) if self.shuffle else range(len(self.dataset))
-        self.data = self.batchify(np.concatenate([self.dataset.x.items[i] for i in idx]))
-        self.i,self.iter = 0,0
-        while self.i < self.n-1 and self.iter<len(self):
-            if self.first and self.i == 0: self.first,seq_len = False,self.bptt + self.max_len
+        self.idxs = np.random.permutation(len(self.dataset)) if self.shuffle else arange_of(self.dataset)
+        self.text_idx = np.concatenate([[0],self.lengths[self.idxs].cumsum()])
+        i,j = 0,0
+        while i < self.n-1 and j < len(self):
+            if self.first and j == 0: self.first,seq_len = False,self.bptt + self.max_len
             else:
                 bptt = self.bptt if np.random.random() < self.p_bptt else self.bptt / 2.
                 seq_len = max(5, int(np.random.normal(bptt, 5)))
-                seq_len = min(seq_len, self.bptt + self.max_len)
-            res = self.get_batch(self.i, seq_len)
-            self.i += seq_len
-            self.iter += 1
-            yield res
-
-    def __len__(self) -> int: return int(math.ceil((self.n-1) / self.bptt))
-    def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
+                seq_len = min(seq_len, self.bptt + self.max_len, self.n-1-i)
+            res = self._get_batch(i, seq_len+1)
+            i += seq_len
+            j += 1
+            yield res[:,:-1], res[:,1:]
+    
+    def _get_batch(self, i, seq_len):
+        return torch.cat([self._get_text(i + k * self.n, seq_len)[None] for k in range(self.bs)], 0)
+    
+    def _get_text(self, i, seq_len):
+        mask = (self.text_idx[1:] >= i) * (self.text_idx[:-1] < i + seq_len)
+        if self.backwards: concat = np.concatenate([self.dataset.x.items[i][::-1] for i in self.idxs[mask]])
+        else: concat = np.concatenate([self.dataset.x.items[i] for i in self.idxs[mask]])
+        start_idx = i-self.text_idx[mask.nonzero()[0][0]]
+        return LongTensor(concat[start_idx:start_idx+seq_len])
 
     @property
     def batch_size(self): return self.bs
     @batch_size.setter
     def batch_size(self, v): self.bs = v
-
-    def batchify(self, data:np.ndarray) -> LongTensor:
-        "Split the corpus `data` in batches."
-        nb = data.shape[0] // self.bs
-        data = np.array(data[:nb*self.bs]).reshape(self.bs, -1)
-        if self.backwards: data=data[:,::-1].copy()
-        return LongTensor(data)
-
-    def get_batch(self, i:int, seq_len:int) -> Tuple[LongTensor, LongTensor]:
-        "Create a batch at `i` of a given `seq_len`."
-        seq_len = min(seq_len, self.data.shape[1] - 1 - i)
-        return self.data[:,i:i+seq_len], self.data[:,i+1:i+1+seq_len]#.contiguous().view(-1)
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
