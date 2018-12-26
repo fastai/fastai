@@ -1,7 +1,4 @@
 "Provides basic training and validation with `Learner`"
-import weakref
-from dataclasses import InitVar
-
 from .torch_core import *
 from .basic_data import *
 from .callback import *

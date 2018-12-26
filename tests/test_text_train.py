@@ -112,6 +112,7 @@ def clean_destroy_block():
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
     learn.lr_find()
 
+@pytest.mark.slow
 def test_mem_leak():
     gc.collect()
     garbage_before = len(gc.garbage)  # should be 0 already, or something leaked earlier
