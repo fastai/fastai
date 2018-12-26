@@ -1,4 +1,7 @@
 "Provides basic training and validation with `Learner`"
+import weakref
+from dataclasses import InitVar
+
 from .torch_core import *
 from .basic_data import *
 from .callback import *
@@ -193,8 +196,6 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def __del__(self): del(self.model, self.data)
-
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
@@ -314,13 +315,22 @@ class RecordOnCPU(Callback):
 @dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
-    learn: Learner
+    learn: field(repr=False)
+    _learn: weakref.ref = field(init=False, repr=False)
     def __post_init__(self): setattr(self.learn, self.cb_name, self)
 
     def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
+    def learn(self) -> Learner: return self._learn()
+
+    @learn.setter
+    def learn(self, learn: Learner) -> None: self._learn = weakref.ref(learn)
+
+    @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
+
+    def  __repr__(self): return f"{self.__class__.__name__}()"
 
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."

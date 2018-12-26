@@ -79,7 +79,7 @@ class BnFreeze(LearnerCallback):
 @dataclass
 class GradientClipping(LearnerCallback):
     "Gradient clipping during training."
-    clip:float
+    clip:float = 0.0
 
     def on_backward_end(self, **kwargs):
         "Clip the gradient before the optimizer step."
