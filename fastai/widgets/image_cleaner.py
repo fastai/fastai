@@ -12,9 +12,10 @@ from IPython.display import clear_output, display
 __all__ = ['DatasetFormatter', 'ImageCleaner']
 
 class DatasetFormatter():
+    "Returns a dataset with the appropriate format and file indices to be displayed."
     @classmethod
     def from_toplosses(cls, learn, n_imgs=None, **kwargs):
-        "Gets indices with top losses for both training and validation sets in `learn`."
+        "Gets indices with top losses."
         train_ds, train_idxs = cls.get_toplosses_idxs(learn, n_imgs, **kwargs)
         return train_ds, train_idxs
 
@@ -30,10 +31,9 @@ class DatasetFormatter():
     def padded_ds(ll_input, size=(250, 300), do_crop=False, padding_mode='zeros', **kwargs):
         "For a LabelList `ll_input`, resize each image to `size`. Optionally `do_crop` or pad with `padding_mode`."
         return ll_input.transform(tfms=crop_pad(), size=size, do_crop=do_crop, padding_mode=padding_mode)
-
     @classmethod
     def from_similars(cls, learn, layer_ls:list=[0, 7, 2], **kwargs):
-        "Gets the indices for the most similar images in training and validation datasets"
+        "Gets the indices for the most similar images."
         train_ds, train_idxs = cls.get_similars_idxs(learn, layer_ls, **kwargs)
         return train_ds, train_idxs
 
@@ -51,7 +51,6 @@ class DatasetFormatter():
     @staticmethod
     def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4, **kwargs):
         "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
-        pool = pool(pool_dim)
         print('Getting activations...')
 
         actns = []
@@ -60,19 +59,23 @@ class DatasetFormatter():
             for (xb,yb) in progress_bar(dl):
                 learn.model(xb)
                 actns.append((hook.stored).cpu())
-        return pool(torch.cat(actns)).view(len(dl.x), -1)
+
+        if pool:
+            pool = pool(pool_dim)
+            return pool(torch.cat(actns)).view(len(dl.x),-1)
+        else: return torch.cat(actns).view(len(dl.x),-1)
+
 
     @staticmethod
-    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0), **kwargs):
-        "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices."
-        self_sim = False
-        if torch.equal(t1, t2): self_sim = True
+    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, **kwargs):
+        # https://github.com/pytorch/pytorch/issues/11202
+        "Computes the similarity function between each embedding of `t1` and `t2` matrices."
         print('Computing similarities...')
 
-        sims = [sim_func(t1[idx1,:],t2[idx2,:]) if not self_sim or idx1>idx2 else 0
-                for idx1 in progress_bar(range(t1.shape[0]))
-                for idx2 in range(t2.shape[0])]
-        return np.array(sims).reshape((t1.shape[0], t2.shape[0]))
+        w1 = t1.norm(p=2, dim=1, keepdim=True)
+        w2 = w1 if t2 is t1 else t2.norm(p=2, dim=1, keepdim=True)
+
+        return torch.mm(t1, t2.t()) / (w1 * w2.t()).clamp(min=1e-8)
 
     def largest_indices(arr, n):
         "Returns the `n` largest indices from a numpy array `arr`."
@@ -90,7 +93,7 @@ class DatasetFormatter():
         return [e for l in idxs for e in l]
 
 class ImageCleaner():
-    "Display images with their current label."
+    "Displays images for relabeling or deletion and saves changes in `path` as 'cleaned.csv'."
     def __init__(self, dataset, fns_idxs, path, batch_size:int=5, duplicates=False):
         self._all_images,self._batch = [],[]
         self._path = path
@@ -138,12 +141,6 @@ class ImageCleaner():
         "Make a vertical box with `children` and `layout`."
         if not duplicates: return widgets.VBox(children, layout=layout)
         else: return widgets.VBox([children[0], children[2]], layout=layout)
-
-    def chunks(self, l, n):
-        "Yield successive n-sized chunks from l."
-        #https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
 
     def create_image_list(self, dataset, fns_idxs):
         "Create a list of images, filenames and labels but first removing files that are not supposed to be displayed."
@@ -209,7 +206,6 @@ class ImageCleaner():
 
     def write_csv(self):
         # Get first element's file path so we write CSV to same directory as our data
-        # TODO: Write only new changes to CSV
         csv_path = self._path/'cleaned.csv'
         with open(csv_path, 'w') as f:
             csv_writer = csv.writer(f)
@@ -228,7 +224,6 @@ class ImageCleaner():
                     f'skipped since at least one of the images was deleted by the user.')
         elif self.empty():
             return display('No images to show :)')
-        
         if self.batch_contains_deleted():
             self.next_batch(None)
             self._skipped += 1

@@ -1,0 +1,877 @@
+---
+
+title: widgets.image_cleaner
+keywords: 
+sidebar: home_sidebar
+
+
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="widgets.image_cleaner">widgets.image_cleaner<a class="anchor-link" href="#widgets.image_cleaner">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>fastai offers several widgets to support the workflow of a deep learning practitioner. The purpose of the widgets are to help you organize, clean, and prepare your data for your model. Widgets are separated by data type.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DatasetFormatter"><code>class</code> <code>DatasetFormatter</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L14" class="source_link">[source]</a></h2><blockquote><p><code>DatasetFormatter</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <a href="/widgets.image_cleaner.html#DatasetFormatter"><code>DatasetFormatter</code></a> class prepares your image dataset for widgets by returning a formatted <a href="/vision.data.html#DatasetTfm"><code>DatasetTfm</code></a> based on the <a href="/basic_data.html#DatasetType"><code>DatasetType</code></a> specified. Use <code>from_toplosses</code> to grab the most problematic images directly from your learner. Optionally, you can restrict the formatted dataset returned to <code>n_imgs</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST_SAMPLE</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">error_rate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;stage-1&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We create a databunch with all the data in the training set and no validation set (DatasetFormatter uses only the training set)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">no_split</span><span class="p">()</span>
+                   <span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
+                   <span class="o">.</span><span class="n">databunch</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;stage-1&#39;</span><span class="p">);</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="ImageCleaner"><code>class</code> <code>ImageCleaner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L92" class="source_link">[source]</a></h2><blockquote><p><code>ImageCleaner</code>(<code>dataset</code>, <code>fns_idxs</code>, <code>path</code>, <code>batch_size</code>:<code>int</code>=<code>5</code>, <code>duplicates</code>=<code>False</code>)</p>
+</blockquote>
+<p>Display images with their current label.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/widgets.image_cleaner.html#ImageCleaner"><code>ImageCleaner</code></a> is for cleaning up images that don't belong in your dataset. It renders images in a row and gives you the opportunity to delete the file from your file system. To use <a href="/widgets.image_cleaner.html#ImageCleaner"><code>ImageCleaner</code></a> we must first use <code>DatasetFormatter().from_toplosses</code> to get the suggested indices for misclassified images.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="n">DatasetFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">from_toplosses</span><span class="p">(</span><span class="n">learn</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ImageCleaner</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/widgets.image_cleaner.html#ImageCleaner"><code>ImageCleaner</code></a> does not change anything on disk (neither labels or existence of images). Instead, it creates a 'cleaned.csv' file in your data path from which you need to load your new databunch for the files to changes to be applied.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">&#39;cleaned.csv&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># We create a databunch from our csv. We include the data in the training set and we don&#39;t use a validation set (DatasetFormatter uses only the training set)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">no_split</span><span class="p">()</span>
+                   <span class="o">.</span><span class="n">label_from_df</span><span class="p">()</span>
+                   <span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">64</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">error_rate</span><span class="p">)</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">learn</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;stage-1&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can then use <a href="/widgets.image_cleaner.html#ImageCleaner"><code>ImageCleaner</code></a> again to find duplicates in the dataset. To do this, you can specify <code>duplicates=True</code> while calling ImageCleaner after getting the indices and dataset from <code>.from_similars</code>. Note that if you are using a layer's output which has dimensions [n_batches, n_features, 1, 1] then you don't need any pooling (this is the case with the last layer). The suggested use of <code>.from_similars()</code> with resnets is using the last layer and no pooling, like in the following cell.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="n">DatasetFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">from_similars</span><span class="p">(</span><span class="n">learn</span><span class="p">,</span> <span class="n">layer_ls</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Getting activations...
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='194' class='' max='194', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [194/194 00:02<00:00]
+    </div>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Computing similarities...
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ImageCleaner</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">idxs</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Methods">Methods<a class="anchor-link" href="#Methods">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.make_horizontal_box"><code>make_horizontal_box</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>make_horizontal_box</code>(<code>children</code>, <code>layout</code>=<code>Layout()</code>)</p>
+</blockquote>
+<p>Make a horizontal box with <a href="/torch_core.html#children"><code>children</code></a> and <code>layout</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.from_similars"><code>from_similars</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>from_similars</code>(<code>learn</code>, <code>layer_ls</code>:<code>list</code>=<code>[0, 7, 2]</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Gets the indices for the most similar images in training and validation datasets</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.chunks"><code>chunks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L142" class="source_link">[source]</a></h4><blockquote><p><code>chunks</code>(<code>l</code>, <code>n</code>)</p>
+</blockquote>
+<p>Yield successive n-sized chunks from l.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.make_vertical_box"><code>make_vertical_box</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L136" class="source_link">[source]</a></h4><blockquote><p><code>make_vertical_box</code>(<code>children</code>, <code>layout</code>=<code>Layout()</code>, <code>duplicates</code>=<code>False</code>)</p>
+</blockquote>
+<p>Make a vertical box with <a href="/torch_core.html#children"><code>children</code></a> and <code>layout</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.get_toplosses_idxs"><code>get_toplosses_idxs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L21" class="source_link">[source]</a></h4><blockquote><p><code>get_toplosses_idxs</code>(<code>learn</code>, <code>n_imgs</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Sorts <code>ds_type</code> dataset by top losses and returns dataset and sorted indices.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.delete_image"><code>delete_image</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L184" class="source_link">[source]</a></h4><blockquote><p><code>delete_image</code>(<code>file_path</code>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.sort_idxs"><code>sort_idxs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L85" class="source_link">[source]</a></h4><blockquote><p><code>sort_idxs</code>(<code>similarities</code>)</p>
+</blockquote>
+<p>Sorts <code>similarities</code> and return the indexes in pairs ordered by highest similarity.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.empty_batch"><code>empty_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L182" class="source_link">[source]</a></h4><blockquote><p><code>empty_batch</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.get_widgets"><code>get_widgets</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L190" class="source_link">[source]</a></h4><blockquote><p><code>get_widgets</code>(<code>duplicates</code>)</p>
+</blockquote>
+<p>Create and format widget set.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.get_similars_idxs"><code>get_similars_idxs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L40" class="source_link">[source]</a></h4><blockquote><p><code>get_similars_idxs</code>(<code>learn</code>, <code>layer_ls</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Gets the indices for the most similar images in <code>ds_type</code> dataset</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.next_batch"><code>next_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L166" class="source_link">[source]</a></h4><blockquote><p><code>next_batch</code>(<code>_</code>)</p>
+</blockquote>
+<p>Handler for 'Next Batch' button click. Delete all flagged images and renders next batch.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.render"><code>render</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L222" class="source_link">[source]</a></h4><blockquote><p><code>render</code>()</p>
+</blockquote>
+<p>Re-render Jupyter cell for batch of images.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">DatasetFormatter</span><span class="o">.</span><span class="n">padded_ds</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.padded_ds"><code>padded_ds</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>padded_ds</code>(<code>ll_input</code>, <code>size</code>=<code>(250, 300)</code>, <code>do_crop</code>=<code>False</code>, <code>padding_mode</code>=<code>'zeros'</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>For a LabelList <code>ll_input</code>, resize each image to <code>size</code>. Optionally <code>do_crop</code> or pad with <code>padding_mode</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.on_delete"><code>on_delete</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L177" class="source_link">[source]</a></h4><blockquote><p><code>on_delete</code>(<code>btn</code>)</p>
+</blockquote>
+<p>Flag this image as delete or keep.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.largest_indices"><code>largest_indices</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L77" class="source_link">[source]</a></h4><blockquote><p><code>largest_indices</code>(<code>arr</code>, <code>n</code>)</p>
+</blockquote>
+<p>Returns the <code>n</code> largest indices from a numpy array <code>arr</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.create_image_list"><code>create_image_list</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L148" class="source_link">[source]</a></h4><blockquote><p><code>create_image_list</code>(<code>dataset</code>, <code>fns_idxs</code>)</p>
+</blockquote>
+<p>Create a list of images, filenames and labels but first removing files that are not supposed to be displayed.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.make_img_widget"><code>make_img_widget</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L107" class="source_link">[source]</a></h4><blockquote><p><code>make_img_widget</code>(<code>img</code>, <code>layout</code>=<code>Layout()</code>, <code>format</code>=<code>'jpg'</code>)</p>
+</blockquote>
+<p>Returns an image widget for specified file name <code>img</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.make_button_widget"><code>make_button_widget</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L112" class="source_link">[source]</a></h4><blockquote><p><code>make_button_widget</code>(<code>label</code>, <code>file_path</code>=<code>None</code>, <code>handler</code>=<code>None</code>, <code>style</code>=<code>None</code>, <code>layout</code>=<code>Layout(width='auto')</code>)</p>
+</blockquote>
+<p>Return a Button widget with specified <code>handler</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.batch_contains_deleted"><code>batch_contains_deleted</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L204" class="source_link">[source]</a></h4><blockquote><p><code>batch_contains_deleted</code>()</p>
+</blockquote>
+<p>Check if current batch contains already deleted images.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.write_csv"><code>write_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L210" class="source_link">[source]</a></h4><blockquote><p><code>write_csv</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.comb_similarity"><code>comb_similarity</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L65" class="source_link">[source]</a></h4><blockquote><p><code>comb_similarity</code>(<code>t1</code>:<code>Tensor</code>, <code>t2</code>:<code>Tensor</code>, <code>sim_func</code>=<code>CosineSimilarity()</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Computes the similarity function <code>sim_func</code> between each embedding of <code>t1</code> and <code>t2</code> matrices.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.from_toplosses"><code>from_toplosses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>from_toplosses</code>(<code>learn</code>, <code>n_imgs</code>=<code>None</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Gets indices with top losses for both training and validation sets in <code>learn</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.empty"><code>empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L187" class="source_link">[source]</a></h4><blockquote><p><code>empty</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DatasetFormatter.get_actns"><code>get_actns</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>get_actns</code>(<code>learn</code>, <code>hook</code>:<a href="/callbacks.hooks.html#Hook"><code>Hook</code></a>, <code>dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>pool</code>=<code>'AdaptiveConcatPool2d'</code>, <code>pool_dim</code>:<code>int</code>=<code>4</code>, <code>kwargs</code>)</p>
+</blockquote>
+<p>Gets activations at the layer specified by <code>hook</code>, applies <code>pool</code> of dim <code>pool_dim</code> and concatenates</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ImageCleaner.relabel"><code>relabel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/widgets/image_cleaner.py#L159" class="source_link">[source]</a></h4><blockquote><p><code>relabel</code>(<code>change</code>)</p>
+</blockquote>
+<p>Relabel images by moving from parent dir with old label <code>class_old</code> to parent dir with new label <code>class_new</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+ 
+
