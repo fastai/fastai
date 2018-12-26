@@ -47,7 +47,7 @@ sidebar_d = {
                 'vision.gan': '/vision.gan',
                 'vision.model overview': '/vision.models',
                 'vision.models.unet': '/vision.models.unet',
-                'vision.widgets': '/widgets'
+                'vision.widgets': '/widgets.image_cleaner'
             }
         },
         'empty1': {
