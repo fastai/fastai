@@ -306,7 +306,7 @@ Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L7" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<code>learner</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>alpha</code>:<code>float</code>=<code>0.4</code>, <code>stack_x</code>:<code>bool</code>=<code>False</code>, <code>stack_y</code>:<code>bool</code>=<code>True</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L7" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<b>`learner`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`alpha`</b>:<code>float</code>=<b><i>`0.4`</i></b>, <b>`stack_x`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`stack_y`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Callback that creates the mixed-up input and target.</p>
 
@@ -347,7 +347,7 @@ Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L14" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>last_input</code>, <code>last_target</code>, <code>train</code>, <code>kwargs</code>)</p>
+<h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L14" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<b>`last_input`</b>, <b>`last_target`</b>, <b>`train`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Applies mixup to <code>last_input</code> and <code>last_target</code> if <code>train</code>.</p>
 
@@ -391,7 +391,7 @@ Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L34" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L34" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<b>`crit`</b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Adapt the loss function <code>crit</code> to go with mixup.</p>
 

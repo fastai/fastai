@@ -75,7 +75,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="flatten"><code>flatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>flatten</code>(<code>m</code>)</p>
+<h4 id="flatten"><code>flatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>flatten</code>(<b>`m`</b>)</p>
 </blockquote>
 
 </div>
@@ -102,7 +102,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="model2half"><code>model2half</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L186" class="source_link">[source]</a></h4><blockquote><p><code>model2half</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="model2half"><code>model2half</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L186" class="source_link">[source]</a></h4><blockquote><p><code>model2half</code>(<b>`model`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Convert <code>model</code> to half precision except the batchnorm layers.</p>
 
@@ -123,7 +123,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="np2model_tensor"><code>np2model_tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L233" class="source_link">[source]</a></h4><blockquote><p><code>np2model_tensor</code>(<code>a</code>)</p>
+<h4 id="np2model_tensor"><code>np2model_tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L233" class="source_link">[source]</a></h4><blockquote><p><code>np2model_tensor</code>(<b>`a`</b>)</p>
 </blockquote>
 <p>Tranform numpy array <code>a</code> to a tensor of the same type.</p>
 
@@ -144,7 +144,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="requires_grad"><code>requires_grad</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L107" class="source_link">[source]</a></h4><blockquote><p><code>requires_grad</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>b</code>:<code>Optional</code>[<code>bool</code>]=<code>None</code>) → <code>Optional</code>[<code>bool</code>]</p>
+<h4 id="requires_grad"><code>requires_grad</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L107" class="source_link">[source]</a></h4><blockquote><p><code>requires_grad</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`b`</b>:<code>Optional</code>[<code>bool</code>]=<b><i>`None`</i></b>) → <code>Optional</code>[<code>bool</code>]</p>
 </blockquote>
 <p>If <code>b</code> is not set <a href="/torch_core.html#requires_grad"><code>requires_grad</code></a> on all params in <code>m</code>, else return <a href="/torch_core.html#requires_grad"><code>requires_grad</code></a> of first param.</p>
 
@@ -165,7 +165,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="tensor"><code>tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L65" class="source_link">[source]</a></h4><blockquote><p><code>tensor</code>(<code>x</code>:<code>Any</code>, <code>rest</code>) → <code>Tensor</code></p>
+<h4 id="tensor"><code>tensor</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L65" class="source_link">[source]</a></h4><blockquote><p><code>tensor</code>(<b>`x`</b>:<code>Any</code>, <b>`rest`</b>) → <code>Tensor</code></p>
 </blockquote>
 <p>Like <code>torch.as_tensor</code>, but handle lists too, and can pass multiple vector elements directly.</p>
 
@@ -186,7 +186,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_cpu"><code>to_cpu</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L92" class="source_link">[source]</a></h4><blockquote><p><code>to_cpu</code>(<code>b</code>:<code>ItemsList</code>)</p>
+<h4 id="to_cpu"><code>to_cpu</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L92" class="source_link">[source]</a></h4><blockquote><p><code>to_cpu</code>(<b>`b`</b>:<code>ItemsList</code>)</p>
 </blockquote>
 <p>Recursively map lists of tensors in <code>b</code> to the cpu.</p>
 
@@ -207,7 +207,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_data"><code>to_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>to_data</code>(<code>b</code>:<code>ItemsList</code>)</p>
+<h4 id="to_data"><code>to_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>to_data</code>(<b>`b`</b>:<code>ItemsList</code>)</p>
 </blockquote>
 <p>Recursively map lists of items in <code>b</code> to their wrapped data.</p>
 
@@ -228,7 +228,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_detach"><code>to_detach</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L80" class="source_link">[source]</a></h4><blockquote><p><code>to_detach</code>(<code>b</code>:<code>Tensors</code>, <code>cpu</code>:<code>bool</code>=<code>True</code>)</p>
+<h4 id="to_detach"><code>to_detach</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L80" class="source_link">[source]</a></h4><blockquote><p><code>to_detach</code>(<b>`b`</b>:<code>Tensors</code>, <b>`cpu`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Recursively detach lists of tensors in <code>b</code>; put them on the CPU if <code>cpu=True</code>.</p>
 
@@ -249,7 +249,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_device"><code>to_device</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L97" class="source_link">[source]</a></h4><blockquote><p><code>to_device</code>(<code>b</code>:<code>Tensors</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>)</p>
+<h4 id="to_device"><code>to_device</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L97" class="source_link">[source]</a></h4><blockquote><p><code>to_device</code>(<b>`b`</b>:<code>Tensors</code>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>)</p>
 </blockquote>
 <p>Recursively put <code>b</code> on <code>device</code>.</p>
 
@@ -270,7 +270,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_half"><code>to_half</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L176" class="source_link">[source]</a></h4><blockquote><p><code>to_half</code>(<code>b</code>:<code>Collection</code>[<code>Tensor</code>]) → <code>Collection</code>[<code>Tensor</code>]</p>
+<h4 id="to_half"><code>to_half</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L176" class="source_link">[source]</a></h4><blockquote><p><code>to_half</code>(<b>`b`</b>:<code>Collection</code>[<code>Tensor</code>]) → <code>Collection</code>[<code>Tensor</code>]</p>
 </blockquote>
 <p>Set the input of batch <code>b</code> to half precision if isn't an int type.</p>
 
@@ -291,7 +291,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="to_np"><code>to_np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L251" class="source_link">[source]</a></h4><blockquote><p><code>to_np</code>(<code>x</code>)</p>
+<h4 id="to_np"><code>to_np</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L251" class="source_link">[source]</a></h4><blockquote><p><code>to_np</code>(<b>`x`</b>)</p>
 </blockquote>
 <p>Convert a tensor to a numpy array.</p>
 
@@ -312,7 +312,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="try_int"><code>try_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L305" class="source_link">[source]</a></h4><blockquote><p><code>try_int</code>(<code>o</code>:<code>Any</code>) → <code>Any</code></p>
+<h4 id="try_int"><code>try_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L305" class="source_link">[source]</a></h4><blockquote><p><code>try_int</code>(<b>`o`</b>:<code>Any</code>) → <code>Any</code></p>
 </blockquote>
 <p>Try to convert <code>o</code> to int, default to <code>o</code> if not possible.</p>
 
@@ -339,7 +339,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_init"><code>apply_init</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L207" class="source_link">[source]</a></h4><blockquote><p><code>apply_init</code>(<code>m</code>, <code>init_func</code>:<code>LayerFunc</code>)</p>
+<h4 id="apply_init"><code>apply_init</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L207" class="source_link">[source]</a></h4><blockquote><p><code>apply_init</code>(<b>`m`</b>, <b>`init_func`</b>:<code>LayerFunc</code>)</p>
 </blockquote>
 <p>Initialize all non-batchnorm layers of <code>m</code> with <code>init_func</code>.</p>
 
@@ -360,7 +360,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="apply_leaf"><code>apply_leaf</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L201" class="source_link">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>f</code>:<code>LayerFunc</code>)</p>
+<h4 id="apply_leaf"><code>apply_leaf</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L201" class="source_link">[source]</a></h4><blockquote><p><code>apply_leaf</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`f`</b>:<code>LayerFunc</code>)</p>
 </blockquote>
 <p>Apply <code>f</code> to children of <code>m</code>.</p>
 
@@ -381,7 +381,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="cond_init"><code>cond_init</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L197" class="source_link">[source]</a></h4><blockquote><p><code>cond_init</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>init_func</code>:<code>LayerFunc</code>)</p>
+<h4 id="cond_init"><code>cond_init</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L197" class="source_link">[source]</a></h4><blockquote><p><code>cond_init</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`init_func`</b>:<code>LayerFunc</code>)</p>
 </blockquote>
 <p>Initialize the non-batchnorm layers of <code>m</code> with <code>init_func</code>.</p>
 
@@ -402,7 +402,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="in_channels"><code>in_channels</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L211" class="source_link">[source]</a></h4><blockquote><p><code>in_channels</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>List</code>[<code>int</code>]</p>
+<h4 id="in_channels"><code>in_channels</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L211" class="source_link">[source]</a></h4><blockquote><p><code>in_channels</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>List</code>[<code>int</code>]</p>
 </blockquote>
 <p>Return the shape of the first weight layer in <code>m</code>.</p>
 
@@ -423,7 +423,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="init_default"><code>init_default</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L190" class="source_link">[source]</a></h4><blockquote><p><code>init_default</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>func</code>:<code>LayerFunc</code>=<code>'kaiming_normal_'</code>)</p>
+<h4 id="init_default"><code>init_default</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L190" class="source_link">[source]</a></h4><blockquote><p><code>init_default</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`func`</b>:<code>LayerFunc</code>=<b><i>`'kaiming_normal_'`</i></b>)</p>
 </blockquote>
 <p>Initialize <code>m</code> weights with <code>func</code> and set <code>bias</code> to 0.</p>
 
@@ -450,7 +450,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="children"><code>children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L119" class="source_link">[source]</a></h4><blockquote><p><code>children</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>ModuleList</code></p>
+<h4 id="children"><code>children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L119" class="source_link">[source]</a></h4><blockquote><p><code>children</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>ModuleList</code></p>
 </blockquote>
 <p>Get children of <code>m</code>.</p>
 
@@ -471,7 +471,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="first_layer"><code>first_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>first_layer</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="first_layer"><code>first_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>first_layer</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Retrieve first layer in a module <code>m</code>.</p>
 
@@ -492,7 +492,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="last_layer"><code>last_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L136" class="source_link">[source]</a></h4><blockquote><p><code>last_layer</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="last_layer"><code>last_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L136" class="source_link">[source]</a></h4><blockquote><p><code>last_layer</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Retrieve last layer in a module <code>m</code>.</p>
 
@@ -513,7 +513,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="num_children"><code>num_children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>num_children</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>int</code></p>
+<h4 id="num_children"><code>num_children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>num_children</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>int</code></p>
 </blockquote>
 <p>Get number of children modules in <code>m</code>.</p>
 
@@ -534,7 +534,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="one_param"><code>one_param</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L301" class="source_link">[source]</a></h4><blockquote><p><code>one_param</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Tensor</code></p>
+<h4 id="one_param"><code>one_param</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L301" class="source_link">[source]</a></h4><blockquote><p><code>one_param</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Tensor</code></p>
 </blockquote>
 <p>Return the first parameter of <code>m</code>.</p>
 
@@ -555,7 +555,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="range_children"><code>range_children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>range_children</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Iterator</code>[<code>int</code>]</p>
+<h4 id="range_children"><code>range_children</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>range_children</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>Iterator</code>[<code>int</code>]</p>
 </blockquote>
 <p>Return iterator of len of children of <code>m</code>.</p>
 
@@ -576,7 +576,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trainable_params"><code>trainable_params</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L114" class="source_link">[source]</a></h4><blockquote><p><code>trainable_params</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>ParamList</code></p>
+<h4 id="trainable_params"><code>trainable_params</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L114" class="source_link">[source]</a></h4><blockquote><p><code>trainable_params</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>ParamList</code></p>
 </blockquote>
 <p>Return list of trainable params in <code>m</code>.</p>
 
@@ -603,7 +603,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="bn2float"><code>bn2float</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L180" class="source_link">[source]</a></h4><blockquote><p><code>bn2float</code>(<code>module</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="bn2float"><code>bn2float</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L180" class="source_link">[source]</a></h4><blockquote><p><code>bn2float</code>(<b>`module`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>If <code>module</code> is batchnorm don't use half precision.</p>
 
@@ -624,7 +624,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="set_bn_eval"><code>set_bn_eval</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L169" class="source_link">[source]</a></h4><blockquote><p><code>set_bn_eval</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)</p>
+<h4 id="set_bn_eval"><code>set_bn_eval</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L169" class="source_link">[source]</a></h4><blockquote><p><code>set_bn_eval</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>)</p>
 </blockquote>
 <p>Set bn layers in eval mode for all recursive children of <code>m</code>.</p>
 
@@ -645,7 +645,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="split_bn_bias"><code>split_bn_bias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>split_bn_bias</code>(<code>layer_groups</code>:<code>ModuleList</code>) → <code>ModuleList</code></p>
+<h4 id="split_bn_bias"><code>split_bn_bias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>split_bn_bias</code>(<b>`layer_groups`</b>:<code>ModuleList</code>) → <code>ModuleList</code></p>
 </blockquote>
 <p>Split the layers in <code>layer_groups</code> into batchnorm (<code>bn_types</code>) and non-batchnorm groups.</p>
 
@@ -672,7 +672,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="log_uniform"><code>log_uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>log_uniform</code>(<code>low</code>, <code>high</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>FloatOrTensor</code></p>
+<h4 id="log_uniform"><code>log_uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>log_uniform</code>(<b>`low`</b>, <b>`high`</b>, <b>`size`</b>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<b><i>`None`</i></b>) → <code>FloatOrTensor</code></p>
 </blockquote>
 <p>Draw 1 or shape=<code>size</code> random floats from uniform dist: min=log(<code>low</code>), max=log(<code>high</code>).</p>
 
@@ -722,7 +722,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rand_bool"><code>rand_bool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L293" class="source_link">[source]</a></h4><blockquote><p><code>rand_bool</code>(<code>p</code>:<code>float</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>BoolOrTensor</code></p>
+<h4 id="rand_bool"><code>rand_bool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L293" class="source_link">[source]</a></h4><blockquote><p><code>rand_bool</code>(<b>`p`</b>:<code>float</code>, <b>`size`</b>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<b><i>`None`</i></b>) → <code>BoolOrTensor</code></p>
 </blockquote>
 <p>Draw 1 or shape=<code>size</code> random booleans (<code>True</code> occuring with probability <code>p</code>).</p>
 
@@ -772,7 +772,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniform"><code>uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L283" class="source_link">[source]</a></h4><blockquote><p><code>uniform</code>(<code>low</code>:<code>Number</code>, <code>high</code>:<code>Number</code>=<code>None</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>FloatOrTensor</code></p>
+<h4 id="uniform"><code>uniform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L283" class="source_link">[source]</a></h4><blockquote><p><code>uniform</code>(<b>`low`</b>:<code>Number</code>, <b>`high`</b>:<code>Number</code>=<b><i>`None`</i></b>, <b>`size`</b>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<b><i>`None`</i></b>) → <code>FloatOrTensor</code></p>
 </blockquote>
 <p>Draw 1 or shape=<code>size</code> random floats from uniform dist: min=<code>low</code>, max=<code>high</code>.</p>
 
@@ -822,7 +822,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniform_int"><code>uniform_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L297" class="source_link">[source]</a></h4><blockquote><p><code>uniform_int</code>(<code>low</code>:<code>int</code>, <code>high</code>:<code>int</code>, <code>size</code>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<code>None</code>) → <code>IntOrTensor</code></p>
+<h4 id="uniform_int"><code>uniform_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L297" class="source_link">[source]</a></h4><blockquote><p><code>uniform_int</code>(<b>`low`</b>:<code>int</code>, <b>`high`</b>:<code>int</code>, <b>`size`</b>:<code>Optional</code>[<code>List</code>[<code>int</code>]]=<b><i>`None`</i></b>) → <code>IntOrTensor</code></p>
 </blockquote>
 <p>Generate int or tensor <code>size</code> of ints between <code>low</code> and <code>high</code> (included).</p>
 
@@ -878,7 +878,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FloatItem"><code>class</code> <code>FloatItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L263" class="source_link">[source]</a></h3><blockquote><p><code>FloatItem</code>(<code>obj</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="FloatItem"><code>class</code> <code>FloatItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L263" class="source_link">[source]</a></h3><blockquote><p><code>FloatItem</code>(<b>`obj`</b>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
 <p>Basic class for float items.</p>
 
@@ -899,7 +899,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="calc_loss"><code>calc_loss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L217" class="source_link">[source]</a></h4><blockquote><p><code>calc_loss</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>loss_func</code>:<code>LossFunction</code>)</p>
+<h4 id="calc_loss"><code>calc_loss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L217" class="source_link">[source]</a></h4><blockquote><p><code>calc_loss</code>(<b>`y_pred`</b>:<code>Tensor</code>, <b>`y_true`</b>:<code>Tensor</code>, <b>`loss_func`</b>:<code>LossFunction</code>)</p>
 </blockquote>
 <p>Calculate loss between <code>y_pred</code> and <code>y_true</code> using <code>loss_func</code>.</p>
 
@@ -920,7 +920,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="data_collate"><code>data_collate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L103" class="source_link">[source]</a></h4><blockquote><p><code>data_collate</code>(<code>batch</code>:<code>ItemsList</code>) → <code>Tensor</code></p>
+<h4 id="data_collate"><code>data_collate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L103" class="source_link">[source]</a></h4><blockquote><p><code>data_collate</code>(<b>`batch`</b>:<code>ItemsList</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Convert <code>batch</code> items to tensor data.</p>
 
@@ -941,7 +941,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="grab_idx"><code>grab_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L268" class="source_link">[source]</a></h4><blockquote><p><code>grab_idx</code>(<code>x</code>, <code>i</code>, <code>batch_first</code>:<code>bool</code>=<code>True</code>)</p>
+<h4 id="grab_idx"><code>grab_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L268" class="source_link">[source]</a></h4><blockquote><p><code>grab_idx</code>(<b>`x`</b>, <b>`i`</b>, <b>`batch_first`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Grab the <code>i</code>-th batch in <code>x</code>, <code>batch_first</code> stating the batch dimension.</p>
 
@@ -962,7 +962,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit"><code>logit</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L273" class="source_link">[source]</a></h4><blockquote><p><code>logit</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="logit"><code>logit</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L273" class="source_link">[source]</a></h4><blockquote><p><code>logit</code>(<b>`x`</b>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Logit of <code>x</code>, clamped to avoid inf.</p>
 
@@ -983,7 +983,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logit_"><code>logit_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L278" class="source_link">[source]</a></h4><blockquote><p><code>logit_</code>(<code>x</code>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="logit_"><code>logit_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L278" class="source_link">[source]</a></h4><blockquote><p><code>logit_</code>(<b>`x`</b>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Inplace logit of <code>x</code>, clamped to avoid inf</p>
 
@@ -1004,7 +1004,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="model_type"><code>model_type</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L227" class="source_link">[source]</a></h4><blockquote><p><code>model_type</code>(<code>dtype</code>)</p>
+<h4 id="model_type"><code>model_type</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L227" class="source_link">[source]</a></h4><blockquote><p><code>model_type</code>(<b>`dtype`</b>)</p>
 </blockquote>
 <p>Return the torch type corresponding to <code>dtype</code>.</p>
 
@@ -1025,7 +1025,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="np_address"><code>np_address</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L76" class="source_link">[source]</a></h4><blockquote><p><code>np_address</code>(<code>x</code>:<code>ndarray</code>) → <code>int</code></p>
+<h4 id="np_address"><code>np_address</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L76" class="source_link">[source]</a></h4><blockquote><p><code>np_address</code>(<b>`x`</b>:<code>ndarray</code>) → <code>int</code></p>
 </blockquote>
 <p>Address of <code>x</code> in memory.</p>
 
@@ -1046,7 +1046,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="split_model"><code>split_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>split_model</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>splits</code>:<code>Collection</code>[<code>Union</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>ModuleList</code>]], <code>want_idxs</code>:<code>bool</code>=<code>False</code>)</p>
+<h4 id="split_model"><code>split_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>split_model</code>(<b>`model`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`splits`</b>:<code>Collection</code>[<code>Union</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>ModuleList</code>]], <b>`want_idxs`</b>:<code>bool</code>=<b><i>`False`</i></b>)</p>
 </blockquote>
 <p>Split <code>model</code> according to the layers in <code>splits</code>.</p>
 
@@ -1074,7 +1074,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="split_model_idx"><code>split_model_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L140" class="source_link">[source]</a></h4><blockquote><p><code>split_model_idx</code>(<code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>idxs</code>:<code>Collection</code>[<code>int</code>]) → <code>ModuleList</code></p>
+<h4 id="split_model_idx"><code>split_model_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L140" class="source_link">[source]</a></h4><blockquote><p><code>split_model_idx</code>(<b>`model`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`idxs`</b>:<code>Collection</code>[<code>int</code>]) → <code>ModuleList</code></p>
 </blockquote>
 <p>Split <code>model</code> according to the indexes in <code>idxs</code>.</p>
 
@@ -1095,7 +1095,7 @@ summary: "Basic functions using pytorch"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trange_of"><code>trange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L247" class="source_link">[source]</a></h4><blockquote><p><code>trange_of</code>(<code>x</code>)</p>
+<h4 id="trange_of"><code>trange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/torch_core.py#L247" class="source_link">[source]</a></h4><blockquote><p><code>trange_of</code>(<b>`x`</b>)</p>
 </blockquote>
 <p>Create a tensor from <code>range_of(x)</code>.</p>
 
