@@ -230,7 +230,7 @@ def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,i
             img.save(dest_fname, img_format, **kwargs)
         img = np.array(img)
         img_channels = 1 if len(img.shape) == 2 else img.shape[2]
-        assert img_channels == n_channels, f"Image {file} has {img_channels} instead of {n_channels}"
+        assert img_channels == n_channels, f"Image {file} has {img_channels} instead of {n_channels} channels"
     except Exception as e:
         print(f'{e}')
         if delete: file.unlink()
@@ -401,7 +401,7 @@ class PointsLabelList(ItemList):
 class PointsItemList(ImageItemList):
     "`ItemList` for `Image` to `ImagePoints` tasks."
     _label_cls,_square_show_res = PointsLabelList,False
-    
+
 class ImageImageList(ImageItemList):
     "`ItemList` suitable for `Image` to `Image` tasks."
     _label_cls,_square_show,_square_show_res = ImageItemList,False,False
@@ -422,4 +422,3 @@ class ImageImageList(ImageItemList):
             x.show(ax=axs[i,0], **kwargs)
             y.show(ax=axs[i,2], **kwargs)
             z.show(ax=axs[i,1], **kwargs)
-
