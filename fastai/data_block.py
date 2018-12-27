@@ -42,10 +42,10 @@ class ItemList():
     _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
     def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, xtra:Any=None, 
-                 processor:PreProcessor=None, x:'ItemList'=None):
+                 processor:PreProcessor=None, x:'ItemList'=None, ignore_empty:bool=False):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
-        self.items,self.x = items,x
+        self.items,self.x,self.ignore_empty = items,x,ignore_empty
         if not isinstance(self.items,np.ndarray): self.items = array(self.items, dtype=object)
         self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
@@ -151,7 +151,9 @@ class ItemList():
 
     def no_split(self):
         "Don't split the data and create an empty validation set."
-        return self._split(self.path, self, self[[]])
+        val = self[[]]
+        val.ignore_empty = True
+        return self._split(self.path, self, val)
 
     def split_by_list(self, train, valid):
         "Split the data between `train` and `valid`."
@@ -201,7 +203,6 @@ class ItemList():
     def split_from_df(self, col:IntsOrStrs=2):
         "Split the data from the `col` in the dataframe in `self.xtra`."
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
-        assert valid_idx.isna().sum().sum() == 0, f"You have NaN values in column {col} of your dataframe, please fix it." 
         return self.split_by_idx(valid_idx)
 
     def get_label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
@@ -377,6 +378,11 @@ class ItemLists():
     "An `ItemList` for each of `train` and `valid` (optional `test`)."
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):
         self.path,self.train,self.valid,self.test = Path(path),train,valid,test
+        if not self.train.ignore_empty and len(self.train.items) == 0:
+            warn("Your training set is empty. Is this is by design, pass `ignore_empty=True` to remove this warning.")
+        if not self.valid.ignore_empty and len(self.valid.items) == 0:
+            warn("""Your validation set is empty. Is this is by design, use `no_split()` 
+                 or pass `ignore_empty=True` when labelling to remove this warning.""")
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
     
     def __dir__(self)->List[str]:
@@ -561,8 +567,8 @@ class LabelList(Dataset):
     def load_empty(cls, fn:PathOrStr):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
         state = pickle.load(open(fn, 'rb'))
-        x = state['x_cls']([], path=state['path'], processor=state['x_proc'])
-        y = state['y_cls']([], path=state['path'], processor=state['y_proc'])
+        x = state['x_cls']([], path=state['path'], processor=state['x_proc'], ignore_empty=True)
+        y = state['y_cls']([], path=state['path'], processor=state['y_proc'], ignore_empty=True)
         res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()
         if state.get('tfms_y', False):    res.tfms_y    = state['tfms_y']
         if state.get('tfmargs_y', False): res.tfmargs_y = state['tfmargs_y']
