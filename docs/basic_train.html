@@ -212,7 +212,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.get_preds"><code>get_preds</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L225" class="source_link">[source]</a></h4><blockquote><p><code>get_preds</code>(<b>`ds_type`</b>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<b><i>`<DatasetType.Valid: 2>`</i></b>, <b>`with_loss`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`n_batch`</b>:<code>Optional</code>[<code>int</code>]=<b><i>`None`</i></b>, <b>`pbar`</b>:<code>Union</code>[<code>MasterBar</code>, <code>ProgressBar</code>, <code>NoneType</code>]=<b><i>`None`</i></b>) → <code>List</code>[<code>Tensor</code>]</p>
+<h4 id="Learner.get_preds"><code>get_preds</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L223" class="source_link">[source]</a></h4><blockquote><p><code>get_preds</code>(<b>`ds_type`</b>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<b><i>`<DatasetType.Valid: 2>`</i></b>, <b>`with_loss`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`n_batch`</b>:<code>Optional</code>[<code>int</code>]=<b><i>`None`</i></b>, <b>`pbar`</b>:<code>Union</code>[<code>MasterBar</code>, <code>ProgressBar</code>, <code>NoneType</code>]=<b><i>`None`</i></b>) → <code>List</code>[<code>Tensor</code>]</p>
 </blockquote>
 <p>Return predictions and targets on <code>ds_type</code> dataset.</p>
 
@@ -233,7 +233,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.validate"><code>validate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L272" class="source_link">[source]</a></h4><blockquote><p><code>validate</code>(<b>`dl`</b>=<b><i>`None`</i></b>, <b>`callbacks`</b>=<b><i>`None`</i></b>, <b>`metrics`</b>=<b><i>`None`</i></b>)</p>
+<h4 id="Learner.validate"><code>validate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L270" class="source_link">[source]</a></h4><blockquote><p><code>validate</code>(<b>`dl`</b>=<b><i>`None`</i></b>, <b>`callbacks`</b>=<b><i>`None`</i></b>, <b>`metrics`</b>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Validate on <code>dl</code> with potential <code>callbacks</code> and <code>metrics</code>.</p>
 
@@ -254,7 +254,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.show_results"><code>show_results</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>show_results</code>(<b>`ds_type`</b>=<b><i>`<DatasetType.Valid: 2>`</i></b>, <b>`rows`</b>:<code>int</code>=<b><i>`5`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="Learner.show_results"><code>show_results</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L280" class="source_link">[source]</a></h4><blockquote><p><code>show_results</code>(<b>`ds_type`</b>=<b><i>`<DatasetType.Valid: 2>`</i></b>, <b>`rows`</b>:<code>int</code>=<b><i>`5`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Show <code>rows</code> result of predictions on <code>ds_type</code> dataset.</p>
 
@@ -275,7 +275,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.predict"><code>predict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L255" class="source_link">[source]</a></h4><blockquote><p><code>predict</code>(<b>`item`</b>:<a href="/core.html#ItemBase"><code>ItemBase</code></a>, <b>`kwargs`</b>)</p>
+<h4 id="Learner.predict"><code>predict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L253" class="source_link">[source]</a></h4><blockquote><p><code>predict</code>(<b>`item`</b>:<a href="/core.html#ItemBase"><code>ItemBase</code></a>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Return predicted class, label and probabilities for <code>item</code>.</p>
 
@@ -296,7 +296,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.pred_batch"><code>pred_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L232" class="source_link">[source]</a></h4><blockquote><p><code>pred_batch</code>(<b>`ds_type`</b>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<b><i>`<DatasetType.Valid: 2>`</i></b>, <b>`batch`</b>:<code>Tuple</code>=<b><i>`None`</i></b>, <b>`reconstruct`</b>:<code>bool</code>=<b><i>`False`</i></b>) → <code>List</code>[<code>Tensor</code>]</p>
+<h4 id="Learner.pred_batch"><code>pred_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L230" class="source_link">[source]</a></h4><blockquote><p><code>pred_batch</code>(<b>`ds_type`</b>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<b><i>`<DatasetType.Valid: 2>`</i></b>, <b>`batch`</b>:<code>Tuple</code>=<b><i>`None`</i></b>, <b>`reconstruct`</b>:<code>bool</code>=<b><i>`False`</i></b>) → <code>List</code>[<code>Tensor</code>]</p>
 </blockquote>
 <p>Return output of the model on one batch from <code>ds_type</code> dataset.</p>
 
@@ -481,6 +481,33 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 <h4 id="to_fp32"><code>to_fp32</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L41" class="source_link">[source]</a></h4><blockquote><p><code>to_fp32</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>)</p>
 </blockquote>
 <p>Put <code>learn</code> back to FP32 precision mode.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Distributed-training">Distributed training<a class="anchor-link" href="#Distributed-training">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="distributed"><code>distributed</code><a href="https://github.com/fastai/fastai/blob/master/fastai/distributed.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>distributed</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`cuda_id`</b>:<code>int</code>, <b>`cache_dir`</b>:<code>PathOrStr</code>=<b><i>`'tmp'`</i></b>)</p>
+</blockquote>
+<p>Put <code>learn</code> on distributed training with <code>cuda_id</code>.</p>
 
 </div>
 
@@ -799,7 +826,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.load"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L210" class="source_link">[source]</a></h4><blockquote><p><code>load</code>(<b>`name`</b>:<code>PathOrStr</code>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`strict`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`with_opt`</b>:<code>bool</code>=<b><i>`None`</i></b>)</p>
+<h4 id="Learner.load"><code>load</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L208" class="source_link">[source]</a></h4><blockquote><p><code>load</code>(<b>`name`</b>:<code>PathOrStr</code>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`strict`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`with_opt`</b>:<code>bool</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Load model and optimizer state (if <code>with_opt</code>) <code>name</code> from <code>self.model_dir</code> using <code>device</code>.</p>
 
@@ -820,7 +847,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L198" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<b>`name`</b>:<code>PathOrStr</code>, <b>`return_path`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`with_opt`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
+<h4 id="Learner.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L196" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<b>`name`</b>:<code>PathOrStr</code>, <b>`return_path`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`with_opt`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Save model and optimizer state (if <code>with_opt</code>) with <code>name</code> to <code>self.model_dir</code>.</p>
 
@@ -936,7 +963,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.backward"><code>backward</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L248" class="source_link">[source]</a></h4><blockquote><p><code>backward</code>(<b>`item`</b>)</p>
+<h4 id="Learner.backward"><code>backward</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L246" class="source_link">[source]</a></h4><blockquote><p><code>backward</code>(<b>`item`</b>)</p>
 </blockquote>
 <p>Pass <code>item</code> through the model and computes the gradient. Useful if <code>backward_hooks</code> are attached.</p>
 
@@ -985,7 +1012,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.dl"><code>dl</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L206" class="source_link">[source]</a></h4><blockquote><p><code>dl</code>(<b>`ds_type`</b>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<b><i>`<DatasetType.Valid: 2>`</i></b>)</p>
+<h4 id="Learner.dl"><code>dl</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L204" class="source_link">[source]</a></h4><blockquote><p><code>dl</code>(<b>`ds_type`</b>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<b><i>`<DatasetType.Valid: 2>`</i></b>)</p>
 </blockquote>
 <p>Return DataLoader for DatasetType <code>ds_type</code>.</p>
 
@@ -1006,7 +1033,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Recorder"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L325" class="source_link">[source]</a></h2><blockquote><p><code>Recorder</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="Recorder"><code>class</code> <code>Recorder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L332" class="source_link">[source]</a></h2><blockquote><p><code>Recorder</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> that records epoch, loss, opt and metric data during training.</p>
 
@@ -1020,7 +1047,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A <a href="/basic_train.html#Learner"><code>Learner</code></a> creates a <a href="/basic_train.html#Recorder"><code>Recorder</code></a> object automatically - you do not need to explicitly pass to <code>callback_fns</code> - because other callbacks rely on it being available. It stores the smoothed loss, hyperparameter values, and metrics each batch, and provides plotting methods for each. Note that <a href="/basic_train.html#Learner"><code>Learner</code></a> automatically sets an attribute with the snake-cased name of each callback, so you can access this through <code>Learner.recorder</code>, as shown below.</p>
+<p>A <a href="/basic_train.html#Learner"><code>Learner</code></a> creates a <a href="/basic_train.html#Recorder"><code>Recorder</code></a> object automatically - you do not need to explicitly pass it to <code>callback_fns</code> - because other callbacks rely on it being available. It stores the smoothed loss, hyperparameter values, and metrics for each batch, and provides plotting methods for each. Note that <a href="/basic_train.html#Learner"><code>Learner</code></a> automatically sets an attribute with the snake-cased name of each callback, so you can access this through <code>Learner.recorder</code>, as shown below.</p>
 
 </div>
 </div>
@@ -1040,7 +1067,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot"><code>plot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L391" class="source_link">[source]</a></h4><blockquote><p><code>plot</code>(<b>`skip_start`</b>:<code>int</code>=<b><i>`10`</i></b>, <b>`skip_end`</b>:<code>int</code>=<b><i>`5`</i></b>)</p>
+<h4 id="Recorder.plot"><code>plot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L398" class="source_link">[source]</a></h4><blockquote><p><code>plot</code>(<b>`skip_start`</b>:<code>int</code>=<b><i>`10`</i></b>, <b>`skip_end`</b>:<code>int</code>=<b><i>`5`</i></b>)</p>
 </blockquote>
 <p>Plot learning rate and losses, trimmed between <code>skip_start</code> and <code>skip_end</code>.</p>
 
@@ -1109,7 +1136,7 @@ Total time: 00:10 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_losses"><code>plot_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L402" class="source_link">[source]</a></h4><blockquote><p><code>plot_losses</code>(<b>`last`</b>:<code>int</code>=<b><i>`None`</i></b>)</p>
+<h4 id="Recorder.plot_losses"><code>plot_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L409" class="source_link">[source]</a></h4><blockquote><p><code>plot_losses</code>(<b>`last`</b>:<code>int</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Plot training and validation losses.</p>
 
@@ -1198,7 +1225,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_lr"><code>plot_lr</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L382" class="source_link">[source]</a></h4><blockquote><p><code>plot_lr</code>(<b>`show_moms`</b>=<b><i>`False`</i></b>)</p>
+<h4 id="Recorder.plot_lr"><code>plot_lr</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L389" class="source_link">[source]</a></h4><blockquote><p><code>plot_lr</code>(<b>`show_moms`</b>=<b><i>`False`</i></b>)</p>
 </blockquote>
 <p>Plot learning rate, <code>show_moms</code> to include momentum.</p>
 
@@ -1250,7 +1277,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_metrics"><code>plot_metrics</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L417" class="source_link">[source]</a></h4><blockquote><p><code>plot_metrics</code>()</p>
+<h4 id="Recorder.plot_metrics"><code>plot_metrics</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L424" class="source_link">[source]</a></h4><blockquote><p><code>plot_metrics</code>()</p>
 </blockquote>
 <p>Plot metrics collected during training.</p>
 
@@ -1322,7 +1349,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L349" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<b>`smooth_loss`</b>:<code>Tensor</code>, <b>`kwargs`</b>:<code>Any</code>)</p>
+<h4 id="Recorder.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L356" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<b>`smooth_loss`</b>:<code>Tensor</code>, <b>`kwargs`</b>:<code>Any</code>)</p>
 </blockquote>
 <p>Record the loss before any other callback has a chance to modify it.</p>
 
@@ -1343,7 +1370,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L343" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<b>`train`</b>, <b>`kwargs`</b>:<code>Any</code>)</p>
+<h4 id="Recorder.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L350" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<b>`train`</b>, <b>`kwargs`</b>:<code>Any</code>)</p>
 </blockquote>
 <p>Record learning rate and momentum at beginning of batch.</p>
 
@@ -1364,7 +1391,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L355" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<b>`epoch`</b>:<code>int</code>, <b>`num_batch`</b>:<code>int</code>, <b>`smooth_loss`</b>:<code>Tensor</code>, <b>`last_metrics`</b>=<b><i>`typing.Collection[typing.Union[torch.Tensor, numbers.Number]]`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>bool</code></p>
+<h4 id="Recorder.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L362" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<b>`epoch`</b>:<code>int</code>, <b>`num_batch`</b>:<code>int</code>, <b>`smooth_loss`</b>:<code>Tensor</code>, <b>`last_metrics`</b>=<b><i>`typing.Collection[typing.Union[torch.Tensor, numbers.Number]]`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>bool</code></p>
 </blockquote>
 <p>Save epoch info: num_batch, smooth_loss, metrics.</p>
 
@@ -1385,7 +1412,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L334" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`pbar`</b>:<code>PBar</code>, <b>`metrics_names`</b>:<code>StrList</code>, <b>`kwargs`</b>:<code>Any</code>)</p>
+<h4 id="Recorder.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L341" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`pbar`</b>:<code>PBar</code>, <b>`metrics_names`</b>:<code>StrList</code>, <b>`kwargs`</b>:<code>Any</code>)</p>
 </blockquote>
 <p>Initialize recording status at beginning of training.</p>
 
@@ -1419,7 +1446,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.add_metrics"><code>add_metrics</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L374" class="source_link">[source]</a></h4><blockquote><p><code>add_metrics</code>(<b>`metrics`</b>)</p>
+<h4 id="Recorder.add_metrics"><code>add_metrics</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L381" class="source_link">[source]</a></h4><blockquote><p><code>add_metrics</code>(<b>`metrics`</b>)</p>
 </blockquote>
 <p>Add <code>metrics</code> to the inner stats.</p>
 
@@ -1440,7 +1467,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.add_metric_names"><code>add_metric_names</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L378" class="source_link">[source]</a></h4><blockquote><p><code>add_metric_names</code>(<b>`names`</b>)</p>
+<h4 id="Recorder.add_metric_names"><code>add_metric_names</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L385" class="source_link">[source]</a></h4><blockquote><p><code>add_metric_names</code>(<b>`names`</b>)</p>
 </blockquote>
 <p>Add <code>names</code> to the inner metric names.</p>
 
@@ -1461,7 +1488,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.format_stats"><code>format_stats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L367" class="source_link">[source]</a></h4><blockquote><p><code>format_stats</code>(<b>`stats`</b>:<code>MetricsList</code>)</p>
+<h4 id="Recorder.format_stats"><code>format_stats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L374" class="source_link">[source]</a></h4><blockquote><p><code>format_stats</code>(<b>`stats`</b>:<code>MetricsList</code>)</p>
 </blockquote>
 <p>Format stats before printing.</p>
 
@@ -1634,7 +1661,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LearnerCallback"><code>class</code> <code>LearnerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L315" class="source_link">[source]</a></h3><blockquote><p><code>LearnerCallback</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h3 id="LearnerCallback"><code>class</code> <code>LearnerCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L313" class="source_link">[source]</a></h3><blockquote><p><code>LearnerCallback</code>(<b>`learn`</b>:<code>_MISSING_TYPE object at 0x7fbbc0f439b0&gt;,init=True,repr=False,hash=None,compare=True,metadata=mappingproxy({}),_field_type=None)</code>=<b><i>`<property object at 0x7fbb7a057598>`</i></b>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Base class for creating callbacks for a <a href="/basic_train.html#Learner"><code>Learner</code></a>.</p>
 
@@ -1655,7 +1682,7 @@ Total time: 00:16 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RecordOnCPU"><code>class</code> <code>RecordOnCPU</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L309" class="source_link">[source]</a></h3><blockquote><p><code>RecordOnCPU</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h3 id="RecordOnCPU"><code>class</code> <code>RecordOnCPU</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L307" class="source_link">[source]</a></h3><blockquote><p><code>RecordOnCPU</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Store the <code>input</code> and <code>target</code> going through the model on the CPU.</p>
 

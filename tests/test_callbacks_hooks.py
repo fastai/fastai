@@ -26,10 +26,10 @@ def test_model_summary_tabular():
     cont_names = ['age', 'fnlwgt', 'education-num']
     procs = [FillMissing, Categorify]
     df = pd.read_csv(path/'adult.csv')
-    data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs, bs=2)
+    data = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
                                .split_by_idx(list(range(800,1000)))
                                .label_from_df(cols=dep_var)
-                               .databunch())
+                               .databunch(bs=2))
     learn = tabular_learner(data, layers=[200,100], metrics=accuracy)
     model_summary(learn)
 

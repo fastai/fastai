@@ -9,7 +9,7 @@ def test_category():
     df = pd.DataFrame(dict(c1=c1,c2=c2))
     trn_idx = [0,1,3]
 
-    l1 = ItemList.from_df(df, col=0)
+    l1 = ItemList.from_df(df, cols=0)
     assert l1[0]==c1[0]
     chk(l1[[1,2]].items, array(c1)[[1,2]])
 
@@ -52,7 +52,7 @@ def test_multi_category():
     df = pd.DataFrame(dict(c1=c1,c2=c2))
     trn_idx = [0,1,3]
 
-    l1 = ItemList.from_df(df, col=0)
+    l1 = ItemList.from_df(df, cols=0)
     sd = l1.split_by_idx([2,4])
 
     ll = sd.label_from_df(1, sep=' ')
@@ -77,7 +77,7 @@ def test_category_processor_existing_class():
     c2 = list('cabbc')
     df = pd.DataFrame(dict(c1=c1,c2=c2))
 
-    l1 = ItemList.from_df(df, col=0)
+    l1 = ItemList.from_df(df, cols=0)
     sd = l1.split_by_idx([2, 4])
     ll = sd.label_from_df(1)
     ll.y.processor[0].process_one('a')
@@ -87,7 +87,7 @@ def test_category_processor_non_existing_class():
     c2 = list('cabbc')
     df = pd.DataFrame(dict(c1=c1,c2=c2))
 
-    l1 = ItemList.from_df(df, col=0)
+    l1 = ItemList.from_df(df, cols=0)
     sd = l1.split_by_idx([2, 4])
     ll = sd.label_from_df(1)
     with pytest.raises(Exception):
@@ -103,7 +103,7 @@ def test_splitdata_datasets():
 
 def test_regression():
     df = pd.DataFrame({'x':range(100), 'y':np.random.rand(100)})
-    data = ItemList.from_df(df, path='.', col=0).random_split_by_pct().label_from_df(cols=1).databunch()
+    data = ItemList.from_df(df, path='.', cols=0).random_split_by_pct().label_from_df(cols=1).databunch()
     assert data.c==1
     assert isinstance(data.valid_ds, LabelList)
 

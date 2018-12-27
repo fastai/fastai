@@ -10,7 +10,7 @@ def make_async(b:Tuple[Tensor,Tensor]):
 
 @dataclass
 class DistributedTrainer(LearnerCallback):
-    cuda_id:int
+    cuda_id:int=0
     _order = -20 #Needs to run before the recorder
 
     def on_train_begin(self, **kwargs):
@@ -32,7 +32,7 @@ class DistributedTrainer(LearnerCallback):
 
 @dataclass
 class DistributedRecorder(LearnerCallback):
-    cuda_id:int
+    cuda_id:int=0
     cache_dir:PathOrStr='tmp'
 
     def on_train_begin(self, **kwargs):
@@ -48,6 +48,7 @@ class DistributedRecorder(LearnerCallback):
         np.save(cache_path/f'metrics_{self.cuda_id}', stats)
 
 def _learner_distributed(learn:Learner, cuda_id:int, cache_dir:PathOrStr='tmp'):
+    "Put `learn` on distributed training with `cuda_id`."
     learn.callbacks.append(DistributedTrainer(learn, cuda_id))
     learn.callbacks.append(DistributedRecorder(learn, cuda_id, cache_dir))
     return learn

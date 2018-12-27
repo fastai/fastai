@@ -41,8 +41,8 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
-    def __init__(self, items:Iterator, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
+    def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, xtra:Any=None, 
+                 processor:PreProcessor=None, x:'ItemList'=None):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
         self.items,self.x = items,x
@@ -105,6 +105,7 @@ class ItemList():
     def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
         inputs = df.iloc[:,df_names_to_idx(cols, df)]
+        assert inputs.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
         res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, **kwargs)
         return res
 
@@ -200,6 +201,7 @@ class ItemList():
     def split_from_df(self, col:IntsOrStrs=2):
         "Split the data from the `col` in the dataframe in `self.xtra`."
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
+        assert valid_idx.isna().sum().sum() == 0, f"You have NaN values in column {col} of your dataframe, please fix it." 
         return self.split_by_idx(valid_idx)
 
     def get_label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
@@ -224,6 +226,7 @@ class ItemList():
     def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
         if is_listy(cols) and len(cols) > 1: 
             new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
             kwargs = {**new_kwargs, **kwargs}
@@ -290,7 +293,7 @@ class CategoryProcessor(PreProcessor):
 
 class CategoryListBase(ItemList):
     "Basic `ItemList` for classification."
-    def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
+    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         self.classes=classes
         super().__init__(items, **kwargs)
 
@@ -303,7 +306,7 @@ class CategoryListBase(ItemList):
 class CategoryList(CategoryListBase):
     "Basic `ItemList` for single classification labels."
     _processor=CategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
+    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = CrossEntropyFlat()
 
@@ -566,7 +569,7 @@ class LabelList(Dataset):
         if state.get('normalize', False): res.normalize = state['normalize']
         return res
 
-    def process(self, xp=None, yp=None, filter_missing_y:bool=False):
+    def process(self, xp:PreProcessor=None, yp:PreProcessor=None, filter_missing_y:bool=False):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
         if filter_missing_y and (getattr(self.x, 'filter_missing_y', None)):
