@@ -323,7 +323,13 @@ class CategoryList(CategoryListBase):
 
 class MultiCategoryProcessor(CategoryProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
-    def process_one(self,item): return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
+    def __init__(self, ds:ItemList, one_hot:bool=False): 
+        super().__init__(ds)
+        self.one_hot = one_hot
+                
+    def process_one(self,item): 
+        if self.one_hot: return item
+        return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
 
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."
@@ -341,7 +347,7 @@ class MultiCategoryList(CategoryListBase):
         super().__init__(items, classes=classes, **kwargs)
         if one_hot: 
             assert classes is not None, "Please provide class names with `classes=...`"
-            self.processor = []
+            self.processor = [MultiCategoryProcessor(self, one_hot=True)]
         self.loss_func = BCEWithLogitsFlat()
         self.one_hot = one_hot
         self.copy_new += ['one_hot']
