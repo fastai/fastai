@@ -93,7 +93,6 @@ class LanguageLearner(RNNLearner):
         self.model.reset()
         for _ in progress_bar(range(n_words), leave=False):
             xb, yb = self.data.one_item(text)
-            xb = xb.view(-1,1)
             res = self.pred_batch(batch=(xb,yb))[0][-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.

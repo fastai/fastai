@@ -18,6 +18,7 @@ of that change.
 ### New:
 
 - `Learner.to_fp32()` to go back to FP32 precision mode.
+- `cont_cat_split` function to automatically get categorical/continuous variables (thanks to RealLankinen)
 
 ### Changed:
 
@@ -27,6 +28,10 @@ of that change.
 ### Fixed:
 
 - Predictions now work in FP16 mode
+- Model is unwrapped at the end of a distributed training (thanks to mgrankin)
+- `DataBunch.export` works for multi-classification problems where `one_hot=True`
+- Fix bug in `DatasetFormatter`
+- Fix `LanguageLearner.predict`
 
 
 ## 1.0.38 (2018-12-18)
