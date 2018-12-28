@@ -102,8 +102,6 @@ loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_lo
 def _loss_func2activ(loss_func):
     if getattr(loss_func,'keywords',None):
         if not loss_func.keywords.get('log_input', True): return
-    # flattened loss
-    loss_func = getattr(loss_func, 'func', loss_func)
     # could have a partial inside flattened loss!
     loss_func = getattr(loss_func, 'func', loss_func)
     cls_name = camel2snake(loss_func.__class__.__name__)
