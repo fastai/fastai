@@ -15,10 +15,15 @@ of that change.
 
 ## 1.0.39.dev0 (Work In Progress)
 
+### Breaking changes:
+
+- `Fbeta_binary` is now `FBeta`
+
 ### New:
 
 - `Learner.to_fp32()` to go back to FP32 precision mode.
 - `cont_cat_split` function to automatically get categorical/continuous variables (thanks to RealLankinen)
+- plenty of new metrics thanks to SvenBecker: mse/mean_squared_error, mae/mean_absolute_error, rmse/root_mean_squared_error, msle/ mean_squared_logarithmic_error, explained_variance, r2_score, top_k_accuracy, KappaScore, MatthewsCorreff, Precision, Recall, FBeta
 
 ### Changed:
 
