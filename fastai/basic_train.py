@@ -94,17 +94,23 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
         raise e
     finally: cb_handler.on_train_end(exception)
 
-loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': partial(F.softmax, dim=1),
+loss_func_name2activ = {'cross_entropy_loss': F.softmax, 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': F.softmax,
     'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid,
 }
+
+def _loss_func_name2activ(name:str, axis:int=-1):
+    res = loss_func_name2activ[name]
+    if res == F.softmax: res = partial(F.softmax, dim=axis)
+    return res
 
 def _loss_func2activ(loss_func):
     if getattr(loss_func,'keywords',None):
         if not loss_func.keywords.get('log_input', True): return
+    axis = getattr(loss_func, 'axis', -1)
     # flattened loss
     loss_func = getattr(loss_func, 'func', loss_func)
-    # could have a partial inside flattened loss!
+    # could have a partial inside flattened loss! Duplicate on purpose.
     loss_func = getattr(loss_func, 'func', loss_func)
     cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name == 'mix_up_loss':
@@ -112,9 +118,9 @@ def _loss_func2activ(loss_func):
         cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name in loss_func_name2activ:
         if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
-        return loss_func_name2activ[cls_name]
+        return _loss_func_name2activ(cls_name, axis)
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
-        return loss_func_name2activ[loss_func.__name__]
+        return _loss_func_name2activ(loss_func.__name__, axis)
     return noop
 
 @dataclass
@@ -193,13 +199,11 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def __del__(self): del(self.model, self.data)
-
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
-        if not with_opt: state = self.model.state_dict()
-        else: state = {'model': self.model.state_dict(), 'opt':self.opt.state_dict()}
+        if not with_opt: state = get_model(self.model).state_dict()
+        else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
         torch.save(state, path)
         if return_path: return path
 
@@ -212,14 +216,14 @@ class Learner():
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
-            self.model.load_state_dict(state['model'], strict=strict)
+            get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
                 try:    self.opt.load_state_dict(state['opt'])
                 except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
-            self.model.load_state_dict(state, strict=strict)
+            get_model(self.model).load_state_dict(state, strict=strict)
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
@@ -314,13 +318,22 @@ class RecordOnCPU(Callback):
 @dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
-    learn: Learner
+    learn: field(repr=False)
+    _learn: weakref.ref = field(init=False, repr=False)
     def __post_init__(self): setattr(self.learn, self.cb_name, self)
 
     def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
+    def learn(self) -> Learner: return self._learn()
+
+    @learn.setter
+    def learn(self, learn: Learner) -> None: self._learn = weakref.ref(learn)
+
+    @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
+
+    def  __repr__(self): return f"{self.__class__.__name__}()"
 
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."

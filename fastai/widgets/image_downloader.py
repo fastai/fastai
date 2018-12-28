@@ -10,8 +10,8 @@ __all__ = ['ImageDownloader', 'download_google_images']
 
 class ImageDownloader():
     """
-    Displays a simple widget that allows searching and downloading images from google images search
-    in a Jupyter notebook.
+    Displays a widget that allows searching and downloading images from google images search
+    in a Jupyter Notebook or Lab.
     """
 
     def __init__(self, path:Union[Path,str]='data'):

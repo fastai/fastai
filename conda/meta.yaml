@@ -56,6 +56,7 @@ requirements:
     - pandas
     - bottleneck
     - numexpr
+    - nb_conda
     - nvidia-ml-py3
     - packaging
     - pillow

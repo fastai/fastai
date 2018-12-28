@@ -145,7 +145,7 @@ def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5,
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
     padding_mode = _pad_mode_convert[padding_mode]
     size = listify(size,2)
-    if x.shape[1:] == size: return x
+    if x.shape[1:] == torch.Size(size): return x
     rows,cols = size
     if x.size(1)<rows or x.size(2)<cols:
         row_pad = max((rows-x.size(1)+1)//2, 0)

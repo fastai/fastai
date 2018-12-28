@@ -233,7 +233,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TabularProc"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L24" class="source_link">[source]</a></h2><blockquote><p><code>TabularProc</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>)</p>
+<h2 id="TabularProc"><code>class</code> <code>TabularProc</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L34" class="source_link">[source]</a></h2><blockquote><p><code>TabularProc</code>(<b>`cat_names`</b>:<code>StrList</code>, <b>`cont_names`</b>:<code>StrList</code>)</p>
 </blockquote>
 <p>A processor for tabular dataframes.</p>
 
@@ -261,7 +261,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularProc.__call__"><code>__call__</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L29" class="source_link">[source]</a></h4><blockquote><p><code>__call__</code>(<code>df</code>:<code>DataFrame</code>, <code>test</code>:<code>bool</code>=<code>False</code>)</p>
+<h4 id="TabularProc.__call__"><code>__call__</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>__call__</code>(<b>`df`</b>:<code>DataFrame</code>, <b>`test`</b>:<code>bool</code>=<b><i>`False`</i></b>)</p>
 </blockquote>
 <p>Apply the correct function to <code>df</code> depending on <code>test</code>.</p>
 
@@ -282,7 +282,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularProc.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="TabularProc.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L44" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Function applied to <code>df</code> if it's the train set.</p>
 
@@ -303,7 +303,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TabularProc.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="TabularProc.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L47" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Function applied to <code>df</code> if it's the test set.</p>
 
@@ -349,7 +349,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Categorify"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L41" class="source_link">[source]</a></h2><blockquote><p><code>Categorify</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="Categorify"><code>class</code> <code>Categorify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L51" class="source_link">[source]</a></h2><blockquote><p><code>Categorify</code>(<b>`cat_names`</b>:<code>StrList</code>, <b>`cont_names`</b>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Transform the categorical variables to that type.</p>
 
@@ -377,7 +377,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Categorify.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="Categorify.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Transform <code>self.cat_names</code> columns in categorical.</p>
 
@@ -398,7 +398,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Categorify.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="Categorify.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L60" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Transform <code>self.cat_names</code> columns in categorical using the codes decided in <code>apply_train</code>.</p>
 
@@ -510,7 +510,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FillMissing"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L58" class="source_link">[source]</a></h2><blockquote><p><code>FillMissing</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>, <code>fill_strategy</code>:<a href="/tabular.transform.html#FillStrategy"><code>FillStrategy</code></a>=<code>&lt;FillStrategy.MEDIAN: 1&gt;</code>, <code>add_col</code>:<code>bool</code>=<code>True</code>, <code>fill_val</code>:<code>float</code>=<code>0.0</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="FillMissing"><code>class</code> <code>FillMissing</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L68" class="source_link">[source]</a></h2><blockquote><p><code>FillMissing</code>(<b>`cat_names`</b>:<code>StrList</code>, <b>`cont_names`</b>:<code>StrList</code>, <b>`fill_strategy`</b>:<a href="/tabular.transform.html#FillStrategy"><code>FillStrategy</code></a>=<b><i>`<FillStrategy.MEDIAN: 1>`</i></b>, <b>`add_col`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`fill_val`</b>:<code>float</code>=<b><i>`0.0`</i></b>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Fill the missing values in continuous columns.</p>
 
@@ -538,7 +538,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FillMissing.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="FillMissing.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L73" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Fill missing values in <code>self.cont_names</code> according to <code>self.fill_strategy</code>.</p>
 
@@ -559,7 +559,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FillMissing.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L77" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="FillMissing.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Fill missing values in <code>self.cont_names</code> like in <code>apply_train</code>.</p>
 
@@ -929,7 +929,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Normalize"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L89" class="source_link">[source]</a></h2><blockquote><p><code>Normalize</code>(<code>cat_names</code>:<code>StrList</code>, <code>cont_names</code>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
+<h2 id="Normalize"><code>class</code> <code>Normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L99" class="source_link">[source]</a></h2><blockquote><p><code>Normalize</code>(<b>`cat_names`</b>:<code>StrList</code>, <b>`cont_names`</b>:<code>StrList</code>) :: <a href="/tabular.transform.html#TabularProc"><code>TabularProc</code></a></p>
 </blockquote>
 <p>Normalize the continuous variables.</p>
 
@@ -950,7 +950,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Normalize.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L91" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="Normalize.apply_train"><code>apply_train</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>apply_train</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Comput the means and stds of <code>self.cont_names</code> columns to normalize them.</p>
 
@@ -971,7 +971,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Normalize.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L98" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<code>df</code>:<code>DataFrame</code>)</p>
+<h4 id="Normalize.apply_test"><code>apply_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>apply_test</code>(<b>`df`</b>:<code>DataFrame</code>)</p>
 </blockquote>
 <p>Normalize <code>self.cont_names</code> with the same statistics as in <code>apply_train</code>.</p>
 
@@ -998,7 +998,7 @@ summary: "Transforms to clean and preprocess tabular data"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="add_datepart"><code>add_datepart</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L6" class="source_link">[source]</a></h4><blockquote><p><code>add_datepart</code>(<code>df</code>, <code>fldname</code>, <code>drop</code>=<code>True</code>, <code>time</code>=<code>False</code>)</p>
+<h4 id="add_datepart"><code>add_datepart</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>add_datepart</code>(<b>`df`</b>, <b>`fldname`</b>, <b>`drop`</b>=<b><i>`True`</i></b>, <b>`time`</b>=<b><i>`False`</i></b>)</p>
 </blockquote>
 <p>Helper function that adds columns relevant to a date in the column <code>fldname</code> of <code>df</code>.</p>
 
@@ -1016,6 +1016,157 @@ summary: "Transforms to clean and preprocess tabular data"
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Spliting-data-into-cat-and-cont">Spliting data into cat and cont<a class="anchor-link" href="#Spliting-data-into-cat-and-cont">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="cont_cat_split"><code>cont_cat_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/tabular/transform.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>cont_cat_split</code>(<b>`df`</b>, <b>`max_card`</b>=<b><i>`20`</i></b>, <b>`dep_var`</b>=<b><i>`None`</i></b>)</p>
+</blockquote>
+<p>Helper function that returns column names of cont and cat variables from given df.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Parameters:</p>
+<ul>
+<li>df: A pandas data frame.</li>
+<li>max_card: Maximum cardinality of a numerical categorical variable.</li>
+<li>dep_var: A dependent variable.</li>
+</ul>
+<p>Return:</p>
+<ul>
+<li>cont_names: A list of names of continuous variables.</li>
+<li>cat_names: A list of names of categorical variables.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="s1">&#39;col3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">],</span> <span class="s1">&#39;col4&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ab&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">]})</span>
+<span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>col1</th>
+      <th>col2</th>
+      <th>col3</th>
+      <th>col4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>a</td>
+      <td>0.5</td>
+      <td>ab</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>b</td>
+      <td>1.2</td>
+      <td>o</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>a</td>
+      <td>7.5</td>
+      <td>o</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cont_list</span><span class="p">,</span> <span class="n">cat_list</span> <span class="o">=</span> <span class="n">cont_cat_split</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">max_card</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">dep_var</span><span class="o">=</span><span class="s1">&#39;col4&#39;</span><span class="p">)</span>
+<span class="n">cont_list</span><span class="p">,</span> <span class="n">cat_list</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>([&#39;col3&#39;], [&#39;col1&#39;, &#39;col2&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 </div>
  

@@ -260,7 +260,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CollabDataBunch"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L43" class="source_link">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>fix_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<code>None</code>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>no_check</code>:<code>bool</code>=<code>False</code>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="CollabDataBunch"><code>class</code> <code>CollabDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L43" class="source_link">[source]</a></h2><blockquote><p><code>CollabDataBunch</code>(<b>`train_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <b>`valid_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <b>`fix_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<b><i>`None`</i></b>, <b>`test_dl`</b>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<b><i>`None`</i></b>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`tfms`</b>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`collate_fn`</b>:<code>Callable</code>=<b><i>`'data_collate'`</i></b>, <b>`no_check`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 <p>Base <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for collaborative filtering.</p>
 
@@ -288,7 +288,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<code>ratings</code>:<code>DataFrame</code>, <code>pct_val</code>:<code>float</code>=<code>0.2</code>, <code>user_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>item_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>rating_name</code>:<code>Optional</code>[<code>str</code>]=<code>None</code>, <code>test</code>:<code>DataFrame</code>=<code>None</code>, <code>seed</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="CollabDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<b>`ratings`</b>:<code>DataFrame</code>, <b>`pct_val`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`user_name`</b>:<code>Optional</code>[<code>str</code>]=<b><i>`None`</i></b>, <b>`item_name`</b>:<code>Optional</code>[<code>str</code>]=<b><i>`None`</i></b>, <b>`rating_name`</b>:<code>Optional</code>[<code>str</code>]=<b><i>`None`</i></b>, <b>`test`</b>:<code>DataFrame</code>=<b><i>`None`</i></b>, <b>`seed`</b>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> suitable for collaborative filtering from <code>ratings</code>.</p>
 
@@ -322,7 +322,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CollabLearner"><code>class</code> <code>CollabLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L58" class="source_link">[source]</a></h3><blockquote><p><code>CollabLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>model</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>opt_func</code>:<code>Callable</code>=<code>'Adam'</code>, <code>loss_func</code>:<code>Callable</code>=<code>None</code>, <code>metrics</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>true_wd</code>:<code>bool</code>=<code>True</code>, <code>bn_wd</code>:<code>bool</code>=<code>True</code>, <code>wd</code>:<code>Floats</code>=<code>0.01</code>, <code>train_bn</code>:<code>bool</code>=<code>True</code>, <code>path</code>:<code>str</code>=<code>None</code>, <code>model_dir</code>:<code>str</code>=<code>'models'</code>, <code>callback_fns</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>callbacks</code>:<code>Collection</code>[<a href="/callback.html#Callback"><code>Callback</code></a>]=<code>&lt;factory&gt;</code>, <code>layer_groups</code>:<code>ModuleList</code>=<code>None</code>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h3 id="CollabLearner"><code>class</code> <code>CollabLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L58" class="source_link">[source]</a></h3><blockquote><p><code>CollabLearner</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`model`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`opt_func`</b>:<code>Callable</code>=<b><i>`'Adam'`</i></b>, <b>`loss_func`</b>:<code>Callable</code>=<b><i>`None`</i></b>, <b>`metrics`</b>:<code>Collection</code>[<code>Callable</code>]=<b><i>`None`</i></b>, <b>`true_wd`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`bn_wd`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`wd`</b>:<code>Floats</code>=<b><i>`0.01`</i></b>, <b>`train_bn`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`path`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`model_dir`</b>:<code>str</code>=<b><i>`'models'`</i></b>, <b>`callback_fns`</b>:<code>Collection</code>[<code>Callable</code>]=<b><i>`None`</i></b>, <b>`callbacks`</b>:<code>Collection</code>[<a href="/callback.html#Callback"><code>Callback</code></a>]=<b><i>`<factory>`</i></b>, <b>`layer_groups`</b>:<code>ModuleList</code>=<b><i>`None`</i></b>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p><a href="/basic_train.html#Learner"><code>Learner</code></a> suitable for collaborative filtering.</p>
 
@@ -350,7 +350,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabLearner.bias"><code>bias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L69" class="source_link">[source]</a></h4><blockquote><p><code>bias</code>(<code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>is_item</code>:<code>bool</code>=<code>True</code>)</p>
+<h4 id="CollabLearner.bias"><code>bias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L69" class="source_link">[source]</a></h4><blockquote><p><code>bias</code>(<b>`arr`</b>:<code>Collection</code>[<code>T_co</code>], <b>`is_item`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Bias for item or user (based on <code>is_item</code>) for all in <code>arr</code>. (Set model to <code>cpu</code> and no grad.)</p>
 
@@ -371,7 +371,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabLearner.get_idx"><code>get_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L60" class="source_link">[source]</a></h4><blockquote><p><code>get_idx</code>(<code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>is_item</code>:<code>bool</code>=<code>True</code>)</p>
+<h4 id="CollabLearner.get_idx"><code>get_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L60" class="source_link">[source]</a></h4><blockquote><p><code>get_idx</code>(<b>`arr`</b>:<code>Collection</code>[<code>T_co</code>], <b>`is_item`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Fetch item or user (based on <code>is_item</code>) for all in <code>arr</code>. (Set model to <code>cpu</code> and no grad.)</p>
 
@@ -392,7 +392,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CollabLearner.weight"><code>weight</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L76" class="source_link">[source]</a></h4><blockquote><p><code>weight</code>(<code>arr</code>:<code>Collection</code>[<code>T_co</code>], <code>is_item</code>:<code>bool</code>=<code>True</code>)</p>
+<h4 id="CollabLearner.weight"><code>weight</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L76" class="source_link">[source]</a></h4><blockquote><p><code>weight</code>(<b>`arr`</b>:<code>Collection</code>[<code>T_co</code>], <b>`is_item`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Bias for item or user (based on <code>is_item</code>) for all in <code>arr</code>. (Set model to <code>cpu</code> and no grad.)</p>
 
@@ -413,7 +413,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDotBias"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L28" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDotBias</code>(<code>n_factors</code>:<code>int</code>, <code>n_users</code>:<code>int</code>, <code>n_items</code>:<code>int</code>, <code>y_range</code>:<code>Point</code>=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDotBias"><code>class</code> <code>EmbeddingDotBias</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L28" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDotBias</code>(<b>`n_factors`</b>:<code>int</code>, <b>`n_users`</b>:<code>int</code>, <b>`n_items`</b>:<code>int</code>, <b>`y_range`</b>:<code>Point</code>=<b><i>`None`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Base dot model for collaborative filtering.</p>
 
@@ -441,7 +441,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingNN"><code>class</code> <code>EmbeddingNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L20" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingNN</code>(<code>emb_szs</code>:<code>ListSizes</code>, <code>kwargs</code>) :: <a href="/tabular.models.html#TabularModel"><code>TabularModel</code></a></p>
+<h3 id="EmbeddingNN"><code>class</code> <code>EmbeddingNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L20" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingNN</code>(<b>`emb_szs`</b>:<code>ListSizes</code>, <b>`kwargs`</b>) :: <a href="/tabular.models.html#TabularModel"><code>TabularModel</code></a></p>
 </blockquote>
 <p>Subclass <a href="/tabular.models.html#TabularModel"><code>TabularModel</code></a> to create a NN suitable for collaborative filtering.</p>
 
@@ -469,7 +469,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<code>data</code>, <code>n_factors</code>:<code>int</code>=<code>None</code>, <code>use_nn</code>:<code>bool</code>=<code>False</code>, <code>metrics</code>=<code>None</code>, <code>emb_szs</code>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<code>None</code>, <code>wd</code>:<code>float</code>=<code>0.01</code>, <code>kwargs</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="collab_learner"><code>collab_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>collab_learner</code>(<b>`data`</b>, <b>`n_factors`</b>:<code>int</code>=<b><i>`None`</i></b>, <b>`use_nn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`metrics`</b>=<b><i>`None`</i></b>, <b>`emb_szs`</b>:<code>Dict</code>[<code>str</code>, <code>int</code>]=<b><i>`None`</i></b>, <b>`wd`</b>:<code>float</code>=<b><i>`0.01`</i></b>, <b>`kwargs`</b>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Create a Learner for collaborative filtering on <code>data</code>.</p>
 
@@ -503,7 +503,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CollabLine"><code>class</code> <code>CollabLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L8" class="source_link">[source]</a></h3><blockquote><p><code>CollabLine</code>(<code>cats</code>, <code>conts</code>, <code>classes</code>, <code>names</code>) :: <a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a></p>
+<h3 id="CollabLine"><code>class</code> <code>CollabLine</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L8" class="source_link">[source]</a></h3><blockquote><p><code>CollabLine</code>(<b>`cats`</b>, <b>`conts`</b>, <b>`classes`</b>, <b>`names`</b>) :: <a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a></p>
 </blockquote>
 
 </div>
@@ -530,7 +530,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="CollabList"><code>class</code> <code>CollabList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L14" class="source_link">[source]</a></h3><blockquote><p><code>CollabList</code>(<code>items</code>:<code>Iterator</code>[<code>T_co</code>], <code>cat_names</code>:<code>OptStrList</code>=<code>None</code>, <code>cont_names</code>:<code>OptStrList</code>=<code>None</code>, <code>procs</code>=<code>None</code>, <code>kwargs</code>) → <code>TabularList</code> :: <a href="/tabular.data.html#TabularList"><code>TabularList</code></a></p>
+<h3 id="CollabList"><code>class</code> <code>CollabList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/collab.py#L14" class="source_link">[source]</a></h3><blockquote><p><code>CollabList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`cat_names`</b>:<code>OptStrList</code>=<b><i>`None`</i></b>, <b>`cont_names`</b>:<code>OptStrList</code>=<b><i>`None`</i></b>, <b>`procs`</b>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>TabularList</code> :: <a href="/tabular.data.html#TabularList"><code>TabularList</code></a></p>
 </blockquote>
 
 </div>

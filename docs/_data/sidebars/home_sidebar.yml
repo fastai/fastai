@@ -110,8 +110,8 @@ entries:
           title: vision.models.unet
           url: /vision.models.unet.html
         - output: web,pdf
-          title: vision.widgets
-          url: /widgets.html
+          title: widgets.image_cleaner
+          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:

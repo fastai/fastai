@@ -361,6 +361,68 @@ More details, example and ways are [here](https://docs.pytest.org/en/latest/skip
 
 
 
+### After test cleanup
+
+To ensure some cleanup code is always run at the end of the test module, add to the desired test module the following code:
+
+```
+@pytest.fixture(scope="module", autouse=True)
+def cleanup(request):
+    """Cleanup the tmp file once we are finished."""
+    def remove_tmp_file():
+        file = "foobar.tmp"
+        if os.path.exists(file): os.remove(file)
+    request.addfinalizer(remove_tmp_file)
+```
+
+The `autouse=True` tells `pytest` to run this fixture automatically (without being called anywhere else).
+
+Use `scope="session"` to run the teardown code not at the end of this test module, but after all test modules were run, i.e. just before `pytest` exits.
+
+Another way to accomplish the global teardown is to put in `tests/conftest.py`:
+
+```
+def pytest_sessionfinish(session, exitstatus):
+    # global tear down code goes here
+```
+
+To run something before and after each test, add to the test module:
+
+```
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    # Code that will run before your test, for example:
+    some_setup()
+    # A test function will be run at this point
+    yield
+    # Code that will run after your test, for example:
+    some_teardown()
+```
+
+`autouse=True` makes this function run for each test defined in the same module automatically.
+
+For creation/teardown of temporary resources for the scope of a test, do the same as above, except get `yield` to return that resource.
+
+```
+@pytest.fixture(scope="module")
+def learner_obj():
+    # Code that will run before your test, for example:
+    learn = Learner(...)
+    # A test function will be run at this point
+    yield learn
+    # Code that will run after your test, for example:
+    del learn
+```
+
+You can now use that function as an argument to a test function:
+
+```
+def test_foo(learner_obj):
+    learner_obj.fit(...)
+```
+
+
+
 
 ### Testing the stdout/stderr output
 

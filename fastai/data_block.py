@@ -41,11 +41,11 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
-    def __init__(self, items:Iterator, path:PathOrStr='.',
-                 label_cls:Callable=None, xtra:Any=None, processor:PreProcessor=None, x:'ItemList'=None, **kwargs):
+    def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, xtra:Any=None, 
+                 processor:PreProcessor=None, x:'ItemList'=None, ignore_empty:bool=False):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
-        self.items,self.x = items,x
+        self.items,self.x,self.ignore_empty = items,x,ignore_empty
         if not isinstance(self.items,np.ndarray): self.items = array(self.items, dtype=object)
         self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
         self._label_list,self._split = LabelList,ItemLists
@@ -105,6 +105,7 @@ class ItemList():
     def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
         inputs = df.iloc[:,df_names_to_idx(cols, df)]
+        assert inputs.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
         res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, **kwargs)
         return res
 
@@ -150,7 +151,9 @@ class ItemList():
 
     def no_split(self):
         "Don't split the data and create an empty validation set."
-        return self._split(self.path, self, self[[]])
+        val = self[[]]
+        val.ignore_empty = True
+        return self._split(self.path, self, val)
 
     def split_by_list(self, train, valid):
         "Split the data between `train` and `valid`."
@@ -224,6 +227,7 @@ class ItemList():
     def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
         if is_listy(cols) and len(cols) > 1: 
             new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
             kwargs = {**new_kwargs, **kwargs}
@@ -290,7 +294,7 @@ class CategoryProcessor(PreProcessor):
 
 class CategoryListBase(ItemList):
     "Basic `ItemList` for classification."
-    def __init__(self, items:Iterator, classes:Collection=None,**kwargs):
+    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         self.classes=classes
         super().__init__(items, **kwargs)
 
@@ -303,7 +307,7 @@ class CategoryListBase(ItemList):
 class CategoryList(CategoryListBase):
     "Basic `ItemList` for single classification labels."
     _processor=CategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
+    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = CrossEntropyFlat()
 
@@ -319,7 +323,13 @@ class CategoryList(CategoryListBase):
 
 class MultiCategoryProcessor(CategoryProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
-    def process_one(self,item): return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
+    def __init__(self, ds:ItemList, one_hot:bool=False): 
+        super().__init__(ds)
+        self.one_hot = one_hot
+                
+    def process_one(self,item): 
+        if self.one_hot: return item
+        return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
 
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."
@@ -337,7 +347,7 @@ class MultiCategoryList(CategoryListBase):
         super().__init__(items, classes=classes, **kwargs)
         if one_hot: 
             assert classes is not None, "Please provide class names with `classes=...`"
-            self.processor = []
+            self.processor = [MultiCategoryProcessor(self, one_hot=True)]
         self.loss_func = BCEWithLogitsFlat()
         self.one_hot = one_hot
         self.copy_new += ['one_hot']
@@ -374,6 +384,11 @@ class ItemLists():
     "An `ItemList` for each of `train` and `valid` (optional `test`)."
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):
         self.path,self.train,self.valid,self.test = Path(path),train,valid,test
+        if not self.train.ignore_empty and len(self.train.items) == 0:
+            warn("Your training set is empty. Is this is by design, pass `ignore_empty=True` to remove this warning.")
+        if not self.valid.ignore_empty and len(self.valid.items) == 0:
+            warn("""Your validation set is empty. Is this is by design, use `no_split()` 
+                 or pass `ignore_empty=True` when labelling to remove this warning.""")
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
     
     def __dir__(self)->List[str]:
@@ -558,15 +573,15 @@ class LabelList(Dataset):
     def load_empty(cls, fn:PathOrStr):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
         state = pickle.load(open(fn, 'rb'))
-        x = state['x_cls']([], path=state['path'], processor=state['x_proc'])
-        y = state['y_cls']([], path=state['path'], processor=state['y_proc'])
+        x = state['x_cls']([], path=state['path'], processor=state['x_proc'], ignore_empty=True)
+        y = state['y_cls']([], path=state['path'], processor=state['y_proc'], ignore_empty=True)
         res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()
         if state.get('tfms_y', False):    res.tfms_y    = state['tfms_y']
         if state.get('tfmargs_y', False): res.tfmargs_y = state['tfmargs_y']
         if state.get('normalize', False): res.normalize = state['normalize']
         return res
 
-    def process(self, xp=None, yp=None, filter_missing_y:bool=False):
+    def process(self, xp:PreProcessor=None, yp:PreProcessor=None, filter_missing_y:bool=False):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
         if filter_missing_y and (getattr(self.x, 'filter_missing_y', None)):

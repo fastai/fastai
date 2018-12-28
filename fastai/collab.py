@@ -15,7 +15,7 @@ class CollabList(TabularList):
     "Base `ItemList` for collaborative filtering, subclasses `TabularList`."
     _item_cls,_label_cls = CollabLine,FloatList
 
-    def reconstruct(self, t:Tensor): return CollabLine(t, [], self.classes, self.col_names)
+    def reconstruct(self, t:Tensor): return CollabLine(tensor(t), tensor([]), self.classes, self.col_names)
 
 class EmbeddingNN(TabularModel):
     "Subclass `TabularModel` to create a NN suitable for collaborative filtering."

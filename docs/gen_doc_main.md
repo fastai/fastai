@@ -393,3 +393,14 @@ bundle exec jekyll serve
 ```
 
 it will tell you which localhost url to go to to see the site.
+
+
+## Cleanups
+
+Check whether we have any `doc/*html` orphans that no longer have `docs_src/*ipynb` source files:
+
+```
+perl -le 'm#docs/(.*?)\.html# && !-e "docs_src/$1.ipynb" && print for @ARGV' docs/*html
+```
+
+and remove them from git.

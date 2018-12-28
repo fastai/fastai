@@ -69,11 +69,9 @@ def test_should_load_backwards_lm():
     df = text_df(['neg','pos'])
     data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
                                    bs=1, backwards=True)
-    lml = data.train_dl.dl
-    lml.data = lml.batchify(np.concatenate([lml.dataset.x.items[i] for i in range(len(lml.dataset))]))
-    batch = lml.get_batch(0, 70)
-    as_text = [data.train_ds.vocab.itos[x] for x in batch[0][0]]
-    np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
+    batch = data.one_batch(DatasetType.Valid)
+    as_text = [data.vocab.itos[x] for x in batch[0][0]]
+    np.testing.assert_array_equal(as_text[:2], ["project", "cool"])
 
 def df_test_collate(data):
     x,y = next(iter(data.train_dl))

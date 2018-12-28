@@ -53,7 +53,7 @@ fastai_types = {
     TensorImageSize:'TensorImageSize', Tensors:'Tensors', Weights:'Weights', AffineFunc:'AffineFunc',
     HookFunc:'HookFunc', LogitTensorImage:'LogitTensorImage', LossFunction:'LossFunction', MetricFunc:'MetricFunc',
     MetricFuncList:'MetricFuncList', MetricsList:'MetricsList', OptLossFunc:'OptLossFunc', OptMetrics:'OptMetrics',
-    OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc',
+    OptSplitFunc:'OptSplitFunc', PixelFunc:'PixelFunc', LightingFunc:'LightingFunc', IntsOrStrs:'IntsOrStrs'
 }
 
 torch.set_num_threads(4) # OpenMP doesn't generally like too many threads
@@ -310,3 +310,11 @@ def try_int(o:Any)->Any:
     try: return int(o)
     except: return o
 
+def get_model(model:nn.Module):
+    "Return the model maybe wrapped inside `model`."
+    return model.module if isinstance(model, nn.DataParallel) else model
+
+#Monkey-patch nn.DataParallel.reset
+def _data_parallel_reset(self): 
+    if hasattr(self.module, 'reset'): self.module.reset()
+nn.DataParallel.reset = _data_parallel_reset

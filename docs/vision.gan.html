@@ -60,7 +60,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GANLearner"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L204" class="source_link">[source]</a></h2><blockquote><p><code>GANLearner</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>generator</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>critic</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>gen_loss_func</code>:<code>LossFunction</code>, <code>crit_loss_func</code>:<code>LossFunction</code>, <code>switcher</code>:<a href="/callback.html#Callback"><code>Callback</code></a>=<code>None</code>, <code>gen_first</code>:<code>bool</code>=<code>False</code>, <code>switch_eval</code>:<code>bool</code>=<code>True</code>, <code>show_img</code>:<code>bool</code>=<code>True</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>kwargs</code>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h2 id="GANLearner"><code>class</code> <code>GANLearner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L204" class="source_link">[source]</a></h2><blockquote><p><code>GANLearner</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`generator`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`critic`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`gen_loss_func`</b>:<code>LossFunction</code>, <b>`crit_loss_func`</b>:<code>LossFunction</code>, <b>`switcher`</b>:<a href="/callback.html#Callback"><code>Callback</code></a>=<b><i>`None`</i></b>, <b>`gen_first`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`switch_eval`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`show_img`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`clip`</b>:<code>float</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) :: <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>A <a href="/basic_train.html#Learner"><code>Learner</code></a> suitable for GANs.</p>
 
@@ -99,7 +99,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.from_learners"><code>from_learners</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L217" class="source_link">[source]</a></h4><blockquote><p><code>from_learners</code>(<code>learn_gen</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>learn_crit</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>switcher</code>:<a href="/callback.html#Callback"><code>Callback</code></a>=<code>None</code>, <code>weights_gen</code>:<code>Point</code>=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="GANLearner.from_learners"><code>from_learners</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L217" class="source_link">[source]</a></h4><blockquote><p><code>from_learners</code>(<b>`learn_gen`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`learn_crit`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`switcher`</b>:<a href="/callback.html#Callback"><code>Callback</code></a>=<b><i>`None`</i></b>, <b>`weights_gen`</b>:<code>Point</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create a GAN from <code>learn_gen</code> and <code>learn_crit</code>.</p>
 
@@ -131,7 +131,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANLearner.wgan"><code>wgan</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L224" class="source_link">[source]</a></h4><blockquote><p><code>wgan</code>(<code>data</code>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <code>generator</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>critic</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>switcher</code>:<a href="/callback.html#Callback"><code>Callback</code></a>=<code>None</code>, <code>clip</code>:<code>float</code>=<code>0.01</code>, <code>kwargs</code>)</p>
+<h4 id="GANLearner.wgan"><code>wgan</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L224" class="source_link">[source]</a></h4><blockquote><p><code>wgan</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`generator`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`critic`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`switcher`</b>:<a href="/callback.html#Callback"><code>Callback</code></a>=<b><i>`None`</i></b>, <b>`clip`</b>:<code>float</code>=<b><i>`0.01`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create a WGAN from <code>data</code>, <code>generator</code> and <code>critic</code>.</p>
 
@@ -173,7 +173,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FixedGANSwitcher"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L153" class="source_link">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>n_crit</code>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<code>1</code>, <code>n_gen</code>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<code>1</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="FixedGANSwitcher"><code>class</code> <code>FixedGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L153" class="source_link">[source]</a></h3><blockquote><p><code>FixedGANSwitcher</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`n_crit`</b>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<b><i>`1`</i></b>, <b>`n_gen`</b>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<b><i>`1`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Switcher to do <code>n_crit</code> iterations of the critic then <code>n_gen</code> iterations of the generator.</p>
 
@@ -194,7 +194,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FixedGANSwitcher.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>)</p>
+<h4 id="FixedGANSwitcher.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Initiate the iteration counts.</p>
 
@@ -215,7 +215,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="FixedGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>iteration</code>, <code>kwargs</code>)</p>
+<h4 id="FixedGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<b>`iteration`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Switch the model if necessary.</p>
 
@@ -236,7 +236,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveGANSwitcher"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L176" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>gen_thresh</code>:<code>float</code>=<code>None</code>, <code>critic_thresh</code>:<code>float</code>=<code>None</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="AdaptiveGANSwitcher"><code>class</code> <code>AdaptiveGANSwitcher</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L176" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveGANSwitcher</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`gen_thresh`</b>:<code>float</code>=<b><i>`None`</i></b>, <b>`critic_thresh`</b>:<code>float</code>=<b><i>`None`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Switcher that goes back to generator/critic when the loes goes below <code>gen_thresh</code>/<code>crit_thresh</code>.</p>
 
@@ -257,7 +257,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="AdaptiveGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L181" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>last_loss</code>, <code>kwargs</code>)</p>
+<h4 id="AdaptiveGANSwitcher.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L181" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<b>`last_loss`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Switch the model if necessary.</p>
 
@@ -291,7 +291,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANDiscriminativeLR"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L278" class="source_link">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>mult_lr</code>:<code>float</code>=<code>5.0</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="GANDiscriminativeLR"><code>class</code> <code>GANDiscriminativeLR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L278" class="source_link">[source]</a></h3><blockquote><p><code>GANDiscriminativeLR</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`mult_lr`</b>:<code>float</code>=<b><i>`5.0`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p><a href="/callback.html#Callback"><code>Callback</code></a> that handles multiplying the learning rate by <code>mult_lr</code> for the critic.</p>
 
@@ -312,7 +312,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANDiscriminativeLR.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>train</code>, <code>kwargs</code>)</p>
+<h4 id="GANDiscriminativeLR.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<b>`train`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Multiply the current lr if necessary.</p>
 
@@ -333,7 +333,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANDiscriminativeLR.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L286" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<code>kwargs</code>)</p>
+<h4 id="GANDiscriminativeLR.on_step_end"><code>on_step_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L286" class="source_link">[source]</a></h4><blockquote><p><code>on_step_end</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Put the LR back to its value if necessary.</p>
 
@@ -360,7 +360,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_critic"><code>basic_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>basic_critic</code>(<code>in_size</code>:<code>int</code>, <code>n_channels</code>:<code>int</code>, <code>n_features</code>:<code>int</code>=<code>64</code>, <code>n_extra_layers</code>:<code>int</code>=<code>0</code>, <code>kwargs</code>)</p>
+<h4 id="basic_critic"><code>basic_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>basic_critic</code>(<b>`in_size`</b>:<code>int</code>, <b>`n_channels`</b>:<code>int</code>, <b>`n_features`</b>:<code>int</code>=<b><i>`64`</i></b>, <b>`n_extra_layers`</b>:<code>int</code>=<b><i>`0`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>A basic critic for images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
 
@@ -388,7 +388,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="basic_generator"><code>basic_generator</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L28" class="source_link">[source]</a></h4><blockquote><p><code>basic_generator</code>(<code>in_size</code>:<code>int</code>, <code>n_channels</code>:<code>int</code>, <code>noise_sz</code>:<code>int</code>=<code>100</code>, <code>n_features</code>:<code>int</code>=<code>64</code>, <code>n_extra_layers</code>=<code>0</code>, <code>kwargs</code>)</p>
+<h4 id="basic_generator"><code>basic_generator</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L28" class="source_link">[source]</a></h4><blockquote><p><code>basic_generator</code>(<b>`in_size`</b>:<code>int</code>, <b>`n_channels`</b>:<code>int</code>, <b>`noise_sz`</b>:<code>int</code>=<b><i>`100`</i></b>, <b>`n_features`</b>:<code>int</code>=<b><i>`64`</i></b>, <b>`n_extra_layers`</b>=<b><i>`0`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>A basic generator from <code>noise_sz</code> to images <code>n_channels</code> x <code>in_size</code> x <code>in_size</code>.</p>
 
@@ -416,7 +416,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gan_critic"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L260" class="source_link">[source]</a></h4><blockquote><p><code>gan_critic</code>(<code>n_channels</code>:<code>int</code>=<code>3</code>, <code>nf</code>:<code>int</code>=<code>128</code>, <code>n_blocks</code>:<code>int</code>=<code>3</code>, <code>p</code>:<code>int</code>=<code>0.15</code>)</p>
+<h4 id="gan_critic"><code>gan_critic</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L260" class="source_link">[source]</a></h4><blockquote><p><code>gan_critic</code>(<b>`n_channels`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`nf`</b>:<code>int</code>=<b><i>`128`</i></b>, <b>`n_blocks`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`p`</b>:<code>int</code>=<b><i>`0.15`</i></b>)</p>
 </blockquote>
 <p>Critic to train a <code>GAN</code>.</p>
 
@@ -437,7 +437,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GANTrainer"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L72" class="source_link">[source]</a></h2><blockquote><p><code>GANTrainer</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>switch_eval</code>:<code>bool</code>=<code>False</code>, <code>clip</code>:<code>float</code>=<code>None</code>, <code>beta</code>:<code>float</code>=<code>0.98</code>, <code>gen_first</code>:<code>bool</code>=<code>False</code>, <code>show_img</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="GANTrainer"><code>class</code> <code>GANTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L72" class="source_link">[source]</a></h2><blockquote><p><code>GANTrainer</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`switch_eval`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`clip`</b>:<code>float</code>=<b><i>`None`</i></b>, <b>`beta`</b>:<code>float</code>=<b><i>`0.98`</i></b>, <b>`gen_first`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`show_img`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Handles GAN Training.</p>
 
@@ -466,7 +466,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L144" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<code>gen_mode</code>:<code>bool</code>=<code>None</code>)</p>
+<h4 id="GANTrainer.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L144" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<b>`gen_mode`</b>:<code>bool</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Switch the model, if <code>gen_mode</code> is provided, in the desired mode.</p>
 
@@ -494,7 +494,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>)</p>
+<h4 id="GANTrainer.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create the optimizers for the generator and critic if necessary, initialize smootheners.</p>
 
@@ -515,7 +515,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<code>epoch</code>, <code>kwargs</code>)</p>
+<h4 id="GANTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<b>`epoch`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Put the critic or the generator back to eval if necessary.</p>
 
@@ -536,7 +536,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<code>last_input</code>, <code>last_target</code>, <code>kwargs</code>)</p>
+<h4 id="GANTrainer.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<b>`last_input`</b>, <b>`last_target`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Clamp the weights with <code>self.clip</code> if it's not None, return the correct input.</p>
 
@@ -557,7 +557,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>, <code>last_output</code>, <code>kwargs</code>)</p>
+<h4 id="GANTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<b>`last_loss`</b>, <b>`last_output`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Record <code>last_loss</code> in the proper list.</p>
 
@@ -578,7 +578,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<code>pbar</code>, <code>epoch</code>, <code>kwargs</code>)</p>
+<h4 id="GANTrainer.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<b>`pbar`</b>, <b>`epoch`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Put the various losses in the recorder and show a sample image.</p>
 
@@ -599,7 +599,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANTrainer.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L106" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>)</p>
+<h4 id="GANTrainer.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L106" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Switch in generator mode for showing results.</p>
 
@@ -626,7 +626,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANModule"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L41" class="source_link">[source]</a></h3><blockquote><p><code>GANModule</code>(<code>generator</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<code>None</code>, <code>critic</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<code>None</code>, <code>gen_mode</code>:<code>bool</code>=<code>False</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="GANModule"><code>class</code> <code>GANModule</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L41" class="source_link">[source]</a></h3><blockquote><p><code>GANModule</code>(<b>`generator`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<b><i>`None`</i></b>, <b>`critic`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<b><i>`None`</i></b>, <b>`gen_mode`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Wrapper around a <code>generator</code> and a <code>critic</code> to create a GAN.</p>
 
@@ -654,7 +654,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANModule.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<code>gen_mode</code>:<code>bool</code>=<code>None</code>)</p>
+<h4 id="GANModule.switch"><code>switch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>switch</code>(<b>`gen_mode`</b>:<code>bool</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Put the model in generator mode if <code>gen_mode</code>, in critic mode otherwise.</p>
 
@@ -675,7 +675,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANLoss"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L55" class="source_link">[source]</a></h3><blockquote><p><code>GANLoss</code>(<code>loss_funcG</code>:<code>Callable</code>, <code>loss_funcC</code>:<code>Callable</code>, <code>gan_model</code>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
+<h3 id="GANLoss"><code>class</code> <code>GANLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L55" class="source_link">[source]</a></h3><blockquote><p><code>GANLoss</code>(<b>`loss_funcG`</b>:<code>Callable</code>, <b>`loss_funcC`</b>:<code>Callable</code>, <b>`gan_model`</b>:<a href="/vision.gan.html#GANModule"><code>GANModule</code></a>) :: <a href="/vision.gan.html#GANModule"><code>GANModule</code></a></p>
 </blockquote>
 <p>Wrapper around <code>loss_funcC</code> (for the critic) and <code>loss_funcG</code> (for the generator).</p>
 
@@ -696,7 +696,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AdaptiveLoss"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L290" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<code>crit</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="AdaptiveLoss"><code>class</code> <code>AdaptiveLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L290" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveLoss</code>(<b>`crit`</b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Expand the <code>target</code> to match the <code>output</code> size before applying <code>crit</code>.</p>
 
@@ -717,7 +717,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_thresh_expand"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L299" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.5</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
+<h4 id="accuracy_thresh_expand"><code>accuracy_thresh_expand</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L299" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh_expand</code>(<b>`y_pred`</b>:<code>Tensor</code>, <b>`y_true`</b>:<code>Tensor</code>, <b>`thresh`</b>:<code>float</code>=<b><i>`0.5`</i></b>, <b>`sigmoid`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Compute accuracy after expanding <code>y_true</code> to the size of <code>y_pred</code>.</p>
 
@@ -744,7 +744,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="NoisyItem"><code>class</code> <code>NoisyItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L229" class="source_link">[source]</a></h3><blockquote><p><code>NoisyItem</code>(<code>noise_sz</code>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+<h3 id="NoisyItem"><code>class</code> <code>NoisyItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L229" class="source_link">[source]</a></h3><blockquote><p><code>NoisyItem</code>(<b>`noise_sz`</b>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
 </blockquote>
 <p>An random <a href="/core.html#ItemBase"><code>ItemBase</code></a> of size <code>noise_sz</code>.</p>
 
@@ -765,7 +765,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="GANItemList"><code>class</code> <code>GANItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L235" class="source_link">[source]</a></h3><blockquote><p><code>GANItemList</code>(<code>items</code>, <code>noise_sz</code>:<code>int</code>=<code>100</code>, <code>kwargs</code>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="GANItemList"><code>class</code> <code>GANItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L235" class="source_link">[source]</a></h3><blockquote><p><code>GANItemList</code>(<b>`items`</b>, <b>`noise_sz`</b>:<code>int</code>=<b><i>`100`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
 </blockquote>
 <p><code>ItemList</code> suitable for GANs.</p>
 
@@ -793,7 +793,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L247" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<code>xs</code>, <code>ys</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="GANItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L247" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<b>`xs`</b>, <b>`ys`</b>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Shows <code>ys</code> (target images) on a figure of <code>figsize</code>.</p>
 
@@ -814,7 +814,7 @@ summary: "All the modules and callbacks necessary to train a GAN"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GANItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L251" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<code>xs</code>, <code>ys</code>, <code>zs</code>, <code>imgsize</code>:<code>int</code>=<code>4</code>, <code>figsize</code>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<code>None</code>, <code>kwargs</code>)</p>
+<h4 id="GANItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/gan.py#L251" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<b>`xs`</b>, <b>`ys`</b>, <b>`zs`</b>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Shows <code>zs</code> (generated images) on a figure of <code>figsize</code>.</p>
 

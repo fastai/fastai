@@ -87,7 +87,7 @@ class ClassificationInterpretation():
     @classmethod
     def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
         "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
-        preds = learn.TTA(with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
+        preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
         return cls(learn.data, *preds)
 
     def top_losses(self, k:int=None, largest=True):

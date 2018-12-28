@@ -35,7 +35,7 @@ summary: "Implement callbacks using hooks"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ActivationStats"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L82" class="source_link">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>modules</code>:<code>Sequence</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<code>None</code>, <code>do_remove</code>:<code>bool</code>=<code>True</code>) :: <a href="/callbacks.hooks.html#HookCallback"><code>HookCallback</code></a></p>
+<h2 id="ActivationStats"><code>class</code> <code>ActivationStats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L82" class="source_link">[source]</a></h2><blockquote><p><code>ActivationStats</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`modules`</b>:<code>Sequence</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<b><i>`None`</i></b>, <b>`do_remove`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="/callbacks.hooks.html#HookCallback"><code>HookCallback</code></a></p>
 </blockquote>
 <p>Callback that record the mean and std of activations.</p>
 
@@ -216,7 +216,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ActivationStats.hook"><code>hook</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>hook</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>i</code>:<code>Tensors</code>, <code>o</code>:<code>Tensors</code>) → <code>Tuple</code>[<code>Rank0Tensor</code>, <code>Rank0Tensor</code>]</p>
+<h4 id="ActivationStats.hook"><code>hook</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>hook</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`i`</b>:<code>Tensors</code>, <b>`o`</b>:<code>Tensors</code>) → <code>Tuple</code>[<code>Rank0Tensor</code>, <code>Rank0Tensor</code>]</p>
 </blockquote>
 <p>Take the mean and std of <code>o</code>.</p>
 
@@ -250,7 +250,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ActivationStats.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L85" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>)</p>
+<h4 id="ActivationStats.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L85" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Initialize stats.</p>
 
@@ -271,7 +271,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ActivationStats.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L93" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<code>train</code>, <code>kwargs</code>)</p>
+<h4 id="ActivationStats.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L93" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<b>`train`</b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Take the stored results and puts it in <code>self.stats</code></p>
 
@@ -292,7 +292,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ActivationStats.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L96" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>)</p>
+<h4 id="ActivationStats.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L96" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Polish the final result.</p>
 
@@ -313,7 +313,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Hook"><code>class</code> <code>Hook</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L10" class="source_link">[source]</a></h2><blockquote><p><code>Hook</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>hook_func</code>:<code>HookFunc</code>, <code>is_forward</code>:<code>bool</code>=<code>True</code>, <code>detach</code>:<code>bool</code>=<code>True</code>)</p>
+<h2 id="Hook"><code>class</code> <code>Hook</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L10" class="source_link">[source]</a></h2><blockquote><p><code>Hook</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`hook_func`</b>:<code>HookFunc</code>, <b>`is_forward`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`detach`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Create a hook on <code>m</code> with <code>hook_func</code>.</p>
 
@@ -369,7 +369,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Hooks"><code>class</code> <code>Hooks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L34" class="source_link">[source]</a></h2><blockquote><p><code>Hooks</code>(<code>ms</code>:<code>ModuleList</code>, <code>hook_func</code>:<code>HookFunc</code>, <code>is_forward</code>:<code>bool</code>=<code>True</code>, <code>detach</code>:<code>bool</code>=<code>True</code>)</p>
+<h2 id="Hooks"><code>class</code> <code>Hooks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L34" class="source_link">[source]</a></h2><blockquote><p><code>Hooks</code>(<b>`ms`</b>:<code>ModuleList</code>, <b>`hook_func`</b>:<code>HookFunc</code>, <b>`is_forward`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`detach`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Create several hooks on the modules in <code>ms</code> with <code>hook_func</code>.</p>
 
@@ -431,7 +431,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hook_output"><code>hook_output</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L54" class="source_link">[source]</a></h4><blockquote><p><code>hook_output</code>(<code>module</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>detach</code>:<code>bool</code>=<code>True</code>, <code>grad</code>:<code>bool</code>=<code>False</code>) → <a href="/callbacks.hooks.html#Hook"><code>Hook</code></a></p>
+<h4 id="hook_output"><code>hook_output</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L54" class="source_link">[source]</a></h4><blockquote><p><code>hook_output</code>(<b>`module`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`detach`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`grad`</b>:<code>bool</code>=<b><i>`False`</i></b>) → <a href="/callbacks.hooks.html#Hook"><code>Hook</code></a></p>
 </blockquote>
 <p>Return a <a href="/callbacks.hooks.html#Hook"><code>Hook</code></a> that stores activations of <code>module</code> in <code>self.stored</code></p>
 
@@ -459,7 +459,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="hook_outputs"><code>hook_outputs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L58" class="source_link">[source]</a></h4><blockquote><p><code>hook_outputs</code>(<code>modules</code>:<code>ModuleList</code>, <code>detach</code>:<code>bool</code>=<code>True</code>, <code>grad</code>:<code>bool</code>=<code>False</code>) → <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a></p>
+<h4 id="hook_outputs"><code>hook_outputs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L58" class="source_link">[source]</a></h4><blockquote><p><code>hook_outputs</code>(<b>`modules`</b>:<code>ModuleList</code>, <b>`detach`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`grad`</b>:<code>bool</code>=<b><i>`False`</i></b>) → <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a></p>
 </blockquote>
 <p>Return <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a> that store activations of all <code>modules</code> in <code>self.stored</code></p>
 
@@ -491,7 +491,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="model_sizes"><code>model_sizes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L109" class="source_link">[source]</a></h4><blockquote><p><code>model_sizes</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>size</code>:<code>tuple</code>=<code>(64, 64)</code>) → <code>Tuple</code>[<code>Sizes</code>, <code>Tensor</code>, <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a>]</p>
+<h4 id="model_sizes"><code>model_sizes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L109" class="source_link">[source]</a></h4><blockquote><p><code>model_sizes</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`size`</b>:<code>tuple</code>=<b><i>`(64, 64)`</i></b>) → <code>Tuple</code>[<code>Sizes</code>, <code>Tensor</code>, <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a>]</p>
 </blockquote>
 <p>Pass a dummy input through the model <code>m</code> to get the various sizes of activations.</p>
 
@@ -512,7 +512,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="model_summary"><code>model_summary</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>model_summary</code>(<code>m</code>:<code>ModuleList</code>, <code>n</code>:<code>int</code>=<code>70</code>)</p>
+<h4 id="model_summary"><code>model_summary</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L158" class="source_link">[source]</a></h4><blockquote><p><code>model_summary</code>(<b>`m`</b>:<code>ModuleList</code>, <b>`n`</b>:<code>int</code>=<b><i>`70`</i></b>)</p>
 </blockquote>
 <p>Print a summary of <code>m</code> using a output text width of <code>n</code> chars</p>
 
@@ -533,7 +533,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="num_features_model"><code>num_features_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L115" class="source_link">[source]</a></h4><blockquote><p><code>num_features_model</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>int</code></p>
+<h4 id="num_features_model"><code>num_features_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L115" class="source_link">[source]</a></h4><blockquote><p><code>num_features_model</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>) → <code>int</code></p>
 </blockquote>
 <p>Return the number of output features for <code>model</code>.</p>
 
@@ -561,7 +561,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dummy_batch"><code>dummy_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>dummy_batch</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>size</code>:<code>tuple</code>=<code>(64, 64)</code>) → <code>Tensor</code></p>
+<h4 id="dummy_batch"><code>dummy_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L100" class="source_link">[source]</a></h4><blockquote><p><code>dummy_batch</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`size`</b>:<code>tuple</code>=<b><i>`(64, 64)`</i></b>) → <code>Tensor</code></p>
 </blockquote>
 <p>Create a dummy batch to go through <code>m</code> with <code>size</code>.</p>
 
@@ -582,7 +582,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dummy_eval"><code>dummy_eval</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>dummy_eval</code>(<code>m</code>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <code>size</code>:<code>tuple</code>=<code>(64, 64)</code>)</p>
+<h4 id="dummy_eval"><code>dummy_eval</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>dummy_eval</code>(<b>`m`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`size`</b>:<code>tuple</code>=<b><i>`(64, 64)`</i></b>)</p>
 </blockquote>
 <p>Pass a <a href="/callbacks.hooks.html#dummy_batch"><code>dummy_batch</code></a> in evaluation mode in <code>m</code> with <code>size</code>.</p>
 
@@ -603,7 +603,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="HookCallback"><code>class</code> <code>HookCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L62" class="source_link">[source]</a></h2><blockquote><p><code>HookCallback</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>modules</code>:<code>Sequence</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<code>None</code>, <code>do_remove</code>:<code>bool</code>=<code>True</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="HookCallback"><code>class</code> <code>HookCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L62" class="source_link">[source]</a></h2><blockquote><p><code>HookCallback</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`modules`</b>:<code>Sequence</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<b><i>`None`</i></b>, <b>`do_remove`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Callback that can be used to register hooks on <code>modules</code>. Implement the corresponding function in <code>self.hook</code>.</p>
 
@@ -647,7 +647,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HookCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<code>kwargs</code>)</p>
+<h4 id="HookCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Register the <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a> on <code>self.modules</code>.</p>
 
@@ -668,7 +668,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="HookCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<code>kwargs</code>)</p>
+<h4 id="HookCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Remove the <a href="/callbacks.hooks.html#Hooks"><code>Hooks</code></a>.</p>
 
