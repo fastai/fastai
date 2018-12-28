@@ -27,10 +27,8 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
 #
-# XXX: when spacy==2.0.18 is on anaconda channel, put it in place (it's already on pypi) and remove its deps: cymem, regex, thinc (and update meta.yaml with the same)
 requirements = to_list("""
     bottleneck           # performance-improvement for numpy
-    cymem==2.0.2         # remove once spacy==2.0.18 is on anaconda channel
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
     matplotlib
@@ -41,11 +39,9 @@ requirements = to_list("""
     packaging
     Pillow
     pyyaml
-    regex==2018.01.10    # remove once spacy==2.0.18 is on anaconda channel
     requests
     scipy
-    spacy==2.0.16
-    thinc==6.12.0        # remove once spacy==2.0.18 is on anaconda channel
+    spacy>=2.0.18
     torch
     torchvision
     typing

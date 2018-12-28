@@ -67,9 +67,7 @@ class DeviceDataLoader():
 
     def __iter__(self):
         "Process and returns items from `DataLoader`."
-        for b in self.dl:
-            #y = b[1][0] if is_listy(b[1]) else b[1] # XXX: Why is this line here?
-            yield self.proc_batch(b)
+        for b in self.dl: yield self.proc_batch(b)
 
     @classmethod
     def create(cls, dataset:Dataset, bs:int=64, shuffle:bool=False, device:torch.device=defaults.device,
@@ -189,7 +187,7 @@ class DataBunch():
         if not hasattr(self, 'valid_dl') or self.valid_dl is None:            return True
         if hasattr(self.valid_ds, 'items') and len(self.valid_ds.items) == 0: return True
         return (len(self.valid_ds) == 0)
-    
+
     @property
     def batch_size(self):   return self.train_dl.batch_size
     @batch_size.setter
@@ -216,3 +214,4 @@ class DataBunch():
             except: pass
             warn(message)
             print(final_message)
+
