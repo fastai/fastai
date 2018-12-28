@@ -45,4 +45,5 @@ def test_logger():
     pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=True)
     stdout_df = convert_into_dataframe(buffer)
     pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=True)
-    
+    # cleanup
+    os.remove("history.csv")
