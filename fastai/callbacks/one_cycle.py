@@ -28,7 +28,7 @@ class OneCycleScheduler(Callback):
         n = len(self.learn.data.train_dl) * n_epochs
         a1 = int(n * self.pct_start)
         a2 = n-a1
-        self.phases = ((a1, annealing_linear), (a2, annealing_cos))
+        self.phases = ((a1, annealing_cos), (a2, annealing_cos))
         low_lr = self.lr_max/self.div_factor
         self.lr_scheds = self.steps((low_lr, self.lr_max), (self.lr_max, low_lr/1e4))
         self.mom_scheds = self.steps(self.moms, (self.moms[1], self.moms[0]))

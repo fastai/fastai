@@ -28,7 +28,7 @@ def get_master(layer_groups:ModuleList, flat_master:bool=False) -> Tuple[List[Li
         return model_params, master_params
 
 def model_g2master_g(model_params:Sequence[Tensor], master_params:Sequence[Tensor], flat_master:bool=False)->None:
-    "Copy the model gradients to the master parameters for the optimizer step."
+    "Copy the `model_params` gradients to `master_params` for the optimizer step."
     if flat_master:
         for model_group,master_group in zip(model_params,master_params):
             if len(master_group) != 0:
@@ -42,7 +42,7 @@ def model_g2master_g(model_params:Sequence[Tensor], master_params:Sequence[Tenso
                 else: master.grad = None
 
 def master2model(model_params:Sequence[Tensor], master_params:Sequence[Tensor], flat_master:bool=False)->None:
-    "Copy master parameters to model parameters."
+    "Copy `master_params` to `model_params`."
     if flat_master:
         for model_group,master_group in zip(model_params,master_params):
             if len(model_group) != 0:
@@ -77,18 +77,12 @@ class MixedPrecision(Callback):
         self.learn.opt.opt = self.learn.opt_func(opt_params)
         opt.mom,opt.wd,opt.beta = mom,wd,beta
 
-    def on_train_end(self, **kwargs:Any)->None:
-        "Remove half precision transforms added at `on_train_begin`."
-        self.learn.data.train_dl.remove_tfm(to_half)
-        if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.remove_tfm(to_half)
-
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
         return last_output.float()
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
-        "Scale gradients up by `loss_scale` to prevent underflow."
+        "Scale gradients up by `self.loss_scale` to prevent underflow."
         #To avoid gradient underflow, we scale the gradients
         return last_loss * self.loss_scale
 

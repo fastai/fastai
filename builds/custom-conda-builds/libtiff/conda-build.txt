@@ -1,0 +1,10 @@
+
+# XXX: currently hardwired version
+
+MAKEFLAGS="-j" conda-build recipe/meta.yaml
+
+This builds a binary package that is no python specific - so one per platform is enough. And we currently do this just for linux.
+
+For now this goes into the test channel:
+
+anaconda upload anaconda3/envs/xxx/conda-bld/linux-64/libtiff-xxx.tar.bz2 -u fastai --label test

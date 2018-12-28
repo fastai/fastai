@@ -8,7 +8,10 @@ At the moment there are only a few automated tests, so we need to start expandin
 
 We use [pytest](https://docs.pytest.org/en/latest/). Here is a complete [pytest API reference](https://docs.pytest.org/en/latest/reference.html).
 
-The tests have been configured to automatically run against the git checked out `fastai` repository and not pre-installed `fastai`.
+The tests have been configured to automatically run against the `fastai` directory inside the `fastai` git repository and not pre-installed `fastai`. i.e. `tests/test_*` work with `../fastai`.
+
+
+## Running Tests
 
 ### Choosing which tests to run
 
@@ -69,14 +72,7 @@ More ways: https://docs.pytest.org/en/latest/usage.html
 
 For nuances of configuring pytest's repo-wide behavior see [collection](https://docs.pytest.org/en/latest/example/pythoncollection.html).
 
-### Writing tests
 
-When writing tests:
-
-- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
-- Use module scope fixtures to run init code that can be shared amongst tests
-- Avoid pretrained models, since they have to be downloaded from the internet to run the test
-- Create some minimal data for your test, or use data already in repo's data/ directory
 
 ### Clearing state
 
@@ -86,6 +82,22 @@ CI builds and when isolation is important (against speed), cache should be clear
    pytest --cache-clear tests
    ```
 
+
+### Running tests in parallel
+
+This can speed up the total execution time of the test suite.
+   ```
+   pip install pytest-xdist
+   ```
+   ```
+   $ time pytest
+   real    0m51.069s
+   $ time pytest -n 6
+   real    0m26.940s
+   ```
+That's twice the speed of the normal sequential execution!
+
+We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
 
 
 ### Test order and repetition
@@ -196,6 +208,7 @@ which tells `torch` to use the 2nd GPU. Instead, if you'd like to run a test loc
 
 
 
+
 ### Report each sub-test name and its progress
 
 For a single or a group of tests via `pytest` (after `pip install pytest-pspec`):
@@ -218,7 +231,7 @@ This also means that meaningful names for each sub-test are important.
 
 During test execution any output sent to `stdout` and `stderr` is captured. If a test or a setup method fails, its according captured output will usually be shown along with the failure traceback.
 
-To disable capturing and get the output normally use `-s` or `--capture=no`:
+To disable output capturing and to get the `stdout` and `stderr` normally, use `-s` or `--capture=no`:
 
    ```
    pytest -s tests/test_core.py
@@ -259,27 +272,16 @@ Creating a URL for a whole test session log:
 
 
 
-# Writing Tests
 
-XXX: Needs to be written. Contributions are welcome.
+## Writing Tests
 
-Until then look at the existing tests.
+When writing tests:
 
+- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
+- Use module scope fixtures to run init code that can be shared amongst tests
+- Avoid pretrained models, since they have to be downloaded from the internet to run the test
+- Create some minimal data for your test, or use data already in repo's data/ directory
 
-## Coverage
-
-When you run:
-
-   ```
-   make coverage
-   ```
-
-it will run the test suite directly via `pytest` and on completion open a browser to show you the coverage report, which will give you an indication of which parts of the code base haven't been exercised by tests yet. So if you are not sure which new tests to write this output can be of great insight.
-
-Remember, that coverage only indicated which parts of the code tests have exercised. It can't tell anything about the quality of the tests. As such, you may have a 100% coverage and a very poorly performing code.
-
-
-## Hints
 
 
 ### Skipping tests
@@ -358,6 +360,93 @@ Implementation:
 More details, example and ways are [here](https://docs.pytest.org/en/latest/skipping.html).
 
 
+
+### After test cleanup
+
+To ensure some cleanup code is always run at the end of the test module, add to the desired test module the following code:
+
+```
+@pytest.fixture(scope="module", autouse=True)
+def cleanup(request):
+    """Cleanup the tmp file once we are finished."""
+    def remove_tmp_file():
+        file = "foobar.tmp"
+        if os.path.exists(file): os.remove(file)
+    request.addfinalizer(remove_tmp_file)
+```
+
+The `autouse=True` tells `pytest` to run this fixture automatically (without being called anywhere else).
+
+Use `scope="session"` to run the teardown code not at the end of this test module, but after all test modules were run, i.e. just before `pytest` exits.
+
+Another way to accomplish the global teardown is to put in `tests/conftest.py`:
+
+```
+def pytest_sessionfinish(session, exitstatus):
+    # global tear down code goes here
+```
+
+To run something before and after each test, add to the test module:
+
+```
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    # Code that will run before your test, for example:
+    some_setup()
+    # A test function will be run at this point
+    yield
+    # Code that will run after your test, for example:
+    some_teardown()
+```
+
+`autouse=True` makes this function run for each test defined in the same module automatically.
+
+For creation/teardown of temporary resources for the scope of a test, do the same as above, except get `yield` to return that resource.
+
+```
+@pytest.fixture(scope="module")
+def learner_obj():
+    # Code that will run before your test, for example:
+    learn = Learner(...)
+    # A test function will be run at this point
+    yield learn
+    # Code that will run after your test, for example:
+    del learn
+```
+
+You can now use that function as an argument to a test function:
+
+```
+def test_foo(learner_obj):
+    learner_obj.fit(...)
+```
+
+
+
+
+### Testing the stdout/stderr output
+
+In order to test functions that write to `stdout` and/or `stderr`, the test can access those streams using the `pytest`'s [capsys system](https://docs.pytest.org/en/latest/capture.html). Here is how this is accomplished:
+
+```
+import sys
+def print_to_stdout(s): print(s)
+def print_to_stderr(s): sys.stderr.write(s)
+def test_result_and_stdout(capsys):
+    msg = "Hello"
+    print_to_stdout(msg)
+    print_to_stderr(msg)
+    out, err = capsys.readouterr() # consume the captured output streams
+    # optional: if you want to replay the consumed streams:
+    sys.stdout.write(out)
+    sys.stderr.write(err)
+    # test:
+    assert msg in out
+    assert msg in err
+```
+
+
+
 ### Getting reproducible results
 
 In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
@@ -375,6 +464,44 @@ In some situations you may want to remove randomness for your tests. To get iden
    ```
    random.seed(42)
    ```
+
+
+
+
+### Debugging tests
+
+
+To start a debugger at the point of the warning, do this:
+
+```
+pytest tests/test_vision_data_block.py -W error::UserWarning --pdb
+```
+
+### Tests requiring jupyter notebook environment
+
+If [pytest-ipynb](https://github.com/zonca/pytest-ipynb) pytest extension is installed it's possible to add `.ipynb` files to the normal test suite.
+
+Basically, you just write a normal notebook with asserts, and `pytest` just runs it, along with normal `.py` tests, reporting any assert failures normally.
+
+We currently don't have such tests, and if we add any, we will first need to make a conda package for it on the fastai channel, and then add this dependency to fastai.
+(note: I haven't researched deeply, perhaps there are other alternatives)
+
+Here is [one example](https://github.com/stas00/ipyexperiments/blob/master/tests/test_cpu.ipynb) of such test.
+
+
+
+## Coverage
+
+When you run:
+
+   ```
+   make coverage
+   ```
+
+it will run the test suite directly via `pytest` and on completion open a browser to show you the coverage report, which will give you an indication of which parts of the code base haven't been exercised by tests yet. So if you are not sure which new tests to write this output can be of great insight.
+
+Remember, that coverage only indicated which parts of the code tests have exercised. It can't tell anything about the quality of the tests. As such, you may have a 100% coverage and a very poorly performing code.
+
 
 ## Notebook integration tests
 
@@ -402,7 +529,7 @@ To run a subset:
 
 There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai/blob/master/docs_src/nbval/README.md).
 
-### fastai/examples/*ipynb
+### examples/*ipynb
 
 You can run each of these interactively in jupyter, or as CLI:
 
@@ -411,4 +538,3 @@ jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook exam
 ```
 
 This set is examples and there is no pass/fail other than visual observation.
-

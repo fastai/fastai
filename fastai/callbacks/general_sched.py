@@ -6,7 +6,7 @@ __all__ = ['GeneralScheduler', 'TrainingPhase']
 
 @dataclass
 class TrainingPhase():
-    "Schedule lr,mom according to `lr_anneal` and `mom_anneal` across a `length` schedule."
+    "Schedule `lrs` and `moms` according to `lr_anneal` and `mom_anneal` across a `length` schedule."
     length:int
     lrs:Floats
     moms:Floats
@@ -24,7 +24,7 @@ class GeneralScheduler(Callback):
     phases:Collection[TrainingPhase]
 
     def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
-        "Initialize our lr and mom schedules for training."
+        "Initialize the lr and mom schedules for training."
         self.lr_scheds = [p.lr_step for p in self.phases]
         self.mom_scheds = [p.mom_step for p in self.phases]
         self.opt = self.learn.opt
@@ -32,7 +32,7 @@ class GeneralScheduler(Callback):
         self.idx_s = 0
 
     def on_batch_end(self, train, **kwargs:Any)->None:
-        "Take a step in lr,mom sched, start next sched when current is complete."
+        "Take a step in lr,mom sched, start next stepper when the current one is complete."
         if train:
             if self.idx_s >= len(self.lr_scheds): return True
             self.opt.lr = self.lr_scheds[self.idx_s].step()

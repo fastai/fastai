@@ -68,8 +68,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai.text</span> <span class="k">import</span> <span class="o">*</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.text</span> <span class="k">import</span> <span class="o">*</span> 
 </pre></div>
 
     </div>
@@ -319,7 +318,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103_1</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
@@ -332,13 +331,25 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:17
-epoch  train_loss  valid_loss  accuracy
-1      4.728971    4.228551    0.247234  (00:17)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>4.339245</th>
+    <th>4.077540</th>
+    <th>0.283568</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -370,13 +381,25 @@ epoch  train_loss  valid_loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:22
-epoch  train_loss  valid_loss  accuracy
-1      4.450525    4.127853    0.253167  (00:22)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:24 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>4.032784</th>
+    <th>3.970864</th>
+    <th>0.290228</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -407,19 +430,10 @@ epoch  train_loss  valid_loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:00
-
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;This is a review about the first way to climb to overcome the best robert&#39;</pre>
+<pre>&#34;This is a review about exceptionally worked meryl foot o&#39;dell endlessly unlikely jeepers rampage thaw&#34;</pre>
 </div>
 
 </div>
@@ -469,7 +483,19 @@ epoch  train_loss  valid_loss  accuracy
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">data_clas</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">load_encoder</span><span class="p">(</span><span class="s1">&#39;ft_enc&#39;</span><span class="p">)</span>
-<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_clas</span><span class="o">.</span><span class="n">show_batch</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -481,13 +507,78 @@ epoch  train_loss  valid_loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:26
-epoch  train_loss  valid_loss  accuracy
-1      0.686503    0.632651    0.701493  (00:26)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+<table>  <col width='90%'>  <col width='10%'>  <tr>
+    <th>text</th>
+    <th>target</th>
+  </tr>
+  <tr>
+    <th>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with</th>
+    <th>positive</th>
+  </tr>
+  <tr>
+    <th>xxbos xxmaj now that xxmaj xxunk ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj xxunk to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject ,</th>
+    <th>negative</th>
+  </tr>
+  <tr>
+    <th>xxbos xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the xxunk - up xxunk of xxmaj new xxmaj xxunk . \n\n xxmaj the xxunk is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj xxunk , "</th>
+    <th>positive</th>
+  </tr>
+  <tr>
+    <th>xxbos xxmaj many neglect that this is n't just a classic due to the fact that it 's the first xxup 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj with graphics</th>
+    <th>positive</th>
+  </tr>
+  <tr>
+    <th>xxbos i really wanted to love this show . i truly , honestly did . \n\n xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj bachelor " . xxmaj with the help of his obligatory " xxunk " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance of love</th>
+    <th>negative</th>
+  </tr>
+</table>
+
 </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:27 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.623477</th>
+    <th>0.620588</th>
+    <th>0.661692</th>
+  </tr>
+</table>
+
+</div>
+
 </div>
 
 </div>
@@ -519,13 +610,25 @@ epoch  train_loss  valid_loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:33
-epoch  train_loss  valid_loss  accuracy
-1      0.612237    0.542365    0.706468  (00:33)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:30 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.528273</th>
+    <th>0.565025</th>
+    <th>0.736318</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -550,13 +653,25 @@ epoch  train_loss  valid_loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:55
-epoch  train_loss  valid_loss  accuracy
-1      0.510760    0.479997    0.791045  (00:55)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 01:06 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.487489</th>
+    <th>0.632793</th>
+    <th>0.726368</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -590,7 +705,7 @@ epoch  train_loss  valid_loss  accuracy
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(&#39;positive&#39;, tensor(0), tensor([0.8558, 0.1442]))</pre>
+<pre>(Category positive, tensor(1), tensor([0.1100, 0.8900]))</pre>
 </div>
 
 </div>
