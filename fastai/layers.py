@@ -3,9 +3,9 @@ from .torch_core import *
 
 __all__ = ['AdaptiveConcatPool2d', 'BCEWithLogitsFlat', 'BCEFlat', 'MSELossFlat', 'CrossEntropyFlat', 'Debugger',
            'Flatten', 'Lambda', 'PoolFlatten', 'ResizeBatch', 'bn_drop_lin', 'conv2d', 'conv2d_trans', 'conv_layer',
-           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'trunc_normal_',
-           'PixelShuffle_ICNR', 'icnr', 'NoopLoss', 'WassersteinLoss', 'SelfAttention',
-           'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range', 'SigmoidRange', 'PartialLayer', 'FlattenedLoss']
+           'embedding', 'simple_cnn', 'NormType', 'relu', 'batchnorm_2d', 'trunc_normal_', 'PixelShuffle_ICNR', 'icnr',
+           'NoopLoss', 'WassersteinLoss', 'SelfAttention', 'SequentialEx', 'MergeLayer', 'res_block', 'sigmoid_range',
+           'SigmoidRange', 'PartialLayer', 'FlattenedLoss', 'BatchNorm1dFlat']
 
 class Lambda(nn.Module):
     "An easy way to create a pytorch layer for a simple `func`."
@@ -269,3 +269,12 @@ def embedding(ni:int,nf:int) -> nn.Module:
     # See https://arxiv.org/abs/1711.09160
     with torch.no_grad(): trunc_normal_(emb.weight, std=0.01)
     return emb
+
+class BatchNorm1dFlat(nn.BatchNorm1d):
+    "`nn.BatchNorm1d`, but first flattens leading dimensions"
+    def forward(self, x):
+        if x.dim()==2: return super().forward(x)
+        *f,l = x.shape
+        x = x.contiguous().view(-1,l)
+        return super().forward(x).view(*f,l)
+

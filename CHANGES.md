@@ -22,6 +22,7 @@ of that change.
 - `Learner.to_fp32()` to go back to FP32 precision mode
 - `cont_cat_split` function to automatically get categorical/continuous variables (thanks to RealLankinen)
 - Lots of new metrics thanks to Sven Becker: `mse/mean_squared_error`, `mae/mean_absolute_error`, `rmse/root_mean_squared_error`, `msle/ mean_squared_logarithmic_error`, `explained_variance`, `r2_score`, `top_k_accuracy`, `KappaScore`, `MatthewsCorreff`, `Precision`, `Recall`, `FBeta`
+- `BatchNorm1dFlat` for using batchnorm in sequence models (e.g. RNNs, and their inputs and outputs)
 
 ### Changed:
 
