@@ -361,6 +361,82 @@ More details, example and ways are [here](https://docs.pytest.org/en/latest/skip
 
 
 
+#### Custom markers
+
+
+Normally, you should be able to declare a test as:
+
+```
+import pytest
+@pytest.mark.mymarker
+def test_mytest(): ...
+```
+
+You can then restrict a test run to only run tests marked with `mymarker`:
+
+```
+pytest -v -m mymarker
+```
+
+Running all tests except the `mymarker` ones:
+
+```
+$ pytest -v -m "not mymarker"
+```
+
+Custom markers should be registered in `setup.cfg`, for example:
+
+```
+[tool:pytest]
+# force all used markers to be registered here with an explanation
+addopts = --strict
+markers =
+    marker1: description of its purpose
+    marker2: description of its purpose
+```
+
+#### fastai custom markers
+
+These are defined in `tests/conftest.py`.
+
+The following markers override normal marker functionality, so they won't work with:
+
+```
+pytest -m marker
+```
+
+and have their own command line option to be used instead, which are defined in `tests/conftest.py`, and can also be seen in the output of `pytest -h` in the "custom options" section:
+
+```
+custom options:
+  --runslow             run slow tests
+  --skipint             skip integration tests
+```
+
+* `slow` - skip tests that can be quite slow (especially on CPU):
+
+   ```
+   @pytest.mark.slow
+   def test_some_slow_test(): ...
+   ```
+
+   To force this kind of tests to run, use:
+   ```
+   pytest --runslow
+   ```
+
+* `integration` - used for tests that are relatively slow but OK to be run on CPU and useful when one needs to finish the tests suite asap (also remember to use parallel testing if that's the case [xdist](#running-tests-in-parallel)). These are usually declared on the module level with:
+
+   ```
+   pytestmark = pytest.mark.integration
+   ```
+
+   And to skip those use:
+   ```
+   pytest --skipint
+   ```
+
+
 ### After test cleanup
 
 To ensure some cleanup code is always run at the end of the test module, add to the desired test module the following code:
