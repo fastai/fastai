@@ -108,7 +108,8 @@ def download_google_images(path:PathOrStr, search_term:str, size:str='>400*300',
     else:
         img_tuples = _fetch_img_tuples_webdriver(search_url, format=format, n_images=n_images)
     
-    _download_images(label_path, img_tuples, max_workers=max_workers, timeout=timeout)
+    downloaded_images = _download_images(label_path, img_tuples, max_workers=max_workers, timeout=timeout)
+    if len(downloaded_images) == 0: raise ValueError(f"Couldn't download any images.")
     verify_images(label_path, max_workers=max_workers)
     return get_image_files(label_path)
     
