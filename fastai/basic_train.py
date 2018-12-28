@@ -94,14 +94,20 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
         raise e
     finally: cb_handler.on_train_end(exception)
 
-loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=-1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': partial(F.softmax, dim=-1),
+loss_func_name2activ = {'cross_entropy_loss': F.softmax, 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': F.softmax,
     'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid,
 }
+
+def _loss_func_name2activ(name:str, axis:int=-1):
+    res = loss_func_name2activ[name]
+    if res == F.softmax: res = partial(F.softmax, dim=axis)
+    return res
 
 def _loss_func2activ(loss_func):
     if getattr(loss_func,'keywords',None):
         if not loss_func.keywords.get('log_input', True): return
+    axis = getattr(loss_func, 'axis', -1)
     # flattened loss
     loss_func = getattr(loss_func, 'func', loss_func)
     # could have a partial inside flattened loss! Duplicate on purpose.
@@ -112,9 +118,9 @@ def _loss_func2activ(loss_func):
         cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name in loss_func_name2activ:
         if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
-        return loss_func_name2activ[cls_name]
+        return _loss_func_name2activ(cls_name, axis)
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
-        return loss_func_name2activ[loss_func.__name__]
+        return _loss_func_name2activ(loss_func.__name__, axis)
     return noop
 
 @dataclass
