@@ -1345,6 +1345,18 @@ rm req1.txt req2.txt req.txt
 The same can be repeated for getting test requirements, just repeat the same process inside `tests` directory.
 
 
+## Copying packages for other channels
+
+Currently we want to use the version of spacy and some of its deps from the conda-forge channel, instead of the main anaconda channel. To do this, we copy the relevent packages in to our channel, as so:
+
+```
+anaconda copy conda-forge/spacy/2.0.18 --to-owner fastai --from-label gcc7
+anaconda copy conda-forge/regex/2018.01.10 --to-owner fastai --from-label gcc7
+anaconda copy conda-forge/thinc/6.12.1 --to-owner fastai --from-label gcc7
+```
+
+This copies all architectures, not just your current architecture.
+
 
 ### Conditional Dependencies
 
