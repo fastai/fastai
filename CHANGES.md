@@ -40,6 +40,7 @@ of that change.
 
 - The data block API has additional checks with assertions (NaNs in columns used for inputs/labels in dataframes, empty items)
 - kwargs are checked in the data block API
+- `model_summary` now returns summary instead of printing it
 
 ### Fixed:
 
