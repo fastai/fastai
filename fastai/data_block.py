@@ -327,6 +327,11 @@ class MultiCategoryProcessor(CategoryProcessor):
         super().__init__(ds)
         self.one_hot = one_hot
                 
+    def __getstate__(self): return {'classes':self.classes, 'one_hot':self.one_hot}
+    def __setstate__(self, state:dict): 
+        self.create_classes(state['classes'])
+        self.one_hot = state['one_hot']
+                
     def process_one(self,item): 
         if self.one_hot: return item
         return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
