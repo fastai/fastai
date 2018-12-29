@@ -29,6 +29,8 @@ def bb2hw(a:Collection[int])->np.ndarray:
 
 def tis2hw(size:Union[int,TensorImageSize]) -> Tuple[int,int]:
     "Convert `int` or `TensorImageSize` to (height,width) of an image."
+    if type(size) is str:
+        raise RuntimeError("Expected size to be an int or a tuple, got a string.")
     return listify(size, 2) if isinstance(size, int) else listify(size[-2:],2)
 
 def _draw_outline(o:Patch, lw:int):
