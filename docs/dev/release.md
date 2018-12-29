@@ -658,9 +658,15 @@ See `fastai/builds/custom-conda-builds` for recipes we created already.
 
 Every package we release on conda needs to be either `noarch` or we need to build a whole slew of packages for each platform we choose to support, `linux-64`, `win-64`, etc.
 
-So far `fastai` is `noarch` (pure python), so we only need to make one `python3.6` and `python3.7` releases.
+At this moment `fastai` is released as a generic `noarch` (pure python), and we don't even make separate `py36` and `py37` releases. That means we can't use [preprocess-selectors](https://conda.io/docs/user-guide/tasks/build-packages/define-metadata.html#preprocess-selectors), since they will all evaluate to `True`, no matter the platform or python version, according to [this](https://conda.io/docs/user-guide/tasks/build-packages/define-metadata.html#architecture-independent-packages). As such we can't instruct conda to install a certain dependency only for a specific python version. For example, this doesn't do anything:
 
-But as shown in the previous section we also have to deal with several dependencies which are not on conda. If they are `noarch`, it should be easy to release conda packages for dependencies every so often. If they are platform-specific we will have to remove them from conda dependencies and ask users to install those via pip. An easy way to check whether a package for a specific platform is available is to:
+```
+  run:
+    - dataclasses # [py36]
+```
+That is, `dataclasses` will be installed on any python platform regardless of its version. For the above to work, i.e. install `dataclasses` dependency only on `py36` platforms, requires that we make separate `py36` and `py37` `fastai` releases.
+
+As shown in the previous section we also have to deal with several dependencies which are not on conda. If they are `noarch`, it should be easy to release conda packages for dependencies every so often. If they are platform-specific we will have to remove them from conda dependencies and ask users to install those via pip. An easy way to check whether a package for a specific platform is available is to:
 
 ```
 conda search -i --platform win-64
