@@ -6,7 +6,7 @@ from .callback import *
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error', 
             'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff', 
-            'Precision', 'Recall']
+            'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE']
 
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
@@ -54,8 +54,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
     else: return intersect / (union-intersect+1.0)
 
-#TODO: implementation that computes the real value and not the average over batches
-def exp_rmspe(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
     assert pred.numel() == targ.numel(), "Expected same numbers of elements in pred & targ"
     if len(pred.shape)==2: pred=pred.squeeze(1)
@@ -71,7 +70,6 @@ def mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared error between `pred` and `targ`."
     return F.mse_loss(pred, targ)
 
-#TODO: implementation that computes the real value and not the average over batches
 def root_mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Root mean squared error between `pred` and `targ`."
     return torch.sqrt(F.mse_loss(pred, targ))
@@ -80,18 +78,43 @@ def mean_squared_logarithmic_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared logarithmic error between `pred` and `targ`."
     return F.mse_loss(torch.log(1 + pred), torch.log(1 + targ))
 
-#TODO: implementation that computes the real value and not the average over batches
 def explained_variance(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Explained variance between `pred` and `targ`."
     var_pct = torch.var(targ - pred) / torch.var(targ)
     return 1 - var_pct
-  
-#TODO: implementation that computes the real value and not the average over batches
+
 def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "R2 score (coefficient of determination) between `pred` and `targ`."
     u = torch.sum((targ - pred) ** 2)
     d = torch.sum((targ - targ.mean()) ** 2)
     return 1 - u / d
+
+
+class RegMetric(Callback):
+    "Stores predictions and targets to perform calculations on epoch end."
+    def on_epoch_begin(self):
+        self.targs, self.preds = Tensor([]), Tensor([])
+
+    def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
+        self.preds = torch.cat((self.preds, last_output.to("cpu")))
+        self.targs = torch.cat((self.targs, last_target.to("cpu")))
+
+class R2Score(RegMetric):
+    def on_epoch_end(self):
+        self.metric = r2_score(self.preds, self.targs)
+
+class ExplainedVariance(RegMetric):
+    def on_epoch_end(self):
+        self.metric = explained_variance(self.preds, self.targs)
+
+class RMSE(RegMetric):
+    def on_epoch_end(self):
+        self.metric = root_mean_squared_error(self.preds, self.targs)
+
+class ExpRMSPE(RegMetric):
+    def on_epoch_end(self):
+        self.metric = exp_rmspe(self.preds, self.targs)
+
 
 # Aliases
 mse = mean_squared_error
@@ -107,12 +130,14 @@ class ConfusionMatrix(Callback):
     def on_train_begin(self, **kwargs):
         assert self.n_classes >= 2
         self.x = torch.arange(0, self.n_classes)
+
     def on_epoch_begin(self, **kwargs):
         self.cm = torch.zeros((self.n_classes, self.n_classes))
         
     def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
-        preds = last_output.argmax(-1).view(-1)
-        cm = ((preds==self.x[:, None]) & (last_target==self.x[:, None, None])).sum(dim=2, dtype=torch.float32)
+        preds = last_output.argmax(-1).view(-1).to("cpu")
+        targs = last_target.to("cpu")
+        cm = ((preds==self.x[:, None]) & (targs==self.x[:, None, None])).sum(dim=2, dtype=torch.float32)
         self.cm += cm
         
     def on_epoch_end(self, **kwargs):
@@ -149,8 +174,8 @@ class CMScores(ConfusionMatrix):
 
     def _weights(self, avg:str):
         if avg == "binary":
-            assert self.n_classes == 2
-            assert self.pos_label in (0, 1)
+            assert self.n_classes == 2, "Expected n_classes=2 for average=`binary`"
+            assert self.pos_label in (0, 1), "A valid pos_label has to be either 0 or 1"
             if self.pos_label == 1:
                 return Tensor([0,1])
             else: 
