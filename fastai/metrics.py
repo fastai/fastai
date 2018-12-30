@@ -56,7 +56,6 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
 
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
-    assert pred.numel() == targ.numel(), "Expected same numbers of elements in pred & targ"
     if len(pred.shape)==2: pred=pred.squeeze(1)
     pred, targ = torch.exp(pred), torch.exp(targ)
     pct_var = (targ - pred)/targ
@@ -90,28 +89,29 @@ def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
     return 1 - u / d
 
 
-class RegMetric(Callback):
+class RegMetrics(Callback):
     "Stores predictions and targets to perform calculations on epoch end."
     def on_epoch_begin(self):
         self.targs, self.preds = Tensor([]), Tensor([])
 
     def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
-        self.preds = torch.cat((self.preds, last_output.to("cpu")))
-        self.targs = torch.cat((self.targs, last_target.to("cpu")))
+        assert last_output.numel() == last_target.numel(), "Expected same numbers of elements in pred & targ"
+        self.preds = torch.cat((self.preds, last_output.cpu()))
+        self.targs = torch.cat((self.targs, last_target.cpu()))
 
-class R2Score(RegMetric):
+class R2Score(RegMetrics):
     def on_epoch_end(self):
         self.metric = r2_score(self.preds, self.targs)
 
-class ExplainedVariance(RegMetric):
+class ExplainedVariance(RegMetrics):
     def on_epoch_end(self):
         self.metric = explained_variance(self.preds, self.targs)
 
-class RMSE(RegMetric):
+class RMSE(RegMetrics):
     def on_epoch_end(self):
         self.metric = root_mean_squared_error(self.preds, self.targs)
 
-class ExpRMSPE(RegMetric):
+class ExpRMSPE(RegMetrics):
     def on_epoch_end(self):
         self.metric = exp_rmspe(self.preds, self.targs)
 
@@ -122,23 +122,26 @@ mae = mean_absolute_error
 msle = mean_squared_logarithmic_error
 rmse = root_mean_squared_error
 
-@dataclass
 class ConfusionMatrix(Callback):
     "Computes the confusion matrix."
-    n_classes:int=2
 
     def on_train_begin(self, **kwargs):
-        assert self.n_classes >= 2
-        self.x = torch.arange(0, self.n_classes)
+        self.n_classes = 0
 
     def on_epoch_begin(self, **kwargs):
-        self.cm = torch.zeros((self.n_classes, self.n_classes))
+        self.cm = None
         
     def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
-        preds = last_output.argmax(-1).view(-1).to("cpu")
-        targs = last_target.to("cpu")
+        preds = last_output.argmax(-1).view(-1).cpu()
+        targs = last_target.cpu()
+        if self.n_classes == 0:
+            self.n_classes = last_output.shape[-1]
+            self.x = torch.arange(0, self.n_classes)
         cm = ((preds==self.x[:, None]) & (targs==self.x[:, None, None])).sum(dim=2, dtype=torch.float32)
-        self.cm += cm
+        if self.cm is None:
+            self.cm = cm
+        else:
+            self.cm += cm
         
     def on_epoch_end(self, **kwargs):
         self.metric = self.cm
@@ -147,13 +150,14 @@ class ConfusionMatrix(Callback):
 @dataclass
 class CMScores(ConfusionMatrix):
     "Base class for metrics which rely on the calculation of the precision and/or recall score."
-    average:Optional[str]="binary"
-    pos_label:int=1
+    
+    average:Optional[str]="binary"      # `binary`, `micro`, `macro`, `weigthed` or None
+    pos_label:int=1                     # 0 or 1
     eps:float=1e-9
 
     def _recall(self):
         rec = torch.diag(self.cm) / self.cm.sum(dim=1)
-        if not self.average:
+        if self.average is None:
             return rec 
         else:
             if self.average == "micro":
@@ -165,7 +169,7 @@ class CMScores(ConfusionMatrix):
 
     def _precision(self):
         prec = torch.diag(self.cm) / self.cm.sum(dim=0)
-        if not self.average:
+        if self.average is None:
             return prec 
         else:
             weights = self._weights(avg=self.average)
@@ -173,9 +177,13 @@ class CMScores(ConfusionMatrix):
         
 
     def _weights(self, avg:str):
+        if self.n_classes != 2 and avg == "binary":
+            avg = self.average = "macro"
+            warn("average=`binary` was selected for a non binary case. Value for average has now been set to `macro` instead.")
         if avg == "binary":
-            assert self.n_classes == 2, "Expected n_classes=2 for average=`binary`"
-            assert self.pos_label in (0, 1), "A valid pos_label has to be either 0 or 1"
+            if self.pos_label not in (0, 1):
+                self.pos_label = 1
+                warn("Invalid value for pos_label. It has now been set to 1.")
             if self.pos_label == 1:
                 return Tensor([0,1])
             else: 
@@ -203,8 +211,7 @@ class FBeta(CMScores):
     beta:float=2
         
     def on_train_begin(self, **kwargs):
-        assert self.n_classes >= 2
-        self.x = torch.arange(0, self.n_classes)
+        self.n_classes = 0
         self.beta2 = self.beta ** 2
         self.avg = self.average
         if self.average != "micro":
@@ -223,17 +230,14 @@ class KappaScore(ConfusionMatrix):
     Computes the rate of agreement (Cohens Kappa).
     Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
     """
-    def on_train_begin(self, **kwargs):
-        assert self.n_classes >= 2
-        self.x = torch.arange(0, self.n_classes)
-        self.w = torch.ones((self.n_classes, self.n_classes))
-        self.w[self.x, self.x] = 0
     
     def on_epoch_end(self, **kwargs):
+        w = torch.ones((self.n_classes, self.n_classes))
+        w[self.x, self.x] = 0
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
-        k = torch.sum(self.w * self.cm) / torch.sum(self.w * expected)
+        k = torch.sum(w * self.cm) / torch.sum(w * expected)
         self.metric = 1 - k
         
 
