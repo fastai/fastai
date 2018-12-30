@@ -54,7 +54,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
     if not iou: return (2. * intersect / union if union > 0 else union.new([1.]).squeeze())
     else: return intersect / (union-intersect+1.0)
 
-def exp_rmspe(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
     assert pred.numel() == targ.numel(), "Expected same numbers of elements in pred & targ"
     if len(pred.shape)==2: pred=pred.squeeze(1)
@@ -62,28 +62,28 @@ def exp_rmspe(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
     pct_var = (targ - pred)/targ
     return torch.sqrt((pct_var**2).mean())
 
-def mean_absolute_error(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def mean_absolute_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean absolute error between `pred` and `targ`."
     return torch.abs(targ - pred).mean()
  
-def mean_squared_error(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared error between `pred` and `targ`."
     return F.mse_loss(pred, targ)
 
-def root_mean_squared_error(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def root_mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Root mean squared error between `pred` and `targ`."
     return torch.sqrt(F.mse_loss(pred, targ))
 
-def mean_squared_logarithmic_error(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def mean_squared_logarithmic_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared logarithmic error between `pred` and `targ`."
     return F.mse_loss(torch.log(1 + pred), torch.log(1 + targ))
 
-def explained_variance(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def explained_variance(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Explained variance between `pred` and `targ`."
     var_pct = torch.var(targ - pred) / torch.var(targ)
     return 1 - var_pct
 
-def r2_score(pred:FloatTensor, targ:FloatTensor)->Rank0Tensor:
+def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "R2 score (coefficient of determination) between `pred` and `targ`."
     u = torch.sum((targ - pred) ** 2)
     d = torch.sum((targ - targ.mean()) ** 2)
@@ -95,7 +95,7 @@ class RegMetric(Callback):
     def on_epoch_begin(self):
         self.targs, self.preds = Tensor([]), Tensor([])
 
-    def on_batch_end(self, last_output:FloatTensor, last_target:FloatTensor, **kwargs):
+    def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
         self.preds = torch.cat((self.preds, last_output.to("cpu")))
         self.targs = torch.cat((self.targs, last_target.to("cpu")))
 
