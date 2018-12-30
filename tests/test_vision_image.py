@@ -33,3 +33,6 @@ def test_tis2hw_2dims():
     size = (224, 224)
     assert(tis2hw(size) == [224,224])
 
+def test_tis2hw_str_raises_an_erorr():
+    with pytest.raises(RuntimeError) as e:
+        tis2hw("224")
