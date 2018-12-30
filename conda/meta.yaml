@@ -49,6 +49,7 @@ requirements:
 # note: since we don't make separate py36 and py37 fastai releases, the # [py36] selector doesn't do anything, and `dataclasses` will be installed on py37 too, which is OK. Full details: https://docs.fast.ai/dev/release.html#the-problem-of-supporting-different-architectures
   run:
     - dataclasses # [py36]
+    - bs4
     - fastprogress >=0.1.18
     - matplotlib
     - numpy >=1.12

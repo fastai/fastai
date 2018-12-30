@@ -110,7 +110,7 @@ entries:
           title: vision.models.unet
           url: /vision.models.unet.html
         - output: web,pdf
-          title: vision.widgets
+          title: widgets.image_cleaner
           url: /widgets.image_cleaner.html
         title: vision
       - output: web
