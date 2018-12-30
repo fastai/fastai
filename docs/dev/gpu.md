@@ -36,7 +36,7 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
    nvidia-smi --query-gpu=timestamp,memory.used,memory.total --format=csv -l 1
    ```
 
-* Similar to the above, but shows the stats as a percentage:
+* Similar to the above, but show the stats as percentages:
 
    ```
    nvidia-smi dmon -s u
@@ -50,7 +50,13 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
    nvidia-smi dmon -h
    ```
 
+* [nvtop](https://github.com/Syllo/nvtop)
 
+   Nvtop stands for NVidia TOP, a (h)top like task monitor for NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
+
+   It shows the processes, and also visually displays the memory and gpu stats.
+
+   This application requires building it from source (needing `gcc`, `make`, et al), but the instructions are easy to follow and it is quick to build.
 
 
 
