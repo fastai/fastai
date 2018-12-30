@@ -214,4 +214,6 @@ class DataBunch():
             except: pass
             warn(message)
             print(final_message)
-
+        if len(self.train_ds) < self.train_dl.batch_size:
+            warn(f"You have {self.train_ds} items in your training set, which is not enough to make a batch.")
+            print(final_message)
