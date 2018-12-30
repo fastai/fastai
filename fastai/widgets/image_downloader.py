@@ -8,10 +8,9 @@ import time
 
 __all__ = ['ImageDownloader', 'download_google_images']
 
-_img_sizes = {'>400*300':'isz:lt,islt:qsvga','>640*480':'isz:lt,islt:vga','>800*600':'isz:lt,islt:svga', \
-              '>1024*768':'visz:lt,islt:xga', \
-              '>2MP':'isz:lt,islt:2mp','>4MP':'isz:lt,islt:4mp','>6MP':'isz:lt,islt:6mp','>8MP':'isz:lt,islt:8mp', \
-              '>10MP':'isz:lt,islt:10mp','>12MP':'isz:lt,islt:12mp','>15MP':'isz:lt,islt:15mp', \
+_img_sizes = {'>400*300':'isz:lt,islt:qsvga','>640*480':'isz:lt,islt:vga','>800*600':'isz:lt,islt:svga',
+              '>1024*768':'visz:lt,islt:xga', '>2MP':'isz:lt,islt:2mp','>4MP':'isz:lt,islt:4mp','>6MP':'isz:lt,islt:6mp',
+              '>8MP':'isz:lt,islt:8mp', '>10MP':'isz:lt,islt:10mp','>12MP':'isz:lt,islt:12mp','>15MP':'isz:lt,islt:15mp',
               '>20MP':'isz:lt,islt:20mp','>40MP':'isz:lt,islt:40mp','>70MP':'isz:lt,islt:70mp'}
 
 class ImageDownloader():
@@ -19,7 +18,6 @@ class ImageDownloader():
     Displays a widget that allows searching and downloading images from google images search
     in a Jupyter Notebook or Lab.
     """
-
     def __init__(self, path:Union[Path,str]='data'):
         "Setup path to save images to, init the UI, and render the widgets."
         self._path = Path(path)
@@ -29,28 +27,19 @@ class ImageDownloader():
     def _init_ui(self) -> VBox:
         "Initialize the widget UI and return the UI."
         self._search_input = Text(placeholder="What images to search for?")
-        self._count_input = BoundedIntText(placeholder="How many pics?",
-                                        value=10, min=1, max=5000, step=1,
-                                        layout=Layout(width='60px'))
-        self._size_input = Dropdown(options= _img_sizes.keys(),
-                                    value='>400*300',
-                                    layout=Layout(width='120px'))
+        self._count_input = BoundedIntText(placeholder="How many pics?", value=10, min=1, max=5000, step=1,
+                                           layout=Layout(width='60px'))
+        self._size_input = Dropdown(options= _img_sizes.keys(), value='>400*300', layout=Layout(width='120px'))
         self._download_button = Button(description="Search & Download", icon="download", layout=Layout(width='200px'))
         self._download_button.on_click(self.on_download_button_click)
-
         self._output = Output()
-        self._controls_pane  = HBox([self._search_input,
-                                    self._count_input,
-                                    self._size_input,
-                                    self._download_button],
+        self._controls_pane  = HBox([self._search_input, self._count_input, self._size_input, self._download_button],
                                     layout=Layout(width='auto', height='40px'))
-
         self._heading = ""
         self._download_complete_heading = "<h3>Download complete. Here are a few images</h3>"
         self._preview_header = widgets.HTML(self._heading, layout=Layout(height='60px'))
         self._img_pane = Box(layout=Layout(display='inline'))
         return VBox([self._controls_pane, self._preview_header, self._img_pane])
-
 
     def render(self) -> None:
         clear_output()
@@ -64,10 +53,8 @@ class ImageDownloader():
     def validate_search_input(self) -> bool:
         "Check if input value is empty."
         input = self._search_input
-        if input.value == str():
-            input.layout = Layout(border="solid 2px red", height='auto')
-        else:
-            self._search_input.layout = Layout()
+        if input.value == str(): input.layout = Layout(border="solid 2px red", height='auto')
+        else:                    self._search_input.layout = Layout()
         return input.value != str()
 
     def on_download_button_click(self, btn) -> None:
@@ -75,9 +62,7 @@ class ImageDownloader():
         term = self._search_input.value
         limit = int(self._count_input.value)
         size = self._size_input.value
-
         if not self.validate_search_input(): return
-
         self.clear_imgs()
         downloaded_images = download_google_images(self._path, term, n_images=limit, size=size)
         self.display_images_widgets(downloaded_images[:min(limit, 12)])
@@ -98,12 +83,8 @@ def download_google_images(path:PathOrStr, search_term:str, size:str='>400*300',
     """
     label_path = Path(path)/search_term
     search_url = _search_url(search_term, size=size, format=format)
-    
-    if n_images <= 100:
-        img_tuples = _fetch_img_tuples(search_url, format=format, n_images=n_images)
-    else:
-        img_tuples = _fetch_img_tuples_webdriver(search_url, format=format, n_images=n_images)
-    
+    if n_images <= 100: img_tuples = _fetch_img_tuples(search_url, format=format, n_images=n_images)
+    else:               img_tuples = _fetch_img_tuples_webdriver(search_url, format=format, n_images=n_images)
     downloaded_images = _download_images(label_path, img_tuples, max_workers=max_workers, timeout=timeout)
     if len(downloaded_images) == 0: raise RuntimeError(f"Couldn't download any images.")
     verify_images(label_path, max_workers=max_workers)
@@ -111,23 +92,19 @@ def download_google_images(path:PathOrStr, search_term:str, size:str='>400*300',
     
 def _url_params(size:str='>400*300', format:str='jpg') -> str:
     "Build Google Images Search Url params and return them as a string."
-    _fmts = {'jpg':'ift:jpg','gif':'ift:gif','png':'ift:png','bmp':'ift:bmp', \
-            'svg':'ift:svg','webp':'webp','ico':'ift:ico'}
+    _fmts = {'jpg':'ift:jpg','gif':'ift:gif','png':'ift:png','bmp':'ift:bmp', 'svg':'ift:svg','webp':'webp','ico':'ift:ico'}
     if size not in _img_sizes: 
-        raise RuntimeError(f"Unexpected size argument value: {size}. " + \
-                    "See `widgets.image_downloader._img_sizes for supported sizes.`") 
+        raise RuntimeError(f"""Unexpected size argument value: {size}.
+                    See `widgets.image_downloader._img_sizes` for supported sizes.""") 
     if format not in _fmts: 
-        raise RuntimeError(f"Unexpected image file format: {format}. " + \
-                    "Use jpg, gif, png, bmp, svg, webp, or ico.")
+        raise RuntimeError(f"Unexpected image file format: {format}. Use jpg, gif, png, bmp, svg, webp, or ico.")
     return "&tbs=" + _img_sizes[size] + "," + _fmts[format]
 
 def _search_url(search_term:str, size:str='>400*300', format:str='jpg') -> str:
     "Return a Google Images Search URL for a given search term."
-    return ( 'https://www.google.com/search?q=' +
-            quote(search_term) +
+    return ('https://www.google.com/search?q=' + quote(search_term) +
             '&espv=2&biw=1366&bih=667&site=webhp&source=lnms&tbm=isch' +
-            _url_params(size, format) +
-            '&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg' )
+            _url_params(size, format) + '&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg')
 
 def _img_fname(img_url:str) -> str:
     "Return image file name including the extension given it's url."
@@ -159,7 +136,6 @@ def _fetch_img_tuples_webdriver(url:str, format:str='jpg', n_images:int=150) -> 
         print("""Looks like you're trying to download > 100 images and `selenium`
                 is not installed. Try running `pip install selenium` to fix this. 
                 You'll also need chrome and `chromedriver` installed.""")
-
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     try: driver = webdriver.Chrome(chrome_options=options)
