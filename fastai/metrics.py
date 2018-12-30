@@ -56,6 +56,7 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
 
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
+    assert pred.numel() == targ.numel(), "Expected same numbers of elements in pred & targ"
     if len(pred.shape)==2: pred=pred.squeeze(1)
     pred, targ = torch.exp(pred), torch.exp(targ)
     pct_var = (targ - pred)/targ
