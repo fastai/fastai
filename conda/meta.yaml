@@ -46,9 +46,10 @@ requirements:
 # skipped requirements:
 # jupyter_contrib_nbextensions - only needed for internal tools - it's not on conda and requires too many of its own dependencies which aren't on conda either
 #
-# note: "module # [py36]" tells conda-build that this requirement is only for python3.6, it's not a comment.
+# note: since we don't make separate py36 and py37 fastai releases, the # [py36] selector doesn't do anything, and `dataclasses` will be installed on py37 too, which is OK. Full details: https://docs.fast.ai/dev/release.html#the-problem-of-supporting-different-architectures
   run:
     - dataclasses # [py36]
+    - bs4
     - fastprogress >=0.1.18
     - matplotlib
     - numpy >=1.12
@@ -59,19 +60,13 @@ requirements:
     - nvidia-ml-py3
     - packaging
     - pillow
-    - python
     - requests
     - scipy
-    - spacy ==2.0.16
-    - regex ==2018.8.29
-    - thinc ==6.12.0
-    - cymem ==2.0.2
+    - spacy >=2.0.18
     - typing
     - pyyaml
     - pytorch >=1.0
     - torchvision
-
-# Need to handle CPU vs GPU still
 
 # Stuff only used for doc() and dev-time:
 #- ipython
@@ -80,8 +75,6 @@ requirements:
 #- nbconvert
 #- nbformat
 #- traitlets
-
-# removed these and instead are asking users to install those directly until a proper pytorch-1.0.0 and the corresponding torchvision are released on conda. otherwise can't support these two sets:
 
 test:
   imports:

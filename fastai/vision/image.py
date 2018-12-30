@@ -5,7 +5,7 @@ from io import BytesIO
 import PIL
 
 __all__ = ['PIL', 'Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
-           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'open_image', 'open_mask',
+           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'open_image', 'open_mask', 'tis2hw',
            'pil2tensor', 'scale_flow', 'show_image', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode',
            'rle_decode', 'ResizeMethod', 'plot_flat', 'plot_multi', 'show_multi', 'show_all']
 
@@ -26,6 +26,11 @@ def image2np(image:Tensor)->np.ndarray:
 def bb2hw(a:Collection[int])->np.ndarray:
     "Convert bounding box points from (width,height,center) to (height,width,top,left)."
     return np.array([a[1],a[0],a[3]-a[1],a[2]-a[0]])
+
+def tis2hw(size:Union[int,TensorImageSize]) -> Tuple[int,int]:
+    "Convert `int` or `TensorImageSize` to (height,width) of an image."
+    if type(size) is str: raise RuntimeError("Expected size to be an int or a tuple, got a string.")
+    return listify(size, 2) if isinstance(size, int) else listify(size[-2:],2)
 
 def _draw_outline(o:Patch, lw:int):
     "Outline bounding box onto image `Patch`."
@@ -567,9 +572,9 @@ def _round_multiple(x:int, mult:int)->int:
     "Calc `x` to nearest multiple of `mult`."
     return (int(x/mult+0.5)*mult)
 
-def _get_crop_target(target_px:Union[int,Tuple[int,int]], mult:int=32)->Tuple[int,int]:
+def _get_crop_target(target_px:Union[int,TensorImageSize], mult:int=32)->Tuple[int,int]:
     "Calc crop shape of `target_px` to nearest multiple of `mult`."
-    target_r,target_c = listify(target_px, 2)
+    target_r,target_c = tis2hw(target_px)
     return _round_multiple(target_r,mult),_round_multiple(target_c,mult)
 
 def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:

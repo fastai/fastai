@@ -159,20 +159,21 @@ def model_summary(m:Collection[nn.Module], n:int=70):
     "Print a summary of `m` using a output text width of `n` chars"
     info = layers_info(m)
     header = ["Layer (type)", "Output Shape", "Param #", "Trainable"]
-    print("=" * n)
-    print(f"{header[0]:<20} {header[1]:<20} {header[2]:<10} {header[3]:<10}")
-    print("=" * n)
+    res = "=" * n + "\n"
+    res += f"{header[0]:<20} {header[1]:<20} {header[2]:<10} {header[3]:<10}\n"
+    res += "=" * n + "\n"
     total_params = 0
     total_trainable_params = 0
     for layer, size, params, trainable in info:
         total_params += int(params)
         total_trainable_params += int(params) * trainable
         params, size, trainable = str(params), str(list(size)), str(trainable)
-        print(f"{layer:<20} {size:<20} {params:<10} {trainable:<10}")
-        print("_" * n)
-    print("\nTotal params: ", total_params)
-    print("Total trainable params: ", total_trainable_params)
-    print("Total non-trainable params: ", total_params - total_trainable_params)
+        res += f"{layer:<20} {size:<20} {params:<10} {trainable:<10}\n"
+        res += "_" * n + "\n"
+    res += f"\nTotal params: {total_params}\n"
+    res += f"Total trainable params: {total_trainable_params}\n"
+    res += f"Total non-trainable params: {total_params - total_trainable_params}\n"
+    return res
 
 Learner.summary = model_summary
 

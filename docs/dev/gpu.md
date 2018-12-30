@@ -6,16 +6,16 @@ title: Working with GPU
 
 Here is how to poll the status of your GPU(s) in a variety of ways from your terminal:
 
-1. watch the processes using GPU(s) and the current state of your GPU(s):
+* Watch the processes using GPU(s) and the current state of your GPU(s):
 
    ```
    watch -n 1 nvidia-smi
    ```
 
-2. Watch the usage stats as their change:
+* Watch the usage stats as their change:
 
    ```
-   nvidia-smi --query-gpu=timestamp,pstate,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv -l 1 -t
+   nvidia-smi --query-gpu=timestamp,pstate,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv -l 1
    ```
 
    This way is useful as you can see the trace of changes, rather than just the current state shown by `nvidia-smi` executed without any arguments.
@@ -30,7 +30,13 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
 
    For more details, please, see [Useful nvidia-smi Queries](https://nvidia.custhelp.com/app/answers/detail/a_id/3751/~/useful-nvidia-smi-queries).
 
-3. Similar to the above, but shows the stats as a percentage:
+   Most likely you will just want to track the memory usage, so this is probably sufficient:
+
+   ```
+   nvidia-smi --query-gpu=timestamp,memory.used,memory.total --format=csv -l 1
+   ```
+
+* Similar to the above, but show the stats as percentages:
 
    ```
    nvidia-smi dmon -s u
@@ -39,6 +45,19 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
    ```
    nvidia-smi dmon
    ```
+   To find out the other options, use:
+   ```
+   nvidia-smi dmon -h
+   ```
+
+* [nvtop](https://github.com/Syllo/nvtop)
+
+   Nvtop stands for NVidia TOP, a (h)top like task monitor for NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
+
+   It shows the processes, and also visually displays the memory and gpu stats.
+
+   This application requires building it from source (needing `gcc`, `make`, et al), but the instructions are easy to follow and it is quick to build.
+
 
 
 ## Accessing NVIDIA GPU Info Programmatically
@@ -105,6 +124,12 @@ res = nvidia_smi.nvmlDeviceGetUtilizationRates(handle)
 print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
 ```
 
+
+### py3nvml
+
+This is another fork of `nvidia-ml-py3`, supplementing it with [extra useful utils](https://github.com/fbcotter/py3nvml).
+
+note: there is no `py3nvml` conda package in its main channel, but it is available on pypi.
 
 
 ### GPUtil
@@ -173,3 +198,21 @@ If you have more than one process using the same GPU, the cached memory from one
 How can we do a lot of experimentation in a given jupyter notebook w/o needing to restart the kernel all the time? You can delete the variables that hold the memory, can call `import gc; gc.collect()` to reclaim memory by deleted objects with circular references, optionally (if you have just one process) calling `torch.cuda.empty_cache()` and you can now re-use the GPU memory inside the same kernel.
 
 To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.
+
+
+
+### pytorch Tensor Memory Tracking
+
+Show all the currently allocated Tensors:
+```
+import torch
+import gc
+for obj in gc.get_objects():
+    try:
+        if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
+            print(type(obj), obj.size())
+    except: pass
+```
+Note, that gc will not contain some tensors that consume memory [inside autograd](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741/22).
+
+Here is a good [discussion on this topic](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741) with more related code snippets.

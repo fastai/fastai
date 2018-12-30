@@ -57,6 +57,7 @@ class TabularProcessor(PreProcessor):
     def process(self, ds):
         if ds.xtra is None:
             ds.classes,ds.cat_names,ds.cont_names = self.classes,self.cat_names,self.cont_names
+            ds.preprocessed = True
             return
         for i,proc in enumerate(self.procs):
             if isinstance(proc, TabularProc): proc(ds.xtra, test=True)
@@ -78,6 +79,7 @@ class TabularProcessor(PreProcessor):
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
+        ds.preprocessed = True
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
@@ -110,6 +112,7 @@ class TabularList(ItemList):
         if cont_names is None: cont_names = []
         self.cat_names,self.cont_names,self.procs = cat_names,cont_names,procs
         self.copy_new += ['cat_names', 'cont_names', 'procs']
+        self.preprocessed = False
 
     @classmethod
     def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, procs=None, **kwargs)->'ItemList':
@@ -117,6 +120,7 @@ class TabularList(ItemList):
         return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df, **kwargs)
 
     def get(self, o):
+        if not self.preprocessed: return self.xtra.iloc[o] if hasattr(self, 'xtra') else self.items[o]
         codes = [] if self.codes is None else self.codes[o]
         conts = [] if self.conts is None else self.conts[o]
         return self._item_cls(codes, conts, self.classes, self.col_names)

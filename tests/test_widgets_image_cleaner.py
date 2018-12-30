@@ -28,3 +28,6 @@ def test_image_cleaner_wrong_input_type(data):
     path = untar_data(URLs.MNIST_TINY)
     n = len(data.valid_ds)
     ImageCleaner(data, np.arange(n), path)
+
+def test_image_downloader_with_path():
+    ImageDownloader('.tmp/data')

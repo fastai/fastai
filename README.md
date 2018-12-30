@@ -58,6 +58,14 @@ If you only care about faster JPEG decompression, it can be `pillow` or `pillow-
 pip install fastai
 ```
 
+### Bug Fix Install
+
+If a bug fix was made in git and you can't wait till a new release is made, you can install the bleeding edge version of `fastai` with:
+
+```
+pip install git+https://github.com/fastai/fastai.git
+```
+
 ### Developer Install
 
 The following instructions will result in a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs), so that you can `git pull` at any time and your environment will automatically get the updates:
