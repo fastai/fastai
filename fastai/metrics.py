@@ -116,7 +116,6 @@ class ExpRMSPE(RegMetrics):
     def on_epoch_end(self):
         self.metric = exp_rmspe(self.preds, self.targs)
 
-
 # Aliases
 mse = mean_squared_error
 mae = mean_absolute_error
@@ -139,10 +138,8 @@ class ConfusionMatrix(Callback):
             self.n_classes = last_output.shape[-1]
             self.x = torch.arange(0, self.n_classes)
         cm = ((preds==self.x[:, None]) & (targs==self.x[:, None, None])).sum(dim=2, dtype=torch.float32)
-        if self.cm is None:
-            self.cm = cm
-        else:
-            self.cm += cm
+        if self.cm is None: self.cm =  cm
+        else:               self.cm += cm
         
     def on_epoch_end(self, **kwargs):
         self.metric = self.cm
