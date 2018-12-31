@@ -1,7 +1,14 @@
 import pytest
 from fastai.vision import *
+from fastai.callbacks import *
+from fastai.utils.mem import *
+from utils.mem import *
 from io import StringIO
 from contextlib import redirect_stdout
+from math import isclose
+
+use_gpu = can_use_gpu()
+torch_preload_mem()
 
 pytestmark = pytest.mark.integration
 
@@ -19,6 +26,12 @@ def learn():
     learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate])
     learn.fit_one_cycle(3)
     return learn
+
+@pytest.fixture(scope="module")
+def learn_large_unfit():
+    path = untar_data(URLs.MNIST_TINY)
+    data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
+    return create_cnn(data, models.resnet18, metrics=accuracy)
 
 def test_accuracy(learn):
     assert accuracy(*learn.get_preds()) > 0.9
@@ -58,3 +71,39 @@ def test_interp_shortcut(learn):
 
 def test_lrfind(learn):
     learn.lr_find(start_lr=1e-5,end_lr=1e-3, num_it=15)
+
+def test_model_save_load(learn):
+    "testing save/load cycle"
+
+    summary_before = model_summary(learn)
+    name = 'mnist-tiny-test-save-load'
+    model_path = learn.save(name=name, return_path=True)
+    _ = learn.load(name)
+    if os.path.exists(model_path): os.remove(model_path)
+    gpu_mem_reclaim()
+    summary_after = model_summary(learn)
+    assert summary_before == summary_after, f"model summary before and after"
+
+def test_model_load_mem_leak(learn_large_unfit):
+    "testing memory leak on load"
+
+    pytest.xfail("memory leak in learn.load()")
+
+    learn = learn_large_unfit
+    gpu_mem_reclaim() # baseline
+    used_before = gpu_mem_get_used()
+
+    name = 'mnist-tiny-test-save-load'
+    model_path = learn.save(name=name, return_path=True)
+    _ = learn.load(name)
+    if os.path.exists(model_path): os.remove(model_path)
+    used_after = gpu_mem_get_used()
+
+    # models.resnet18 loaded in GPU RAM is about 50MB
+    # calling learn.load() of a saved and instantly loaded model shouldn't require more GPU RAM
+    # XXX: currently w/o running gc.collect() this temporarily leaks memory and causes fragmentation - the fragmentation can't be tested from here, but it'll get automatically fixed once load is fixed. load() must unload first the previous model, gc.collect() and only then load the new one onto cuda.
+    gc.collect()
+    gpu_cache_clear()
+    used_after_reclaimed = gpu_mem_get_used()
+    # XXX: not sure where 6MB get lost still but for now it's a small leak - need to test with a bigger model
+    assert isclose(used_before, used_after_reclaimed, abs_tol=6), f"reclaim all consumed memory, started with {used_before}, after load() {used_after}, at the end {used_after_reclaimed} used"
