@@ -521,6 +521,60 @@ def test_result_and_stdout(capsys):
     assert msg in err
 ```
 
+### Testing memory leaks
+
+This section is currently focused on GPU RAM since it's the scarce resource, but we should test general RAM too.
+
+#### Utils
+
+* Memory measuring helper utils are found in `tests/utils/mem.py`:
+
+   ```
+   from utils.mem import *
+   ```
+
+* Test whether we can use GPU:
+   ```
+   use_gpu = can_use_gpu()
+   ```
+   It first checks `torch.cuda.is_available()`, and then whether `CUDA_VISIBLE_DEVICES=""` is used to fake a no-CUDA env, even though CUDA is available, so that we could test things on CPU despite having a GPU.
+
+* Force `pytorch` to preload cuDNN and its kernels to claim unreclaimable memory (~0.5GB) if it hasn't done so already, so that we get correct measurements. This must run before any tests that measure GPU RAM. If you don't run it you will get erratic behavior and wrong measurements.
+   ```
+   torch_preload_mem()
+   ```
+
+* Consume some GPU RAM:
+   ```
+   gpu_mem_consume_some(n)
+   ```
+   `n` is the size of the matrix of `torch.ones`. When `n=2**14` it consumes about 1GB, but that's too much for the test suite, so use small numbers, e.g.: `n=2000` consumes about 16MB.
+
+
+* alias for `torch.cuda.empty_cache()`
+   ```
+   gpu_cache_clear()
+   ```
+   It's absolutely essential to run this one, if you're trying to measure real used memory. If cache doesn't get cleared the reported used/free memory can be quite inconsistent.
+
+
+* This is a combination of `gc.collect()` and `torch.cuda.empty_cache()`
+   ```
+   gpu_mem_reclaim()
+   ```
+   Again, this one is crucial for measuring the memory usage correctly. While normal objects get destroyed and their memory becomes available/cached right away, objects with circular references only get freed up when python invokes `gc.collect`, which happens periodically. So if you want to make sure your test doesn't get caught in the inconsistency of getting `gc.collect` to be called during that test or not, call it yourself. But, remember, that if you have to call `gc.collect()` there could be a problem that you will be masking by calling it. So before using it understand what it is doing.
+
+   After `gc.collect()` is called this functions clears the cache that potentially grew due to the released by `gc` objects, and we want to make sure we get the real used/free memory at all times.
+
+* this is a wrapper for getting the used memory for the currently selected device.
+   ```
+   gpu_mem_get_used()
+   ```
+
+
+
+
+
 
 
 ### Getting reproducible results
