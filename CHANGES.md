@@ -19,8 +19,11 @@ of that change.
 
 ### Changed:
 
+- If no label is provided, the test set has `EmptyLabel` for every item
+
 ### Fixed:
 
+- Avoid bugs in tabular by copying the dataframe in `TabularList.from_df`
 
 
 ## 1.0.39 (2018-12-28)

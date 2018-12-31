@@ -3,7 +3,7 @@ from .basic_data import *
 from .layers import *
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
-           'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor']
+           'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor', 'EmptyLabelList']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
@@ -279,6 +279,7 @@ class CategoryProcessor(PreProcessor):
         return uniqueify(items)
 
     def process_one(self,item):
+        if isinstance(item, EmptyLabel): return item
         try: return self.c2i[item] if item is not None else None
         except:
             raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
@@ -333,7 +334,7 @@ class MultiCategoryProcessor(CategoryProcessor):
         self.one_hot = state['one_hot']
                 
     def process_one(self,item): 
-        if self.one_hot: return item
+        if self.one_hot or isinstance(item, EmptyLabel): return item
         return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
 
     def generate_classes(self, items):
@@ -478,11 +479,11 @@ class LabelLists(ItemLists):
     def add_test(self, items:Iterator, label:Any=None):
         "Add test set containing `items` with an arbitrary `label`."
         # if no label passed, use label of first training item
-        if label is None:
-            if len(self.items)>0: label = self.train[0][1].obj
-        labels = [label] * len(items)
-        if isinstance(items, ItemList): self.test = self.valid.new(items.items, labels, xtra=items.xtra)
-        else: self.test = self.valid.new(items, labels)
+        if label is None: labels = EmptyLabelList([0] * len(items))
+        else: labels = self.valid.y.new([label] * len(items)).process()
+        if isinstance(items, ItemList): items = self.valid.x.new(items.items, xtra=items.xtra).process()
+        else: items = self.valid.x.new(items).process()          
+        self.test = self.valid.new(items, labels)
         return self
 
     def add_test_folder(self, test_folder:str='test', label:Any=None):

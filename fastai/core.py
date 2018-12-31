@@ -247,7 +247,7 @@ def array(a, dtype:type=None, **kwargs)->np.ndarray:
 
 class EmptyLabel(ItemBase):
     "Should be used for a dummy label."
-    def __init__(self): self.obj,self.data = 0.,0.
+    def __init__(self): self.obj,self.data = 0,0
     def __str__(self):  return ''
 
 class Category(ItemBase):
