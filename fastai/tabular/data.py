@@ -117,7 +117,7 @@ class TabularList(ItemList):
     @classmethod
     def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, procs=None, **kwargs)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
-        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df, **kwargs)
+        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df.copy(), **kwargs)
 
     def get(self, o):
         if not self.preprocessed: return self.xtra.iloc[o] if hasattr(self, 'xtra') else self.items[o]

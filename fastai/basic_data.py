@@ -147,11 +147,11 @@ class DataBunch():
             if norm.keywords.get('do_y',False): y = self.denorm(y, do_x=True)
         return x,y
 
-    def one_item(self, item, detach:bool=False, denorm:bool=False):
+    def one_item(self, item, detach:bool=False, denorm:bool=False, cpu:bool=False):
         "Get `item` into a batch. Optionally `detach` and `denorm`."
         ds = self.single_ds
         with ds.set_item(item):
-            return self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm)
+            return self.one_batch(ds_type=DatasetType.Single, detach=detach, denorm=denorm, cpu=cpu)
 
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."

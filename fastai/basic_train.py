@@ -258,16 +258,13 @@ class Learner():
 
     def predict(self, item:ItemBase, **kwargs):
         "Return predicted class, label and probabilities for `item`."
-        self.callbacks.append(RecordOnCPU())
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred = res[0]
-        x = self.callbacks[-1].input
+        pred,x = res[0],batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
             if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
-        self.callbacks = self.callbacks[:-1]
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(pred, **kwargs)
         out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
