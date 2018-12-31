@@ -80,7 +80,6 @@ def test_model_save_load(learn):
     model_path = learn.save(name=name, return_path=True)
     _ = learn.load(name)
     if os.path.exists(model_path): os.remove(model_path)
-    gpu_mem_reclaim()
     summary_after = model_summary(learn)
     assert summary_before == summary_after, f"model summary before and after"
 
