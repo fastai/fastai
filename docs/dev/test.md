@@ -566,11 +566,30 @@ This section is currently focused on GPU RAM since it's the scarce resource, but
 
    After `gc.collect()` is called this functions clears the cache that potentially grew due to the released by `gc` objects, and we want to make sure we get the real used/free memory at all times.
 
-* this is a wrapper for getting the used memory for the currently selected device.
+* This is a wrapper for getting the used memory for the currently selected device.
    ```
    gpu_mem_get_used()
    ```
 
+#### Concepts
+
+* Taking into account cached memory and unpredictable `gc.collect` calls. See above.
+
+* Memory fluctuations. When measuring either general or GPU RAM there is often a small fluctuation in reported numbers, so when writing tests use functions that approximate equality, but do think deep about the margin you allow, so that the test is useful and yet it doesn't fail at random times.
+
+   Also remember that rounding happens when Bs are converted to MBs.
+
+   Here is an example:
+   ```
+   from math import isclose
+   used_before = gpu_mem_get_used()
+   ... some gpu consuming code here ...
+   used_after = gpu_mem_get_used()
+   assert isclose(used_before, used_after, abs_tol=6), "testing absolute tolerance"
+   assert isclose(used_before, used_after, rel_tol=0.02), "testing relative tolerance"
+   ```
+   This example compares used memory size (in MBs). The first assert compares whether the absolute difference between the two numbers is no more than 6.
+   The second assert does the same by uses relative tolerance in percentages, `0.02` in the example means `2%`. So the difference between the two numbers is no more than `2%`. Often absolute numbers provide a better test, because percent-based could result in quite a big gap if the numbers are big.
 
 
 
