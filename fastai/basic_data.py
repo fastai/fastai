@@ -38,6 +38,7 @@ class DeviceDataLoader():
     def batch_size(self):   return self.dl.batch_size
     @batch_size.setter
     def batch_size(self,v):
+        #maybe TODO: make LMDataLoader have consistent args with pytorch dataloader to simplify this 
         if 'bs' in self.dl.init_kwargs: new_kwargs = {**self.dl.init_kwargs, 'bs':v}
         else: new_kwargs = {**self.dl.init_kwargs, 'batch_size':v, 'collate_fn':self.collate_fn}
         self.dl = self.dl.__class__(self.dl.dataset, **new_kwargs)

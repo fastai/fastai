@@ -61,6 +61,7 @@ def test_from_csv_and_from_df():
     assert len(data3.classes) == 1
     data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)
     assert 5 <= len(data4.train_ds.vocab.itos) <= 5+8 # +(8 special tokens - UNK/BOS/etc)
+    data4.batch_size = 8
 
     os.remove(path/'tmp.csv')
 
