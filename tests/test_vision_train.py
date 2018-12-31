@@ -93,17 +93,20 @@ def test_model_load_mem_leak(learn_large_unfit):
     gpu_mem_reclaim() # baseline
     used_before = gpu_mem_get_used()
 
-    name = 'mnist-tiny-test-save-load'
+    name = 'mnist-tiny-test-load-mem-leak'
     model_path = learn.save(name=name, return_path=True)
     _ = learn.load(name)
     if os.path.exists(model_path): os.remove(model_path)
     used_after = gpu_mem_get_used()
 
     # models.resnet18 loaded in GPU RAM is about 50MB
-    # calling learn.load() of a saved and instantly loaded model shouldn't require more GPU RAM
+    # calling learn.load() of a saved and then instantly re-loaded model shouldn't require more GPU RAM
     # XXX: currently w/o running gc.collect() this temporarily leaks memory and causes fragmentation - the fragmentation can't be tested from here, but it'll get automatically fixed once load is fixed. load() must unload first the previous model, gc.collect() and only then load the new one onto cuda.
+    assert isclose(used_before, used_after, abs_tol=6), f"load() and used GPU RAM: before load(): {used_before}, after: {used_after}"
+
+    # this shows how it should have been
     gc.collect()
     gpu_cache_clear()
     used_after_reclaimed = gpu_mem_get_used()
     # XXX: not sure where 6MB get lost still but for now it's a small leak - need to test with a bigger model
-    assert isclose(used_before, used_after_reclaimed, abs_tol=6), f"reclaim all consumed memory, started with {used_before}, after load() {used_after}, at the end {used_after_reclaimed} used"
+    assert isclose(used_before, used_after_reclaimed, abs_tol=6),f"load() and used GPU RAM: before load(): {used_before}, after: {used_after}, after gc.collect() {used_after_reclaimed} used"
