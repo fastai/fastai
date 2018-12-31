@@ -59,6 +59,19 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
    This application requires building it from source (needing `gcc`, `make`, et al), but the instructions are easy to follow and it is quick to build.
 
 
+* [gpustat](https://github.com/wookayin/gpustat)
+
+   `nvidia-smi` like monitor, but a compact one. It relies on [pynvml](https://pythonhosted.org/nvidia-ml-py/) to talk to the nvml layer.
+
+   Installation: `pip3 install gpustat`.
+
+   And here is a usage example:
+
+   ```
+   gpustat -cp -i --no-color
+   ```
+
+
 
 ## Accessing NVIDIA GPU Info Programmatically
 
@@ -151,20 +164,8 @@ For more details see: https://github.com/anderskm/gputil
 
 For more details see: https://github.com/nicolargo/nvidia-ml-py3
 
+https://github.com/FrancescAlted/ipython_memwatcher
 
-### gpustat
-
-`nvidia-smi` like monitor, but a compact one. It relies on [pynvml](https://pythonhosted.org/nvidia-ml-py/) to talk to the nvml layer.
-
-Installation: `pip3 install gpustat`.
-
-And here is a usage example:
-
-```
-gpustat -cp -i --no-color
-```
-
-For more details see: https://github.com/wookayin/gpustat
 
 
 ## GPU Memory Notes
