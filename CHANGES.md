@@ -24,6 +24,8 @@ of that change.
 ### Fixed:
 
 - Avoid bugs in tabular by copying the dataframe in `TabularList.from_df`
+- Can properly change the batch size even if the `DataLoader` is an `LanguageDataLoader`
+- Bug in `ImageBBox` when all the targets had the same number of bboxes
 
 
 ## 1.0.39 (2018-12-28)

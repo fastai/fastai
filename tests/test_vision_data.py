@@ -12,6 +12,9 @@ def mnist_tiny_sanity_test(data):
     assert data.c == 2
     assert set(map(str, set(data.classes))) == {'3', '7'}
 
+def test_path_can_be_str_type(path):
+    assert ImageDataBunch.from_csv(str(path))
+
 def test_from_folder(path):
     for valid_pct in [None, 0.9]:
         data = ImageDataBunch.from_folder(path, test='test')
@@ -30,6 +33,42 @@ def test_from_csv_and_from_df(path):
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
 
+def test_multi_iter_broken(path):
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    for i in range(2): x,y = next(iter(data.train_dl))
+
+def test_multi_iter(path):
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data.normalize()
+    for i in range(2): x,y = data.one_batch()
+
+def test_clean_tear_down(path):
+    docstr = "test DataLoader iter doesn't get stuck"
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data.normalize()
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    data.normalize()
+
+def test_normalize(path):
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    x,y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
+    m,s = x.mean(),x.std()
+    data.normalize()
+    x,y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
+    assert abs(x.mean()) < abs(m)
+    assert abs(x.std()-1) < abs(m-1)
+
+    with pytest.raises(Exception): data.normalize()
+
+def test_denormalize(path):
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
+    original_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
+    data.normalize()
+    normalized_x, y = data.one_batch(ds_type=DatasetType.Valid, denorm=False)
+    denormalized = denormalize(normalized_x, original_x.mean(), original_x.std())
+    assert round(original_x.mean().item(), 3) == round(denormalized.mean().item(), 3)
+    assert round(original_x.std().item(), 3) == round(denormalized.std().item(), 3)
+        
 def test_download_images():
     base_url = 'http://files.fast.ai/data/tst_images/'
     fnames = ['tst0.jpg', 'tst1.png', 'tst2.tif']
@@ -193,3 +232,45 @@ def test_image_to_image_different_tfms():
     y1 = y[0]
     x1r = flip_lr(Image(x1)).data
     assert (y1 == x1r).all()
+    
+def test_vision_pil2tensor():
+    path  = Path(__file__).parent / "data/test/images"
+    files = list(Path(path).glob("**/*.*"))
+    pil_passed, pil_failed = [],[]
+    for f in files:
+        try:
+            im = PIL.Image.open(f)
+            #provoke read of the file so we can isolate PIL issue separately
+            b = np.asarray(im.convert("RGB"))
+            pil_passed.append(f)
+        except:
+            pil_failed.append(f)
+
+    pil2tensor_passed,pil2tensor_failed = [],[]
+    for f in pil_passed:
+        try :
+            # it doesn't matter for the test if we convert "RGB" or "I"
+            im = PIL.Image.open(f).convert("RGB")
+            t  = pil2tensor(im,np.float)
+            pil2tensor_passed.append(f)
+        except:
+            pil2tensor_failed.append(f)
+            print(f"converting file: {f}  had Unexpected error:", sys.exc_info()[0])
+
+    if len(pil2tensor_failed)>0 :
+        print("\npil2tensor failed to convert the following images:")
+        [print(f) for f in pil2tensor_failed]
+
+    assert(len(pil2tensor_passed) == len(pil_passed))
+
+def test_vision_pil2tensor_16bit():
+    f    = Path(__file__) .parent/ "data/test/images/gray_16bit.png"
+    im   = PIL.Image.open(f).convert("I") # so that the 16bit values are preserved as integers
+    vmax = pil2tensor(im,np.int).data.numpy().max()
+    assert(vmax>255)
+
+def test_vision_pil2tensor_numpy():
+    "assert that the two arrays contains the same values"
+    arr  = np.random.rand(16,16,3)
+    diff = np.sort( pil2tensor(arr,np.float).data.numpy().flatten() ) - np.sort(arr.flatten())
+    assert( np.sum(diff==0)==len(arr.flatten()) )
