@@ -589,7 +589,7 @@ This section is currently focused on GPU RAM since it's the scarce resource, but
    assert isclose(used_before, used_after, rel_tol=0.02), "testing relative tolerance"
    ```
    This example compares used memory size (in MBs). The first assert compares whether the absolute difference between the two numbers is no more than 6.
-   The second assert does the same by uses relative tolerance in percentages, `0.02` in the example means `2%`. So the difference between the two numbers is no more than `2%`. Often absolute numbers provide a better test, because percent-based could result in quite a big gap if the numbers are big.
+   The second assert does the same but uses a relative tolerance in percents -- `0.02` in the example means `2%`. So the accepted difference between the two numbers is no more than `2%`. Often absolute numbers provide a better test, because a percent-based approach could result in quite a large gap if the numbers are big.
 
 
 
