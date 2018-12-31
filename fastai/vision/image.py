@@ -339,7 +339,7 @@ class ImageBBox(ImagePoints):
     def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, classes:dict=None,
                pad_idx:int=0, scale:bool=True)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
-        bboxes = tensor(bboxes).float()
+        bboxes = tensor(np.array([bb for bb in bboxes])).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
         bl_corners = bboxes[:,1:3].flip(1)
         bboxes = torch.cat([bboxes[:,:2], tr_corners, bl_corners, bboxes[:,2:]], 1)
