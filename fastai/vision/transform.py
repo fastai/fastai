@@ -200,7 +200,7 @@ def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
         matrix.append([0, 0, 0, p1[0], p1[1], 1, -p2[1]*p1[0], -p2[1]*p1[1]])
 
     A = FloatTensor(matrix)
-    B = FloatTensor(orig_pts).view(8)
+    B = FloatTensor(orig_pts).view(8, 1)
     #The 8 scalars we seek are solution of AX = B
     return torch.gesv(B,A)[0][:,0]
 
