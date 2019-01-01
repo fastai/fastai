@@ -63,14 +63,14 @@ class RNNLearner(Learner):
         get_model(self.model)[0].load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
         self.freeze()
 
-    def load_pretrained(self, wgts_fname:str, itos_fname:str):
+    def load_pretrained(self, wgts_fname:str, itos_fname:str, strict:bool=True):
         "Load a pretrained model and adapts it to the data vocabulary."
         old_itos = pickle.load(open(itos_fname, 'rb'))
         old_stoi = {v:k for k,v in enumerate(old_itos)}
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
         if 'model' in wgts: wgts = wgts['model']
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
-        self.model.load_state_dict(wgts)
+        self.model.load_state_dict(wgts, strict=strict)
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None,
                   ordered:bool=False) -> List[Tensor]:
@@ -122,7 +122,7 @@ class LanguageLearner(RNNLearner):
         display(HTML(text2html_table(items, ([34,33,33]))))
 
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
-                  drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
+                  drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model:str=None,
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
     "Create a `Learner` with a language model from `data`."
     dps = default_dropout['language'] * drop_mult
@@ -142,8 +142,8 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
     return learn
 
 def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
-               drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None,
-               ps:Collection[float]=None, **kwargs) -> 'TextClassifierLearner':
+               drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None, 
+               ps:Collection[float]=None, pretrained_model:str=None, **kwargs) -> 'TextClassifierLearner':
     "Create a RNN classifier from `data`."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
@@ -155,4 +155,9 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=
     model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
     learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    if pretrained_model is not None:
+        model_path = untar_data(pretrained_model, data=False)
+        fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        learn.load_pretrained(*fnames, strict=False)
+        learn.freeze()
     return learn
