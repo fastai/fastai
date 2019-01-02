@@ -150,6 +150,19 @@ class Callback():
     def on_train_end(self, **kwargs:Any)->None:
         "Useful for cleaning up things and saving files/models."
         pass
+    
+    def get_state(self, minimal:bool=True):
+        state = self.__dict__
+        to_remove = getattr(self, 'exclude', [])
+        if minimal: to_remove += getattr(self, 'not_min', [])
+        for k in to_remove: state.pop(k)
+        state['cls'] = self.__class__
+        return state
+    
+    def  __repr__(self): 
+        attrs = func_args(self.__init__)
+        list_repr = [self.__class__.__name__] + [f'{k}: {getattr(self, k)}' for k in attrs if k != 'self']
+        return '\n'.join(list_repr) 
 
 class SmoothenValue():
     "Create a smooth moving average for a value (loss, etc) using `beta`."

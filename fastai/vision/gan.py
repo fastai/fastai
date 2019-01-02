@@ -149,11 +149,11 @@ class GANTrainer(LearnerCallback):
         self.model.switch(gen_mode)
         self.loss_func.switch(gen_mode)
 
-@dataclass
 class FixedGANSwitcher(LearnerCallback):
     "Switcher to do `n_crit` iterations of the critic then `n_gen` iterations of the generator."
-    n_crit:Union[int,Callable]=1
-    n_gen:Union[int,Callable]=1
+    def __init__(self, learn:Learner, n_crit:Union[int,Callable]=1, n_gen:Union[int,Callable]=1):
+        super().__init__(self, learn)
+        self.n_crit,self.n_gen = n_crit,n_gen
 
     def on_train_begin(self, **kwargs):
         "Initiate the iteration counts."
@@ -175,8 +175,9 @@ class FixedGANSwitcher(LearnerCallback):
 @dataclass
 class AdaptiveGANSwitcher(LearnerCallback):
     "Switcher that goes back to generator/critic when the loes goes below `gen_thresh`/`crit_thresh`."
-    gen_thresh:float=None
-    critic_thresh:float=None
+    def __init__(self, learn:Learner, gen_thresh:float=None, critic_thresh:float=None):
+        super().__init__(self, learn)
+        self.gen_thresh,self.critic_thresh = gen_thresh,critic_thresh
 
     def on_batch_end(self, last_loss, **kwargs):
         "Switch the model if necessary."
@@ -274,10 +275,11 @@ def gan_critic(n_channels:int=3, nf:int=128, n_blocks:int=3, p:int=0.15):
         Flatten()]
     return nn.Sequential(*layers)
 
-@dataclass
 class GANDiscriminativeLR(LearnerCallback):
     "`Callback` that handles multiplying the learning rate by `mult_lr` for the critic."
-    mult_lr:float = 5.
+    def __init__(self, learn:Learner, mult_lr:float = 5.):
+        super().__init__(learn)
+        self.mult_lr = mult_lr
 
     def on_batch_begin(self, train, **kwargs):
         "Multiply the current lr if necessary."

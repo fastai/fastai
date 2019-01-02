@@ -5,13 +5,11 @@ from ..basic_train import Learner, LearnerCallback
 
 __all__ = ['RNNTrainer']
 
-@dataclass
 class RNNTrainer(LearnerCallback):
     "`Callback` that regroups lr adjustment to seq_len, AR and TAR."
-    bptt:int=0
-    alpha:float=0.
-    beta:float=0.
-    adjust:bool=True
+    def __init__(self, learn, bptt:int, alpha:float=0., beta:float=0., adjust:bool=True):
+        super().__init__(learn)
+        self.bptt,self.alpha,self.beta,self.adjust = bptt,alpha,beta,adjust
         
     def on_train_begin(self, **kwargs):
         "IN LM, put the training dataloader `first` attribute to `True` to avoid OOM."

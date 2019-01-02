@@ -24,13 +24,11 @@ class TerminateOnNaNCallback(Callback):
         "Stop the training if necessary."
         return self.stop
 
-@dataclass
 class TrackerCallback(LearnerCallback):
     "A `LearnerCallback` that keeps track of the best value in `monitor`."
-    monitor:str='val_loss'
-    mode:str='auto'
-
-    def __post_init__(self):
+    def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto'):
+        super().__init__(learn)
+        self.monitor,self.mode = monitor,mode
         if self.mode not in ['auto', 'min', 'max']:
             warn(f'{self.__class__} mode {self.mode} is invalid, falling back to "auto" mode.')
             self.mode = 'auto'
@@ -57,11 +55,9 @@ class TrackerCallback(LearnerCallback):
 @dataclass
 class EarlyStoppingCallback(TrackerCallback):
     "A `TrackerCallback` that terminates training when monitored quantity stops improving."
-    min_delta:int=0
-    patience:int=0
-
-    def __post_init__(self):
-        super().__post_init__()
+    def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto', min_delta:int=0, patience:int=0):
+        super().__init__(learn, monitor=monitor, mode=mode)
+        self.min_delta,self.patience = min_delta,patience
         if self.operator == np.less:  self.min_delta *= -1
 
     def on_train_begin(self, **kwargs:Any)->None:
@@ -81,12 +77,11 @@ class EarlyStoppingCallback(TrackerCallback):
                 print(f'Epoch {epoch}: early stopping')
                 return True
 
-@dataclass
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model when monitored quantity is best."
-    every:str='improvement'
-    name:str='bestmodel'
-    def __post_init__(self):
+    def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto', every:str='improvement', name:str='bestmodel'):
+        super().__init__(self, learn, monitor=monitor, mode=mode)
+        self.every,self.name = every,name
         if self.every not in ['improvement', 'epoch']:
             warn(f'SaveModel every {self.every} is invalid, falling back to "improvement".')
             self.every = 'improvement'
@@ -106,15 +101,12 @@ class SaveModelCallback(TrackerCallback):
         if self.every=="improvement" and (self.learn.path/f'{self.learn.model_dir}/{self.name}.pth').is_file():
             self.learn.load(f'{self.name}')
 
-@dataclass
 class ReduceLROnPlateauCallback(TrackerCallback):
     "A `TrackerCallback` that reduces learning rate when a metric has stopped improving."
-    patience:int=0
-    factor:float=0.2
-    min_delta:int=0
-
-    def __post_init__(self):
-        super().__post_init__()
+    def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto', patience:int=0, factor:float=0.2, 
+                 min_delta:int=0):
+        super().__init__(learn, monitor=monitor, mode=mode)
+        self.patience,self.factor,self.min_delta = patience,factor,min_delta
         if self.operator == np.less:  self.min_delta *= -1
 
     def on_train_begin(self, **kwargs:Any)->None:

@@ -76,10 +76,11 @@ class BnFreeze(LearnerCallback):
         "Put bn layers in eval mode just after `model.train()`."
         set_bn_eval(self.learn.model)
 
-@dataclass
 class GradientClipping(LearnerCallback):
     "Gradient clipping during training."
-    clip:float = 0.0
+    def __init__(self, learn:Learner, clip:float = 0.):
+        super().__init__(learn)
+        self.clip = clip
 
     def on_backward_end(self, **kwargs):
         "Clip the gradient before the optimizer step."

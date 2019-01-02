@@ -312,33 +312,22 @@ class RecordOnCPU(Callback):
     def on_batch_begin(self, last_input,last_target,**kwargs):
         self.input,self.target = to_cpu(last_input),to_cpu(last_target)
 
-@dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
-    learn: field(repr=False)
-    _learn: weakref.ref = field(init=False, repr=False)
+    def __init__(self, learn): 
+        self._learn = weakref.ref(learn)
+        self.exclude = ['_learn']
+        setattr(self.learn, self.cb_name, self)
     
-    def __post_init__(self): setattr(self.learn, self.cb_name, self)
     def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
     def learn(self) -> Learner: return self._learn()
-
     @learn.setter
     def learn(self, learn: Learner) -> None: self._learn = weakref.ref(learn)
 
     @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
-
-    def  __repr__(self): return f"{self.__class__.__name__}()"
-    
-    def __getstate__(self):
-        state = self.__dict__
-        state.pop('_learn')
-        return state
-    
-    def __setstate__(self, state):
-        for k,v in state.items: setattr(self, k, v)
 
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
