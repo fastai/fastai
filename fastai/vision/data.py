@@ -347,9 +347,11 @@ class ObjectCategoryList(MultiCategoryList):
 
     def get(self, i):
         return ImageBBox.create(*_get_size(self.x,i), *self.items[i], classes=self.classes, pad_idx=self.pad_idx)
-
+    
+    def analyze_pred(self, pred): return pred
+    
     def reconstruct(self, t, x):
-        bboxes, labels = t
+        (bboxes, labels) = t
         if len((labels - self.pad_idx).nonzero()) == 0: return
         i = (labels - self.pad_idx).nonzero().min()
         bboxes,labels = bboxes[i:],labels[i:]
