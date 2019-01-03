@@ -115,10 +115,15 @@ def _pad(x, padding:int, mode='reflection'):
 
 pad = TfmPixel(_pad, order=-10)
 
+def _minus_epsilon(row_pct:float, col_pct:float, eps:float=1e-7):
+    if row_pct==1.: row_pct -= 1e-7
+    if col_pct==1.: col_pct -= 1e-7
+    return row_pct,col_pct
 
 def _crop_default(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     "Crop `x` to `size` pixels. `row_pct`,`col_pct` select focal point of crop."
     rows,cols = tis2hw(size)
+    row_pct,col_pct = _minus_epsilon(row_pct,col_pct)
     row = int((x.size(1)-rows+1) * row_pct)
     col = int((x.size(2)-cols+1) * col_pct)
     return x[:, row:row+rows, col:col+cols].contiguous()
@@ -126,6 +131,7 @@ def _crop_default(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
 def _crop_image_points(x, size, row_pct=0.5, col_pct=0.5):
     h,w = x.size
     rows,cols = tis2hw(size)
+    row_pct,col_pct = _minus_epsilon(row_pct,col_pct)
     x.flow.flow.mul_(torch.Tensor([w/cols, h/rows])[None])
     row = int((h-rows+1) * row_pct)
     col = int((w-cols+1) * col_pct)
@@ -146,6 +152,7 @@ def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5,
     size = tis2hw(size)
     if x.shape[1:] == torch.Size(size): return x
     rows,cols = size
+    row_pct,col_pct = _minus_epsilon(row_pct,col_pct)
     if x.size(1)<rows or x.size(2)<cols:
         row_pad = max((rows-x.size(1)+1)//2, 0)
         col_pad = max((cols-x.size(2)+1)//2, 0)
