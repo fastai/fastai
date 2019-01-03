@@ -230,12 +230,12 @@ If you do the following sequence of GPU RAM allocations:
 x1 = allocate_gb(2) #        2GB | 6GB  | [XX______]
 x2 = allocate_gb(4) #        6GB | 2GB  | [XXXXXX__]
 del x1              #        4GB | 4GB  | [__XXXX__]
-x3 = allocate_gb(3) # RuntimeError: CUDA out of memory.failure to allocate 3GB
+x3 = allocate_gb(3) # failure to allocate 3GB w/ RuntimeError: CUDA out of memory
 ```
 
 despite having a total of 4GB of free GPU RAM (cached and free), the last command will fail, because it can't get 3GB of contiguous memory.
 
-You can conclude from this example, that it's crucial to always free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `dell()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
+You can conclude from this example, that it's crucial to always free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `del()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
 
 If you want to educate yourself on how and when the python garbage collector gets automatically invoked see [gc](https://docs.python.org/3/library/gc.html#gc.get_threshold) and [this](https://rushter.com/blog/python-garbage-collector/).
 
