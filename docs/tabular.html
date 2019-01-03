@@ -145,7 +145,7 @@ summary: "Application to tabular/structured data"
       <th>capital-loss</th>
       <th>hours-per-week</th>
       <th>native-country</th>
-      <th>&gt;=50k</th>
+      <th>salary</th>
     </tr>
   </thead>
   <tbody>
@@ -165,7 +165,7 @@ summary: "Application to tabular/structured data"
       <td>1902</td>
       <td>40</td>
       <td>United-States</td>
-      <td>1</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>1</th>
@@ -183,7 +183,7 @@ summary: "Application to tabular/structured data"
       <td>0</td>
       <td>45</td>
       <td>United-States</td>
-      <td>1</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>2</th>
@@ -201,7 +201,7 @@ summary: "Application to tabular/structured data"
       <td>0</td>
       <td>32</td>
       <td>United-States</td>
-      <td>0</td>
+      <td>&lt;50k</td>
     </tr>
     <tr>
       <th>3</th>
@@ -219,7 +219,7 @@ summary: "Application to tabular/structured data"
       <td>0</td>
       <td>40</td>
       <td>United-States</td>
-      <td>1</td>
+      <td>&gt;=50k</td>
     </tr>
     <tr>
       <th>4</th>
@@ -237,7 +237,7 @@ summary: "Application to tabular/structured data"
       <td>0</td>
       <td>50</td>
       <td>United-States</td>
-      <td>0</td>
+      <td>&lt;50k</td>
     </tr>
   </tbody>
 </table>
@@ -308,7 +308,7 @@ summary: "Application to tabular/structured data"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dep_var</span> <span class="o">=</span> <span class="s1">&#39;&gt;=50k&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dep_var</span> <span class="o">=</span> <span class="s1">&#39;salary&#39;</span>
 <span class="n">cat_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;native-country&#39;</span><span class="p">]</span>
 </pre></div>
 
@@ -343,7 +343,7 @@ summary: "Application to tabular/structured data"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[&#39;capital-gain&#39;, &#39;education-num&#39;, &#39;hours-per-week&#39;, &#39;capital-loss&#39;, &#39;fnlwgt&#39;, &#39;age&#39;]
+<pre>[&#39;capital-gain&#39;, &#39;hours-per-week&#39;, &#39;age&#39;, &#39;fnlwgt&#39;, &#39;capital-loss&#39;, &#39;education-num&#39;]
 </pre>
 </div>
 </div>
@@ -378,17 +378,17 @@ summary: "Application to tabular/structured data"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[[ 5  6  7  9  5  1  1 40  1]
- [ 5  9  5  5  2  3  1 10  1]
- [ 5  6  3  8  1  5  2 40  1]
- [ 5 12  3  4  1  5  2 40  1]
- [ 5 12  5 15  5  5  2 27  1]]
-[[-0.145922 -2.380691 -1.651622 -0.216787 -0.642793  2.151118]
- [-0.145922  0.362079 -0.439748 -0.216787  0.019226 -0.485059]
- [-0.145922 -2.380691 -0.035789 -0.216787  1.505258  0.759802]
- [ 0.549539 -0.421569 -0.035789 -0.216787 -0.900724  0.247212]
- [-0.145922 -0.421569 -0.035789 -0.216787  3.926718 -1.070876]]
-[0 0 0 1 0]
+<pre>[[ 5 15  3 11  1  5  2 40  1]
+ [ 5 12  5 15  4  5  2 40  1]
+ [ 7  6  7  6  5  5  1 40  1]
+ [ 5 12  3  8  1  5  2 40  1]
+ [ 5 10  3  4  1  5  2 40  1]]
+[[-1.459218e-01  3.195877e+00 -2.653773e-01  9.093628e-02  4.693008e+00  1.929376e+00]
+ [-4.224067e-03 -1.247664e+00 -1.510238e+00 -1.561173e-01 -2.167869e-01 -4.215691e-01]
+ [-1.459218e-01 -2.459539e+00  1.784982e+00 -7.425725e-01 -2.167869e-01 -2.380691e+00]
+ [-1.459218e-01 -3.578932e-02  1.007583e-01 -1.072195e+00 -2.167869e-01 -4.215691e-01]
+ [-1.459218e-01  3.681690e-01 -4.118315e-01 -7.420329e-01 -2.167869e-01  1.145728e+00]]
+[1 0 0 0 0]
 </pre>
 </div>
 </div>
@@ -446,9 +446,9 @@ Total time: 00:04 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.323456</th>
-    <th>0.313531</th>
-    <th>0.849000</th>
+    <th>0.327664</th>
+    <th>0.317699</th>
+    <th>0.847000</th>
   </tr>
 </table>
 
@@ -487,7 +487,7 @@ Total time: 00:04 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(Category 1, tensor(1), tensor([0.1910, 0.8090]))</pre>
+<pre>(Category &gt;=50k, tensor(1), tensor([0.2022, 0.7978]))</pre>
 </div>
 
 </div>
