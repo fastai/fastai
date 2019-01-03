@@ -17,8 +17,6 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 
 ### normal dependencies ###
 #
-# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
-#
 # these get resolved and installed via either of these two:
 #
 #   pip install fastai
@@ -27,6 +25,7 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
 #
+# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
 requirements = to_list("""
     bottleneck           # performance-improvement for numpy
     dataclasses ; python_version<'3.7'
@@ -58,11 +57,11 @@ requirements = to_list("""
 #
 # these, including the normal dependencies, get installed with:
 #
-#   pip install fastai[dev]
+#   pip install "fastai[dev]"
 #
 # or via an editable install:
 #
-#   pip install -e .[dev]
+#   pip install -e ".[dev]"
 #
 # some of the listed modules appear in test_requirements as well, as explained below.
 #
