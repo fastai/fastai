@@ -392,16 +392,15 @@ and it should just work. Now, go and sort out the rest of the installation, so t
 ## Conda environments not showing up in Jupyter Notebook
 
 While normally you shouldn't have this problem, and all the required things should get installed automatically, some users report that their jupyter notebook
-does not recognize newly created environments at times. They reported the following to work:
+does not recognize newly created environments at times. To fix that, perform:
 
 ```
-conda activate fastai-3.6
-conda install jupyter
-conda install nb_conda
-conda install nb_conda_kernels
-conda install ipykernel
-python -m ipykernel install --user --name fastai-3.6 --display-name "Python (fastai-3.6)"
+conda activate fastai
+conda install jupyter nb_conda nb_conda_kernels ipykernel
+python -m ipykernel install --user --name fastai --display-name "Python (fastai)"
 ```
+Replace `fastai` with the name of your conda environment if it's different.
+
 See also [Kernels for different environments](https://ipython.readthedocs.io/en/stable/install/kernel_install.html#kernels-for-different-environments).
 
 
