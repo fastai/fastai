@@ -201,6 +201,46 @@ How can we do a lot of experimentation in a given jupyter notebook w/o needing t
 To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.
 
 
+### GPU RAM Fragmentation
+
+If you encounter an error similar to the following:
+
+```
+RuntimeError: CUDA out of memory.
+Tried to allocate 350.00 MiB
+(GPU 0; 7.93 GiB total capacity; 5.73 GiB already allocated;
+324.56 MiB free; 1.34 GiB cached)
+```
+
+You may ask yourself, if there is 0.32 GB free and 1.34 GB cached (i.e. 1.66 GB total of unused memory), how can it not allocate 350 MB? This happens because of memory fragmentation.
+
+For the sake of this example let's assume that you have a function that allocates as many GBs of GPU RAM as its argument specifies:
+
+```
+def allocate_gb(n_gbs): ...
+```
+
+And you have an 8GB GPU card and no process is using it, so when a process is starting it's the first one to use it.
+
+If you do the following sequence of GPU RAM allocations:
+
+```
+                    # total used | free | 8gb of RAM
+                    #        0GB | 8GB  | [________]
+x1 = allocate_gb(2) #        2GB | 6GB  | [XX______]
+x2 = allocate_gb(4) #        6GB | 2GB  | [XXXXXX__]
+del x1              #        4GB | 4GB  | [__XXXX__]
+x3 = allocate_gb(3) # RuntimeError: CUDA out of memory.failure to allocate 3GB
+```
+
+despite having a total of 4GB of free GPU RAM (cached and free), the last command will fail, because it can't get 3GB of contiguous memory.
+
+You can conclude from this example, that it's crucial to always free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `dell()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
+
+If you want to educate yourself on how and when the python garbage collector gets automatically invoked see [gc](https://docs.python.org/3/library/gc.html#gc.get_threshold) and [this](https://rushter.com/blog/python-garbage-collector/).
+
+
+
 
 ### pytorch Tensor Memory Tracking
 
