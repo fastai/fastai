@@ -2,9 +2,10 @@
 from .torch_core import *
 from .basic_data import *
 from .callback import *
+from .data_block import *
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
-           'get_preds']
+           'get_preds', 'load_learner']
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
@@ -198,6 +199,18 @@ class Learner():
         "Unfreeze entire model."
         self.freeze_to(0)
         self.create_opt(defaults.lr)
+        
+    def export(self, fname:str='export.pkl'):
+        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
+        state = {a:getattr(self,a) for a in args}
+        state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
+        #layer_groups -> need to find a way
+        #TO SEE: do we save model structure and weights separately?
+        state['model'] = self.model 
+        xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
+        state['data'] = self.data.valid_ds.get_state(**xtra)
+        state['cls'] = self.__class__
+        pickle.dump(state, open(self.path/fname, 'wb'))
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
@@ -316,7 +329,7 @@ class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
     def __init__(self, learn): 
         self._learn = weakref.ref(learn)
-        self.exclude = ['_learn']
+        self.exclude,self.not_min = ['_learn'],[]
         setattr(self.learn, self.cb_name, self)
     
     def __getattr__(self,k): return getattr(self.learn, k)
@@ -436,3 +449,22 @@ class FakeOptimizer():
     def step(self): pass
     def zero_grad(self): pass
 
+def load_callback(class_func, state, learn:Learner):
+    init_kwargs, others = split_kwargs_by_func(state, class_func.__init__)
+    res = class_func(learn, **init_kwargs) if issubclass(class_func, LearnerCallback) else class_func(**init_kwargs)
+    for k,v in others.items(): setattr(res, k, v)
+    return res
+    
+def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
+    "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
+    state = pickle.load(open(path/fname, 'rb'))
+    model = state.pop('model')
+    src = LabelLists.load_state(path, state.pop('data'))
+    if test is not None: src.add_test(test)
+    data = src.databunch()
+    cb_state = state.pop('cb_state')
+    clas_func = state.pop('cls')
+    res = clas_func(data, model, **state)
+    res.callback_fns = state['callback_fns'] #to avoid duplicates
+    res.callbacks = [load_callback(c,s, res) for c,s in cb_state.items()]
+    return res

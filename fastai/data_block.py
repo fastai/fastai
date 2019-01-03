@@ -491,14 +491,20 @@ class LabelLists(ItemLists):
         # note: labels will be ignored if available in the test dataset
         items = self.x.__class__.from_folder(self.path/test_folder)
         return self.add_test(items.items, label=label)
+                
+    @classmethod
+    def load_state(cls, path:PathOrStr, state:dict):
+        "Create a `LabelLists` with empty sets from the serialzied `state`."
+        path = Path(path)
+        train_ds = LabelList.load_state(state)
+        valid_ds = LabelList.load_state(state)
+        return LabelLists(path, train=train_ds, valid=valid_ds)
 
     @classmethod
     def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl'):
-        "Create a `LabelLists` with empty sets from the serialzed file in `path/fn`."
-        path = Path(path)
-        train_ds = LabelList.load_empty(path/fn)
-        valid_ds = LabelList.load_empty(path/fn)
-        return LabelLists(path, train=train_ds, valid=valid_ds)
+        "Create a `LabelLists` with empty sets from the serialzed file in `path/fn`."      
+        state = pickle.load(open(path/fn, 'rb'))
+        return LabelLists.load_state(path, state)
 
 class LabelList(Dataset):
     "A list of inputs `x` and labels `y` with optional `tfms`."
@@ -565,20 +571,26 @@ class LabelList(Dataset):
         "Save `self.to_df()` to a CSV file in `self.path`/`dest`."
         self.to_df().to_csv(self.path/dest, index=False)
 
-    def export(self, fn:PathOrStr, **kwargs):
-        "Export the minimal state and save it in `fn` to load an empty version for inference."
+    def get_state(self, **kwargs):
+        "Return the minimal state for export."
         state = {'x_cls':self.x.__class__, 'x_proc':self.x.processor,
                  'y_cls':self.y.__class__, 'y_proc':self.y.processor,
                  'path':self.path, 'tfms':self.tfms, 'tfm_y':self.tfm_y, 'tfmargs':self.tfmargs}
         if hasattr(self, 'tfms_y'):    state['tfms_y']    = self.tfms_y
         if hasattr(self, 'tfmargs_y'): state['tfmargs_y'] = self.tfmargs_y
-        state = {**state, **kwargs}
-        pickle.dump(state, open(fn, 'wb'))
+        return {**state, **kwargs}
+                
+    def export(self, fn:PathOrStr, **kwargs):
+        "Export the minimal state and save it in `fn` to load an empty version for inference."
+        pickle.dump(self.get_state(**kwargs), open(fn, 'wb'))
 
     @classmethod
     def load_empty(cls, fn:PathOrStr):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
-        state = pickle.load(open(fn, 'rb'))
+        return cls.load_state(pickle.load(open(fn, 'rb')))
+    
+    @classmethod
+    def load_state(cls, state:dict):
         x = state['x_cls']([], path=state['path'], processor=state['x_proc'], ignore_empty=True)
         y = state['y_cls']([], path=state['path'], processor=state['y_proc'], ignore_empty=True)
         res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()

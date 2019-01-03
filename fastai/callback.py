@@ -118,7 +118,7 @@ class OptimWrapper():
 
 class Callback():
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
-    _order=0
+    _order=0 
     def on_train_begin(self, **kwargs:Any)->None:
         "To initialize constants in the callback."
         pass
@@ -152,16 +152,14 @@ class Callback():
         pass
     
     def get_state(self, minimal:bool=True):
-        state = self.__dict__
-        to_remove = getattr(self, 'exclude', [])
-        if minimal: to_remove += getattr(self, 'not_min', [])
-        for k in to_remove: state.pop(k)
-        state['cls'] = self.__class__
-        return state
+        to_remove = ['exclude', 'not_min'] + getattr(self, 'exclude', []).copy()
+        if minimal: to_remove += getattr(self, 'not_min', []).copy()
+        return {k:v for k,v in self.__dict__.items() if k not in to_remove}
     
     def  __repr__(self): 
         attrs = func_args(self.__init__)
-        list_repr = [self.__class__.__name__] + [f'{k}: {getattr(self, k)}' for k in attrs if k != 'self']
+        to_remove = getattr(self, 'exclude', [])
+        list_repr = [self.__class__.__name__] + [f'{k}: {getattr(self, k)}' for k in attrs if k != 'self' and k not in to_remove]
         return '\n'.join(list_repr) 
 
 class SmoothenValue():
@@ -329,4 +327,3 @@ class Stepper():
     def is_done(self)->bool:
         "Return `True` if schedule completed."
         return self.n >= self.n_iter
-

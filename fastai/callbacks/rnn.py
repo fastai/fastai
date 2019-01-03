@@ -9,6 +9,7 @@ class RNNTrainer(LearnerCallback):
     "`Callback` that regroups lr adjustment to seq_len, AR and TAR."
     def __init__(self, learn, bptt:int, alpha:float=0., beta:float=0., adjust:bool=True):
         super().__init__(learn)
+        self.not_min += ['raw_out', 'out']
         self.bptt,self.alpha,self.beta,self.adjust = bptt,alpha,beta,adjust
         
     def on_train_begin(self, **kwargs):

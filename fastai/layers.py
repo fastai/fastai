@@ -20,10 +20,16 @@ def ResizeBatch(*size:int) -> Tensor:
     "Layer that resizes x to `size`, good for connecting mismatched layers."
     return Lambda(lambda x: x.view((-1,)+size))
 
-def Flatten(full:bool=False)->Tensor:
+class Flatten(nn.Module):
     "Flatten `x` to a single dimension, often used at the end of a model. `full` for rank-1 tensor"
-    func = (lambda x: x.view(-1)) if full else (lambda x: x.view(x.size(0), -1))
-    return Lambda(func)
+    def __init__(self, full:bool=False):
+        super().__init__()
+        self.full = full
+    
+    def forward(self, x):
+        return x.view(-1) if self.full else x.view(x.size(0), -1)
+    #func = (lambda x: x.view(-1)) if full else (lambda x: x.view(x.size(0), -1))
+    #return Lambda(func)
 
 def PoolFlatten()->nn.Sequential:
     "Apply `nn.AdaptiveAvgPool2d` to `x` and then flatten the result."
