@@ -152,7 +152,7 @@ class GANTrainer(LearnerCallback):
 class FixedGANSwitcher(LearnerCallback):
     "Switcher to do `n_crit` iterations of the critic then `n_gen` iterations of the generator."
     def __init__(self, learn:Learner, n_crit:Union[int,Callable]=1, n_gen:Union[int,Callable]=1):
-        super().__init__(self, learn)
+        super().__init__(learn)
         self.n_crit,self.n_gen = n_crit,n_gen
 
     def on_train_begin(self, **kwargs):
@@ -176,7 +176,7 @@ class FixedGANSwitcher(LearnerCallback):
 class AdaptiveGANSwitcher(LearnerCallback):
     "Switcher that goes back to generator/critic when the loes goes below `gen_thresh`/`crit_thresh`."
     def __init__(self, learn:Learner, gen_thresh:float=None, critic_thresh:float=None):
-        super().__init__(self, learn)
+        super().__init__(learn)
         self.gen_thresh,self.critic_thresh = gen_thresh,critic_thresh
 
     def on_batch_end(self, last_loss, **kwargs):
@@ -236,19 +236,19 @@ class NoisyItem(ItemBase):
 class GANItemList(ImageItemList):
     "`ItemList` suitable for GANs."
     _label_cls = ImageItemList
-    
+
     def __init__(self, items, noise_sz:int=100, **kwargs):
         super().__init__(items, **kwargs)
         self.noise_sz = noise_sz
         self.copy_new.append('noise_sz')
-    
+
     def get(self, i): return NoisyItem(self.noise_sz)
     def reconstruct(self, t): return NoisyItem(t.size(0))
-    
+
     def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Shows `ys` (target images) on a figure of `figsize`."
         super().show_xys(ys, xs, imgsize=imgsize, figsize=figsize, **kwargs)
-        
+
     def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Shows `zs` (generated images) on a figure of `figsize`."
         super().show_xys(zs, xs, imgsize=imgsize, figsize=figsize, **kwargs)
@@ -302,4 +302,3 @@ def accuracy_thresh_expand(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmo
     "Compute accuracy after expanding `y_true` to the size of `y_pred`."
     if sigmoid: y_pred = y_pred.sigmoid()
     return ((y_pred>thresh)==y_true[:,None].expand_as(y_pred).byte()).float().mean()
-
