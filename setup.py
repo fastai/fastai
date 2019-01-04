@@ -30,7 +30,7 @@ requirements = to_list("""
     bottleneck           # performance-improvement for numpy
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
-    bs4
+    beautifulsoup4
     matplotlib
     numexpr              # performance-improvement for numpy
     numpy>=1.12

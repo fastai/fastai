@@ -17,6 +17,8 @@ of that change.
 
 ### New:
 
+- `ImageDownloader()` widget for quick image datasets research
+
 ### Changed:
 
 - If no label is provided, the test set has `EmptyLabel` for every item
