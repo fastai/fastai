@@ -80,7 +80,7 @@ class EarlyStoppingCallback(TrackerCallback):
 class SaveModelCallback(TrackerCallback):
     "A `TrackerCallback` that saves the model when monitored quantity is best."
     def __init__(self, learn:Learner, monitor:str='val_loss', mode:str='auto', every:str='improvement', name:str='bestmodel'):
-        super().__init__(self, learn, monitor=monitor, mode=mode)
+        super().__init__(learn, monitor=monitor, mode=mode)
         self.every,self.name = every,name
         if self.every not in ['improvement', 'epoch']:
             warn(f'SaveModel every {self.every} is invalid, falling back to "improvement".')
