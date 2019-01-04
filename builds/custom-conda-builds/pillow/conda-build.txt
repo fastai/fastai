@@ -33,7 +33,7 @@ cd builds/custom-conda-builds/pillow # this dir
 git clone https://github.com/python-pillow/Pillow Pillow
 cd Pillow
 # optionally switch to a desired release tag, otherwise you're on the bleeding edge
-# git checkout tags/5.3.0
+# git checkout tags/5.4.0
 cp -r ../recipe .
 
 
@@ -49,13 +49,17 @@ pip   uninstall -y         pillow pil jpeg libtiff
 # presumes libjpeg-turbo libtiff were built locally - see
 # builds/custom-conda-builds/libjpeg-turbo and
 # builds/custom-conda-builds/libtiff
-conda install -c ${CONDA_PREFIX}/conda-bld/ libjpeg-turbo libtiff
-# or if they are already on fastai:
-conda install -c fastai/label/test libjpeg-turbo libtiff
-
-
+conda install -y -c ${CONDA_PREFIX}/conda-bld/ libjpeg-turbo libtiff
 python setup.py sdist
 MAKEFLAGS="-j" conda-build -c fastai recipe/meta.yaml
+
+# or if they are already on fastai:
+conda install -y -c fastai/label/test libjpeg-turbo libtiff
+python setup.py sdist
+MAKEFLAGS="-j" conda-build -c fastai -c fastai/label/test recipe/meta.yaml
+
+# to build 5.4.0 I also had to do:
+sudo apt-get install gcc-multilib g++-multilib
 
 
 ### Build against -c conda-forge libjpeg-turbo
@@ -63,12 +67,9 @@ MAKEFLAGS="-j" conda-build -c fastai recipe/meta.yaml
 XXX: outdated - probably don't need any more?
 
 (Alternative build)
-
 conda uninstall -y --force pillow pil jpeg libtiff
 pip   uninstall -y         pillow pil jpeg libtiff
-
 conda install -y -c conda-forge libjpeg-turbo
-
 python setup.py sdist
 MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
 
@@ -76,7 +77,7 @@ MAKEFLAGS="-j" conda-build -c conda-forge recipe/meta.yaml
 
 ## Install
 
-conda install -c ${CONDA_PREFIX}/conda-bld/ pillow
+conda install -y -c ${CONDA_PREFIX}/conda-bld/ pillow
 
 # need to add the build channel as highest priority, otherwise the
 # package will get overridden with `conda install pillow` or any other
