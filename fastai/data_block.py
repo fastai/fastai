@@ -97,7 +97,8 @@ class ItemList():
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True,
                     include:Optional[Collection[str]]=None, **kwargs)->'ItemList':
-        "Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`. `recurse` determines if we search subfolders."
+        """Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`. 
+        `recurse` determines if we search subfolders."""
         path = Path(path)
         return cls(get_files(path, extensions, recurse=recurse, include=include), path=path, **kwargs)
 
@@ -280,9 +281,9 @@ class CategoryProcessor(PreProcessor):
 
     def process_one(self,item):
         if isinstance(item, EmptyLabel): return item
-        try: return self.c2i[item] if item is not None else None
-        except:
-            raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
+        return self.c2i.get(item,None) if item is not None else None
+        #except:
+        #    raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
 
     def process(self, ds):
         if self.classes is None: self.create_classes(self.generate_classes(ds.items))
@@ -297,6 +298,7 @@ class CategoryListBase(ItemList):
     "Basic `ItemList` for classification."
     def __init__(self, items:Iterator, classes:Collection=None, **kwargs):
         self.classes=classes
+        self.filter_missing_y = True
         super().__init__(items, **kwargs)
 
     @property
@@ -464,7 +466,10 @@ class LabelLists(ItemLists):
     def process(self):
         "Process the inner datasets."
         xp,yp = self.get_processors()
-        for i,ds in enumerate(self.lists): ds.process(xp, yp, filter_missing_y=i==0)
+        for ds,n in zip(self.lists, ['train','valid','test']): ds.process(xp, yp, name=n)
+        #progress_bar clear the outputs so in some case warnings issued during processing disappear.
+        for ds in self.lists:
+            if getattr(ds, 'warn', False): warn(ds.warn)
         return self
 
     def databunch(self, path:PathOrStr=None, **kwargs)->'ImageDataBunch':
@@ -494,7 +499,7 @@ class LabelLists(ItemLists):
                 
     @classmethod
     def load_state(cls, path:PathOrStr, state:dict):
-        "Create a `LabelLists` with empty sets from the serialzied `state`."
+        "Create a `LabelLists` with empty sets from the serialized `state`."
         path = Path(path)
         train_ds = LabelList.load_state(state)
         valid_ds = LabelList.load_state(state)
@@ -599,12 +604,15 @@ class LabelList(Dataset):
         if state.get('normalize', False): res.normalize = state['normalize']
         return res
 
-    def process(self, xp:PreProcessor=None, yp:PreProcessor=None, filter_missing_y:bool=False):
+    def process(self, xp:PreProcessor=None, yp:PreProcessor=None, name:str=None):
         "Launch the processing on `self.x` and `self.y` with `xp` and `yp`."
         self.y.process(yp)
-        if filter_missing_y and (getattr(self.x, 'filter_missing_y', None)):
+        if getattr(self.y, 'filter_missing_y', False):
             filt = array([o is None for o in self.y])
-            if filt.sum()>0: self.x,self.y = self.x[~filt],self.y[~filt]
+            if filt.sum()>0: 
+                #Warnings are given later since progress_bar might make them disappear.
+                self.warn = f"Your {name} set contained unknown labels, the corresponding items have been discarded." 
+                self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)
         return self
 

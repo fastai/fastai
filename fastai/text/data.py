@@ -265,7 +265,6 @@ class TextList(ItemList):
     _is_lm = False
 
     def __init__(self, items:Iterator, vocab:Vocab=None, pad_idx:int=1, **kwargs):
-        self.filter_missing_y = True
         super().__init__(items, **kwargs)
         self.vocab,self.pad_idx = vocab,pad_idx
         self.copy_new += ['vocab', 'pad_idx']
