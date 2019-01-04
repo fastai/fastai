@@ -21,7 +21,7 @@ def test_model_summary_text():
 
 def test_model_summary_tabular():
     path = untar_data(URLs.ADULT_SAMPLE)
-    dep_var = '>=50k'
+    dep_var = 'salary'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race']
     cont_names = ['age', 'fnlwgt', 'education-num']
     procs = [FillMissing, Categorify]
