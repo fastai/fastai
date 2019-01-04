@@ -207,8 +207,6 @@ conda uninstall -y pillow libjpeg-turbo
 conda install -c fastai/label/test pillow
 ```
 
-Note that this is pillow-5.4.0.dev0 build - i.e. don't use in production w/o testing.
-
 There is also `pillow-simd-5.3.0.post0` built against `libjpeg-turbo` and with avx2 - only linux/py36.
 
 ```
