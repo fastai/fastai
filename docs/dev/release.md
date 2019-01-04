@@ -165,6 +165,12 @@ The starting point of the workflow is a dev version of the master branch. For th
     make test                     # py.test tests
     ```
 
+    Another optional target is `test-cpu`, which emulates no gpus environment, by running the tests with environment variable `CUDA_VISIBLE_DEVICES=""`:
+    ```
+    make test-cpu
+    ```
+
+
 7. start release-$(version) branch
 
 

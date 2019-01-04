@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-install-conda test-install test-install-pyp upload upload-conda upload-pypi install-conda-local
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-cpu test-install-conda test-install test-install-pyp upload upload-conda upload-pypi install-conda-local
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -167,6 +167,9 @@ install: clean ## install the package to the active python's site-packages
 
 test: ## run tests with the default python
 	python setup.py --quiet test
+
+test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
+	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
 
 tools-update: ## install/update build tools
 	@echo "\n\n*** Updating build tools"
