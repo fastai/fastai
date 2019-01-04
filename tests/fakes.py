@@ -50,13 +50,20 @@ class RandomItemList(ItemList):
         res = [f'{repr(x)},{repr(y)},{repr(z)}' for x,y,z in zip(xs, ys, zs)]
         print('\n'.join(res))
 
+def fake_basedata(n_in:int=5,batch_size:int=5, train_length:int=None, valid_length:int=None):
+    if train_length is None: train_length = 2 * batch_size
+    if valid_length is None: valid_length = batch_size
+    
+    return torch.empty([train_length+valid_length, n_in]).random_(-10, 10)
+                
+              
 def fake_data(n_in:int=5, n_out:int=4, batch_size:int=5, train_length:int=None, valid_length:int=None):
     if train_length is None: train_length = 2 * batch_size
     if valid_length is None: valid_length = batch_size
     return (RandomItemList([0] * (train_length+valid_length), sizes=[n_in])
                 .split_by_idx(list(range(valid_length)))
                 .label_const(0., y_range=[0,n_out])
-                .databunch(bs=batch_size))
+                .databunch(bs=batch_size))                
 
 def fake_learner(n_in=5, n_out=4, batch_size:int=5, train_length:int=None, valid_length:int=None):
     data = fake_data(n_in=n_in, n_out=n_out, batch_size=batch_size, train_length=train_length, valid_length=valid_length)
