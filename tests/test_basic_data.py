@@ -18,16 +18,12 @@ import sys
 ## Class DataBunch
 
 def test_DataBunch_Create():
-    x_train =  fake_basedata(n_in=3, batch_size=6) 
-    y_train =  fake_basedata(n_in=3, batch_size=6) 
-    x_valid =  fake_basedata(n_in=3, batch_size=3) 
-    y_valid =  fake_basedata(n_in=3, batch_size=3) 
+    x_train,y_train =  fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
+    x_valid,y_valid =  fake_basedata(n_in=3, batch_size=3),fake_basedata(n_in=3, batch_size=3)
     bs=5
-    train_ds = TensorDataset(x_train, y_train)
-    valid_ds = TensorDataset(x_valid, y_valid)
+    train_ds,valid_ds = TensorDataset(x_train, y_train),TensorDataset(x_valid, y_valid)
     data = DataBunch.create(train_ds, valid_ds, bs=bs)
    
-    ##print(data.shape)
     assert 3 == len(data.train_dl)
     assert 18 == len(data.train_ds)
     assert 2 == len(data.valid_dl)
@@ -37,10 +33,9 @@ def test_DataBunch_Create():
 def test_DataBunch_onebatch():
     data = fake_data(n_in=4, n_out=5, batch_size=6)
     x,y = data.one_batch()
-    ##print(x.shape)
-    assert 4 == x[0].shape[0] ## print(x[1].shape[0]) ## 4 /  print(len(x[0])) ## 4 /  print(len(x[1])) ## 4
-    assert 6 == x.shape[0] ## 6 print(len(x)) ## 6
-    assert 6 == y.shape[0] ## 6 print(len(y)) ## 6
+    assert 4 == x[0].shape[0] 
+    assert 6 == x.shape[0] 
+    assert 6 == y.shape[0] 
 
     
 def test_DataBunch_oneitem():
