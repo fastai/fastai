@@ -1,8 +1,8 @@
 import pytest,fastai
 from fakes import *
 
-## filename: test_basic_data.py
-## tests code in basic_data.py -s
+## filename: test_basic_train.py
+## tests code in basic_train.py -s
 
 ## run: pytest tests/test_basic_train.py -s
 
