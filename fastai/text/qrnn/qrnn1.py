@@ -77,7 +77,8 @@ class QRNNLayer(nn.Module):
         if self.window == 1: source = X
         elif self.window == 2:
             Xm1 = [self.prevX if self.prevX is not None else (X[:,:1] if self.batch_first else X[:1])* 0]
-            if len(X) > 1: Xm1.append((X[:,:-1] if self.batch_first else X[:-1]))
+            if self.batch_first and X.shape[1] > 1:   Xm1.append(X[:,:-1]) 
+            elif not self.batch_first and len(X) > 1: Xm1.append(X[:-1])
             Xm1 = torch.cat(Xm1, dim = (1 if self.batch_first else 0))
             source = torch.cat([X, Xm1], 2)
         # Matrix multiplication for the three outputs: Z, F, O
