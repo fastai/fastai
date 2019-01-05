@@ -66,7 +66,7 @@ class DynamicUnet(SequentialEx):
         if imsize != sfs_szs[0][-2:]: layers.append(PixelShuffle_ICNR(ni, **kwargs))
         if last_cross:
             layers.append(MergeLayer(dense=True))
-            ni += 3
+            ni += in_channels(encoder)
             layers.append(res_block(ni, bottle=bottle, **kwargs))
         layers += [conv_layer(ni, n_classes, ks=1, use_activ=False, **kwargs)]
         if y_range is not None: layers.append(SigmoidRange(*y_range))
