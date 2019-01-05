@@ -616,8 +616,9 @@ class LabelList(Dataset):
                 self.warn = f"Your {name} set contained the folowing unknown labels, the corresponding items have been discarded.\n"
                 for p in self.y.processor:
                     if len(getattr(p, 'warns', [])) > 0: 
-                        self.warn += ', '.join(p.warns[:5])
-                        if len(p.warns) > 5: self.warn += "..."
+                        warnings = list(set(p.warns))
+                        self.warn += ', '.join(warnings[:5])
+                        if len(warnings) > 5: self.warn += "..."
                     p.warns = []
                 self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)
