@@ -389,6 +389,35 @@ and it should just work. Now, go and sort out the rest of the installation, so t
 
 
 
+## ModuleNotFoundError: No module named ‘fastai.vision’
+
+If you have multiple environments, it's very possible that you installed `fastai` into one environment, but then are trying to use it from another, where it's not installed. Even more confusing, the situation where different environments have different versions of `fastai` installed, so its modules are found, but they don't work as you'd expect them to.
+
+If you use jupyter notebook, always make sure you activated the environment you installed `fastai` into before starting the `notebook`.
+
+There is an easy way to check whether you're in the right environment by either running from jupyter cell or in your code:
+
+```
+import sys
+print(sys.path)
+```
+and checking whether it shows the correct paths. That is compare these paths with the paths you installed `fastai` into.
+
+Alternatively, you can use the `fastai` helper that will show you that and other important details about your environment:
+
+```
+from fastai.utils.show_install import *
+show_install()
+```
+
+or the same from the command line:
+```
+python -m fastai.utils.show_install
+```
+Incidentally, we want you to include its output in any bug reports you may submit in the future.
+
+
+
 ## Conda environments not showing up in Jupyter Notebook
 
 While normally you shouldn't have this problem, and all the required things should get installed automatically, some users report that their jupyter notebook
