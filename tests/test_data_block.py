@@ -91,6 +91,7 @@ def test_category_processor_non_existing_class():
     sd = l1.split_by_idx([2, 4])
     ll = sd.label_from_df(1)
     assert ll.y.processor[0].process_one('d') is None
+    assert ll.y.processor[0].warns == ['d']
 
 def test_splitdata_datasets():
     c1,ratio,n = list('abc'),0.2,10

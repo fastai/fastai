@@ -37,14 +37,16 @@ def test_from_folder():
     assert set(data.classes) == {'neg', 'pos'}
     shutil.rmtree(path/'temp')
 
-@pytest.mark.xfail(reason = "Sylvain needs to fix me.")    
 def test_filter_classes():
     path = untar_data(URLs.IMDB_SAMPLE)
     text_files(path, ['pos', 'neg', 'unsup'])
-    data = (TextList.from_folder(path/'temp')
-               .random_split_by_pct(0.1)
-               .label_from_folder(classes=['pos', 'neg'])
-               .databunch())
+    with pytest.warns(UserWarning):
+        data = (TextList.from_folder(path/'temp')
+                 .random_split_by_pct(0.1)
+                 .label_from_folder(classes=['pos', 'neg'])
+                 .databunch())
+    assert (len(data.train_ds) + len(data.valid_ds)) == 80
+    assert set(data.classes) == {'neg', 'pos'}
     shutil.rmtree(path/'temp')
 
 def special_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")

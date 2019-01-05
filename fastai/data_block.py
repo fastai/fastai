@@ -269,7 +269,9 @@ class EmptyLabelList(ItemList):
 
 class CategoryProcessor(PreProcessor):
     "`PreProcessor` that create `classes` from `ds.items` and handle the mapping."
-    def __init__(self, ds:ItemList): self.create_classes(ds.classes)
+    def __init__(self, ds:ItemList): 
+        self.create_classes(ds.classes)
+        self.warns = []
 
     def create_classes(self, classes):
         self.classes = classes
@@ -281,10 +283,10 @@ class CategoryProcessor(PreProcessor):
 
     def process_one(self,item):
         if isinstance(item, EmptyLabel): return item
-        return self.c2i.get(item,None) if item is not None else None
-        #except:
-        #    raise Exception("Your validation data contains a label that isn't present in the training set, please fix your data.")
-
+        res = self.c2i.get(item,None)
+        if res is None: self.warns.append(item)
+        return res
+        
     def process(self, ds):
         if self.classes is None: self.create_classes(self.generate_classes(ds.items))
         ds.classes = self.classes
@@ -611,7 +613,12 @@ class LabelList(Dataset):
             filt = array([o is None for o in self.y])
             if filt.sum()>0: 
                 #Warnings are given later since progress_bar might make them disappear.
-                self.warn = f"Your {name} set contained unknown labels, the corresponding items have been discarded." 
+                self.warn = f"Your {name} set contained the folowing unknown labels, the corresponding items have been discarded.\n"
+                for p in self.y.processor:
+                    if len(getattr(p, 'warns', [])) > 0: 
+                        self.warn += ', '.join(p.warns[:5])
+                        if len(p.warns) > 5: self.warn += "..."
+                    p.warns = []
                 self.x,self.y = self.x[~filt],self.y[~filt]
         self.x.process(xp)
         return self
