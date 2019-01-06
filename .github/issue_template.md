@@ -13,12 +13,12 @@ fastai-0.7.x: http://forums.fast.ai/t/fastai-v0-install-issues-thread/24652
 <!-- A clear and concise description of what the bug is. -->
 
 **Provide your installation details**
-<!-- Copy-n-paste the output of running either this cell in jupyter:
+<!-- Copy-n-paste the output of `show_install`, by either running this cell in jupyter notebook:
 ```
 from fastai.utils.show_install import *
 show_install()
 ```
-the same can be accomplished by running the following in your shell:
+or via your shell:
 ```
 python -m fastai.utils.show_install
 ```
