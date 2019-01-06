@@ -12,7 +12,7 @@ fastai-0.7.x: http://forums.fast.ai/t/fastai-v0-install-issues-thread/24652
 **Describe the bug**
 <!-- A clear and concise description of what the bug is. -->
 
-**Give us your isntallation**
+**Give us your installation**
 <!-- Copy-paste the result of the cell
 ```
 from fastai.utils.show_install import *
