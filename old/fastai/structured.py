@@ -1,4 +1,4 @@
-from .imports import *
+from imports import *
 
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import LabelEncoder, Imputer, StandardScaler
