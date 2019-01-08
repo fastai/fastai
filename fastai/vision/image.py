@@ -94,14 +94,14 @@ class Image(ItemBase):
 
     def apply_tfms(self, tfms:TfmList, do_resolve:bool=True, xtra:Optional[Dict[Callable,dict]]=None,
                    size:Optional[Union[int,TensorImageSize]]=None, resize_method:ResizeMethod=ResizeMethod.CROP,
-                   mult:int=32, padding_mode:str='reflection', mode:str='bilinear')->TensorImage:
+                   mult:int=32, padding_mode:str='reflection', mode:str='bilinear', remove_out:bool=True)->TensorImage:
         "Apply all `tfms` to the `Image`, if `do_resolve` picks value for random args."
         if not (tfms or xtra or size): return self
         xtra = ifnone(xtra, {})
         tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
         if do_resolve: _resolve_tfms(tfms)
         x = self.clone()
-        x.set_sample(padding_mode=padding_mode, mode=mode)
+        x.set_sample(padding_mode=padding_mode, mode=mode, remove_out=remove_out)
         if size is not None:
             crop_target = _get_crop_target(size, mult=mult)
             if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
@@ -261,7 +261,7 @@ class ImagePoints(Image):
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
     def _repr_image_format(self, format_str): return None
-
+    
     @property
     def flow(self)->FlowField:
         "Access the flow-field grid after applying queued affine and coord transforms."
