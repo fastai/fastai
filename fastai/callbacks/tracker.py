@@ -85,7 +85,6 @@ class SaveModelCallback(TrackerCallback):
         if self.every not in ['improvement', 'epoch']:
             warn(f'SaveModel every {self.every} is invalid, falling back to "improvement".')
             self.every = 'improvement'
-        super().__post_init__()
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
         "Compare the value monitored to its best score and maybe save the model."
