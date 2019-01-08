@@ -40,9 +40,11 @@ def to_fp16(learn:Learner, loss_scale:float=512., flat_master:bool=False)->Learn
 
 def to_fp32(learn:Learner):
     "Put `learn` back to FP32 precision mode."
-    learn.data.train_dl.remove_tfm(to_half)
+    learn.data.train_dl.remove_tfm(batch_to_half)
     if hasattr(learn.data, 'valid_dl') and learn.data.valid_dl is not None:
-        learn.data.valid_dl.remove_tfm(to_half)
+        learn.data.valid_dl.remove_tfm(batch_to_half)
+    if hasattr(learn.data, 'test_dl') and learn.data.test_dl is not None:
+        learn.data.test_dl.remove_tfm(batch_to_half)
     learn.model = learn.model.float()
 
 def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True) -> Learner:

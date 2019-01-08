@@ -94,6 +94,11 @@ def to_cpu(b:ItemsList):
     if is_listy(b): return [to_cpu(o) for o in b]
     return b.cpu() if isinstance(b,Tensor) else b
 
+def to_half(b:Collection[Tensor])->Collection[Tensor]:
+    "Recursively map lists of tensors in `b ` to FP16."
+    if is_listy(b): return [to_half(o) for o in b]
+    return b.half() if b.dtype != torch.int64 else b
+
 def to_device(b:Tensors, device:torch.device):
     "Recursively put `b` on `device`."
     device = ifnone(device, defaults.device)
@@ -173,9 +178,9 @@ def set_bn_eval(m:nn.Module)->None:
             l.eval()
         set_bn_eval(l)
 
-def to_half(b:Collection[Tensor])->Collection[Tensor]:
-    "Set the input of batch `b` to half precision if isn't an int type."
-    return [b[0].half(), b[1]] if b[0].dtype != torch.int64 else b
+def batch_to_half(b:Collection[Tensor])->Collection[Tensor]:
+    "Set the input of batch `b` to half precision."
+    return [to_half(b[0]), b[1]]
 
 def bn2float(module:nn.Module)->nn.Module:
     "If `module` is batchnorm don't use half precision."

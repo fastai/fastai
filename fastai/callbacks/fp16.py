@@ -61,11 +61,11 @@ class MixedPrecision(LearnerCallback):
 
     def on_train_begin(self, **kwargs:Any)->None:
         "Ensure everything is in half precision mode."
-        self.learn.data.train_dl.add_tfm(to_half)
+        self.learn.data.train_dl.add_tfm(batch_to_half)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.add_tfm(to_half)
+            self.learn.data.valid_dl.add_tfm(batch_to_half)
         if hasattr(self.learn.data, 'test_dl') and self.learn.data.test_dl is not None:
-            self.learn.data.test_dl.add_tfm(to_half)
+            self.learn.data.test_dl.add_tfm(batch_to_half)
         #Get a copy of the model params in FP32
         self.model_params, self.master_params = get_master(self.learn.layer_groups, self.flat_master)
         #Changes the optimizer so that the optimization step is done in FP32.

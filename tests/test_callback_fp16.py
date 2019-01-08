@@ -22,7 +22,13 @@ def test_model2half_forward():
     assert (res2.float() - res1).abs().sum() < 0.01
 
 def test_to_half():
-    t1,t2 = torch.ones([1]),torch.ones([1])
+    t1,t2 = torch.ones([1]).long(),torch.ones([1])
     half = to_half([t1,t2])
+    assert isinstance(half[0],torch.LongTensor)
+    assert isinstance(half[1],torch.HalfTensor)
+    
+def test_batch_to_half():
+    t1,t2 = torch.ones([1]),torch.ones([1])
+    half = batch_to_half([t1,t2])
     assert isinstance(half[0],torch.HalfTensor)
-    assert isinstance(half[1],torch.FloatTensor)
+    assert isinstance(half[1],torch.FloatTensor)    
