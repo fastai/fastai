@@ -51,11 +51,12 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
     return torch.cat(imgs,0), (bboxes,labels)
 
 def _maybe_add_crop_pad(tfms):
-    tfm_names = [tfm.__name__ for tfm in tfms]
-    return [crop_pad()] + tfms if 'crop_pad' not in tfm_names else tfms
+    tfms = ifnone(tfms, [[],[]])
+    tfm_names = [[tfm.__name__ for tfm in o] for o in tfms]
+    return [([crop_pad()] + o if 'crop_pad' not in n else o) for o,n in zip(tfms, tfm_names)]
 
-def _prep_tfm_kwargs(tfms, kwargs):
-    default_rsz = ResizeMethod.SQUISH if ('size' in kwargs and is_listy(kwargs['size'])) else ResizeMethod.CROP
+def _prep_tfm_kwargs(tfms, size, kwargs):
+    default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
     resize_method = ifnone(kwargs.get('resize_method', default_rsz), default_rsz)
     if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
     kwargs['resize_method'] = resize_method
@@ -98,8 +99,10 @@ class ImageDataBunch(DataBunch):
     @classmethod
     def create_from_ll(cls, lls:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False, **kwargs)->'ImageDataBunch':
+                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False, 
+                **kwargs)->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
+        ds_tfms, kwargs = _prep_tfm_kwargs(ds_tfms, size, kwargs)
         lls = lls.transform(tfms=ds_tfms, size=size, **kwargs)
         if test is not None: lls.add_test_folder(test)
         return lls.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device, no_check=no_check)
