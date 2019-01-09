@@ -433,7 +433,7 @@ learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
 <p>And then the output changes to:</p>
 
 <pre><code>Total time: 00:53
-epoch   train_loss valid_loss   accuracy     used   max_used      peak
+epoch   train_loss valid_loss   accuracy     used   max_used   peak
     1   0.321233    0.068252    0.978600    156504  2408404   2419891 
     2   0.093551    0.032776    0.988500     79343  2408404   2348085
     3   0.047178    0.025307    0.992100     79568  2408404   2342754</code></pre>
@@ -453,7 +453,7 @@ learn.fit_one_cycle(3, max_lr=1e-2, callbacks=TraceMallocMultiColMetric(learn))<
 <li><code>learn.callbacks.append</code> expects a single instance of a class</li>
 </ul>
 <p>For more examples, look inside fastai codebase and its test suite, search for classes that subclass either <code>Callback</code>, <code>LearnerCallback</code> and subclasses of those two.</p>
-<p>Finally, while the above examples all add to the metrics, it's not required. The callback can do anything it wants and is not required to add its outcomes to the metrics outcome printout.</p>
+<p>Finally, while the above examples all add to the metrics, it's not a requirement. A callback can do anything it wants and it is not required to add its outcomes to the metrics printout.</p>
 
 </div>
 </div>
