@@ -521,6 +521,45 @@ def test_result_and_stdout(capsys):
     assert msg in err
 ```
 
+And, of course, most of the time, stderr will come as a part of an exception, so try/except has to be used in such a case:
+
+```
+def raise_exception(msg): raise ValueError(msg)
+def test_something_exception():
+    msg = "Not a good value"
+    error = ''
+    try: raise_exception(msg)
+    except Exception as e:
+        error = str(e)
+        assert msg in error, f"{msg} is in the exception:\n{error}"
+```
+
+Another approach to capturing stdout, is via `contextlib.redirect_stdout`:
+
+```
+from io import StringIO
+from contextlib import redirect_stdout
+def print_to_stdout(s): print(s)
+def test_result_and_stdout():
+    msg = "Hello"
+    buffer = StringIO()
+    with redirect_stdout(buffer): print_to_stdout(msg)
+    out = buffer.getvalue()
+    # optional: if you want to replay the consumed streams:
+    sys.stdout.write(out)
+    # test:
+    assert msg in out
+```
+
+An important potential issue with capturing stdout is that it may contain `\r` characters that in normal `print` reset everything that has been printed so far. There is no problem with `pytest`, but with `pytest -s` these characters get included in the buffer, so to be able to have the test run w/ and w/o `-s`, you have to make an extra cleanup to the captured output, using `re.sub(r'^.*\r', '', buf, 0, re.M)`. You can use a test helper function for that:
+
+```
+from utils.text import apply_print_resets
+output = apply_print_resets(output)
+```
+
+
+
 ### Testing memory leaks
 
 This section is currently focused on GPU RAM since it's the scarce resource, but we should test general RAM too.
