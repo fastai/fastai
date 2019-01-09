@@ -18,6 +18,8 @@ of that change.
 ### New:
 
 - `ImageDownloader()` widget for quick image datasets research
+- `Learner.export` to export the state of a `Learner` for inference (with `Callback.get_state` to get the state of a callback behind the scenes)
+- `load_learner` to load a `Learner` from an exported state (with `load_callback` to load the state of a callback behind the scenes)
 
 ### Changed:
 
