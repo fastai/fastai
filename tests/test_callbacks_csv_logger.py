@@ -1,4 +1,4 @@
-import pytest
+import pytest, re
 from fakes import *
 from io import StringIO
 from contextlib import redirect_stdout
@@ -16,7 +16,10 @@ def create_metrics_dataframe(learn):
 
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
-    lines = buffer.getvalue().split('\n')
+
+    # under pytest -s it catches the whole string including the temporary prints and \r's
+    # so we have to clear that out to match the non -s output
+    lines = [re.sub(r'^.*\r', '', l) for l in buffer.getvalue().split('\n')]
     header, *lines = [l.strip() for l in lines if l and not l.startswith('Total')]
     header = header.split()
     floats = [[float(x) for x in line.split()] for line in lines]
@@ -43,9 +46,8 @@ def test_logger():
     csv_df = learn.csv_logger.read_logged_file()
     recorder_df = create_metrics_dataframe(learn)
     pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=True)
-    # Disabled since this doesn't work under `pytest -s`
-    # stdout_df = convert_into_dataframe(buffer)
-    # pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=True)
+    stdout_df = convert_into_dataframe(buffer)
+    pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=True)
 
 @pytest.fixture(scope="module", autouse=True)
 def cleanup(request):
