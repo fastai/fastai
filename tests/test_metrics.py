@@ -1,6 +1,10 @@
 import pytest
 from fastai.basics import *
 from fastai.metrics import *
+from io import StringIO
+from contextlib import redirect_stdout
+from utils.fakes import fake_data
+from utils.text import apply_print_resets
 
 p1 = torch.Tensor([0,1,0,0,0]).expand(5,-1)
 p2 = torch.Tensor([[0,0,0,0,0],[0,1,0,0,0]]).expand(5,2,-1).float()
@@ -54,3 +58,30 @@ def test_dice_iou(p, t, expect):
 def test_fbeta(p, t, expect):
     assert np.isclose(fbeta(p, t).item(), expect)
 
+
+### metric as a custom class
+dummy_base_val = 9876
+class DummyMetric(Callback):
+    """ this dummy metric returns an epoch number power of a base """
+    def __init__(self):
+        super().__init__()
+        self.name = "dummy"
+        self.epoch = 0
+
+    def on_epoch_begin(self, **kwargs):
+        self.epoch += 1
+
+    def on_epoch_end(self, **kwargs):
+        self.metric = torch.tensor(dummy_base_val**self.epoch)
+
+def test_custom_metric_class():
+    n_in, n_out = 3, 2
+    data  = fake_data(n_in=n_in, n_out=n_out)
+    model = nn.Linear(n_in, n_out)
+    learn = Learner(data, model, metrics=[accuracy, DummyMetric()])
+    buffer = StringIO()
+    with redirect_stdout(buffer): learn.fit_one_cycle(2)
+    out = apply_print_resets(buffer.getvalue())
+    # expecting column header 'dummy', and the metrics per class definition
+    for s in ['dummy', f'{dummy_base_val}.00', f'{dummy_base_val**2}.00']:
+        assert str(s) in out, f"{s} is in the output:\n{out}"
