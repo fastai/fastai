@@ -1,5 +1,5 @@
 import pytest
-from fakes import *
+from utils.fakes import *
 from io import StringIO
 from contextlib import redirect_stdout
 import sys

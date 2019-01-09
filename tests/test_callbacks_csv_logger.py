@@ -1,5 +1,5 @@
 import pytest, re
-from fakes import *
+from utils.fakes import *
 from io import StringIO
 from contextlib import redirect_stdout
 from utils.text import apply_print_resets

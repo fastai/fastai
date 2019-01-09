@@ -1,5 +1,5 @@
 import pytest
-from fakes import *
+from utils.fakes import *
 cuda_required = pytest.mark.skipif(not torch.cuda.is_available(),
                                 reason="cuda enabled gpu is not available")
 a3b3b3 =torch.ones([1,3,3,3])
