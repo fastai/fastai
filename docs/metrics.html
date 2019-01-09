@@ -358,7 +358,7 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To deploy it, you need to pass an instance of this custom metric in the <code>metrics</code> argument:</p>
+<p>To deploy it, you need to pass an instance of this custom metric in the <a href="/metrics.html#metrics"><code>metrics</code></a> argument:</p>
 
 <pre><code>learn = create_cnn(data, model, metrics=[accuracy, TraceMallocMetric()])
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
@@ -375,7 +375,7 @@ epoch   train_loss  valid_loss  accuracy    peak RAM
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As mentioner earlier, using the <code>metrics</code> argument with a custom metrics class is limited in the number of phases of the callback system it can access, it can only return one numerical value and as you can see its output is hardcoded to have 6 points of precision in the output, even if the number is an int.</p>
+<p>As mentioner earlier, using the <a href="/metrics.html#metrics"><code>metrics</code></a> argument with a custom metrics class is limited in the number of phases of the callback system it can access, it can only return one numerical value and as you can see its output is hardcoded to have 6 points of precision in the output, even if the number is an int.</p>
 <p>To overcome these limitations callback classes should be used instead.</p>
 <p>For example, the following class:</p>
 <ul>
@@ -424,7 +424,7 @@ epoch   train_loss  valid_loss  accuracy    peak RAM
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note, that it subclasses <code>LearnerCallback</code> and not <code>Callback</code>, since the former provides extra features not available in the latter.</p>
+<p>Note, that it subclasses <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> and not <a href="/callback.html#Callback"><code>Callback</code></a>, since the former provides extra features not available in the latter.</p>
 <p>Also <code>_order=-20</code> is crucial - without it the custom columns will not be added - it tells the callback system to run this callback before the recorder system.</p>
 <p>To deploy it, you need to pass the name of the class (not an instance!) of the class in the <code>callback_fns</code> argument. This is because the <code>learn</code> object doesn't exist yet, and it's required to instantiate <code>TraceMallocMultiColMetric</code>. The system will do it for us automatically as soon as the learn object has been created.</p>
 
@@ -442,17 +442,17 @@ epoch   train_loss valid_loss   accuracy     used   max_used   peak
 <pre><code>learn = create_cnn(data, model, metrics=[accuracy])
 learn.callbacks.append(TraceMallocMultiColMetric(learn))
 learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
-<p>Configuring the custom metrics in the <code>learn</code> object sets them to run in all future <code>fit</code>-family calls. However, if you'd like to configure it for just one call, you can configure it directly inside <code>fit</code> or <code>fit_one_cycle</code>:</p>
+<p>Configuring the custom metrics in the <code>learn</code> object sets them to run in all future <a href="/basic_train.html#fit"><code>fit</code></a>-family calls. However, if you'd like to configure it for just one call, you can configure it directly inside <a href="/basic_train.html#fit"><code>fit</code></a> or <a href="/train.html#fit_one_cycle"><code>fit_one_cycle</code></a>:</p>
 
 <pre><code>learn = create_cnn(data, model, metrics=[accuracy])
 learn.fit_one_cycle(3, max_lr=1e-2, callbacks=TraceMallocMultiColMetric(learn))</code></pre>
 <p>And to stress the differences:</p>
 <ul>
 <li>the <code>callback_fns</code> argument expects a classname or a list of those</li>
-<li>the <code>callbacks</code> argument expects an instance of a class or a list of those</li>
+<li>the <a href="/callbacks.html#callbacks"><code>callbacks</code></a> argument expects an instance of a class or a list of those</li>
 <li><code>learn.callbacks.append</code> expects a single instance of a class</li>
 </ul>
-<p>For more examples, look inside fastai codebase and its test suite, search for classes that subclass either <code>Callback</code>, <code>LearnerCallback</code> and subclasses of those two.</p>
+<p>For more examples, look inside fastai codebase and its test suite, search for classes that subclass either <a href="/callback.html#Callback"><code>Callback</code></a>, <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> and subclasses of those two.</p>
 <p>Finally, while the above examples all add to the metrics, it's not a requirement. A callback can do anything it wants and it is not required to add its outcomes to the metrics printout.</p>
 
 </div>

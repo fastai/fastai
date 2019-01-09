@@ -178,7 +178,7 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mixup"><code>mixup</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L48" class="source_link">[source]</a></h4><blockquote><p><code>mixup</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`alpha`</b>:<code>float</code>=<b><i>`0.4`</i></b>, <b>`stack_x`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`stack_y`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="mixup"><code>mixup</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>mixup</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`alpha`</b>:<code>float</code>=<b><i>`0.4`</i></b>, <b>`stack_x`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`stack_y`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Add mixup <a href="https://arxiv.org/abs/1710.09412">https://arxiv.org/abs/1710.09412</a> to <code>learn</code>.</p>
 
@@ -233,7 +233,7 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ShowGraph"><code>class</code> <code>ShowGraph</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L60" class="source_link">[source]</a></h3><blockquote><p><code>ShowGraph</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h3 id="ShowGraph"><code>class</code> <code>ShowGraph</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L62" class="source_link">[source]</a></h3><blockquote><p><code>ShowGraph</code>(<b>`learn`</b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Update a graph of learner stats and metrics after each epoch.</p>
 
@@ -270,7 +270,7 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ShowGraph.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L62" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<b>`n_epochs`</b>:<code>int</code>, <b>`last_metrics`</b>:<code>MetricsList</code>, <b>`kwargs`</b>) → <code>bool</code></p>
+<h4 id="ShowGraph.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<b>`n_epochs`</b>:<code>int</code>, <b>`last_metrics`</b>:<code>MetricsList</code>, <b>`kwargs`</b>) → <code>bool</code></p>
 </blockquote>
 <p>If we have <code>last_metrics</code> plot them in our pbar graph</p>
 
@@ -291,7 +291,7 @@ summary: "Extensions to Learner that easily implement Callback"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="GradientClipping"><code>class</code> <code>GradientClipping</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L80" class="source_link">[source]</a></h2><blockquote><p><code>GradientClipping</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`clip`</b>:<code>float</code>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="GradientClipping"><code>class</code> <code>GradientClipping</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L81" class="source_link">[source]</a></h2><blockquote><p><code>GradientClipping</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`clip`</b>:<code>float</code>=<b><i>`0.0`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Gradient clipping during training.</p>
 
@@ -356,7 +356,7 @@ Total time: 00:11 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GradientClipping.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>(<b>`kwargs`</b>)</p>
+<h4 id="GradientClipping.on_backward_end"><code>on_backward_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_end</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Clip the gradient before the optimizer step.</p>
 
@@ -377,7 +377,7 @@ Total time: 00:11 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BnFreeze"><code>class</code> <code>BnFreeze</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L73" class="source_link">[source]</a></h2><blockquote><p><code>BnFreeze</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="BnFreeze"><code>class</code> <code>BnFreeze</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L75" class="source_link">[source]</a></h2><blockquote><p><code>BnFreeze</code>(<b>`learn`</b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Freeze moving average statistics in all non-trainable batchnorm layers.</p>
 
@@ -448,7 +448,7 @@ Total time: 00:07 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BnFreeze.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<b>`kwargs`</b>:<code>Any</code>)</p>
+<h4 id="BnFreeze.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L77" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<b>`kwargs`</b>:<code>Any</code>)</p>
 </blockquote>
 <p>Put bn layers in eval mode just after <code>model.train()</code>.</p>
 

@@ -190,7 +190,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.one_item"><code>one_item</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L152" class="source_link">[source]</a></h4><blockquote><p><code>one_item</code>(<b>`item`</b>, <b>`detach`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`denorm`</b>:<code>bool</code>=<b><i>`False`</i></b>)</p>
+<h4 id="DataBunch.one_item"><code>one_item</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L152" class="source_link">[source]</a></h4><blockquote><p><code>one_item</code>(<b>`item`</b>, <b>`detach`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`denorm`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`cpu`</b>:<code>bool</code>=<b><i>`False`</i></b>)</p>
 </blockquote>
 <p>Get <code>item</code> into a batch. Optionally <code>detach</code> and <code>denorm</code>.</p>
 
@@ -259,7 +259,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L592" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<b>`path`</b>, <b>`fname`</b>:<code>str</code>=<b><i>`'export.pkl'`</i></b>)</p>
+<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L641" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<b>`path`</b>, <b>`fname`</b>:<code>str</code>=<b><i>`'export.pkl'`</i></b>)</p>
 </blockquote>
 <p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
 
@@ -460,7 +460,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L49" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<b>`tfm`</b>:<code>Callable</code>)</p>
+<h4 id="DeviceDataLoader.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<b>`tfm`</b>:<code>Callable</code>)</p>
 </blockquote>
 <p>Add <code>tfm</code> to <code>self.tfms</code>.</p>
 
@@ -481,7 +481,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.remove_tfm"><code>remove_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>remove_tfm</code>(<b>`tfm`</b>:<code>Callable</code>)</p>
+<h4 id="DeviceDataLoader.remove_tfm"><code>remove_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L54" class="source_link">[source]</a></h4><blockquote><p><code>remove_tfm</code>(<b>`tfm`</b>:<code>Callable</code>)</p>
 </blockquote>
 <p>Remove <code>tfm</code> from <code>self.tfms</code>.</p>
 
@@ -502,7 +502,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.new"><code>new</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L56" class="source_link">[source]</a></h4><blockquote><p><code>new</code>(<b>`kwargs`</b>)</p>
+<h4 id="DeviceDataLoader.new"><code>new</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L58" class="source_link">[source]</a></h4><blockquote><p><code>new</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create a new copy of <code>self</code> with <code>kwargs</code> replacing current values.</p>
 
@@ -523,7 +523,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.proc_batch"><code>proc_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L62" class="source_link">[source]</a></h4><blockquote><p><code>proc_batch</code>(<b>`b`</b>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="DeviceDataLoader.proc_batch"><code>proc_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>proc_batch</code>(<b>`b`</b>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Proces batch <code>b</code> of <code>TensorImage</code>.</p>
 

@@ -40,7 +40,7 @@ summary: "Easy access of language models and ULMFiT"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="language_model_learner"><code>language_model_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L125" class="source_link">[source]</a></h4><blockquote><p><code>language_model_learner</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`bptt`</b>:<code>int</code>=<b><i>`70`</i></b>, <b>`emb_sz`</b>:<code>int</code>=<b><i>`400`</i></b>, <b>`nh`</b>:<code>int</code>=<b><i>`1150`</i></b>, <b>`nl`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`pad_token`</b>:<code>int</code>=<b><i>`1`</i></b>, <b>`drop_mult`</b>:<code>float</code>=<b><i>`1.0`</i></b>, <b>`tie_weights`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`bias`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`pretrained_model`</b>=<b><i>`None`</i></b>, <b>`pretrained_fnames`</b>:<code>OptStrTuple</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>LanguageLearner</code></p>
+<h4 id="language_model_learner"><code>language_model_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>language_model_learner</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`bptt`</b>:<code>int</code>=<b><i>`70`</i></b>, <b>`emb_sz`</b>:<code>int</code>=<b><i>`400`</i></b>, <b>`nh`</b>:<code>int</code>=<b><i>`1150`</i></b>, <b>`nl`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`pad_token`</b>:<code>int</code>=<b><i>`1`</i></b>, <b>`drop_mult`</b>:<code>float</code>=<b><i>`1.0`</i></b>, <b>`tie_weights`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`bias`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`pretrained_model`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`pretrained_fnames`</b>:<code>OptStrTuple</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>LanguageLearner</code></p>
 </blockquote>
 <p>Create a <a href="/basic_train.html#Learner"><code>Learner</code></a> with a language model from <code>data</code>.</p>
 
@@ -85,7 +85,7 @@ summary: "Easy access of language models and ULMFiT"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="text_classifier_learner"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L145" class="source_link">[source]</a></h4><blockquote><p><code>text_classifier_learner</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`bptt`</b>:<code>int</code>=<b><i>`70`</i></b>, <b>`emb_sz`</b>:<code>int</code>=<b><i>`400`</i></b>, <b>`nh`</b>:<code>int</code>=<b><i>`1150`</i></b>, <b>`nl`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`pad_token`</b>:<code>int</code>=<b><i>`1`</i></b>, <b>`drop_mult`</b>:<code>float</code>=<b><i>`1.0`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`max_len`</b>:<code>int</code>=<b><i>`1400`</i></b>, <b>`lin_ftrs`</b>:<code>Collection</code>[<code>int</code>]=<b><i>`None`</i></b>, <b>`ps`</b>:<code>Collection</code>[<code>float</code>]=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>TextClassifierLearner</code></p>
+<h4 id="text_classifier_learner"><code>text_classifier_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L144" class="source_link">[source]</a></h4><blockquote><p><code>text_classifier_learner</code>(<b>`data`</b>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <b>`bptt`</b>:<code>int</code>=<b><i>`70`</i></b>, <b>`emb_sz`</b>:<code>int</code>=<b><i>`400`</i></b>, <b>`nh`</b>:<code>int</code>=<b><i>`1150`</i></b>, <b>`nl`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`pad_token`</b>:<code>int</code>=<b><i>`1`</i></b>, <b>`drop_mult`</b>:<code>float</code>=<b><i>`1.0`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`max_len`</b>:<code>int</code>=<b><i>`1400`</i></b>, <b>`lin_ftrs`</b>:<code>Collection</code>[<code>int</code>]=<b><i>`None`</i></b>, <b>`ps`</b>:<code>Collection</code>[<code>float</code>]=<b><i>`None`</i></b>, <b>`pretrained_model`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>TextClassifierLearner</code></p>
 </blockquote>
 <p>Create a RNN classifier from <code>data</code>.</p>
 
@@ -257,7 +257,7 @@ summary: "Easy access of language models and ULMFiT"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNLearner.load_pretrained"><code>load_pretrained</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L66" class="source_link">[source]</a></h4><blockquote><p><code>load_pretrained</code>(<b>`wgts_fname`</b>:<code>str</code>, <b>`itos_fname`</b>:<code>str</code>)</p>
+<h4 id="RNNLearner.load_pretrained"><code>load_pretrained</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L66" class="source_link">[source]</a></h4><blockquote><p><code>load_pretrained</code>(<b>`wgts_fname`</b>:<code>str</code>, <b>`itos_fname`</b>:<code>str</code>, <b>`strict`</b>:<code>bool</code>=<b><i>`True`</i></b>)</p>
 </blockquote>
 <p>Load a pretrained model and adapts it to the data vocabulary.</p>
 

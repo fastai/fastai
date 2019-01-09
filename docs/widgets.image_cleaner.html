@@ -490,7 +490,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">data_path</span><span class="p">()</span><span class="o">/</span><span class="s1">&#39;image_downloader_data&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">data_path</span><span class="p">()</span><span class="o">/</span><span class="s1">&#39;image_downloader&#39;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ImageDownloader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
@@ -507,7 +507,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;fastai.widgets.image_downloader.ImageDownloader at 0x7fcfb0dbd8d0&gt;</pre>
+<pre>&lt;fastai.widgets.image_downloader.ImageDownloader at 0x1a31435dd8&gt;</pre>
 </div>
 
 </div>
@@ -515,41 +515,6 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>After populating images with <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a>, you can get a an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> by calling <code>ImageDataBunch.from_folder(path, size=size)</code>, or using the data block API.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-
-<pre><code>src = (ImageItemList.from_folder(path)
-       .random_split_by_pct()
-       .label_from_folder()
-       .transform(get_transforms(), size=224))
-db  = src.databunch(bs=16)
-learn = create_cnn(db, models.resnet34, metrics=[accuracy])
-learn.fit_one_cycle(3)</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Downloading-more-than-a-hundred-images">Downloading more than a hundred images<a class="anchor-link" href="#Downloading-more-than-a-hundred-images">&#182;</a></h4><p>To fetch more than a hundred images, <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> uses <code>selenium</code> and <code>chromedriver</code> to scroll through the Google Images search results page and scrape image URLs. They're not required as dependencies by default. If you don't have them installed on your system, the widget will show you an error message.</p>
-<p>To install <code>selenium</code>, just <code>pip install selenium</code> in your fastai environment.</p>
-<p><strong>On a mac</strong>, you can install <code>chromedriver</code> with <code>brew cask install chromedriver</code>.</p>
-<p><strong>On Ubuntu</strong>
-Take a look at the latest Chromedriver version available, then something like:</p>
-
-<pre><code>wget https://chromedriver.storage.googleapis.com/2.45/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip</code></pre>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -557,14 +522,97 @@ unzip chromedriver_linux64.zip</code></pre>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-<pre><code>path = Config.data_path()/'image_downloader_data'
-download_google_images(path, 'aussie shepherd', size='&gt;1024*768', n_images=150)</code></pre>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">data_path</span><span class="p">()</span><span class="o">/</span><span class="s1">&#39;image_downloader&#39;</span>
+<span class="n">files</span> <span class="o">=</span> <span class="n">download_google_images</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;aussie shepherd&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;&gt;1024*768&#39;</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='30' class='' max='30', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [30/30 00:00<00:00]
+    </div>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <div>
+        <style>
+            /* Turns off some styling */
+            progress {
+                /* gets rid of default border in Firefox and Opera. */
+                border: none;
+                /* Needs to be in here for Safari polyfill so background images work as expected. */
+                background-size: auto;
+            }
+            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+                background: #F44336;
+            }
+        </style>
+      <progress value='30' class='' max='30', style='width:300px; height:20px; vertical-align: middle;'></progress>
+      100.00% [30/30 00:00<00:00]
+    </div>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cannot identify image file &lt;_io.BufferedReader name=&#39;/Users/xnutsive/.fastai/data/image_downloader_data/aussie shepherd/00000015.jpg&#39;&gt;
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>29</pre>
+</div>
+
+</div>
 
 </div>
 </div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -586,6 +634,57 @@ download_google_images(path, 'aussie shepherd', size='&gt;1024*768', n_images=15
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After populating images with <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a>, you can get a an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> by calling <code>ImageDataBunch.from_folder(path, size=size)</code>, or using the data block API.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Setup path and labels to search for</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">data_path</span><span class="p">()</span><span class="o">/</span><span class="s1">&#39;image_downloader&#39;</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;boston terrier&#39;</span><span class="p">,</span> <span class="s1">&#39;french bulldog&#39;</span><span class="p">]</span>
+
+<span class="c1"># Download images</span>
+<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span> 
+    <span class="n">download_google_images</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;&gt;400*300&#39;</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Build a databunch and train! </span>
+<span class="n">src</span> <span class="o">=</span> <span class="p">(</span><span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+       <span class="o">.</span><span class="n">random_split_by_pct</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">label_from_folder</span><span class="p">()</span>
+       <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">get_transforms</span><span class="p">(),</span> <span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">))</span>
+
+<span class="n">db</span>  <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">databunch</span><span class="p">(</span><span class="n">bs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">learn</span> <span class="o">=</span> <span class="n">create_cnn</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet34</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Downloading-more-than-a-hundred-images">Downloading more than a hundred images<a class="anchor-link" href="#Downloading-more-than-a-hundred-images">&#182;</a></h4><p>To fetch more than a hundred images, <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> uses <code>selenium</code> and <code>chromedriver</code> to scroll through the Google Images search results page and scrape image URLs. They're not required as dependencies by default. If you don't have them installed on your system, the widget will show you an error message.</p>
+<p>To install <code>selenium</code>, just <code>pip install selenium</code> in your fastai environment.</p>
+<p><strong>On a mac</strong>, you can install <code>chromedriver</code> with <code>brew cask install chromedriver</code>.</p>
+<p><strong>On Ubuntu</strong>
+Take a look at the latest Chromedriver version available, then something like:</p>
+
+<pre><code>wget https://chromedriver.storage.googleapis.com/2.45/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip</code></pre>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
