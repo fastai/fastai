@@ -47,6 +47,7 @@ def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_hand
     model.eval()
     with torch.no_grad():
         val_losses,nums = [],[]
+        if cb_handler: cb_handler.set_dl(dl)
         for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
             if cb_handler: xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
             val_losses.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler))
@@ -78,8 +79,8 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     try:
         for epoch in pbar:
             model.train()
+            cb_handler.set_dl(data.train_dl)
             cb_handler.on_epoch_begin()
-
             for xb,yb in progress_bar(data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
                 loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)

@@ -3,59 +3,48 @@ from ..torch_core import *
 from .transform import *
 from ..basic_data import *
 from ..data_block import *
+from ..callback import Callback
 
-__all__ = ['LanguageModelLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
+__all__ = ['LanguageModelPreLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
            'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
            'OpenFileProcessor']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
 
-class LanguageModelLoader():
+class LanguageModelPreLoader(Callback):
     "Create a dataloader with bptt slightly changing."
     def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=64, bptt:int=70, backwards:bool=False, 
-                 shuffle:bool=False, drop_last:bool=False, max_len:int=25, p_bptt:int=0.95):
-        self.dataset,self.bs,self.bptt,self.backwards,self.shuffle = dataset,bs,bptt,backwards,shuffle
-        self.drop_last,self.max_len,self.p_bptt,self.num_workers = drop_last,max_len,p_bptt,0
-        self.init_kwargs = dict(lengths=lengths, bs=bs, bptt=bptt, backwards=backwards, shuffle=shuffle, max_len=max_len)
+                 shuffle:bool=False, max_len:int=25, p_bptt:int=0.95):
+        self.dataset,self.bs,self.bptt,self.backwards = dataset,bs,bptt,backwards
+        self.shuffle,self.max_len,self.p_bptt,self.num_workers = shuffle,max_len,p_bptt,0
         self.lengths = np.array(ifnone(lengths, [len(o) for o in dataset.x.items]))
         self.n = self.lengths.sum() // self.bs
         self.first = True
         
-    def __len__(self): return int(math.ceil((self.n-1) / self.bptt))
+    def __len__(self):
+        return int(math.ceil((self.n-1) / self.bptt)) * self.bs if self.item is None else 1
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
     
-    def __iter__(self):
-        if getattr(self.dataset, 'item', None) is not None:
-            yield LongTensor(getattr(self.dataset, 'item'))[None],LongTensor([0])
+    def on_epoch_begin(self, epoch, **kwargs):
         self.idxs = np.random.permutation(len(self.dataset)) if self.shuffle else arange_of(self.dataset)
         self.text_idx = np.concatenate([[0],self.lengths[self.idxs].cumsum()])
-        i,j = 0,0
-        while i < self.n-1 and j < len(self):
-            if self.first and j == 0: self.first,seq_len = False,self.bptt + self.max_len
-            else:
-                bptt = self.bptt if np.random.random() < self.p_bptt else self.bptt / 2.
-                seq_len = max(5, int(np.random.normal(bptt, 5)))
-                seq_len = min(seq_len, self.bptt + self.max_len, self.n-1-i)
-            res = self._get_batch(i, seq_len+1)
-            i += seq_len
-            j += 1
-            yield res[:,:-1], res[:,1:]
+        self.read_idx = 0
+        
+    #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
+    def on_epoch_end(self, epoch, **kwargs): self.on_epoch_begin(epoch)
     
-    def _get_batch(self, i, seq_len):
-        return torch.cat([self._get_text(i + k * self.n, seq_len)[None] for k in range(self.bs)], 0)
-    
-    def _get_text(self, i, seq_len):
-        mask = (self.text_idx[1:] >= i) * (self.text_idx[:-1] < i + seq_len)
-        if self.backwards: concat = np.concatenate([self.dataset.x.items[i][::-1] for i in self.idxs[mask]])
-        else: concat = np.concatenate([self.dataset.x.items[i] for i in self.idxs[mask]])
-        start_idx = i-self.text_idx[mask.nonzero()[0][0]]
-        return LongTensor(concat[start_idx:start_idx+seq_len])
-
-    @property
-    def batch_size(self): return self.bs
-    @batch_size.setter
-    def batch_size(self, v): self.bs = v
+    def __getitem__(self, k:int):
+        if self.item is not None: return self.dataset[0]
+        if not hasattr(self, 'idxs'): self.on_epoch_begin(1)
+        seq_len = min(self.bptt, self.n-self.read_idx-1)
+        i = self.read_idx + (k % self.bs) * self.n 
+        start,end = np.argmax(self.text_idx >= i)-1,np.argmin(self.text_idx <= i+seq_len+1)
+        start = max(0,start)
+        if self.backwards: concat = np.concatenate([self.dataset.x.items[j][::-1] for j in self.idxs[start:end]])
+        else: concat = np.concatenate([self.dataset.x.items[j] for j in self.idxs[start:end]])
+        start_idx = i-self.text_idx[start]
+        return concat[start_idx:start_idx+seq_len], concat[start_idx+1:start_idx+seq_len+1]
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
@@ -196,12 +185,24 @@ class TextDataBunch(DataBunch):
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
-    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, **kwargs) -> DataBunch:
+    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, num_workers:int=0,
+               **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        dataloaders = [LanguageModelLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
-        return cls(*dataloaders, path=path, no_check=no_check)
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
+        dataloaders = [DataLoader(ds, batch_size=bs, num_workers=num_workers) for ds in datasets]
+        return cls(*dataloaders, path=path, no_check=True)
 
+    @property
+    def train_ds(self)->Dataset: return self.train_dl.dl.dataset.dataset
+    @property
+    def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset.dataset
+    @property
+    def single_ds(self)->Dataset: return self.single_dl.dl.dataset.dataset
+    @property
+    def test_ds(self)->Dataset:
+        return self.test_dl.dl.dataset.dataset if self.test_dl is not None else None
+    
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod

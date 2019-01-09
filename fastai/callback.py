@@ -198,6 +198,12 @@ class CallbackHandler():
         if call_mets: [getattr(met, f'on_{cb_name}')(**self.state_dict, **kwargs) for met in self.metrics]
         return [getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs) for cb in self.callbacks]
 
+    def set_dl(self, dl:DataLoader):
+        if hasattr(self, 'cb_dl'): self.callbacks.remove(self.cb_dl)
+        if isinstance(dl.dataset, Callback):
+            self.callbacks.append(dl.dataset)
+            self.cb_dl = dl.dataset
+    
     def on_train_begin(self, epochs:int, pbar:PBar, metrics:MetricFuncList)->None:
         "About to start learning."
         self.state_dict = _get_init_state()
