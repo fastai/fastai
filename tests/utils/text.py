@@ -1,4 +1,4 @@
-""" Helper test function for dealing with text outputs """
+""" Helper functions for dealing with testing text outputs """
 
 import re
 

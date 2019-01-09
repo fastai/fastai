@@ -1,3 +1,5 @@
+""" Helper functions for dealing with memory usage testing """
+
 import pytest, fastai, torch
 from fastai.utils.mem import *
 
