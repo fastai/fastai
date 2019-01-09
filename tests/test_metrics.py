@@ -84,4 +84,4 @@ def test_custom_metric_class():
     out = apply_print_resets(buffer.getvalue())
     # expecting column header 'dummy', and the metrics per class definition
     for s in ['dummy', f'{dummy_base_val}.00', f'{dummy_base_val**2}.00']:
-        assert str(s) in out, f"{s} is in the output:\n{out}"
+        assert s in out, f"{s} is in the output:\n{out}"
