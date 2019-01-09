@@ -229,7 +229,7 @@ class ItemList():
         "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
         assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
-        if is_listy(cols) and len(cols) > 1: 
+        if is_listy(cols) and len(cols) > 1 and 'label_cls' not in kwargs: 
             new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
             kwargs = {**new_kwargs, **kwargs}
         return self.label_from_list(labels, **kwargs)
@@ -386,9 +386,9 @@ class FloatList(ItemList):
 
     def get(self, i):
         o = super().get(i)
-        return FloatItem(log(o) if self.log else o)
+        return FloatItem(np.log(o) if self.log else o)
 
-    def reconstruct(self,t): return FloatItem(t.item())
+    def reconstruct(self,t): return FloatItem(t.numpy())
 
 class ItemLists():
     "An `ItemList` for each of `train` and `valid` (optional `test`)."

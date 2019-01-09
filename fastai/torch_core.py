@@ -267,7 +267,7 @@ Tensor.ndim = property(lambda x: len(x.shape))
 
 class FloatItem(ItemBase):
     "Basic class for float items."
-    def __init__(self,obj): self.data,self.obj = tensor(obj),obj
+    def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
     def __str__(self): return str(self.obj)
 
 def grab_idx(x,i,batch_first:bool=True):
