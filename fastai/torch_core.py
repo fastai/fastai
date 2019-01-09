@@ -265,11 +265,6 @@ def tensor__array__(self, dtype=None):
 Tensor.__array__ = tensor__array__
 Tensor.ndim = property(lambda x: len(x.shape))
 
-class FloatItem(ItemBase):
-    "Basic class for float items."
-    def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
-    def __str__(self): return str(self.obj)
-
 def grab_idx(x,i,batch_first:bool=True):
     "Grab the `i`-th batch in `x`, `batch_first` stating the batch dimension."
     if batch_first: return ([o[i].cpu() for o in x]   if is_listy(x) else x[i].cpu())

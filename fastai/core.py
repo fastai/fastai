@@ -261,6 +261,11 @@ class MultiCategory(ItemBase):
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
 
+class FloatItem(ItemBase):
+    "Basic class for float items."
+    def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
+    def __str__(self): return str(self.obj)
+
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
 

@@ -1056,7 +1056,7 @@ True
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L277" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<b>`func`</b>, <b>`arr`</b>:<code>Collection</code>[<code>T_co</code>], <b>`max_workers`</b>:<code>int</code>=<b><i>`None`</i></b>)</p>
+<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L282" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<b>`func`</b>, <b>`arr`</b>:<code>Collection</code>[<code>T_co</code>], <b>`max_workers`</b>:<code>int</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Call <code>func</code> on every element of <code>arr</code> in parallel using <code>max_workers</code>.</p>
 
@@ -1270,6 +1270,27 @@ True
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="FloatItem"><code>class</code> <code>FloatItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L264" class="source_link">[source]</a></h3><blockquote><p><code>FloatItem</code>(<b>`obj`</b>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+<p>Basic class for float items.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Others">Others<a class="anchor-link" href="#Others">&#182;</a></h2>
@@ -1425,7 +1446,7 @@ True
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L286" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<b>`rows`</b>:<code>int</code>, <b>`cols`</b>:<code>int</code>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`title`</b>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L291" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<b>`rows`</b>:<code>int</code>, <b>`cols`</b>:<code>int</code>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`title`</b>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Like <code>plt.subplots</code> but with consistent axs shape, <code>kwargs</code> passed to <code>fig.suptitle</code> with <code>title</code></p>
 
@@ -1446,7 +1467,7 @@ True
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="text2html_table"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L267" class="source_link">[source]</a></h4><blockquote><p><code>text2html_table</code>(<b>`items`</b>:<code>Tokens</code>, <b>`widths`</b>:<code>Collection</code>[<code>int</code>]) → <code>str</code></p>
+<h4 id="text2html_table"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L272" class="source_link">[source]</a></h4><blockquote><p><code>text2html_table</code>(<b>`items`</b>:<code>Tokens</code>, <b>`widths`</b>:<code>Collection</code>[<code>int</code>]) → <code>str</code></p>
 </blockquote>
 <p>Put the texts in <code>items</code> in an HTML table, <code>widths</code> are the widths of the columns in %.</p>
 
