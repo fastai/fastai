@@ -31,7 +31,6 @@ class LanguageModelPreLoader(Callback):
     def on_epoch_begin(self, **kwargs):
         self.idxs = np.random.permutation(len(self.dataset)) if self.shuffle else arange_of(self.dataset)
         self.text_idx = np.concatenate([[0],self.lengths[self.idxs].cumsum()])
-        self.read_idx = 0
         
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
     def on_epoch_end(self, **kwargs): self.on_epoch_begin()
@@ -39,9 +38,10 @@ class LanguageModelPreLoader(Callback):
     def __getitem__(self, k:int):
         if self.item is not None: return self.dataset[0]
         if not hasattr(self, 'idxs'): self.on_epoch_begin()
-        seq_len = min(self.bptt, self.n-self.read_idx-1)
         #The dataloader will send (batch_index) * bs + sample_index, converting to where to read in the stream 
-        i = self.read_idx + (k % self.bs) * self.n 
+        read_idx = (k//self.bs) * self.bptt
+        i = read_idx  + (k % self.bs) * self.n 
+        seq_len = min(self.bptt, self.n-read_idx-1)
         #Getting the indexes of the texts that start and finish the portion i---i+seq_len in the stream 
         start,end = np.argmax(self.text_idx >= i)-1,np.argmin(self.text_idx <= i+seq_len+1)
         start = max(0,start)
