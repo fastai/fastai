@@ -5,7 +5,7 @@ from utils.text import *
 ## filename: test_basic_train.py
 ## tests code in basic_train.py
 
-## run: pytest tests/test_basic_train.py -s
+## run: pytest tests/test_basic_train.py (add -s for more screenoutput)
 
 ## Class Learner
 
@@ -20,11 +20,8 @@ def test_fit(capsys):
     learn.fit(epochs=3, lr=learning_rate, wd=weight_decay)
     assert learn.opt.lr == learn.lr_range(learning_rate)
     assert learn.opt.wd == weight_decay
-    ## TO CHECK: good idea to assert over this output?    
     captured = capsys.readouterr()
-    ##match_epoch = re.findall(r'1/3 ', captured.out) ## finds Epoch 1/3
-    ##assert match_epoch
-    match_hundperc = re.findall(r'100.00%', captured.out) ## finds 100% progress
+    match_hundperc = re.findall(r'[100%]', captured.out) ## finds 100% progress
     assert match_hundperc
       
 ## fit_one_cycle tested in test_train
