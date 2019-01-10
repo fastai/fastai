@@ -73,7 +73,7 @@ def get_sample(df,n):
     idxs = sorted(np.random.permutation(len(df))[:n])
     return df.iloc[idxs].copy()
 
-def add_datepart(df, fldname, drop=True, time=False):
+def add_datepart(df, fldname, drop=True, time=False, errors="raise"):	
     """add_datepart converts a column of df from a datetime64 to many columns containing
     the information from the date. This applies changes inplace.
 
@@ -110,7 +110,7 @@ def add_datepart(df, fldname, drop=True, time=False):
         fld_dtype = np.datetime64
 
     if not np.issubdtype(fld_dtype, np.datetime64):
-        df[fldname] = fld = pd.to_datetime(fld, infer_datetime_format=True)
+        df[fldname] = fld = pd.to_datetime(fld, infer_datetime_format=True, errors=errors)
     targ_pre = re.sub('[Dd]ate$', '', fldname)
     attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear',
             'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
@@ -333,7 +333,9 @@ def scale_vars(df, mapper):
 def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na_dict=None,
             preproc_fn=None, max_n_cat=None, subset=None, mapper=None):
     """ proc_df takes a data frame df and splits off the response variable, and
-    changes the df into an entirely numeric dataframe.
+    changes the df into an entirely numeric dataframe. For each column of df 
+    which is not in skip_flds nor in ignore_flds, na values are replaced by the
+    median value of the column.
 
     Parameters:
     -----------

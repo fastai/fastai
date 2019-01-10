@@ -66,11 +66,7 @@ def get_global_vars(mod):
     return d
 
 def write_nb(nb, nb_path, mode='w'):
-    try:
-        with open(nb_path, mode) as f: f.write(nbformat.writes(nb, version=4))
-    except Exception as e:
-        print(f'Could not output nb format. Dumping json instead.\nPath: {nb_path}\nException: {e}')
-        json.dump(nb, open(nb_path, mode), indent=1)
+    with open(nb_path, mode) as f: f.write(nbformat.writes(nbformat.from_dict(nb), version=4))
 
 class ExecuteShowDocPreprocessor(ExecutePreprocessor):
     "An ExecutePreprocessor that only executes show_doc cells"
@@ -327,7 +323,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, document_new
             print(f'Updating notebook {doc_path}. Please wait...')
             link_nb(doc_path)
             execute_nb(doc_path, {'metadata': {'path': doc_path.parent}}, show_doc_only=True)
-        if update_html: 
+        if update_html:
             check_nbconvert_version()
             html_fn = html_path/doc_path.with_suffix('.html').name
             if not force and html_fn.is_file():
@@ -348,7 +344,7 @@ def update_notebooks(source_path, dest_path=None, update_html=True, document_new
         update_notebooks(doc_path, dest_path=dest_path, update_html=update_html, document_new_fns=document_new_fns,
                          update_nb_links=update_nb_links, html_path=html_path)
     elif source_path.is_dir():
-        for f in Path(source_path).glob('*.ipynb'):
+        for f in sorted(Path(source_path).glob('*.ipynb')):
             update_notebooks(f, dest_path=dest_path, update_html=update_html, document_new_fns=document_new_fns,
                              update_nb_links=update_nb_links, html_path=html_path)
     else: print('Could not resolve source file:', source_path)

@@ -45,9 +45,16 @@ def num_cpus()->int:
     try:                   return len(os.sched_getaffinity(0))
     except AttributeError: return os.cpu_count()
 
+_default_cpus = min(16, num_cpus())
+defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis')
+
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
 def noop(x): return x
+
+def chunks(l:Collection, n:int)->Iterable:
+    "Yield successive `n`-sized chunks from `l`."
+    for i in range(0, len(l), n): yield l[i:i+n]
 
 def to_int(b:Any)->Union[int,List[int]]:
     "Convert `b` to an int or list of ints (if `is_listy`); raises exception if not convertible"
@@ -59,14 +66,18 @@ def ifnone(a:Any,b:Any)->Any:
     return b if a is None else a
 
 def is1d(a:Collection)->bool:
-    "Returns True if a collection is one dimensional"
+    "Return `True` if `a` is one-dimensional"
     return len(a.shape) == 1 if hasattr(a, 'shape') else True
 
 def uniqueify(x:Series)->List:
-    "Return unique values of `x`"
-    return list(OrderedDict.fromkeys(x).keys())
+    "Return sorted unique values of `x`."
+    res = list(OrderedDict.fromkeys(x).keys())
+    res.sort()
+    return res
 
-def idx_dict(a): return {v:k for k,v in enumerate(a)}
+def idx_dict(a): 
+    "Create a dictionary value to index from `a`."
+    return {v:k for k,v in enumerate(a)}
 
 def find_classes(folder:Path)->FilePathList:
     "List of label subdirectories in imagenet-style `folder`."
@@ -88,7 +99,7 @@ def random_split(valid_pct:float, *arrs:NPArrayableList)->SplitArrayList:
     return arrays_split(is_train, *arrs)
 
 def listify(p:OptListOrItem=None, q:OptListOrItem=None):
-    "Make `p` same length as `q`"
+    "Make `p` listy and the same length as `q`."
     if p is None: p=[]
     elif isinstance(p, str):          p=[p]
     elif not isinstance(p, Iterable): p=[p]
@@ -100,11 +111,12 @@ def listify(p:OptListOrItem=None, q:OptListOrItem=None):
 _camel_re1 = re.compile('(.)([A-Z][a-z]+)')
 _camel_re2 = re.compile('([a-z0-9])([A-Z])')
 def camel2snake(name:str)->str:
+    "Change `name` from camel to snake style."
     s1 = re.sub(_camel_re1, r'\1_\2', name)
     return re.sub(_camel_re2, r'\1_\2', s1).lower()
 
 def even_mults(start:float, stop:float, n:int)->np.ndarray:
-    "Build evenly stepped schedule from `start` to `stop` in `n` steps."
+    "Build log-stepped array from `start` to `stop` in `n` steps."
     mult = stop/start
     step = mult**(1/(n-1))
     return np.array([start*(step**i) for i in range(n)])
@@ -133,13 +145,17 @@ def series2cat(df:DataFrame, *col_names):
 TfmList = Union[Callable, Collection[Callable]]
 
 class ItemBase():
-    "All transformable dataset items use this type."
+    "Base item type in the fastai library."
     def __init__(self, data:Any): self.data=self.obj=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
-    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
+    def show(self, ax:plt.Axes, **kwargs): 
+        "Subclass this method if you want to customize the way this `ItemBase` is shown on `ax`."
+        ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
+        "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception('Not implemented')
         return self
+
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
@@ -157,8 +173,12 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
             if show_progress: pbar.update(nbytes)
             f.write(chunk)
 
-def range_of(x): return list(range(len(x)))
-def arange_of(x): return np.arange(len(x))
+def range_of(x):  
+    "Create a range from 0 to `len(x)`."
+    return list(range(len(x)))
+def arange_of(x): 
+    "Same as `range_of` but returns an array."
+    return np.arange(len(x))
 
 Path.ls = lambda x: list(x.iterdir())
 
@@ -188,9 +208,9 @@ def df_names_to_idx(names:IntsOrStrs, df:DataFrame):
     return [df.columns.get_loc(c) for c in names]
 
 def one_hot(x:Collection[int], c:int):
-    "One-hot encode the target."
+    "One-hot encode `x` with `c` classes."
     res = np.zeros((c,), np.float32)
-    res[x] = 1.
+    res[listify(x)] = 1.
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
@@ -207,49 +227,50 @@ def func_args(func)->bool:
     code = func.__code__
     return code.co_varnames[:code.co_argcount]
 
-def has_arg(func, arg)->bool: return arg in func_args(func)
+def has_arg(func, arg)->bool: 
+    "Check if `func` accepts `arg`."
+    return arg in func_args(func)
 
-def split_kwargs(kwargs, func):
+def split_kwargs_by_func(kwargs, func):
     "Split `kwargs` between those expected by `func` and the others."
     args = func_args(func)
     func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}
     return func_kwargs, kwargs
 
-def try_int(o:Any)->Any:
-    "Try to conver `o` to int, default to `o` if not possible."
-    try: return int(o)
-    except: return o
-
-def array(a, *args, **kwargs)->np.ndarray:
+def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators"
-    if not isinstance(a, collections.Sized): a = list(a)
-    return np.array(a, *args, **kwargs)
+    if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):
+        a = list(a)
+    if np.int_==np.int32 and dtype is None and is_listy(a) and len(a) and isinstance(a[0],int):
+        dtype=np.int64
+    return np.array(a, dtype=dtype, **kwargs)
+
+class EmptyLabel(ItemBase):
+    "Should be used for a dummy label."
+    def __init__(self): self.obj,self.data = 0,0
+    def __str__(self):  return ''
 
 class Category(ItemBase):
+    "Basic class for singe classification labels."
     def __init__(self,data,obj): self.data,self.obj = data,obj
     def __int__(self): return int(self.data)
     def __str__(self): return str(self.obj)
 
 class MultiCategory(ItemBase):
+    "Basic class for multi-classification labels."
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
 
-    @property
-    def p(self):
-        if self.p_ is None: self.p_ = Path(self.d)
-        return self.p_
-
-    def __getattr__(self,k):
-        res = getattr(self.d, k, None)
-        if res is not None: return res
-        return getattr(self.p, k)
-
-    #def read(self): return self.open('rb').read()
+class FloatItem(ItemBase):
+    "Basic class for float items."
+    def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
+    def __str__(self): return str(self.obj)
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
 
 def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
+    "Put the texts in `items` in an HTML table, `widths` are the widths of the columns in %."
     html_code = f"<table>"
     for w in widths: html_code += f"  <col width='{w}%'>"
     for line in items:
@@ -257,3 +278,21 @@ def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->
         html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
         html_code += "\n  </tr>\n"
     return html_code + "</table>\n"
+
+def parallel(func, arr:Collection, max_workers:int=None):
+    "Call `func` on every element of `arr` in parallel using `max_workers`."
+    max_workers = ifnone(max_workers, defaults.cpus)
+    if max_workers<2: _ = [func(o,i) for i,o in enumerate(arr)]
+    else:
+        with ProcessPoolExecutor(max_workers=max_workers) as ex:
+            futures = [ex.submit(func,o,i) for i,o in enumerate(arr)]
+            for f in progress_bar(concurrent.futures.as_completed(futures), total=len(arr)): pass
+
+def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, title=None, **kwargs):
+    "Like `plt.subplots` but with consistent axs shape, `kwargs` passed to `fig.suptitle` with `title`"
+    figsize = ifnone(figsize, (imgsize*cols, imgsize*rows))
+    fig, axs = plt.subplots(rows,cols,figsize=figsize)
+    if (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
+    if title is not None: fig.suptitle(title, **kwargs)
+    return array(axs)
+

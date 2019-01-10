@@ -1,21 +1,16 @@
 "Supports 1-Cycle style training"
 from ..core import *
 from ..callback import *
-from ..basic_train import Learner
+from ..basic_train import Learner,LearnerCallback
 
 __all__ = ['OneCycleScheduler']
 
-@dataclass
-class OneCycleScheduler(Callback):
+class OneCycleScheduler(LearnerCallback):
     "Manage 1-Cycle style training as outlined in Leslie Smith's [paper](https://arxiv.org/pdf/1803.09820.pdf)."
-    learn:Learner
-    lr_max:float
-    moms:Floats=(0.95,0.85)
-    div_factor:float=25.
-    pct_start:float=0.3
-
-    def __post_init__(self):
-        self.moms=tuple(listify(self.moms,2))
+    def __init__(self, learn:Learner, lr_max:float, moms:Floats=(0.95,0.85), div_factor:float=25., pct_start:float=0.3):
+        super().__init__(learn)
+        self.lr_max,self.div_factor,self.pct_start = lr_max,div_factor,pct_start
+        self.moms=tuple(listify(moms,2))
         if is_listy(self.lr_max): self.lr_max = np.array(self.lr_max)
 
     def steps(self, *steps_cfg:StartOptEnd):
@@ -28,7 +23,7 @@ class OneCycleScheduler(Callback):
         n = len(self.learn.data.train_dl) * n_epochs
         a1 = int(n * self.pct_start)
         a2 = n-a1
-        self.phases = ((a1, annealing_linear), (a2, annealing_cos))
+        self.phases = ((a1, annealing_cos), (a2, annealing_cos))
         low_lr = self.lr_max/self.div_factor
         self.lr_scheds = self.steps((low_lr, self.lr_max), (self.lr_max, low_lr/1e4))
         self.mom_scheds = self.steps(self.moms, (self.moms[1], self.moms[0]))

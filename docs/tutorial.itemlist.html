@@ -1,0 +1,586 @@
+---
+
+title: Custom ItemList
+keywords: fastai
+sidebar: home_sidebar
+
+summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `ItemList`"
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Customizing-datasets-in-fastai">Customizing datasets in fastai<a class="anchor-link" href="#Customizing-datasets-in-fastai">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this tutorial, we'll see how to create custom subclasses of <a href="/core.html#ItemBase"><code>ItemBase</code></a> or <a href="/data_block.html#ItemList"><code>ItemList</code></a> while retaining everything the fastai library has to offer. To allow basic functions to work consistently across various applications, the fastai library delegates several tasks to one of those specific objets, and we'll see here which methods you have to implement to be able to have everything work properly. But first let's see take a step back to see where you'll use your end result.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Links-with-the-data-block-API">Links with the data block API<a class="anchor-link" href="#Links-with-the-data-block-API">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data block API works by allowing you to pick a class that is responsible to get your items and another class that is charged with getting your targets. Combined together, they create a pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> that is then wrapped inside a <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>. The training set, validation set and maybe test set are then all put in a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>.</p>
+<p>The data block API allows you to mix and match what class your inputs have, what clas you target have, how to do the split between train and validation set, then how to create the <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, but if you have a very specific kind of input/target, the fastai classes might no be sufficient to you. This tutorial is there to explain what is needed to create a new class of items and what methods are important to implement or override.</p>
+<p>It goes in two phases: first we focus on what you need to create a custom <a href="/core.html#ItemBase"><code>ItemBase</code></a> class (which the type of your inputs/targets) then on how to create your custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> (which is basically a set of <a href="/core.html#ItemBase"><code>ItemBase</code></a>) while highlining which methods are called by the library.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-a-custom-ItemBase-subclass">Creating a custom <a href="/core.html#ItemBase"><code>ItemBase</code></a> subclass<a class="anchor-link" href="#Creating-a-custom-ItemBase-subclass">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The fastai library contains three basic type of <a href="/core.html#ItemBase"><code>ItemBase</code></a> that you might want to subclass:</p>
+<ul>
+<li><a href="/vision.image.html#Image"><code>Image</code></a> for vision applications</li>
+<li><a href="/text.data.html#Text"><code>Text</code></a> for text applications</li>
+<li><a href="/tabular.data.html#TabularLine"><code>TabularLine</code></a> for tabular applications</li>
+</ul>
+<p>Whether you decide to create your own item class or to subclass one of the above, here is what you need to implement:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Basic-attributes">Basic attributes<a class="anchor-link" href="#Basic-attributes">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Those are the more importants attribute your custom <a href="/core.html#ItemBase"><code>ItemBase</code></a> needs as they're used everywhere in the fastai library:</p>
+<ul>
+<li><code>ItemBase.data</code> is the thing that is passed to pytorch when you want to create a <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>. This is what needs to be fed to your model. Note that it might be different from the representation of your item since you might want something that is more understandable.</li>
+<li><code>ItemBase.obj</code> is the thing that truly represents the underlying object behind your item. It should be sufficient to create a copy of your item. For instance, when creating the test set, the basic label is the <code>obj</code> attribute of the first label (or y) in the training set.</li>
+<li><code>__str__</code> representation: if applicable, this is what will be displayed when the fastai library has to show your item.</li>
+</ul>
+<p>If we take the example of a <a href="/core.html#MultiCategory"><code>MultiCategory</code></a> object <code>o</code> for instance:</p>
+<ul>
+<li><code>o.obj</code> is the list of tags that object has</li>
+<li><code>o.data</code> is a tensor where the tags are one-hot encoded</li>
+<li><code>str(o)</code> returns the tags separated by ;</li>
+</ul>
+<p>If you want to code the way data augmentation should be applied to your custom <code>Item</code>, you should write an <code>apply_tfms</code> method. This is what will be called if you apply a <a href="/vision.transform.html#vision.transform"><code>transform</code></a> block in the data block API.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Advanced-show-methods">Advanced show methods<a class="anchor-link" href="#Advanced-show-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to use methods such a <code>data.show_batch()</code> or <code>learn.show_results()</code> with a brand new kind of <a href="/core.html#ItemBase"><code>ItemBase</code></a> you will need to implement two other methods. In both cases, the generic function will grab the tensors of inputs, targets and predictions (if applicable), reconstruct the corespoding <a href="/core.html#ItemBase"><code>ItemBase</code></a> (see below) but it will delegate to the <a href="/core.html#ItemBase"><code>ItemBase</code></a> the way to display the results.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_xys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="bp">None</span><span class="p">:</span>
+
+<span class="k">def</span> <span class="nf">show_xyzs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="bp">None</span><span class="p">:</span>
+</pre></div>
+<p>In both cases <code>xs</code> and <code>ys</code> represent the inputs and the targets, in the second case <code>zs</code> represent the predictions. They are lists of the same length that depend on the <code>rows</code> argument you passed. The kwargs are passed from <code>data.show_batch()</code> / <code>learn.show_results()</code>. As an example, here is the source code of those methods in <a href="/vision.image.html#Image"><code>Image</code></a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_xys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="s2">&quot;Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method.&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">rows</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">if</span> <span class="n">rows</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">[</span><span class="n">axs</span><span class="p">]):</span>
+        <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">show_xyzs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`. </span>
+<span class="sd">    `kwargs` are passed to the show method.&quot;&quot;&quot;</span>
+    <span class="n">figsize</span> <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+    <span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Ground truth / Predictions&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="n">ys</span><span class="p">,</span><span class="n">zs</span><span class="p">)):</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Example:-ImageTuple">Example: ImageTuple<a class="anchor-link" href="#Example:-ImageTuple">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For cycleGANs, we need to create a custom type of items since we feed the model tuples of images. Let's look at how to code this. The basis is to code the <code>obj</code> and <a href="/vision.data.html#vision.data"><code>data</code></a> attributes. We do that in the init. The object is the tuple of images and the data their underlying tensors normalized between -1 and 1.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTuple</span><span class="p">(</span><span class="n">ItemBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">img2</span> <span class="o">=</span> <span class="n">img1</span><span class="p">,</span><span class="n">img2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">img1</span><span class="p">,</span><span class="n">img2</span><span class="p">),[</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">img1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">img2</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then we want to apply data augmentation to our tuple of images. That's done by writing and <code>apply_tfms</code> method as we saw before. Here we just pass that call to the two underlying images then update the data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="k">def</span> <span class="nf">apply_tfms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img1</span><span class="o">.</span><span class="n">apply_tfms</span><span class="p">(</span><span class="n">tfms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img2</span><span class="o">.</span><span class="n">apply_tfms</span><span class="p">(</span><span class="n">tfms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">img1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">img2</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We define a last method to stack the two images next ot each other, which we will use later for a customized <code>show_batch</code>/ <code>show_results</code> behavior.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="k">def</span> <span class="nf">to_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">Image</span><span class="p">(</span><span class="mf">0.5</span><span class="o">+</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is all your need to create your custom <a href="/core.html#ItemBase"><code>ItemBase</code></a>. You won't be able to use it until you have put it inside your custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> though, so you should continue reading the next section.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-a-custom-ItemList-subclass">Creating a custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> subclass<a class="anchor-link" href="#Creating-a-custom-ItemList-subclass">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the main class that allows you to group your inputs or your targets in the data block API. You can then use any of the splitting or labelling methods before creating a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>. To make sure everything is properly working, her eis what you need to know.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Class-variables">Class variables<a class="anchor-link" href="#Class-variables">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Whether you're directly subclassing <a href="/data_block.html#ItemList"><code>ItemList</code></a> or one of the particular fastai ones, make sure to know the content of the following three variables as you may need to adjust them:</p>
+<ul>
+<li><code>_bunch</code> contains the name of the class that will be used to create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> </li>
+<li><code>_processor</code> contains a class (or a list of classes) of <a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a> that will then be used as the default to create processor for this <a href="/data_block.html#ItemList"><code>ItemList</code></a></li>
+<li><code>_label_cls</code> contains the class that will be used to create the labels by default</li>
+</ul>
+<p><code>_label_cls</code> is the first to be used in the data block API, in the labelling function. If this variable is set to <code>None</code>, the label class will be guessed between <a href="/data_block.html#CategoryList"><code>CategoryList</code></a>, <a href="/data_block.html#MultiCategoryList"><code>MultiCategoryList</code></a> and <a href="/data_block.html#FloatList"><code>FloatList</code></a> depending on the type of the first item. The default can be overriden by passing a <code>label_cls</code> in the kwargs of the labelling function.</p>
+<p><code>_processor</code> is the second to be used. The processors are called at the end of the labelling to apply some kind of function on your items. The default processor of the inputs can be overriden by passing a <code>processor</code> in the kwargs when creating the <a href="/data_block.html#ItemList"><code>ItemList</code></a>, the default processor of the targets can be overriden by passing a <code>processor</code> in the kwargs of the labelling function.</p>
+<p>Processors are useful for pre-processing some data, but you also need to put in their state any variable you want to save for the call of <code>data.export()</code> before creating a <a href="/basic_train.html#Learner"><code>Learner</code></a> object for inference: the state of the <a href="/data_block.html#ItemList"><code>ItemList</code></a> isn't saved there, only their processors. For instance <code>SegmentationProcessor</code> only reason to exist is to save the dataset classes, and during the process call, it doesn't do anything apart from setting the <code>classes</code> and <code>c</code> attributes to its dataset.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SegmentationProcessor</span><span class="p">(</span><span class="n">PreProcessor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span><span class="n">ItemList</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">classes</span>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span><span class="n">ItemList</span><span class="p">):</span>  <span class="n">ds</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span><span class="n">ds</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
+</pre></div>
+<p><code>_bunch</code> is the last class variable usd in the data block. When you type the final <code>databunch()</code>, the data block API calls the <code>_bunch.create</code> method with the <code>_bunch</code> of the inputs.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Keeping-__init__-arguments">Keeping __init__ arguments<a class="anchor-link" href="#Keeping-__init__-arguments">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you pass additional arguments in your <code>__init__</code> call that you save in the state of your <a href="/data_block.html#ItemList"><code>ItemList</code></a>, be wary to also pass them along in the <code>new</code> method as this one is used to create your training and validation set when splitting. The basic scheme is:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomItemList</span><span class="p">(</span><span class="n">ItemList</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">my_arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_arg</span> <span class="o">=</span> <span class="n">my_arg</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+<p>Be sure to keep the kwargs as is, as they contain all the additional stuff you can pass to an <a href="/data_block.html#ItemList"><code>ItemList</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Important-methods">Important methods<a class="anchor-link" href="#Important-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="--get">- get<a class="anchor-link" href="#--get">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The most important method you have to implement is <code>get</code>: this one will explain your custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> how to general an <a href="/core.html#ItemBase"><code>ItemBase</code></a> from the thign stored in its <code>items</code> array. For instance an <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a> has the following <code>get</code> method:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+<p>The first line basically looks at <code>self.items[i]</code> (which is a filename). The second line opens it since the <code>open</code>method is just</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span> <span class="k">return</span> <span class="n">open_image</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+</pre></div>
+<p>The third line is there for <a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a> or <a href="/vision.image.html#ImageBBox"><code>ImageBBox</code></a> targets that require the size of the input <a href="/vision.image.html#Image"><code>Image</code></a> to be created. Note that if you are building a custom target class and you need the size of an image, you should call <code>self.x.size[i]</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>If you just want to customize the way an `Image` is opened, subclass `Image` and just change the
+`open` method.</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="--reconstruct">- reconstruct<a class="anchor-link" href="#--reconstruct">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the method that is called in <code>data.show_batch()</code>, <code>learn.predict()</code> or <code>learn.show_results()</code> to transform a pytorch tensor back in an <a href="/core.html#ItemBase"><code>ItemBase</code></a>. In a way, it does the opposite of calling <code>ItemBase.data</code>. It should take a tensor <code>t</code> and return the same king of thing as the <code>get</code> method.</p>
+<p>In some situations (<a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a>, <a href="/vision.image.html#ImageBBox"><code>ImageBBox</code></a> for instance) you need to have a look at the corresponding input to rebuild your item. In this case, you should have a second argument called <code>x</code> (don't change that name). For instance, here is the <code>reconstruct</code> method of <a href="/vision.data.html#PointsItemList"><code>PointsItemList</code></a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">ImagePoints</span><span class="p">(</span><span class="n">FlowField</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="--analyze_pred">- analyze_pred<a class="anchor-link" href="#--analyze_pred">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is the method that is called in <code>learn.predict()</code> or <code>learn.show_results()</code> to transform predictions in an output tensor suitable for <code>reconstruct</code>. For instance we may need to take the maximum argument (for <a href="/core.html#Category"><code>Category</code></a>) or the predictions greater than a certain threshold (for <a href="/core.html#MultiCategory"><code>MultiCategory</code></a>). It should take a tensor, along with optional kwargs and return a tensor.</p>
+<p>For instance, here is the <code>anaylze_pred</code> method of <a href="/data_block.html#MultiCategoryList"><code>MultiCategoryList</code></a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">analyze_pred</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span> <span class="k">return</span> <span class="p">(</span><span class="n">pred</span> <span class="o">&gt;=</span> <span class="n">thresh</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+</pre></div>
+<p><code>thresh</code> can then be passed as kwarg during the calls to <code>learn.predict()</code> or <code>learn.show_results()</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Advanced-show-methods">Advanced show methods<a class="anchor-link" href="#Advanced-show-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to use methods such a <code>data.show_batch()</code> or <code>learn.show_results()</code> with a brand new kind of <a href="/core.html#ItemBase"><code>ItemBase</code></a> you will need to implement two other methods. In both cases, the generic function will grab the tensors of inputs, targets and predictions (if applicable), reconstruct the coresponding (as seen before) but it will delegate to the <a href="/data_block.html#ItemList"><code>ItemList</code></a> the way to display the results.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_xys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="bp">None</span><span class="p">:</span>
+
+<span class="k">def</span> <span class="nf">show_xyzs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="bp">None</span><span class="p">:</span>
+</pre></div>
+<p>In both cases <code>xs</code> and <code>ys</code> represent the inputs and the targets, in the second case <code>zs</code> represent the predictions. They are lists of the same length that depend on the <code>rows</code> argument you passed. The kwargs are passed from <code>data.show_batch()</code> / <code>learn.show_results()</code>. As an example, here is the source code of those methods in <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_xys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="s2">&quot;Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method.&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">rows</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">if</span> <span class="n">rows</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">[</span><span class="n">axs</span><span class="p">]):</span>
+        <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">show_xyzs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`. </span>
+<span class="sd">    `kwargs` are passed to the show method.&quot;&quot;&quot;</span>
+    <span class="n">figsize</span> <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+    <span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Ground truth / Predictions&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="n">ys</span><span class="p">,</span><span class="n">zs</span><span class="p">)):</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+<p>Linked to this method is the class variable <code>_show_square</code> of an <a href="/data_block.html#ItemList"><code>ItemList</code></a>. It defaults to <code>False</code> but if it's <code>True</code>, the <code>show_batch</code> method will send <code>rows * rows</code> <code>xs</code> and <code>ys</code> to <code>show_xys</code> (so that it shows a square of inputs/targets), like here for iamges.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Example:-ImageTupleList">Example: ImageTupleList<a class="anchor-link" href="#Example:-ImageTupleList">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Continuing our custom item example, we create a custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> class that will wrap those <code>ImageTuple</code> properly. The first thing is to write a custom <code>__init__</code> method (since we need to list of filenames here) which means we also have to change the <code>new</code> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTupleList</span><span class="p">(</span><span class="n">ImageItemList</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span> <span class="o">=</span> <span class="n">itemsB</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We then specify how to get one item. Here we pass the image in the first list of items, and pick one randomly in the second list.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">img1</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">ImageTuple</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">open_image</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We also add a custom factory method to directly create an <code>ImageTupleList</code> from two folders.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_folders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">folderA</span><span class="p">,</span> <span class="n">folderB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">itemsB</span> <span class="o">=</span> <span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderB</span><span class="p">)</span><span class="o">.</span><span class="n">items</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderA</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="n">itemsB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we have to specify how to reconstruct the <code>ImageTuple</code> from tensors if we want <code>show_batch</code> to work. We recreate the images and denormalize.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span><span class="n">Tensor</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="n">ImageTuple</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mf">0.5</span><span class="p">),</span><span class="n">Image</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is no need to write a <code>analyze_preds</code> method since the default behavior (returning the output tensor) is what we need here. However <code>show_results</code> won't work properly unless the target (which we don't really care about here) has the right <code>reconstruct</code> method: the fastai library uses the <code>reconstruct</code> method of the target on the outputs. That's why we create another custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> with just that <code>reconstruct</code> method. The first line is to reconstruct our dummy targets, and the second one is the same as in <code>ImageTupleList</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TargetTupleList</span><span class="p">(</span><span class="n">ItemList</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span><span class="n">Tensor</span><span class="p">):</span> 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">t</span>
+        <span class="k">return</span> <span class="n">ImageTuple</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mf">0.5</span><span class="p">),</span><span class="n">Image</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To make sure our <code>ImageTupleList</code> uses that for labelling, we pass it in <code>_label_cls</code> and this is what the result looks like.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTupleList</span><span class="p">(</span><span class="n">ImageItemList</span><span class="p">):</span>
+    <span class="n">_label_cls</span><span class="o">=</span><span class="n">TargetTupleList</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span> <span class="o">=</span> <span class="n">itemsB</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">img1</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">ImageTuple</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">open_image</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span><span class="n">Tensor</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="n">ImageTuple</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mf">0.5</span><span class="p">),</span><span class="n">Image</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mf">0.5</span><span class="p">))</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_folders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">folderA</span><span class="p">,</span> <span class="n">folderB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">itemsB</span> <span class="o">=</span> <span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderB</span><span class="p">)</span><span class="o">.</span><span class="n">items</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderA</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="n">itemsB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lastly, we want to customize the behavior of <code>show_batch</code> and <code>show_results</code>. Remember the <code>to_one</code> method just puts the two images next to each other.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="k">def</span> <span class="nf">show_xys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method.&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span><span class="n">rows</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">if</span> <span class="n">rows</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">[</span><span class="n">axs</span><span class="p">]):</span>
+            <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">to_one</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">show_xyzs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`.</span>
+<span class="sd">        `kwargs` are passed to the show method.&quot;&quot;&quot;</span>
+        <span class="n">figsize</span> <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Ground truth / Predictions&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="n">zs</span><span class="p">)):</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">to_one</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">to_one</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+ 
+

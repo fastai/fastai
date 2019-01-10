@@ -5,9 +5,8 @@ __all__ = ['TabularModel']
 
 class TabularModel(nn.Module):
     "Basic model for tabular data."
-
-    def __init__(self, emb_szs:ListSizes, n_cont:int, out_sz:int, layers:Collection[int],
-            ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True):
+    def __init__(self, emb_szs:ListSizes, n_cont:int, out_sz:int, layers:Collection[int], ps:Collection[float]=None,
+                 emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, bn_final:bool=False):
         super().__init__()
         ps = ifnone(ps, [0]*len(layers))
         ps = listify(ps, layers)
@@ -21,6 +20,7 @@ class TabularModel(nn.Module):
         layers = []
         for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:],[0.]+ps,actns)):
             layers += bn_drop_lin(n_in, n_out, bn=use_bn and i!=0, p=dp, actn=act)
+        if bn_final: layers.append(nn.BatchNorm1d(sizes[-1]))
         self.layers = nn.Sequential(*layers)
 
     def get_sizes(self, layers, out_sz):

@@ -96,7 +96,7 @@ dependencies:
 - prompt_toolkit
 #- pytest
 - pip:
-  - torchvision>=0.1.9
+  - torchvision==0.1.9
   - opencv-python
   - isoweek
   - pandas_summary

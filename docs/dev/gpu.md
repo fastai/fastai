@@ -6,16 +6,16 @@ title: Working with GPU
 
 Here is how to poll the status of your GPU(s) in a variety of ways from your terminal:
 
-1. watch the processes using GPU(s) and the current state of your GPU(s):
+* Watch the processes using GPU(s) and the current state of your GPU(s):
 
    ```
    watch -n 1 nvidia-smi
    ```
 
-2. Watch the usage stats as their change:
+* Watch the usage stats as their change:
 
    ```
-   nvidia-smi --query-gpu=timestamp,pstate,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv -l 1 -t
+   nvidia-smi --query-gpu=timestamp,pstate,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv -l 1
    ```
 
    This way is useful as you can see the trace of changes, rather than just the current state shown by `nvidia-smi` executed without any arguments.
@@ -30,7 +30,13 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
 
    For more details, please, see [Useful nvidia-smi Queries](https://nvidia.custhelp.com/app/answers/detail/a_id/3751/~/useful-nvidia-smi-queries).
 
-3. Similar to the above, but shows the stats as a percentage:
+   Most likely you will just want to track the memory usage, so this is probably sufficient:
+
+   ```
+   nvidia-smi --query-gpu=timestamp,memory.used,memory.total --format=csv -l 1
+   ```
+
+* Similar to the above, but show the stats as percentages:
 
    ```
    nvidia-smi dmon -s u
@@ -39,6 +45,32 @@ Here is how to poll the status of your GPU(s) in a variety of ways from your ter
    ```
    nvidia-smi dmon
    ```
+   To find out the other options, use:
+   ```
+   nvidia-smi dmon -h
+   ```
+
+* [nvtop](https://github.com/Syllo/nvtop)
+
+   Nvtop stands for NVidia TOP, a (h)top like task monitor for NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
+
+   It shows the processes, and also visually displays the memory and gpu stats.
+
+   This application requires building it from source (needing `gcc`, `make`, et al), but the instructions are easy to follow and it is quick to build.
+
+
+* [gpustat](https://github.com/wookayin/gpustat)
+
+   `nvidia-smi` like monitor, but a compact one. It relies on [pynvml](https://pythonhosted.org/nvidia-ml-py/) to talk to the nvml layer.
+
+   Installation: `pip3 install gpustat`.
+
+   And here is a usage example:
+
+   ```
+   gpustat -cp -i --no-color
+   ```
+
 
 
 ## Accessing NVIDIA GPU Info Programmatically
@@ -62,6 +94,8 @@ pip3 install nvidia-ml-py3
 ```
 conda install nvidia-ml-py3 -c fastai
 ```
+
+This library is now a `fastai` dependency, so you can use it directly.
 
 Examples:
 
@@ -104,6 +138,12 @@ print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
 ```
 
 
+### py3nvml
+
+This is another fork of `nvidia-ml-py3`, supplementing it with [extra useful utils](https://github.com/fbcotter/py3nvml).
+
+note: there is no `py3nvml` conda package in its main channel, but it is available on pypi.
+
 
 ### GPUtil
 
@@ -124,20 +164,8 @@ For more details see: https://github.com/anderskm/gputil
 
 For more details see: https://github.com/nicolargo/nvidia-ml-py3
 
+https://github.com/FrancescAlted/ipython_memwatcher
 
-### gpustat
-
-`nvidia-smi` like monitor, but a compact one. It relies on [pynvml](https://pythonhosted.org/nvidia-ml-py/) to talk to the nvml layer.
-
-Installation: `pip3 install gpustat`.
-
-And here is a usage example:
-
-```
-gpustat -cp -i --no-color
-```
-
-For more details see: https://github.com/wookayin/gpustat
 
 
 ## GPU Memory Notes
@@ -171,3 +199,61 @@ If you have more than one process using the same GPU, the cached memory from one
 How can we do a lot of experimentation in a given jupyter notebook w/o needing to restart the kernel all the time? You can delete the variables that hold the memory, can call `import gc; gc.collect()` to reclaim memory by deleted objects with circular references, optionally (if you have just one process) calling `torch.cuda.empty_cache()` and you can now re-use the GPU memory inside the same kernel.
 
 To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.
+
+
+### GPU RAM Fragmentation
+
+If you encounter an error similar to the following:
+
+```
+RuntimeError: CUDA out of memory.
+Tried to allocate 350.00 MiB
+(GPU 0; 7.93 GiB total capacity; 5.73 GiB already allocated;
+324.56 MiB free; 1.34 GiB cached)
+```
+
+You may ask yourself, if there is 0.32 GB free and 1.34 GB cached (i.e. 1.66 GB total of unused memory), how can it not allocate 350 MB? This happens because of memory fragmentation.
+
+For the sake of this example let's assume that you have a function that allocates as many GBs of GPU RAM as its argument specifies:
+
+```
+def allocate_gb(n_gbs): ...
+```
+
+And you have an 8GB GPU card and no process is using it, so when a process is starting it's the first one to use it.
+
+If you do the following sequence of GPU RAM allocations:
+
+```
+                    # total used | free | 8gb of RAM
+                    #        0GB | 8GB  | [________]
+x1 = allocate_gb(2) #        2GB | 6GB  | [XX______]
+x2 = allocate_gb(4) #        6GB | 2GB  | [XXXXXX__]
+del x1              #        4GB | 4GB  | [__XXXX__]
+x3 = allocate_gb(3) # failure to allocate 3GB w/ RuntimeError: CUDA out of memory
+```
+
+despite having a total of 4GB of free GPU RAM (cached and free), the last command will fail, because it can't get 3GB of contiguous memory.
+
+You can conclude from this example, that it's crucial to always free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `del()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
+
+If you want to educate yourself on how and when the python garbage collector gets automatically invoked see [gc](https://docs.python.org/3/library/gc.html#gc.get_threshold) and [this](https://rushter.com/blog/python-garbage-collector/).
+
+
+
+
+### pytorch Tensor Memory Tracking
+
+Show all the currently allocated Tensors:
+```
+import torch
+import gc
+for obj in gc.get_objects():
+    try:
+        if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
+            print(type(obj), obj.size())
+    except: pass
+```
+Note, that gc will not contain some tensors that consume memory [inside autograd](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741/22).
+
+Here is a good [discussion on this topic](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741) with more related code snippets.

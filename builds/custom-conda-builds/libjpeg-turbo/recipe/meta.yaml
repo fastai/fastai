@@ -1,0 +1,39 @@
+{% set version = "2.0.1" %}
+
+package:
+  name: libjpeg-turbo
+  version: {{ version }}
+
+source:
+  url: https://github.com/libjpeg-turbo/libjpeg-turbo/archive/{{ version }}.tar.gz
+  sha256: a30db8bcc8a0fab56998ea134233a8cdcb7ac81170e7d87f8bc900f02dda39d4
+
+build:
+  number: 1000
+  run_exports:
+    - {{ pin_subpackage('libjpeg-turbo', max_pin='x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake
+    - msinttypes  # [win and py<35]
+    - yasm
+    - jom  # [win]
+
+test:
+  files:
+    - testorig.jpg
+  commands:
+    - djpeg -dct int -ppm -outfile testout.ppm testorig.jpg
+
+about:
+  home: http://www.libjpeg-turbo.org/
+  license: IJG, modified 3-clause BSD and zlib
+  license_file: LICENSE.md
+  summary: IJG JPEG compliant runtime library with SIMD and other optimizations
+
+extra:
+  recipe-maintainers:
+    - valgur
+    - sdvillal

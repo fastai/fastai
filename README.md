@@ -25,7 +25,7 @@ If you are using `fastai` for any [course.fast.ai](http://course.fast.ai) course
 
 ## Installation
 
-**NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** (currently in preview) and **Python 3.6** or later. Once pytorch v1 packages are available for Windows, we will work to support Windows as soon as possible. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
+**NB:** *fastai v1 currently supports Linux only, and requires **PyTorch v1** and **Python 3.6** or later. Windows support is at an experimental stage: it should work fine but we haven't thoroughly tested it. Since Macs don't currently have good Nvidia GPU support, we do not currently prioritize Mac development.*
 
 `fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favourite python package manager. Note that **PyTorch v1** and **Python 3.6** are the minimal version requirements.
 
@@ -35,68 +35,51 @@ It's highly recommended you install `fastai` and its dependencies in a virtual e
 
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
-More advanced installation issues, such as installing only partial dependencies are covered in a dedicated [installation doc](https://docs.fast.ai/installation.html).
+More advanced installation issues, such as installing only partial dependencies are covered in a dedicated [installation doc](https://docs.fast.ai/install.html).
 
 ### Conda Install
 
-* GPU
+```bash
+conda install -c pytorch -c fastai fastai
+```
 
-   ```bash
-   conda install -c pytorch pytorch-nightly cuda92
-   conda install -c fastai torchvision-nightly
-   conda install -c fastai fastai
-   ```
-
-* CPU
-
-   ```bash
-   conda install -c pytorch pytorch-nightly-cpu
-   conda install -c fastai torchvision-nightly-cpu
-   conda install -c fastai fastai
-   ```
-
-Note that JPEG decoding can be a bottleneck, particularly if you have a fast CPU. You can optionally install an optimized JPEG decoder as follows (Linux):
+Note that JPEG decoding can be a bottleneck, particularly if you have a fast GPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
 ```bash
 conda uninstall --force jpeg libtiff -y
 conda install -c conda-forge libjpeg-turbo
-CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall pillow-simd
+CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall --no-binary :all: --compile pillow-simd
 ```
-
+If you only care about faster JPEG decompression, it can be `pillow` or `pillow-simd` in the last command above, the latter speeds up other image processing operations. For the full story see [Pillow-SIMD](https://docs.fast.ai/performance.html#faster-image-processing).
 
 ### PyPI Install
 
-* GPU
+```bash
+pip install fastai
+```
 
-   ```bash
-   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu92/torch_nightly.html
-   pip install fastai
-   ```
+### Bug Fix Install
 
-* CPU
+If a bug fix was made in git and you can't wait till a new release is made, you can install the bleeding edge version of `fastai` with:
 
-   ```bash
-   pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-   pip install fastai
-   ```
-
-NB: this set will also fetch `torchvision-nightly`, which supports `torch-1.x`.
-
-
+```
+pip install git+https://github.com/fastai/fastai.git
+```
 
 ### Developer Install
 
-First, follow the instructions above for either `PyPi` or `Conda`. Then uninstall the `fastai` package using the **same package manager you used to install it**, i.e. `pip uninstall fastai` or `conda uninstall fastai`, and then, replace it with a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
-
+The following instructions will result in a [pip editable install](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs), so that you can `git pull` at any time and your environment will automatically get the updates:
 
 ```bash
 git clone https://github.com/fastai/fastai
 cd fastai
 tools/run-after-git-clone
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
-You can test that the build works by starting the jupyter notebook:
+Note that this will install the `cuda9.0` `pytorch` build via default dependencies. If you need a higher or lower `cudaXX` build, following the instructions [here]( https://pytorch.org/get-started/locally/), to install the desired `pytorch` build.
+
+Next, you can test that the build works by starting the jupyter notebook:
 
 ```bash
 jupyter notebook
@@ -109,7 +92,7 @@ Alternatively, you can do a quick CLI test:
 jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
 ```
 
-Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and  [develop.md](https://github.com/fastai/fastai/blob/master/docs/develop.md) for more details on how to contribute to the `fastai` project.
+Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [Notes For Developers](https://docs.fast.ai/dev/develop.html) for more details on how to contribute to the `fastai` project.
 
 
 
@@ -143,7 +126,7 @@ If for any reason you can't use the prepackaged packages and have to build from 
 
 ## Installation Issues
 
-If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please refer to the [troubleshooting document](https://docs-dev.fast.ai/troubleshoot.html).
+If the installation process fails, first make sure [your system is supported](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). And if the problem is still not addressed, please refer to the [troubleshooting document](https://docs.fast.ai/troubleshoot.html).
 
 If you encounter installation problems with conda, make sure you have the latest `conda` client (`conda install` will do an update too):
 ```bash
@@ -164,41 +147,58 @@ conda install conda
 
    Since fastai-1.0 relies on pytorch-1.0, you need to be able to install pytorch-1.0 first.
 
-   As of this moment pytorch.org's pre-1.0.0 version (`torch-nightly`) supports:
+   As of this moment pytorch.org's 1.0 version supports:
 
     | Platform | GPU    | CPU    |
     |----------|--------|--------|
     | linux    | binary | binary |
     | mac      | source | binary |
-    | windows  | source | source |
+    | windows  | binary | binary |
 
    Legend: `binary` = can be installed directly, `source` = needs to be built from source.
 
-   This will change once `pytorch` 1.0.0 is released and installable packages made available for your system, which could take some time after the official release is made. Please watch for updates [here](https://pytorch.org/get-started/locally/).
-
    If there is no `pytorch` preview conda or pip package available for your system, you may still be able to [build it from source](https://pytorch.org/get-started/locally/).
-
-   Alternatively, please consider installing and using the very solid "0.7.x" version of `fastai`. Please see the [instructions](https://github.com/fastai/fastai/tree/master/old).
 
 4. How do you know which pytorch cuda version build to choose?
 
-   It depends on the version of the installed NVIDIA driver. Here are the requirements for CUDA versions supported by pre-built `pytorch-nightly` releases:
+   It depends on the version of the installed NVIDIA driver. Here are the requirements for CUDA versions supported by pre-built `pytorch` releases:
 
     | CUDA Toolkit | NVIDIA (Linux x86_64) |
     |--------------|-----------------------|
-    | CUDA 9.2     | >= 396.26             |
+    | CUDA 10.0    | >= 410.00             |
     | CUDA 9.0     | >= 384.81             |
     | CUDA 8.0     | >= 367.48             |
 
    So if your NVIDIA driver is less than 384, then you can only use `cuda80`. Of course, you can upgrade your drivers to more recent ones if your card supports it.
+
    You can find a complete table with all variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
 
+   If you use NVIDIA driver 410+, you most likely want to install the `cuda100` pytorch variant, via:
+   ```bash
+   conda install -c pytorch pytorch cuda100
+   ```
+   or if you need a lower version (`cuda90` is installed by default), use:
+   ```bash
+   conda install -c pytorch pytorch cuda80
+   ```
+   For other options refer to the complete list of [the available pytorch variants](https://pytorch.org/get-started/locally/).
+
+## Updates
+
+In order to update your environment, simply install `fastai` in exactly the same way you did the initial installation.
+
+Top level files `environment.yml` and `environment-cpu.yml` belong to the old fastai (0.7). `conda env update` is no longer the way to update your `fastai-1.x` environment. These files remain because the fastai course-v2 video instructions rely on this setup. Eventually, once fastai course-v3 p1 and p2 will be completed, they will probably be moved to where they belong - under `old/`.
+
+## Contribution guidelines
+If you want to contribute to `fastai`, be sure to review the [contribution guidelines](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md). This project adheres to fastai's [code of conduct](https://github.com/fastai/fastai/blob/master/CODE-OF-CONDUCT.md). By participating, you are expected to uphold this code.
+
+We use GitHub issues for tracking requests and bugs, so please see [fastai forum](https://forums.fast.ai/) for general questions and discussion.
+
+The fastai project strives to abide by generally accepted best practices in open-source software development:
 
 ## History
 
 A detailed history of changes can be found [here](https://github.com/fastai/fastai/blob/master/CHANGES.md).
-
-
 
 ## Copyright
 

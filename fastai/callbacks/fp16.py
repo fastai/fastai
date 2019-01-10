@@ -28,7 +28,7 @@ def get_master(layer_groups:ModuleList, flat_master:bool=False) -> Tuple[List[Li
         return model_params, master_params
 
 def model_g2master_g(model_params:Sequence[Tensor], master_params:Sequence[Tensor], flat_master:bool=False)->None:
-    "Copy the model gradients to the master parameters for the optimizer step."
+    "Copy the `model_params` gradients to `master_params` for the optimizer step."
     if flat_master:
         for model_group,master_group in zip(model_params,master_params):
             if len(master_group) != 0:
@@ -42,7 +42,7 @@ def model_g2master_g(model_params:Sequence[Tensor], master_params:Sequence[Tenso
                 else: master.grad = None
 
 def master2model(model_params:Sequence[Tensor], master_params:Sequence[Tensor], flat_master:bool=False)->None:
-    "Copy master parameters to model parameters."
+    "Copy `master_params` to `model_params`."
     if flat_master:
         for model_group,master_group in zip(model_params,master_params):
             if len(model_group) != 0:
@@ -52,21 +52,20 @@ def master2model(model_params:Sequence[Tensor], master_params:Sequence[Tensor], 
         for model_group,master_group in zip(model_params,master_params):
             for model, master in zip(model_group, master_group): model.data.copy_(master.data)
 
-@dataclass
-class MixedPrecision(Callback):
+class MixedPrecision(LearnerCallback):
     "Callback that handles mixed-precision training."
-    learn:Learner
-    loss_scale:float=512.
-    flat_master:bool=False
-    def __post_init__(self): assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
+    def __init__(self, learn:Learner, loss_scale:float=512., flat_master:bool=False):
+        super().__init__(learn)
+        self.loss_scale,self.flat_master = loss_scale,flat_master
+        assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
 
     def on_train_begin(self, **kwargs:Any)->None:
         "Ensure everything is in half precision mode."
-        self.learn.data.train_dl.add_tfm(to_half)
+        self.learn.data.train_dl.add_tfm(batch_to_half)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.add_tfm(to_half)
+            self.learn.data.valid_dl.add_tfm(batch_to_half)
         if hasattr(self.learn.data, 'test_dl') and self.learn.data.test_dl is not None:
-            self.learn.data.test_dl.add_tfm(to_half)
+            self.learn.data.test_dl.add_tfm(batch_to_half)
         #Get a copy of the model params in FP32
         self.model_params, self.master_params = get_master(self.learn.layer_groups, self.flat_master)
         #Changes the optimizer so that the optimization step is done in FP32.
@@ -77,18 +76,12 @@ class MixedPrecision(Callback):
         self.learn.opt.opt = self.learn.opt_func(opt_params)
         opt.mom,opt.wd,opt.beta = mom,wd,beta
 
-    def on_train_end(self, **kwargs:Any)->None:
-        "Remove half precision transforms added at `on_train_begin`."
-        self.learn.data.train_dl.remove_tfm(to_half)
-        if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
-            self.learn.data.valid_dl.remove_tfm(to_half)
-
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
         return last_output.float()
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
-        "Scale gradients up by `loss_scale` to prevent underflow."
+        "Scale gradients up by `self.loss_scale` to prevent underflow."
         #To avoid gradient underflow, we scale the gradients
         return last_loss * self.loss_scale
 

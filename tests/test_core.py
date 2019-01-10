@@ -1,6 +1,6 @@
 import pytest, torch
 import numpy as np
-from fastai import *
+from fastai.basics import *
 from tempfile import TemporaryDirectory
 
 def test_cpus(): assert num_cpus() >= 1
@@ -26,6 +26,12 @@ def test_ifnone():
     assert ifnone(5, None) == 5
     assert ifnone(1, 5)    == 1
     assert ifnone(0, 5)    == 0
+
+def test_chunks():
+    ls = [0,1,2,3]
+    assert([a for a in chunks(ls, 2)] == [[0,1],[2,3]])
+    assert([a for a in chunks(ls, 4)] == [[0,1,2,3]])
+    assert([a for a in chunks(ls, 1)] == [[0],[1],[2],[3]])
 
 def test_uniqueify():
     assert uniqueify([1,1,3,3,5]) == [1,3,5]
@@ -98,10 +104,8 @@ def test_find_classes():
     classes = ['class_0', 'class_1', 'class_2']
     for class_num in classes:
         os.mkdir(path/class_num)
-    try:
-        assert find_classes(path)==[Path('./classes_test/class_0').resolve(),Path('./classes_test/class_1').resolve(),Path('./classes_test/class_2').resolve()]
-    finally:
-        shutil.rmtree(path)
+    try: assert [o.name for o in find_classes(path)]==classes
+    finally: shutil.rmtree(path)
 
 def test_arrays_split():
     a = arrays_split([0,3],[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'])
