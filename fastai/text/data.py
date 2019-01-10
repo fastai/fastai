@@ -26,23 +26,27 @@ class LanguageModelPreLoader(Callback):
         return int(math.ceil((self.n-1) / self.bptt)) * self.bs if self.item is None else 1
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
     
-    def on_epoch_begin(self, epoch, **kwargs):
+    def on_epoch_begin(self, **kwargs):
         self.idxs = np.random.permutation(len(self.dataset)) if self.shuffle else arange_of(self.dataset)
         self.text_idx = np.concatenate([[0],self.lengths[self.idxs].cumsum()])
         self.read_idx = 0
         
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
-    def on_epoch_end(self, epoch, **kwargs): self.on_epoch_begin(epoch)
+    def on_epoch_end(self, **kwargs): self.on_epoch_begin()
     
     def __getitem__(self, k:int):
         if self.item is not None: return self.dataset[0]
-        if not hasattr(self, 'idxs'): self.on_epoch_begin(1)
+        if not hasattr(self, 'idxs'): self.on_epoch_begin()
         seq_len = min(self.bptt, self.n-self.read_idx-1)
+        #The dataloader will send (batch_index) * bs + sample_index, converting to where to read in the stream 
         i = self.read_idx + (k % self.bs) * self.n 
+        #Getting the indexes of the texts that start and finish the portion i---i+seq_len in the stream 
         start,end = np.argmax(self.text_idx >= i)-1,np.argmin(self.text_idx <= i+seq_len+1)
         start = max(0,start)
+        #Grabbing the texts we need in the dataset
         if self.backwards: concat = np.concatenate([self.dataset.x.items[j][::-1] for j in self.idxs[start:end]])
         else: concat = np.concatenate([self.dataset.x.items[j] for j in self.idxs[start:end]])
+        #Returning the right portion.
         start_idx = i-self.text_idx[start]
         return concat[start_idx:start_idx+seq_len], concat[start_idx+1:start_idx+seq_len+1]
 
