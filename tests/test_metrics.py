@@ -3,7 +3,7 @@ from fastai.basics import *
 from fastai.metrics import *
 from io import StringIO
 from contextlib import redirect_stdout
-from utils.fakes import fake_data
+from utils.fakes import fake_learner
 from utils.text import apply_print_resets
 
 p1 = torch.Tensor([0,1,0,0,0]).expand(5,-1)
@@ -75,10 +75,8 @@ class DummyMetric(Callback):
         self.metric = torch.tensor(dummy_base_val**self.epoch)
 
 def test_custom_metric_class():
-    n_in, n_out = 3, 2
-    data  = fake_data(n_in=n_in, n_out=n_out)
-    model = nn.Linear(n_in, n_out)
-    learn = Learner(data, model, metrics=[accuracy, DummyMetric()])
+    learn = fake_learner(3,2)
+    learn.metrics.append(DummyMetric())
     buffer = StringIO()
     with redirect_stdout(buffer): learn.fit_one_cycle(2)
     out = apply_print_resets(buffer.getvalue())
