@@ -252,7 +252,7 @@ class Learner():
         if batch is not None: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
-        cb_handler.on_batch_begin(xb,yb, train=False)
+        xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
         res = _loss_func2activ(self.loss_func)(preds[0])
         if not reconstruct: return res
