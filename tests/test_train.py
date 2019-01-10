@@ -5,7 +5,7 @@ from utils.text import *
 ## filename: test_train.py
 ## tests code in train.py
 
-## run: pytest tests/test_train.py -s
+## run: pytest tests/test_train.py (add -s for more screenoutput) 
 
 ## see documentation: https://docs.fast.ai/train.html
  
@@ -18,9 +18,7 @@ def test_fit_one_cycle(capsys):
     weight_decay = 1e-2
     learn.fit_one_cycle(cyc_len=3)
     captured = capsys.readouterr()
-    ##match_epoch = re.findall(r'1/3 ', captured.out) ## finds Epoch 1/3
-    ##assert match_epoch
-    match_hundperc = re.findall(r'100.00%', captured.out) ## finds 100% progress
+    match_hundperc = re.findall(r'[100%]', captured.out) ## finds 100% progress
     assert match_hundperc
 
 ## lr_find tested in other class, e.g. to be added: test_lr_finder 
