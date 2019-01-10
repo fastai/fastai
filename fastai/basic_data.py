@@ -38,10 +38,9 @@ class DeviceDataLoader():
     def batch_size(self):   return self.dl.batch_size
     @batch_size.setter
     def batch_size(self,v):
-        #maybe TODO: make LMDataLoader have consistent args with pytorch dataloader to simplify this 
-        if 'bs' in self.dl.init_kwargs: new_kwargs = {**self.dl.init_kwargs, 'bs':v}
-        else: new_kwargs = {**self.dl.init_kwargs, 'batch_size':v, 'collate_fn':self.collate_fn}
+        new_kwargs = {**self.dl.init_kwargs, 'batch_size':v, 'collate_fn':self.collate_fn}
         self.dl = self.dl.__class__(self.dl.dataset, **new_kwargs)
+        if hasattr(self.dl.dataset, 'bs'): self.dl.dataset.bs = v
 
     @property
     def num_workers(self):   return self.dl.num_workers
@@ -170,19 +169,24 @@ class DataBunch():
         "Export the minimal state of `self` for inference in `self.path/fname`."
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
         self.valid_ds.export(self.path/fname, **xtra)
+    
+    def _grab_dataset(self, dl:DataLoader):
+        ds = dl.dl.dataset
+        while hasattr(ds, 'dataset'): ds = ds.dataset
+        return ds
 
     @property
-    def train_ds(self)->Dataset: return self.train_dl.dl.dataset
+    def train_ds(self)->Dataset: return self._grab_dataset(self.train_dl)
     @property
-    def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset
+    def valid_ds(self)->Dataset: return self._grab_dataset(self.valid_dl)
     @property
-    def single_ds(self)->Dataset: return self.single_dl.dl.dataset
+    def single_ds(self)->Dataset: return self._grab_dataset(self.single_dl)
     @property
     def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
 
     @property
     def test_ds(self)->Dataset:
-        return self.test_dl.dl.dataset if self.test_dl is not None else None
+        return self._grab_dataset(self.test_dl) if self.test_dl is not None else None
 
     @property
     def empty_val(self)->bool:
@@ -201,8 +205,12 @@ class DataBunch():
         "Check the underlying data in the training set can be properly loaded."
         final_message = "You can deactivate this warning by passing `no_check=True`."
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
+        if len(self.train_dl) == 0: 
+            warn(f"Your training dataloader is empty, you have only {self.train_dl.datasets} items in your training set")
+            print(final_message)
+            return
         idx = next(iter(self.train_dl.batch_sampler))
-        try: samples = [self.train_ds[i] for i in idx]
+        try: samples = [self.train_dl.dataset[i] for i in idx]
         except:
             warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i in {idx}")
             print(final_message)
@@ -215,7 +223,4 @@ class DataBunch():
                 message += f'\nShapes of the inputs/targets:\n{shapes}'
             except: pass
             warn(message)
-            print(final_message)
-        if len(self.train_ds) < self.train_dl.batch_size:
-            warn(f"You have {self.train_ds} items in your training set, which is not enough to make a batch.")
             print(final_message)
