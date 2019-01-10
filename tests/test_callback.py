@@ -53,7 +53,7 @@ def test_callbacks_learner(data, model):
     learn.callbacks.append([DummyCallback(learn)])
     error = ''
     try:
-         with CaptureStdout() as cs: learn.fit_one_cycle(2)
+        with CaptureStdout() as cs: learn.fit_one_cycle(2)
     except Exception as e:
         error = str(e)
     error_pat = "'list' object has no attribute 'on_train_begin'"
