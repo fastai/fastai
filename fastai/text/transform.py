@@ -107,7 +107,7 @@ class Tokenizer():
         "Process a list of `texts` in one process."
         tok = self.tok_func(self.lang)
         if self.special_cases: tok.add_special_cases(self.special_cases)
-        return [self.process_text(t, tok) for t in texts]
+        return [self.process_text(str(t), tok) for t in texts]
 
     def process_all(self, texts:Collection[str]) -> List[List[str]]:
         "Process a list of `texts`."
