@@ -78,4 +78,4 @@ def test_custom_metric_class():
     with CaptureStdout() as cs: learn.fit_one_cycle(2)
     # expecting column header 'dummy', and the metrics per class definition
     for s in ['dummy', f'{dummy_base_val}.00', f'{dummy_base_val**2}.00']:
-        assert s in cs.out, f"{s} is in the output:\n{out}"
+        assert s in cs.out, f"{s} is in the output:\n{cs.out}"
