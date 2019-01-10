@@ -1,5 +1,5 @@
 import pytest,fastai
-from fakes import *
+from utils.fakes import *
 
 ## filename: test_train.py
 ## tests code in train.py
