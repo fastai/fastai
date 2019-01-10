@@ -1,8 +1,6 @@
 import pytest, re
 from utils.fakes import *
-from io import StringIO
-from contextlib import redirect_stdout
-from utils.text import apply_print_resets
+from utils.text import CaptureStdout
 
 def create_metrics_dataframe(learn):
     "Converts metrics stored in `Recorder` into dataframe."
@@ -17,8 +15,7 @@ def create_metrics_dataframe(learn):
 
 def convert_into_dataframe(buffer):
     "Converts data captured from `fastprogress.ConsoleProgressBar` into dataframe."
-    buf = apply_print_resets(buffer.getvalue())
-    lines = buf.split('\n')
+    lines = buffer.split('\n')
     header, *lines = [l.strip() for l in lines if l and not l.startswith('Total')]
     header = header.split()
     floats = [[float(x) for x in line.split()] for line in lines]
@@ -40,12 +37,11 @@ def test_logger():
     learn = fake_learner()
     learn.metrics = [accuracy, error_rate]
     learn.callback_fns.append(callbacks.CSVLogger)
-    buffer = StringIO()
-    with redirect_stdout(buffer): learn.fit_one_cycle(3)
+    with CaptureStdout() as cs: learn.fit_one_cycle(3)
     csv_df = learn.csv_logger.read_logged_file()
     recorder_df = create_metrics_dataframe(learn)
     pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=True)
-    stdout_df = convert_into_dataframe(buffer)
+    stdout_df = convert_into_dataframe(cs.out)
     pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=True)
 
 @pytest.fixture(scope="module", autouse=True)

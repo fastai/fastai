@@ -558,7 +558,21 @@ from utils.text import apply_print_resets
 output = apply_print_resets(output)
 ```
 
-
+But, then we have a helper context manager wrapper to automatically take care of it all, regardless of whether it has some `\r`s in it or not, so it's a simple:
+```
+with CaptureStdout() as cs: function_that_writes_to_stdout()
+print(cs.out)
+```
+Here is a full test example:
+```
+from utils.text import CaptureStdout
+msg = "Secret message\r"
+final = "Hello World"
+with CaptureStdout() as cs: print(msg + final)
+assert cs.out == final+"\n", f"captured: {cs.out}, expecting {final}"
+# and you can access the captured data in several ways:
+print(cs.out == str(cs) == f"{cs}") # True
+```
 
 ### Testing memory leaks
 
