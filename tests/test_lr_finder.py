@@ -1,5 +1,5 @@
-import pytest,fastai
-from utils.fakes import *
+##import pytest,fastai
+##from utils.fakes import *
 
 ## filename: test_lr_finder.py
 ## tests code in lr_finder.py
