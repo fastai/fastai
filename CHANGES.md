@@ -20,17 +20,19 @@ of that change.
 - `ImageDownloader()` widget for quick image datasets research
 - `Learner.export` to export the state of a `Learner` for inference (with `Callback.get_state` to get the state of a callback behind the scenes)
 - `load_learner` to load a `Learner` from an exported state (with `load_callback` to load the state of a callback behind the scenes)
+- A dataset can also be a `Callback` if we want to apply changes at the beginning of every epoch
 
 ### Changed:
 
 - If no label is provided, the test set has `EmptyLabel` for every item
+- `LanguageModelLoader` becomes `LanguageModelPreLoader` and is a dataset to wrap in a pytorch `DataLoader`
 
 ### Fixed:
 
 - Avoid bugs in tabular by copying the dataframe in `TabularList.from_df`
 - Can properly change the batch size even if the `DataLoader` is an `LanguageDataLoader`
 - Bug in `ImageBBox` when all the targets had the same number of bboxes
-
+- Default metric in `RNNLearner` is accuracy only for language models or classification tasks
 
 ## 1.0.39 (2018-12-28)
 

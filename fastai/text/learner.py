@@ -2,6 +2,7 @@
 from ..torch_core import *
 from ..basic_train import *
 from ..callbacks import *
+from ..data_block import CategoryList
 from ..basic_data import *
 from ..datasets import untar_data
 from ..metrics import accuracy
@@ -52,7 +53,8 @@ class RNNLearner(Learner):
         self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta, adjust=adjust))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
-        self.metrics = ifnone(metrics, [accuracy])
+        is_class = (hasattr(self.data.train_ds, 'y') and isinstance(self.data.train_ds.y, CategoryList))
+        self.metrics = ifnone(metrics, ([accuracy] if is_class else []))
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
