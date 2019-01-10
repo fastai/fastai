@@ -168,6 +168,9 @@ install: clean ## install the package to the active python's site-packages
 test: ## run tests with the default python
 	python setup.py --quiet test
 
+test-fast: ## run tests in parallel (requires pip install pytest-xdist)
+	pytest -n 3
+
 test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
 	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
 
