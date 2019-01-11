@@ -79,7 +79,7 @@ class DeviceDataLoader():
 
 class DataBunch():
     "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
-
+    
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate, no_check:bool=False):
@@ -101,7 +101,7 @@ class DataBunch():
     @staticmethod
     def _init_ds(train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None):
         # train_ds, but without training tfms
-        fix_ds = valid_ds.new(train_ds.x, train_ds.y) if hasattr(valid_ds,'new') else None
+        fix_ds = valid_ds.new(train_ds.x, train_ds.y) if hasattr(valid_ds,'new') else train_ds
         return [o for o in (train_ds,valid_ds,fix_ds,test_ds) if o is not None]
 
     @classmethod
