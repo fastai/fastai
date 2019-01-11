@@ -15,13 +15,13 @@ from utils.text import *
 ## TO DO: 
   ## summarise this test with test_basic_train test_fit following
   ## https://github.com/fastai/fastai/blob/master/tests/test_callback.py#L65
-def test_fit_one_cycle(capsys):
-    learn = fake_learner()
-    learning_rate = 0.01
-    weight_decay = 1e-2
-    learn.fit_one_cycle(cyc_len=3)
-    captured = capsys.readouterr()
-    match_hundperc = re.findall(r'[100%]', captured.out) ## finds 100% progress
-    assert match_hundperc, f"expecting to find '100%' in output: f{captured.out}"
 
+## fit_one_cycle tested in test_basic_train
+
+def test_lr_find(capsys):
+    learn = fake_learner()
+    with CaptureStdout() as cs: learning_rate_max = lr_find(learn, start_lr=1e-07, end_lr=10, num_it=100, stop_div=True)
+    ## TO DO: consider a dynamic test based on input params
+    assert_screenout(cs.out, 'LR Finder is complete')
+    
 ## lr_find tested in other class, e.g. to be added: test_lr_finder 
