@@ -42,7 +42,7 @@ requirements = to_list("""
     requests
     scipy
     spacy>=2.0.18
-    torch
+    torch>=1.0.0
     torchvision
     typing
 """)
