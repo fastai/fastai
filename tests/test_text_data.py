@@ -132,3 +132,13 @@ def test_from_ids_works_for_variable_length_sentences():
                                       train_ids=ids, train_lbls=lbl,
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
     text_classifier_learner(data).fit(1)
+
+def test_regression():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    df = text_df([0., 1.])
+    data = (TextList.from_df(df, path, cols='text')
+             .random_split_by_pct(0.2)
+             .label_from_df(cols='label',label_cls=FloatList)
+             .databunch(bs=4))
+    assert data.c == 1
+    x,y = data.one_batch()
