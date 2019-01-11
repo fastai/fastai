@@ -1,0 +1,7 @@
+All notebooks under courses/ require fastai-0.7 and if you try to run them with fastai-1.x they will not work. 
+
+Moreover, due to the symbolic link from courses/*/fastai to ../../old/fastai no new notebook that you will place anywhere under courses/*/ will work with fastai-1.x
+
+if you want to try fastai-1.x, use the notebooks under examples instead
+
+
