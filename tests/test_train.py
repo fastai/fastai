@@ -12,6 +12,9 @@ from utils.text import *
 ## Model fitting methods     
 
 ## To check: is there a more meaningful way to assert, like e.g. fit_one_cycle is 'better' than fit only?
+## TO DO: 
+  ## summarise this test with test_basic_train test_fit following
+  ## https://github.com/fastai/fastai/blob/master/tests/test_callback.py#L65
 def test_fit_one_cycle(capsys):
     learn = fake_learner()
     learning_rate = 0.01
