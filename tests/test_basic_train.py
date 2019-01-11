@@ -13,6 +13,9 @@ from utils.text import *
  
 ## Model fitting methods
  
+##TO DO: 
+  ## summarise this test with test_train test_fit following
+  ## https://github.com/fastai/fastai/blob/master/tests/test_callback.py#L65 
 def test_fit(capsys):
     learn = fake_learner()
     learning_rate = 0.01
