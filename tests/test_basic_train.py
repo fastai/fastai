@@ -22,7 +22,7 @@ def test_fit(capsys):
     assert learn.opt.wd == weight_decay
     captured = capsys.readouterr()
     match_hundperc = re.findall(r'[100%]', captured.out) ## finds 100% progress
-    assert match_hundperc
+    assert match_hundperc, f"expecting to find '100%' in output: f{captured.out}"
       
 ## fit_one_cycle tested in test_train
 ## lr_find tested in test_lr_finder
