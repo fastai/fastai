@@ -19,6 +19,6 @@ def test_fit_one_cycle(capsys):
     learn.fit_one_cycle(cyc_len=3)
     captured = capsys.readouterr()
     match_hundperc = re.findall(r'[100%]', captured.out) ## finds 100% progress
-    assert match_hundperc
+    assert match_hundperc, f"expecting to find '100%' in output: f{captured.out}"
 
 ## lr_find tested in other class, e.g. to be added: test_lr_finder 
