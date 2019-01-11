@@ -13,23 +13,24 @@ TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
 
 class LanguageModelPreLoader(Callback):
-    "Create a dataloader with bptt slightly changing."
+    "Transforms the texts in `dataset` in a stream for language modelling."
     def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=64, bptt:int=70, backwards:bool=False, 
-                 shuffle:bool=False, max_len:int=25, p_bptt:int=0.95):
+                 shuffle:bool=False, drop_last:bool=False):
         self.dataset,self.bs,self.bptt,self.backwards = dataset,bs,bptt,backwards
-        self.shuffle,self.max_len,self.p_bptt,self.num_workers = shuffle,max_len,p_bptt,0
+        self.shuffle,self.drop_last = shuffle,drop_last
         self.lengths = np.array(ifnone(lengths, [len(o) for o in dataset.x.items]))
         self.n = self.lengths.sum() // self.bs
-        self.first = True
         
     def __len__(self):
-        return int(math.ceil((self.n-1) / self.bptt)) * self.bs if self.item is None else 1
+        if self.item is not None:    return 1
+        if (self.n-1)%self.bptt == 0 or self.drop_last: return ((self.n-1) // self.bptt) * self.bs
+        return ((self.n-1) // self.bptt + 1) * self.bs
+    
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
     
     def on_epoch_begin(self, **kwargs):
         self.idxs = np.random.permutation(len(self.dataset)) if self.shuffle else arange_of(self.dataset)
         self.text_idx = np.concatenate([[0],self.lengths[self.idxs].cumsum()])
-        self.read_idx = 0
         
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
     def on_epoch_end(self, **kwargs): self.on_epoch_begin()
@@ -37,9 +38,10 @@ class LanguageModelPreLoader(Callback):
     def __getitem__(self, k:int):
         if self.item is not None: return self.dataset[0]
         if not hasattr(self, 'idxs'): self.on_epoch_begin()
-        seq_len = min(self.bptt, self.n-self.read_idx-1)
         #The dataloader will send (batch_index) * bs + sample_index, converting to where to read in the stream 
-        i = self.read_idx + (k % self.bs) * self.n 
+        read_idx = (k//self.bs) * self.bptt
+        i = read_idx  + (k % self.bs) * self.n 
+        seq_len = min(self.bptt, self.n-read_idx-1)
         #Getting the indexes of the texts that start and finish the portion i---i+seq_len in the stream 
         start,end = np.argmax(self.text_idx >= i)-1,np.argmin(self.text_idx <= i+seq_len+1)
         start = max(0,start)
@@ -87,7 +89,7 @@ def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tup
     for i,s in enumerate(samples):
         if pad_first: res[i,-len(s[0]):] = LongTensor(s[0])
         else:         res[i,:len(s[0]):] = LongTensor(s[0])
-    return res, tensor([s[1] for s in samples])
+    return res, tensor(np.array([s[1] for s in samples]))
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
                    min_freq:int=2, mark_fields:bool=False):
@@ -190,22 +192,14 @@ class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, num_workers:int=0,
+               device:torch.device=None, collate_fn:Callable=data_collate, tfms:Optional[Collection[Callable]]=None, 
                **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), **kwargs) for i,ds in enumerate(datasets)]
-        dataloaders = [DataLoader(ds, batch_size=bs, num_workers=num_workers) for ds in datasets]
-        return cls(*dataloaders, path=path, no_check=True)
-
-    @property
-    def train_ds(self)->Dataset: return self.train_dl.dl.dataset.dataset
-    @property
-    def valid_ds(self)->Dataset: return self.valid_dl.dl.dataset.dataset
-    @property
-    def single_ds(self)->Dataset: return self.single_dl.dl.dataset.dataset
-    @property
-    def test_ds(self)->Dataset:
-        return self.test_dl.dl.dataset.dataset if self.test_dl is not None else None
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), drop_last=(i==0), bs=bs, **kwargs) for i,ds in enumerate(datasets)]
+        val_bs = bs
+        dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
+        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
     
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."

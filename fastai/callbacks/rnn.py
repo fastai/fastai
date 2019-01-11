@@ -12,11 +12,6 @@ class RNNTrainer(LearnerCallback):
         self.not_min += ['raw_out', 'out']
         self.bptt,self.alpha,self.beta,self.adjust = bptt,alpha,beta,adjust
         
-    def on_train_begin(self, **kwargs):
-        "IN LM, put the training dataloader `first` attribute to `True` to avoid OOM."
-        if hasattr(self.learn.data.train_dl, 'first'):
-            self.learn.data.first = True
-        
     def on_epoch_begin(self, **kwargs):
         "Reset the hidden state of the model."
         self.learn.model.reset()

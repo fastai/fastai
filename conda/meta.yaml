@@ -65,7 +65,7 @@ requirements:
     - spacy >=2.0.18
     - typing
     - pyyaml
-    - pytorch >=1.0
+    - pytorch >=1.0.0
     - torchvision
 
 # Stuff only used for doc() and dev-time:

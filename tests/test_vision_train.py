@@ -3,8 +3,6 @@ from fastai.vision import *
 from fastai.callbacks import *
 from fastai.utils.mem import *
 from utils.mem import *
-from io import StringIO
-from contextlib import redirect_stdout
 from math import isclose
 
 use_gpu = can_use_gpu()
