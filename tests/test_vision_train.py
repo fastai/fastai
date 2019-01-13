@@ -17,11 +17,22 @@ def no_bar():
     fastprogress.NO_BAR = False
 
 @pytest.fixture(scope="module")
-def learn():
+def mnist_tiny():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), num_workers=2)
     data.normalize()
-    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate])
+    return data
+
+@pytest.fixture(scope="module")
+def zero_image():
+    return Image(torch.zeros((3, 128, 128)))
+
+@pytest.fixture(scope="module")
+def learn(mnist_tiny):
+    # path = untar_data(URLs.MNIST_TINY)
+    # data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), num_workers=2)
+    # data.normalize()
+    learn = Learner(mnist_tiny, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate])
     learn.fit_one_cycle(3)
     return learn
 
@@ -107,3 +118,10 @@ def test_model_load_mem_leak(learn_large_unfit):
     used_after_reclaimed = gpu_mem_get_used()
     # XXX: not sure where 6MB get lost still but for now it's a small leak - need to test with a bigger model
     assert isclose(used_before, used_after_reclaimed, abs_tol=6),f"load() and used GPU RAM: before load(): {used_before}, after: {used_after}, after gc.collect() {used_after_reclaimed} used"
+
+@pytest.mark.slow
+@pytest.mark.parametrize('arch', [models.resnet18, models.squeezenet1_1])
+def test_models_meta(mnist_tiny, arch, zero_image):
+    learn = create_cnn(mnist_tiny, arch, metrics=[accuracy, error_rate])
+    pred = learn.predict(zero_image)
+    assert pred is not None

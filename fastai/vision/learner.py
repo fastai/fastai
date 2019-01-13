@@ -13,14 +13,20 @@ __all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpreta
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
 def _resnet_split(m:nn.Module): return (m[0][6],m[1])
+# Split squeezenet model on maxpool layers
+def _squeezenet_split(m:nn.Module): return (m[0][0][5], m[0][0][8], m[1])
 
 _default_meta = {'cut':-1, 'split':_default_split}
 _resnet_meta  = {'cut':-2, 'split':_resnet_split }
+_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split}
 
 model_meta = {
     models.resnet18 :{**_resnet_meta}, models.resnet34: {**_resnet_meta},
     models.resnet50 :{**_resnet_meta}, models.resnet101:{**_resnet_meta},
-    models.resnet152:{**_resnet_meta}}
+    models.resnet152:{**_resnet_meta},
+
+    models.squeezenet1_0:{**_squeezenet_meta},
+    models.squeezenet1_1:{**_squeezenet_meta}}
 
 def cnn_config(arch):
     "Get the metadata associated with `arch`."
