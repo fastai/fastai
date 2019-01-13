@@ -76,7 +76,8 @@ class DatasetFormatter():
         w1 = t1.norm(p=2, dim=1, keepdim=True)
         w2 = w1 if t2 is t1 else t2.norm(p=2, dim=1, keepdim=True)
 
-        return torch.mm(t1, t2.t()) / (w1 * w2.t()).clamp(min=1e-8)
+        t = torch.mm(t1, t2.t()) / (w1 * w2.t()).clamp(min=1e-8)
+        return torch.tril(t, diagonal=-1) 
 
     def largest_indices(arr, n):
         "Returns the `n` largest indices from a numpy array `arr`."
@@ -89,66 +90,6 @@ class DatasetFormatter():
     @classmethod
     def sort_idxs(cls, similarities):
         "Sorts `similarities` and return the indexes in pairs ordered by highest similarity."
-        idxs = cls.largest_indices(similarities, len(similarities))
-        idxs = [(idxs[0][i], idxs[1][i]) for i in range(len(idxs[0]))]
-        return [e for l in idxs for e in l]
-
-    @classmethod
-    def from_similars(cls, learn, weight_file, layer_ls:list=[0, 7, 2], ds_type=DatasetType.Valid, **kwargs):
-        "Gets the indices for the most similar images in a dataset"
-        hook = hook_output(learn.model[layer_ls[0]][layer_ls[1]][layer_ls[2]])
-        if ds_type == DatasetType.Train: dl = DataLoader(learn.data.train_ds,
-            batch_size=learn.dl(DatasetType.Train).batch_size, shuffle=False, collate_fn=data_collate)
-        else: dl = learn.dl(ds_type)
-
-        ds_actns = cls.get_actns(learn, hook=hook, dl=dl, **kwargs)
-        similarities = cls.comb_similarity(ds_actns, ds_actns, **kwargs)
-        idxs = cls.sort_idxs(similarities)
-        return cls.padded_ds(dl, **kwargs), idxs
- 
-    @staticmethod
-    def get_actns(learn, hook:Hook, dl:DataLoader, pool=AdaptiveConcatPool2d, pool_dim:int=4):
-        "Gets activations at the layer specified by `hook`, applies `pool` of dim `pool_dim` and concatenates"
-        pool = pool(pool_dim)
-        print('Getting activations...')
-
-        actns = []
-        learn.model.eval()
-        with torch.no_grad():
-            for (xb,yb) in progress_bar(dl):
-                learn.model(xb)
-                actns.append((hook.stored).cpu())
-        return pool(torch.cat(actns)).view(len(dl.x), -1)
-
-    @staticmethod
-    def comb_similarity(t1: torch.Tensor, t2: torch.Tensor, sim_func=nn.CosineSimilarity(dim=0)):
-        "Computes the similarity function `sim_func` between each embedding of `t1` and `t2` matrices. t1` and `t2` should have dimensions [n_embeddings, n_features]"
-        self_sim = False
-        if torch.equal(t1, t2): self_sim = True
-        print('Computing similarities...')
-
-        sims = np.zeros((t1.shape[0], t2.shape[0]))
-        for idx1 in progress_bar(range(t1.shape[0])):
-            for idx2 in range(t2.shape[0]):
-                if not self_sim or idx1>idx2:
-                    ex1 = t1[idx1,:]
-                    ex2 = t2[idx2,:]
-                    sims[idx1][idx2] = sim_func(ex1,ex2)
-                else:
-                    sims[idx1][idx2] = 0
-        return np.array(sims)
-
-    def largest_indices(arr, n):
-        'https://stackoverflow.com/questions/6910641/how-do-i-get-indices-of-n-maximum-values-in-a-numpy-array'
-        "Returns the n largest indices from a numpy array."
-        flat = arr.flatten()
-        indices = np.argpartition(flat, -n)[-n:]
-        indices = indices[np.argsort(-flat[indices])]
-        return np.unravel_index(indices, arr.shape)
-
-    @classmethod
-    def sort_idxs(cls, similarities):
-        "Sorts similarities and returns the indexes in pairs ordered by highest similarity"
         idxs = cls.largest_indices(similarities, len(similarities))
         idxs = [(idxs[0][i], idxs[1][i]) for i in range(len(idxs[0]))]
         return [e for l in idxs for e in l]
@@ -199,7 +140,7 @@ class ImageCleaner():
 
     @classmethod
     def make_vertical_box(cls, children, layout=Layout(), duplicates=False):
-       "Make a vertical box with `children` and `layout`."
+        "Make a vertical box with `children` and `layout`."
         if not duplicates: return widgets.VBox(children, layout=layout)
         else: return widgets.VBox([children[0], children[2]], layout=layout)
 
@@ -219,7 +160,7 @@ class ImageCleaner():
         class_new,class_old,file_path = change.new,change.old,change.owner.file_path
         fp = Path(file_path)
         parent = fp.parents[1]
-       self._csv_dict[fp] = class_new
+        self._csv_dict[fp] = class_new
 
     def next_batch(self, _):
         "Handler for 'Next Batch' button click. Delete all flagged images and renders next batch."
@@ -246,7 +187,7 @@ class ImageCleaner():
         return len(self._all_images) == 0
 
     def get_widgets(self, duplicates):
-       "Create and format widget set."
+        "Create and format widget set."
         widgets = []
         for (img,fp,human_readable_label) in self._all_images[:self._batch_size]:
             img_widget = self.make_img_widget(img, layout=Layout(height='250px', width='300px'))
@@ -260,7 +201,7 @@ class ImageCleaner():
         return widgets
 
     def batch_contains_deleted(self):
-       "Check if current batch contains already deleted images."
+        "Check if current batch contains already deleted images."
         if not self._duplicates: return False
         imgs = [self._all_images[:self._batch_size][0][1], self._all_images[:self._batch_size][1][1]]
         return any(img in self._deleted_fns for img in imgs)
@@ -279,7 +220,7 @@ class ImageCleaner():
     def render(self):
         "Re-render Jupyter cell for batch of images."
         clear_output()
-       self.write_csv()
+        self.write_csv()
         if self.empty() and self._skipped>0:
             return display(f'No images to show :). {self._skipped} pairs were '
                     f'skipped since at least one of the images was deleted by the user.')
