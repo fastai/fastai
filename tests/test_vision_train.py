@@ -120,7 +120,7 @@ def test_model_load_mem_leak(learn_large_unfit):
     assert isclose(used_before, used_after_reclaimed, abs_tol=6),f"load() and used GPU RAM: before load(): {used_before}, after: {used_after}, after gc.collect() {used_after_reclaimed} used"
 
 @pytest.mark.slow
-@pytest.mark.parametrize('arch', [models.squeezenet1_1])
+@pytest.mark.parametrize('arch', [models.resnet18, models.squeezenet1_1])
 def test_models_meta(mnist_tiny, arch, zero_image):
     learn = create_cnn(mnist_tiny, arch, metrics=[accuracy, error_rate])
     pred = learn.predict(zero_image)
