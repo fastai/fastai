@@ -1,17 +1,16 @@
 "Implements [mixup](https://arxiv.org/abs/1710.09412) training method"
 from ..torch_core import *
 from ..callback import *
-from ..basic_train import Learner
+from ..basic_train import Learner, LearnerCallback
 
-@dataclass
-class MixUpCallback(Callback):
+class MixUpCallback(LearnerCallback):
     "Callback that creates the mixed-up input and target."
-    learner:Learner
-    alpha:float=0.4
-    stack_x:bool=False
-    stack_y:bool=True
+    def __init__(self, learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True):
+        super().__init__(learn)
+        self.alpha,self.stack_x,self.stack_y = alpha,stack_x,stack_y
         
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
+        "Applies mixup to `last_input` and `last_target` if `train`."
         if not train: return
         lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
         lambd = np.concatenate([lambd[:,None], 1-lambd[:,None]], 1).max(1)
@@ -31,7 +30,7 @@ class MixUpCallback(Callback):
         return (new_input, new_target)  
 
 class MixUpLoss(nn.Module):
-    "Adapt the loss function to go with mixup."
+    "Adapt the loss function `crit` to go with mixup."
     
     def __init__(self, crit):
         super().__init__()

@@ -43,24 +43,31 @@ def code_esc(s): return f'`{s}`'
 
 def type_repr(t):
     if t in _typing_names: return link_type(t, _typing_names[t])
+    if isinstance(t, partial): return partial_repr(t)
     if hasattr(t, '__forward_arg__'): return link_type(t.__forward_arg__)
     elif getattr(t, '__args__', None):
         args = t.__args__
         if len(args)==2 and args[1] == type(None):
             return f'`Optional`\[{type_repr(args[0])}\]'
-        reprs = ', '.join([type_repr(o) for o in t.__args__])
+        reprs = ', '.join([type_repr(o) for o in args])
         return f'{link_type(t)}\[{reprs}\]'
     else: return link_type(t)
+
+def partial_repr(t):
+    args = (t.func,) + t.args + tuple([f'k={link_type(v)}' for k,v in t.keywords.items()])
+    reprs = ', '.join([link_type(o) for o in args])
+    return f'<code>partial(</code>{reprs}<code>)</code>'
 
 def anno_repr(a): return type_repr(a)
 
 def format_param(p):
-    res = code_esc(p.name)
+    # bold the argument name and bold+italicize the default value, to make them standout from very complex at times annotations.
+    res = f"<b>{code_esc(p.name)}</b>"
     if hasattr(p, 'annotation') and p.annotation != p.empty: res += f':{anno_repr(p.annotation)}'
     if p.default != p.empty:
         default = getattr(p.default, 'func', p.default)
         default = getattr(default, '__name__', default)
-        res += f'=`{repr(default)}`'
+        res += f'=<b><i>`{repr(default)}`</i></b>'
     return res
 
 def format_ft_def(func, full_name:str=None)->str:
@@ -181,7 +188,7 @@ def import_mod(mod_name:str, ignore_errors=False):
         if len(splits) > 1 : mod = importlib.import_module('.' + '.'.join(splits[1:]), splits[0])
         else: mod = importlib.import_module(mod_name)
         return mod
-    except: 
+    except:
         if not ignore_errors: print(f"Module {mod_name} doesn't exist.")
 
 def show_doc_from_name(mod_name, ft_name:str, doc_string:bool=True, arg_comments:dict={}, alt_doc_string:str=''):
@@ -269,7 +276,7 @@ def show_video(url):
     return display(HTML(data))
 
 def show_video_from_youtube(code, start=0):
-    "Display video from Youtube with a `code` and a `start` time." 
+    "Display video from Youtube with a `code` and a `start` time."
     url = f'https://www.youtube.com/embed/{code}?start={start}&amp;rel=0&amp;controls=0&amp;showinfo=0'
     return show_video(url)
 

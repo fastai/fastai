@@ -8,7 +8,10 @@ At the moment there are only a few automated tests, so we need to start expandin
 
 We use [pytest](https://docs.pytest.org/en/latest/). Here is a complete [pytest API reference](https://docs.pytest.org/en/latest/reference.html).
 
-The tests have been configured to automatically run against the git checked out `fastai` repository and not pre-installed `fastai`.
+The tests have been configured to automatically run against the `fastai` directory inside the `fastai` git repository and not pre-installed `fastai`. i.e. `tests/test_*` work with `../fastai`.
+
+
+## Running Tests
 
 ### Choosing which tests to run
 
@@ -69,14 +72,7 @@ More ways: https://docs.pytest.org/en/latest/usage.html
 
 For nuances of configuring pytest's repo-wide behavior see [collection](https://docs.pytest.org/en/latest/example/pythoncollection.html).
 
-### Writing tests
 
-When writing tests:
-
-- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
-- Use module scope fixtures to run init code that can be shared amongst tests
-- Avoid pretrained models, since they have to be downloaded from the internet to run the test
-- Create some minimal data for your test, or use data already in repo's data/ directory
 
 ### Clearing state
 
@@ -86,6 +82,22 @@ CI builds and when isolation is important (against speed), cache should be clear
    pytest --cache-clear tests
    ```
 
+
+### Running tests in parallel
+
+This can speed up the total execution time of the test suite.
+   ```
+   pip install pytest-xdist
+   ```
+   ```
+   $ time pytest
+   real    0m51.069s
+   $ time pytest -n 6
+   real    0m26.940s
+   ```
+That's twice the speed of the normal sequential execution!
+
+We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
 
 
 ### Test order and repetition
@@ -196,6 +208,7 @@ which tells `torch` to use the 2nd GPU. Instead, if you'd like to run a test loc
 
 
 
+
 ### Report each sub-test name and its progress
 
 For a single or a group of tests via `pytest` (after `pip install pytest-pspec`):
@@ -218,7 +231,7 @@ This also means that meaningful names for each sub-test are important.
 
 During test execution any output sent to `stdout` and `stderr` is captured. If a test or a setup method fails, its according captured output will usually be shown along with the failure traceback.
 
-To disable capturing and get the output normally use `-s` or `--capture=no`:
+To disable output capturing and to get the `stdout` and `stderr` normally, use `-s` or `--capture=no`:
 
    ```
    pytest -s tests/test_core.py
@@ -259,27 +272,16 @@ Creating a URL for a whole test session log:
 
 
 
-# Writing Tests
 
-XXX: Needs to be written. Contributions are welcome.
+## Writing Tests
 
-Until then look at the existing tests.
+When writing tests:
 
+- Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
+- Use module scope fixtures to run init code that can be shared amongst tests
+- Avoid pretrained models, since they have to be downloaded from the internet to run the test
+- Create some minimal data for your test, or use data already in repo's data/ directory
 
-## Coverage
-
-When you run:
-
-   ```
-   make coverage
-   ```
-
-it will run the test suite directly via `pytest` and on completion open a browser to show you the coverage report, which will give you an indication of which parts of the code base haven't been exercised by tests yet. So if you are not sure which new tests to write this output can be of great insight.
-
-Remember, that coverage only indicated which parts of the code tests have exercised. It can't tell anything about the quality of the tests. As such, you may have a 100% coverage and a very poorly performing code.
-
-
-## Hints
 
 
 ### Skipping tests
@@ -358,6 +360,295 @@ Implementation:
 More details, example and ways are [here](https://docs.pytest.org/en/latest/skipping.html).
 
 
+
+#### Custom markers
+
+
+Normally, you should be able to declare a test as:
+
+```
+import pytest
+@pytest.mark.mymarker
+def test_mytest(): ...
+```
+
+You can then restrict a test run to only run tests marked with `mymarker`:
+
+```
+pytest -v -m mymarker
+```
+
+Running all tests except the `mymarker` ones:
+
+```
+$ pytest -v -m "not mymarker"
+```
+
+Custom markers should be registered in `setup.cfg`, for example:
+
+```
+[tool:pytest]
+# force all used markers to be registered here with an explanation
+addopts = --strict
+markers =
+    marker1: description of its purpose
+    marker2: description of its purpose
+```
+
+#### fastai custom markers
+
+These are defined in `tests/conftest.py`.
+
+The following markers override normal marker functionality, so they won't work with:
+
+```
+pytest -m marker
+```
+
+and have their own command line option to be used instead, which are defined in `tests/conftest.py`, and can also be seen in the output of `pytest -h` in the "custom options" section:
+
+```
+custom options:
+  --runslow             run slow tests
+  --skipint             skip integration tests
+```
+
+* `slow` - skip tests that can be quite slow (especially on CPU):
+
+   ```
+   @pytest.mark.slow
+   def test_some_slow_test(): ...
+   ```
+
+   To force this kind of tests to run, use:
+   ```
+   pytest --runslow
+   ```
+
+* `integration` - used for tests that are relatively slow but OK to be run on CPU and useful when one needs to finish the tests suite asap (also remember to use parallel testing if that's the case [xdist](#running-tests-in-parallel)). These are usually declared on the module level with:
+
+   ```
+   pytestmark = pytest.mark.integration
+   ```
+
+   And to skip those use:
+   ```
+   pytest --skipint
+   ```
+
+
+### After test cleanup
+
+To ensure some cleanup code is always run at the end of the test module, add to the desired test module the following code:
+
+```
+@pytest.fixture(scope="module", autouse=True)
+def cleanup(request):
+    """Cleanup the tmp file once we are finished."""
+    def remove_tmp_file():
+        file = "foobar.tmp"
+        if os.path.exists(file): os.remove(file)
+    request.addfinalizer(remove_tmp_file)
+```
+
+The `autouse=True` tells `pytest` to run this fixture automatically (without being called anywhere else).
+
+Use `scope="session"` to run the teardown code not at the end of this test module, but after all test modules were run, i.e. just before `pytest` exits.
+
+Another way to accomplish the global teardown is to put in `tests/conftest.py`:
+
+```
+def pytest_sessionfinish(session, exitstatus):
+    # global tear down code goes here
+```
+
+To run something before and after each test, add to the test module:
+
+```
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    # Code that will run before your test, for example:
+    some_setup()
+    # A test function will be run at this point
+    yield
+    # Code that will run after your test, for example:
+    some_teardown()
+```
+
+`autouse=True` makes this function run for each test defined in the same module automatically.
+
+For creation/teardown of temporary resources for the scope of a test, do the same as above, except get `yield` to return that resource.
+
+```
+@pytest.fixture(scope="module")
+def learner_obj():
+    # Code that will run before your test, for example:
+    learn = Learner(...)
+    # A test function will be run at this point
+    yield learn
+    # Code that will run after your test, for example:
+    del learn
+```
+
+You can now use that function as an argument to a test function:
+
+```
+def test_foo(learner_obj):
+    learner_obj.fit(...)
+```
+
+
+
+
+### Testing the stdout/stderr output
+
+In order to test functions that write to `stdout` and/or `stderr`, the test can access those streams using the `pytest`'s [capsys system](https://docs.pytest.org/en/latest/capture.html). Here is how this is accomplished:
+
+```
+import sys
+def print_to_stdout(s): print(s)
+def print_to_stderr(s): sys.stderr.write(s)
+def test_result_and_stdout(capsys):
+    msg = "Hello"
+    print_to_stdout(msg)
+    print_to_stderr(msg)
+    out, err = capsys.readouterr() # consume the captured output streams
+    # optional: if you want to replay the consumed streams:
+    sys.stdout.write(out)
+    sys.stderr.write(err)
+    # test:
+    assert msg in out
+    assert msg in err
+```
+
+And, of course, most of the time, stderr will come as a part of an exception, so try/except has to be used in such a case:
+
+```
+def raise_exception(msg): raise ValueError(msg)
+def test_something_exception():
+    msg = "Not a good value"
+    error = ''
+    try: raise_exception(msg)
+    except Exception as e:
+        error = str(e)
+        assert msg in error, f"{msg} is in the exception:\n{error}"
+```
+
+Another approach to capturing stdout, is via `contextlib.redirect_stdout`:
+
+```
+from io import StringIO
+from contextlib import redirect_stdout
+def print_to_stdout(s): print(s)
+def test_result_and_stdout():
+    msg = "Hello"
+    buffer = StringIO()
+    with redirect_stdout(buffer): print_to_stdout(msg)
+    out = buffer.getvalue()
+    # optional: if you want to replay the consumed streams:
+    sys.stdout.write(out)
+    # test:
+    assert msg in out
+```
+
+An important potential issue with capturing stdout is that it may contain `\r` characters that in normal `print` reset everything that has been printed so far. There is no problem with `pytest`, but with `pytest -s` these characters get included in the buffer, so to be able to have the test run w/ and w/o `-s`, you have to make an extra cleanup to the captured output, using `re.sub(r'^.*\r', '', buf, 0, re.M)`. You can use a test helper function for that:
+
+```
+from utils.text import apply_print_resets
+output = apply_print_resets(output)
+```
+
+But, then we have a helper context manager wrapper to automatically take care of it all, regardless of whether it has some `\r`s in it or not, so it's a simple:
+```
+with CaptureStdout() as cs: function_that_writes_to_stdout()
+print(cs.out)
+```
+Here is a full test example:
+```
+from utils.text import CaptureStdout
+msg = "Secret message\r"
+final = "Hello World"
+with CaptureStdout() as cs: print(msg + final)
+assert cs.out == final+"\n", f"captured: {cs.out}, expecting {final}"
+# and you can access the captured data in several ways:
+print(cs.out == str(cs) == f"{cs}") # True
+```
+
+### Testing memory leaks
+
+This section is currently focused on GPU RAM since it's the scarce resource, but we should test general RAM too.
+
+#### Utils
+
+* Memory measuring helper utils are found in `tests/utils/mem.py`:
+
+   ```
+   from utils.mem import *
+   ```
+
+* Test whether we can use GPU:
+   ```
+   use_gpu = can_use_gpu()
+   ```
+   It first checks `torch.cuda.is_available()`, and then whether `CUDA_VISIBLE_DEVICES=""` is used to fake a no-CUDA env, even though CUDA is available, so that we could test things on CPU despite having a GPU.
+
+* Force `pytorch` to preload cuDNN and its kernels to claim unreclaimable memory (~0.5GB) if it hasn't done so already, so that we get correct measurements. This must run before any tests that measure GPU RAM. If you don't run it you will get erratic behavior and wrong measurements.
+   ```
+   torch_preload_mem()
+   ```
+
+* Consume some GPU RAM:
+   ```
+   gpu_mem_consume_some(n)
+   ```
+   `n` is the size of the matrix of `torch.ones`. When `n=2**14` it consumes about 1GB, but that's too much for the test suite, so use small numbers, e.g.: `n=2000` consumes about 16MB.
+
+
+* alias for `torch.cuda.empty_cache()`
+   ```
+   gpu_cache_clear()
+   ```
+   It's absolutely essential to run this one, if you're trying to measure real used memory. If cache doesn't get cleared the reported used/free memory can be quite inconsistent.
+
+
+* This is a combination of `gc.collect()` and `torch.cuda.empty_cache()`
+   ```
+   gpu_mem_reclaim()
+   ```
+   Again, this one is crucial for measuring the memory usage correctly. While normal objects get destroyed and their memory becomes available/cached right away, objects with circular references only get freed up when python invokes `gc.collect`, which happens periodically. So if you want to make sure your test doesn't get caught in the inconsistency of getting `gc.collect` to be called during that test or not, call it yourself. But, remember, that if you have to call `gc.collect()` there could be a problem that you will be masking by calling it. So before using it understand what it is doing.
+
+   After `gc.collect()` is called this functions clears the cache that potentially grew due to the released by `gc` objects, and we want to make sure we get the real used/free memory at all times.
+
+* This is a wrapper for getting the used memory for the currently selected device.
+   ```
+   gpu_mem_get_used()
+   ```
+
+#### Concepts
+
+* Taking into account cached memory and unpredictable `gc.collect` calls. See above.
+
+* Memory fluctuations. When measuring either general or GPU RAM there is often a small fluctuation in reported numbers, so when writing tests use functions that approximate equality, but do think deep about the margin you allow, so that the test is useful and yet it doesn't fail at random times.
+
+   Also remember that rounding happens when Bs are converted to MBs.
+
+   Here is an example:
+   ```
+   from math import isclose
+   used_before = gpu_mem_get_used()
+   ... some gpu consuming code here ...
+   used_after = gpu_mem_get_used()
+   assert isclose(used_before, used_after, abs_tol=6), "testing absolute tolerance"
+   assert isclose(used_before, used_after, rel_tol=0.02), "testing relative tolerance"
+   ```
+   This example compares used memory size (in MBs). The first assert compares whether the absolute difference between the two numbers is no more than 6.
+   The second assert does the same but uses a relative tolerance in percents -- `0.02` in the example means `2%`. So the accepted difference between the two numbers is no more than `2%`. Often absolute numbers provide a better test, because a percent-based approach could result in quite a large gap if the numbers are big.
+
+
+
+
+
+
 ### Getting reproducible results
 
 In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
@@ -375,6 +666,44 @@ In some situations you may want to remove randomness for your tests. To get iden
    ```
    random.seed(42)
    ```
+
+
+
+
+### Debugging tests
+
+
+To start a debugger at the point of the warning, do this:
+
+```
+pytest tests/test_vision_data_block.py -W error::UserWarning --pdb
+```
+
+### Tests requiring jupyter notebook environment
+
+If [pytest-ipynb](https://github.com/zonca/pytest-ipynb) pytest extension is installed it's possible to add `.ipynb` files to the normal test suite.
+
+Basically, you just write a normal notebook with asserts, and `pytest` just runs it, along with normal `.py` tests, reporting any assert failures normally.
+
+We currently don't have such tests, and if we add any, we will first need to make a conda package for it on the fastai channel, and then add this dependency to fastai.
+(note: I haven't researched deeply, perhaps there are other alternatives)
+
+Here is [one example](https://github.com/stas00/ipyexperiments/blob/master/tests/test_cpu.ipynb) of such test.
+
+
+
+## Coverage
+
+When you run:
+
+   ```
+   make coverage
+   ```
+
+it will run the test suite directly via `pytest` and on completion open a browser to show you the coverage report, which will give you an indication of which parts of the code base haven't been exercised by tests yet. So if you are not sure which new tests to write this output can be of great insight.
+
+Remember, that coverage only indicated which parts of the code tests have exercised. It can't tell anything about the quality of the tests. As such, you may have a 100% coverage and a very poorly performing code.
+
 
 ## Notebook integration tests
 
@@ -402,7 +731,7 @@ To run a subset:
 
 There are a lot more details on this subject matter in this [document](https://github.com/fastai/fastai/blob/master/docs_src/nbval/README.md).
 
-### fastai/examples/*ipynb
+### examples/*ipynb
 
 You can run each of these interactively in jupyter, or as CLI:
 
@@ -411,4 +740,3 @@ jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook exam
 ```
 
 This set is examples and there is no pass/fail other than visual observation.
-
