@@ -86,12 +86,6 @@ jupyter notebook
 ```
 and executing an example notebook. For example load `examples/tabular.ipynb` and run it.
 
-Alternatively, you can do a quick CLI test:
-
-```bash
-jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
-```
-
 Please refer to [CONTRIBUTING.md](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md) and [Notes For Developers](https://docs.fast.ai/dev/develop.html) for more details on how to contribute to the `fastai` project.
 
 

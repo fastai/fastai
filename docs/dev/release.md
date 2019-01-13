@@ -1116,6 +1116,8 @@ When debugging issues it helps to know what packages have been installed. The fo
 
 The comparison is useful for identifying differences in these two package environment (for example when CI build fails with pypi but not with conda).
 
+If you want an easier to read output use `conda-env-compare.pl` from [conda-tools](https://github.com/stas00/conda-tools).
+
 
 ### Package Dependencies
 
