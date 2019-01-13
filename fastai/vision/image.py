@@ -316,7 +316,8 @@ class ImagePoints(Image):
         "Show the `ImagePoints` on `ax`."
         if ax is None: _,ax = plt.subplots(figsize=figsize)
         pnt = scale_flow(FlowField(self.size, self.data), to_unit=False).flow.flip(1)
-        ax.scatter(pnt[:, 0], pnt[:, 1], s=10, marker='.', c='r')
+        params = {'s': 10, 'marker': '.', 'c': 'r', **kwargs}
+        ax.scatter(pnt[:, 0], pnt[:, 1], **params)
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
 
