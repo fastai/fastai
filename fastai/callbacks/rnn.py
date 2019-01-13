@@ -7,10 +7,10 @@ __all__ = ['RNNTrainer']
 
 class RNNTrainer(LearnerCallback):
     "`Callback` that regroups lr adjustment to seq_len, AR and TAR."
-    def __init__(self, learn, bptt:int, alpha:float=0., beta:float=0., adjust:bool=True):
+    def __init__(self, learn, bptt:int, alpha:float=0., beta:float=0.):
         super().__init__(learn)
         self.not_min += ['raw_out', 'out']
-        self.bptt,self.alpha,self.beta,self.adjust = bptt,alpha,beta,adjust
+        self.bptt,self.alpha,self.beta = bptt,alpha,beta
         
     def on_epoch_begin(self, **kwargs):
         "Reset the hidden state of the model."
@@ -22,11 +22,10 @@ class RNNTrainer(LearnerCallback):
         return last_output[0]
 
     def on_backward_begin(self, last_loss:Rank0Tensor, last_input:Tensor, **kwargs):
-        "Adjusts the lr to the sequence length and applies AR and TAR to `last_loss`."
-        if self.adjust: self.learn.opt.lr *= last_input.size(1) / self.bptt
+        "Apply AR and TAR to `last_loss`."
         #AR and TAR
-        if self.alpha != 0.:  last_loss += (self.alpha * self.out[-1].pow(2).mean()).sum().float()
+        if self.alpha != 0.:  last_loss += self.alpha * self.out[-1].pow(2).mean().float()
         if self.beta != 0.:
             h = self.raw_out[-1]
-            if len(h)>1: last_loss += (self.beta * (h[1:] - h[:-1]).pow(2).mean()).sum().float()
+            if len(h)>1: last_loss += self.beta * (h[:,1:] - h[:,:-1]).pow(2).mean().float()
         return last_loss
