@@ -221,7 +221,8 @@ class FBeta(CMScores):
         self.metric = (1 + self.beta2) * prec * rec / (prec * self.beta2 + rec + self.eps)
         if self.avg:
             self.metric = (self._weights(avg=self.avg) * self.metric).sum()
-
+            
+    def on_train_end(self, **kwargs): self.average = self.avg
 
 class KappaScore(ConfusionMatrix):
     """
