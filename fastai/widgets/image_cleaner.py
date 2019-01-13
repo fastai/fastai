@@ -76,7 +76,8 @@ class DatasetFormatter():
         w1 = t1.norm(p=2, dim=1, keepdim=True)
         w2 = w1 if t2 is t1 else t2.norm(p=2, dim=1, keepdim=True)
 
-        return torch.mm(t1, t2.t()) / (w1 * w2.t()).clamp(min=1e-8)
+        t = torch.mm(t1, t2.t()) / (w1 * w2.t()).clamp(min=1e-8)
+        return torch.tril(t, diagonal=-1) 
 
     def largest_indices(arr, n):
         "Returns the `n` largest indices from a numpy array `arr`."
