@@ -206,13 +206,19 @@ class DataBunch():
         final_message = "You can deactivate this warning by passing `no_check=True`."
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
         if len(self.train_dl) == 0: 
-            warn(f"Your training dataloader is empty, you have only {self.train_dl.datasets} items in your training set")
+            warn(f"Your training dataloader is empty, you have only {len(self.train_dl.dataset)} items in your training set")
             print(final_message)
             return
         idx = next(iter(self.train_dl.batch_sampler))
-        try: samples = [self.train_dl.dataset[i] for i in idx]
-        except:
-            warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i in {idx}")
+        samples,fails = [],[]
+        for i in idx:
+            try:    samples.append(self.train_dl.dataset[i])
+            except: fails.append(i)
+        if len(fails) > 0:
+            if len(fails) == len(idx):
+                warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i.")
+            else: 
+                warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] the i in {fails}.")
             print(final_message)
             return
         try: batch = self.collate_fn(samples)
