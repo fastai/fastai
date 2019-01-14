@@ -173,15 +173,14 @@ https://github.com/FrancescAlted/ipython_memwatcher
 
 ### Unusable GPU RAM per process
 
-As soon as you start using `cuda`, your GPU loses about 0.5GB RAM per process. For example this code consumes 0.5GB GPU RAM:
+As soon as you start using CUDA, your GPU loses some 300-500MB RAM per process. The exact size seems to be depending on the card and CUDA version. For example, on GeForce GTX 1070 Ti (8GB), the following code, running on CUDA 10.0, consumes 0.5GB GPU RAM:
 ```
 import torch
 torch.ones((1, 1)).cuda()
 ```
 This GPU memory is not accessible to your program's needs and it's not re-usable between processes. If you run two processes, each executing code on `cuda`, each will consume 0.5GB GPU RAM from the get going.
 
-This fixed chunk of memory is used by `cuDNN` kernels (~300MB) and `pytorch` (the rest) for its internal needs.
-
+This fixed chunk of memory is used by [CUDA context](https://stackoverflow.com/questions/43244645/what-is-a-cuda-context).
 
 ### Cached Memory
 
@@ -192,6 +191,9 @@ torch.cuda.empty_cache()
 ```
 
 If you have more than one process using the same GPU, the cached memory from one process is not accessible to the other. The above code executed by the first process will solve this issue and make the freed GPU RAM available to the other process.
+
+It also might be helpful to note that `torch.cuda.memory_cached()` doesn't show how much memory pytorch has free in the cache, but it just indicates how much memory it currently has allocated, with some of it being used and may be some being free. To measure how much free memory available to use is in the cache do: `torch.cuda.memory_cached()-torch.cuda.memory_allocated()`.
+
 
 
 ### Reusing GPU RAM
