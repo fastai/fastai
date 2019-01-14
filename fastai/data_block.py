@@ -637,6 +637,10 @@ class LabelList(Dataset):
         if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
         else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
         return self
+                
+    def databunch(self, **kwargs):
+        "To throw a clear error message when the data wasn't splitted."
+        raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`")
 
 @classmethod
 def _databunch_load_empty(cls, path, fname:str='export.pkl'):
