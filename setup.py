@@ -78,6 +78,7 @@ dev_requirements = { 'dev' : to_list("""
     pip>=9.0.1
     pipreqs>=0.4.9
     pytest
+    responses                    # for requests testing
     traitlets
     wheel>=0.30.0
 """) }
