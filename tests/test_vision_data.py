@@ -109,7 +109,7 @@ def test_trunc_download():
         except:
             print(f"untar_data({URLs.COCO_TINY}) had Unexpected error:", sys.exc_info()[0])
         finally:
-            os.remove(fname)
+            if fname.exists(): os.remove(fname)
         
 def test_verify_images(path):
     tmp_path = path/'tmp'
