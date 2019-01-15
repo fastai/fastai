@@ -32,7 +32,6 @@ class URLs():
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
     PETS = f'{S3_IMAGE}oxford-iiit-pet'
-    PETS1 = f'{S3_IMAGE}oxford-iiit-pet-restyled'
     MNIST = f'{S3_IMAGE}mnist_png'
     CAMVID = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY = f'{URL}camvid_tiny'
@@ -56,7 +55,6 @@ _checks = {URLs.COCO_SAMPLE:(3245877008, '006cd55d633d94b36ecaf661467830ec'),
            URLs.WT103_1:(165175630, '9cbe02e9e23b969fee10dc9b8dec6566'), 
            URLs.DOGS:(839285364, '3e483c8d6ef2175e9d395a6027eb92b7'), 
            URLs.PETS:(811706944, 'e4db5c768afd933bb91f5f594d7417a4'), 
-           URLs.PETS1:(788208066, 'b6d7b491221c6ff5121dbd04166adcf1'),
            URLs.MNIST:(15683414, '03639f83c4e3d19e0a3a53a8a997c487'), 
            URLs.CAMVID:(598913237, '648371e4f3a833682afb39b08a3ce2aa'), 
            URLs.CAMVID_TINY:(2314212, '2cf6daf91b7a2083ecfa3e9968e9d915'),
