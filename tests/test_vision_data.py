@@ -69,7 +69,7 @@ def test_denormalize(path):
     denormalized = denormalize(normalized_x, original_x.mean(), original_x.std())
     assert round(original_x.mean().item(), 3) == round(denormalized.mean().item(), 3)
     assert round(original_x.std().item(), 3) == round(denormalized.std().item(), 3)
-        
+
 def test_download_images():
     base_url = 'http://files.fast.ai/data/tst_images/'
     fnames = ['tst0.jpg', 'tst1.png', 'tst2.tif']
@@ -88,29 +88,29 @@ def test_download_images():
     finally:
         shutil.rmtree(tmp_path)
 
-@responses.activate                                                                              
+@responses.activate
 def test_trunc_download():
     from io import StringIO
     with StringIO('test_file_that_is_not_image') as cc_trunc:
-        file_io = cc_trunc.read()                                                                
-        mock_headers = {'Content-Type':'text/plain','Content-Length':'168168549'}                
-        responses.add(responses.GET, 'http://files.fast.ai/data/examples/coco_tiny.tgz',         
-                      body=file_io,status=200,headers=mock_headers)                              
+        file_io = cc_trunc.read()
+        mock_headers = {'Content-Type':'text/plain', 'Content-Length':'168168549'}
+        responses.add(responses.GET, 'http://files.fast.ai/data/examples/coco_tiny.tgz',
+                      body=file_io, status=200, headers=mock_headers)
 
         url = URLs.COCO_TINY
-        fname = f'{url2path(url)}.tgz'
+        fname = datapath4file(f'{url2name(url)}.tgz')
         try:
             coco = untar_data(url,force_download=True)
         except AssertionError as e:
             # from fastai.datasets import Config, url2name
             data_dir = Config().data_path()
-            expected_error =  f"Downloaded file {fname} does not match checksum expected!  Remove the file from {data_dir} and try your code again."
+            expected_error =  f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_dir} and try your code again."
             assert e.args[0] == expected_error
         except:
             print(f"untar_data({URLs.COCO_TINY}) had Unexpected error:", sys.exc_info()[0])
         finally:
             if fname.exists(): os.remove(fname)
-        
+
 def test_verify_images(path):
     tmp_path = path/'tmp'
     os.makedirs(tmp_path, exist_ok=True)
@@ -192,14 +192,14 @@ def test_coco():
             .transform(get_transforms(), tfm_y=True)
             .databunch(bs=16, collate_fn=bb_pad_collate))
     _check_data(data, 160, 40)
-    
+
 def test_coco_same_size():
     def get_y_func(fname):
         cat = fname.parent.name
         bbox = torch.cat([torch.randint(0,5,(2,)), torch.randint(23,28,(2,))])
         bbox = list(bbox.float().numpy())
         return [[bbox, bbox], [cat, cat]]
-    
+
     coco = untar_data(URLs.MNIST_TINY)
     bs = 16
     data = (ObjectItemList.from_folder(coco)
@@ -256,7 +256,7 @@ def test_image_to_image_different_tfms():
     y1 = y[0]
     x1r = flip_lr(Image(x1)).data
     assert (y1 == x1r).all()
-    
+
 def test_vision_pil2tensor():
     path  = Path(__file__).parent / "data/test/images"
     files = list(Path(path).glob("**/*.*"))
