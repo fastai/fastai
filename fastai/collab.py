@@ -5,6 +5,13 @@ from . import tabular
 __all__ = [*tabular.__all__, 'EmbeddingDotBias', 'EmbeddingNN', 'collab_learner', 'CollabDataBunch', 'CollabLine',
            'CollabList', 'CollabLearner']
 
+class CollabProcessor(TabularProcessor):
+    "Subclass `TabularProcessor for `process_one`."
+    
+    def process_one(self, item):
+        res = super().process_one(item)
+        return CollabLine(res.cats,res.conts,res.classes,res.names)
+
 class CollabLine(TabularLine):
     "Base item for collaborative filtering, subclasses `TabularLine`."
     def __init__(self, cats, conts, classes, names):
@@ -13,7 +20,7 @@ class CollabLine(TabularLine):
 
 class CollabList(TabularList):
     "Base `ItemList` for collaborative filtering, subclasses `TabularList`."
-    _item_cls,_label_cls = CollabLine,FloatList
+    _item_cls,_label_cls,_processor = CollabLine,FloatList,CollabProcessor
 
     def reconstruct(self, t:Tensor): return CollabLine(tensor(t), tensor([]), self.classes, self.col_names)
 
