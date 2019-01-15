@@ -157,21 +157,37 @@ class ItemBase():
         return self
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
-                 show_progress=True, chunk_size=1024*1024, timeout=4)->None:
+                 show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
 
-    u = requests.get(url, stream=True, timeout=timeout)
+    s = requests.Session()
+    s.mount('http://',requests.adapters.HTTPAdapter(max_retries=retries))
+    u = s.get(url, stream=True, timeout=timeout)
     try: file_size = int(u.headers["Content-Length"])
     except: show_progress = False
 
     with open(dest, 'wb') as f:
         nbytes = 0
         if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
-        for chunk in u.iter_content(chunk_size=chunk_size):
-            nbytes += len(chunk)
-            if show_progress: pbar.update(nbytes)
-            f.write(chunk)
+        try:
+            for chunk in u.iter_content(chunk_size=chunk_size):
+                nbytes += len(chunk)
+                if show_progress: pbar.update(nbytes)
+                f.write(chunk)
+        except requests.exceptions.ConnectionError as e:
+            fname = url.split('/')[-1]
+            from fastai.datasets import Config
+            data_dir = Config().data_path()
+            timeout_txt =(f'\n Download of {url} has failed after {retries} retries\n'
+                          f' Fix the download manually:\n'
+                          f'$ mkdir -p {data_dir}\n'
+                          f'$ cd {data_dir}\n'
+                          f'$ wget -c {url}\n'
+                          f'$ tar -zxvf {fname}\n\n'
+                          f'And re-run your code once the download is successful\n')
+            print(timeout_txt)
+            import sys;sys.exit(1)
 
 def range_of(x):  
     "Create a range from 0 to `len(x)`."
