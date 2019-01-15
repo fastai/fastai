@@ -298,5 +298,3 @@ def test_vision_pil2tensor_numpy():
     arr  = np.random.rand(16,16,3)
     diff = np.sort( pil2tensor(arr,np.float).data.numpy().flatten() ) - np.sort(arr.flatten())
     assert( np.sum(diff==0)==len(arr.flatten()) )
-
-            
