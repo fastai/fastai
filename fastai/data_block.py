@@ -284,7 +284,7 @@ class CategoryProcessor(PreProcessor):
     def process_one(self,item):
         if isinstance(item, EmptyLabel): return item
         res = self.c2i.get(item,None)
-        if res is None: self.warns.append(item)
+        if res is None: self.warns.append(str(item))
         return res
         
     def process(self, ds):
@@ -613,7 +613,8 @@ class LabelList(Dataset):
             filt = array([o is None for o in self.y])
             if filt.sum()>0: 
                 #Warnings are given later since progress_bar might make them disappear.
-                self.warn = f"Your {name} set contained the folowing unknown labels, the corresponding items have been discarded.\n"
+                self.warn = f"You are labelling your items with {self.y.__class__.__name__}.\n"
+                self.warn += f"Your {name} set contained the folowing unknown labels, the corresponding items have been discarded.\n"
                 for p in self.y.processor:
                     if len(getattr(p, 'warns', [])) > 0: 
                         warnings = list(set(p.warns))

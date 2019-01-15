@@ -94,7 +94,7 @@ class RNNCore(nn.Module):
             self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
                 1, bidirectional=bidir, batch_first=True) for l in range(n_layers)]
             self.rnns = [WeightDropout(rnn, weight_p) for rnn in self.rnns]
-        self.rnns = torch.nn.ModuleList(self.rnns)
+        self.rnns = nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
@@ -143,7 +143,6 @@ class LinearDecoder(nn.Module):
         raw_outputs, outputs = input
         output = self.output_dp(outputs[-1])
         decoded = self.decoder(output)
-        #decoded = self.decoder(output.contiguous().view(output.size(0)*output.size(1), output.size(2)))
         return decoded, raw_outputs, outputs
 
 class SequentialRNN(nn.Sequential):
