@@ -177,10 +177,12 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                 f.write(chunk)
         except requests.exceptions.ConnectionError as e:
             fname = url.split('/')[-1]
+            from fastai.datasets import Config
+            data_dir = Config().data_path()
             timeout_txt =(f'\n Download of {url} has failed after {retries} retries\n'
                           f' Fix the download manually:\n'
-                          f'$ mkdir -p ~/.fastai/data\n'
-                          f'$ cd ~/.fastai/data\n'
+                          f'$ mkdir -p {data_dir}\n'
+                          f'$ cd {data_dir}\n'
                           f'$ wget -c {url}\n'
                           f'$ tar -zxvf {fname}\n\n'
                           f'And re-run your code once the download is successful\n')

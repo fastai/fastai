@@ -1,5 +1,6 @@
 from .core import *
 import hashlib
+# from fastai.datasets import Config
 
 __all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'url2name', 'url2path']
 
@@ -145,16 +146,17 @@ def _check_file(fname):
         hash_nb = hashlib.md5(f.read(2**20)).hexdigest()
     return size,hash_nb
 
-def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True) -> Path:
+def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True,force_download=False) -> Path:
     "Download `url` to `fname` if it doesn't exist, and un-tgz to folder `dest`."
     dest = Path(ifnone(dest, url2path(url, data)))
     fname = Path(ifnone(fname, _url2tgz(url, data)))
-    if fname.exists() and _check_file(fname) != _checks[url]:
+    if force_download or (fname.exists() and _check_file(fname) != _checks[url]):
         print(f"A new version of the {'dataset' if data else 'model'} is available.")
         os.remove(fname)
         shutil.rmtree(dest)      
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
-        assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected!  Remove the file from ~/.fastai/data and try your code again."
+        data_dir = Config().data_path()
+        assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected!  Remove the file from {data_dir} and try your code again."
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest

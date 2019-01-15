@@ -2,6 +2,7 @@ import pytest
 from fastai.vision import *
 from fastai.vision.data import verify_image
 import PIL
+import responses
 
 @pytest.fixture(scope="module")
 def path():
@@ -87,6 +88,29 @@ def test_download_images():
     finally:
         shutil.rmtree(tmp_path)
 
+@responses.activate                                                                              
+def test_trunc_download():
+    from io import StringIO
+    with StringIO('test_file_that_is_not_image') as cc_trunc:
+        file_io = cc_trunc.read()                                                                
+        mock_headers = {'Content-Type':'text/plain','Content-Length':'168168549'}                
+        responses.add(responses.GET, 'http://files.fast.ai/data/examples/coco_tiny.tgz',         
+                      body=file_io,status=200,headers=mock_headers)                              
+
+        url = URLs.COCO_TINY
+        fname = f'{url2path(url)}.tgz'
+        try:
+            coco = untar_data(url,force_download=True)
+        except AssertionError as e:
+            # from fastai.datasets import Config, url2name
+            data_dir = Config().data_path()
+            expected_error =  f"Downloaded file {fname} does not match checksum expected!  Remove the file from {data_dir} and try your code again."
+            assert e.args[0] == expected_error
+        except:
+            print(f"untar_data({URLs.COCO_TINY}) had Unexpected error:", sys.exc_info()[0])
+        finally:
+            os.remove(fname)
+        
 def test_verify_images(path):
     tmp_path = path/'tmp'
     os.makedirs(tmp_path, exist_ok=True)
@@ -274,3 +298,5 @@ def test_vision_pil2tensor_numpy():
     arr  = np.random.rand(16,16,3)
     diff = np.sort( pil2tensor(arr,np.float).data.numpy().flatten() ) - np.sort(arr.flatten())
     assert( np.sum(diff==0)==len(arr.flatten()) )
+
+            
