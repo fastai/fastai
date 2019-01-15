@@ -76,14 +76,30 @@ def test_from_csv_and_from_df():
 
     os.remove(path/'tmp.csv')
 
-def test_should_load_backwards_lm():
+def test_should_load_backwards_lm_1():
+    "assumes that a backwards batch starts where forward ends. Whether this holds depends on LanguageModelPreLoader"
+    path = untar_data(URLs.IMDB_SAMPLE)
+    
+    df = text_df(['neg','pos'])
+    data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
+                                   bs=2, backwards=False)
+    batch_forward = data.one_batch(DatasetType.Valid)[0].numpy()
+    
+    data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
+                                   bs=2, backwards=True)
+    batch_backwards = data.one_batch(DatasetType.Valid)[0].numpy()
+
+    np.testing.assert_array_equal(batch_backwards, np.flip(batch_forward))
+
+def test_should_load_backwards_lm_2():
+    "it is fragile to test against specific words. What if 2 batches were split between 'is' an 'a' in df.Text"
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos'])
     data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
                                    bs=2, backwards=True)
     batch = data.one_batch(DatasetType.Valid)
     as_text = [data.vocab.itos[x] for x in batch[0][0]]
-    np.testing.assert_array_equal(as_text[:2], ["project", "cool"])
+    np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
 def df_test_collate(data):
     x,y = next(iter(data.train_dl))

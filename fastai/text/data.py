@@ -13,44 +13,106 @@ TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
 
 class LanguageModelPreLoader(Callback):
-    "Transforms the texts in `dataset` in a stream for language modelling."
-    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=64, bptt:int=70, backwards:bool=False, 
-                 shuffle:bool=False, drop_last:bool=False):
-        self.dataset,self.bs,self.bptt,self.backwards = dataset,bs,bptt,backwards
-        self.shuffle,self.drop_last = shuffle,drop_last
-        self.lengths = np.array(ifnone(lengths, [len(o) for o in dataset.x.items]))
-        self.n = self.lengths.sum() // self.bs
-        
-    def __len__(self):
-        if self.item is not None:    return 1
-        if (self.n-1)%self.bptt == 0 or self.drop_last: return ((self.n-1) // self.bptt) * self.bs
-        return ((self.n-1) // self.bptt + 1) * self.bs
+    "Create a dataloader with bptt slightly changing."
     
+    class CircularIndex():
+        #When the index exceeds the length of self.idx then it is wrap to start at the head 
+        #or the end if indexing is moving backwards. The shuffled is done in-place, 
+        def __init__(self, length:int, forward:bool): 
+            self.idx      = np.arange(length)
+            self.forward_ = forward
+        def __getitem__(self, i): 
+            idx = self.idx
+            return idx[ i%len(idx) if self.forward_ else len(idx)-1-i%len(idx) ]
+        def __len__(self) -> int: return len(self.idx)
+        def shuffle(self): np.random.shuffle(self.idx)
+        def forward(self, forward:bool=True): self.forward_ = forward
+
+    def __init__(self, dataset:LabelList, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
+        self.dataset,self.bs,self.bptt,self.shuffle,self.backwards = dataset,bs,bptt,shuffle,backwards
+        self.totalToks = 0
+        for rag in dataset.x.items: self.totalToks += len(rag)
+        self.ite_len   = self.bs*int( math.ceil( self.totalToks/(self.bptt*self.bs) )) if self.item is None else 1
+        self.idx = None
+
+    def __len__(self): return self.ite_len
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
-    
+   
+    def allocate_buffers(self):     
+        "allocate the required worth-case batchbuffer"
+        #idx:     used to index into items so that shuffle is used - if idx has been shuffled 
+        #ei:      index of the first rag to be extract. Returs as index to the next rag to be extracted
+        #eo:      index to the first token to be extracted in the first rag. Returs pointing to the next to be extract in the last rag
+        #         when iterating backwards then ei becomes 1+ the last token to be extraced in the rag 
+        #overlap: overlap=1 between batches, because we only predict the next token        
+        self.idx   = LanguageModelPreLoader.CircularIndex(len(self.dataset.x.items), not self.backwards)
+        self.batch = np.zeros( (self.bs, self.bptt+1), dtype=np.int64)
+        self.x, self.y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1]      
+        self.ei    = np.zeros(self.bs, dtype=np.int)
+        self.eo    = np.zeros(self.bs, dtype=np.int)
+
     def on_epoch_begin(self, **kwargs):
-        self.idxs = np.random.permutation(len(self.dataset)) if self.shuffle else arange_of(self.dataset)
-        self.text_idx = np.concatenate([[0],self.lengths[self.idxs].cumsum()])
-        
+        if self.idx is None: self.allocate_buffers()
+        if self.shuffle:     self.idx.shuffle()
+        self.idx.forward(self.backwards is False) 
+
+        #set up ei and eo to index the data so batches has continuous rows  
+        step   = self.totalToks / self.bs
+        ln_rag = countTokens = 0
+        i_rag  = -1
+        for i in range(0,self.bs):
+            while ln_rag <= int(step * i) - countTokens :
+                countTokens += ln_rag
+                i_rag       += 1
+                ln_rag       = len( self.dataset.x.items[self.idx[i_rag]] )
+            self.ei[i] = i_rag
+            self.eo[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
+
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
     def on_epoch_end(self, **kwargs): self.on_epoch_begin()
-    
+
     def __getitem__(self, k:int):
         if self.item is not None: return self.dataset[0]
-        if not hasattr(self, 'idxs'): self.on_epoch_begin()
-        #The dataloader will send (batch_index) * bs + sample_index, converting to where to read in the stream 
-        read_idx = (k//self.bs) * self.bptt
-        i = read_idx  + (k % self.bs) * self.n 
-        seq_len = min(self.bptt, self.n-read_idx-1)
-        #Getting the indexes of the texts that start and finish the portion i---i+seq_len in the stream 
-        start,end = np.argmax(self.text_idx >= i)-1,np.argmin(self.text_idx <= i+seq_len+1)
-        start = max(0,start)
-        #Grabbing the texts we need in the dataset
-        if self.backwards: concat = np.concatenate([self.dataset.x.items[j][::-1] for j in self.idxs[start:end]])
-        else: concat = np.concatenate([self.dataset.x.items[j] for j in self.idxs[start:end]])
-        #Returning the right portion.
-        start_idx = i-self.text_idx[start]
-        return concat[start_idx:start_idx+seq_len], concat[start_idx+1:start_idx+seq_len+1]
+        if self.idx is None:      self.on_epoch_begin()
+
+        j = k % self.bs
+        if self.backwards: self.ei[j],self.eo[j] = self.fill_backward(  self.dataset.x.items, self.idx, self.batch[j], 
+                                                                        self.ei[j], self.eo[j], overlap=1 )
+        else:              self.ei[j],self.eo[j] = self.fill_forward(   self.dataset.x.items, self.idx, self.batch[j], 
+                                                                        self.ei[j], self.eo[j], overlap=1 )
+        return self.x[j], self.y[j]
+
+    def fill_forward(self, items, idx, row, ei, eo, overlap):
+        "fill the row with tokens from the ragged array reading forwards"
+        ibuf = 0
+        ei  -= 1 
+        while ibuf < row.size:  
+            ei   += 1 
+            rag   = items[idx[ei]]
+            eo    = eo if ibuf==0 else 0
+            n     = min(len(rag) - eo, row.size - ibuf)
+            row[ibuf:ibuf+n] = rag[eo:eo+n]
+            ibuf += n
+        if overlap == 1:  eo += n-overlap
+        else: raise ValueError("overlap != 1 has not been implemented")
+
+        return ei,eo
+
+    def fill_backward(self, items, idx, row, ei, eo, overlap):
+        "fill the row with tokens from the ragged array reading backwards"
+        ibuf = 0
+        ei  -= 1 
+        while ibuf < row.size:  
+            ei   += 1 
+            rag   = items[idx[ei]]
+            eo    = eo if ibuf==0 else len(rag)
+            n     = min(eo, row.size - ibuf) 
+            row[ibuf:ibuf+n] = rag[eo-n:eo][::-1]
+            ibuf += n
+        if overlap == 1: eo -= n-overlap
+        else: raise ValueError("overlap != 1 has not been implemented")
+
+        return ei,eo
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
@@ -196,7 +258,7 @@ class TextLMDataBunch(TextDataBunch):
                **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), drop_last=(i==0), bs=bs, **kwargs) for i,ds in enumerate(datasets)]
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=bs, **kwargs) for i,ds in enumerate(datasets)]
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
