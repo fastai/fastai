@@ -1,6 +1,5 @@
 from .core import *
 import hashlib
-# from fastai.datasets import Config
 
 __all__ = ['URLs', 'Config', 'untar_data', 'download_data', 'datapath4file', 'url2name', 'url2path']
 
