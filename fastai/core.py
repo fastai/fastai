@@ -312,3 +312,8 @@ def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]
     if title is not None: fig.suptitle(title, **kwargs)
     return array(axs)
 
+def show_some(items:Collection, n_max:int=5, sep:str=','):
+    if items is None or len(items) == 0: return ''
+    res = sep.join([f'{o}' for o in items[:n_max]])
+    if len(items) > n_max: res += '...'
+    return res
