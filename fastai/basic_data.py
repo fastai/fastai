@@ -216,7 +216,7 @@ class DataBunch():
             except: fails.append(i)
         if len(fails) > 0:
             if len(fails) == len(idx):
-                warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] for all i.")
+                warn(f"There seems to be something wrong with your dataset, can't access any element of self.train_ds.")
             else: 
                 warn(f"There seems to be something wrong with your dataset, can't access self.train_ds[i] the i in {fails}.")
             print(final_message)
