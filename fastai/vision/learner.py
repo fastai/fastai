@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 16 14:20:24 2019
-
-"""
-
 "`Learner` support for computer vision"
 from ..torch_core import *
 from ..basic_train import *
@@ -19,14 +13,20 @@ __all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpreta
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
 def _resnet_split(m:nn.Module): return (m[0][6],m[1])
+# Split squeezenet model on maxpool layers
+def _squeezenet_split(m:nn.Module): return (m[0][0][5], m[0][0][8], m[1])
 
 _default_meta = {'cut':-1, 'split':_default_split}
 _resnet_meta  = {'cut':-2, 'split':_resnet_split }
+_squeezenet_meta = {'cut':-1, 'split': _squeezenet_split}
 
 model_meta = {
     models.resnet18 :{**_resnet_meta}, models.resnet34: {**_resnet_meta},
     models.resnet50 :{**_resnet_meta}, models.resnet101:{**_resnet_meta},
-    models.resnet152:{**_resnet_meta}}
+    models.resnet152:{**_resnet_meta},
+
+    models.squeezenet1_0:{**_squeezenet_meta},
+    models.squeezenet1_1:{**_squeezenet_meta}}
 
 def cnn_config(arch):
     "Get the metadata associated with `arch`."
@@ -112,37 +112,19 @@ class ClassificationInterpretation():
             cl = int(cl)
             im.show(ax=axes.flat[i], title=
                 f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
-    
-    
-    def plot_multi_top_losses(self, samples=5, figsz=(8,8)):
-    
-        """
-        INPUT = Number of samples to plot (Int), figure size (tuple of Int)
-    
-        OUTPUT= Images of misclassified samples along with predicted/actual/loss/prob.
-            Furthermore, it saves those misclassified samples in a list (mismatchescontainer),
-            in case you want to train a few epochs just upon them
-        """
+            
+    def plot_multi_top_losses(self, samples:int=5, figsz:Tuple[int,int]=(8,8)):
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class, multilabeled dataset version of the above."
         if samples >20:
             print("Max 20 samples")
             return
-        
         losses, idxs = self.top_losses(self.data.c)
-        
-        granlista=[]                            # info tuples
-        ordlosses_idxs=[]                       # indexes of samples sorted by loss
-        mismatches_idxs = []                    # mismatches indexes from validation set
-        mismatches = []                         # data.valid_ds subset with wrongly predicted items, same format
-        losses_mismatches=[]                    # Losses of mismatched items
-        mismatchescontainer=[]                  # mismatched images, in case you want to move them into the training set
-        
-        kakkona=np.asarray(self.y_true, dtype=int) # ground truth labels validation set
-        
+        granlista, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
+        truthlabels=np.asarray(self.y_true, dtype=int) 
         classes_ids=[k for k in enumerate(self.data.classes)]
-        
         predclass=np.asarray(self.pred_class)
         for i, pred in enumerate(predclass):
-            dove_truth=np.nonzero((kakkona[i]>0))[0] # [0] since it's a tuple
+            dove_truth=np.nonzero((truthlabels[i]>0))[0] # [0] since it's a tuple
             mismatch=np.all(pred!=dove_truth) # if True, the prediction is wrong!
             if mismatch: 
                 mismatches_idxs.append(i)
@@ -150,20 +132,14 @@ class ClassificationInterpretation():
             #infotup: sampleNo., pred, gr.truths, prob on prediction, loss on prediction, mismatch true/false
             infotup=(i, pred, dove_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
             granlista.append(infotup)
-        
         mismatches = self.data.valid_ds[mismatches_idxs]
         ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
-        
-        for w in ordlosses:
-            ordlosses_idxs.append(w[1])
-        
+        for w in ordlosses: ordlosses_idxs.append(w[1])
         mismatches_ordered_byloss=self.data.valid_ds[ordlosses_idxs]
         print(mismatches)
-            
         mismatchescontainer=[]
         for ima in range(len(mismatches_ordered_byloss)):
-            mismatchescontainer.append(mismatches_ordered_byloss[ima][0])
-            
+            mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
         for sampleN in range(samples):
             actualclasses=''
             for clas in granlista[ordlosses_idxs[sampleN]][2]:
@@ -172,8 +148,7 @@ class ClassificationInterpretation():
             imag=show_image(imag, figsize=figsz)
             imag.set_title(f'Predicted: {classes_ids[granlista[ordlosses_idxs[sampleN]][1]][1]}, Actual: {actualclasses}, Loss: {granlista[ordlosses_idxs[sampleN]][3]}, Probability: {granlista[ordlosses_idxs[sampleN]][4]}')
             plt.show()
-    
-    
+
     def confusion_matrix(self, slice_size:int=None):
         "Confusion matrix as an `np.ndarray`."
         x=torch.arange(0,self.data.c)
@@ -220,4 +195,3 @@ def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
     return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
 Learner.interpret = _learner_interpret
-
