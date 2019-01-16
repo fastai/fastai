@@ -219,8 +219,8 @@ class DataBunch():
                 warn_msg = "There seems to be something wrong with your dataset, can't access any element of self.train_ds.\n"
                 warn_msg += f"Tried: {show_some(idx)}"
             else:
-                warn_msg = "There seems to be something wrong with your dataset, can't access the following elements "
-                warn_msg += f"in self.train_ds: {show_some(idx)}"
+                warn_msg = "There seems to be something wrong with your dataset, can't access these elements "
+                warn_msg += f"in self.train_ds: {show_some(fails)}"
             warn(warn_msg)
             print(final_message)
             return
