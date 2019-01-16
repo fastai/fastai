@@ -124,8 +124,8 @@ class ClassificationInterpretation():
         classes_ids=[k for k in enumerate(self.data.classes)]
         predclass=np.asarray(self.pred_class)
         for i, pred in enumerate(predclass):
-            dove_truth=np.nonzero((truthlabels[i]>0))[0] # [0] since it's a tuple
-            mismatch=np.all(pred!=dove_truth) # if True, the prediction is wrong!
+            dove_truth=np.nonzero((truthlabels[i]>0))[0]
+            mismatch=np.all(pred!=dove_truth)
             if mismatch: 
                 mismatches_idxs.append(i)
                 losses_mismatches.append((losses[i][pred],i))
