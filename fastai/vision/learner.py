@@ -124,12 +124,12 @@ class ClassificationInterpretation():
         classes_ids=[k for k in enumerate(self.data.classes)]
         predclass=np.asarray(self.pred_class)
         for i, pred in enumerate(predclass):
-            dove_truth=np.nonzero((truthlabels[i]>0))[0]
-            mismatch=np.all(pred!=dove_truth)
+            where_truth=np.nonzero((truthlabels[i]>0))[0]
+            mismatch=np.all(pred!=where_truth)
             if mismatch: 
                 mismatches_idxs.append(i)
                 losses_mismatches.append((losses[i][pred],i))
-            infotup=(i, pred, dove_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
+            infotup=(i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
             infolist.append(infotup)
         mismatches = self.data.valid_ds[mismatches_idxs]
         ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
