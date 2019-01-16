@@ -113,7 +113,7 @@ class ClassificationInterpretation():
             im.show(ax=axes.flat[i], title=
                 f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
             
-    def plot_multi_top_losses(self, samples:int=5, figsz:Tuple[int,int]=(8,8)):
+    def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8)):
         "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class, multilabeled dataset version of the above."
         if samples >20:
             print("Max 20 samples")
@@ -129,7 +129,6 @@ class ClassificationInterpretation():
             if mismatch: 
                 mismatches_idxs.append(i)
                 losses_mismatches.append((losses[i][pred],i))
-            #infotup: sampleNo., pred, gr.truths, prob on prediction, loss on prediction, mismatch true/false
             infotup=(i, pred, dove_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
             granlista.append(infotup)
         mismatches = self.data.valid_ds[mismatches_idxs]
