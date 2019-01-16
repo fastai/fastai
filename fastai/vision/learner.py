@@ -119,7 +119,7 @@ class ClassificationInterpretation():
             print("Max 20 samples")
             return
         losses, idxs = self.top_losses(self.data.c)
-        granlista, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
+        infolist, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
         truthlabels=np.asarray(self.y_true, dtype=int) 
         classes_ids=[k for k in enumerate(self.data.classes)]
         predclass=np.asarray(self.pred_class)
@@ -130,7 +130,7 @@ class ClassificationInterpretation():
                 mismatches_idxs.append(i)
                 losses_mismatches.append((losses[i][pred],i))
             infotup=(i, pred, dove_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
-            granlista.append(infotup)
+            infolist.append(infotup)
         mismatches = self.data.valid_ds[mismatches_idxs]
         ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
         for w in ordlosses: ordlosses_idxs.append(w[1])
@@ -141,11 +141,11 @@ class ClassificationInterpretation():
             mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
         for sampleN in range(samples):
             actualclasses=''
-            for clas in granlista[ordlosses_idxs[sampleN]][2]:
+            for clas in infolist[ordlosses_idxs[sampleN]][2]:
                 actualclasses=actualclasses+' -- '+str(classes_ids[clas][1])
             imag=mismatches_ordered_byloss[sampleN][0]
             imag=show_image(imag, figsize=figsz)
-            imag.set_title(f'Predicted: {classes_ids[granlista[ordlosses_idxs[sampleN]][1]][1]}, Actual: {actualclasses}, Loss: {granlista[ordlosses_idxs[sampleN]][3]}, Probability: {granlista[ordlosses_idxs[sampleN]][4]}')
+            imag.set_title(f'Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]}, Actual: {actualclasses}, Loss: {infolist[ordlosses_idxs[sampleN]][3]}, Probability: {infolist[ordlosses_idxs[sampleN]][4]}')
             plt.show()
 
     def confusion_matrix(self, slice_size:int=None):
