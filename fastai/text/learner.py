@@ -150,11 +150,10 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
     if ps is None:  ps = [0.1]
-    ds = data.train_ds
     vocab_size, n_class = len(data.vocab.itos), data.c
     layers = [emb_sz*3] + lin_ftrs + [n_class]
     ps = [dps[4]] + ps
-    model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
+    model = get_rnn_classifier(bptt, max_len, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
     learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
     if pretrained_model is not None:
