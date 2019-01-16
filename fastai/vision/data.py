@@ -160,7 +160,7 @@ class ImageDataBunch(DataBunch):
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
-        sd = ImageItemList([], path=path).split_by_idx([])
+        sd = ImageItemList([], path=path, ignore_empty=True).no_split()
         return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
 
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
