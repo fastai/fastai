@@ -114,7 +114,7 @@ class ClassificationInterpretation():
                 f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
             
     def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8)):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class, multilabeled dataset version of the above."
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
         if samples >20:
             print("Max 20 samples")
             return
@@ -145,7 +145,9 @@ class ClassificationInterpretation():
                 actualclasses=actualclasses+' -- '+str(classes_ids[clas][1])
             imag=mismatches_ordered_byloss[sampleN][0]
             imag=show_image(imag, figsize=figsz)
-            imag.set_title(f'Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]}, Actual: {actualclasses}, Loss: {infolist[ordlosses_idxs[sampleN]][3]}, Probability: {infolist[ordlosses_idxs[sampleN]][4]}')
+            imag.set_title(f"""Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]}, 
+                               Actual: {actualclasses}, Loss: {infolist[ordlosses_idxs[sampleN]][3]}, 
+                               Probability: {infolist[ordlosses_idxs[sampleN]][4]}""")
             plt.show()
 
     def confusion_matrix(self, slice_size:int=None):
