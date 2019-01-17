@@ -23,24 +23,24 @@ class LanguageModelPreLoader(Callback):
             return idx[ i%len(idx) if self.forward_ else len(idx)-1-i%len(idx) ]
         def __len__(self) -> int: return len(self.idx)
         def shuffle(self): np.random.shuffle(self.idx)
-        def forward(self, forward:bool=True): self.forward_ = forward
+        def forward(self, forward): self.forward_=forward
 
     def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
         self.dataset,self.bs,self.bptt,self.shuffle,self.backwards = dataset,bs,bptt,shuffle,backwards
-        self.totalToks, self.idx, self.lengths = int(0), None, lengths
+        self.totalToks, self.ite_len, self.idx = int(0), None, None
+        self.lengths = lengths if lengths is not None and len(lengths)==len(dataset.x.items) else None
 
     def __len__(self): 
         if self.ite_len is None:
-            if not lengths is None: 
-                print(f"__len__ not self.lengths is None")
-                lengths = self.lengths 
-                for l in lengths: self.totalToks += l
+            if not self.lengths is None: 
+                lengths, totalToks = self.lengths, 0 
+                for l in lengths: totalToks += l
+                self.totalToks = totalToks
             else:                        
-                print(f"__len__ self.lengths is None")
-                items = dataset.x.items
-                for rag in items: self.totalToks += len(rag)
+                items, totalToks = self.dataset.x.items, 0
+                for rag in items: totalToks += len(rag)
+                self.totalToks = totalToks
             self.ite_len = self.bs*int( math.ceil( self.totalToks/(self.bptt*self.bs) )) if self.item is None else 1
-            print(f"__len__ done")
         return self.ite_len
 
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
@@ -61,14 +61,12 @@ class LanguageModelPreLoader(Callback):
 
         step = self.totalToks / self.bs
         ln_rag, countTokens, i_rag = 0, 0, -1
+        lengths, items, idx = self.lengths, self.dataset.x.items, self.idx
         for i in range(0,self.bs):
             while ln_rag <= int(step * i) - countTokens:
                 countTokens += ln_rag
                 i_rag       += 1
-                if not self.lengths is None:
-                    ln_rag       = self.lengths[self.idx[i_rag]]
-                else: 
-                    ln_rag       = len( self.dataset.x.items[self.idx[i_rag]] )
+                ln_rag       = lengths[idx[i_rag]] if not lengths is None else len( items[idx[i_rag]] )
             self.ro[i] = i_rag
             self.ri[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
 
@@ -78,21 +76,21 @@ class LanguageModelPreLoader(Callback):
     def __getitem__(self, k:int):
         if self.item is not None: return self.dataset[0]
         elif self.idx is None:    self.on_epoch_begin()
+
         j = k % self.bs
         self.ro[j],self.ri[j] = self.fill(not self.backwards, self.dataset.x.items, self.idx,self.batch[j], 
-                                          self.ro[j], self.ri[j], overlap=1, lenghts=self.lengths )
+                                          self.ro[j], self.ri[j], overlap=1, lengths=self.lengths )
         return self.x[j], self.y[j]
 
-    def fill(self, forward, items, idx, row, ro, ri, overlap, lenghts):
+    def fill(self, forward, items, idx, row, ro, ri, overlap, lengths):
         "fill the row with tokens from the ragged array"
         ibuf = 0
         ro  -= 1
         while ibuf < row.size:  
             ro   += 1 
-            ix     = idx[ro]
+            ix    = idx[ro]
             rag   = items[ix]
-
-            l     = lenghts[ix] if not self.lengths is None else len(rag)
+            l     = lengths[ix] if not lengths is None else len(rag)
             if forward:
                 ri = ri if ibuf==0 else 0
                 n  = min(l - ri, row.size - ibuf)
