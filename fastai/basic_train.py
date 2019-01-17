@@ -202,6 +202,7 @@ class Learner():
         self.create_opt(defaults.lr)
         
     def export(self, fname:str='export.pkl'):
+        "Export the state of the `Learner` in `self.path/fname`."
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}

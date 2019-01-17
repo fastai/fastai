@@ -111,6 +111,7 @@ class Config():
 def _expand_path(fpath): return Path(fpath).expanduser()
 def url2name(url): return url.split('/')[-1]
 def url2path(url, data=True):
+    "Change `url` to a path."
     name = url2name(url)
     return datapath4file(name) if data else modelpath4file(name)
 def _url2tgz(url, data=True):

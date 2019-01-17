@@ -597,7 +597,8 @@ class LabelList(Dataset):
         return cls.load_state(pickle.load(open(fn, 'rb')))
     
     @classmethod
-    def load_state(cls, state:dict):
+    def load_state(cls, state:dict) -> 'LabelList':
+        "Create a `LabelList` from `state`."
         x = state['x_cls']([], path=state['path'], processor=state['x_proc'], ignore_empty=True)
         y = state['y_cls']([], path=state['path'], processor=state['y_proc'], ignore_empty=True)
         res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()

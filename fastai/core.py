@@ -313,6 +313,7 @@ def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]
     return array(axs)
 
 def show_some(items:Collection, n_max:int=5, sep:str=','):
+    "Return the representation of the first  `n_max` elements in `items`."
     if items is None or len(items) == 0: return ''
     res = sep.join([f'{o}' for o in items[:n_max]])
     if len(items) > n_max: res += '...'
