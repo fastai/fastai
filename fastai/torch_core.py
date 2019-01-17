@@ -133,7 +133,24 @@ def range_children(m:nn.Module)->Iterator[int]:
     "Return iterator of len of children of `m`."
     return range(num_children(m))
 
-flatten_model = lambda m: sum(map(flatten_model,m.children()),[]) if num_children(m) else [m]
+class ParameterModule(nn.Module):
+    "Register a lone parameter `p` in a module."
+    def __init__(self, p:nn.Parameter):
+        super().__init__()
+        self.val = p
+    
+    def forward(self, x): return x
+    
+def children_and_parameters(m:nn.Module):
+    "Return the children of `m` and its direct parameters not registered in modules."
+    children = list(m.children())
+    children_p = sum([[id(p) for p in c.parameters()] for c in m.children()],[])
+    for p in m.parameters():
+        if id(p) not in children_p: children.append(ParameterModule(p))
+    return children
+
+flatten_model = lambda m: sum(map(flatten_model,children_and_parameters(m)),[]) if num_children(m) else [m]
+
 def first_layer(m:nn.Module)->nn.Module:
     "Retrieve first layer in a module `m`."
     return flatten_model(m)[0]
