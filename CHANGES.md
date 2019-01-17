@@ -34,6 +34,7 @@ of that change.
 - Bug in `ImageBBox` when all the targets had the same number of bboxes
 - Default metric in `RNNLearner` is accuracy only for language models or classification tasks
 - Throws a clear error message when trying to use `databunch` on not-split data
+- Fix `flatten_model` that removed parameters not registered in modules
 
 ## 1.0.39 (2018-12-28)
 

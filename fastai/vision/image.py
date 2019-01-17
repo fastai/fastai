@@ -94,7 +94,7 @@ class Image(ItemBase):
 
     def apply_tfms(self, tfms:TfmList, do_resolve:bool=True, xtra:Optional[Dict[Callable,dict]]=None,
                    size:Optional[Union[int,TensorImageSize]]=None, resize_method:ResizeMethod=ResizeMethod.CROP,
-                   mult:int=32, padding_mode:str='reflection', mode:str='bilinear', remove_out:bool=True)->TensorImage:
+                   mult:int=None, padding_mode:str='reflection', mode:str='bilinear', remove_out:bool=True)->TensorImage:
         "Apply all `tfms` to the `Image`, if `do_resolve` picks value for random args."
         if not (tfms or xtra or size): return self
         xtra = ifnone(xtra, {})
@@ -114,7 +114,7 @@ class Image(ItemBase):
             if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
             elif tfm in size_tfms:
                 if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                    x = tfm(x, size=size, padding_mode=padding_mode)
+                    x = tfm(x, size=_get_crop_target(size,mult=mult), padding_mode=padding_mode)
             else: x = tfm(x)
         return x
 
@@ -570,11 +570,11 @@ class TfmLighting(Transform):
     "Decorator for lighting tfm funcs."
     order,_wrap = 8,'lighting'
 
-def _round_multiple(x:int, mult:int)->int:
+def _round_multiple(x:int, mult:int=None)->int:
     "Calc `x` to nearest multiple of `mult`."
-    return (int(x/mult+0.5)*mult)
+    return (int(x/mult+0.5)*mult) if mult is not None else x
 
-def _get_crop_target(target_px:Union[int,TensorImageSize], mult:int=32)->Tuple[int,int]:
+def _get_crop_target(target_px:Union[int,TensorImageSize], mult:int=None)->Tuple[int,int]:
     "Calc crop shape of `target_px` to nearest multiple of `mult`."
     target_r,target_c = tis2hw(target_px)
     return _round_multiple(target_r,mult),_round_multiple(target_c,mult)
