@@ -151,7 +151,10 @@ def get_layer_name(layer:nn.Module)->str:
 def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     func = lambda m:list(map(get_layer_name, flatten_model(m)))
     layers_names = func(m.model) if isinstance(m, Learner) else func(m)
-    layers_sizes, layers_params, layers_trainable, _ = params_size(m)
+    layers_sizes, layers_params, layers_trainable, hooks = params_size(m)
+    for h1,h2 in hooks:
+        h1.remove()
+        h2.remove()
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params', 'Trainable'])
     return list(map(layer_info, layers_names, layers_sizes, layers_params, layers_trainable))
 
