@@ -13,7 +13,7 @@ TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
 
 class LanguageModelPreLoader(Callback):
-    "load rows in a batch with fixed bptt"
+    "Transforms the tokens in `dataset` to a stream of continuous batches for language modelling."
     
     class CircularIndex():
         "Handles shuffle, direction of indexing, wraps around to head tail in the ragged array as needed"
@@ -25,15 +25,29 @@ class LanguageModelPreLoader(Callback):
         def shuffle(self): np.random.shuffle(self.idx)
         def forward(self, forward:bool=True): self.forward_ = forward
 
-    def __init__(self, dataset:LabelList, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
-        self.dataset,self.bs,self.bptt,self.shuffle,self.backwards,self.totalToks, self.idx = dataset,bs,bptt,shuffle,backwards,0, None
-        for rag in dataset.x.items: self.totalToks += len(rag)
-        self.ite_len = self.bs*int( math.ceil( self.totalToks/(self.bptt*self.bs) )) if self.item is None else 1
+    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
+        self.dataset,self.bs,self.bptt,self.shuffle,self.backwards = dataset,bs,bptt,shuffle,backwards
+        self.totalToks, self.idx, self.lengths = int(0), None, lengths
 
-    def __len__(self): return self.ite_len
+    def __len__(self): 
+        if self.ite_len is None:
+            if not lengths is None: 
+                print(f"__len__ not self.lengths is None")
+                lengths = self.lengths 
+                for l in lengths: self.totalToks += l
+            else:                        
+                print(f"__len__ self.lengths is None")
+                items = dataset.x.items
+                for rag in items: self.totalToks += len(rag)
+            self.ite_len = self.bs*int( math.ceil( self.totalToks/(self.bptt*self.bs) )) if self.item is None else 1
+            print(f"__len__ done")
+        return self.ite_len
+
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
    
-    def allocate_buffers(self):     
+    def allocate_buffers(self): 
+        if self.ite_len is None: len(self)
+
         self.idx   = LanguageModelPreLoader.CircularIndex(len(self.dataset.x.items), not self.backwards)
         self.batch = np.zeros( (self.bs, self.bptt+1), dtype=np.int64)
         self.x, self.y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1]      
@@ -41,8 +55,8 @@ class LanguageModelPreLoader(Callback):
         self.ri    = np.zeros(self.bs, dtype=np.int)
 
     def on_epoch_begin(self, **kwargs):
-        if self.idx is None:  self.allocate_buffers()
-        else if self.shuffle: self.idx.shuffle()
+        if self.idx is None: self.allocate_buffers()
+        elif self.shuffle:   self.idx.shuffle()
         self.idx.forward(not self.backwards) 
 
         step = self.totalToks / self.bs
@@ -51,7 +65,10 @@ class LanguageModelPreLoader(Callback):
             while ln_rag <= int(step * i) - countTokens:
                 countTokens += ln_rag
                 i_rag       += 1
-                ln_rag       = len( self.dataset.x.items[self.idx[i_rag]] )
+                if not self.lengths is None:
+                    ln_rag       = self.lengths[self.idx[i_rag]]
+                else: 
+                    ln_rag       = len( self.dataset.x.items[self.idx[i_rag]] )
             self.ro[i] = i_rag
             self.ri[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
 
@@ -63,16 +80,28 @@ class LanguageModelPreLoader(Callback):
         elif self.idx is None:    self.on_epoch_begin()
         j = k % self.bs
         self.ro[j],self.ri[j] = self.fill(not self.backwards, self.dataset.x.items, self.idx,self.batch[j], 
-                                          self.ro[j], self.ri[j], overlap=1 )
+                                          self.ro[j], self.ri[j], overlap=1, lenghts=self.lengths )
         return self.x[j], self.y[j]
 
-    def fill(self, forward, items, idx, row, ro, ri, overlap):
+    def fill(self, forward, items, idx, row, ro, ri, overlap, lenghts):
         "fill the row with tokens from the ragged array"
         ibuf = 0
         ro  -= 1
         while ibuf < row.size:  
             ro   += 1 
-            rag   = items[idx[ro]]
+            ix     = idx[ro]
+            rag   = items[ix]
+
+            l     = lenghts[ix] if not self.lengths is None else len(rag)
+            if forward:
+                ri = ri if ibuf==0 else 0
+                n  = min(l - ri, row.size - ibuf)
+                row[ibuf:ibuf+n] = rag[ri:ri+n]
+            else:    
+                ri = ri if ibuf==0 else l
+                n  = min(ri, row.size - ibuf) 
+                row[ibuf:ibuf+n] = rag[ri-n:ri][::-1]
+            """
             if forward:
                 ri = ri if ibuf==0 else 0
                 n  = min(len(rag) - ri, row.size - ibuf)
@@ -81,6 +110,7 @@ class LanguageModelPreLoader(Callback):
                 ri = ri if ibuf==0 else len(rag)
                 n  = min(ri, row.size - ibuf) 
                 row[ibuf:ibuf+n] = rag[ri-n:ri][::-1]
+            """
             ibuf += n
         if overlap == 1:  ri += n-overlap if forward else -(n-overlap)
         else: raise ValueError("overlap != 1 has not been implemented")
@@ -230,7 +260,7 @@ class TextLMDataBunch(TextDataBunch):
                **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=bs, **kwargs) for i,ds in enumerate(datasets)]
+        datasets = [LanguageModelPreLoader(ds, bs=bs, **kwargs) for i,ds in enumerate(datasets)]
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
         return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
