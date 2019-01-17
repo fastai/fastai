@@ -35,6 +35,8 @@ of that change.
 - Default metric in `RNNLearner` is accuracy only for language models or classification tasks
 - Throws a clear error message when trying to use `databunch` on not-split data
 - Fix `flatten_model` that removed parameters not registered in modules
+- Fix behavior of `apply_tfms` with `mult` and output size.
+- Fix bug in `DataBunch.one_item` when doing object detection
 
 ## 1.0.39 (2018-12-28)
 
