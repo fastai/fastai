@@ -51,9 +51,8 @@ class LanguageModelPreLoader(Callback):
         elif self.shuffle:   self.idx.shuffle()
         self.idx.forward = not self.backwards 
 
-        step   = self.totalToks / self.bs
-        ln_rag = countTokens = 0
-        i_rag  = -1
+        step = self.totalToks / self.bs
+        ln_rag,countTokens,i_rag = 0,0,-1
         items, idx = self.dataset.x.items, self.idx
         for i in range(0,self.bs):
             while ln_rag <= int(step * i) - countTokens :
