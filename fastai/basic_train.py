@@ -459,7 +459,7 @@ def load_callback(class_func, state, learn:Learner):
     
 def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
-    state = pickle.load(open(path/fname, 'rb'))
+    state = pickle.load(open(Path(path)/fname, 'rb'))
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)
