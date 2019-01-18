@@ -69,10 +69,8 @@ class LanguageModelPreLoader(Callback):
         j = k % self.bs
         if j==0:
             if self.item is not None: return self.dataset[0]
-            if self.idx is None:      self.on_epoch_begin()
-
-        self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx,self.batch[j], 
-                                              self.ro[j], self.ri[j], overlap=1 )
+            if self.idx is None: self.on_epoch_begin()
+            self.fill_batch(not self.backwards, self.dataset.x.items, self.idx,self.batch, self.ro, self.ri, overlap=1)
         return self.x[j], self.y[j]
 
     def fill_row(self, forward, items, idx, row, ro, ri, overlap):
@@ -94,6 +92,10 @@ class LanguageModelPreLoader(Callback):
                 ibuf += n
         ri += (n-overlap) if forward else -(n-overlap)
         return ro,ri
+
+    def fill_batch(self, forward, items, idx, batch, ro, ri, overlap):
+        for j,row in enumerate(batch):
+            ro[j],ri[j] = self.fill_row(forward, items, idx, row, ro[j], ri[j], overlap)
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
