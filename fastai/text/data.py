@@ -52,7 +52,7 @@ class LanguageModelPreLoader(Callback):
         self.idx.forward = not self.backwards 
 
         step = self.totalToks / self.bs
-        ln_rag,countTokens,i_rag = 0,0,-1
+        ln_rag, countTokens, i_rag = 0, 0, -1
         items, idx = self.dataset.x.items, self.idx
         for i in range(0,self.bs):
             while ln_rag <= int(step * i) - countTokens :
@@ -63,20 +63,20 @@ class LanguageModelPreLoader(Callback):
             self.ri[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
 
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
-    def on_epoch_end(self, **kwargs): 
-        self.on_epoch_begin()
+    def on_epoch_end(self, **kwargs): self.on_epoch_begin()
 
     def __getitem__(self, k:int):
-        if self.item is not None: return self.dataset[0]
-        elif self.idx is None: self.on_epoch_begin()
-
         j = k % self.bs
-        self.ro[j],self.ri[j] = self.fill(not self.backwards, self.dataset.x.items, self.idx,self.batch[j], 
-                                          self.ro[j], self.ri[j], overlap=1 )
+        if j==0:
+            if self.item is not None: return self.dataset[0]
+            if self.idx is None:      self.on_epoch_begin()
+
+        self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx,self.batch[j], 
+                                              self.ro[j], self.ri[j], overlap=1 )
         return self.x[j], self.y[j]
 
-    def fill(self, forward, items, idx, row, ro, ri, overlap):
-        "fill the row with tokens from the ragged array"
+    def fill_row(self, forward, items, idx, row, ro, ri, overlap):
+        "fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"
         ibuf = 0 
         ro  -= 1
         while ibuf < row.size:  
@@ -92,10 +92,9 @@ class LanguageModelPreLoader(Callback):
                 n  = min(ri, row.size - ibuf) 
                 row[ibuf:ibuf+n] = rag[ri-n:ri][::-1]
                 ibuf += n
-        if overlap == 1:  ri += (n-overlap) if forward else -(n-overlap)
-        else: raise ValueError("overlap != 1 has not been implemented")
+        ri += (n-overlap) if forward else -(n-overlap)
         return ro,ri
-        
+
 class SortSampler(Sampler):
     "Go through the text data by order of length."
 
