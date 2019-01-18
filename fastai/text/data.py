@@ -54,11 +54,12 @@ class LanguageModelPreLoader(Callback):
         step   = self.totalToks / self.bs
         ln_rag = countTokens = 0
         i_rag  = -1
+        items, idx = self.dataset.x.items, self.idx
         for i in range(0,self.bs):
             while ln_rag <= int(step * i) - countTokens :
                 countTokens += ln_rag
                 i_rag       += 1
-                ln_rag       = len( self.dataset.x.items[self.idx[i_rag]] )
+                ln_rag       = len( items[idx[i_rag]] )
             self.ro[i] = i_rag
             self.ri[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
 
