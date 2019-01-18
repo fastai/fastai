@@ -148,7 +148,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
     "Download `url` to `fname` if it doesn't exist, and un-tgz to folder `dest`."
     dest = Path(ifnone(dest, url2path(url, data)))
     fname = Path(ifnone(fname, _url2tgz(url, data)))
-    if force_download or (fname.exists() and _check_file(fname) != _checks[url]):
+    if force_download or (fname.exists() and url in _checks and _check_file(fname) != _checks[url]):
         print(f"A new version of the {'dataset' if data else 'model'} is available.")
         os.remove(fname)
         shutil.rmtree(dest)

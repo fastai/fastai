@@ -21,8 +21,11 @@ of that change.
 
 ### Changed:
 
+- Clearer representation of `FlattenedLoss`
+
 ### Fixed:
 
+- Bug when loading text data in multi-classification with `TextDataBunch.load`
 
 
 ## 1.0.40 (2019-01-17)

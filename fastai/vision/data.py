@@ -99,14 +99,14 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def create_from_ll(cls, lls:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
-                num_workers:int=defaults.cpus, tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
+                num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                 test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False, 
                 **kwargs)->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
         ds_tfms, kwargs = _prep_tfm_kwargs(ds_tfms, size, kwargs)
         lls = lls.transform(tfms=ds_tfms, size=size, **kwargs)
         if test is not None: lls.add_test_folder(test)
-        return lls.databunch(bs=bs, tfms=tfms, num_workers=num_workers, collate_fn=collate_fn, device=device, no_check=no_check)
+        return lls.databunch(bs=bs, dl_tfms=dl_tfms, num_workers=num_workers, collate_fn=collate_fn, device=device, no_check=no_check)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:PathOrStr='train', valid:PathOrStr='valid',
