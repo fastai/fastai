@@ -55,7 +55,7 @@ class LanguageModelPreLoader(Callback):
         ln_rag, countTokens, i_rag = 0, 0, -1
         items, idx = self.dataset.x.items, self.idx
         for i in range(0,self.bs):
-            while ln_rag + countTokens <= step * i:
+            while ln_rag + countTokens <= int(step * i):
                 countTokens += ln_rag
                 i_rag       += 1
                 ln_rag       = len( items[idx[i_rag]] )
