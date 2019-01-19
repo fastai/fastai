@@ -10,7 +10,7 @@ from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
 from .transform import *
 
-__all__ = ['RNNLearner', 'LanguageLearner', 'RNNLearner', 'convert_weights', 'lm_split',
+__all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'lm_split',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
 
 default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
