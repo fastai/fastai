@@ -259,3 +259,28 @@ for obj in gc.get_objects():
 Note, that gc will not contain some tensors that consume memory [inside autograd](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741/22).
 
 Here is a good [discussion on this topic](https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741) with more related code snippets.
+
+
+### GPU Reset
+
+If for some reason after exiting the python process the GPU doesn't free the memory, you can try to reset it (change 0 to the desired GPU ID):
+
+```
+sudo nvidia-smi --gpu-reset -i 0
+```
+
+When using multiprocessing, sometimes some of the client processes get stuck and go zombie and won't release the GPU memory. They also may become invisible to `nvidia-smi`, so that it reports no memory used, but the card is unusable and fails with OOM even when trying to create a tiny tensor on that card. In such a case locate the relevant processes with `fuser -v /dev/nvidia*`and kill them with `kill -9`.
+
+This blog [post](https://jianchao-li.github.io/2018/11/02/killing-pytorch-multi-gpu-training-the-safe-way/) suggests the following trick to arrange for the processes to cleanly exit on demand:
+```
+if os.path.isfile('kill.me'):
+    num_gpus = torch.cuda.device_count()
+    for gpu_id in range(num_gpus):
+        torch.cuda.set_device(gpu_id)
+        torch.cuda.empty_cache()
+    exit(0)
+```
+After you add this code to the training iteration, once you want to stop it, just cd into the directory of the training program and run
+```
+touch kill.me
+```
