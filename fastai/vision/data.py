@@ -53,6 +53,7 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
 
 def _maybe_add_crop_pad(tfms):
     tfms = ifnone(tfms, [[],[]])
+    assert is_listy(tfms) and len(tfms) == 2, "Please pass a list of two lists of transforms (train and valid)."
     tfm_names = [[tfm.__name__ for tfm in o] for o in tfms]
     return [([crop_pad()] + o if 'crop_pad' not in n else o) for o,n in zip(tfms, tfm_names)]
 
