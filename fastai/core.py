@@ -267,7 +267,7 @@ class EmptyLabel(ItemBase):
     def __str__(self):  return ''
 
 class Category(ItemBase):
-    "Basic class for singe classification labels."
+    "Basic class for single classification labels."
     def __init__(self,data,obj): self.data,self.obj = data,obj
     def __int__(self): return int(self.data)
     def __str__(self): return str(self.obj)
