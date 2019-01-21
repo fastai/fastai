@@ -17,6 +17,10 @@ of that change.
 
 ## 1.0.41.dev0 (Work In Progress)
 
+### Breaking change:
+
+- `sep` (in ImageDataBunch factory methods) is now called `label_delim`
+
 ### New:
 
 ### Changed:
