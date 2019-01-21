@@ -161,7 +161,7 @@ def test_vision_datasets():
 def test_multi():
     path = untar_data(URLs.PLANET_TINY)
     data = (ImageItemList.from_csv(path, 'labels.csv', folder='train', suffix='.jpg')
-        .random_split_by_pct(seed=42).label_from_df(sep=' ').databunch())
+        .random_split_by_pct(seed=42).label_from_df(label_delim=' ').databunch())
     x,y = data.valid_ds[0]
     assert x.shape[0]==3
     assert data.c==len(y.data)==14

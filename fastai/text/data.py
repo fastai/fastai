@@ -159,7 +159,8 @@ class TextDataBunch(DataBunch):
         if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
+        if cls==TextLMDataBunch: src = src.label_for_lm() 
+        else: src = src.label_from_df(cols=label_cols, classes=classes, label_delim=label_delim)
         if test_df is not None: src.add_test(TextList.from_df(test_df, path, cols=text_cols))
         return src.databunch(**kwargs)
 

@@ -52,12 +52,12 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
     return torch.cat(imgs,0), (bboxes,labels)
 
 def _maybe_add_crop_pad(tfms):
-    tfms = ifnone(tfms, [[],[]])
     assert is_listy(tfms) and len(tfms) == 2, "Please pass a list of two lists of transforms (train and valid)."
     tfm_names = [[tfm.__name__ for tfm in o] for o in tfms]
     return [([crop_pad()] + o if 'crop_pad' not in n else o) for o,n in zip(tfms, tfm_names)]
 
 def _prep_tfm_kwargs(tfms, size, kwargs):
+    tfms = ifnone(tfms, [[],[]])
     default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
     resize_method = ifnone(kwargs.get('resize_method', default_rsz), default_rsz)
     if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
@@ -121,23 +121,22 @@ class ImageDataBunch(DataBunch):
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', sep=None, valid_pct:float=0.2,
-                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='',
-                **kwargs:Any)->'ImageDataBunch':
+    def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', label_delim:str=None, valid_pct:float=0.2,
+                fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
         "Create from a `DataFrame` `df`."
         src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
                 .random_split_by_pct(valid_pct)
-                .label_from_df(sep=sep, cols=label_col))
+                .label_from_df(label_delim=label_delim, cols=label_col))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', sep=None, csv_labels:PathOrStr='labels.csv', valid_pct:float=0.2,
-            fn_col:int=0, label_col:int=1, suffix:str='',
-            header:Optional[Union[int,str]]='infer', **kwargs:Any)->'ImageDataBunch':
+    def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', label_delim:str=None, csv_labels:PathOrStr='labels.csv',
+                 valid_pct:float=0.2, fn_col:int=0, label_col:int=1, suffix:str='', header:Optional[Union[int,str]]='infer',
+                 **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file in `path/csv_labels`."
         path = Path(path)
         df = pd.read_csv(path/csv_labels, header=header)
-        return cls.from_df(path, df, folder=folder, sep=sep, valid_pct=valid_pct,
+        return cls.from_df(path, df, folder=folder, label_delim=label_delim, valid_pct=valid_pct,
                 fn_col=fn_col, label_col=label_col, suffix=suffix, **kwargs)
 
     @classmethod
@@ -163,6 +162,8 @@ class ImageDataBunch(DataBunch):
     @staticmethod
     def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
+        warn("""This method is deprecated and will be removed in a future version, use `load_learner` after
+             `Learner.export()`""", DeprecationWarning)
         sd = ImageItemList([], path=path, ignore_empty=True).no_split()
         return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
 
