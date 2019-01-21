@@ -136,7 +136,6 @@ class ClassificationInterpretation():
         for w in ordlosses: ordlosses_idxs.append(w[1])
         mismatches_ordered_byloss=self.data.valid_ds[ordlosses_idxs]
         print(mismatches)
-        mismatchescontainer=[]
         for ima in range(len(mismatches_ordered_byloss)):
             mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
         for sampleN in range(samples):
@@ -149,9 +148,7 @@ class ClassificationInterpretation():
                                Actual: {actualclasses}, Loss: {infolist[ordlosses_idxs[sampleN]][3]}, 
                                Probability: {infolist[ordlosses_idxs[sampleN]][4]}""")
             plt.show()
-            if save_misclassified:
-                return mismatchescontainer
-            
+            if save_misclassified: return mismatchescontainer
 
     def confusion_matrix(self, slice_size:int=None):
         "Confusion matrix as an `np.ndarray`."
