@@ -331,6 +331,12 @@ def get_model(model:nn.Module):
     "Return the model maybe wrapped inside `model`."
     return model.module if isinstance(model, nn.DataParallel) else model
 
+def squeeze_check(out:Tensor, targ:Tensor) -> Tensor:
+    "Check that `out` and `targ` have the same number of elements and squeeze them."
+    out,targ = out.squeeze(),targ.squeeze()
+    assert len(out) == len(targ), f"Expected output and target to have the same number of elements but got {len(out)} and {len(targ)}."
+    return out,targ
+
 #Monkey-patch nn.DataParallel.reset
 def _data_parallel_reset(self): 
     if hasattr(self.module, 'reset'): self.module.reset()
