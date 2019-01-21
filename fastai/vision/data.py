@@ -142,7 +142,8 @@ class ImageDataBunch(DataBunch):
     @classmethod
     def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, **kwargs):
         "Create from list of `fnames` in `path`."
-        src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct).label_from_list(labels)
+        fname2label = {f:l for (f,l) in zip(fnames, labels)}
+        src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct).label_from_func(lambda x:fname2label[x])
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod

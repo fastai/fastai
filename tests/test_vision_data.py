@@ -27,6 +27,20 @@ def test_from_name_re(path):
     data = ImageDataBunch.from_name_re(path, fnames, pat, ds_tfms=(rand_pad(2, 28), []))
     mnist_tiny_sanity_test(data)
 
+def test_from_lists(path):
+    df = pd.read_csv(path/'labels.csv')
+    fnames = [path/f for f in df['name'].values]
+    labels = df['label'].values
+    data = ImageDataBunch.from_lists(path, fnames, labels)
+    mnist_tiny_sanity_test(data)
+    #Check labels weren't shuffled for the validation set
+    valid_fnames = data.valid_ds.x.items
+    pat = re.compile(r'/([^/]+)/\d+.png$')
+    expected_labels = [int(pat.search(str(o)).group(1)) for o in valid_fnames]
+    current_labels = [int(str(l)) for l in data.valid_ds.y]
+    assert len(expected_labels) == len(current_labels)
+    assert np.all(np.array(expected_labels) == np.array(current_labels))
+    
 def test_from_csv_and_from_df(path):
     for func in ['from_csv', 'from_df']:
         files = []
