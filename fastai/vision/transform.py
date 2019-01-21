@@ -118,7 +118,6 @@ pad = TfmPixel(_pad, order=-10)
 def _cutout(x, n_holes:uniform_int=1, length:uniform_int=40):
     "Cut out `n_holes` number of square holes of size `length` in image at random locations."
     h,w = x.shape[1:]
-    mask = torch.ones([h,w])
     for n in range(n_holes):
         h_y = np.random.randint(0, h)
         h_x = np.random.randint(0, w)
@@ -126,8 +125,7 @@ def _cutout(x, n_holes:uniform_int=1, length:uniform_int=40):
         y2 = int(np.clip(h_y + length / 2, 0, h))
         x1 = int(np.clip(h_x - length / 2, 0, w))
         x2 = int(np.clip(h_x + length / 2, 0, w))
-        mask[y1:y2, x1:x2] = 0
-    x = x * mask
+        x[:, y1:y2, x1:x2] = 0
     return x
 
 cutout = TfmPixel(_cutout, order=20)
