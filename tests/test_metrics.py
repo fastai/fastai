@@ -26,7 +26,6 @@ def test_error_rate(p, t, expect):
 def test_exp_rmspe():
     assert np.isclose(exp_rmspe(torch.ones(1,5), torch.ones(5)).item(), 0)
 
-@pytest.mark.skip(reason="needs fixing")
 def test_exp_rmspe_num_of_ele():
     with pytest.raises(AssertionError):
         exp_rmspe(p1, t1.float())

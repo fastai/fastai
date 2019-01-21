@@ -26,6 +26,8 @@ of that change.
 ### Fixed:
 
 - Bug when loading text data in multi-classification with `TextDataBunch.load`
+- Wrong values for metrics like MSE due to broadcasting errors
+- `ImageDataBunch` doesn't shuffle the valdiation labels anymore
 
 
 ## 1.0.40 (2019-01-17)
