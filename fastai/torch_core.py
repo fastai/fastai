@@ -97,7 +97,7 @@ def to_cpu(b:ItemsList):
 def to_half(b:Collection[Tensor])->Collection[Tensor]:
     "Recursively map lists of tensors in `b ` to FP16."
     if is_listy(b): return [to_half(o) for o in b]
-    return b.half() if b.dtype != torch.int64 else b
+    return b.half() if b.dtype not in [torch.int64, torch.int32, torch.int16] else b
 
 def to_device(b:Tensors, device:torch.device):
     "Recursively put `b` on `device`."
