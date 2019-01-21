@@ -110,7 +110,7 @@ def data_collate(batch:ItemsList)->Tensor:
     return torch.utils.data.dataloader.default_collate(to_data(batch))
 
 def requires_grad(m:nn.Module, b:Optional[bool]=None)->Optional[bool]:
-    "If `b` is not set `requires_grad` on all params in `m`, else return `requires_grad` of first param."
+    "If `b` is not set return `requires_grad` of first param, else set `requires_grad` on all params as `b`"
     ps = list(m.parameters())
     if not ps: return None
     if b is None: return ps[0].requires_grad
