@@ -15,6 +15,8 @@ of that change.
 
 ### New:
 
+- gpu_mem_restore - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
+- gpu_mem_restore_ctx - same as gpu_mem_restore, but a context manager
 - PeakMemMetric callback to profile general and GPU RAM used and peaked by epoch
 
 ### Changed:

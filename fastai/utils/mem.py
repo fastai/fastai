@@ -69,3 +69,14 @@ def gpu_mem_restore(func):
             type, val, tb = get_ref_free_exc_info() # must!
             raise type(val).with_traceback(tb) from None
     return wrapper
+
+# if function decorator is not a good option, use context manager, example:
+# with gpu_mem_restore_ctx():
+#    learn.fit_one_cycle(1,1e-2)
+class gpu_mem_restore_ctx():
+    " context manager to reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    def __enter__(self): return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not exc_val: return True
+        traceback.clear_frames(exc_tb)
+        raise exc_type(exc_val).with_traceback(exc_tb) from None
