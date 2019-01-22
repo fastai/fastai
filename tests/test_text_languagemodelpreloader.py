@@ -34,7 +34,7 @@ def verify_datadirection( bs,seq_len,sentence_len, iterations,minTokens, backwar
         jagged,countTokens = jaggedWithConsecutiveNumbers(bs,sentence_len,iterations,minTokens)
             
         trainIDS = validIDS = jagged
-        db   = TextLMDataBunch.from_ids( ".", None, trainIDS, validIDS, bptt=seq_len, bs=bs)
+        db   = TextLMDataBunch.from_ids( ".", None, trainIDS, validIDS, bptt=seq_len, bs=bs,no_check=True)
         data = LanguageModelPreLoader(db.train_ds, bs=bs, bptt=seq_len, backwards=backwards, shuffle=False)
         dl   = DataLoader(data, bs, shuffle=False)
         batches, countIte = getAllBatches(dl)

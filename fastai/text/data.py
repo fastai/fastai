@@ -24,14 +24,16 @@ class LanguageModelPreLoader(Callback):
         def __len__(self) -> int: return len(self.idx)
         def shuffle(self): np.random.shuffle(self.idx)
 
-    def __init__(self, dataset:LabelList, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
-        self.dataset,self.bs,self.bptt,self.shuffle,self.backwards = dataset,bs,bptt,shuffle,backwards
+    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
+        self.dataset,self.bs,self.bptt,self.shuffle,self.backwards,self.lengths = dataset,bs,bptt,shuffle,backwards,lengths
         self.totalToks, self.ite_len, self.idx = int(0), None, None
 
     def __len__(self): 
         if self.ite_len is None:
-            items = self.dataset.x.items
-            self.totalToks = sum( len(rag) for rag in items )
+            if self.lengths is None:
+                self.lengths = np.zeros(len(self.dataset.x.items),dtype=np.int)
+                for i,item in enumerate(self.dataset.x.items): self.lengths[i] = len(item)
+            self.totalToks = sum( l for l in self.lengths )
             self.ite_len   = self.bs*int( math.ceil( self.totalToks/(self.bptt*self.bs) )) if self.item is None else 1
         return self.ite_len
 
@@ -53,15 +55,14 @@ class LanguageModelPreLoader(Callback):
 
         step = self.totalToks / self.bs
         ln_rag, countTokens, i_rag = 0, 0, -1
-        items, idx = self.dataset.x.items, self.idx
         for i in range(0,self.bs):
             while ln_rag + countTokens <= int(step * i):
                 countTokens += ln_rag
                 i_rag       += 1
-                ln_rag       = len( items[idx[i_rag]] )
+                ln_rag       = self.lengths[self.idx[i_rag]]
             self.ro[i] = i_rag
             self.ri[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
-
+        
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
     def on_epoch_end(self, **kwargs): self.on_epoch_begin()
 
@@ -70,64 +71,28 @@ class LanguageModelPreLoader(Callback):
         if j==0:
             if self.item is not None: return self.dataset[0]
             if self.idx is None: self.on_epoch_begin()
-            self.fill_batch(not self.backwards, self.dataset.x.items, self.idx,self.batch, self.ro, self.ri, overlap=1)
+        self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j], 
+                                              self.ro[j], self.ri[j], overlap=1, lengths=self.lengths)
         return self.x[j], self.y[j]
 
-    def fill_forward(self, items, idx, row, ro, ri, overlap):
-        "fill the row with tokens reading forward in the ragged array. --OBS-- overlap != 1 has not been implemented"
-        ibuf = n = 0 
-        ro  -= 1
-        while ibuf < row.size:  
-            ro   += 1 
-            rag   = items[idx[ro]]
-            ri    = 0 if ibuf else ri
-            n     = min(len(rag) - ri, row.size - ibuf)
-            row[ibuf:ibuf+n] = rag[ri:ri+n]
-            ibuf += n
-        return ro, ri + n-overlap
-
-    def fill_backwards(self, items, idx, row, ro, ri, overlap):
-        "fill the row with tokens reading backwards in the ragged array. --OBS-- overlap != 1 has not been implemented"
-        ibuf = n = 0 
-        ro  -= 1
-        while ibuf < row.size:  
-            ro   += 1 
-            rag   = items[idx[ro]]
-            ri    = len(rag) if ibuf else ri
-            n     = min(ri, row.size - ibuf) 
-            row[ibuf:ibuf+n] = rag[ri-n:ri][::-1]
-            ibuf += n
-        return ro, ri - n+overlap
-
-    def fill_batch(self, forward, items, idx, batch, ro, ri, overlap):
-        if forward:
-            for j,row in enumerate(batch): ro[j],ri[j] = self.fill_forward(items,  idx, row, ro[j], ri[j], overlap)
-        else:
-            for j,row in enumerate(batch): ro[j],ri[j] = self.fill_backwards(items, idx, row, ro[j], ri[j], overlap)
-
-    """
-    def fill_row(self, forward, items, idx, row, ro, ri, overlap):
+    def fill_row(self, forward, items, idx, row, ro, ri, overlap,lengths):
         "fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"
         ibuf = n = 0 
         ro  -= 1
         while ibuf < row.size:  
             ro   += 1 
-            rag   = items[idx[ro]]
+            ix    = idx[ro]
+            rag   = items[ix]
             if forward:
                 ri = 0 if ibuf else ri
-                n  = min(len(rag) - ri, row.size - ibuf)
+                n  = min(lengths[ix] - ri, row.size - ibuf)
                 row[ibuf:ibuf+n] = rag[ri:ri+n]
             else:    
-                ri = len(rag) if ibuf else ri
+                ri = lengths[ix] if ibuf else ri
                 n  = min(ri, row.size - ibuf) 
                 row[ibuf:ibuf+n] = rag[ri-n:ri][::-1]
             ibuf += n
         return ro, ri + ((n-overlap) if forward else -(n-overlap))
-
-    def fill_batch(self, forward, items, idx, batch, ro, ri, overlap):
-        for j,row in enumerate(batch):
-            ro[j],ri[j] = self.fill_row(forward, items, idx, row, ro[j], ri[j], overlap)
-    """
 
 class SortSampler(Sampler):
     "Go through the text data by order of length."
