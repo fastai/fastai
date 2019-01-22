@@ -10,7 +10,7 @@ from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
 from .transform import *
 
-__all__ = ['RNNLearner', 'LanguageLearner', 'RNNLearner', 'convert_weights', 'lm_split',
+__all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'lm_split',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
 
 default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
@@ -92,8 +92,8 @@ class LanguageLearner(RNNLearner):
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
-        self.model.reset()
         for _ in progress_bar(range(n_words), leave=False):
+            self.model.reset()
             xb, yb = self.data.one_item(text)
             res = self.pred_batch(batch=(xb,yb))[0][-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
@@ -150,11 +150,10 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
     if ps is None:  ps = [0.1]
-    ds = data.train_ds
     vocab_size, n_class = len(data.vocab.itos), data.c
     layers = [emb_sz*3] + lin_ftrs + [n_class]
     ps = [dps[4]] + ps
-    model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
+    model = get_rnn_classifier(bptt, max_len, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
     learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
     if pretrained_model is not None:

@@ -66,8 +66,9 @@ class QRNNLayer(nn.Module):
         self.output_gate,self.use_cuda,self.batch_first = output_gate,use_cuda,batch_first
         self.use_cuda = use_cuda
         #One large matmul with concat is faster than N small matmuls and no concat
-        self.linear = nn.Linear(self.window * self.input_size, 
+        self.linear = nn.Linear(self.window * self.input_size,
                                 3 * self.hidden_size if self.output_gate else 2 * self.hidden_size)
+        #self.ln = nn.LayerNorm(3 * self.hidden_size if self.output_gate else 2 * self.hidden_size)
 
     def reset(self):
         # If you are saving the previous value of x, you should call this when starting with a new state
@@ -77,12 +78,13 @@ class QRNNLayer(nn.Module):
         if self.window == 1: source = X
         elif self.window == 2:
             Xm1 = [self.prevX if self.prevX is not None else (X[:,:1] if self.batch_first else X[:1])* 0]
-            if self.batch_first and X.shape[1] > 1:   Xm1.append(X[:,:-1]) 
+            if self.batch_first and X.shape[1] > 1:   Xm1.append(X[:,:-1])
             elif not self.batch_first and len(X) > 1: Xm1.append(X[:-1])
             Xm1 = torch.cat(Xm1, dim = (1 if self.batch_first else 0))
             source = torch.cat([X, Xm1], 2)
         # Matrix multiplication for the three outputs: Z, F, O
         Y = self.linear(source)
+        #Y = self.ln(self.linear(source))
         # Convert the tensor back to (batch, seq_len, len([Z, F, O]) * hidden_size)
         if self.output_gate:
             Y = Y.view(*X.shape[:2], 3 * self.hidden_size)

@@ -3,7 +3,7 @@ from ..torch_core import *
 from .image import *
 from .image import _affine_mult
 
-__all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
+__all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'cutout', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
            'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rotate', 'skew', 'squish',
            'rand_resize_crop', 'symmetric_warp', 'tilt', 'zoom', 'zoom_crop']
 
@@ -114,6 +114,21 @@ def _pad(x, padding:int, mode='reflection'):
     return f_pad(x, padding, mode)
 
 pad = TfmPixel(_pad, order=-10)
+
+def _cutout(x, n_holes:uniform_int=1, length:uniform_int=40):
+    "Cut out `n_holes` number of square holes of size `length` in image at random locations."
+    h,w = x.shape[1:]
+    for n in range(n_holes):
+        h_y = np.random.randint(0, h)
+        h_x = np.random.randint(0, w)
+        y1 = int(np.clip(h_y - length / 2, 0, h))
+        y2 = int(np.clip(h_y + length / 2, 0, h))
+        x1 = int(np.clip(h_x - length / 2, 0, w))
+        x2 = int(np.clip(h_x + length / 2, 0, w))
+        x[:, y1:y2, x1:x2] = 0
+    return x
+
+cutout = TfmPixel(_cutout, order=20)
 
 def _minus_epsilon(row_pct:float, col_pct:float, eps:float=1e-7):
     if row_pct==1.: row_pct -= 1e-7

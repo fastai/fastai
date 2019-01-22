@@ -11,9 +11,47 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
+## 1.0.42.dev0 (Work In Progress)
+
+### New:
+
+- gpu_mem_restore - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
+- gpu_mem_restore_ctx - same as gpu_mem_restore, but a context manager
+- PeakMemMetric callback to profile general and GPU RAM used and peaked by epoch
+- `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
+
+### Changed:
+
+### Fixed:
+
+- any fastai function that internally uses fit() will no longer suffer from
+  unrecoverable 'CUDA out of memory error' and memory leakages triggered by manual
+  interrupt.
+- `DataBunch.show_batch` and `Learner.show_results` show at maximum batch_size elements
+- `DataBunch.show_batch` and `Learner.show_results` handle `rows=1` (thanks to xnutsive)
 
 
-## 1.0.40.dev0 (Work In Progress)
+
+## 1.0.41 (2019-01-22)
+
+### Breaking change:
+
+- `sep` (in ImageDataBunch factory methods) is now called `label_delim`
+
+### New:
+
+### Changed:
+
+- Clearer representation of `FlattenedLoss`
+
+### Fixed:
+
+- Bug when loading text data in multi-classification with `TextDataBunch.load`
+- Wrong values for metrics like MSE due to broadcasting errors
+- `ImageDataBunch` doesn't shuffle the valdiation labels anymore
+
+
+## 1.0.40 (2019-01-17)
 
 ### New:
 
@@ -34,6 +72,9 @@ of that change.
 - Bug in `ImageBBox` when all the targets had the same number of bboxes
 - Default metric in `RNNLearner` is accuracy only for language models or classification tasks
 - Throws a clear error message when trying to use `databunch` on not-split data
+- Fix `flatten_model` that removed parameters not registered in modules
+- Fix behavior of `apply_tfms` with `mult` and output size.
+- Fix bug in `DataBunch.one_item` when doing object detection
 
 ## 1.0.39 (2018-12-28)
 
@@ -81,7 +122,7 @@ of that change.
 - `fastai.launch` module for simplified single-machine multi-GPU training
 - `check_perf` - performance improvement recommendations
 - `distributed` module with helper functions to quickly launch a distributed training
-- temptative use of JIT C++ extensions to code the QRNN with `batch_first` argument, it needs a proper installation 
+- temptative use of JIT C++ extensions to code the QRNN with `batch_first` argument, it needs a proper installation
   of cuda to be compiled at execution time
 
 ### Changed:

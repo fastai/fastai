@@ -56,39 +56,43 @@ def dice(input:Tensor, targs:Tensor, iou:bool=False)->Rank0Tensor:
 
 def exp_rmspe(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Exp RMSE between `pred` and `targ`."
-    assert pred.numel() == targ.numel(), "Expected same numbers of elements in pred & targ"
-    if len(pred.shape)==2: pred=pred.squeeze(1)
+    pred,targ = flatten_check(pred,targ)
     pred, targ = torch.exp(pred), torch.exp(targ)
     pct_var = (targ - pred)/targ
     return torch.sqrt((pct_var**2).mean())
 
 def mean_absolute_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean absolute error between `pred` and `targ`."
+    pred,targ = flatten_check(pred,targ)
     return torch.abs(targ - pred).mean()
  
 def mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared error between `pred` and `targ`."
+    pred,targ = flatten_check(pred,targ)
     return F.mse_loss(pred, targ)
 
 def root_mean_squared_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Root mean squared error between `pred` and `targ`."
+    pred,targ = flatten_check(pred,targ)
     return torch.sqrt(F.mse_loss(pred, targ))
 
 def mean_squared_logarithmic_error(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Mean squared logarithmic error between `pred` and `targ`."
+    pred,targ = flatten_check(pred,targ)
     return F.mse_loss(torch.log(1 + pred), torch.log(1 + targ))
 
 def explained_variance(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "Explained variance between `pred` and `targ`."
+    pred,targ = flatten_check(pred,targ)
     var_pct = torch.var(targ - pred) / torch.var(targ)
     return 1 - var_pct
 
 def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
     "R2 score (coefficient of determination) between `pred` and `targ`."
+    pred,targ = flatten_check(pred,targ)
     u = torch.sum((targ - pred) ** 2)
     d = torch.sum((targ - targ.mean()) ** 2)
     return 1 - u / d
-
 
 class RegMetrics(Callback):
     "Stores predictions and targets to perform calculations on epoch end."
@@ -101,18 +105,22 @@ class RegMetrics(Callback):
         self.targs = torch.cat((self.targs, last_target.cpu()))
 
 class R2Score(RegMetrics):
+    "Compute the R2 score (coefficient of determination)."
     def on_epoch_end(self):
         self.metric = r2_score(self.preds, self.targs)
 
 class ExplainedVariance(RegMetrics):
+    "Compute the explained variance."
     def on_epoch_end(self):
         self.metric = explained_variance(self.preds, self.targs)
 
 class RMSE(RegMetrics):
+    "Compute the root mean squared error."
     def on_epoch_end(self):
         self.metric = root_mean_squared_error(self.preds, self.targs)
 
 class ExpRMSPE(RegMetrics):
+    "Compute the exponential of the root mean square error."
     def on_epoch_end(self):
         self.metric = exp_rmspe(self.preds, self.targs)
 
@@ -195,17 +203,20 @@ class CMScores(ConfusionMatrix):
 
 
 class Recall(CMScores):
+    "Compute the Recall."
     def on_epoch_end(self, **kwargs):
         self.metric = self._recall()
             
 
 class Precision(CMScores):
+    "Compute the Precision."
     def on_epoch_end(self, **kwargs):
         self.metric = self._precision()
             
             
 @dataclass
 class FBeta(CMScores):
+    "Compute the F`beta` score."
     beta:float=2
         
     def on_train_begin(self, **kwargs):
@@ -226,7 +237,7 @@ class FBeta(CMScores):
 
 class KappaScore(ConfusionMatrix):
     """
-    Computes the rate of agreement (Cohens Kappa).
+    Compute the rate of agreement (Cohens Kappa).
     Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
     """
     
@@ -242,7 +253,7 @@ class KappaScore(ConfusionMatrix):
 
 class MatthewsCorreff(ConfusionMatrix):
     """    
-    Computes the Matthews correlation coefficient.
+    Compute the Matthews correlation coefficient.
     Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
     """
 

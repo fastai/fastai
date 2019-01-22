@@ -1492,7 +1492,7 @@ summary: "Image class, variants and internal data augmentation pipeline"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Image.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <b>`do_resolve`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`xtra`</b>:<code>Optional</code>[<code>Dict</code>[<code>Callable</code>, <code>dict</code>]]=<b><i>`None`</i></b>, <b>`size`</b>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>, <code>NoneType</code>]=<b><i>`None`</i></b>, <b>`resize_method`</b>:<a href="/vision.image.html#ResizeMethod"><code>ResizeMethod</code></a>=<b><i>`<ResizeMethod.CROP: 1>`</i></b>, <b>`mult`</b>:<code>int</code>=<b><i>`32`</i></b>, <b>`padding_mode`</b>:<code>str</code>=<b><i>`'reflection'`</i></b>, <b>`mode`</b>:<code>str</code>=<b><i>`'bilinear'`</i></b>, <b>`remove_out`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <code>Tensor</code></p>
+<h4 id="Image.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <b>`do_resolve`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`xtra`</b>:<code>Optional</code>[<code>Dict</code>[<code>Callable</code>, <code>dict</code>]]=<b><i>`None`</i></b>, <b>`size`</b>:<code>Union</code>[<code>int</code>, <code>TensorImageSize</code>, <code>NoneType</code>]=<b><i>`None`</i></b>, <b>`resize_method`</b>:<a href="/vision.image.html#ResizeMethod"><code>ResizeMethod</code></a>=<b><i>`<ResizeMethod.CROP: 1>`</i></b>, <b>`mult`</b>:<code>int</code>=<b><i>`None`</i></b>, <b>`padding_mode`</b>:<code>str</code>=<b><i>`'reflection'`</i></b>, <b>`mode`</b>:<code>str</code>=<b><i>`'bilinear'`</i></b>, <b>`remove_out`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <code>Tensor</code></p>
 </blockquote>
 <p>Apply all <code>tfms</code> to the <a href="/vision.image.html#Image"><code>Image</code></a>, if <code>do_resolve</code> picks value for random args.</p>
 <ul>
@@ -1817,9 +1817,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 </ul>
 <p>This is why all transforms have an attribute (such as <a href="/vision.image.html#TfmAffine"><code>TfmAffine</code></a>, <a href="/vision.image.html#TfmCoord"><code>TfmCoord</code></a>, <a href="/vision.image.html#TfmCrop"><code>TfmCrop</code></a> or <a href="/vision.image.html#TfmPixel"><code>TfmPixel</code></a>) so that the fastai library can regroup them and apply them all together at the right step. In terms of implementation:</p>
 <ul>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L518"><code>_affine_grid</code></a> is reponsible for creating the grid of coordinates</li>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L528"><code>_affine_mult</code></a> is in charge of doing the affine multiplication on that grid</li>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L505"><code>_grid_sample</code></a>is the function that is responsible for the interpolation step</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L525"><code>_affine_grid</code></a> is reponsible for creating the grid of coordinates</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L535"><code>_affine_mult</code></a> is in charge of doing the affine multiplication on that grid</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L512"><code>_grid_sample</code></a>is the function that is responsible for the interpolation step</li>
 </ul>
 
 </div>

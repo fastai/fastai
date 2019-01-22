@@ -206,12 +206,12 @@ class ItemList():
         valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
         return self.split_by_idx(valid_idx)
 
-    def get_label_cls(self, labels, label_cls:Callable=None, sep:str=None, **kwargs):
+    def get_label_cls(self, labels, label_cls:Callable=None, label_delim:str=None, **kwargs):
         "Return `label_cls` or guess one from the first element of `labels`."
         if label_cls is not None:               return label_cls
         if self.label_cls is not None:          return self.label_cls
         it = index_row(labels,0)
-        if sep is not None:                     return MultiCategoryList
+        if label_delim is not None:             return MultiCategoryList
         if isinstance(it, (float, np.float32)): return FloatList
         if isinstance(try_int(it), (str,numbers.Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList
@@ -229,7 +229,7 @@ class ItemList():
         "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
         assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
-        if is_listy(cols) and len(cols) > 1 and 'label_cls' not in kwargs: 
+        if is_listy(cols) and len(cols) > 1 and ('label_cls' not in kwargs or kwargs['label_cls'] == MultiCategoryList): 
             new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
             kwargs = {**new_kwargs, **kwargs}
         return self.label_from_list(labels, **kwargs)
@@ -312,7 +312,7 @@ class CategoryListBase(ItemList):
 class CategoryList(CategoryListBase):
     "Basic `ItemList` for single classification labels."
     _processor=CategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, **kwargs):
+    def __init__(self, items:Iterator, classes:Collection=None, label_delim:str=None, **kwargs):
         super().__init__(items, classes=classes, **kwargs)
         self.loss_func = CrossEntropyFlat()
 
@@ -352,8 +352,8 @@ class MultiCategoryProcessor(CategoryProcessor):
 class MultiCategoryList(CategoryListBase):
     "Basic `ItemList` for multi-classification labels."
     _processor=MultiCategoryProcessor
-    def __init__(self, items:Iterator, classes:Collection=None, sep:str=None, one_hot:bool=False, **kwargs):
-        if sep is not None: items = array(csv.reader(items.astype(str), delimiter=sep))
+    def __init__(self, items:Iterator, classes:Collection=None, label_delim:str=None, one_hot:bool=False, **kwargs):
+        if label_delim is not None: items = array(csv.reader(items.astype(str), delimiter=label_delim))
         super().__init__(items, classes=classes, **kwargs)
         if one_hot: 
             assert classes is not None, "Please provide class names with `classes=...`"
@@ -562,7 +562,7 @@ class LabelList(Dataset):
         if isinstance(idxs, numbers.Integral):
             if self.item is None: x,y = self.x[idxs],self.y[idxs]
             else:                 x,y = self.item   ,0
-            if self.tfms:
+            if self.tfms or self.tfmargs:
                 x = x.apply_tfms(self.tfms, **self.tfmargs)
             if hasattr(self, 'tfms_y') and self.tfm_y and self.item is None:
                 y = y.apply_tfms(self.tfms_y, **{**self.tfmargs_y, 'do_resolve':False})
@@ -597,7 +597,8 @@ class LabelList(Dataset):
         return cls.load_state(pickle.load(open(fn, 'rb')))
     
     @classmethod
-    def load_state(cls, state:dict):
+    def load_state(cls, state:dict) -> 'LabelList':
+        "Create a `LabelList` from `state`."
         x = state['x_cls']([], path=state['path'], processor=state['x_proc'], ignore_empty=True)
         y = state['y_cls']([], path=state['path'], processor=state['y_proc'], ignore_empty=True)
         res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()

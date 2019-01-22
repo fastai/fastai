@@ -3,6 +3,7 @@ from .torch_core import *
 from .basic_data import *
 from .callback import *
 from .data_block import *
+from .utils.mem import gpu_mem_restore
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
@@ -68,9 +69,12 @@ def train_epoch(model:nn.Module, dl:DataLoader, opt:optim.Optimizer, loss_func:L
         opt.step()
         opt.zero_grad()
 
+@gpu_mem_restore
 def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer,
         data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss_func` and `opt`."
+    assert len(data.train_dl) != 0, f"""Your training dataloader is empty, can't train a model.
+        Use a smaller batch size (batch size={data.train_dl.batch_size} for {len(data.train_dl.dataset)} elements)."""
     cb_handler = CallbackHandler(callbacks, metrics)
     pbar = master_bar(range(epochs))
     cb_handler.on_train_begin(epochs, pbar=pbar, metrics=metrics)
@@ -200,14 +204,15 @@ class Learner():
         "Unfreeze entire model."
         self.freeze_to(0)
         self.create_opt(defaults.lr)
-        
+
     def export(self, fname:str='export.pkl'):
+        "Export the state of the `Learner` in `self.path/fname`."
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
-        state['model'] = self.model 
+        state['model'] = self.model
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
@@ -298,7 +303,8 @@ class Learner():
         "Show `rows` result of predictions on `ds_type` dataset."
         #TODO: get read of has_arg x and split_kwargs_by_func if possible
         #TODO: simplify this and refactor with pred_batch(...reconstruct=True)
-        if self.data.train_ds.x._square_show_res: rows = rows ** 2
+        n_items = rows ** 2 if self.data.train_ds.x._square_show_res else rows
+        if self.dl(ds_type).batch_size < n_items: n_items = self.dl(ds_type).batch_size
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
@@ -311,13 +317,13 @@ class Learner():
                 y     = self.data.denorm(y, do_x=True)
                 preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
-        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
-        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
+        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(n_items)]
+        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(n_items)]
         if has_arg(ds.y.reconstruct, 'x'):
             ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
             zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
         else :
-            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
+            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
             zs = [ds.y.reconstruct(z) for z in preds]
         ds.x.show_xyzs(xs, ys, zs, **kwargs)
 
@@ -328,11 +334,11 @@ class RecordOnCPU(Callback):
 
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
-    def __init__(self, learn): 
+    def __init__(self, learn):
         self._learn = weakref.ref(learn)
         self.exclude,self.not_min = ['_learn'],[]
         setattr(self.learn, self.cb_name, self)
-    
+
     def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
@@ -455,10 +461,10 @@ def load_callback(class_func, state, learn:Learner):
     res = class_func(learn, **init_kwargs) if issubclass(class_func, LearnerCallback) else class_func(**init_kwargs)
     for k,v in others.items(): setattr(res, k, v)
     return res
-    
+
 def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
-    state = pickle.load(open(path/fname, 'rb'))
+    state = pickle.load(open(Path(path)/fname, 'rb'))
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)

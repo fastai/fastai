@@ -75,7 +75,6 @@ def test_vocabs(learn):
         assert len(learn.data.train_ds.vocab.itos) == len(ds.vocab.itos)
         assert np.all(learn.data.train_ds.vocab.itos == ds.vocab.itos)
 
-@pytest.mark.skip(reason="need to update")
 def text_df(n_labels):
     data = []
     texts = ["fast ai is a cool project", "hello world"]

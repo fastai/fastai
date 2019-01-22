@@ -385,7 +385,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span><span class="n">planet</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">label_delim</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
     <span class="n">ds_tfms</span><span class="o">=</span><span class="n">get_transforms</span><span class="p">(</span><span class="n">flip_vert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_lighting</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mf">1.05</span><span class="p">,</span> <span class="n">max_warp</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 </pre></div>
 
@@ -430,7 +430,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ImageDataBunch"><code>class</code> <code>ImageDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L95" class="source_link">[source]</a></h2><blockquote><p><code>ImageDataBunch</code>(<b>`train_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <b>`valid_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <b>`fix_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<b><i>`None`</i></b>, <b>`test_dl`</b>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<b><i>`None`</i></b>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`tfms`</b>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`collate_fn`</b>:<code>Callable</code>=<b><i>`'data_collate'`</i></b>, <b>`no_check`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h2 id="ImageDataBunch"><code>class</code> <code>ImageDataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L97" class="source_link">[source]</a></h2><blockquote><p><code>ImageDataBunch</code>(<b>`train_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <b>`valid_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <b>`fix_dl`</b>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<b><i>`None`</i></b>, <b>`test_dl`</b>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<b><i>`None`</i></b>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`dl_tfms`</b>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`collate_fn`</b>:<code>Callable</code>=<b><i>`'data_collate'`</i></b>, <b>`no_check`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 <p>DataBunch suitable for computer vision.</p>
 
@@ -471,7 +471,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`train`</b>:<code>PathOrStr</code>=<b><i>`'train'`</i></b>, <b>`valid`</b>:<code>PathOrStr</code>=<b><i>`'valid'`</i></b>, <b>`valid_pct`</b>=<b><i>`None`</i></b>, <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L112" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`train`</b>:<code>PathOrStr</code>=<b><i>`'train'`</i></b>, <b>`valid`</b>:<code>PathOrStr</code>=<b><i>`'valid'`</i></b>, <b>`valid_pct`</b>=<b><i>`None`</i></b>, <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create from imagenet style dataset in <code>path</code> with <code>train</code>,<code>valid</code>,<code>test</code> subfolders (or provide <code>valid_pct</code>).</p>
 
@@ -531,7 +531,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_csv"><code>from_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L131" class="source_link">[source]</a></h4><blockquote><p><code>from_csv</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`folder`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`sep`</b>=<b><i>`None`</i></b>, <b>`csv_labels`</b>:<code>PathOrStr</code>=<b><i>`'labels.csv'`</i></b>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`fn_col`</b>:<code>int</code>=<b><i>`0`</i></b>, <b>`label_col`</b>:<code>int</code>=<b><i>`1`</i></b>, <b>`suffix`</b>:<code>str</code>=<b><i>`''`</i></b>, <b>`header`</b>:<code>Union</code>[<code>int</code>, <code>str</code>, <code>NoneType</code>]=<b><i>`'infer'`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.from_csv"><code>from_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>from_csv</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`folder`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`label_delim`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`csv_labels`</b>:<code>PathOrStr</code>=<b><i>`'labels.csv'`</i></b>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`fn_col`</b>:<code>int</code>=<b><i>`0`</i></b>, <b>`label_col`</b>:<code>int</code>=<b><i>`1`</i></b>, <b>`suffix`</b>:<code>str</code>=<b><i>`''`</i></b>, <b>`header`</b>:<code>Union</code>[<code>int</code>, <code>str</code>, <code>NoneType</code>]=<b><i>`'infer'`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create from a csv file in <code>path/csv_labels</code>.</p>
 
@@ -545,8 +545,8 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> from <code>path</code> by splitting the data in <code>folder</code> and labelled in a file <code>csv_labels</code> between a training and validation set. Use <code>valid_pct</code> to indicate the percentage of the total images for the validation set. An optional <code>test</code> folder contains unlabelled data and <code>suffix</code> contains an optional suffix to add to the filenames in <code>csv_labels</code> (such as '.jpg'). 
-For example:</p>
+<p>Create <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> from <code>path</code> by splitting the data in <code>folder</code> and labelled in a file <code>csv_labels</code> between a training and validation set. Use <code>valid_pct</code> to indicate the percentage of the total images for the validation set. An optional <code>test</code> folder contains unlabelled data and <code>suffix</code> contains an optional suffix to add to the filenames in <code>csv_labels</code> (such as '.jpg'). <code>fn_col</code> is the number (or the name) of the the column containing the filenames and <code>label_col</code> is the number(s) (or the name(s)) of the column containing the labels. If <code>label_delim</code> is passed, split what's in the label column according to that separator.</p>
+<p>For example:</p>
 
 </div>
 </div>
@@ -573,7 +573,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`df`</b>:<code>DataFrame</code>, <b>`folder`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`sep`</b>=<b><i>`None`</i></b>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`fn_col`</b>:<code>IntsOrStrs</code>=<b><i>`0`</i></b>, <b>`label_col`</b>:<code>IntsOrStrs</code>=<b><i>`1`</i></b>, <b>`suffix`</b>:<code>str</code>=<b><i>`''`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`df`</b>:<code>DataFrame</code>, <b>`folder`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`label_delim`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`fn_col`</b>:<code>IntsOrStrs</code>=<b><i>`0`</i></b>, <b>`label_col`</b>:<code>IntsOrStrs</code>=<b><i>`1`</i></b>, <b>`suffix`</b>:<code>str</code>=<b><i>`''`</i></b>, <b>`kwargs`</b>:<code>Any</code>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create from a <code>DataFrame</code> <code>df</code>.</p>
 
@@ -706,7 +706,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_name_re"><code>from_name_re</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L153" class="source_link">[source]</a></h4><blockquote><p><code>from_name_re</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fnames`</b>:<code>FilePathList</code>, <b>`pat`</b>:<code>str</code>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ImageDataBunch.from_name_re"><code>from_name_re</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L155" class="source_link">[source]</a></h4><blockquote><p><code>from_name_re</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fnames`</b>:<code>FilePathList</code>, <b>`pat`</b>:<code>str</code>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code> with re expression <code>pat</code>.</p>
 
@@ -808,7 +808,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_name_func"><code>from_name_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>from_name_func</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fnames`</b>:<code>FilePathList</code>, <b>`label_func`</b>:<code>Callable</code>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ImageDataBunch.from_name_func"><code>from_name_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L149" class="source_link">[source]</a></h4><blockquote><p><code>from_name_func</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fnames`</b>:<code>FilePathList</code>, <b>`label_func`</b>:<code>Callable</code>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code> with <code>label_func</code>.</p>
 
@@ -868,7 +868,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.from_lists"><code>from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>from_lists</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fnames`</b>:<code>FilePathList</code>, <b>`labels`</b>:<code>StrList</code>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ImageDataBunch.from_lists"><code>from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L142" class="source_link">[source]</a></h4><blockquote><p><code>from_lists</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fnames`</b>:<code>FilePathList</code>, <b>`labels`</b>:<code>StrList</code>, <b>`valid_pct`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create from list of <code>fnames</code> in <code>path</code>.</p>
 
@@ -928,7 +928,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.create_from_ll"><code>create_from_ll</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L99" class="source_link">[source]</a></h4><blockquote><p><code>create_from_ll</code>(<b>`lls`</b>:<a href="/data_block.html#LabelLists"><code>LabelLists</code></a>, <b>`bs`</b>:<code>int</code>=<b><i>`64`</i></b>, <b>`ds_tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>], <code>NoneType</code>]=<b><i>`None`</i></b>, <b>`num_workers`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`tfms`</b>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`test`</b>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<b><i>`None`</i></b>, <b>`collate_fn`</b>:<code>Callable</code>=<b><i>`'data_collate'`</i></b>, <b>`size`</b>:<code>int</code>=<b><i>`None`</i></b>, <b>`no_check`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) → <code>ImageDataBunch</code></p>
+<h4 id="ImageDataBunch.create_from_ll"><code>create_from_ll</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>create_from_ll</code>(<b>`lls`</b>:<a href="/data_block.html#LabelLists"><code>LabelLists</code></a>, <b>`bs`</b>:<code>int</code>=<b><i>`64`</i></b>, <b>`ds_tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>], <code>NoneType</code>]=<b><i>`None`</i></b>, <b>`num_workers`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`dl_tfms`</b>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`device`</b>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<b><i>`None`</i></b>, <b>`test`</b>:<code>Union</code>[<code>Path</code>, <code>str</code>, <code>NoneType</code>]=<b><i>`None`</i></b>, <b>`collate_fn`</b>:<code>Callable</code>=<b><i>`'data_collate'`</i></b>, <b>`size`</b>:<code>int</code>=<b><i>`None`</i></b>, <b>`no_check`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> from <a href="/data_block.html#LabelLists"><code>LabelLists</code></a> <code>lls</code> with potential <code>ds_tfms</code>.</p>
 
@@ -956,7 +956,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.single_from_classes"><code>single_from_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L160" class="source_link">[source]</a></h4><blockquote><p><code>single_from_classes</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`classes`</b>:<code>StrList</code>, <b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ImageDataBunch.single_from_classes"><code>single_from_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L162" class="source_link">[source]</a></h4><blockquote><p><code>single_from_classes</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`classes`</b>:<code>StrList</code>, <b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Create an empty <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> in <code>path</code> with <code>classes</code>. Typically used for inference.</p>
 
@@ -1037,7 +1037,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="channel_view"><code>channel_view</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L91" class="source_link">[source]</a></h4><blockquote><p><code>channel_view</code>(<b>`x`</b>:<code>Tensor</code>) → <code>Tensor</code></p>
+<h4 id="channel_view"><code>channel_view</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L93" class="source_link">[source]</a></h4><blockquote><p><code>channel_view</code>(<b>`x`</b>:<code>Tensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Make channel the first axis of <code>x</code> and flatten remaining axes</p>
 
@@ -1178,7 +1178,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.batch_stats"><code>batch_stats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L166" class="source_link">[source]</a></h4><blockquote><p><code>batch_stats</code>(<b>`funcs`</b>:<code>Collection</code>[<code>Callable</code>]=<b><i>`None`</i></b>) → <code>Tensor</code></p>
+<h4 id="ImageDataBunch.batch_stats"><code>batch_stats</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L170" class="source_link">[source]</a></h4><blockquote><p><code>batch_stats</code>(<b>`funcs`</b>:<code>Collection</code>[<code>Callable</code>]=<b><i>`None`</i></b>) → <code>Tensor</code></p>
 </blockquote>
 <p>Grab a batch of data and call reduction function <code>func</code> per channel</p>
 
@@ -1228,7 +1228,7 @@ For example:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageDataBunch.normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L172" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<b>`stats`</b>:<code>Collection</code>[<code>Tensor</code>]=<b><i>`None`</i></b>, <b>`do_x`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`do_y`</b>:<code>bool</code>=<b><i>`False`</i></b>)</p>
+<h4 id="ImageDataBunch.normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L176" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<b>`stats`</b>:<code>Collection</code>[<code>Tensor</code>]=<b><i>`None`</i></b>, <b>`do_x`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`do_y`</b>:<code>bool</code>=<b><i>`False`</i></b>)</p>
 </blockquote>
 <p>Add normalize transform using <code>stats</code> (defaults to <code>DataBunch.batch_stats</code>)</p>
 
@@ -1345,7 +1345,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L65" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<b>`x`</b>:<code>Tensor</code>, <b>`mean`</b>:<code>FloatTensor</code>, <b>`std`</b>:<code>FloatTensor</code>) → <code>Tensor</code></p>
+<h4 id="normalize"><code>normalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L67" class="source_link">[source]</a></h4><blockquote><p><code>normalize</code>(<b>`x`</b>:<code>Tensor</code>, <b>`mean`</b>:<code>FloatTensor</code>, <b>`std`</b>:<code>FloatTensor</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Normalize <code>x</code> with <code>mean</code> and <code>std</code>.</p>
 
@@ -1366,7 +1366,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="denormalize"><code>denormalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L69" class="source_link">[source]</a></h4><blockquote><p><code>denormalize</code>(<b>`x`</b>:<code>Tensor</code>, <b>`mean`</b>:<code>FloatTensor</code>, <b>`std`</b>:<code>FloatTensor</code>, <b>`do_x`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <code>Tensor</code></p>
+<h4 id="denormalize"><code>denormalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L71" class="source_link">[source]</a></h4><blockquote><p><code>denormalize</code>(<b>`x`</b>:<code>Tensor</code>, <b>`mean`</b>:<code>FloatTensor</code>, <b>`std`</b>:<code>FloatTensor</code>, <b>`do_x`</b>:<code>bool</code>=<b><i>`True`</i></b>) → <code>Tensor</code></p>
 </blockquote>
 <p>Denormalize <code>x</code> with <code>mean</code> and <code>std</code>.</p>
 
@@ -1387,7 +1387,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="normalize_funcs"><code>normalize_funcs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L81" class="source_link">[source]</a></h4><blockquote><p><code>normalize_funcs</code>(<b>`mean`</b>:<code>FloatTensor</code>, <b>`std`</b>:<code>FloatTensor</code>, <b>`do_x`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`do_y`</b>:<code>bool</code>=<b><i>`False`</i></b>) → <code>Tuple</code>[<code>Callable</code>, <code>Callable</code>]</p>
+<h4 id="normalize_funcs"><code>normalize_funcs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>normalize_funcs</code>(<b>`mean`</b>:<code>FloatTensor</code>, <b>`std`</b>:<code>FloatTensor</code>, <b>`do_x`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`do_y`</b>:<code>bool</code>=<b><i>`False`</i></b>) → <code>Tuple</code>[<code>Callable</code>, <code>Callable</code>]</p>
 </blockquote>
 <p>Create normalize/denormalize func using <code>mean</code> and <code>std</code>, can specify <code>do_y</code> and <code>device</code>.</p>
 
@@ -1519,7 +1519,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageItemList"><code>class</code> <code>ImageItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L254" class="source_link">[source]</a></h3><blockquote><p><code>ImageItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+<h3 id="ImageItemList"><code>class</code> <code>ImageItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L258" class="source_link">[source]</a></h3><blockquote><p><code>ImageItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> suitable for computer vision.</p>
 
@@ -1547,7 +1547,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageItemList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L273" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`extensions`</b>:<code>StrList</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+<h4 id="ImageItemList.from_folder"><code>from_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L277" class="source_link">[source]</a></h4><blockquote><p><code>from_folder</code>(<b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`extensions`</b>:<code>StrList</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
 <p>Get the list of files in <code>path</code> that have an image suffix. <code>recurse</code> determines if we search subfolders.</p>
 
@@ -1568,7 +1568,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageItemList.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L279" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<b>`df`</b>:<code>DataFrame</code>, <b>`path`</b>:<code>PathOrStr</code>, <b>`cols`</b>:<code>IntsOrStrs</code>=<b><i>`0`</i></b>, <b>`folder`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`suffix`</b>:<code>str</code>=<b><i>`''`</i></b>, <b>`kwargs`</b>) → <code>ItemList</code></p>
+<h4 id="ImageItemList.from_df"><code>from_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L283" class="source_link">[source]</a></h4><blockquote><p><code>from_df</code>(<b>`df`</b>:<code>DataFrame</code>, <b>`path`</b>:<code>PathOrStr</code>, <b>`cols`</b>:<code>IntsOrStrs</code>=<b><i>`0`</i></b>, <b>`folder`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`suffix`</b>:<code>str</code>=<b><i>`''`</i></b>, <b>`kwargs`</b>) → <code>ItemList</code></p>
 </blockquote>
 <p>Get the filenames in <code>col</code> of <code>df</code> and will had <code>path/folder</code> in front of them, <code>suffix</code> at the end.</p>
 
@@ -1610,7 +1610,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageItemList.open"><code>open</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L263" class="source_link">[source]</a></h4><blockquote><p><code>open</code>(<b>`fn`</b>)</p>
+<h4 id="ImageItemList.open"><code>open</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L267" class="source_link">[source]</a></h4><blockquote><p><code>open</code>(<b>`fn`</b>)</p>
 </blockquote>
 <p>Open image in <code>fn</code>, subclass and overwrite for custom behavior.</p>
 
@@ -1631,7 +1631,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L298" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<b>`xs`</b>, <b>`ys`</b>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ImageItemList.show_xys"><code>show_xys</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L302" class="source_link">[source]</a></h4><blockquote><p><code>show_xys</code>(<b>`xs`</b>, <b>`ys`</b>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Show the <code>xs</code> (inputs) and <code>ys</code> (targets) on a figure of <code>figsize</code>.</p>
 
@@ -1652,7 +1652,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ImageItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L306" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<b>`xs`</b>, <b>`ys`</b>, <b>`zs`</b>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ImageItemList.show_xyzs"><code>show_xyzs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L310" class="source_link">[source]</a></h4><blockquote><p><code>show_xyzs</code>(<b>`xs`</b>, <b>`ys`</b>, <b>`zs`</b>, <b>`imgsize`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`figsize`</b>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Show <code>xs</code> (inputs), <code>ys</code> (targets) and <code>zs</code> (predictions) on a figure of <code>figsize</code>.</p>
 
@@ -1673,7 +1673,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ObjectCategoryList"><code>class</code> <code>ObjectCategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L347" class="source_link">[source]</a></h3><blockquote><p><code>ObjectCategoryList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`sep`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`one_hot`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#MultiCategoryList"><code>MultiCategoryList</code></a></p>
+<h3 id="ObjectCategoryList"><code>class</code> <code>ObjectCategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L351" class="source_link">[source]</a></h3><blockquote><p><code>ObjectCategoryList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`label_delim`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`one_hot`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#MultiCategoryList"><code>MultiCategoryList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> for labelled bounding boxes.</p>
 
@@ -1694,7 +1694,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ObjectItemList"><code>class</code> <code>ObjectItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L363" class="source_link">[source]</a></h3><blockquote><p><code>ObjectItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="ObjectItemList"><code>class</code> <code>ObjectItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L367" class="source_link">[source]</a></h3><blockquote><p><code>ObjectItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> suitable for object detection.</p>
 
@@ -1715,7 +1715,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SegmentationItemList"><code>class</code> <code>SegmentationItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L384" class="source_link">[source]</a></h3><blockquote><p><code>SegmentationItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="SegmentationItemList"><code>class</code> <code>SegmentationItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L388" class="source_link">[source]</a></h3><blockquote><p><code>SegmentationItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> suitable for segmentation tasks.</p>
 
@@ -1736,7 +1736,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SegmentationLabelList"><code>class</code> <code>SegmentationLabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L372" class="source_link">[source]</a></h3><blockquote><p><code>SegmentationLabelList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="SegmentationLabelList"><code>class</code> <code>SegmentationLabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L376" class="source_link">[source]</a></h3><blockquote><p><code>SegmentationLabelList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> for segmentation masks.</p>
 
@@ -1757,7 +1757,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PointsLabelList"><code>class</code> <code>PointsLabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L393" class="source_link">[source]</a></h3><blockquote><p><code>PointsLabelList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`label_cls`</b>:<code>Callable</code>=<b><i>`None`</i></b>, <b>`xtra`</b>:<code>Any</code>=<b><i>`None`</i></b>, <b>`processor`</b>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<b><i>`None`</i></b>, <b>`x`</b>:<code>ItemList</code>=<b><i>`None`</i></b>, <b>`ignore_empty`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+<h3 id="PointsLabelList"><code>class</code> <code>PointsLabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L397" class="source_link">[source]</a></h3><blockquote><p><code>PointsLabelList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`path`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`label_cls`</b>:<code>Callable</code>=<b><i>`None`</i></b>, <b>`xtra`</b>:<code>Any</code>=<b><i>`None`</i></b>, <b>`processor`</b>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<b><i>`None`</i></b>, <b>`x`</b>:<code>ItemList</code>=<b><i>`None`</i></b>, <b>`ignore_empty`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> for points.</p>
 
@@ -1778,7 +1778,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PointsItemList"><code>class</code> <code>PointsItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L406" class="source_link">[source]</a></h3><blockquote><p><code>PointsItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="PointsItemList"><code>class</code> <code>PointsItemList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L410" class="source_link">[source]</a></h3><blockquote><p><code>PointsItemList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> for <a href="/vision.image.html#Image"><code>Image</code></a> to <a href="/vision.image.html#ImagePoints"><code>ImagePoints</code></a> tasks.</p>
 
@@ -1799,7 +1799,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ImageImageList"><code>class</code> <code>ImageImageList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L410" class="source_link">[source]</a></h3><blockquote><p><code>ImageImageList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
+<h3 id="ImageImageList"><code>class</code> <code>ImageImageList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L414" class="source_link">[source]</a></h3><blockquote><p><code>ImageImageList</code>(<b>`args`</b>, <b>`convert_mode`</b>=<b><i>`'RGB'`</i></b>, <b>`kwargs`</b>) :: <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> suitable for <a href="/vision.image.html#Image"><code>Image</code></a> to <a href="/vision.image.html#Image"><code>Image</code></a> tasks.</p>
 
@@ -1833,7 +1833,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_images"><code>download_images</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L190" class="source_link">[source]</a></h4><blockquote><p><code>download_images</code>(<b>`urls`</b>:<code>StrList</code>, <b>`dest`</b>:<code>PathOrStr</code>, <b>`max_pics`</b>:<code>int</code>=<b><i>`1000`</i></b>, <b>`max_workers`</b>:<code>int</code>=<b><i>`8`</i></b>, <b>`timeout`</b>=<b><i>`4`</i></b>)</p>
+<h4 id="download_images"><code>download_images</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L194" class="source_link">[source]</a></h4><blockquote><p><code>download_images</code>(<b>`urls`</b>:<code>StrList</code>, <b>`dest`</b>:<code>PathOrStr</code>, <b>`max_pics`</b>:<code>int</code>=<b><i>`1000`</i></b>, <b>`max_workers`</b>:<code>int</code>=<b><i>`8`</i></b>, <b>`timeout`</b>=<b><i>`4`</i></b>)</p>
 </blockquote>
 <p>Download images listed in text file <code>urls</code> to path <code>dest</code>, at most <code>max_pics</code></p>
 
@@ -1854,7 +1854,7 @@ Test: None</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="verify_images"><code>verify_images</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L241" class="source_link">[source]</a></h4><blockquote><p><code>verify_images</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`delete`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`max_workers`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`max_size`</b>:<code>int</code>=<b><i>`None`</i></b>, <b>`dest`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`n_channels`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`interp`</b>=<b><i>`2`</i></b>, <b>`ext`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`img_format`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`resume`</b>:<code>bool</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="verify_images"><code>verify_images</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/data.py#L245" class="source_link">[source]</a></h4><blockquote><p><code>verify_images</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`delete`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`max_workers`</b>:<code>int</code>=<b><i>`4`</i></b>, <b>`max_size`</b>:<code>int</code>=<b><i>`None`</i></b>, <b>`dest`</b>:<code>PathOrStr</code>=<b><i>`'.'`</i></b>, <b>`n_channels`</b>:<code>int</code>=<b><i>`3`</i></b>, <b>`interp`</b>=<b><i>`2`</i></b>, <b>`ext`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`img_format`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`resume`</b>:<code>bool</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Check if the images in <code>path</code> aren't broken, maybe resize them and copy it in <code>dest</code>.</p>
 

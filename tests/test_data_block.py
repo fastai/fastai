@@ -55,7 +55,7 @@ def test_multi_category():
     l1 = ItemList.from_df(df, cols=0)
     sd = l1.split_by_idx([2,4])
 
-    ll = sd.label_from_df(1, sep=' ')
+    ll = sd.label_from_df(1, label_delim=' ')
     x,y = ll.train.x,ll.train.y
     c2i = {v:k for k,v in enumerate(ll.train.classes)}
 

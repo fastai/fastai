@@ -162,6 +162,7 @@ class TextDataBunch(DataBunch):
         src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
                         TextList(valid_ids, vocab, path=path, processor=[]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
+        if not is1d(train_lbls): src.train.y.one_hot,src.valid.y.one_hot = True,True
         if test_ids is not None: src.add_test(TextList(test_ids, vocab, path=path), label=train_lbls[0])
         src.valid.x.processor = ifnone(processor, [TokenizeProcessor(), NumericalizeProcessor(vocab=vocab)])
         return src.databunch(**kwargs)
@@ -200,7 +201,8 @@ class TextDataBunch(DataBunch):
         if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
-        src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_df(cols=label_cols, classes=classes, sep=label_delim)
+        if cls==TextLMDataBunch: src = src.label_for_lm() 
+        else: src = src.label_from_df(cols=label_cols, classes=classes, label_delim=label_delim)
         if test_df is not None: src.add_test(TextList.from_df(test_df, path, cols=text_cols))
         return src.databunch(**kwargs)
 
@@ -234,14 +236,14 @@ class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, num_workers:int=0,
-               device:torch.device=None, collate_fn:Callable=data_collate, tfms:Optional[Collection[Callable]]=None, 
+               device:torch.device=None, collate_fn:Callable=data_collate, dl_tfms:Optional[Collection[Callable]]=None, 
                **kwargs) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        datasets = [LanguageModelPreLoader(ds, bs=bs, **kwargs) for i,ds in enumerate(datasets)]
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), drop_last=(i==0), bs=bs, **kwargs) for i,ds in enumerate(datasets)]
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
-        return cls(*dls, path=path, device=device, tfms=tfms, collate_fn=collate_fn, no_check=no_check)
+        return cls(*dls, path=path, device=device, dl_tfms=dl_tfms, collate_fn=collate_fn, no_check=no_check)
     
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
