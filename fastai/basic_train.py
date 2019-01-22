@@ -216,7 +216,7 @@ class Learner():
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
-        pickle.dump(state, open(self.path/fname, 'wb'))
+        torch.save(state, open(self.path/fname, 'wb'))
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
@@ -462,9 +462,9 @@ def load_callback(class_func, state, learn:Learner):
     for k,v in others.items(): setattr(res, k, v)
     return res
 
-def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
+def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, map_location=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
-    state = pickle.load(open(Path(path)/fname, 'rb'))
+    state = torch.load(open(Path(path)/fname, 'rb'), map_location=map_location)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)
