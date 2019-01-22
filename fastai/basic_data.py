@@ -207,7 +207,8 @@ class DataBunch():
         final_message = "You can deactivate this warning by passing `no_check=True`."
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
         if len(self.train_dl) == 0: 
-            warn(f"Your training dataloader is empty, you have only {len(self.train_dl.dataset)} items in your training set")
+            warn(f"""Your training dataloader is empty, you have only {len(self.train_dl.dataset)} items in your training set.
+                 Your batch size is {self.train_dl.batch_size}, you should lower it.""")
             print(final_message)
             return
         idx = next(iter(self.train_dl.batch_sampler))
