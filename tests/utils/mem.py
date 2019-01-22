@@ -23,3 +23,23 @@ def gpu_mem_consume_16mb(): return gpu_mem_consume_some(2000)
 def gpu_cache_clear(): torch.cuda.empty_cache()
 def gpu_mem_reclaim(): gc.collect(); gpu_cache_clear()
 def gpu_mem_get_used(): return gpu_mem_get().used
+def gpu_mem_get_free(): return gpu_mem_get().free
+
+def gpu_mem_allocate_mbs(n):
+    " allocate n MBs, return the var holding it on success, None on failure "
+    try:
+        d = int(2**9*n**0.5)
+        return torch.ones((d, d)).cuda().contiguous()
+    except:
+        return None
+
+# this is very useful if the test needs to hit OOM, so this function will leave
+# just the requested amount of GPU free, regardless of GPU utilization or size
+# of the card
+def gpu_mem_leave_free_mbs(n):
+    " consume whatever memory is needed so that n MBs are left free "
+    avail = gpu_mem_get_free()
+    assert avail > n, f"already have less available mem than desired {n}MBs"
+    consume = avail - n
+    #print(f"consuming {consume}MB to bring free mem to {n}MBs")
+    return gpu_mem_allocate_mbs(consume, fatal=True)
