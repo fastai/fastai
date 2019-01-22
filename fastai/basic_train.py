@@ -3,6 +3,7 @@ from .torch_core import *
 from .basic_data import *
 from .callback import *
 from .data_block import *
+from .utils.mem import gpu_mem_restore
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
@@ -68,6 +69,7 @@ def train_epoch(model:nn.Module, dl:DataLoader, opt:optim.Optimizer, loss_func:L
         opt.step()
         opt.zero_grad()
 
+@gpu_mem_restore
 def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer,
         data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss_func` and `opt`."
@@ -200,7 +202,7 @@ class Learner():
         "Unfreeze entire model."
         self.freeze_to(0)
         self.create_opt(defaults.lr)
-        
+
     def export(self, fname:str='export.pkl'):
         "Export the state of the `Learner` in `self.path/fname`."
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
@@ -208,7 +210,7 @@ class Learner():
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
-        state['model'] = self.model 
+        state['model'] = self.model
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
@@ -329,11 +331,11 @@ class RecordOnCPU(Callback):
 
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
-    def __init__(self, learn): 
+    def __init__(self, learn):
         self._learn = weakref.ref(learn)
         self.exclude,self.not_min = ['_learn'],[]
         setattr(self.learn, self.cb_name, self)
-    
+
     def __getattr__(self,k): return getattr(self.learn, k)
 
     @property
@@ -456,7 +458,7 @@ def load_callback(class_func, state, learn:Learner):
     res = class_func(learn, **init_kwargs) if issubclass(class_func, LearnerCallback) else class_func(**init_kwargs)
     for k,v in others.items(): setattr(res, k, v)
     return res
-    
+
 def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
     state = pickle.load(open(Path(path)/fname, 'rb'))

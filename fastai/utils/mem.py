@@ -3,7 +3,7 @@
 from ..imports.torch import *
 from ..core import *
 from ..script import *
-import pynvml
+import pynvml, functools, traceback
 from collections import namedtuple
 
 GPUMemory = namedtuple('GPUMemory', ['total', 'used', 'free'])
@@ -47,3 +47,25 @@ def gpu_with_max_free_mem():
     free_all = np.array([x.free for x in mem_all])
     id = np.argmax(free_all)
     return id, free_all[id]
+
+def get_ref_free_exc_info():
+    "Free traceback from references to locals() in each frame to avoid circular reference leading to gc.collect() unable to reclaim memory"
+    type, val, tb = sys.exc_info()
+    traceback.clear_frames(tb)
+    return (type, val, tb)
+
+# this is a decorator to be used with any functions that interact with CUDA (top-level is fine)
+#
+# ipython has a bug where it stores tb with all the locals() tied in (circular
+# reference) and are unable to be freed, so we cleanse the tb before handing it
+# over to ipython.
+def gpu_mem_restore(func):
+    "Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            type, val, tb = get_ref_free_exc_info() # must!
+            raise type(val).with_traceback(tb) from None
+    return wrapper

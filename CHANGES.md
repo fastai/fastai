@@ -11,12 +11,6 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
-
-
-
-
 ## 1.0.42.dev0 (Work In Progress)
 
 ### New:
@@ -24,6 +18,10 @@ of that change.
 ### Changed:
 
 ### Fixed:
+
+- any fastai function that internally uses fit() will no longer suffer from
+  unrecoverable 'CUDA out of memory error' and memory leakages triggered by manual
+  interrupt.
 
 
 
@@ -117,7 +115,7 @@ of that change.
 - `fastai.launch` module for simplified single-machine multi-GPU training
 - `check_perf` - performance improvement recommendations
 - `distributed` module with helper functions to quickly launch a distributed training
-- temptative use of JIT C++ extensions to code the QRNN with `batch_first` argument, it needs a proper installation 
+- temptative use of JIT C++ extensions to code the QRNN with `batch_first` argument, it needs a proper installation
   of cuda to be compiled at execution time
 
 ### Changed:
