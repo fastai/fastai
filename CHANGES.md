@@ -15,6 +15,8 @@ of that change.
 
 ### New:
 
+- PeakMemMetric callback to profile general and GPU RAM used and peaked by epoch
+
 ### Changed:
 
 ### Fixed:
