@@ -38,7 +38,7 @@ class PeakMemMetric(LearnerCallback):
 
     _order=-20 # Needs to run before the recorder
 
-    def __init__(self, learn:Learner, loss_scale:float=512., flat_master:bool=False):
+    def __init__(self, learn:Learner):
         super().__init__(learn)
         assert torch.cuda.is_available(), "pytorch CUDA is required"
 
