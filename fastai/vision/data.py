@@ -303,7 +303,7 @@ class ImageItemList(ItemList):
         "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
         rows = int(math.sqrt(len(xs)))
         axs = subplots(rows, rows, imgsize=imgsize, figsize=figsize)
-        for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
+        for i, ax in enumerate(axs.flatten()):
             xs[i].show(ax=ax, y=ys[i], **kwargs)
         plt.tight_layout()
 
@@ -313,7 +313,7 @@ class ImageItemList(ItemList):
             title = 'Ground truth\nPredictions'
             rows = int(math.sqrt(len(xs)))
             axs = subplots(rows, rows, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=12)
-            for i, ax in enumerate(axs.flatten() if rows > 1 else [axs]):
+            for i, ax in enumerate(axs.flatten()):
                 xs[i].show(ax=ax, title=f'{str(ys[i])}\n{str(zs[i])}', **kwargs)
         else:
             title = 'Ground truth/Predictions'
