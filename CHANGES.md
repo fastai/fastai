@@ -15,9 +15,9 @@ of that change.
 
 ### New:
 
-- gpu_mem_restore - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
-- gpu_mem_restore_ctx - same as gpu_mem_restore, but a context manager
-- PeakMemMetric callback to profile general and GPU RAM used and peaked by epoch
+- `gpu_mem_restore` - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
+- `gpu_mem_restore_ctx` - same as `gpu_mem_restore`, but a context manager
+- `PeakMemMetric` callback to profile general and GPU RAM used and peaked by epoch
 - `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
 
 ### Changed:
@@ -29,7 +29,7 @@ of that change.
   interrupt.
 - `DataBunch.show_batch` and `Learner.show_results` show at maximum batch_size elements
 - `DataBunch.show_batch` and `Learner.show_results` handle `rows=1` (thanks to xnutsive)
-
+- `LanguageModelPreLoader` is way faster (thanks to kasparlund)
 
 
 ## 1.0.41 (2019-01-22)
