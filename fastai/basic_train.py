@@ -462,9 +462,9 @@ def load_callback(class_func, state, learn:Learner):
     for k,v in others.items(): setattr(res, k, v)
     return res
 
-def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, map_location=None):
+def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, device=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
-    state = torch.load(open(Path(path)/fname, 'rb'), map_location=map_location)
+    state = torch.load(open(Path(path)/fname, 'rb'), map_location=device)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)
