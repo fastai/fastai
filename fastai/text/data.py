@@ -19,33 +19,33 @@ class LanguageModelPreLoader(Callback):
         "Handles shuffle, direction of indexing, wraps around to head tail in the ragged array as needed"
         def __init__(self, length:int, forward:bool): self.idx, self.forward = np.arange(length), forward
         def __getitem__(self, i): 
-            idx = self.idx
-            return idx[ i%len(idx) if self.forward else len(idx)-1-i%len(idx) ]
+            return self.idx[ i%len(self.idx) if self.forward else len(self.idx)-1-i%len(self.idx)]
         def __len__(self) -> int: return len(self.idx)
         def shuffle(self): np.random.shuffle(self.idx)
 
-    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False, shuffle:bool=False):
+    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False, 
+                 shuffle:bool=False):
         self.dataset,self.bs,self.bptt,self.shuffle,self.backwards,self.lengths = dataset,bs,bptt,shuffle,backwards,lengths
-        self.totalToks, self.ite_len, self.idx = int(0), None, None
+        self.totalToks,self.ite_len,self.idx = int(0),None,None
 
     def __len__(self): 
         if self.ite_len is None:
-            if self.lengths is None:
-                self.lengths = np.zeros(len(self.dataset.x.items),dtype=np.int)
-                for i,item in enumerate(self.dataset.x.items): self.lengths[i] = len(item)
-            self.totalToks = sum( l for l in self.lengths )
+            if self.lengths is None: self.lengths = np.array([len(item) for item in self.dataset.x.items])
+            self.totalToks = self.lengths.sum()
             self.ite_len   = self.bs*int( math.ceil( self.totalToks/(self.bptt*self.bs) )) if self.item is None else 1
         return self.ite_len
 
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
    
-    def allocate_buffers(self): 
+    def allocate_buffers(self):
+        "Create the ragged array that will be filled when we ask for items."
         if self.ite_len is None: len(self)
-
         self.idx   = LanguageModelPreLoader.CircularIndex(len(self.dataset.x.items), not self.backwards)
-        self.batch = np.zeros( (self.bs, self.bptt+1), dtype=np.int64)
-        self.x, self.y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1]      
+        self.batch = np.zeros((self.bs, self.bptt+1), dtype=np.int64)
+        self.x, self.y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1] 
+        #ro: index of the text we're at inside our datasets for the various batches
         self.ro    = np.zeros(self.bs, dtype=np.int64)
+        #ri: index of the token we're at inside our current text for the various batches
         self.ri    = np.zeros(self.bs, dtype=np.int)
 
     def on_epoch_begin(self, **kwargs):
@@ -56,6 +56,7 @@ class LanguageModelPreLoader(Callback):
         step = self.totalToks / self.bs
         ln_rag, countTokens, i_rag = 0, 0, -1
         for i in range(0,self.bs):
+            #Compute the initial values for ro and ri 
             while ln_rag + countTokens <= int(step * i):
                 countTokens += ln_rag
                 i_rag       += 1
@@ -76,7 +77,7 @@ class LanguageModelPreLoader(Callback):
         return self.x[j], self.y[j]
 
     def fill_row(self, forward, items, idx, row, ro, ri, overlap,lengths):
-        "fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"
+        "Fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"
         ibuf = n = 0 
         ro  -= 1
         while ibuf < row.size:  
