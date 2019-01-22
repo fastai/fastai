@@ -309,7 +309,7 @@ def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]
     figsize = ifnone(figsize, (imgsize*cols, imgsize*rows))
     fig, axs = plt.subplots(rows,cols,figsize=figsize)
     if rows==cols==1: axs = [[axs]] # subplots(1,1) returns Axes, not [Axes]
-    if (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
+    elif (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
     if title is not None: fig.suptitle(title, **kwargs)
     return array(axs)
 

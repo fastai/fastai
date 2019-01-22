@@ -301,7 +301,8 @@ class Learner():
         "Show `rows` result of predictions on `ds_type` dataset."
         #TODO: get read of has_arg x and split_kwargs_by_func if possible
         #TODO: simplify this and refactor with pred_batch(...reconstruct=True)
-        if self.data.train_ds.x._square_show_res: rows = rows ** 2
+        n_items = rows ** 2 if self.data.train_ds.x._square_show_res else rows
+        if self.dl(ds_type).batch_size < n_items: n_items = self.dl(ds_type).batch_size
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
@@ -314,13 +315,13 @@ class Learner():
                 y     = self.data.denorm(y, do_x=True)
                 preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
-        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
-        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
+        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(n_items)]
+        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(n_items)]
         if has_arg(ds.y.reconstruct, 'x'):
             ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
             zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
         else :
-            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
+            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
             zs = [ds.y.reconstruct(z) for z in preds]
         ds.x.show_xyzs(xs, ys, zs, **kwargs)
 

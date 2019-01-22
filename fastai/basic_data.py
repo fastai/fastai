@@ -157,8 +157,7 @@ class DataBunch():
     def show_batch(self, rows:int=5, ds_type:DatasetType=DatasetType.Train, **kwargs)->None:
         "Show a batch of data in `ds_type` on a few `rows`."
         x,y = self.one_batch(ds_type, True, True)
-        n_items = rows
-        if self.train_ds.x._square_show: n_items = n_items ** 2
+        n_items = rows **2 if self.train_ds.x._square_show else rows
         if self.dl(ds_type).batch_size < n_items: n_items = self.dl(ds_type).batch_size
         xs = [self.train_ds.x.reconstruct(grab_idx(x, i)) for i in range(n_items)]
         #TODO: get rid of has_arg if possible

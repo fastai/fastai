@@ -18,6 +18,7 @@ of that change.
 - gpu_mem_restore - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
 - gpu_mem_restore_ctx - same as gpu_mem_restore, but a context manager
 - PeakMemMetric callback to profile general and GPU RAM used and peaked by epoch
+- `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
 
 ### Changed:
 
@@ -26,6 +27,8 @@ of that change.
 - any fastai function that internally uses fit() will no longer suffer from
   unrecoverable 'CUDA out of memory error' and memory leakages triggered by manual
   interrupt.
+- `DataBunch.show_batch` and `Learner.show_results` show at maximum batch_size elements
+- `DataBunch.show_batch` and `Learner.show_results` handle `rows=1` (thanks to xnutsive)
 
 
 

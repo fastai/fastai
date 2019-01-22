@@ -301,20 +301,20 @@ class ImageItemList(ItemList):
 
     def show_xys(self, xs, ys, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show the `xs` (inputs) and `ys` (targets) on a figure of `figsize`."
-        rows = int(math.sqrt(len(xs)))
+        rows = int(np.ceil(math.sqrt(len(xs))))
         axs = subplots(rows, rows, imgsize=imgsize, figsize=figsize)
-        for i, ax in enumerate(axs.flatten()):
-            xs[i].show(ax=ax, y=ys[i], **kwargs)
+        for x,y,ax in zip(xs, ys, axs.flatten()): x.show(ax=ax, y=y, **kwargs)
+        for ax in axs.flatten()[len(xs):]: ax.axis('off')
         plt.tight_layout()
 
     def show_xyzs(self, xs, ys, zs, imgsize:int=4, figsize:Optional[Tuple[int,int]]=None, **kwargs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
         if self._square_show_res:
             title = 'Ground truth\nPredictions'
-            rows = int(math.sqrt(len(xs)))
+            rows = int(np.ceil(math.sqrt(len(xs))))
             axs = subplots(rows, rows, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=12)
-            for i, ax in enumerate(axs.flatten()):
-                xs[i].show(ax=ax, title=f'{str(ys[i])}\n{str(zs[i])}', **kwargs)
+            for x,y,z,ax in zip(xs,ys,zs,axs.flatten()): x.show(ax=ax, title=f'{str(y)}\n{str(z)}', **kwargs)
+            for ax in axs.flatten()[len(xs):]: ax.axis('off')
         else:
             title = 'Ground truth/Predictions'
             axs = subplots(len(xs), 2, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=14)
