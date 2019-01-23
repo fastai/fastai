@@ -463,7 +463,7 @@ def load_callback(class_func, state, learn:Learner):
     return res
 
 def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, device=None):
-    "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`."
+    "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test`. To load on cpu, specify `device='cpu'`"
     state = torch.load(open(Path(path)/fname, 'rb'), map_location=device)
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
