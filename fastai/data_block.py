@@ -503,8 +503,8 @@ class LabelLists(ItemLists):
     def load_state(cls, path:PathOrStr, state:dict):
         "Create a `LabelLists` with empty sets from the serialized `state`."
         path = Path(path)
-        train_ds = LabelList.load_state(state)
-        valid_ds = LabelList.load_state(state)
+        train_ds = LabelList.load_state(path, state)
+        valid_ds = LabelList.load_state(path, state)
         return LabelLists(path, train=train_ds, valid=valid_ds)
 
     @classmethod
@@ -582,7 +582,7 @@ class LabelList(Dataset):
         "Return the minimal state for export."
         state = {'x_cls':self.x.__class__, 'x_proc':self.x.processor,
                  'y_cls':self.y.__class__, 'y_proc':self.y.processor,
-                 'path':self.path, 'tfms':self.tfms, 'tfm_y':self.tfm_y, 'tfmargs':self.tfmargs}
+                 'tfms':self.tfms, 'tfm_y':self.tfm_y, 'tfmargs':self.tfmargs}
         if hasattr(self, 'tfms_y'):    state['tfms_y']    = self.tfms_y
         if hasattr(self, 'tfmargs_y'): state['tfmargs_y'] = self.tfmargs_y
         return {**state, **kwargs}
@@ -592,15 +592,15 @@ class LabelList(Dataset):
         pickle.dump(self.get_state(**kwargs), open(fn, 'wb'))
 
     @classmethod
-    def load_empty(cls, fn:PathOrStr):
+    def load_empty(cls, path:PathOrStr, fn:PathOrStr):
         "Load the sate in `fn` to create an empty `LabelList` for inference."
-        return cls.load_state(pickle.load(open(fn, 'rb')))
+        return cls.load_state(path, pickle.load(open(Path(path)/fn, 'rb')))
     
     @classmethod
-    def load_state(cls, state:dict) -> 'LabelList':
+    def load_state(cls, path:PathOrStr, state:dict) -> 'LabelList':
         "Create a `LabelList` from `state`."
-        x = state['x_cls']([], path=state['path'], processor=state['x_proc'], ignore_empty=True)
-        y = state['y_cls']([], path=state['path'], processor=state['y_proc'], ignore_empty=True)
+        x = state['x_cls']([], path=path, processor=state['x_proc'], ignore_empty=True)
+        y = state['y_cls']([], path=path, processor=state['y_proc'], ignore_empty=True)
         res = cls(x, y, tfms=state['tfms'], tfm_y=state['tfm_y'], **state['tfmargs']).process()
         if state.get('tfms_y', False):    res.tfms_y    = state['tfms_y']
         if state.get('tfmargs_y', False): res.tfmargs_y = state['tfmargs_y']

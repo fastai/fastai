@@ -19,6 +19,7 @@ of that change.
 - `gpu_mem_restore_ctx` - same as `gpu_mem_restore`, but a context manager
 - `PeakMemMetric` callback to profile general and GPU RAM used and peaked by epoch
 - `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
+- `load_learner` has a `cpu` flag to avoid loading on the GPU when there are none (thanks to pouannes)
 
 ### Changed:
 
