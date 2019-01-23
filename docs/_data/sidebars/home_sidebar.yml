@@ -18,6 +18,12 @@ entries:
     - output: web,pdf
       title: Troubleshooting
       url: /troubleshoot.html
+    - output: web,pdf
+      title: Performance
+      url: /performance.html
+    - output: web,pdf
+      title: Support
+      url: /support.html
     output: web
     title: Getting started
   - folderitems:
@@ -95,14 +101,17 @@ entries:
           title: vision.data
           url: /vision.data.html
         - output: web,pdf
+          title: vision.gan
+          url: /vision.gan.html
+        - output: web,pdf
           title: vision.model overview
           url: /vision.models.html
         - output: web,pdf
           title: vision.models.unet
           url: /vision.models.unet.html
         - output: web,pdf
-          title: vision.widgets
-          url: /widgets.html
+          title: widgets.image_cleaner
+          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:
@@ -166,6 +175,12 @@ entries:
       url: /torch_core.html
     output: web
     title: Core
+  - folderitems:
+    - output: web,pdf
+      title: Helpers
+      url: /utils.collect_env.html
+    output: web
+    title: Utils
   - folderitems:
     - output: web,pdf
       title: Look at data

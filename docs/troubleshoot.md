@@ -85,7 +85,7 @@ If you have `nvidia-smi` working and `pytorch` still can't recognize your NVIDIA
 Also note that `pytorch` will **silently fallback to CPU** if it reports `torch.cuda.is_available()` as `False`, so the only indicator of something being wrong will be that your notebooks will be running very slowly and you will hear your CPU revving up (if you are using a local system). Run:
 
 ```
-python -c 'import fastai; fastai.show_install(1)'
+python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(1)'
 ```
 to detect such issues. If you have this problem it'll say that your torch cuda is not available.
 
@@ -228,7 +228,7 @@ XXX: pytorch?
 
 ### Dedicated environment
 
-`fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead (`[conda](https://conda.io/docs/user-guide/tasks/manage-environments.html)` or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
+`fastai` has a relatively complex set of python dependencies, and it's the best not to install those system-wide, but to use a virtual environment instead ([conda](https://conda.io/docs/user-guide/tasks/manage-environments.html) or others). A lot of problems disappear when a fresh dedicated to `fastai` virtual environment is created.
 
 The following example is for using a conda environment.
 
@@ -306,7 +306,7 @@ It's possible that your system is misconfigured and while you think you're using
 You can check that by checking the output of `import torch; print(torch.cuda.is_available())` - it should return `True` if `pytorch` sees your GPU(s). You can also see the state of your setup with:
 
 ```
-python -c 'import fastai; fastai.show_install(1)'
+python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(1)'
 ```
 which will include that check in its report.
 
@@ -330,7 +330,7 @@ If you use the [developer setup](https://github.com/fastai/fastai/blob/master/RE
 ```
 cd path/to/your/fastai/clone
 git pull
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 Sometimes jupyter notebooks get messed up, and `git pull` might fail with an error like:
@@ -389,19 +389,47 @@ and it should just work. Now, go and sort out the rest of the installation, so t
 
 
 
+## ModuleNotFoundError: No module named ‘fastai.vision’
+
+If you have multiple environments, it's very possible that you installed `fastai` into one environment, but then are trying to use it from another, where it's not installed. Even more confusing, the situation where different environments have different versions of `fastai` installed, so its modules are found, but they don't work as you'd expect them to.
+
+If you use jupyter notebook, always make sure you activated the environment you installed `fastai` into before starting the `notebook`.
+
+There is an easy way to check whether you're in the right environment by either running from jupyter cell or in your code:
+
+```
+import sys
+print(sys.path)
+```
+and checking whether it shows the correct paths. That is compare these paths with the paths you installed `fastai` into.
+
+Alternatively, you can use the `fastai` helper that will show you that and other important details about your environment:
+
+```
+from fastai.utils.show_install import *
+show_install()
+```
+
+or the same from the command line:
+```
+python -m fastai.utils.show_install
+```
+Incidentally, we want you to include its output in any bug reports you may submit in the future.
+
+
+
 ## Conda environments not showing up in Jupyter Notebook
 
 While normally you shouldn't have this problem, and all the required things should get installed automatically, some users report that their jupyter notebook
-does not recognize newly created environments at times. They reported the following to work:
+does not recognize newly created environments at times. To fix that, perform:
 
 ```
-conda activate fastai-3.6
-conda install jupyter
-conda install nb_conda
-conda install nb_conda_kernels
-conda install ipykernel
-python -m ipykernel install --user --name fastai-3.6 --display-name "Python (fastai-3.6)"
+conda activate fastai
+conda install jupyter nb_conda nb_conda_kernels ipykernel
+python -m ipykernel install --user --name fastai --display-name "Python (fastai)"
 ```
+Replace `fastai` with the name of your conda environment if it's different.
+
 See also [Kernels for different environments](https://ipython.readthedocs.io/en/stable/install/kernel_install.html#kernels-for-different-environments).
 
 
@@ -440,58 +468,4 @@ Of course, if you're not using `jupyter notebook` then you can just set the env 
 
 ## Support
 
-Before making a new issue report, please:
-
-1.  Make sure you have the latest `conda` and/or `pip`, depending on the package manager you use:
-    ```
-    pip install pip -U
-    conda install conda
-    ```
-    and then repeat the steps and see whether the problem you wanted to report still exists.
-
-2.  Make sure [your platform is supported by the preview build of `pytorch-1.0.0`](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported). You may have to build `pytorch` from source if it isn't.
-
-3. Make sure you follow [the exact installation instructions](https://github.com/fastai/fastai/blob/master/README.md#installation). If you improvise and it works that's great, if it fails please RTFM ;)
-
-If you followed the steps in this document and couldn't find a resolution, please post a comment in this [thread](https://forums.fast.ai/t/fastai-v1-install-issues-thread/24111/1).
-
-
-If the issue is still relevant, make sure to include in your post:
-
-1. the output of the following script (including the \`\`\`text opening and closing \`\`\` so that it's formatted properly in your post):
-   ```
-   git clone https://github.com/fastai/fastai
-   cd fastai
-   python -c 'import fastai; fastai.show_install(1)'
-   ```
-
-   If you already have a `fastai` checkout, then just update it first:
-   ```
-   cd fastai
-   git pull
-   python -c 'import fastai; fastai.show_install(1)'
-   ```
-
-   The reporting script won't work if `pytorch` wasn't installed, so if that's the case, then send in the following details:
-   * output of `python --version`
-   * your OS: linux/osx/windows / and linux distro+version if relevant
-   * output of `nvidia-smi`  (or say CPU if none)
-
-2. a brief summary of the problem
-3. the exact installation steps you followed
-
-If the resulting output is very long, please paste it to https://pastebin.com/ and include a link to your paste
-
-### Do's and Don'ts:
-
-* please do not send screenshots with trace/error messages - we can't copy-n-paste from the images, instead paste them verbatim into your post and use the markdown gui menu so that it's code-formatted.
-
-* If your system is configured to use a non-English locale, if possible, re-run the problematic code after running:
-
-   `export LC_ALL=en_US.UTF-8`
-
-    So that the error messages will be in English. You can run `locale` to see which locales you have installed.
-
-### Bug Reports and PRs
-
-If you found a bug and know how to fix it please submit a PR with the fix [here](https://github.com/fastai/fastai/pulls). Thank you.
+If troubleshooting wasn't successful please refer next to [the support document](https://docs.fast.ai/support.html).

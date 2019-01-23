@@ -68,8 +68,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fastai.text</span> <span class="k">import</span> <span class="o">*</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">fastai.text</span> <span class="k">import</span> <span class="o">*</span> 
 </pre></div>
 
     </div>
@@ -319,7 +318,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span><span class="n">data_lm</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="o">=</span><span class="n">URLs</span><span class="o">.</span><span class="n">WT103_1</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 
@@ -334,7 +333,7 @@ summary: "Application to NLP, including ULMFiT fine-tuning"
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:20 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:19 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -343,12 +342,9 @@ Total time: 00:20 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>5.018477</th>
-    <th>4.568722</th>
-    <th>0.231460</th>
-  </tr>
-  <tr>
-
+    <th>4.339245</th>
+    <th>4.077540</th>
+    <th>0.283568</th>
   </tr>
 </table>
 
@@ -387,7 +383,7 @@ Total time: 00:20 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:26 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:24 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -396,12 +392,9 @@ Total time: 00:26 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>4.276163</th>
-    <th>4.076024</th>
-    <th>0.278745</th>
-  </tr>
-  <tr>
-
+    <th>4.032784</th>
+    <th>3.970864</th>
+    <th>0.290228</th>
   </tr>
 </table>
 
@@ -440,7 +433,7 @@ Total time: 00:26 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#34;This is a review about the subject &#39;s character . above all , he may&#34;</pre>
+<pre>&#34;This is a review about exceptionally worked meryl foot o&#39;dell endlessly unlikely jeepers rampage thaw&#34;</pre>
 </div>
 
 </div>
@@ -521,24 +514,24 @@ Total time: 00:26 <p><table style='width:300px; margin-bottom:10px'>
     <th>target</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come</th>
+    <th>xxbos xxup the xxup shop xxup around xxup the xxup corner is one of the xxunk and most feel - good romantic comedies ever made . xxmaj there 's just no getting around that , and it 's hard to actually put one 's feeling for this film into words . xxmaj it 's not one of those films that tries too hard , nor does it come up with</th>
     <th>positive</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 xxmaj now that xxmaj che(2008 ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj soderbergh to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style /</th>
+    <th>xxbos xxmaj now that xxmaj xxunk ) has finished its relatively short xxmaj australian cinema run ( extremely limited xxunk screen in xxmaj xxunk , after xxunk ) , i can xxunk join both xxunk of " xxmaj at xxmaj the xxmaj movies " in taking xxmaj steven xxmaj xxunk to task . \n\n xxmaj it 's usually satisfying to watch a film director change his style / subject ,</th>
     <th>negative</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 xxmaj many xxunk that this is n't just a classic due to the fact that it 's the first xxup 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj</th>
+    <th>xxbos xxmaj this film sat on my xxmaj xxunk for weeks before i watched it . i xxunk a self - indulgent xxunk flick about relationships gone bad . i was wrong ; this was an xxunk xxunk into the xxunk - up xxunk of xxmaj new xxmaj xxunk . \n\n xxmaj the xxunk is the same as xxmaj max xxmaj xxunk ' " xxmaj la xxmaj xxunk , "</th>
     <th>positive</th>
   </tr>
   <tr>
-    <th>xxbos xxfld 1 i really wanted to love this show . i truly , honestly did . \n\n xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj bachelor " . xxmaj with the help of his obligatory " hag " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance</th>
+    <th>xxbos xxmaj many neglect that this is n't just a classic due to the fact that it 's the first xxup 3d game , or even the first xxunk - up . xxmaj it 's also one of the first xxunk games , one of the xxunk definitely the first ) truly claustrophobic games , and just a pretty well - xxunk gaming experience in general . xxmaj with graphics</th>
+    <th>positive</th>
+  </tr>
+  <tr>
+    <th>xxbos i really wanted to love this show . i truly , honestly did . \n\n xxmaj for the first time , gay viewers get their own version of the " xxmaj the xxmaj bachelor " . xxmaj with the help of his obligatory " xxunk " xxmaj xxunk , xxmaj james , a good looking , well - to - do thirty - something has the chance of love</th>
     <th>negative</th>
-  </tr>
-  <tr>
-    <th>xxbos xxfld 1 \n\n i 'm sure things did n't exactly go the same way in the real life of xxmaj homer xxmaj hickam as they did in the film adaptation of his book , xxmaj rocket xxmaj boys , but the movie " xxmaj october xxmaj sky " ( an xxunk of the book 's title ) is good enough to stand alone . i have not read xxmaj</th>
-    <th>positive</th>
   </tr>
 </table>
 
@@ -569,7 +562,7 @@ Total time: 00:26 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:35 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:27 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -578,12 +571,9 @@ Total time: 00:35 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.625492</th>
-    <th>0.670434</th>
-    <th>0.557214</th>
-  </tr>
-  <tr>
-
+    <th>0.623477</th>
+    <th>0.620588</th>
+    <th>0.661692</th>
   </tr>
 </table>
 
@@ -622,7 +612,7 @@ Total time: 00:35 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 00:44 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 00:30 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -631,12 +621,9 @@ Total time: 00:44 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.616969</th>
-    <th>0.684036</th>
-    <th>0.532338</th>
-  </tr>
-  <tr>
-
+    <th>0.528273</th>
+    <th>0.565025</th>
+    <th>0.736318</th>
   </tr>
 </table>
 
@@ -668,7 +655,7 @@ Total time: 00:44 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_html rendered_html output_subarea ">
-Total time: 01:20 <p><table style='width:300px; margin-bottom:10px'>
+Total time: 01:06 <p><table style='width:300px; margin-bottom:10px'>
   <tr>
     <th>epoch</th>
     <th>train_loss</th>
@@ -677,12 +664,9 @@ Total time: 01:20 <p><table style='width:300px; margin-bottom:10px'>
   </tr>
   <tr>
     <th>1</th>
-    <th>0.556483</th>
-    <th>0.614743</th>
-    <th>0.701493</th>
-  </tr>
-  <tr>
-
+    <th>0.487489</th>
+    <th>0.632793</th>
+    <th>0.726368</th>
   </tr>
 </table>
 
@@ -721,7 +705,7 @@ Total time: 01:20 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(Category positive, tensor(1), tensor([0.0218, 0.9782]))</pre>
+<pre>(Category positive, tensor(1), tensor([0.1100, 0.8900]))</pre>
 </div>
 
 </div>

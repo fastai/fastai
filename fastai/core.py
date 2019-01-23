@@ -148,27 +148,46 @@ class ItemBase():
     "Base item type in the fastai library."
     def __init__(self, data:Any): self.data=self.obj=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
-    def show(self, ax:plt.Axes, **kwargs): ax.set_title(str(self))
+    def show(self, ax:plt.Axes, **kwargs): 
+        "Subclass this method if you want to customize the way this `ItemBase` is shown on `ax`."
+        ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
+        "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception('Not implemented')
         return self
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
-                 show_progress=True, chunk_size=1024*1024, timeout=4)->None:
+                 show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
     "Download `url` to `dest` unless it exists and not `overwrite`."
     if os.path.exists(dest) and not overwrite: return
 
-    u = requests.get(url, stream=True, timeout=timeout)
+    s = requests.Session()
+    s.mount('http://',requests.adapters.HTTPAdapter(max_retries=retries))
+    u = s.get(url, stream=True, timeout=timeout)
     try: file_size = int(u.headers["Content-Length"])
     except: show_progress = False
 
     with open(dest, 'wb') as f:
         nbytes = 0
         if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
-        for chunk in u.iter_content(chunk_size=chunk_size):
-            nbytes += len(chunk)
-            if show_progress: pbar.update(nbytes)
-            f.write(chunk)
+        try:
+            for chunk in u.iter_content(chunk_size=chunk_size):
+                nbytes += len(chunk)
+                if show_progress: pbar.update(nbytes)
+                f.write(chunk)
+        except requests.exceptions.ConnectionError as e:
+            fname = url.split('/')[-1]
+            from fastai.datasets import Config
+            data_dir = Config().data_path()
+            timeout_txt =(f'\n Download of {url} has failed after {retries} retries\n'
+                          f' Fix the download manually:\n'
+                          f'$ mkdir -p {data_dir}\n'
+                          f'$ cd {data_dir}\n'
+                          f'$ wget -c {url}\n'
+                          f'$ tar -zxvf {fname}\n\n'
+                          f'And re-run your code once the download is successful\n')
+            print(timeout_txt)
+            import sys;sys.exit(1)
 
 def range_of(x):  
     "Create a range from 0 to `len(x)`."
@@ -207,7 +226,7 @@ def df_names_to_idx(names:IntsOrStrs, df:DataFrame):
 def one_hot(x:Collection[int], c:int):
     "One-hot encode `x` with `c` classes."
     res = np.zeros((c,), np.float32)
-    res[x] = 1.
+    res[listify(x)] = 1.
     return res
 
 def index_row(a:Union[Collection,pd.DataFrame,pd.Series], idxs:Collection[int])->Any:
@@ -234,24 +253,21 @@ def split_kwargs_by_func(kwargs, func):
     func_kwargs = {a:kwargs.pop(a) for a in args if a in kwargs}
     return func_kwargs, kwargs
 
-def try_int(o:Any)->Any:
-    "Try to convert `o` to int, default to `o` if not possible."
-    try: return int(o)
-    except: return o
-
-def array(a, *args, **kwargs)->np.ndarray:
+def array(a, dtype:type=None, **kwargs)->np.ndarray:
     "Same as `np.array` but also handles generators"
     if not isinstance(a, collections.Sized) and not getattr(a,'__array_interface__',False):
         a = list(a)
-    return np.array(a, *args, **kwargs)
+    if np.int_==np.int32 and dtype is None and is_listy(a) and len(a) and isinstance(a[0],int):
+        dtype=np.int64
+    return np.array(a, dtype=dtype, **kwargs)
 
 class EmptyLabel(ItemBase):
     "Should be used for a dummy label."
-    def __init__(self): self.obj,self.data = 0.,0.
+    def __init__(self): self.obj,self.data = 0,0
     def __str__(self):  return ''
 
 class Category(ItemBase):
-    "Basic class for singe classification labels."
+    "Basic class for single classification labels."
     def __init__(self,data,obj): self.data,self.obj = data,obj
     def __int__(self): return int(self.data)
     def __str__(self): return str(self.obj)
@@ -260,6 +276,11 @@ class MultiCategory(ItemBase):
     "Basic class for multi-classification labels."
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
+
+class FloatItem(ItemBase):
+    "Basic class for float items."
+    def __init__(self,obj): self.data,self.obj = np.array(obj).astype(np.float32),obj
+    def __str__(self): return str(self.obj)
 
 def _treat_html(o:str)->str:
     return o.replace('\n','\\n')
@@ -287,7 +308,14 @@ def subplots(rows:int, cols:int, imgsize:int=4, figsize:Optional[Tuple[int,int]]
     "Like `plt.subplots` but with consistent axs shape, `kwargs` passed to `fig.suptitle` with `title`"
     figsize = ifnone(figsize, (imgsize*cols, imgsize*rows))
     fig, axs = plt.subplots(rows,cols,figsize=figsize)
-    if (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
+    if rows==cols==1: axs = [[axs]] # subplots(1,1) returns Axes, not [Axes]
+    elif (rows==1 and cols!=1) or (cols==1 and rows!=1): axs = [axs]
     if title is not None: fig.suptitle(title, **kwargs)
     return array(axs)
 
+def show_some(items:Collection, n_max:int=5, sep:str=','):
+    "Return the representation of the first  `n_max` elements in `items`."
+    if items is None or len(items) == 0: return ''
+    res = sep.join([f'{o}' for o in items[:n_max]])
+    if len(items) > n_max: res += '...'
+    return res

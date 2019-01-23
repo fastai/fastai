@@ -3,6 +3,7 @@
 
 """The setup script."""
 
+import re
 from setuptools import setup, find_packages
 
 # note: version is maintained inside fastai/version.py
@@ -10,43 +11,39 @@ exec(open('fastai/version.py').read())
 
 with open('README.md') as readme_file: readme = readme_file.read()
 
-def to_list(buffer): return list(filter(None, map(str.strip, buffer.splitlines())))
+# helper functions to make it easier to list dependencies not as a python list, but vertically w/ optional built-in comments to why a certain version of the dependency is listed
+def cleanup(x): return re.sub(r' *#.*', '', x.strip()) # comments
+def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines())))
 
 ### normal dependencies ###
-#
-# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
 #
 # these get resolved and installed via either of these two:
 #
 #   pip install fastai
 #   pip install -e .
 #
-# notes:
-# - bottleneck and numexpr are performance-improvement extras for numpy
-#
 # dependencies to skip for now:
 # - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
-
+#
+# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
 requirements = to_list("""
-    bottleneck
-    cymem==2.0.2
+    bottleneck           # performance-improvement for numpy
     dataclasses ; python_version<'3.7'
     fastprogress>=0.1.18
+    beautifulsoup4
     matplotlib
-    numexpr
+    numexpr              # performance-improvement for numpy
     numpy>=1.12
+    nvidia-ml-py3
     pandas
+    packaging
     Pillow
     pyyaml
-    regex
     requests
     scipy
-    spacy==2.0.16
-    thinc==6.12.0
-    regex
-    cymem
+    spacy>=2.0.18
+    torch>=1.0.0
     torchvision
-    torch
     typing
 """)
 
@@ -60,11 +57,11 @@ requirements = to_list("""
 #
 # these, including the normal dependencies, get installed with:
 #
-#   pip install fastai[dev]
+#   pip install "fastai[dev]"
 #
 # or via an editable install:
 #
-#   pip install -e .[dev]
+#   pip install -e ".[dev]"
 #
 # some of the listed modules appear in test_requirements as well, as explained below.
 #
@@ -75,11 +72,13 @@ dev_requirements = { 'dev' : to_list("""
     jupyter
     jupyter_contrib_nbextensions
     nbconvert>=5.4
+    nbdime                       # help with nb diff/merge
     nbformat
     notebook>=5.7.0
     pip>=9.0.1
     pipreqs>=0.4.9
     pytest
+    responses                    # for requests testing
     traitlets
     wheel>=0.30.0
 """) }

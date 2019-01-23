@@ -5,7 +5,7 @@ from io import BytesIO
 import PIL
 
 __all__ = ['PIL', 'Image', 'ImageBBox', 'ImageSegment', 'ImagePoints', 'FlowField', 'RandTransform', 'TfmAffine', 'TfmCoord',
-           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'open_image', 'open_mask',
+           'TfmCrop', 'TfmLighting', 'TfmPixel', 'Transform', 'bb2hw', 'image2np', 'open_image', 'open_mask', 'tis2hw',
            'pil2tensor', 'scale_flow', 'show_image', 'CoordFunc', 'TfmList', 'open_mask_rle', 'rle_encode',
            'rle_decode', 'ResizeMethod', 'plot_flat', 'plot_multi', 'show_multi', 'show_all']
 
@@ -26,6 +26,11 @@ def image2np(image:Tensor)->np.ndarray:
 def bb2hw(a:Collection[int])->np.ndarray:
     "Convert bounding box points from (width,height,center) to (height,width,top,left)."
     return np.array([a[1],a[0],a[3]-a[1],a[2]-a[0]])
+
+def tis2hw(size:Union[int,TensorImageSize]) -> Tuple[int,int]:
+    "Convert `int` or `TensorImageSize` to (height,width) of an image."
+    if type(size) is str: raise RuntimeError("Expected size to be an int or a tuple, got a string.")
+    return listify(size, 2) if isinstance(size, int) else listify(size[-2:],2)
 
 def _draw_outline(o:Patch, lw:int):
     "Outline bounding box onto image `Patch`."
@@ -88,15 +93,15 @@ class Image(ItemBase):
             return str_buffer.getvalue()
 
     def apply_tfms(self, tfms:TfmList, do_resolve:bool=True, xtra:Optional[Dict[Callable,dict]]=None,
-                   size:Optional[Union[int,TensorImageSize]]=None, mult:int=32,
-                   resize_method:ResizeMethod=ResizeMethod.CROP, padding_mode:str='reflection', **kwargs:Any)->TensorImage:
+                   size:Optional[Union[int,TensorImageSize]]=None, resize_method:ResizeMethod=ResizeMethod.CROP,
+                   mult:int=None, padding_mode:str='reflection', mode:str='bilinear', remove_out:bool=True)->TensorImage:
         "Apply all `tfms` to the `Image`, if `do_resolve` picks value for random args."
         if not (tfms or xtra or size): return self
         xtra = ifnone(xtra, {})
         tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
         if do_resolve: _resolve_tfms(tfms)
         x = self.clone()
-        x.set_sample(padding_mode=padding_mode, **kwargs)
+        x.set_sample(padding_mode=padding_mode, mode=mode, remove_out=remove_out)
         if size is not None:
             crop_target = _get_crop_target(size, mult=mult)
             if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
@@ -109,7 +114,7 @@ class Image(ItemBase):
             if tfm.tfm in xtra: x = tfm(x, **xtra[tfm.tfm])
             elif tfm in size_tfms:
                 if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
-                    x = tfm(x, size=size, padding_mode=padding_mode)
+                    x = tfm(x, size=_get_crop_target(size,mult=mult), padding_mode=padding_mode)
             else: x = tfm(x)
         return x
 
@@ -256,7 +261,7 @@ class ImagePoints(Image):
 
     def __repr__(self): return f'{self.__class__.__name__} {tuple(self.size)}'
     def _repr_image_format(self, format_str): return None
-
+    
     @property
     def flow(self)->FlowField:
         "Access the flow-field grid after applying queued affine and coord transforms."
@@ -311,7 +316,8 @@ class ImagePoints(Image):
         "Show the `ImagePoints` on `ax`."
         if ax is None: _,ax = plt.subplots(figsize=figsize)
         pnt = scale_flow(FlowField(self.size, self.data), to_unit=False).flow.flip(1)
-        ax.scatter(pnt[:, 0], pnt[:, 1], s=10, marker='.', c='r')
+        params = {'s': 10, 'marker': '.', 'c': 'r', **kwargs}
+        ax.scatter(pnt[:, 0], pnt[:, 1], **params)
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
 
@@ -334,6 +340,7 @@ class ImageBBox(ImagePoints):
     def create(cls, h:int, w:int, bboxes:Collection[Collection[int]], labels:Collection=None, classes:dict=None,
                pad_idx:int=0, scale:bool=True)->'ImageBBox':
         "Create an ImageBBox object from `bboxes`."
+        if isinstance(bboxes, np.ndarray) and bboxes.dtype == np.object: bboxes = np.array([bb for bb in bboxes])
         bboxes = tensor(bboxes).float()
         tr_corners = torch.cat([bboxes[:,0][:,None], bboxes[:,3][:,None]], 1)
         bl_corners = bboxes[:,1:3].flip(1)
@@ -354,7 +361,7 @@ class ImageBBox(ImagePoints):
     @property
     def data(self)->Union[FloatTensor, Tuple[FloatTensor,LongTensor]]:
         bboxes,lbls = self._compute_boxes()
-        lbls = tensor([o.data for o in lbls]) if lbls is not None else None
+        lbls = np.array([o.data for o in lbls]) if lbls is not None else None
         return bboxes if lbls is None else (bboxes, lbls)
 
     def show(self, y:Image=None, ax:plt.Axes=None, figsize:tuple=(3,3), title:Optional[str]=None, hide_axis:bool=True,
@@ -433,6 +440,7 @@ class Transform():
         "Create a transform for `func` and assign it an priority `order`, attach to `Image` class."
         if order is not None: self.order=order
         self.func=func
+        self.func.__name__ = func.__name__[1:] #To remove the _ that begins every transform function.
         functools.update_wrapper(self, self.func)
         self.func.__annotations__['return'] = Image
         self.params = copy(func.__annotations__)
@@ -562,13 +570,13 @@ class TfmLighting(Transform):
     "Decorator for lighting tfm funcs."
     order,_wrap = 8,'lighting'
 
-def _round_multiple(x:int, mult:int)->int:
+def _round_multiple(x:int, mult:int=None)->int:
     "Calc `x` to nearest multiple of `mult`."
-    return (int(x/mult+0.5)*mult)
+    return (int(x/mult+0.5)*mult) if mult is not None else x
 
-def _get_crop_target(target_px:Union[int,Tuple[int,int]], mult:int=32)->Tuple[int,int]:
+def _get_crop_target(target_px:Union[int,TensorImageSize], mult:int=None)->Tuple[int,int]:
     "Calc crop shape of `target_px` to nearest multiple of `mult`."
-    target_r,target_c = listify(target_px, 2)
+    target_r,target_c = tis2hw(target_px)
     return _round_multiple(target_r,mult),_round_multiple(target_c,mult)
 
 def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:

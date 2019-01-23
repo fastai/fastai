@@ -1,0 +1,42 @@
+diff --git a/src/PIL/features.py b/src/PIL/features.py
+index 9926445e..6530038b 100644
+--- a/src/PIL/features.py
++++ b/src/PIL/features.py
+@@ -51,7 +51,8 @@ features = {
+     "webp_anim": ("PIL._webp", 'HAVE_WEBPANIM'),
+     "webp_mux": ("PIL._webp", 'HAVE_WEBPMUX'),
+     "transp_webp": ("PIL._webp", "HAVE_TRANSPARENCY"),
+-    "raqm": ("PIL._imagingft", "HAVE_RAQM")
++    "raqm": ("PIL._imagingft", "HAVE_RAQM"),
++    "libjpeg_turbo": ("PIL._imaging", "HAVE_LIBJPEGTURBO"),
+ }
+ 
+ 
+diff --git a/src/_imaging.c b/src/_imaging.c
+index 47444434..80d2f6ce 100644
+--- a/src/_imaging.c
++++ b/src/_imaging.c
+@@ -73,6 +73,10 @@
+ 
+ #include "Python.h"
+ 
++#ifdef HAVE_LIBJPEG
++#include "jconfig.h"
++#endif
++
+ #ifdef HAVE_LIBZ
+ #include "zlib.h"
+ #endif
+@@ -3836,6 +3840,12 @@ setup_module(PyObject* m) {
+   }
+ #endif
+ 
++#ifdef LIBJPEG_TURBO_VERSION
++    PyModule_AddObject(m, "HAVE_LIBJPEGTURBO", Py_True);
++#else
++    PyModule_AddObject(m, "HAVE_LIBJPEGTURBO", Py_False);
++#endif
++
+ #ifdef HAVE_LIBZ
+   /* zip encoding strategies */
+   PyModule_AddIntConstant(m, "DEFAULT_STRATEGY", Z_DEFAULT_STRATEGY);

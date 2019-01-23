@@ -2,9 +2,11 @@
 from .torch_core import *
 from .basic_data import *
 from .callback import *
+from .data_block import *
+from .utils.mem import gpu_mem_restore
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
-           'get_preds']
+           'get_preds', 'load_learner']
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
@@ -46,6 +48,7 @@ def validate(model:nn.Module, dl:DataLoader, loss_func:OptLossFunc=None, cb_hand
     model.eval()
     with torch.no_grad():
         val_losses,nums = [],[]
+        if cb_handler: cb_handler.set_dl(dl)
         for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
             if cb_handler: xb, yb = cb_handler.on_batch_begin(xb, yb, train=False)
             val_losses.append(loss_batch(model, xb, yb, loss_func, cb_handler=cb_handler))
@@ -66,9 +69,12 @@ def train_epoch(model:nn.Module, dl:DataLoader, opt:optim.Optimizer, loss_func:L
         opt.step()
         opt.zero_grad()
 
+@gpu_mem_restore
 def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer,
         data:DataBunch, callbacks:Optional[CallbackList]=None, metrics:OptMetrics=None)->None:
     "Fit the `model` on `data` and learn using `loss_func` and `opt`."
+    assert len(data.train_dl) != 0, f"""Your training dataloader is empty, can't train a model.
+        Use a smaller batch size (batch size={data.train_dl.batch_size} for {len(data.train_dl.dataset)} elements)."""
     cb_handler = CallbackHandler(callbacks, metrics)
     pbar = master_bar(range(epochs))
     cb_handler.on_train_begin(epochs, pbar=pbar, metrics=metrics)
@@ -77,14 +83,14 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
     try:
         for epoch in pbar:
             model.train()
+            cb_handler.set_dl(data.train_dl)
             cb_handler.on_epoch_begin()
-
             for xb,yb in progress_bar(data.train_dl, parent=pbar):
                 xb, yb = cb_handler.on_batch_begin(xb, yb)
                 loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
                 if cb_handler.on_batch_end(loss): break
 
-            if hasattr(data,'valid_dl') and data.valid_dl is not None and data.valid_ds is not None:
+            if not data.empty_val:
                 val_loss = validate(model, data.valid_dl, loss_func=loss_func,
                                        cb_handler=cb_handler, pbar=pbar)
             else: val_loss=None
@@ -94,17 +100,23 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
         raise e
     finally: cb_handler.on_train_end(exception)
 
-loss_func_name2activ = {'cross_entropy_loss': partial(F.softmax, dim=-1), 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
-    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': partial(F.softmax, dim=1),
+loss_func_name2activ = {'cross_entropy_loss': F.softmax, 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
+    'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': F.softmax,
     'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid,
 }
+
+def _loss_func_name2activ(name:str, axis:int=-1):
+    res = loss_func_name2activ[name]
+    if res == F.softmax: res = partial(F.softmax, dim=axis)
+    return res
 
 def _loss_func2activ(loss_func):
     if getattr(loss_func,'keywords',None):
         if not loss_func.keywords.get('log_input', True): return
+    axis = getattr(loss_func, 'axis', -1)
     # flattened loss
     loss_func = getattr(loss_func, 'func', loss_func)
-    # could have a partial inside flattened loss!
+    # could have a partial inside flattened loss! Duplicate on purpose.
     loss_func = getattr(loss_func, 'func', loss_func)
     cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name == 'mix_up_loss':
@@ -112,9 +124,9 @@ def _loss_func2activ(loss_func):
         cls_name = camel2snake(loss_func.__class__.__name__)
     if cls_name in loss_func_name2activ:
         if cls_name == 'poisson_nll_loss' and (not getattr(loss_func, 'log_input', True)): return
-        return loss_func_name2activ[cls_name]
+        return _loss_func_name2activ(cls_name, axis)
     if getattr(loss_func,'__name__','') in loss_func_name2activ:
-        return loss_func_name2activ[loss_func.__name__]
+        return _loss_func_name2activ(loss_func.__name__, axis)
     return noop
 
 @dataclass
@@ -193,13 +205,24 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def __del__(self): del(self.model, self.data)
+    def export(self, fname:str='export.pkl'):
+        "Export the state of the `Learner` in `self.path/fname`."
+        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
+        state = {a:getattr(self,a) for a in args}
+        state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
+        #layer_groups -> need to find a way
+        #TO SEE: do we save model structure and weights separately?
+        state['model'] = self.model
+        xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
+        state['data'] = self.data.valid_ds.get_state(**xtra)
+        state['cls'] = self.__class__
+        torch.save(state, open(self.path/fname, 'wb'))
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
-        if not with_opt: state = self.model.state_dict()
-        else: state = {'model': self.model.state_dict(), 'opt':self.opt.state_dict()}
+        if not with_opt: state = get_model(self.model).state_dict()
+        else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
         torch.save(state, path)
         if return_path: return path
 
@@ -212,14 +235,14 @@ class Learner():
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
-            self.model.load_state_dict(state['model'], strict=strict)
+            get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
                 if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
                 try:    self.opt.load_state_dict(state['opt'])
                 except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
-            self.model.load_state_dict(state, strict=strict)
+            get_model(self.model).load_state_dict(state, strict=strict)
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
@@ -229,14 +252,21 @@ class Learner():
         return get_preds(self.model, self.dl(ds_type), cb_handler=CallbackHandler(self.callbacks),
                          activ=_loss_func2activ(self.loss_func), loss_func=lf, n_batch=n_batch, pbar=pbar)
 
-    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None) -> List[Tensor]:
+    def pred_batch(self, ds_type:DatasetType=DatasetType.Valid, batch:Tuple=None, reconstruct:bool=False) -> List[Tensor]:
         "Return output of the model on one batch from `ds_type` dataset."
-        if batch: xb,yb = batch
+        if batch is not None: xb,yb = batch
         else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
         cb_handler = CallbackHandler(self.callbacks)
-        cb_handler.on_batch_begin(xb,yb, train=False)
+        xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
         preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
-        return _loss_func2activ(self.loss_func)(preds[0])
+        res = _loss_func2activ(self.loss_func)(preds[0])
+        if not reconstruct: return res
+        res = res.detach().cpu()
+        ds = self.dl(ds_type).dataset
+        norm = getattr(self.data, 'norm', False)
+        if norm and norm.keywords.get('do_y',False):
+            res = self.data.denorm(res, do_x=True)
+        return [ds.reconstruct(o) for o in res]
 
     def backward(self, item):
         "Pass `item` through the model and computes the gradient. Useful if `backward_hooks` are attached."
@@ -246,17 +276,14 @@ class Learner():
         return loss
 
     def predict(self, item:ItemBase, **kwargs):
-        "Return prect class, label and probabilities for `item`."
-        self.callbacks.append(RecordOnCPU())
+        "Return predicted class, label and probabilities for `item`."
         batch = self.data.one_item(item)
         res = self.pred_batch(batch=batch)
-        pred = res[0]
-        x = self.callbacks[-1].input
+        pred,x = res[0],batch[0]
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
             if norm.keywords.get('do_y',False): pred = self.data.denorm(pred)
-        self.callbacks = self.callbacks[:-1]
         ds = self.data.single_ds
         pred = ds.y.analyze_pred(pred, **kwargs)
         out = ds.y.reconstruct(pred, ds.x.reconstruct(x[0])) if has_arg(ds.y.reconstruct, 'x') else ds.y.reconstruct(pred)
@@ -275,6 +302,9 @@ class Learner():
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, **kwargs):
         "Show `rows` result of predictions on `ds_type` dataset."
         #TODO: get read of has_arg x and split_kwargs_by_func if possible
+        #TODO: simplify this and refactor with pred_batch(...reconstruct=True)
+        n_items = rows ** 2 if self.data.train_ds.x._square_show_res else rows
+        if self.dl(ds_type).batch_size < n_items: n_items = self.dl(ds_type).batch_size
         ds = self.dl(ds_type).dataset
         self.callbacks.append(RecordOnCPU())
         preds = self.pred_batch(ds_type)
@@ -283,17 +313,17 @@ class Learner():
         norm = getattr(self.data,'norm',False)
         if norm:
             x = self.data.denorm(x)
-            if norm.keywords.get('do_y',True):
+            if norm.keywords.get('do_y',False):
                 y     = self.data.denorm(y, do_x=True)
                 preds = self.data.denorm(preds, do_x=True)
         analyze_kwargs,kwargs = split_kwargs_by_func(kwargs, ds.y.analyze_pred)
-        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(rows)]
-        xs = [ds.x.reconstruct(grab_idx(x, i, self.data._batch_first)) for i in range(rows)]
+        preds = [ds.y.analyze_pred(grab_idx(preds, i), **analyze_kwargs) for i in range(n_items)]
+        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(n_items)]
         if has_arg(ds.y.reconstruct, 'x'):
             ys = [ds.y.reconstruct(grab_idx(y, i), x=x) for i,x in enumerate(xs)]
             zs = [ds.y.reconstruct(z, x=x) for z,x in zip(preds,xs)]
         else :
-            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(rows)]
+            ys = [ds.y.reconstruct(grab_idx(y, i)) for i in range(n_items)]
             zs = [ds.y.reconstruct(z) for z in preds]
         ds.x.show_xyzs(xs, ys, zs, **kwargs)
 
@@ -302,13 +332,19 @@ class RecordOnCPU(Callback):
     def on_batch_begin(self, last_input,last_target,**kwargs):
         self.input,self.target = to_cpu(last_input),to_cpu(last_target)
 
-@dataclass
 class LearnerCallback(Callback):
     "Base class for creating callbacks for a `Learner`."
-    learn: Learner
-    def __post_init__(self): setattr(self.learn, self.cb_name, self)
+    def __init__(self, learn):
+        self._learn = weakref.ref(learn)
+        self.exclude,self.not_min = ['_learn'],[]
+        setattr(self.learn, self.cb_name, self)
 
     def __getattr__(self,k): return getattr(self.learn, k)
+
+    @property
+    def learn(self) -> Learner: return self._learn()
+    @learn.setter
+    def learn(self, learn: Learner) -> None: self._learn = weakref.ref(learn)
 
     @property
     def cb_name(self): return camel2snake(self.__class__.__name__)
@@ -320,7 +356,7 @@ class Recorder(LearnerCallback):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val = False
+        self.no_val,self.silent = False,False
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
@@ -328,7 +364,7 @@ class Recorder(LearnerCallback):
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
         self.names += metrics_names
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
-        self.pbar.write(self.names, table=True)
+        if not self.silent: self.pbar.write(self.names, table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
 
     def on_batch_begin(self, train, **kwargs:Any)->None:
@@ -360,7 +396,7 @@ class Recorder(LearnerCallback):
         str_stats = []
         for name,stat in zip(self.names,stats):
             str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
-        self.pbar.write(str_stats, table=True)
+        if not self.silent: self.pbar.write(str_stats, table=True)
 
     def add_metrics(self, metrics):
         "Add `metrics` to the inner stats."
@@ -420,3 +456,22 @@ class FakeOptimizer():
     def step(self): pass
     def zero_grad(self): pass
 
+def load_callback(class_func, state, learn:Learner):
+    init_kwargs, others = split_kwargs_by_func(state, class_func.__init__)
+    res = class_func(learn, **init_kwargs) if issubclass(class_func, LearnerCallback) else class_func(**init_kwargs)
+    for k,v in others.items(): setattr(res, k, v)
+    return res
+
+def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, cpu:bool=False):
+    "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test` and load on `cpu`."
+    state = torch.load(open(Path(path)/fname, 'rb'), map_location='cpu') if cpu else torch.load(open(Path(path)/fname, 'rb'))
+    model = state.pop('model')
+    src = LabelLists.load_state(path, state.pop('data'))
+    if test is not None: src.add_test(test)
+    data = src.databunch()
+    cb_state = state.pop('cb_state')
+    clas_func = state.pop('cls')
+    res = clas_func(data, model, **state)
+    res.callback_fns = state['callback_fns'] #to avoid duplicates
+    res.callbacks = [load_callback(c,s, res) for c,s in cb_state.items()]
+    return res

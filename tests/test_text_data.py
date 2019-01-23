@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.text import *
 
 def text_df(labels):
@@ -38,45 +37,68 @@ def test_from_folder():
     assert set(data.classes) == {'neg', 'pos'}
     shutil.rmtree(path/'temp')
 
+def test_filter_classes():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    text_files(path, ['pos', 'neg', 'unsup'])
+    with pytest.warns(UserWarning):
+        data = (TextList.from_folder(path/'temp')
+                 .random_split_by_pct(0.1)
+                 .label_from_folder(classes=['pos', 'neg'])
+                 .databunch())
+    assert (len(data.train_ds) + len(data.valid_ds)) == 80
+    assert set(data.classes) == {'neg', 'pos'}
+    shutil.rmtree(path/'temp')
 
 def special_fastai_test_rule(s): return s.replace("fast ai", "@fastdotai")
 
 def test_from_csv_and_from_df():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos']) #"fast ai is a cool project", "hello world"
-    data1 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols=["text"])
+    trn_df,val_df,tst_df = df.iloc[:20],df.iloc[20:],df.iloc[:10]
+    data1 = TextClasDataBunch.from_df(path, train_df=trn_df, valid_df=val_df, test_df=tst_df, label_cols=0, 
+                                      text_cols=["text"], no_check=True)
     assert len(data1.classes) == 2
-
+    x,y = next(iter(data1.valid_dl)) # Will fail if the SortSampler keys get messed up between train and valid. 
     df = text_df(['neg','pos','neg pos'])
-    data2 = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df,
+    data2 = TextClasDataBunch.from_df(path, train_df=trn_df, valid_df=val_df,
                                   label_cols=0, text_cols=["text"], label_delim=' ',
-                                  tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]))
+                                  tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]), no_check=True)
     assert len(data2.classes) == 2
     x,y = data2.train_ds[0]
     assert len(y.data) == 2
     assert '@fastdotai' in data2.train_ds.vocab.itos,  "custom tokenzier not used by TextClasDataBunch"
     text_csv_file(path/'tmp.csv', ['neg','pos'])
-    data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"])
+    data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], bs=2)
     assert len(data3.classes) == 1
-    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5)
+    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5, bs=2)
     assert 5 <= len(data4.train_ds.vocab.itos) <= 5+8 # +(8 special tokens - UNK/BOS/etc)
-
-    # Test that the tokenizer parameter is used in from_csv
-    data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"],
-                                     tokenizer=Tokenizer(pre_rules=[special_fastai_test_rule]))
-    assert '@fastdotai' in data4.train_ds.vocab.itos, "It seems that our custom tokenzier was not used by TextClasDataBunch"
+    data4.batch_size = 8
 
     os.remove(path/'tmp.csv')
 
-def test_should_load_backwards_lm():
+def test_should_load_backwards_lm_1():
+    "assumes that a backwards batch starts where forward ends. Whether this holds depends on LanguageModelPreLoader"
+    path = untar_data(URLs.IMDB_SAMPLE)
+    
+    df = text_df(['neg','pos'])
+    data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
+                                   bs=2, backwards=False)
+    batch_forward = data.one_batch(DatasetType.Valid)[0].numpy()
+    
+    data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
+                                   bs=2, backwards=True)
+    batch_backwards = data.one_batch(DatasetType.Valid)[0].numpy()
+
+    np.testing.assert_array_equal(batch_backwards, np.flip(batch_forward))
+
+def test_should_load_backwards_lm_2():
+    "it is fragile to test against specific words. What if 2 batches were split between 'is' an 'a' in df.Text"
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos'])
     data = TextLMDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=["text"],
-                                   bs=1, backwards=True)
-    lml = data.train_dl.dl
-    lml.data = lml.batchify(np.concatenate([lml.dataset.x.items[i] for i in range(len(lml.dataset))]))
-    batch = lml.get_batch(0, 70)
-    as_text = [data.train_ds.vocab.itos[x] for x in batch[0]]
+                                   bs=2, backwards=True)
+    batch = data.one_batch(DatasetType.Valid)
+    as_text = [data.vocab.itos[x] for x in batch[0][0]]
     np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
 def df_test_collate(data):
@@ -116,7 +138,7 @@ def test_from_ids_works_for_equally_length_sentences():
     lbl = [0]*10
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
-                                      valid_ids=ids, valid_lbls=lbl, classes={0:0})
+                                      valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
     text_classifier_learner(data).fit(1)
 
 def test_from_ids_works_for_variable_length_sentences():
@@ -124,5 +146,15 @@ def test_from_ids_works_for_variable_length_sentences():
     lbl = [0]*10
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
-                                      valid_ids=ids, valid_lbls=lbl, classes={0:0})
+                                      valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
     text_classifier_learner(data).fit(1)
+
+def test_regression():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    df = text_df([0., 1.])
+    data = (TextList.from_df(df, path, cols='text')
+             .random_split_by_pct(0.2)
+             .label_from_df(cols='label',label_cls=FloatList)
+             .databunch(bs=4))
+    assert data.c == 1
+    x,y = data.one_batch()

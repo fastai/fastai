@@ -4,18 +4,19 @@ from .callbacks import *
 from .basic_data import *
 from .basic_train import *
 
-__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'mixup']
+__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32',
+           'mixup']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
     return partial(OneCycleScheduler, lr_max=lr_max, **kwargs)
 
-def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr, 
-                  moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, 
+def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr,
+                  moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3,
                   wd:float=None, callbacks:Optional[CallbackList]=None, **kwargs)->None:
     "Fit a model following the 1cycle policy."
     max_lr = learn.lr_range(max_lr)
-    callbacks = ifnone(callbacks, [])
+    callbacks = listify(callbacks)
     callbacks.append(OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor,
                                         pct_start=pct_start, **kwargs))
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
@@ -37,6 +38,15 @@ def to_fp16(learn:Learner, loss_scale:float=512., flat_master:bool=False)->Learn
     learn.callbacks.append(learn.mp_cb)
     return learn
 
+def to_fp32(learn:Learner):
+    "Put `learn` back to FP32 precision mode."
+    learn.data.train_dl.remove_tfm(batch_to_half)
+    if hasattr(learn.data, 'valid_dl') and learn.data.valid_dl is not None:
+        learn.data.valid_dl.remove_tfm(batch_to_half)
+    if hasattr(learn.data, 'test_dl') and learn.data.test_dl is not None:
+        learn.data.test_dl.remove_tfm(batch_to_half)
+    learn.model = learn.model.float()
+
 def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True) -> Learner:
     "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
     if stack_y: learn.loss_func = MixUpLoss(learn.loss_func)
@@ -46,6 +56,7 @@ def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True)
 Learner.fit_one_cycle = fit_one_cycle
 Learner.lr_find = lr_find
 Learner.to_fp16 = to_fp16
+Learner.to_fp32 = to_fp32
 Learner.mixup = mixup
 
 class ShowGraph(LearnerCallback):
@@ -67,10 +78,11 @@ class BnFreeze(LearnerCallback):
         "Put bn layers in eval mode just after `model.train()`."
         set_bn_eval(self.learn.model)
 
-@dataclass
 class GradientClipping(LearnerCallback):
     "Gradient clipping during training."
-    clip:float
+    def __init__(self, learn:Learner, clip:float = 0.):
+        super().__init__(learn)
+        self.clip = clip
 
     def on_backward_end(self, **kwargs):
         "Clip the gradient before the optimizer step."
@@ -82,4 +94,3 @@ def clip_grad(learn:Learner, clip:float=0.1)->Learner:
     return learn
 
 Learner.clip_grad = clip_grad
-

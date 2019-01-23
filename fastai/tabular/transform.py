@@ -1,10 +1,11 @@
 "Cleaning and feature engineering functions for structured data"
 from ..torch_core import *
+from pandas.api.types import is_numeric_dtype
 
-__all__ = ['add_datepart', 'Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularProc']
+__all__ = ['add_datepart', 'cont_cat_split', 'Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularProc']
 
 def add_datepart(df, fldname, drop=True, time=False):
-    "Helper function that adds columns relevant to a date."
+    "Helper function that adds columns relevant to a date in the column `fldname` of `df`."
     fld = df[fldname]
     fld_dtype = fld.dtype
     if isinstance(fld_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
@@ -20,6 +21,15 @@ def add_datepart(df, fldname, drop=True, time=False):
     df[targ_pre + 'Elapsed'] = fld.astype(np.int64) // 10 ** 9
     if drop: df.drop(fldname, axis=1, inplace=True)
 
+def cont_cat_split(df, max_card=20, dep_var=None):
+    "Helper function that returns column names of cont and cat variables from given df."
+    cont_names, cat_names = [], []
+    for label in df:
+        if label == dep_var: continue
+        if len(set(df[label])) > max_card and df[label].dtype == int or df[label].dtype == float: cont_names.append(label)
+        else: cat_names.append(label)
+    return cont_names, cat_names
+        
 @dataclass
 class TabularProc():
     "A processor for tabular dataframes."
@@ -41,12 +51,14 @@ class TabularProc():
 class Categorify(TabularProc):
     "Transform the categorical variables to that type."
     def apply_train(self, df:DataFrame):
+        "Transform `self.cat_names` columns in categorical."
         self.categories = {}
         for n in self.cat_names:
             df.loc[:,n] = df.loc[:,n].astype('category').cat.as_ordered()
             self.categories[n] = df[n].cat.categories
 
     def apply_test(self, df:DataFrame):
+        "Transform `self.cat_names` columns in categorical using the codes decided in `apply_train`."
         for n in self.cat_names:
             df.loc[:,n] = pd.Categorical(df[n], categories=self.categories[n], ordered=True)
 
@@ -59,6 +71,7 @@ class FillMissing(TabularProc):
     add_col:bool=True
     fill_val:float=0.
     def apply_train(self, df:DataFrame):
+        "Fill missing values in `self.cont_names` according to `self.fill_strategy`."
         self.na_dict = {}
         for name in self.cont_names:
             if pd.isnull(df.loc[:,name]).sum():
@@ -72,6 +85,7 @@ class FillMissing(TabularProc):
                 self.na_dict[name] = filler
 
     def apply_test(self, df:DataFrame):
+        "Fill missing values in `self.cont_names` like in `apply_train`."
         for name in self.cont_names:
             if name in self.na_dict:
                 if self.add_col:
@@ -85,11 +99,15 @@ class FillMissing(TabularProc):
 class Normalize(TabularProc):
     "Normalize the continuous variables."
     def apply_train(self, df:DataFrame):
+        "Comput the means and stds of `self.cont_names` columns to normalize them."
         self.means,self.stds = {},{}
         for n in self.cont_names:
+            assert is_numeric_dtype(df[n]), (f"""Cannot normalize '{n}' column as it isn't numerical.
+                Are you sure it doesn't belong in the categorical set of columns?""")
             self.means[n],self.stds[n] = df.loc[:,n].mean(),df.loc[:,n].std()
             df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])
 
     def apply_test(self, df:DataFrame):
+        "Normalize `self.cont_names` with the same statistics as in `apply_train`."
         for n in self.cont_names:
             df.loc[:,n] = (df.loc[:,n]-self.means[n]) / (1e-7 + self.stds[n])

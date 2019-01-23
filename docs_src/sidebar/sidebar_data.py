@@ -10,7 +10,9 @@ sidebar_d = {
     'Getting started': {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
         'Installation Extras': '/install',
-        'Troubleshooting': '/troubleshoot'
+        'Troubleshooting': '/troubleshoot',
+        'Performance': '/performance',
+        'Support': '/support'
     },
     'Training': {
         'Overview': '/training',
@@ -42,9 +44,10 @@ sidebar_d = {
                 'vision.transform': '/vision.transform',
                 'vision.image': '/vision.image',
                 'vision.data': '/vision.data',
+                'vision.gan': '/vision.gan',
                 'vision.model overview': '/vision.models',
                 'vision.models.unet': '/vision.models.unet',
-                'vision.widgets': '/widgets'
+                'widgets.image_cleaner': '/widgets.image_cleaner'
             }
         },
         'empty1': {
@@ -74,6 +77,9 @@ sidebar_d = {
         'datasets': '/datasets',
         'core': '/core',
         'torch_core': '/torch_core',
+    },
+    'Utils': {
+        'Helpers': '/utils.collect_env'
     },
     'Tutorials': {
         'Look at data': '/tutorial.data',

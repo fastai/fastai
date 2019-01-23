@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.text import *
 
 pytestmark = pytest.mark.integration
@@ -76,7 +75,6 @@ def test_vocabs(learn):
         assert len(learn.data.train_ds.vocab.itos) == len(ds.vocab.itos)
         assert np.all(learn.data.train_ds.vocab.itos == ds.vocab.itos)
 
-@pytest.mark.skip(reason="need to update")
 def text_df(n_labels):
     data = []
     texts = ["fast ai is a cool project", "hello world"]
@@ -99,8 +97,8 @@ def test_classifier():
             classifier = text_classifier_learner(data, bptt=10)
             assert last_layer(classifier.model).out_features == expected_classes
             assert len(data.train_dl) == math.ceil(len(data.train_ds)/data.train_dl.batch_size)
-            assert next(iter(data.train_dl))[0].shape == (9, 2)
-            assert next(iter(data.valid_dl))[0].shape == (9, 2)
+            assert next(iter(data.train_dl))[0].shape == (2, 7)
+            assert next(iter(data.valid_dl))[0].shape == (2, 7)
         finally:
             shutil.rmtree(path)
 
@@ -113,14 +111,26 @@ def clean_destroy_block():
     learn = language_model_learner(data, emb_sz=100, nl=1, drop_mult=0.)
     learn.lr_find()
 
-@pytest.mark.skip(reason="memory leak to be fixed")
+@pytest.mark.slow
 def test_mem_leak():
     gc.collect()
     garbage_before = len(gc.garbage)  # should be 0 already, or something leaked earlier
     assert garbage_before == 0
     clean_destroy_block()
+
     gc_collected = gc.collect() # should be 0 too - !0 means we have circular references
-    assert gc_collected == 0
+    assert gc_collected < 102 # scipy has some cyclic references that we want to ignore (this accounts for 100 objects).
     garbage_after = len(gc.garbage)  # again, should be 0, or == garbage_before
     assert garbage_after == 0
 
+def test_order_preds():
+    path, df_trn, df_val = prep_human_numbers()
+    df_val.labels = np.random.randint(0,5,(len(df_val),))
+    data_clas = (TextList.from_df(df_val, path, cols='texts')
+                .split_by_idx(list(range(200)))
+                .label_from_df(cols='labels')
+                .databunch())
+    learn = text_classifier_learner(data_clas)
+    preds = learn.get_preds(ordered=True)
+    true_value = np.array([learn.data.train_ds.c2i[o] for o in df_val.iloc[:200,0]])
+    np.all(true_value==preds[1].numpy())
