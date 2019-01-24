@@ -189,7 +189,7 @@ class ClassificationInterpretation():
         cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
         res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
-                for i,j in zip(*np.where(cm>min_val))]
+                for i,j in zip(*np.where(cm>=min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
