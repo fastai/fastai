@@ -27,8 +27,8 @@ of that change.
 
 ### New:
 
-- `gpu_mem_restore` - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
-- `gpu_mem_restore_ctx` - same as `gpu_mem_restore`, but a context manager
+- `gpu_mem_restore` decorator - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
+- `gpu_mem_restore_ctx` context manager - same functionality as `gpu_mem_restore`
 - `PeakMemMetric` callback to profile general and GPU RAM used and peaked by epoch
 - `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
 - `Learner.export` serializes the model on the CPU to avoid loading on the GPU when there are none (thanks to pouannes)
@@ -37,9 +37,8 @@ of that change.
 
 ### Fixed:
 
-- any fastai function that internally uses fit() will no longer suffer from
-  unrecoverable 'CUDA out of memory error' and memory leakages triggered by manual
-  interrupt.
+- any fastai function that internally uses `fit()` will no longer suffer from
+  unrecoverable 'CUDA out of memory error' unless overridden by the `FASTAI_TB_CLEAR_FRAMES` environment variable, which also allows extending this protection to all other exceptions.
 - `DataBunch.show_batch` and `Learner.show_results` show at maximum batch_size elements
 - `DataBunch.show_batch` and `Learner.show_results` handle `rows=1` (thanks to xnutsive)
 - `LanguageModelPreLoader` is way faster (thanks to kasparlund)
