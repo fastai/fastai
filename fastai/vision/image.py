@@ -585,7 +585,7 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     ch,r,c = img.shape
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
-    return ch,round(r/ratio),round(c/ratio)
+    return ch,int(round(r/ratio)),int(round(c/ratio)) #Sometimes those are numpy numbers and round doesn't return an int.
 
 def plot_flat(r, c, figsize):
     "Shortcut for `enumerate(subplots.flatten())`"
