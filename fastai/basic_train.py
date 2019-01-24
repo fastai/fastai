@@ -212,11 +212,13 @@ class Learner():
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
-        state['model'] = self.model
+        device = one_param(self.model).device
+        state['model'] = self.model.cpu() #This is done inplace so we need to put the model back where it was after the save.
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
-        torch.save(state, open(self.path/fname, 'wb'))
+        pickle.dump(state, open(self.path/fname, 'wb'))
+        self.model.to(device)
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
@@ -462,9 +464,9 @@ def load_callback(class_func, state, learn:Learner):
     for k,v in others.items(): setattr(res, k, v)
     return res
 
-def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None, cpu:bool=False):
+def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test` and load on `cpu`."
-    state = torch.load(open(Path(path)/fname, 'rb'), map_location='cpu') if cpu else torch.load(open(Path(path)/fname, 'rb'))
+    state = pickle.load(open(Path(path)/fname, 'rb'))
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)
