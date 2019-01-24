@@ -217,7 +217,7 @@ class Learner():
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
-        pickle.dump(state, open(self.path/fname, 'wb'))
+        torch.save(state, open(self.path/fname, 'wb'))
         self.model.to(device)
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
@@ -466,7 +466,7 @@ def load_callback(class_func, state, learn:Learner):
 
 def load_learner(path:PathOrStr, fname:PathOrStr='export.pkl', test:ItemList=None):
     "Load a `Learner` object saved with `export_state` in `path/fn` with empty data, optionally add `test` and load on `cpu`."
-    state = pickle.load(open(Path(path)/fname, 'rb'))
+    state = torch.load(open(Path(path)/fname, 'rb'))
     model = state.pop('model')
     src = LabelLists.load_state(path, state.pop('data'))
     if test is not None: src.add_test(test)
