@@ -435,6 +435,14 @@ See also [Kernels for different environments](https://ipython.readthedocs.io/en/
 
 ## CUDA Errors
 
+### CUDA out of memory exception
+
+When this error is encountered, that means the software cannot allocate the memory it needs to continue. Therefore you need to change your code to consume less memory. Most of the time in the training loops it requires either reducing the batch size and other hyper-parameters, using a smaller model or smaller items (images, etc.).
+
+There is a particular issue with this error is that under ipython/jupyter notebook this error may lead to an unrecoverable state, where the only way out is to restart the jupyter kernel. This problem is easily solved. Please see [Memory Leakage On Exception](
+dev/gpu.html#memory-leakage-on-exception).
+
+
 ### cuda runtime error (59) : device-side assert triggered
 
 CUDA's default environment allows sending commands to GPU in asynchronous mode - i.e. without waiting to check whether they were successful, thus tremendously speeding up the execution. The side effect is that if anything goes wrong, the context is gone and it's impossible to tell what the error was. That's when you get this generic error, which means that something went wrong on the GPU, but the program can't tell what.
