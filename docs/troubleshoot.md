@@ -440,7 +440,7 @@ See also [Kernels for different environments](https://ipython.readthedocs.io/en/
 When this error is encountered, that means the software cannot allocate the memory it needs to continue. Therefore you need to change your code to consume less memory. Most of the time in the training loops it requires either reducing the batch size and other hyper-parameters, using a smaller model or smaller items (images, etc.).
 
 There is a particular issue with this error is that under ipython/jupyter notebook this error may lead to an unrecoverable state, where the only way out is to restart the jupyter kernel. This problem is easily solved. Please see [Memory Leakage On Exception](
-dev/gpu.html#memory-leakage-on-exception).
+#memory-leakage-on-exception).
 
 
 ### cuda runtime error (59) : device-side assert triggered
@@ -473,6 +473,99 @@ Of course, if you're not using `jupyter notebook` then you can just set the env 
    ```
    CUDA_LAUNCH_BLOCKING=1 my_pytorch_script.py
    ```
+
+
+## Memory Leakage On Exception
+
+This section applies to both general and GPU RAM.
+
+If an exception occurs in a jupyter notebook (or ipython shell) it stores the traceback of the exception so that it can be accessed by `%debug` and `%pdb` magic. The trouble is that this feature prevents variables involved in the exception (`locals()` in each frame involved) from being released and memory reclaimed by `gc.collect()`, when the exception is reported. And so all those variables get stuck and memory is leaked. In particular when [CUDA out of memory exception](#cuda-out-of-memory-exception) is encountered you might not be able to continue using the card, until the kernel is reset, since the leaked memory will leave no free RAM to proceed with.
+
+So now that you understand this, the quick fix solution is to just run a cell with this content:
+
+```
+1/0
+```
+
+and you should be back in the game w/o needing to restart the kernel. This fixed the problem since any new exception will free up the resources tied up by the previous exception. If you want something more instructive, use:
+
+```
+assert False, "please liberate my GPU!"
+```
+
+The leakage happens with any exception, except it's most problematic with CUDA OOM exception. For example if you tend to hit Kernel Interrupt and then re-run your training loop, you will have less RAM to run on when you re-run it.
+
+Currently, ipython is working on a configurable solution. This section will get updated once ipython has it sorted out.
+
+The rest of this section covers a variety of solutions for this problem.
+
+If you want to understand more about the nuances of the problem of saving a traceback or an exception object, please refer to [this explanation](https://stackoverflow.com/a/54295910/9201239).
+
+#### fastai Solutions
+
+`fastai > 1.0.41` has been instrumented with the following features that will provide you a solution to this problem:
+
+1.  under non-ipython environment it doesn't do anything special
+2. under ipython it strips tb by default only for the "CUDA out of memory" exception, i.e. `%debug` magic will work under all circumstances but this one, and it'll leak memory in all of those until tb is reset
+3.  The env var ` FASTAI_TB_CLEAR_FRAMES` changes this behavior when run under ipython,
+depending on its value:
+
+* "0": never  strip tb (makes it possible to always use %debug magic, but with leaks)
+* "1": always strip tb (never need to worry about leaks, but %debug won't work)
+
+where ipython == ipython/ipython-notebook/jupyter-notebook.
+
+At the moment we are only doing this for the fit() family of functions. If you find other fastai API needing this please let us know.
+
+You can set `os.environ['FASTAI_TB_CLEAR_FRAMES']="0"` (or `"1"`) in your code or from the shell when you start jupyter.
+
+#### Custom Solutions
+
+If you need a solution for your own code that perhaps doesn't involve `fastai` functions, here is a decorator you can use to workaround this issue:
+
+```python
+import functools, traceback
+def gpu_mem_restore(func):
+    "Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            type, val, tb = sys.exc_info()
+            traceback.clear_frames(tb)
+            raise type(val).with_traceback(tb) from None
+    return wrapper
+```
+
+Now add it before any of your functions:
+
+```
+@gpu_mem_restore
+def fit(...)
+```
+and OOM is now automagically recoverable! And `KeyboardInterrupt` leaks no memory!
+
+And if you want to protect just a few lines of code, here is a context manager that does the same:
+```
+class gpu_mem_restore_ctx():
+    " context manager to reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    def __enter__(self): return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not exc_val: return True
+        traceback.clear_frames(exc_tb)
+        raise exc_type(exc_val).with_traceback(exc_tb) from None
+```
+So now you can do:
+
+```
+with gpu_mem_restore_ctx():
+    learn.fit_one_cycle(1, 1e-2)
+```
+with the same results. Except this one (fit functions) is already protected, this would be more useful for your custom code.
+
+Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.mem](https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py) which have more flexibility as explained in the previous section.
+
 
 ## Support
 
