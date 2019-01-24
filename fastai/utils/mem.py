@@ -3,8 +3,11 @@
 from ..imports.torch import *
 from ..core import *
 from ..script import *
+from ..utils.env import *
 import pynvml, functools, traceback
 from collections import namedtuple
+
+IS_IN_IPYTHON = is_in_ipython()
 
 GPUMemory = namedtuple('GPUMemory', ['total', 'used', 'free'])
 
@@ -63,6 +66,9 @@ def gpu_mem_restore(func):
     "Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        if not IS_IN_IPYTHON: # the problem impacts only ipython-based envs
+            return func(*args, **kwargs)
+
         try:
             return func(*args, **kwargs)
         except:
