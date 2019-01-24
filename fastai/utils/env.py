@@ -9,7 +9,7 @@ def is_in_ipython():
 
     if ('jupyter-notebook' in program_name or # jupyter-notebook
         'ipython'          in program_name or # ipython
-        'JPY_PARENT_PID' in os.environ        # ipython-notebook
-    ): return True
-
-    return False
+        'JPY_PARENT_PID'   in os.environ):    # ipython-notebook
+        return True
+    else:
+        return False
