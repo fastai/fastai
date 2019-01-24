@@ -501,7 +501,7 @@ The rest of this section covers a variety of solutions for this problem.
 
 If you want to understand more about the nuances of the problem of saving a traceback or an exception object, please refer to [this explanation](https://stackoverflow.com/a/54295910/9201239).
 
-#### fastai Solutions
+### fastai Solutions
 
 `fastai > 1.0.41` has been instrumented with the following features that will provide you a solution to this problem:
 
@@ -519,7 +519,7 @@ At the moment we are only doing this for the fit() family of functions. If you f
 
 You can set `os.environ['FASTAI_TB_CLEAR_FRAMES']="0"` (or `"1"`) in your code or from the shell when you start jupyter.
 
-#### Custom Solutions
+### Custom Solutions
 
 If you need a solution for your own code that perhaps doesn't involve `fastai` functions, here is a decorator you can use to workaround this issue:
 
