@@ -339,7 +339,9 @@ class MultiCategoryProcessor(CategoryProcessor):
                 
     def process_one(self,item): 
         if self.one_hot or isinstance(item, EmptyLabel): return item
-        return [super(MultiCategoryProcessor, self).process_one(o) for o in item]
+        res = [super(MultiCategoryProcessor, self).process_one(o) for o in item]
+        res = [r for r in res if r is not None]
+        return res if len(res) > 0 else None
 
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."

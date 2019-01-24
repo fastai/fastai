@@ -1838,7 +1838,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MultiCategoryList"><code>class</code> <code>MultiCategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L352" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategoryList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`label_delim`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`one_hot`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a></p>
+<h3 id="MultiCategoryList"><code>class</code> <code>MultiCategoryList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L354" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategoryList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`classes`</b>:<code>Collection</code>[<code>T_co</code>]=<b><i>`None`</i></b>, <b>`label_delim`</b>:<code>str</code>=<b><i>`None`</i></b>, <b>`one_hot`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#CategoryListBase"><code>CategoryListBase</code></a></p>
 </blockquote>
 <p>Basic <a href="/data_block.html#ItemList"><code>ItemList</code></a> for multi-classification labels.</p>
 
@@ -1867,7 +1867,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FloatList"><code>class</code> <code>FloatList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L378" class="source_link">[source]</a></h3><blockquote><p><code>FloatList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`log`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
+<h3 id="FloatList"><code>class</code> <code>FloatList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L380" class="source_link">[source]</a></h3><blockquote><p><code>FloatList</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`log`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/data_block.html#ItemList"><code>ItemList</code></a></p>
 </blockquote>
 <p><a href="/data_block.html#ItemList"><code>ItemList</code></a> suitable for storing the floats in items for regression. Will add a <code>log</code> if thif flag is <code>True</code>.</p>
 
@@ -2063,7 +2063,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MultiCategoryProcessor.generate_classes"><code>generate_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L344" class="source_link">[source]</a></h4><blockquote><p><code>generate_classes</code>(<b>`items`</b>)</p>
+<h4 id="MultiCategoryProcessor.generate_classes"><code>generate_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L346" class="source_link">[source]</a></h4><blockquote><p><code>generate_classes</code>(<b>`items`</b>)</p>
 </blockquote>
 <p>Generate classes from <code>items</code> by taking the sorted unique values.</p>
 
@@ -2103,7 +2103,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemLists.transform"><code>transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L443" class="source_link">[source]</a></h4><blockquote><p><code>transform</code>(<b>`tfms`</b>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]]]=<b><i>`(None, None)`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ItemLists.transform"><code>transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L445" class="source_link">[source]</a></h4><blockquote><p><code>transform</code>(<b>`tfms`</b>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]]]=<b><i>`(None, None)`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Set <code>tfms</code> to be applied to the xs of the train and validation set.</p>
 
@@ -2144,7 +2144,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.add_test"><code>add_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L486" class="source_link">[source]</a></h4><blockquote><p><code>add_test</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`label`</b>:<code>Any</code>=<b><i>`None`</i></b>)</p>
+<h4 id="LabelLists.add_test"><code>add_test</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L488" class="source_link">[source]</a></h4><blockquote><p><code>add_test</code>(<b>`items`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`label`</b>:<code>Any</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Add test set containing <code>items</code> with an arbitrary <code>label</code>.</p>
 
@@ -2183,7 +2183,7 @@ summary: "The data block API"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.add_test_folder"><code>add_test_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L496" class="source_link">[source]</a></h4><blockquote><p><code>add_test_folder</code>(<b>`test_folder`</b>:<code>str</code>=<b><i>`'test'`</i></b>, <b>`label`</b>:<code>Any</code>=<b><i>`None`</i></b>)</p>
+<h4 id="LabelLists.add_test_folder"><code>add_test_folder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L498" class="source_link">[source]</a></h4><blockquote><p><code>add_test_folder</code>(<b>`test_folder`</b>:<code>str</code>=<b><i>`'test'`</i></b>, <b>`label`</b>:<code>Any</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Add test set containing items from <code>test_folder</code> and an arbitrary <code>label</code>.</p>
 
@@ -2257,7 +2257,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.databunch"><code>databunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L477" class="source_link">[source]</a></h4><blockquote><p><code>databunch</code>(<b>`path`</b>:<code>PathOrStr</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>ImageDataBunch</code></p>
+<h4 id="LabelLists.databunch"><code>databunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L479" class="source_link">[source]</a></h4><blockquote><p><code>databunch</code>(<b>`path`</b>:<code>PathOrStr</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>ImageDataBunch</code></p>
 </blockquote>
 <p>Create an <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from self, <code>path</code> will override <code>self.path</code>, <code>kwargs</code> are passed to <a href="/basic_data.html#DataBunch.create"><code>DataBunch.create</code></a>.</p>
 
@@ -2284,7 +2284,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelList"><code>class</code> <code>LabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L516" class="source_link">[source]</a></h3><blockquote><p><code>LabelList</code>(<b>`x`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`y`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`tfm_y`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
+<h3 id="LabelList"><code>class</code> <code>LabelList</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L518" class="source_link">[source]</a></h3><blockquote><p><code>LabelList</code>(<b>`x`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`y`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`tfm_y`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
 </blockquote>
 <p>A list of inputs <code>x</code> and labels <code>y</code> with optional <code>tfms</code>.</p>
 
@@ -2312,7 +2312,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.export"><code>export</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L590" class="source_link">[source]</a></h4><blockquote><p><code>export</code>(<b>`fn`</b>:<code>PathOrStr</code>, <b>`kwargs`</b>)</p>
+<h4 id="LabelList.export"><code>export</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L592" class="source_link">[source]</a></h4><blockquote><p><code>export</code>(<b>`fn`</b>:<code>PathOrStr</code>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Export the minimal state and save it in <code>fn</code> to load an empty version for inference.</p>
 
@@ -2333,7 +2333,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.transform_y"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L636" class="source_link">[source]</a></h4><blockquote><p><code>transform_y</code>(<b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="LabelList.transform_y"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L638" class="source_link">[source]</a></h4><blockquote><p><code>transform_y</code>(<b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Set <code>tfms</code> to be applied to the targets only.</p>
 
@@ -2354,7 +2354,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.get_state"><code>get_state</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L581" class="source_link">[source]</a></h4><blockquote><p><code>get_state</code>(<b>`kwargs`</b>)</p>
+<h4 id="LabelList.get_state"><code>get_state</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L583" class="source_link">[source]</a></h4><blockquote><p><code>get_state</code>(<b>`kwargs`</b>)</p>
 </blockquote>
 <p>Return the minimal state for export.</p>
 
@@ -2375,7 +2375,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L594" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<b>`fn`</b>:<code>PathOrStr</code>)</p>
+<h4 id="LabelList.load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L596" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fn`</b>:<code>PathOrStr</code>)</p>
 </blockquote>
 <p>Load the sate in <code>fn</code> to create an empty <a href="/data_block.html#LabelList"><code>LabelList</code></a> for inference.</p>
 
@@ -2396,7 +2396,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.load_state"><code>load_state</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L599" class="source_link">[source]</a></h4><blockquote><p><code>load_state</code>(<b>`state`</b>:<code>dict</code>) → <code>LabelList</code></p>
+<h4 id="LabelList.load_state"><code>load_state</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L601" class="source_link">[source]</a></h4><blockquote><p><code>load_state</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`state`</b>:<code>dict</code>) → <code>LabelList</code></p>
 </blockquote>
 <p>Create a <a href="/data_block.html#LabelList"><code>LabelList</code></a> from <code>state</code>.</p>
 
@@ -2417,7 +2417,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.process"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L610" class="source_link">[source]</a></h4><blockquote><p><code>process</code>(<b>`xp`</b>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<b><i>`None`</i></b>, <b>`yp`</b>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<b><i>`None`</i></b>, <b>`name`</b>:<code>str</code>=<b><i>`None`</i></b>)</p>
+<h4 id="LabelList.process"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L612" class="source_link">[source]</a></h4><blockquote><p><code>process</code>(<b>`xp`</b>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<b><i>`None`</i></b>, <b>`yp`</b>:<a href="/data_block.html#PreProcessor"><code>PreProcessor</code></a>=<b><i>`None`</i></b>, <b>`name`</b>:<code>str</code>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>Launch the processing on <code>self.x</code> and <code>self.y</code> with <code>xp</code> and <code>yp</code>.</p>
 
@@ -2438,7 +2438,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.set_item"><code>set_item</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L526" class="source_link">[source]</a></h4><blockquote><p><code>set_item</code>(<b>`item`</b>)</p>
+<h4 id="LabelList.set_item"><code>set_item</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L528" class="source_link">[source]</a></h4><blockquote><p><code>set_item</code>(<b>`item`</b>)</p>
 </blockquote>
 <p>For inference, will briefly replace the dataset with one that only contains <code>item</code>.</p>
 
@@ -2459,7 +2459,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.to_df"><code>to_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L573" class="source_link">[source]</a></h4><blockquote><p><code>to_df</code>()</p>
+<h4 id="LabelList.to_df"><code>to_df</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L575" class="source_link">[source]</a></h4><blockquote><p><code>to_df</code>()</p>
 </blockquote>
 <p>Create <code>pd.DataFrame</code> containing <code>items</code> from <code>self.x</code> and <code>self.y</code>.</p>
 
@@ -2480,7 +2480,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.to_csv"><code>to_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L577" class="source_link">[source]</a></h4><blockquote><p><code>to_csv</code>(<b>`dest`</b>:<code>str</code>)</p>
+<h4 id="LabelList.to_csv"><code>to_csv</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L579" class="source_link">[source]</a></h4><blockquote><p><code>to_csv</code>(<b>`dest`</b>:<code>str</code>)</p>
 </blockquote>
 <p>Save <code>self.to_df()</code> to a CSV file in <code>self.path</code>/<code>dest</code>.</p>
 
@@ -2501,7 +2501,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelList.transform"><code>transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L629" class="source_link">[source]</a></h4><blockquote><p><code>transform</code>(<b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <b>`tfm_y`</b>:<code>bool</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="LabelList.transform"><code>transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L631" class="source_link">[source]</a></h4><blockquote><p><code>transform</code>(<b>`tfms`</b>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <b>`tfm_y`</b>:<code>bool</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Set the <code>tfms</code> and <code>tfm_y</code> value to be applied to the inputs and targets.</p>
 
@@ -2522,7 +2522,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemLists"><code>class</code> <code>ItemLists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L393" class="source_link">[source]</a></h3><blockquote><p><code>ItemLists</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`train`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`valid`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`test`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>=<b><i>`None`</i></b>)</p>
+<h3 id="ItemLists"><code>class</code> <code>ItemLists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L395" class="source_link">[source]</a></h3><blockquote><p><code>ItemLists</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`train`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`valid`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`test`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>=<b><i>`None`</i></b>)</p>
 </blockquote>
 <p>An <a href="/data_block.html#ItemList"><code>ItemList</code></a> for each of <code>train</code> and <code>valid</code> (optional <code>test</code>).</p>
 
@@ -2543,7 +2543,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemLists.label_from_lists"><code>label_from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L434" class="source_link">[source]</a></h4><blockquote><p><code>label_from_lists</code>(<b>`train_labels`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`valid_labels`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`label_cls`</b>:<code>Callable</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>LabelList</code></p>
+<h4 id="ItemLists.label_from_lists"><code>label_from_lists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L436" class="source_link">[source]</a></h4><blockquote><p><code>label_from_lists</code>(<b>`train_labels`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`valid_labels`</b>:<code>Iterator</code>[<code>T_co</code>], <b>`label_cls`</b>:<code>Callable</code>=<b><i>`None`</i></b>, <b>`kwargs`</b>) → <code>LabelList</code></p>
 </blockquote>
 <p>Use the labels in <code>train_labels</code> and <code>valid_labels</code> to label the data. <code>label_cls</code> will overwrite the default.</p>
 
@@ -2564,7 +2564,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemLists.transform"><code>transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L443" class="source_link">[source]</a></h4><blockquote><p><code>transform</code>(<b>`tfms`</b>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]]]=<b><i>`(None, None)`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ItemLists.transform"><code>transform</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L445" class="source_link">[source]</a></h4><blockquote><p><code>transform</code>(<b>`tfms`</b>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]]]=<b><i>`(None, None)`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Set <code>tfms</code> to be applied to the xs of the train and validation set.</p>
 
@@ -2585,7 +2585,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemLists.transform_y"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L451" class="source_link">[source]</a></h4><blockquote><p><code>transform_y</code>(<b>`tfms`</b>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]]]=<b><i>`(None, None)`</i></b>, <b>`kwargs`</b>)</p>
+<h4 id="ItemLists.transform_y"><code>transform_y</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L453" class="source_link">[source]</a></h4><blockquote><p><code>transform_y</code>(<b>`tfms`</b>:<code>Optional</code>[<code>Tuple</code>[<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]], <code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>Callable</code>]]]]=<b><i>`(None, None)`</i></b>, <b>`kwargs`</b>)</p>
 </blockquote>
 <p>Set <code>tfms</code> to be applied to the ys of the train and validation set.</p>
 
@@ -2606,7 +2606,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LabelLists"><code>class</code> <code>LabelLists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L459" class="source_link">[source]</a></h3><blockquote><p><code>LabelLists</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`train`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`valid`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`test`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>=<b><i>`None`</i></b>) :: <a href="/data_block.html#ItemLists"><code>ItemLists</code></a></p>
+<h3 id="LabelLists"><code>class</code> <code>LabelLists</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L461" class="source_link">[source]</a></h3><blockquote><p><code>LabelLists</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`train`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`valid`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>, <b>`test`</b>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>=<b><i>`None`</i></b>) :: <a href="/data_block.html#ItemLists"><code>ItemLists</code></a></p>
 </blockquote>
 <p>A <a href="/data_block.html#LabelList"><code>LabelList</code></a> for each of <code>train</code> and <code>valid</code> (optional <code>test</code>).</p>
 
@@ -2627,7 +2627,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.get_processors"><code>get_processors</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L461" class="source_link">[source]</a></h4><blockquote><p><code>get_processors</code>()</p>
+<h4 id="LabelLists.get_processors"><code>get_processors</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L463" class="source_link">[source]</a></h4><blockquote><p><code>get_processors</code>()</p>
 </blockquote>
 <p>Read the default class processors if none have been set.</p>
 
@@ -2648,7 +2648,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L510" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fn`</b>:<code>PathOrStr</code>=<b><i>`'export.pkl'`</i></b>)</p>
+<h4 id="LabelLists.load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L512" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`fn`</b>:<code>PathOrStr</code>=<b><i>`'export.pkl'`</i></b>)</p>
 </blockquote>
 <p>Create a <a href="/data_block.html#LabelLists"><code>LabelLists</code></a> with empty sets from the serialzed file in <code>path/fn</code>.</p>
 
@@ -2669,7 +2669,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.load_state"><code>load_state</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L502" class="source_link">[source]</a></h4><blockquote><p><code>load_state</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`state`</b>:<code>dict</code>)</p>
+<h4 id="LabelLists.load_state"><code>load_state</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L504" class="source_link">[source]</a></h4><blockquote><p><code>load_state</code>(<b>`path`</b>:<code>PathOrStr</code>, <b>`state`</b>:<code>dict</code>)</p>
 </blockquote>
 <p>Create a <a href="/data_block.html#LabelLists"><code>LabelLists</code></a> with empty sets from the serialized <code>state</code>.</p>
 
@@ -2690,7 +2690,7 @@ learn.validate()</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="LabelLists.process"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L468" class="source_link">[source]</a></h4><blockquote><p><code>process</code>()</p>
+<h4 id="LabelLists.process"><code>process</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L470" class="source_link">[source]</a></h4><blockquote><p><code>process</code>()</p>
 </blockquote>
 <p>Process the inner datasets.</p>
 

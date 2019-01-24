@@ -42,7 +42,7 @@ class LanguageModelPreLoader(Callback):
         if self.ite_len is None: len(self)
         self.idx   = LanguageModelPreLoader.CircularIndex(len(self.dataset.x.items), not self.backwards)
         self.batch = np.zeros((self.bs, self.bptt+1), dtype=np.int64)
-        self.x, self.y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1] 
+        self.batch_x, self.batch_y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1] 
         #ro: index of the text we're at inside our datasets for the various batches
         self.ro    = np.zeros(self.bs, dtype=np.int64)
         #ri: index of the token we're at inside our current text for the various batches
@@ -74,7 +74,7 @@ class LanguageModelPreLoader(Callback):
             if self.idx is None: self.on_epoch_begin()
         self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j], 
                                               self.ro[j], self.ri[j], overlap=1, lengths=self.lengths)
-        return self.x[j], self.y[j]
+        return self.batch_x[j], self.batch_y[j]
 
     def fill_row(self, forward, items, idx, row, ro, ri, overlap,lengths):
         "Fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"

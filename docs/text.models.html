@@ -20,7 +20,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
+<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.awd_lstm.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
 <p>This being given, there are five different dropouts in the AWD-LSTM:</p>
 <ul>
 <li>the first one, embedding dropout, is applied when we look the ids of our tokens inside the embedding matrix (to transform them from numbers to a vector of float). We zero some lines of it, so random ids are sent to a vector of zeros instead of being sent to their embedding vector.</li>
@@ -48,7 +48,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_language_model"><code>get_language_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L202" class="source_link">[source]</a></h4><blockquote><p><code>get_language_model</code>(<b>`vocab_sz`</b>:<code>int</code>, <b>`emb_sz`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`n_layers`</b>:<code>int</code>, <b>`pad_token`</b>:<code>int</code>, <b>`tie_weights`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`bias`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`bidir`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`output_p`</b>:<code>float</code>=<b><i>`0.4`</i></b>, <b>`hidden_p`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`input_p`</b>:<code>float</code>=<b><i>`0.6`</i></b>, <b>`embed_p`</b>:<code>float</code>=<b><i>`0.1`</i></b>, <b>`weight_p`</b>:<code>float</code>=<b><i>`0.5`</i></b>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="get_language_model"><code>get_language_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L202" class="source_link">[source]</a></h4><blockquote><p><code>get_language_model</code>(<b>`vocab_sz`</b>:<code>int</code>, <b>`emb_sz`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`n_layers`</b>:<code>int</code>, <b>`pad_token`</b>:<code>int</code>, <b>`tie_weights`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`bias`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`bidir`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`output_p`</b>:<code>float</code>=<b><i>`0.4`</i></b>, <b>`hidden_p`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`input_p`</b>:<code>float</code>=<b><i>`0.6`</i></b>, <b>`embed_p`</b>:<code>float</code>=<b><i>`0.1`</i></b>, <b>`weight_p`</b>:<code>float</code>=<b><i>`0.5`</i></b>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create a full AWD-LSTM.</p>
 
@@ -78,7 +78,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_rnn_classifier"><code>get_rnn_classifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L213" class="source_link">[source]</a></h4><blockquote><p><code>get_rnn_classifier</code>(<b>`bptt`</b>:<code>int</code>, <b>`max_seq`</b>:<code>int</code>, <b>`vocab_sz`</b>:<code>int</code>, <b>`emb_sz`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`n_layers`</b>:<code>int</code>, <b>`pad_token`</b>:<code>int</code>, <b>`layers`</b>:<code>Collection</code>[<code>int</code>], <b>`drops`</b>:<code>Collection</code>[<code>float</code>], <b>`bidir`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`hidden_p`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`input_p`</b>:<code>float</code>=<b><i>`0.6`</i></b>, <b>`embed_p`</b>:<code>float</code>=<b><i>`0.1`</i></b>, <b>`weight_p`</b>:<code>float</code>=<b><i>`0.5`</i></b>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="get_rnn_classifier"><code>get_rnn_classifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L213" class="source_link">[source]</a></h4><blockquote><p><code>get_rnn_classifier</code>(<b>`bptt`</b>:<code>int</code>, <b>`max_seq`</b>:<code>int</code>, <b>`vocab_sz`</b>:<code>int</code>, <b>`emb_sz`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`n_layers`</b>:<code>int</code>, <b>`pad_token`</b>:<code>int</code>, <b>`layers`</b>:<code>Collection</code>[<code>int</code>], <b>`drops`</b>:<code>Collection</code>[<code>float</code>], <b>`bidir`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`hidden_p`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`input_p`</b>:<code>float</code>=<b><i>`0.6`</i></b>, <b>`embed_p`</b>:<code>float</code>=<b><i>`0.1`</i></b>, <b>`weight_p`</b>:<code>float</code>=<b><i>`0.5`</i></b>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create a RNN classifier model.</p>
 
@@ -121,7 +121,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="EmbeddingDropout"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L54" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<b>`emb`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`embed_p`</b>:<code>float</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="EmbeddingDropout"><code>class</code> <code>EmbeddingDropout</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L54" class="source_link">[source]</a></h3><blockquote><p><code>EmbeddingDropout</code>(<b>`emb`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`embed_p`</b>:<code>float</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Apply dropout with probabily <code>embed_p</code> to an embedding layer <code>emb</code>.</p>
 
@@ -189,7 +189,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RNNDropout"><code>class</code> <code>RNNDropout</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L11" class="source_link">[source]</a></h3><blockquote><p><code>RNNDropout</code>(<b>`p`</b>:<code>float</code>=<b><i>`0.5`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="RNNDropout"><code>class</code> <code>RNNDropout</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L11" class="source_link">[source]</a></h3><blockquote><p><code>RNNDropout</code>(<b>`p`</b>:<code>float</code>=<b><i>`0.5`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Dropout with probability <code>p</code> that is consistent on the seq_len dimension.</p>
 
@@ -262,7 +262,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="WeightDropout"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L23" class="source_link">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<b>`module`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`weight_p`</b>:<code>float</code>, <b>`layer_names`</b>:<code>StrList</code>=<b><i>`['weight_hh_l0']`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="WeightDropout"><code>class</code> <code>WeightDropout</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L23" class="source_link">[source]</a></h3><blockquote><p><code>WeightDropout</code>(<b>`module`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`weight_p`</b>:<code>float</code>, <b>`layer_names`</b>:<code>StrList</code>=<b><i>`['weight_hh_l0']`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>A module that warps another layer in which some weights will be replaced by 0 during training.</p>
 
@@ -375,7 +375,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L148" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<b>`args`</b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L148" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<b>`args`</b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential module that passes the reset call to its children.</p>
 
@@ -396,7 +396,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SequentialRNN.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L150" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
+<h4 id="SequentialRNN.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L150" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
 </blockquote>
 
 </div>
@@ -423,7 +423,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dropout_mask"><code>dropout_mask</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>dropout_mask</code>(<b>`x`</b>:<code>Tensor</code>, <b>`sz`</b>:<code>Collection</code>[<code>int</code>], <b>`p`</b>:<code>float</code>)</p>
+<h4 id="dropout_mask"><code>dropout_mask</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>dropout_mask</code>(<b>`x`</b>:<code>Tensor</code>, <b>`sz`</b>:<code>Collection</code>[<code>int</code>], <b>`p`</b>:<code>float</code>)</p>
 </blockquote>
 <p>Return a dropout mask of the same type as <code>x</code>, size <code>sz</code>, with probability <code>p</code> to cancel an element.</p>
 
@@ -469,7 +469,7 @@ tensor([[ 0.0712, -0.6369],
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Such a mask is then expanded in the sequence length dimension and multiplied by the input to do an <a href="/text.models.html#RNNDropout"><code>RNNDropout</code></a>.</p>
+<p>Such a mask is then expanded in the sequence length dimension and multiplied by the input to do an <a href="/text.models.awd_lstm.html#RNNDropout"><code>RNNDropout</code></a>.</p>
 
 </div>
 </div>
@@ -489,7 +489,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RNNCore"><code>class</code> <code>RNNCore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L73" class="source_link">[source]</a></h3><blockquote><p><code>RNNCore</code>(<b>`vocab_sz`</b>:<code>int</code>, <b>`emb_sz`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`n_layers`</b>:<code>int</code>, <b>`pad_token`</b>:<code>int</code>, <b>`bidir`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`hidden_p`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`input_p`</b>:<code>float</code>=<b><i>`0.6`</i></b>, <b>`embed_p`</b>:<code>float</code>=<b><i>`0.1`</i></b>, <b>`weight_p`</b>:<code>float</code>=<b><i>`0.5`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="RNNCore"><code>class</code> <code>RNNCore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L73" class="source_link">[source]</a></h3><blockquote><p><code>RNNCore</code>(<b>`vocab_sz`</b>:<code>int</code>, <b>`emb_sz`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`n_layers`</b>:<code>int</code>, <b>`pad_token`</b>:<code>int</code>, <b>`bidir`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`hidden_p`</b>:<code>float</code>=<b><i>`0.2`</i></b>, <b>`input_p`</b>:<code>float</code>=<b><i>`0.6`</i></b>, <b>`embed_p`</b>:<code>float</code>=<b><i>`0.1`</i></b>, <b>`weight_p`</b>:<code>float</code>=<b><i>`0.5`</i></b>, <b>`qrnn`</b>:<code>bool</code>=<b><i>`False`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM/QRNN inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a>.</p>
 
@@ -517,7 +517,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNCore.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
+<h4 id="RNNCore.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L123" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
 </blockquote>
 <p>Reset the hidden states.</p>
 
@@ -538,7 +538,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LinearDecoder"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L130" class="source_link">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<b>`n_out`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`output_p`</b>:<code>float</code>, <b>`tie_encoder`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<b><i>`None`</i></b>, <b>`bias`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="LinearDecoder"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L130" class="source_link">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<b>`n_out`</b>:<code>int</code>, <b>`n_hid`</b>:<code>int</code>, <b>`output_p`</b>:<code>float</code>, <b>`tie_encoder`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<b><i>`None`</i></b>, <b>`bias`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>To go on top of a RNNCore module and create a Language Model.</p>
 
@@ -552,7 +552,7 @@ tensor([[ 0.0712, -0.6369],
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a the decoder to go on top of an <a href="/text.models.html#RNNCore"><code>RNNCore</code></a> encoder and create a language model. <code>n_hid</code> is the dimension of the last hidden state of the encoder, <code>n_out</code> the size of the output. Dropout of <code>output_p</code> is applied. If a <code>tie_encoder</code> is passed, it will be used for the weights of the linear layer, that will have <code>bias</code> or not.</p>
+<p>Create a the decoder to go on top of an <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a> encoder and create a language model. <code>n_hid</code> is the dimension of the last hidden state of the encoder, <code>n_out</code> the size of the output. Dropout of <code>output_p</code> is applied. If a <code>tie_encoder</code> is passed, it will be used for the weights of the linear layer, that will have <code>bias</code> or not.</p>
 
 </div>
 </div>
@@ -572,7 +572,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MultiBatchRNNCore"><code>class</code> <code>MultiBatchRNNCore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>MultiBatchRNNCore</code>(<b>`bptt`</b>:<code>int</code>, <b>`max_seq`</b>:<code>int</code>, <b>`args`</b>, <b>`kwargs`</b>) :: <a href="/text.models.html#RNNCore"><code>RNNCore</code></a></p>
+<h3 id="MultiBatchRNNCore"><code>class</code> <code>MultiBatchRNNCore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>MultiBatchRNNCore</code>(<b>`bptt`</b>:<code>int</code>, <b>`max_seq`</b>:<code>int</code>, <b>`args`</b>, <b>`kwargs`</b>) :: <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a></p>
 </blockquote>
 <p>Create a RNNCore module that can process a full sentence.</p>
 
@@ -586,7 +586,7 @@ tensor([[ 0.0712, -0.6369],
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Text is passed by chunks of sequence length <code>bptt</code> and only the last <code>max_seq</code> outputs are kept for the next layer. <code>args</code> and <code>kwargs</code> are passed to the <a href="/text.models.html#RNNCore"><code>RNNCore</code></a>.</p>
+<p>Text is passed by chunks of sequence length <code>bptt</code> and only the last <code>max_seq</code> outputs are kept for the next layer. <code>args</code> and <code>kwargs</code> are passed to the <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a>.</p>
 
 </div>
 </div>
@@ -600,7 +600,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MultiBatchRNNCore.concat"><code>concat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L161" class="source_link">[source]</a></h4><blockquote><p><code>concat</code>(<b>`arrs`</b>:<code>Collection</code>[<code>Tensor</code>]) → <code>Tensor</code></p>
+<h4 id="MultiBatchRNNCore.concat"><code>concat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L161" class="source_link">[source]</a></h4><blockquote><p><code>concat</code>(<b>`arrs`</b>:<code>Collection</code>[<code>Tensor</code>]) → <code>Tensor</code></p>
 </blockquote>
 <p>Concatenate the <code>arrs</code> along the batch dimension.</p>
 
@@ -621,7 +621,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolingLinearClassifier"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L176" class="source_link">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<b>`layers`</b>:<code>Collection</code>[<code>int</code>], <b>`drops`</b>:<code>Collection</code>[<code>float</code>]) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="PoolingLinearClassifier"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L176" class="source_link">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<b>`layers`</b>:<code>Collection</code>[<code>int</code>], <b>`drops`</b>:<code>Collection</code>[<code>float</code>]) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create a linear classifier with pooling.</p>
 
@@ -649,7 +649,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PoolingLinearClassifier.pool"><code>pool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models.py#L187" class="source_link">[source]</a></h4><blockquote><p><code>pool</code>(<b>`x`</b>:<code>Tensor</code>, <b>`bs`</b>:<code>int</code>, <b>`is_max`</b>:<code>bool</code>)</p>
+<h4 id="PoolingLinearClassifier.pool"><code>pool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L187" class="source_link">[source]</a></h4><blockquote><p><code>pool</code>(<b>`x`</b>:<code>Tensor</code>, <b>`bs`</b>:<code>int</code>, <b>`is_max`</b>:<code>bool</code>)</p>
 </blockquote>
 <p>Pool the tensor along the seq_len dimension.</p>
 
