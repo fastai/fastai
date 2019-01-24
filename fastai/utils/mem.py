@@ -59,26 +59,42 @@ def get_ref_free_exc_info():
 
 # this is a decorator to be used with any functions that interact with CUDA (top-level is fine)
 #
-# ipython has a bug where it stores tb with all the locals() tied in (circular
-# reference) and are unable to be freed, so we cleanse the tb before handing it
-# over to ipython.
+# ipython has a feature where it stores tb with all the locals() tied in, which
+# prevents gc.collect from freeing those variables, therefore we cleanse the tb
+# before handing it over to ipython.
+#
+# under non-ipython environment it doesn't do anything.
+#
+# under ipython currently it strips tb by default only for the "CUDA out of memory" exception.
+#
+# The env var FASTAI_TB_CLEAR_FRAMES changes this behavior when run under ipython,
+# depending on its value: (os.environ['FASTAI_TB_CLEAR_FRAMES']="0")
+#
+# "0": never  strip tb (makes it possible to always use %debug magic, but with leaks)
+# "1": always strip tb (never need to worry about leaks, but %debug won't work)
+#
 def gpu_mem_restore(func):
     "Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        if not IS_IN_IPYTHON: # the problem impacts only ipython-based envs
+        tb_clear_frames = os.environ.get('FASTAI_TB_CLEAR_FRAMES', None)
+        if not IS_IN_IPYTHON or tb_clear_frames=="0":
             return func(*args, **kwargs)
 
         try:
             return func(*args, **kwargs)
-        except:
-            type, val, tb = get_ref_free_exc_info() # must!
-            raise type(val).with_traceback(tb) from None
+        except Exception as e:
+            if "CUDA out of memory" in str(e) or tb_clear_frames=="1":
+                type, val, tb = get_ref_free_exc_info() # must!
+                raise type(val).with_traceback(tb) from None
+            else: raise # re-raises the exact last exception
     return wrapper
+
 
 # if function decorator is not a good option, use context manager, example:
 # with gpu_mem_restore_ctx():
 #    learn.fit_one_cycle(1,1e-2)
+# this particular one will clear tb on any exception
 class gpu_mem_restore_ctx():
     " context manager to reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
     def __enter__(self): return self
