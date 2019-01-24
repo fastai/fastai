@@ -1,5 +1,5 @@
-from ..torch_core import *
-from ..layers import *
+from ...torch_core import *
+from ...layers import *
 
 __all__ = ['EmbeddingDropout', 'LinearDecoder', 'MultiBatchRNNCore', 'PoolingLinearClassifier', 'RNNCore', 'RNNDropout', 
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'get_language_model', 'get_rnn_classifier']
@@ -85,7 +85,7 @@ class RNNCore(nn.Module):
         self.encoder_dp = EmbeddingDropout(self.encoder, embed_p)
         if self.qrnn:
             #Using QRNN requires an installation of cuda
-            from .qrnn.qrnn1 import QRNNLayer
+            from .qrnn import QRNNLayer
             self.rnns = [QRNNLayer(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
                                    save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True,
                                    use_cuda=torch.cuda.is_available()) for l in range(n_layers)]
