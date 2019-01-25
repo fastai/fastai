@@ -242,7 +242,7 @@ def test_image_to_image_different_y_size():
     get_y_func = lambda o:o
     mnist = untar_data(URLs.MNIST_TINY)
     tfms = get_transforms()
-    data = (ImageItemList.from_folder(mnist)
+    data = (ImageImageList.from_folder(mnist)
             .random_split_by_pct()
             .label_from_func(get_y_func)
             .transform(tfms, size=20)
@@ -258,7 +258,7 @@ def test_image_to_image_different_tfms():
     x_tfms = get_transforms()
     y_tfms = [[t for t in x_tfms[0]], [t for t in x_tfms[1]]]
     y_tfms[0].append(flip_lr())
-    data = (ImageItemList.from_folder(mnist)
+    data = (ImageImageList.from_folder(mnist)
             .random_split_by_pct()
             .label_from_func(get_y_func)
             .transform(x_tfms)

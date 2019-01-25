@@ -215,7 +215,7 @@ class ItemList():
         if isinstance(it, (float, np.float32)): return FloatList
         if isinstance(try_int(it), (str,numbers.Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList
-        return self.__class__
+        return ItemList #self.__class__
 
     def label_from_list(self, labels:Iterator, **kwargs)->'LabelList':
         "Label `self.items` with `labels`."

@@ -383,7 +383,6 @@ class SegmentationLabelList(ImageItemList):
 
     def open(self, fn): return open_mask(fn)
     def analyze_pred(self, pred, thresh:float=0.5): return pred.argmax(dim=0)[None]
-    def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class SegmentationItemList(ImageItemList):
     "`ItemList` suitable for segmentation tasks."
@@ -405,7 +404,6 @@ class PointsLabelList(ItemList):
         return ImagePoints(FlowField(_get_size(self.x,i), o), scale=True)
 
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
-    def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
 class PointsItemList(ImageItemList):
     "`ItemList` for `Image` to `ImagePoints` tasks."

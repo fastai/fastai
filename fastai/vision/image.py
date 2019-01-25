@@ -234,6 +234,8 @@ class ImageSegment(Image):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
+            
+    def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
@@ -320,6 +322,8 @@ class ImagePoints(Image):
         ax.scatter(pnt[:, 0], pnt[:, 1], **params)
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
+     
+    def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
 class ImageBBox(ImagePoints):
     "Support applying transforms to a `flow` of bounding boxes."
