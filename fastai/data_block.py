@@ -88,6 +88,10 @@ class ItemList():
         processor = ifnone(processor, self.processor)
         copy_d = {o:getattr(self,o) for o in self.copy_new}
         return self.__class__(items=items, processor=processor, **copy_d, **kwargs)
+                
+    def add(self, items:'ItemList'): 
+        self.items = np.concatenate([self.items, items.items], 0)
+        return self
 
     def __getitem__(self,idxs:int)->Any:
         idxs = try_int(idxs)

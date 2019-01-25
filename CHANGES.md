@@ -21,7 +21,7 @@ of that change.
 
 ### Fixed:
 
-
+- Fixed argument name in `ImageDataBunch.signle_from_classes`.
 
 ## 1.0.42 (2019-01-24)
 
