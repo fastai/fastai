@@ -62,12 +62,12 @@ def anno_repr(a): return type_repr(a)
 
 def format_param(p):
     # bold the argument name and bold+italicize the default value, to make them standout from very complex at times annotations.
-    res = f"<b>{code_esc(p.name)}</b>"
+    res = f"**{code_esc(p.name)}**"
     if hasattr(p, 'annotation') and p.annotation != p.empty: res += f':{anno_repr(p.annotation)}'
     if p.default != p.empty:
         default = getattr(p.default, 'func', p.default)
         default = getattr(default, '__name__', default)
-        res += f'=<b><i>`{repr(default)}`</i></b>'
+        res += f'=***`{repr(default)}`***'
     return res
 
 def format_ft_def(func, full_name:str=None)->str:
