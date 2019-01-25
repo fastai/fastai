@@ -160,12 +160,12 @@ class ImageDataBunch(DataBunch):
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
     @staticmethod
-    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
+    def single_from_classes(path:Union[Path, str], classes:Collection[str], ds_tfms:TfmList=None, **kwargs):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
         warn("""This method is deprecated and will be removed in a future version, use `load_learner` after
              `Learner.export()`""", DeprecationWarning)
         sd = ImageItemList([], path=path, ignore_empty=True).no_split()
-        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
+        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(ds_tfms, **kwargs).databunch()
 
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
