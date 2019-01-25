@@ -116,8 +116,7 @@ def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
     sz = 64
     while True:
-        try:
-            return model_sizes(m, size=(sz,sz))[-1][1]
+        try: return model_sizes(m, size=(sz,sz))[-1][1]
         except Exception as e:
             sz *= 2
             if sz > 2048: raise e
