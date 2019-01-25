@@ -114,7 +114,13 @@ def model_sizes(m:nn.Module, size:tuple=(64,64))->Tuple[Sizes,Tensor,Hooks]:
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
-    return model_sizes(m)[-1][1]
+    sz = 64
+    while True:
+        try:
+            return model_sizes(m, size=(sz,sz))[-1][1]
+        except Exception as e:
+            sz *= 2
+            if sz > 2048: raise e
 
 def total_params(m:nn.Module)->int:
     params, trainable = 0, False
