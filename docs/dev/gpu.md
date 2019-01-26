@@ -237,7 +237,11 @@ x3 = allocate_gb(3) # failure to allocate 3GB w/ RuntimeError: CUDA out of memor
 
 despite having a total of 4GB of free GPU RAM (cached and free), the last command will fail, because it can't get 3GB of contiguous memory.
 
-You can conclude from this example, that it's crucial to always free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `del()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
+Except, this example isn't quite valid, because under the hood CUDA relocates physical pages, and makes them appear as if they are of a contiguous type of memory. So in the example above it'll reuse all those fragments.
+
+So for this example to be applicable to CUDA situation it needs to allocate fractions of a memory page, which currently for most CUDA cards is of 2MB. So if less than 2MB is allocated in the same scenario as this example, fragmentation will occur.
+
+Given that GPU RAM is a scarce resource, it helps to always try free up anything that's on CUDA as soon as you're done using it, and only then move new objects to CUDA. Normally a simple `del obj` does the trick. However, if your object has circular references in it, it will not be freed despite the `del()` call, until `gc.collect()` will not be called by python. And until the latter happens, it'll still hold the allocated GPU RAM! And that also means that in some situations you may want to call `gc.collect()` yourself.
 
 If you want to educate yourself on how and when the python garbage collector gets automatically invoked see [gc](https://docs.python.org/3/library/gc.html#gc.get_threshold) and [this](https://rushter.com/blog/python-garbage-collector/).
 
