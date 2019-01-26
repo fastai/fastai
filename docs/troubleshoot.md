@@ -495,11 +495,11 @@ assert False, "please liberate my GPU!"
 
 The leakage happens with any exception, except it's most problematic with CUDA OOM exception. For example if you tend to hit Kernel Interrupt and then re-run your training loop, you will have less RAM to run on when you re-run it.
 
-Currently, ipython is working on a configurable solution. This section will get updated once ipython has it sorted out.
-
-The rest of this section covers a variety of solutions for this problem.
+Currently, ipython is working on a configurable solution. This section will get updated once ipython has it sorted out. You can also follow the discussion [here](https://github.com/ipython/ipython/pull/11572).
 
 If you want to understand more about the nuances of the problem of saving a traceback or an exception object, please refer to [this explanation](https://stackoverflow.com/a/54295910/9201239).
+
+The rest of this section covers a variety of solutions for this problem.
 
 ### fastai Solutions
 
@@ -567,6 +567,9 @@ with the same results. Except this one (fit functions) is already protected, thi
 Note, that the trick is in running: `traceback.clear_frames(tb)` to free all `locals()` tied to the exception object.
 
 Note that these help functions don't make any special cases and will do the clearing for any exception. Which means that you will not be able to use a debugger if you use those, since an `locals()` will be gone. You can, of course, use the more complicated versions of these functions from [fastai.utils.mem](https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py) which have more flexibility as explained in the previous section.
+
+If you need the same solution outside of the fastai environment, you can either copy-n-paste it from this section, or alternatively similar helper functions (a function decorator and a context manager) are available via the [ipyexperiments](https://github.com/stas00/ipyexperiments) project, inside the [ipyexperiments.utils.ipython](https://github.com/stas00/ipyexperiments/blob/master/docs/utils_ipython.md) module.
+
 
 
 ## Support
