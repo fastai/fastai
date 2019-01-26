@@ -570,6 +570,7 @@ Note that these help functions don't make any special cases and will do the clea
 
 If you need the same solution outside of the fastai environment, you can either copy-n-paste it from this section, or alternatively similar helper functions (a function decorator and a context manager) are available via the [ipyexperiments](https://github.com/stas00/ipyexperiments) project, inside the [ipyexperiments.utils.ipython](https://github.com/stas00/ipyexperiments/blob/master/docs/utils_ipython.md) module.
 
+If after reading this section, you still have questions, please ask in this [thread](https://forums.fast.ai/t/a-guide-to-recovering-from-cuda-out-of-memory-and-other-exceptions/35849).
 
 
 ## Support
