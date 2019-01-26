@@ -2,24 +2,7 @@
 
 import tracemalloc, threading, torch, time, pynvml
 from ..utils.mem import *
-from ..vision import *
-
-#from ..basic_train import Learner, LearnerCallback
-
-def preload_pytorch():
-    torch.ones((1, 1)).cuda()
-
-def gpu_mem_get_used_no_cache():
-    torch.cuda.empty_cache()
-    return gpu_mem_get().used
-
-def gpu_mem_used_get_fast(gpu_handle):
-    info = pynvml.nvmlDeviceGetMemoryInfo(gpu_handle)
-    return int(info.used/2**20)
-
-if torch.cuda.is_available():
-    preload_pytorch()
-    pynvml.nvmlInit()
+from ..basic_train import *
 
 # XXX: to be migrated to docs:
 # usage:
@@ -41,6 +24,7 @@ class PeakMemMetric(LearnerCallback):
     def __init__(self, learn:Learner):
         super().__init__(learn)
         assert torch.cuda.is_available(), "pytorch CUDA is required"
+        preload_pytorch()
 
     def peak_monitor_start(self):
         self.peak_monitoring = True
@@ -64,7 +48,7 @@ class PeakMemMetric(LearnerCallback):
         gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_id)
 
         while True:
-            gpu_mem_used = gpu_mem_used_get_fast(gpu_handle)
+            gpu_mem_used = gpu_mem_get_fast_used(gpu_handle)
             self.gpu_mem_used_peak = max(gpu_mem_used, self.gpu_mem_used_peak)
             if not self.peak_monitoring: break
             time.sleep(0.001) # 1msec
@@ -77,9 +61,9 @@ class PeakMemMetric(LearnerCallback):
         self.gpu_before = gpu_mem_get_used_no_cache()
 
     def on_epoch_end(self, **kwargs):
-        cpu_current, cpu_peak =  list(map(lambda x: int(x/2**20), tracemalloc.get_traced_memory()))
-        gpu_current = gpu_mem_get_used_no_cache() - self.gpu_before
-        gpu_peak    = self.gpu_mem_used_peak      - self.gpu_before
+        cpu_used, cpu_peak =  list(map(lambda x: int(x/2**20), tracemalloc.get_traced_memory()))
+        gpu_used = gpu_mem_get_used_no_cache() - self.gpu_before
+        gpu_peak = self.gpu_mem_used_peak      - self.gpu_before
         self.peak_monitor_stop()
         # The numbers are deltas in MBs (beginning of the epoch and the end)
-        self.learn.recorder.add_metrics([cpu_current, cpu_peak, gpu_current, gpu_peak])
+        self.learn.recorder.add_metrics([cpu_used, cpu_peak, gpu_used, gpu_peak])

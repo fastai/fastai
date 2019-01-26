@@ -4,7 +4,7 @@ from ..imports.torch import *
 from ..core import *
 from ..script import *
 from ..utils.env import *
-import pynvml, functools, traceback
+import pynvml, functools, traceback, threading, time
 from collections import namedtuple
 
 IS_IN_IPYTHON = is_in_ipython()
@@ -15,6 +15,9 @@ have_cuda = 0
 if torch.cuda.is_available():
     pynvml.nvmlInit()
     have_cuda = 1
+
+def preload_pytorch():
+    torch.ones((1, 1)).cuda()
 
 def b2mb(num):
     """ convert Bs to MBs and round down """
@@ -40,6 +43,14 @@ def gpu_mem_get_all():
     "query nvidia for total, used and free memory for each available gpu in MBs"
     if not have_cuda: return []
     return list(map(gpu_mem_get, range(pynvml.nvmlDeviceGetCount())))
+
+def gpu_mem_get_used_no_cache():
+    torch.cuda.empty_cache()
+    return gpu_mem_get().used
+
+def gpu_mem_get_fast_used(gpu_handle):
+    info = pynvml.nvmlDeviceGetMemoryInfo(gpu_handle)
+    return int(info.used/2**20)
 
 # for gpu returns: (gpu_with_max_free_ram_id, its_free_ram)
 # for cpu returns: (None, 0)
@@ -96,7 +107,7 @@ def gpu_mem_restore(func):
 #    learn.fit_one_cycle(1,1e-2)
 # this particular one will clear tb on any exception
 class gpu_mem_restore_ctx():
-    " context manager to reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
+    "context manager to reclaim RAM if an exception happened under ipython"
     def __enter__(self): return self
     def __exit__(self, exc_type, exc_val, exc_tb):
         if not exc_val: return True
