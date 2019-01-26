@@ -92,6 +92,7 @@ class SaveModelCallback(TrackerCallback):
         else: #every="improvement"
             current = self.get_monitor_value()
             if current is not None and self.operator(current, self.best):
+                print(f'Better model found at epoch {epoch} with {self.monitor} value: {current}.')
                 self.best = current
                 self.learn.save(f'{self.name}')
 
