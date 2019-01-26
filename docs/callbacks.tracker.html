@@ -222,7 +222,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TerminateOnNaNCallback.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>last_loss</code></strong>, <strong><code>epoch</code></strong>, <strong><code>num_batch</code></strong>, <strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="TerminateOnNaNCallback.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>last_loss</code></strong>, <strong><code>epoch</code></strong>, <strong><code>num_batch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Test if <code>last_loss</code> is NaN and interrupts training.</p>
 
@@ -243,7 +243,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TerminateOnNaNCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L23" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="TerminateOnNaNCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L23" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Stop the training if necessary.</p>
 
@@ -412,7 +412,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EarlyStoppingCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="EarlyStoppingCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Initialize inner arguments.</p>
 
@@ -433,7 +433,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="EarlyStoppingCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="EarlyStoppingCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Compare the value monitored to its best score and maybe stop training.</p>
 
@@ -495,7 +495,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SaveModelCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="SaveModelCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Compare the value monitored to its best score and maybe save the model.</p>
 
@@ -516,7 +516,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SaveModelCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L98" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<strong><code>kwargs</code></strong>)</p>
+<h4 id="SaveModelCallback.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L98" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Load the best model.</p>
 
@@ -578,7 +578,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ReduceLROnPlateauCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="ReduceLROnPlateauCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Initialize inner arguments.</p>
 
@@ -599,7 +599,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ReduceLROnPlateauCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="ReduceLROnPlateauCallback.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Compare the value monitored to its best and maybe reduce lr.</p>
 
@@ -675,7 +675,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="TrackerCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="TrackerCallback.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/tracker.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Initializes the best value.</p>
 

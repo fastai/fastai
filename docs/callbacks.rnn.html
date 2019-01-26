@@ -80,7 +80,7 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong><code>kwargs</code></strong>)</p>
+<h4 id="RNNTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Reset the hidden state of the model.</p>
 
@@ -101,7 +101,7 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>last_output</code></strong>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <strong><code>kwargs</code></strong>)</p>
+<h4 id="RNNTrainer.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>last_output</code></strong>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Save the extra outputs for later and only returns the true output.</p>
 
@@ -129,7 +129,7 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>:<code>Rank0Tensor</code>, <strong><code>last_input</code></strong>:<code>Tensor</code>, <strong><code>kwargs</code></strong>)</p>
+<h4 id="RNNTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>:<code>Rank0Tensor</code>, <strong><code>last_input</code></strong>:<code>Tensor</code>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Apply AR and TAR to <code>last_loss</code>.</p>
 

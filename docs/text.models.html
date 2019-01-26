@@ -375,7 +375,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L148" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong><code>args</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L148" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential module that passes the reset call to its children.</p>
 
@@ -572,7 +572,7 @@ tensor([[ 0.0712, -0.6369],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MultiBatchRNNCore"><code>class</code> <code>MultiBatchRNNCore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>MultiBatchRNNCore</code>(<strong><code>bptt</code></strong>:<code>int</code>, <strong><code>max_seq</code></strong>:<code>int</code>, <strong><code>args</code></strong>, <strong><code>kwargs</code></strong>) :: <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a></p>
+<h3 id="MultiBatchRNNCore"><code>class</code> <code>MultiBatchRNNCore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>MultiBatchRNNCore</code>(<strong><code>bptt</code></strong>:<code>int</code>, <strong><code>max_seq</code></strong>:<code>int</code>, <strong>*<code>args</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a></p>
 </blockquote>
 <p>Create a RNNCore module that can process a full sentence.</p>
 

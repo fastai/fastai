@@ -728,7 +728,7 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="array"><code>array</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L256" class="source_link">[source]</a></h4><blockquote><p><code>array</code>(<strong><code>a</code></strong>, <strong><code>dtype</code></strong>:<code>type</code>=<strong><em><code>None</code></em></strong>, <strong><code>kwargs</code></strong>) → <code>ndarray</code></p>
+<h4 id="array"><code>array</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L256" class="source_link">[source]</a></h4><blockquote><p><code>array</code>(<strong><code>a</code></strong>, <strong><code>dtype</code></strong>:<code>type</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>ndarray</code></p>
 </blockquote>
 <p>Same as <code>np.array</code> but also handles generators</p>
 
@@ -884,7 +884,7 @@ False
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="arrays_split"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>arrays_split</code>(<strong><code>mask</code></strong>:<code>ndarray</code>, <strong><code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
+<h4 id="arrays_split"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>arrays_split</code>(<strong><code>mask</code></strong>:<code>ndarray</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
 <p>Given <code>arrs</code> is [a,b,...] and <code>mask</code>index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...].</p>
 
@@ -1725,7 +1725,7 @@ Name: 7, dtype: int64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_split"><code>random_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>random_split</code>(<strong><code>valid_pct</code></strong>:<code>float</code>, <strong><code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
+<h4 id="random_split"><code>random_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>random_split</code>(<strong><code>valid_pct</code></strong>:<code>float</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
 <p>Randomly split <code>arrs</code> with <code>valid_pct</code> ratio. good for creating validation set.</p>
 
@@ -1946,7 +1946,7 @@ Name: 7, dtype: int64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>col_names</code></strong>)</p>
+<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong>*<code>col_names</code></strong>)</p>
 </blockquote>
 <p>Categorifies the columns <code>col_names</code> in <code>df</code>.</p>
 
@@ -2598,7 +2598,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemBase.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>kwargs</code></strong>)</p>
+<h4 id="ItemBase.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Subclass this method if you want to apply data augmentation with <code>tfms</code> to this <a href="/core.html#ItemBase"><code>ItemBase</code></a>.</p>
 
@@ -2619,7 +2619,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ItemBase.show"><code>show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>show</code>(<strong><code>ax</code></strong>:<code>Axes</code>, <strong><code>kwargs</code></strong>)</p>
+<h4 id="ItemBase.show"><code>show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>show</code>(<strong><code>ax</code></strong>:<code>Axes</code>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Subclass this method if you want to customize the way this <a href="/core.html#ItemBase"><code>ItemBase</code></a> is shown on <code>ax</code>.</p>
 
@@ -2912,7 +2912,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L307" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong><code>kwargs</code></strong>)</p>
+<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L307" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Like <code>plt.subplots</code> but with consistent axs shape, <code>kwargs</code> passed to <code>fig.suptitle</code> with <code>title</code></p>
 
