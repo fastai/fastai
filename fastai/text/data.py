@@ -124,14 +124,17 @@ class SortishSampler(Sampler):
         sort_idx = np.concatenate((ck_idx[0], sort_idx))
         return iter(sort_idx)
 
-def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tuple[LongTensor, LongTensor]:
-    "Function that collect samples and adds padding."
+def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True, backwards:bool=False) -> Tuple[LongTensor, LongTensor]:
+    "Function that collect samples and adds padding. Flips token order if needed"
     samples = to_data(samples)
     max_len = max([len(s[0]) for s in samples])
     res = torch.zeros(len(samples), max_len).long() + pad_idx
+    if backwards: pad_first = not pad_first
     for i,s in enumerate(samples):
         if pad_first: res[i,-len(s[0]):] = LongTensor(s[0])
         else:         res[i,:len(s[0]):] = LongTensor(s[0])
+    if backwards:
+        res = res.flip(1)
     return res, tensor(np.array([s[1] for s in samples]))
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
@@ -250,10 +253,10 @@ class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs=64, pad_idx=1, pad_first=True,
-               no_check:bool=False, **kwargs) -> DataBunch:
+               no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
+        collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first, backwards=backwards)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
         train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, drop_last=True, **kwargs)
         dataloaders = [train_dl]
