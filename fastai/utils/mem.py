@@ -113,3 +113,87 @@ class gpu_mem_restore_ctx():
         if not exc_val: return True
         traceback.clear_frames(exc_tb)
         raise exc_type(exc_val).with_traceback(exc_tb) from None
+
+
+#
+# memtrace = GPUMemTrace()
+# memtrace.start() # start tracing
+#
+# some_code()
+# memtrace.report() # print intermediary cumulative report
+# used, peak =  memtrace.data() # same but as data
+#
+# some_code()
+# memtrace.report('2nd run') # print intermediary cumulative report
+# used, peak =  memtrace.data()
+#
+# for i in range(10):
+#     memtrace.reset()
+#     code()
+#     memtrace.report(f'i={i}') # report for just the last code run since reset
+#
+# combine report+reset
+# memtrace.reset()
+# for i in range(10):
+#     code()
+#     memtrace.report_n_reset(f'i={i}') # report for just the last code run since reset
+#
+# memtrace.stop() # stop the monitor thread
+#
+
+class GPUMemTrace():
+    "Trace GPU allocated and peak memory usage"
+    def __init__(self, silent=False):
+        assert torch.cuda.is_available(), "pytorch CUDA is required"
+        self.silent = silent # quickly turn off printouts from the constructor
+
+    def silent(self, silent=False):
+        self.silent = silent
+
+    def reset(self):
+        self.used_start = gpu_mem_get_used_no_cache()
+        self.used_peak  = self.used_start
+
+    def start(self):
+        self.reset()
+        self.peak_monitor_start()
+
+    def stop(self):
+        self.peak_monitor_stop()
+
+    def __del__(self):
+        self.stop()
+
+    def data(self):
+        self.delta_used = gpu_mem_get_used_no_cache() - self.used_start
+        self.delta_peak = self.used_peak              - self.used_start
+        return (self.delta_used, self.delta_peak)
+
+    def report_n_reset(self, note=''):
+        self.report(note)
+        self.reset()
+
+    def report(self, note=''):
+        "printout used+delta peak, and an optional context note"
+        if self.silent: return
+        delta_used, delta_peak = self.data()
+        if note: note = f": {note}"
+        print(f"△used {delta_used}, △peak {delta_peak}{note}")
+
+    def peak_monitor_start(self):
+        self.peak_monitoring = True
+
+        # continually sample RAM usage
+        peak_monitor_thread = threading.Thread(target=self.peak_monitor_func)
+        peak_monitor_thread.daemon = True
+        peak_monitor_thread.start()
+
+    def peak_monitor_stop(self):
+        self.peak_monitoring = False
+
+    def peak_monitor_func(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(torch.cuda.current_device())
+        while True:
+            self.used_peak = max(gpu_mem_get_fast_used(gpu_handle), self.used_peak)
+            if not self.peak_monitoring: break
+            time.sleep(0.001) # 1msec
