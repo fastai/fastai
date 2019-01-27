@@ -101,6 +101,18 @@ def test_should_load_backwards_lm_2():
     as_text = [data.vocab.itos[x] for x in batch[0][0]]
     np.testing.assert_array_equal(as_text[:2], ["world", "hello"])
 
+def test_backwards_cls_databunch():
+    path = untar_data(URLs.IMDB_SAMPLE)
+    df = text_df(['neg', 'pos'])
+    data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=0, text_cols=['text'], bs=4,
+                                         backwards=True)
+    orig_texts = df.text.unique()
+    for ds in [DatasetType.Train, DatasetType.Valid]:
+        batch = data.one_batch(ds)
+        for sample in batch[0]:
+            as_text = ' '.join([data.vocab.itos[tok] for tok in sample.flip(0)])
+            assert any([orig in as_text for orig in orig_texts])  # batch samples contain BOS and optionally PAD tokens
+
 def df_test_collate(data):
     x,y = next(iter(data.train_dl))
     assert x.size(0) == 8
