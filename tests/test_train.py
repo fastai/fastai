@@ -28,7 +28,7 @@ def test_fit(learn):
     eps = 4
     
     with CaptureStdout() as cs:  learn.fit(epochs=eps, lr=learning_rate, wd=weight_decay)
-    #assert_screenout(cs.out, str(eps))
+   
     lrs = list(learn.recorder.lrs)
     prevlr = learning_rate
     for lr in lrs:
@@ -47,21 +47,20 @@ def test_fit_one_cycle(learn):
     ## https://github.com/sgugger/Deep-Learning/blob/master/Cyclical%20LR%20and%20momentums.ipynb
 
     cycle_length = 4
-    lr = 3e-3 # 5e-3
+    lr = 3e-3
 
     with CaptureStdout() as cs: learn.fit_one_cycle(cycle_length, lr)
-    #assert_screenout(cs.out, str(cycle_length)) 
-
+  
     listlrs = list(learn.recorder.lrs)
-    listmoms = list(learn.recorder.moms) # give give_moms(learn)
+    listmoms = list(learn.recorder.moms) 
     
-    ## eliminate the final 'off' lrs
+    ## eliminate the final low learning rates with corresponding momentum
     for (idx,lr) in enumerate(listlrs):
         if lr < listlrs[0]:
             del listlrs[idx]
             del listmoms[idx]
 
-    ## we confirm learning rate is at its max when momentum is at its low
+    ## we confirm learning rate is at its max when momentum is at its min
     val_lr, idx_lr = max((val, idx) for (idx, val) in enumerate(listlrs))
     val_mom, idx_mom = min((val, idx) for (idx, val) in enumerate(listmoms))
     assert idx_lr == idx_mom
