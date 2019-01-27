@@ -17,11 +17,14 @@ of that change.
 
 ### New:
 
+- More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
+
 ### Changed:
 
 ### Fixed:
 
-- Fixed argument name in `ImageDataBunch.signle_from_classes`.
+- Fixed argument name in `ImageDataBunch.single_from_classes`.
+- Bud in `bb_pad_colalte` when no bboxes where left due to data augmentation (thanks to pouannes)
 
 ## 1.0.42 (2019-01-24)
 
