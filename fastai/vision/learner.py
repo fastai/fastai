@@ -130,6 +130,8 @@ class ClassificationInterpretation():
             print("Max 20 samples")
             return
         losses, idxs = self.top_losses(self.data.c)
+        l_dim = len(losses.size())
+        if l_dim == 1: losses, idxs = self.top_losses()
         infolist, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
         truthlabels=np.asarray(self.y_true, dtype=int) 
         classes_ids=[k for k in enumerate(self.data.classes)]
@@ -139,14 +141,16 @@ class ClassificationInterpretation():
             mismatch=np.all(pred!=where_truth)
             if mismatch: 
                 mismatches_idxs.append(i)
-                losses_mismatches.append((losses[i][pred],i))
-            infotup=(i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
+                if l_dim > 1 : losses_mismatches.append((losses[i][pred],i))
+                else: losses_mismatches.append((losses[i],i))
+            if l_dim > 1: infotup=(i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
+            else: infotup=(i, pred, where_truth, losses[i], np.round(self.probs[i], decimals=3)[pred], mismatch)
             infolist.append(infotup)
         mismatches = self.data.valid_ds[mismatches_idxs]
         ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
         for w in ordlosses: ordlosses_idxs.append(w[1])
         mismatches_ordered_byloss=self.data.valid_ds[ordlosses_idxs]
-        print(mismatches)
+        print(str(len(mismatches))+' misclassified samples over '+str(len(self.data.valid_ds))+' samples in the validation set.')
         for ima in range(len(mismatches_ordered_byloss)):
             mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
         for sampleN in range(samples):
@@ -155,9 +159,8 @@ class ClassificationInterpretation():
                 actualclasses=actualclasses+' -- '+str(classes_ids[clas][1])
             imag=mismatches_ordered_byloss[sampleN][0]
             imag=show_image(imag, figsize=figsz)
-            imag.set_title(f"""Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]}, 
-                               Actual: {actualclasses}, Loss: {infolist[ordlosses_idxs[sampleN]][3]}, 
-                               Probability: {infolist[ordlosses_idxs[sampleN]][4]}""")
+            imag.set_title(f"""Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]} \nActual: {actualclasses}\nLoss: {infolist[ordlosses_idxs[sampleN]][3]}\nProbability: {infolist[ordlosses_idxs[sampleN]][4]}""",
+                           loc='left')
             plt.show()
             if save_misclassified: return mismatchescontainer
 
