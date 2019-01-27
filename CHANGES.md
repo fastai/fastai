@@ -21,6 +21,8 @@ of that change.
 
 ### Changed:
 
+- `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
+
 ### Fixed:
 
 - Fixed argument name in `ImageDataBunch.single_from_classes`.
