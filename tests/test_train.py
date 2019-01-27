@@ -1,8 +1,6 @@
 import pytest,fastai
 from utils.fakes import *
 from utils.text import *
-from utils.param import *
-#from fastai.vision import *
 
 ## filename: test_train.py
 ## tests functions in train.py
@@ -16,18 +14,9 @@ from utils.param import *
 
 @pytest.fixture(scope="module")
 def learn():
-    ## fixture for same model in fit and fit_one_cycle and demonstrate difference in behavior
-    ## test_fit and test_fit_one_cycle assert correctly with decommented models, 
-    ## fake_learner defaulted for performance reasons
     
     learn = fake_learner(50,50)
-
-    #path = untar_data(URLs.MNIST_TINY)
-    #data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), num_workers=2)
-    #data.normalize()
-    #learn = create_cnn(data, models.resnet34, metrics=error_rate)
-    #learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate])        
-    
+   
     return learn
 
 def test_fit(learn):
@@ -40,12 +29,12 @@ def test_fit(learn):
     
     with CaptureStdout() as cs:  learn.fit(epochs=eps, lr=learning_rate, wd=weight_decay)
     #assert_screenout(cs.out, str(eps))
-    lrs = get_learning_rates(learn)
+    lrs = list(learn.recorder.lrs)
     prevlr = learning_rate
     for lr in lrs:
         if prevlr is not None: assert prevlr == lr
         prevlr = lr
-    moms = get_momentum(learn)
+    moms = list(learn.recorder.moms)
     prevmom = None
     for mom in moms:
         if prevmom is not None: assert prevmom == mom
@@ -63,25 +52,14 @@ def test_fit_one_cycle(learn):
     with CaptureStdout() as cs: learn.fit_one_cycle(cycle_length, lr)
     #assert_screenout(cs.out, str(cycle_length)) 
 
-    listlrs =  get_learning_rates(learn) #give_lrs(learn)
-    listmoms = get_momentum(learn) # give give_moms(learn)
+    listlrs = list(learn.recorder.lrs)
+    listmoms = list(learn.recorder.moms) # give give_moms(learn)
     
     ## eliminate the final 'off' lrs
     for (idx,lr) in enumerate(listlrs):
         if lr < listlrs[0]:
             del listlrs[idx]
             del listmoms[idx]
-
-    '''
-    ## list learning rate and momentum as pairs at the end of each training epoch
-    ## for debugging
-    listlrsandmoms = get_lrsmoms_paired(learn)
-    i=0
-    for lrandmom in listlrsandmoms:
-        print(' \n\t' + str(i) + ' learning rate: ' + str(lrandmom[0]))
-        print(' \t' + str(i) + ' momentum: ' + str(lrandmom[1]))
-        i =  i + 1
-    '''
 
     ## we confirm learning rate is at its max when momentum is at its low
     val_lr, idx_lr = max((val, idx) for (idx, val) in enumerate(listlrs))
