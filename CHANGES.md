@@ -18,6 +18,7 @@ of that change.
 ### New:
 
 - More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
+- Backward option in `text_classifier_learner` (thanks to tpietruszka)
 
 ### Changed:
 
