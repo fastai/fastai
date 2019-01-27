@@ -45,13 +45,11 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
     labels = torch.zeros(len(samples), max_len).long() + pad_idx
     imgs = []
     for i,s in enumerate(samples):
-        try:
-            imgs.append(s[0].data[None])
-            bbs, lbls = s[1].data
+        imgs.append(s[0].data[None])
+        bbs, lbls = s[1].data
+        if not (bbs.nelement() == 0):
             bboxes[i,-len(lbls):] = bbs
             labels[i,-len(lbls):] = tensor(lbls)
-        except:
-            pass
     return torch.cat(imgs,0), (bboxes,labels)
 
 def _maybe_add_crop_pad(tfms):
