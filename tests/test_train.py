@@ -2,7 +2,7 @@ import pytest,fastai
 from utils.fakes import *
 from utils.text import *
 from utils.param import *
-from fastai.vision import *
+#from fastai.vision import *
 
 ## filename: test_train.py
 ## tests functions in train.py
@@ -39,7 +39,7 @@ def test_fit(learn):
     eps = 4
     
     with CaptureStdout() as cs:  learn.fit(epochs=eps, lr=learning_rate, wd=weight_decay)
-    assert_screenout(cs.out, str(eps))
+    #assert_screenout(cs.out, str(eps))
     lrs = get_learning_rates(learn)
     prevlr = learning_rate
     for lr in lrs:
@@ -61,7 +61,7 @@ def test_fit_one_cycle(learn):
     lr = 3e-3 # 5e-3
 
     with CaptureStdout() as cs: learn.fit_one_cycle(cycle_length, lr)
-    assert_screenout(cs.out, str(cycle_length)) 
+    #assert_screenout(cs.out, str(cycle_length)) 
 
     listlrs =  get_learning_rates(learn) #give_lrs(learn)
     listmoms = get_momentum(learn) # give give_moms(learn)
