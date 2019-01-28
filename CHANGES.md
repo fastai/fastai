@@ -28,6 +28,8 @@ of that change.
 
 - Fixed argument name in `ImageDataBunch.single_from_classes`.
 - Bud in `bb_pad_colalte` when no bboxes where left due to data augmentation (thanks to pouannes)
+- fix the conda package dependency for py36
+
 
 ## 1.0.42 (2019-01-24)
 
