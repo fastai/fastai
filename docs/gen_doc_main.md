@@ -302,7 +302,7 @@ update_notebooks('fastai.gen_doc.gen_notebooks', dest_path='fastai/docs_src')
 
 ### Updating html only
 
-If you are not syncronizing the code base with its documentation, but made some manual changes to the documentation notebooks, then you don't need to update the notebooks, but just convert them to `.html`:
+If you are not synchronizing the code base with its documentation, but made some manual changes to the documentation notebooks, then you don't need to update the notebooks, but just convert them to `.html`:
 
 To convert `docs_src/*ipynb` to `docs/*html`:
 
@@ -362,7 +362,7 @@ If you work on markdown (.md) files it helps to be able to validate your changes
 ```
 grip -b docs/dev/release.md
 ```
-will open a browser with the rendered markdown as html - it uses github API, so this is exacly how it'll look on github once you commit it. And here is a handy alias:
+will open a browser with the rendered markdown as html - it uses github API, so this is exactly how it'll look on github once you commit it. And here is a handy alias:
 
 ```
 alias grip='grip -b'
