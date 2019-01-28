@@ -122,7 +122,7 @@ class ImageDataBunch(DataBunch):
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', label_delim:str=None, valid_pct:float=0.2,
+    def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr=None, label_delim:str=None, valid_pct:float=0.2,
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
         "Create from a `DataFrame` `df`."
         src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
@@ -131,7 +131,7 @@ class ImageDataBunch(DataBunch):
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', label_delim:str=None, csv_labels:PathOrStr='labels.csv',
+    def from_csv(cls, path:PathOrStr, folder:PathOrStr=None, label_delim:str=None, csv_labels:PathOrStr='labels.csv',
                  valid_pct:float=0.2, fn_col:int=0, label_col:int=1, suffix:str='', header:Optional[Union[int,str]]='infer',
                  **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file in `path/csv_labels`."
@@ -282,13 +282,13 @@ class ImageItemList(ItemList):
         return super().from_folder(path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='', **kwargs)->'ItemList':
-        "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
+    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr=None, suffix:str='', **kwargs)->'ItemList':
+        "Get the filenames in `col` of `df` and will had `folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
-        sep = os.path.sep
         res = super().from_df(df, path=path, cols=cols, **kwargs)
-        res.items = np.char.add(np.char.add(f'{folder}{sep}', res.items.astype(str)), suffix)
-        res.items = np.char.add(f'{res.path}{sep}', res.items)
+        pref = f'{res.path}{os.path.sep}'
+        if folder is not None: pref += f'{folder}{os.path.sep}'
+        res.items = np.char.add(np.char.add(pref, res.items.astype(str)), suffix)
         return res
 
     @classmethod
