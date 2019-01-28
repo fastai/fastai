@@ -3,7 +3,7 @@
 Most recent releases are shown at the top. Each release shows:
 
 - **New**: New classes, methods, functions, etc
-- **Changed**: Additional paramaters, changes to inputs or outputs, etc
+- **Changed**: Additional parameters, changes to inputs or outputs, etc
 - **Fixed**: Bug fixes that don't change documented behaviour
 
 Note that the top-most release is changes in the unreleased master branch on
@@ -68,7 +68,7 @@ of that change.
 
 - Bug when loading text data in multi-classification with `TextDataBunch.load`
 - Wrong values for metrics like MSE due to broadcasting errors
-- `ImageDataBunch` doesn't shuffle the valdiation labels anymore
+- `ImageDataBunch` doesn't shuffle the validation labels anymore
 
 
 ## 1.0.40 (2019-01-17)
@@ -176,7 +176,7 @@ of that change.
 
 - Windows fixes, including:
   - Most transforms can now be used in Windows with `num_workers`>0
-  - Avoid recusion error with data blocks API
+  - Avoid recursion error with data blocks API
   - Try to avoid default `np.int32` creation where possible
 - `y_range` for unet output activation
 - `Image.apply_tfms` doesn't accept any kwargs anymore
@@ -231,7 +231,7 @@ of that change.
 
 - `LanguageLearner.predict` now returns better text predictions
 - Unfreezing layers didn't create a new optimizer so the unfrozen layers weren't training
-- Bug in `TextDataBunch` with a mistmatched test set was causing problems on the validation set
+- Bug in `TextDataBunch` with a mismatched test set was causing problems on the validation set
 
 
 ## 1.0.31 (2018-12-01)
@@ -411,8 +411,8 @@ of that change.
 
 ### New:
 
-- `Learner.predict` works accross applications
-- `Learner.show_batch` works accross applications
+- `Learner.predict` works across applications
+- `Learner.show_batch` works across applications
 
 ### Changed:
 
@@ -447,7 +447,7 @@ of that change.
 - `CSVLogger` callback (thanks to devorfu)
 - Initial support for image regression problems
 - If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`
-- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems accross applications
+- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems across applications
 
 ### Changed:
 
