@@ -5,7 +5,7 @@ from fastai.utils.mem import *
 from utils.mem import *
 from math import isclose
 
-use_gpu = can_use_gpu()
+use_gpu = torch.cuda.is_available()
 torch_preload_mem()
 
 pytestmark = pytest.mark.integration

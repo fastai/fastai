@@ -6,7 +6,7 @@ from math import isclose
 # GPU, by running: CUDA_VISIBLE_DEVICES="" pytest
 
 # most tests are run regardless of cuda available or not, we just get zeros when gpu is not available
-use_gpu = can_use_gpu()
+use_gpu = torch.cuda.is_available()
 torch_preload_mem()
 
 def check_gpu_mem_zeros(total, used, free):
