@@ -436,6 +436,8 @@ custom options:
    pytest --skipint
    ```
 
+* `cuda` - mark tests as requiring a CUDA device to run (skipped if no such device is present). These tests check CUDA-specific code, e.g., compiling and running kernels or GPU version of function's `forward`/`backward` methods.
+
 
 ### After test cleanup
 
