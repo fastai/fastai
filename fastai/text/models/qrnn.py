@@ -5,9 +5,10 @@ from torch.autograd import Function
 __all__ = ['QRNNLayer', 'QRNN']
 
 import fastai
-fastai_path = Path(fastai.__path__[0])/'text'/'qrnn'
-files = ['forget_mult_cuda.cpp', 'forget_mult_cuda_kernel.cu']
-forget_mult_cuda = load(name='forget_mult_cuda', sources=[fastai_path/f for f in files])
+if torch.cuda.is_available():
+    fastai_path = Path(fastai.__path__[0])/'text'/'models'
+    files = ['forget_mult_cuda.cpp', 'forget_mult_cuda_kernel.cu']
+    forget_mult_cuda = load(name='forget_mult_cuda', sources=[fastai_path/f for f in files])
 
 class ForgetMultGPU(Function):
     
