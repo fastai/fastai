@@ -26,7 +26,7 @@ python -m fastai.utils.show_install
 
 **To Reproduce**
 <!-- Steps to reproduce the behavior. A gist to reproduce it is even better!-->
-<!-- If possible please add a new test for https://github.com/fastai/fastai/tests that helps us reproduce the problem and will help with future regression testing. See https://docs.fast.ai/dev/test.html for details on how to run/write tests. -->
+<!-- If possible please add a new test for https://github.com/fastai/fastai/tree/master/tests/ that helps us reproduce the problem and will help with future regression testing. See https://docs.fast.ai/dev/test.html for details on how to run/write tests. -->
 
 **Expected behavior**
 <!-- A clear and concise description of what you expected to happen. -->

@@ -14,7 +14,7 @@ class TerminateOnNaNCallback(Callback):
 
     def on_batch_end(self, last_loss, epoch, num_batch, **kwargs:Any)->None:
         "Test if `last_loss` is NaN and interrupts training."
-        if self.stop: return True #to skip validation after stopping during traning
+        if self.stop: return True #to skip validation after stopping during training
         if torch.isnan(last_loss):
             print (f'Epoch/Batch ({epoch}/{num_batch}): Invalid loss, terminating training.')
             self.stop = True

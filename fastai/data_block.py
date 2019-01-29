@@ -381,7 +381,7 @@ class MultiCategoryList(CategoryListBase):
         return MultiCategory(t, [self.classes[p] for p in o], o)
 
 class FloatList(ItemList):
-    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if thif flag is `True`."
+    "`ItemList` suitable for storing the floats in items for regression. Will add a `log` if this flag is `True`."
     def __init__(self, items:Iterator, log:bool=False, **kwargs):
         super().__init__(np.array(items, dtype=np.float32), **kwargs)
         self.log = log
@@ -514,7 +514,7 @@ class LabelLists(ItemLists):
 
     @classmethod
     def load_empty(cls, path:PathOrStr, fn:PathOrStr='export.pkl'):
-        "Create a `LabelLists` with empty sets from the serialzed file in `path/fn`."      
+        "Create a `LabelLists` with empty sets from the serialized file in `path/fn`."      
         state = pickle.load(open(path/fn, 'rb'))
         return LabelLists.load_state(path, state)
 
@@ -598,7 +598,7 @@ class LabelList(Dataset):
 
     @classmethod
     def load_empty(cls, path:PathOrStr, fn:PathOrStr):
-        "Load the sate in `fn` to create an empty `LabelList` for inference."
+        "Load the state in `fn` to create an empty `LabelList` for inference."
         return cls.load_state(path, pickle.load(open(Path(path)/fn, 'rb')))
     
     @classmethod
@@ -620,7 +620,7 @@ class LabelList(Dataset):
             if filt.sum()>0: 
                 #Warnings are given later since progress_bar might make them disappear.
                 self.warn = f"You are labelling your items with {self.y.__class__.__name__}.\n"
-                self.warn += f"Your {name} set contained the folowing unknown labels, the corresponding items have been discarded.\n"
+                self.warn += f"Your {name} set contained the following unknown labels, the corresponding items have been discarded.\n"
                 for p in self.y.processor:
                     if len(getattr(p, 'warns', [])) > 0: 
                         warnings = list(set(p.warns))
@@ -646,7 +646,7 @@ class LabelList(Dataset):
         return self
                 
     def databunch(self, **kwargs):
-        "To throw a clear error message when the data wasn't splitted."
+        "To throw a clear error message when the data wasn't split."
         raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`")
 
 @classmethod
