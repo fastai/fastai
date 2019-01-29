@@ -19,9 +19,9 @@ learn.fit(1)
 
 ## Note for [course.fast.ai](http://course.fast.ai) students
 
-If you are using `fastai` for any [course.fast.ai](http://course.fast.ai) course, you need to use `fastai 0.7`. Please ignore the rest of this document, which is written for `fastai v1`, and instead follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
+This document is written for `fastai v1`, which we use for the current, third version of part 1 of the [course.fast.ai](http://course.fast.ai) deep learning course. If you're following along with a course at [course18.fast.ai](http://course18.fast.ai)&mdash;that is, part 2 of the deep learning course, or the machine learning course (which aren't yet updated for v1)&mdash;you need to use `fastai 0.7`;  please follow the installation instructions [here](https://forums.fast.ai/t/fastai-v0-install-issues-thread/24652).
 
-*Note: If you want to learn how to use fastai v1 from its lead developer, Jeremy Howard, he will be teaching it in the [Deep Learning Part I](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one) course at the University of San Francisco from Oct 22nd, 2018.*
+*Note: If you want to dive deep in to fastai, Jeremy Howard, its lead developer, will be showing internals and advanced features in [Deep Learning Part II](https://www.usfca.edu/data-institute/certificates/deep-learning-part-two) at the University of San Francisco from March 18th, 2018.*
 
 ## Installation
 
