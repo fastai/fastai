@@ -66,7 +66,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <a href="/layers.html#AdaptiveConcatPool2d"><code>AdaptiveConcatPool2d</code></a> object uses adaptive average pooling and adaptive max pooling and concatenates them both. We use this because it provides the model with the information of both methods and improves performance. This technique is called <code>adaptive</code> because it allows us to decide on what output dimensions we want, instead of choosing the input's dimensions to fit a desired output size.</p>
 <p>Let's try training with Adaptive Average Pooling first, then with Adaptive Max Pooling and finally with the concatenation of them both to see how they fare in performance.</p>
-<p>We will first define a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> using <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveMaxPool2d">Adapative Max Pooling</a> by changing the source code a bit.</p>
+<p>We will first define a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> using <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveMaxPool2d">Adaptive Max Pooling</a> by changing the source code a bit.</p>
 
 </div>
 </div>
@@ -153,7 +153,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now let's try with <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveAvgPool2d">Adapative Average Pooling</a> now.</p>
+<p>Now let's try with <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveAvgPool2d">Adaptive Average Pooling</a> now.</p>
 
 </div>
 </div>
@@ -655,7 +655,7 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The debugger module allows us to peek inside a network while its training and see in detail what is going on. We can see inputs, ouputs and sizes at any point in the network.</p>
+<p>The debugger module allows us to peek inside a network while its training and see in detail what is going on. We can see inputs, outputs and sizes at any point in the network.</p>
 <p>For instance, if you run the following:</p>
 <div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
     <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span>  <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
@@ -1095,7 +1095,7 @@ ipdb&gt;</code></pre>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <a href="/layers.html#conv_layer"><code>conv_layer</code></a> function returns a sequence of <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d">nn.Conv2D</a>, <a href="https://arxiv.org/abs/1502.03167">BatchNorm</a> and a ReLU or <a href="https://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf">leaky RELU</a> activation function.</p>
-<p><code>n_in</code> represents the number of size of the input <code>n_out</code> the size of the output, <code>ks</code> kernel size, <code>stride</code> the stride with which we want to apply the convolutions. <code>bias</code> will decide if they have bias or not (if None, defaults to True unless using batchnorm). <code>norm_type</code> selects type of normalization (or <code>None</code>). If <code>leaky</code> is None, the activation is a standard <code>ReLU</code>, otherwise it's a <code>LearkyReLU</code> of slope <code>leaky</code>. Finally if <code>transpose=True</code>, the convolution is replaced by a <code>ConvTranspose2D</code>.</p>
+<p><code>n_in</code> represents the number of size of the input <code>n_out</code> the size of the output, <code>ks</code> kernel size, <code>stride</code> the stride with which we want to apply the convolutions. <code>bias</code> will decide if they have bias or not (if None, defaults to True unless using batchnorm). <code>norm_type</code> selects type of normalization (or <code>None</code>). If <code>leaky</code> is None, the activation is a standard <code>ReLU</code>, otherwise it's a <code>LeakyReLU</code> of slope <code>leaky</code>. Finally if <code>transpose=True</code>, the convolution is replaced by a <code>ConvTranspose2D</code>.</p>
 
 </div>
 </div>

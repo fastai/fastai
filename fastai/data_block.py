@@ -80,7 +80,7 @@ class ItemList():
         return pred
 
     def reconstruct(self, t:Tensor, x:Tensor=None):
-        "Reconstuct one of the underlying item for its data `t`."
+        "Reconstruct one of the underlying item for its data `t`."
         return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
 
     def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':

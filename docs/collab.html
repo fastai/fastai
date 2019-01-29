@@ -146,7 +146,7 @@ summary: "Application to collaborative filtering"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We'll first turn the <code>userId</code> and <code>movieId</code> columns in category codes, so that we can replace them with their codes when it's time to feed them to an <code>Embedding</code> layer. This step would be even more important if our csv had names of users, or names of items in it. To do it, we wimply have to call a <a href="/collab.html#CollabDataBunch"><code>CollabDataBunch</code></a> factory method.</p>
+<p>We'll first turn the <code>userId</code> and <code>movieId</code> columns in category codes, so that we can replace them with their codes when it's time to feed them to an <code>Embedding</code> layer. This step would be even more important if our csv had names of users, or names of items in it. To do it, we simply have to call a <a href="/collab.html#CollabDataBunch"><code>CollabDataBunch</code></a> factory method.</p>
 
 </div>
 </div>
@@ -483,7 +483,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>More specifically, binds <a href="/tabular.data.html#tabular.data"><code>data</code></a> with a model that is either an <a href="/collab.html#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code> if <code>use_nn=False</code> or a <a href="/collab.html#EmbeddingNN"><code>EmbeddingNN</code></a> with <code>emb_szs</code> otherwise. In both cases the numbers of users and items will be inferred from the data, <code>y_range</code> can be specifided in the <code>kwargs</code> and you can pass <a href="/metrics.html#metrics"><code>metrics</code></a> or <code>wd</code> to the <a href="/basic_train.html#Learner"><code>Learner</code></a> constructor.</p>
+<p>More specifically, binds <a href="/tabular.data.html#tabular.data"><code>data</code></a> with a model that is either an <a href="/collab.html#EmbeddingDotBias"><code>EmbeddingDotBias</code></a> with <code>n_factors</code> if <code>use_nn=False</code> or a <a href="/collab.html#EmbeddingNN"><code>EmbeddingNN</code></a> with <code>emb_szs</code> otherwise. In both cases the numbers of users and items will be inferred from the data, <code>y_range</code> can be specified in the <code>kwargs</code> and you can pass <a href="/metrics.html#metrics"><code>metrics</code></a> or <code>wd</code> to the <a href="/basic_train.html#Learner"><code>Learner</code></a> constructor.</p>
 
 </div>
 </div>

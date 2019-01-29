@@ -47,7 +47,7 @@ summary: "Implementation of a flexible training API"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a phase for training a model during <code>length</code> iterations, following a schedule given by <code>lrs</code> and <code>lr_anneal</code>, <code>moms</code> and <code>mom_anneal</code>. More specifically, the phase will make the learning rate (or momentum) vary from the first value of <code>lrs</code> (or <code>moms</code>) to the second, following <code>lr_anneal</code> (or <code>mom_anneal</code>). If an annealing function is speficied but <code>lrs</code> or <code>moms</code> is a float, it will decay to 0. If no annealing function is specified, the default is a linear annealing if <code>lrs</code> (or <code>moms</code>) is a tuple, a constant parameter if it's a float.</p>
+<p>Create a phase for training a model during <code>length</code> iterations, following a schedule given by <code>lrs</code> and <code>lr_anneal</code>, <code>moms</code> and <code>mom_anneal</code>. More specifically, the phase will make the learning rate (or momentum) vary from the first value of <code>lrs</code> (or <code>moms</code>) to the second, following <code>lr_anneal</code> (or <code>mom_anneal</code>). If an annealing function is specified but <code>lrs</code> or <code>moms</code> is a float, it will decay to 0. If no annealing function is specified, the default is a linear annealing if <code>lrs</code> (or <code>moms</code>) is a tuple, a constant parameter if it's a float.</p>
 
 </div>
 </div>
