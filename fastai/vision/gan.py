@@ -174,7 +174,7 @@ class FixedGANSwitcher(LearnerCallback):
 
 @dataclass
 class AdaptiveGANSwitcher(LearnerCallback):
-    "Switcher that goes back to generator/critic when the loes goes below `gen_thresh`/`crit_thresh`."
+    "Switcher that goes back to generator/critic when the loss goes below `gen_thresh`/`crit_thresh`."
     def __init__(self, learn:Learner, gen_thresh:float=None, critic_thresh:float=None):
         super().__init__(learn)
         self.gen_thresh,self.critic_thresh = gen_thresh,critic_thresh

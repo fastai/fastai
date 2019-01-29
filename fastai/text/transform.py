@@ -119,7 +119,7 @@ class Tokenizer():
             return sum(e.map(self._process_all_1, partition_by_cores(texts, self.n_cpus)), [])
 
 class Vocab():
-    "Contain the correspondance between numbers and tokens and numericalize."
+    "Contain the correspondence between numbers and tokens and numericalize."
     def __init__(self, itos:Collection[str]):
         self.itos = itos
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
