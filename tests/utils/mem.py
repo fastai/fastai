@@ -5,13 +5,8 @@ from fastai.utils.mem import *
 
 # check if we can/should use nvidia gpu
 # handle the case where cuda is available, but it is pretended not to have one through setting env var CUDA_VISIBLE_DEVICES=""
-def can_use_gpu():
-    use_gpu = 1 if torch.cuda.is_available() else 0
-    if "CUDA_VISIBLE_DEVICES" in os.environ and not len(os.environ["CUDA_VISIBLE_DEVICES"]):
-        # print('detected no gpu env emulation with CUDA_VISIBLE_DEVICES=""')
-        use_gpu = 0
-    return use_gpu
-use_gpu = can_use_gpu()
+# don't need to do anything since torch.cuda.is_available() looks for it
+use_gpu = torch.cuda.is_available()
 
 # This must run before any tests that measure gpu RAM
 # force pytorch to load cuDNN and its kernels to claim unreclaimable memory (~0.5GB) if it hasn't done so already, so that we get correct measurements
