@@ -78,7 +78,7 @@ class MixedPrecision(LearnerCallback):
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
-        return last_output.float()
+        return to_float(last_output)
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
         "Scale gradients up by `self.loss_scale` to prevent underflow."
