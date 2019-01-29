@@ -3,9 +3,9 @@
 import pytest, fastai, torch
 from fastai.utils.mem import *
 
-# check if we can/should use nvidia gpu
+# torch.cuda.is_available() check if we can/should use nvidia gpu
 # handle the case where cuda is available, but it is pretended not to have one through setting env var CUDA_VISIBLE_DEVICES=""
-# don't need to do anything since torch.cuda.is_available() looks for it
+
 use_gpu = torch.cuda.is_available()
 
 # This must run before any tests that measure gpu RAM
