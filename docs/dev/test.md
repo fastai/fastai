@@ -590,9 +590,9 @@ This section is currently focused on GPU RAM since it's the scarce resource, but
 
 * Test whether we can use GPU:
    ```
-   use_gpu = can_use_gpu()
+   use_gpu = torch.cuda.is_available()
    ```
-   It first checks `torch.cuda.is_available()`, and then whether `CUDA_VISIBLE_DEVICES=""` is used to fake a no-CUDA env, even though CUDA is available, so that we could test things on CPU despite having a GPU.
+   `torch.cuda.is_available()` checks if we can use NVIDIA GPU. It automatically handles the case when CUDA_VISIBLE_DEVICES="" env var is set, so even if CUDA is available it will return False, thus we can emulate non-CUDA environment.
 
 * Force `pytorch` to preload cuDNN and its kernels to claim unreclaimable memory (~0.5GB) if it hasn't done so already, so that we get correct measurements. This must run before any tests that measure GPU RAM. If you don't run it you will get erratic behavior and wrong measurements.
    ```
