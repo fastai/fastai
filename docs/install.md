@@ -25,6 +25,30 @@ Generally pytorch GPU build should work fine on machines that don't have a CUDA-
    ```
 
 
+## Jupyter notebook dependencies
+
+The `fastai` library doesn't require the jupyter environment to work, therefore those dependencies aren't included. So if you are planning on using `fastai` in the jupyter notebook environment, e.g. to run the `fastai` course lessons and you haven't already setup the jupyter environment, here is how you can do it.
+
+
+* conda
+
+   ```bash
+   conda install jupyter notebook jupyter_contrib_nbextensions
+   ```
+
+   Some users also [seem to need](https://stackoverflow.com/questions/39604271/conda-environments-not-showing-up-in-jupyter-notebook) this conda package to be able to choose the right kernel environment, however, most likely you won't need this package.
+
+   ```bash
+   conda install nb_conda
+   ```
+
+* pip
+
+   ```bash
+   pip install jupyter notebook jupyter_contrib_nbextensions
+   ```
+
+
 ## Custom dependencies
 
 If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disk space on your remote instance, here is how you can install only the dependencies that you need.

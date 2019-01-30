@@ -35,6 +35,8 @@ It's highly recommended you install `fastai` and its dependencies in a virtual e
 
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
 
+If you are planning on using `fastai` in the jupyter notebook environment, make sure to also install the corresponding [packages](https://docs.fast.ai/install.html#jupyter-notebook-dependencies).
+
 More advanced installation issues, such as installing only partial dependencies are covered in a dedicated [installation doc](https://docs.fast.ai/install.html).
 
 ### Conda Install
