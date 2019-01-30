@@ -32,6 +32,7 @@ def model_g2master_g(model_params:Sequence[Tensor], master_params:Sequence[Tenso
     if flat_master:
         for model_group,master_group in zip(model_params,master_params):
             if len(master_group) != 0:
+                if master_group[0].grad is None: master_group[0].grad = master_group[0].data.new(*master_group[0].data.size())
                 master_group[0].grad.data.copy_(parameters_to_vector([p.grad.data.float() for p in model_group]))
     else:
         for model_group,master_group in zip(model_params,master_params):
@@ -89,7 +90,8 @@ class MixedPrecision(LearnerCallback):
         "Convert the gradients back to FP32 and divide them by the scale."
         model_g2master_g(self.model_params, self.master_params, self.flat_master)
         for group in self.master_params:
-            for param in group: param.grad.div_(self.loss_scale)
+            for param in group: 
+                if param.grad is not None: param.grad.div_(self.loss_scale)
 
     def on_step_end(self, **kwargs:Any)->None:
         "Update the params from master to model and zero grad."
