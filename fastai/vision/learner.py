@@ -97,15 +97,15 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor):
-        self.data,self.probs,self.y_true,self.losses = data,probs,y_true,losses
+    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
+        self.data,self.probs,self.y_true,self.losses,self.ds_type = data,probs,y_true,losses,ds_type
         self.pred_class = self.probs.argmax(dim=1)
 
     @classmethod
     def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
         "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
         preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds)
+        return cls(learn.data, *preds, ds_type=ds_type)
 
     def top_losses(self, k:int=None, largest=True):
         "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
@@ -119,7 +119,7 @@ class ClassificationInterpretation():
         fig,axes = plt.subplots(rows,rows,figsize=figsize)
         fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
         for i,idx in enumerate(tl_idx):
-            im,cl = self.data.valid_ds[idx]
+            im,cl = self.data.dl(self.ds_type).dataset[idx]
             cl = int(cl)
             im.show(ax=axes.flat[i], title=
                 f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
@@ -146,10 +146,11 @@ class ClassificationInterpretation():
             if l_dim > 1: infotup=(i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
             else: infotup=(i, pred, where_truth, losses[i], np.round(self.probs[i], decimals=3)[pred], mismatch)
             infolist.append(infotup)
-        mismatches = self.data.valid_ds[mismatches_idxs]
+        ds = self.data.dl(self.ds_type).dataset
+        mismatches = ds[mismatches_idxs]
         ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
         for w in ordlosses: ordlosses_idxs.append(w[1])
-        mismatches_ordered_byloss=self.data.valid_ds[ordlosses_idxs]
+        mismatches_ordered_byloss=ds[ordlosses_idxs]
         print(str(len(mismatches))+' misclassified samples over '+str(len(self.data.valid_ds))+' samples in the validation set.')
         for ima in range(len(mismatches_ordered_byloss)):
             mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
