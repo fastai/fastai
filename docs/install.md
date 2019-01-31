@@ -62,8 +62,17 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    conda install --no-deps -c fastai fastai
    ```
 
-2. Next, find out which groups of dependencies you want:
+2. The rest of this section assumes you're inside the `fastai` git repo, since that's where `setup.py` resides. If you don't have the repository checked out, do:
 
+   ```
+   git clone https://github.com/fastai/fastai
+   cd fastai
+   tools/run-after-git-clone
+   ```
+
+3. Next, find out which groups of dependencies you want.
+
+   Now run:
    ```
    python setup.py -q deps
    ```
@@ -74,7 +83,7 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
 
    Do note that the `deps` command is a custom `distutils` extension, i.e. it only works in the `fastai` setup.
 
-3. Finally, install the custom dependencies for the desired groups.
+4. Finally, install the custom dependencies for the desired groups.
 
    For the sake of this demonstration, let's say you want to get the core dependencies (`base`), plus dependencies specific to computer vision (`vision`). The following command will give you the up-to-date dependencies for these two groups:
 
@@ -99,7 +108,7 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
 
    If your shell doesn't support `$()` syntax, it most likely will support backticks, which are deprecated in modern `bash`. The two are equivalent, but `$()` has a superior flexibility.
 
-* Special case:
+* Manual copy-n-paste case:
 
    If, instead of feeding the output directly to pip or conda, you want to do it manually via copy-n-paste, you need to quote the arguments, in which case add the `--dep-quote` option, which will do it for you:
 
