@@ -53,41 +53,97 @@ The `fastai` library doesn't require the jupyter environment to work, therefore 
 
 If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disk space on your remote instance, here is how you can install only the dependencies that you need.
 
-First, install `fastai` without its dependencies, and then install the dependencies that you need directly:
+1. First, install `fastai` without its dependencies using either `pip` or `conda`:
 
-```
-pip install --no-deps fastai
-pip install "matplotlib" "numpy>=1.12" "pandas" ...
-```
-this will work with conda too:
+   ```
+   # pip
+   pip install --no-deps fastai
+   # conda
+   conda install --no-deps -c fastai fastai
+   ```
 
-```
-conda install --no-deps -c fastai fastai
-conda install -c pytorch -c fastai "matplotlib" "numpy>=1.12" "pandas"  ...
-```
+2. Next, find out which groups of dependencies you want:
 
-Don't forget to add `-c fastai` for the conda installs, e.g. it's needed for `torchvision`.
+   ```
+   python setup.py -q deps
+   ```
+   You should get something like:
+   ```
+   Available dependency groups: base, text, qrnn, vision
+   ```
 
-Below you will find the groups of dependencies for you to choose from. `fastai.base` is mandatory, the rest are optional:
+   Do note that the `deps` command is a custom `distutils` extension, i.e. it only works in the `fastai` setup.
 
-```
-fastai.base:
+3. Finally, install the custom dependencies for the desired groups.
 
-   "matplotlib" "numpy>=1.12" "pandas" "fastprogress>=0.1.18" "bottleneck" "beautifulsoup4" "numexpr" "Pillow" "requests" "scipy" "typing" "pyyaml" "pytorch" "packaging" "nvidia-ml-py3"
+   For the sake of this demonstration, let's say you want to get the core dependencies (`base`), plus dependencies specific to computer vision (`vision`). The following command will give you the up-to-date dependencies for these two groups:
 
-fastai.text:
+   ```
+   python setup.py -q deps --dep-groups=base,vision
+   ```
+   It will return something like:
+   ```
+   Pillow beautifulsoup4 bottleneck dataclasses;python_version<'3.7' fastprogress>=0.1.18 matplotlib numexpr numpy>=1.12 nvidia-ml-py3 packaging pandas pyyaml requests scipy torch>=1.0.0 torchvision typing
+   ```
+   which can be fed directly to `pip install`:
 
-  "spacy" "regex" "thinc" "cymem"
+   ```
+   pip install $(python setup.py -q deps --dep-groups=base,vision)
+   ```
 
-fastai.text.qrnn:
+   Since conda uses a slightly different syntax/package names, to get the same output suitable for conda, add `--dep-conda`:
 
-  "cupy"
+   ```
+   python setup.py -q deps --dep-groups=base,vision --dep-conda
+   ```
 
-fastai.vision:
+   If your shell doesn't support `$()` syntax, it most likely will support backticks, which are deprecated in modern `bash`. The two are equivalent, but `$()` has a superior flexibility.
 
-  "torchvision"
+* Special case:
 
-```
+   If, instead of feeding the output directly to pip or conda, you want to do it manually via copy-n-paste, you need to quote the arguments, in which case add the `--dep-quote` option, which will do it for you:
+
+   ```
+   # pip:
+   python setup.py -q deps --dep-groups=base,vision --dep-quote
+   # conda:
+   python setup.py -q deps --dep-groups=base,vision --dep-quote --dep-conda
+   ```
+
+   So the output for pip will look like:
+   ```
+   "Pillow" "beautifulsoup4" "bottleneck" "dataclasses;python_version<'3.7'" "fastprogress>=0.1.18" "matplotlib" "numexpr" "numpy>=1.12" "nvidia-ml-py3" "packaging" "pandas" "pyyaml" "requests" "scipy" "torch>=1.0.0" "torchvision" "typing"
+   ```
+
+* Summary:
+
+   pip selective dependency installation:
+   ```
+   pip install --no-deps fastai
+   pip install $(python setup.py -q deps --dep-groups=base,vision)
+   ```
+
+   same for conda:
+   ```
+   conda install --no-deps -c fastai fastai
+   conda install -c pytorch -c fastai $(python setup.py -q deps --dep-conda --dep-groups=base,vision)
+   ```
+
+   adjust the `--dep-groups` argument to match your needs.
+
+
+* Full usage:
+
+   ```
+   # show available dependency groups:
+   python setup.py -q deps
+
+   # print dependency list for specified groups
+   python setup.py -q deps --dep-groups=base,vision
+
+   # see all options:
+   python setup.py -q deps --help
+   ```
 
 
 ## Virtual environment

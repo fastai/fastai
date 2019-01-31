@@ -6,6 +6,74 @@
 import re
 from setuptools import setup, find_packages
 
+from distutils.core import Command
+
+class DepsCommand(Command):
+    """A custom distutils command to print selective dependency groups.
+
+    # show available dependency groups:
+    python setup.py -q deps
+
+    # print dependency list for specified groups
+    python setup.py -q deps --dep-groups=base,vision
+
+    # see all options:
+    python setup.py -q deps --help
+    """
+
+    description = 'show dependency groups and their packages'
+    user_options = [
+        # format: (long option, short option, description).
+        ('dep-groups=', None, 'comma separated dependency groups'),
+        ('dep-quote',   None, 'quote each dependency'),
+        ('dep-conda',   None, 'adjust output for conda'),
+    ]
+
+    def initialize_options(self):
+        """Set default values for options."""
+        self.dep_groups = ''
+        self.dep_quote = False
+        self.dep_conda = False
+
+    def finalize_options(self):
+        """Post-process options."""
+        pass
+
+    def parse(self):
+        arg = self.dep_groups.strip()
+        return re.split(r' *, *', arg) if len(arg) else []
+
+    def run(self):
+        """Run command."""
+        wanted_groups = self.parse()
+
+        deps = []
+        invalid_groups = []
+        for grp in wanted_groups:
+            if grp in dep_groups: deps.extend(dep_groups[grp])
+            else:                 invalid_groups.append(grp)
+
+        if invalid_groups or not wanted_groups:
+            print("Available dependency groups:", ", ".join(dep_groups.keys()))
+            if invalid_groups:
+                print(f"Error: Invalid group name(s): {', '.join(invalid_groups)}")
+                exit(1)
+        else:
+            # prepare for shell word splitting (no whitespace in items)
+            deps = [re.sub(" ", "", x, 0) for x in sorted(set(deps))]
+            if self.dep_conda:
+                for i in range(len(deps)):
+                    # strip pip-specific syntax
+                    deps[i] = re.sub(r';.*',     '',         deps[i])
+                    # rename mismatching package names
+                    deps[i] = re.sub(r'^torch>', 'pytorch>', deps[i])
+            if self.dep_quote:
+                # for manual copy-n-paste (assuming no " in vars)
+                print(" ".join(map(lambda x: f'"{x}"', deps)))
+            else:
+                # if fed directly to `pip install` via backticks/$() don't quote
+                print(" ".join(deps))
+
 # note: version is maintained inside fastai/version.py
 exec(open('fastai/version.py').read())
 
@@ -26,26 +94,38 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 # - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
 #
 # IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
-requirements = to_list("""
-    bottleneck           # performance-improvement for numpy
-    dataclasses ; python_version<'3.7'
-    fastprogress>=0.1.18
-    beautifulsoup4
-    matplotlib
-    numexpr              # performance-improvement for numpy
-    numpy>=1.12
-    nvidia-ml-py3
-    pandas
-    packaging
-    Pillow
-    pyyaml
-    requests
-    scipy
-    spacy>=2.0.18
-    torch>=1.0.0
-    torchvision
-    typing
-""")
+dep_groups = {
+    'base':   to_list("""
+        bottleneck           # performance-improvement for numpy
+        dataclasses ; python_version<'3.7'
+        fastprogress>=0.1.18
+        beautifulsoup4
+        matplotlib
+        numexpr              # performance-improvement for numpy
+        numpy>=1.12
+        nvidia-ml-py3
+        pandas
+        packaging
+        Pillow
+        pyyaml
+        requests
+        scipy
+        torch>=1.0.0
+        typing
+"""),
+    'text':   to_list("""
+        spacy>=2.0.18
+"""),
+    'qrnn':   to_list("""
+        cupy
+"""),
+    'vision': to_list("""
+        torchvision
+"""),
+}
+
+# XXX: skipping cupy for now
+requirements = [item for l in dep_groups.values() for item in l if item != 'cupy']
 
 ### developer dependencies ###
 #
@@ -105,6 +185,8 @@ test_requirements = to_list("""
 
 # list of classifiers: https://pypi.org/pypi?%3Aaction=list_classifiers
 setup(
+    cmdclass = { 'deps': DepsCommand },
+
     name = 'fastai',
     version = __version__,
 
