@@ -8,10 +8,11 @@ __all__ = ['DistributedRecorder', 'DistributedTrainer', 'read_metrics', 'setup_d
 def make_async(b:Tuple[Tensor,Tensor]):
     return [o.to(o.device, non_blocking=True) for o in b]
 
-@dataclass
 class DistributedTrainer(LearnerCallback):
-    cuda_id:int=0
     _order = -20 #Needs to run before the recorder
+    def __init__(self, learn:Learner, cuda_id:int=0):
+        super().__init__(learn)
+        self.cuda_id = cuda_id
 
     def on_train_begin(self, **kwargs):
         self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id],
@@ -30,10 +31,11 @@ class DistributedTrainer(LearnerCallback):
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
             self.learn.data.valid_dl.remove_tfm(make_async)
 
-@dataclass
 class DistributedRecorder(LearnerCallback):
-    cuda_id:int=0
-    cache_dir:PathOrStr='tmp'
+    def __init__(self, learn:Learner, cuda_id:int=0, cache_dir:PathOrStr='tmp'):
+        super().__init__(learn)
+        self.cuda_id,self.cache_dir = cuda_id,cache_dir
+    
 
     def on_train_begin(self, **kwargs):
         os.makedirs(self.learn.path/self.cache_dir, exist_ok=True)
