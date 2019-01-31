@@ -1,2 +1,3 @@
 from .awd_lstm import *
-__all__ = [*awd_lstm.__all__]
+from .transformer import *
+__all__ = [*awd_lstm.__all__, *transformer.__all__]
