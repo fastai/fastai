@@ -90,10 +90,7 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 #   pip install fastai
 #   pip install -e .
 #
-# dependencies to skip for now:
-# - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
-#
-# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
+# IMPORTANT: when updating these, please make sure to sync conda/meta.yaml
 dep_groups = {
     'core':   to_list("""
         bottleneck           # performance-improvement for numpy
@@ -124,7 +121,9 @@ dep_groups = {
 """),
 }
 
-# XXX: skipping cupy for now
+# dependencies to skip for now:
+# - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
+#
 requirements = [item for l in dep_groups.values() for item in l if item != 'cupy']
 
 ### developer dependencies ###
