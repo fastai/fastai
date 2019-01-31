@@ -103,7 +103,7 @@ class ClassificationInterpretation():
 
     @classmethod
     def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid):
-        "Create an instance of `ClassificationInterpretationTabular`"
+        "Create an instance of `ClassificationInterpretation`"
         preds = learn.get_preds(ds_type=ds_type, with_loss=True)
         return cls(learn.data, *preds)
 
