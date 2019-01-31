@@ -157,7 +157,7 @@ class ImageDataBunch(DataBunch):
     def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:float=0.2, **kwargs):
         "Create from list of `fnames` in `path` with re expression `pat`."
         pat = re.compile(pat)
-        def _get_label(fn): return pat.search(str(fn)).group(1)
+        def _get_label(fn): return pat.search(str(fn.as_posix())).group(1)
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
     @staticmethod

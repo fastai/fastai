@@ -258,7 +258,7 @@ class ItemList():
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
         pat = re.compile(pat)
         def _inner(o):
-            s = str(os.path.join(self.path,o) if full_path else o)
+            s = str((os.path.join(self.path,o) if full_path else o).as_posix())
             res = pat.search(s)
             assert res,f'Failed to find "{pat}" in "{s}"'
             return res.group(1)
