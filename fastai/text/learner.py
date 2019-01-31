@@ -92,16 +92,19 @@ class LanguageLearner(RNNLearner):
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
+        self.model.reset()
+        xb, yb = self.data.one_item(text)
+        res = self.pred_batch(batch=(xb,yb))[0][-1]
+        new_idx = []
         for _ in progress_bar(range(n_words), leave=False):
-            self.model.reset()
-            xb, yb = self.data.one_item(text)
             res = self.pred_batch(batch=(xb,yb))[0][-1]
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
-            text += f' {self.data.vocab.itos[idx]}'
-        return text
+            new_idx.append(idx)
+            xb = xb.new_tensor([idx])[None]
+        return text + self.data.vocab.textify(new_idx)
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML

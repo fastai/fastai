@@ -20,6 +20,7 @@ of that change.
 - More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
 - Backward option in `text_classifier_learner` (thanks to tpietruszka)
 - Automate custom dependency groups installation via extending `distutils`
+- Transformer and TransformerXL architectures
 
 ### Changed:
 
@@ -32,6 +33,7 @@ of that change.
 - fix the conda package dependency for py36
 - Bugs in `ForgetMult` and check cuda version are consistent (thanks to mkardas)
 - Bug `label_empty()` got an unexpected keyword argument 'label_cls'
+- For a language model `predict` is now way faster
 
 ## 1.0.42 (2019-01-24)
 
