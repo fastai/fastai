@@ -242,7 +242,7 @@ class ItemList():
         "Label every item with `const`."
         return self.label_from_func(func=lambda o: const, **kwargs)
 
-    def label_empty(self):
+    def label_empty(self, **kwargs):
         "Label every item with an `EmptyLabel`."
         return self.label_from_func(func=lambda o: 0., label_cls=EmptyLabelList)
 
