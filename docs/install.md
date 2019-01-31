@@ -77,8 +77,10 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    ```
    You should get something like:
    ```
-   Available dependency groups: core, text, qrnn, vision
+   Available dependency groups: core, qrnn, text, vision
    ```
+
+   You need to use at least the `core` group.
 
    Do note that the `deps` command is a custom `distutils` extension, i.e. it only works in the `fastai` setup.
 

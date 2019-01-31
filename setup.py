@@ -54,7 +54,7 @@ class DepsCommand(Command):
             else:                 invalid_groups.append(grp)
 
         if invalid_groups or not wanted_groups:
-            print("Available dependency groups:", ", ".join(dep_groups.keys()))
+            print("Available dependency groups:", ", ".join(sorted(dep_groups.keys())))
             if invalid_groups:
                 print(f"Error: Invalid group name(s): {', '.join(invalid_groups)}")
                 exit(1)
