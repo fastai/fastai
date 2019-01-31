@@ -5,6 +5,10 @@ from torch.utils.data.distributed import DistributedSampler
 
 __all__ = ['DistributedRecorder', 'DistributedTrainer', 'read_metrics', 'setup_distrib']
 
+def rnn_reset(self):
+    if hasattr(self.module, 'reset'): self.module.reset()
+DistributedDataParallel.reset = rnn_reset
+
 def make_async(b:Tuple[Tensor,Tensor]):
     return [o.to(o.device, non_blocking=True) for o in b]
 
@@ -18,8 +22,8 @@ class DistributedTrainer(LearnerCallback):
     def on_train_begin(self, **kwargs):
         self.learn.model = DistributedDataParallel(self.learn.model, device_ids=[self.cuda_id],
                                                    output_device=self.cuda_id)
-        self.train_sampler = DistributedSampler(self.learn.data.train_ds)
-        self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=train_sampler)
+        self.train_sampler = DistributedSampler(self.learn.data.train_dl.dataset)
+        self.learn.data.train_dl = self.learn.data.train_dl.new(shuffle=False, sampler=self.train_sampler)
         self.learn.data.train_dl.add_tfm(make_async)
         if hasattr(self.learn.data, 'valid_dl') and self.learn.data.valid_dl is not None:
             self.learn.data.valid_dl.add_tfm(make_async)
