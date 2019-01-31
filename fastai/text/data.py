@@ -290,7 +290,7 @@ class TokenizeProcessor(PreProcessor):
 
 class NumericalizeProcessor(PreProcessor):
     "`PreProcessor` that numericalizes the tokens in `ds`."
-    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
         vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
 
