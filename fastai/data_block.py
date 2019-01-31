@@ -231,12 +231,12 @@ class ItemList():
 
     def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`."
-        labels = _maybe_squeeze(self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)])
+        labels = self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)]
         assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
         if is_listy(cols) and len(cols) > 1 and ('label_cls' not in kwargs or kwargs['label_cls'] == MultiCategoryList): 
             new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
             kwargs = {**new_kwargs, **kwargs}
-        return self.label_from_list(labels, **kwargs)
+        return self.label_from_list(_maybe_squeeze(labels), **kwargs)
 
     def label_const(self, const:Any=0, **kwargs)->'LabelList':
         "Label every item with `const`."
