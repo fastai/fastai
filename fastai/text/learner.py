@@ -50,7 +50,7 @@ class RNNLearner(Learner):
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
                  alpha:float=2., beta:float=1., metrics=None, **kwargs):
         super().__init__(data, model, **kwargs)
-        self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta))
+        self.callbacks.append(RNNTrainer(self, alpha=alpha, beta=beta))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
         is_class = (hasattr(self.data.train_ds, 'y') and isinstance(self.data.train_ds.y, CategoryList))
