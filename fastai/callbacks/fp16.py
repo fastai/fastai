@@ -58,6 +58,7 @@ class MixedPrecision(LearnerCallback):
     def __init__(self, learn:Learner, loss_scale:float=512., flat_master:bool=False):
         super().__init__(learn)
         self.loss_scale,self.flat_master = loss_scale,flat_master
+        self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
 
     def on_train_begin(self, **kwargs:Any)->None:

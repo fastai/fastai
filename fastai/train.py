@@ -45,7 +45,10 @@ def to_fp32(learn:Learner):
         learn.data.valid_dl.remove_tfm(batch_to_half)
     if hasattr(learn.data, 'test_dl') and learn.data.test_dl is not None:
         learn.data.test_dl.remove_tfm(batch_to_half)
+    for cb in learn.callbacks: 
+        if isinstance(cb, MixedPrecision): learn.callbacks.remove(cb)
     learn.model = learn.model.float()
+    return learn
 
 def mixup(learn:Learner, alpha:float=0.4, stack_x:bool=False, stack_y:bool=True) -> Learner:
     "Add mixup https://arxiv.org/abs/1710.09412 to `learn`."
