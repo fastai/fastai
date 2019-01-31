@@ -77,17 +77,17 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    ```
    You should get something like:
    ```
-   Available dependency groups: base, text, qrnn, vision
+   Available dependency groups: core, text, qrnn, vision
    ```
 
    Do note that the `deps` command is a custom `distutils` extension, i.e. it only works in the `fastai` setup.
 
 4. Finally, install the custom dependencies for the desired groups.
 
-   For the sake of this demonstration, let's say you want to get the core dependencies (`base`), plus dependencies specific to computer vision (`vision`). The following command will give you the up-to-date dependencies for these two groups:
+   For the sake of this demonstration, let's say you want to get the core dependencies (`core`), plus dependencies specific to computer vision (`vision`). The following command will give you the up-to-date dependencies for these two groups:
 
    ```
-   python setup.py -q deps --dep-groups=base,vision
+   python setup.py -q deps --dep-groups=core,vision
    ```
    It will return something like:
    ```
@@ -96,19 +96,19 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    which can be fed directly to `pip install`:
 
    ```
-   pip install $(python setup.py -q deps --dep-groups=base,vision)
+   pip install $(python setup.py -q deps --dep-groups=core,vision)
    ```
 
    Since conda uses a slightly different syntax/package names, to get the same output suitable for conda, add `--dep-conda`:
 
    ```
-   python setup.py -q deps --dep-groups=base,vision --dep-conda
+   python setup.py -q deps --dep-groups=core,vision --dep-conda
    ```
 
    If your shell doesn't support `$()` syntax, it most likely will support backticks, which are deprecated in modern `bash`. (The two are equivalent, but `$()` has a superior flexibility). If that's your situation, use the following syntax instead:
 
    ```
-   pip install `python setup.py -q deps --dep-groups=base,vision`
+   pip install `python setup.py -q deps --dep-groups=core,vision`
    ```
 
 * Manual copy-n-paste case:
@@ -117,9 +117,9 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
 
    ```
    # pip:
-   python setup.py -q deps --dep-groups=base,vision --dep-quote
+   python setup.py -q deps --dep-groups=core,vision --dep-quote
    # conda:
-   python setup.py -q deps --dep-groups=base,vision --dep-quote --dep-conda
+   python setup.py -q deps --dep-groups=core,vision --dep-quote --dep-conda
    ```
 
    So the output for pip will look like:
@@ -132,13 +132,13 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    pip selective dependency installation:
    ```
    pip install --no-deps fastai
-   pip install $(python setup.py -q deps --dep-groups=base,vision)
+   pip install $(python setup.py -q deps --dep-groups=core,vision)
    ```
 
    same for conda:
    ```
    conda install --no-deps -c fastai fastai
-   conda install -c pytorch -c fastai $(python setup.py -q deps --dep-conda --dep-groups=base,vision)
+   conda install -c pytorch -c fastai $(python setup.py -q deps --dep-conda --dep-groups=core,vision)
    ```
 
    adjust the `--dep-groups` argument to match your needs.
@@ -151,7 +151,7 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    python setup.py -q deps
 
    # print dependency list for specified groups
-   python setup.py -q deps --dep-groups=base,vision
+   python setup.py -q deps --dep-groups=core,vision
 
    # see all options:
    python setup.py -q deps --help

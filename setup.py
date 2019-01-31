@@ -15,7 +15,7 @@ class DepsCommand(Command):
     python setup.py -q deps
 
     # print dependency list for specified groups
-    python setup.py -q deps --dep-groups=base,vision
+    python setup.py -q deps --dep-groups=core,vision
 
     # see all options:
     python setup.py -q deps --help
@@ -95,7 +95,7 @@ def to_list(buffer): return list(filter(None, map(cleanup, buffer.splitlines()))
 #
 # IMPORTANT: when updating these, please make sure to sync conda/meta.yaml and docs/install.md (the "custom dependencies" section)
 dep_groups = {
-    'base':   to_list("""
+    'core':   to_list("""
         bottleneck           # performance-improvement for numpy
         dataclasses ; python_version<'3.7'
         fastprogress>=0.1.18
