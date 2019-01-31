@@ -70,9 +70,8 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    tools/run-after-git-clone
    ```
 
-3. Next, find out which groups of dependencies you want.
+3. Next, find out which groups of dependencies you want:
 
-   Now run:
    ```
    python setup.py -q deps
    ```
@@ -106,11 +105,15 @@ If for any reason you don't want to install all of `fastai`'s dependencies, sinc
    python setup.py -q deps --dep-groups=base,vision --dep-conda
    ```
 
-   If your shell doesn't support `$()` syntax, it most likely will support backticks, which are deprecated in modern `bash`. The two are equivalent, but `$()` has a superior flexibility.
+   If your shell doesn't support `$()` syntax, it most likely will support backticks, which are deprecated in modern `bash`. (The two are equivalent, but `$()` has a superior flexibility). If that's your situation, use the following syntax instead:
+
+   ```
+   pip install `python setup.py -q deps --dep-groups=base,vision`
+   ```
 
 * Manual copy-n-paste case:
 
-   If, instead of feeding the output directly to pip or conda, you want to do it manually via copy-n-paste, you need to quote the arguments, in which case add the `--dep-quote` option, which will do it for you:
+   If, instead of feeding the output directly to `pip` or `conda`, you want to do it manually via copy-n-paste, you need to quote the arguments, in which case add the `--dep-quote` option, which will do it for you:
 
    ```
    # pip:
