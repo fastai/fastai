@@ -3,7 +3,7 @@ module: basic_train.py - Model fitting methods
 docs  : https://docs.fast.ai/train.html
 """
 
-import pytest,fastai
+import pytest, fastai
 from utils.fakes import *
 from utils.text import *
 
