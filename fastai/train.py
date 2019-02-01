@@ -142,7 +142,7 @@ class ClassificationInterpretation():
         plt.xlabel('Predicted')
 
     def most_confused(self, min_val:int=0)->Collection[Tuple[str,str,int]]:
-        "Sorted descending list of largest non-diagonal entries of confusion matrix."
+        "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix()
         np.fill_diagonal(cm, 0)
         res = [(range(self.data.c)[i],range(self.data.c)[j],cm[i,j])
