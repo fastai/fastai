@@ -113,18 +113,12 @@ dep_groups = {
     'text':   to_list("""
         spacy>=2.0.18
 """),
-    'qrnn':   to_list("""
-        cupy
-"""),
     'vision': to_list("""
         torchvision
 """),
 }
 
-# dependencies to skip for now:
-# - cupy - is only required for QRNNs - sgugger thinks later he will get rid of this dep.
-#
-requirements = [item for l in dep_groups.values() for item in l if item != 'cupy']
+requirements = [y for x in dep_groups.values() for y in x]
 
 ### developer dependencies ###
 #
