@@ -97,7 +97,7 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
             if cb_handler.on_epoch_end(val_loss): break
     except Exception as e:
         exception = e
-        raise e
+        raise
     finally: cb_handler.on_train_end(exception)
 
 loss_func_name2activ = {'cross_entropy_loss': F.softmax, 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,

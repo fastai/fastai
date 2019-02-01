@@ -93,7 +93,7 @@ class ActivationStats(HookCallback):
     def on_batch_end(self, train, **kwargs):
         "Take the stored results and puts it in `self.stats`"
         if train: self.stats.append(self.hooks.stored)
-    def on_train_end(self, **kwargs): 
+    def on_train_end(self, **kwargs):
         "Polish the final result."
         self.stats = tensor(self.stats).permute(2,1,0)
 
@@ -119,7 +119,7 @@ def num_features_model(m:nn.Module)->int:
         try: return model_sizes(m, size=(sz,sz))[-1][1]
         except Exception as e:
             sz *= 2
-            if sz > 2048: raise e
+            if sz > 2048: raise
 
 def total_params(m:nn.Module)->int:
     params, trainable = 0, False
@@ -184,4 +184,3 @@ def model_summary(m:Collection[nn.Module], n:int=70):
     return res
 
 Learner.summary = model_summary
-
