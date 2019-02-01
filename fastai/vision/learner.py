@@ -203,7 +203,7 @@ ClassificationInterpretation.confusion_matrix = confusion_matrix
 ClassificationInterpretation.plot_confusion_matrix = plot_confusion_matrix
 ClassificationInterpretation.most_confused = most_confused
 
-def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
-    "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
-    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
+def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid):
+    "Create a `ClassificationInterpretation` object from `learner` on `ds_type`."
+    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type)
 Learner.interpret = _learner_interpret
