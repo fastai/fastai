@@ -18,7 +18,7 @@ class URLs():
     COCO_TINY = f'{URL}coco_tiny'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
-    MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny.tgz'
+    MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny'
     IMDB = f'{S3_NLP}imdb'
     IMDB_SAMPLE = f'{URL}imdb_sample'
     HUMAN_NUMBERS = f'{URL}human_numbers'
