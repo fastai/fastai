@@ -130,8 +130,8 @@ class ClassificationInterpretation():
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         tick_marks = np.arange(self.data.c)
-        plt.xticks(tick_marks, list(range(self.data.c)), rotation=90)
-        plt.yticks(tick_marks, list(range(self.data.c)), rotation=0)
+        plt.xticks(tick_marks, self.data.y.classes, rotation=90)
+        plt.yticks(tick_marks, self.data.y.classes, rotation=0)
 
         if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
@@ -143,11 +143,11 @@ class ClassificationInterpretation():
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
 
-    def most_confused(self, min_val:int=0, slice_size:int=None)->Collection[Tuple[str,str,int]]:
+    def most_confused(self, min_val:int=0, slice_size:int=1)->Collection[Tuple[str,str,int]]:
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
-        res = [(range(self.data.c)[i],range(self.data.c)[j],cm[i,j])
+        res = [(self.data.y.classes[i],self.data.y.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
     
