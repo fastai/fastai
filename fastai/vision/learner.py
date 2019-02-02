@@ -96,9 +96,11 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
     apply_init(model[2], nn.init.kaiming_normal_)
     return learn
 
-def top_losses(self, k:int=None, largest=True):
-    "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
-    return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
+@classmethod
+def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+    "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
+    preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
+    return cls(learn.data, *preds, ds_type=ds_type)
 
 def plot_top_losses(self, k, largest=True, figsize=(12,12)):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
@@ -154,56 +156,11 @@ def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_
         plt.show()
         if save_misclassified: return mismatchescontainer
 
-def confusion_matrix(self, slice_size:int=None):
-    "Confusion matrix as an `np.ndarray`."
-    x=torch.arange(0,self.data.c)
-    if slice_size is None: cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-    else:
-        cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
-        for i in range(0, self.y_true.shape[0], slice_size):
-            cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None])
-                        & (self.y_true[i:i+slice_size]==x[:,None,None])).sum(2)
-            torch.add(cm, cm_slice, out=cm)
-    return to_np(cm)
-
-def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2,
-                              slice_size:int=None, **kwargs)->None:
-    "Plot the confusion matrix, with `title` and using `cmap`."
-    # This function is mainly copied from the sklearn docs
-    cm = self.confusion_matrix(slice_size=slice_size)
-    plt.figure(**kwargs)
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    tick_marks = arange_of(self.data.classes)
-    plt.xticks(tick_marks, self.data.classes, rotation=90)
-    plt.yticks(tick_marks, self.data.classes, rotation=0)
-
-    if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
-        plt.text(j, i, coeff, horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
-
-    plt.tight_layout()
-    plt.ylabel('Actual')
-    plt.xlabel('Predicted')
-
-def most_confused(self, min_val:int=1, slice_size:int=None)->Collection[Tuple[str,str,int]]:
-    "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
-    cm = self.confusion_matrix(slice_size=slice_size)
-    np.fill_diagonal(cm, 0)
-    res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
-            for i,j in zip(*np.where(cm>min_val))]
-    return sorted(res, key=itemgetter(2), reverse=True)
-
-ClassificationInterpretation.top_losses = top_losses
+ClassificationInterpretation.from_learner = from_learner
 ClassificationInterpretation.plot_top_losses = plot_top_losses
 ClassificationInterpretation.plot_multi_top_losses = plot_multi_top_losses
-ClassificationInterpretation.confusion_matrix = confusion_matrix
-ClassificationInterpretation.plot_confusion_matrix = plot_confusion_matrix
-ClassificationInterpretation.most_confused = most_confused
 
-def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid):
-    "Create a `ClassificationInterpretation` object from `learner` on `ds_type`."
-    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type)
+def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+    "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
+    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type, tta=tta)
 Learner.interpret = _learner_interpret
