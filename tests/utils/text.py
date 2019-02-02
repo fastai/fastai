@@ -47,3 +47,32 @@ class CaptureStdout():
 
     def __repr__(self):
         return self.out
+
+# XXX: probably need to refactor into a single class that will work with stderr/stdout and make it configurable to capture both or either. probably capsys-like
+class CaptureStderr():
+    """ Context manager to capture stderr, clean it up and make it available via obj.err or str(obj).
+
+    Example:
+
+    with CaptureStderr() as cs:
+        print("Secret message")
+    print(f"captured: {cs.err}")
+    # or via its stringified repr:
+    print(f"captured: {cs}")
+
+    """
+    def __init__(self):
+        self.buffer = StringIO()
+        self.err = 'error: CaptureStderr context is unfinished yet, called too early'
+
+    def __enter__(self):
+        self.old = sys.stderr
+        sys.stderr = self.buffer
+        return self
+
+    def __exit__(self, *exc):
+        sys.stderr = self.old
+        self.err = apply_print_resets(self.buffer.getvalue())
+
+    def __repr__(self):
+        return self.err
