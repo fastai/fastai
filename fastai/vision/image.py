@@ -116,7 +116,7 @@ class Image(ItemBase):
                 if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
                     x = tfm(x, size=_get_crop_target(size,mult=mult), padding_mode=padding_mode)
             else: x = tfm(x)
-        return x
+        return x.refresh()
 
     def refresh(self)->None:
         "Apply any logit, flow, or affine transfers that have been sent to the `Image`."

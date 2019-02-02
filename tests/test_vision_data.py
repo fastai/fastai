@@ -54,7 +54,6 @@ def test_from_csv_and_from_df(path):
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
 
-@pytest.mark.skip(reason="needs fixing")
 def test_from_plus_resize(path, path_var_size):
     # in this test the 2 datasets are of (1) 28x28, (2) var-size but larger than
     # 28x28, so we don't need to check whether the original size of the image is
