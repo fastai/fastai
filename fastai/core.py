@@ -153,7 +153,7 @@ class ItemBase():
         ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
         "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
-        if tfms: raise Exception('Not implemented')
+        if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of items ({self.__class__.__name__})")
         return self
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,

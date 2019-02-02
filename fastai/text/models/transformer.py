@@ -113,7 +113,7 @@ class MultiHeadRelativeAttention(MultiHeadAttention):
         attn_score = (AC + BD).mul_(1/(self.d_head ** 0.5))
         if mask is not None: 
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
-        attn_prob = F.softmax(attn_score, dim=-1)
+        attn_prob = self.drop_att(F.softmax(attn_score, dim=-1))
         attn_vec = torch.matmul(attn_prob, wv)
         return attn_vec.permute(0, 2, 1, 3).contiguous().view(bs, x_len, -1)
     
@@ -167,7 +167,7 @@ class Transformer(nn.Module):
         pos = torch.arange(0, x_len, device=x.device, dtype=x.dtype)
         inp = self.drop_emb(self.embedding(x) + self.pos_enc(pos)[None]) #.mul_(self.d_model ** 0.5)
         mask = torch.triu(x.new_ones(x_len, x_len), diagonal=1).byte()[None,None]
-        #[:,None,None] for einsum implementation of attention
+        #[None,:,:None] for einsum implementation of attention
         for layer in self.layers: inp = layer(inp, mask=mask)
         return ([inp],[inp]) #For the LinearDecoder
 
@@ -205,7 +205,7 @@ class TransformerXL(nn.Module):
         m_len = self.hidden[0].size(1) if hasattr(self, 'hidden') and len(self.hidden[0].size()) > 1 else 0
         seq_len = m_len + x_len
         mask = torch.triu(x.new_ones(x_len, seq_len), diagonal=1+m_len).byte()[None,None]
-        #[:,None,None] for einsum implementation of attention
+        #[None,:,:None] for einsum implementation of attention
         hids = []
         pos = torch.arange(seq_len-1, -1, -1, device=inp.device, dtype=inp.dtype)
         pos_enc = self.pos_enc(pos)
@@ -216,7 +216,7 @@ class TransformerXL(nn.Module):
             hids.append(inp)
         core_out = inp[:,-x_len:]
         self._update_mems(hids)
-        return [core_out], (self.hidden if self.mem_len > 0 else [core_out])
+        return (self.hidden if self.mem_len > 0 else [core_out]),[core_out]
 
 def init_transformer(m):
     classname = m.__class__.__name__
