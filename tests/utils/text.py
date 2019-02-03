@@ -20,59 +20,82 @@ def assert_screenout(out, what):
     match_str = out_pr.find(what.lower())
     assert match_str != -1, f"expecting to find {what} in output: f{out_pr}"
 
-class CaptureStdout():
-    """ Context manager to capture stdout, clean it up and make it available via obj.out or str(obj).
+class CaptureStd():
+    """ Context manager to capture:
+    stdout, clean it up and make it available via obj.out
+    stderr, and make it available via obj.err
 
-    Example:
+    init arguments:
+    - out - capture stdout: True/False, default True
+    - err - capture stdout: True/False, default True
+
+    Examples:
 
     with CaptureStdout() as cs:
         print("Secret message")
     print(f"captured: {cs.out}")
-    # or via its stringified repr:
-    print(f"captured: {cs}")
 
-    """
-    def __init__(self):
-        self.buffer = StringIO()
-        self.out = 'error: CaptureStdout context is unfinished yet, called too early'
-
-    def __enter__(self):
-        self.old = sys.stdout
-        sys.stdout = self.buffer
-        return self
-
-    def __exit__(self, *exc):
-        sys.stdout = self.old
-        self.out = apply_print_resets(self.buffer.getvalue())
-
-    def __repr__(self):
-        return self.out
-
-# XXX: probably need to refactor into a single class that will work with stderr/stdout and make it configurable to capture both or either. probably capsys-like
-class CaptureStderr():
-    """ Context manager to capture stderr, clean it up and make it available via obj.err or str(obj).
-
-    Example:
-
-    with CaptureStderr() as cs:
-        print("Secret message")
+    import sys
+    with CaptureStdout() as cs:
+        print("Warning: ", file=sys.stderr)
     print(f"captured: {cs.err}")
-    # or via its stringified repr:
-    print(f"captured: {cs}")
+
+    # to capture just one of the streams, but not the other
+    with CaptureStdout(err=False) as cs:
+        print("Secret message")
+    print(f"captured: {cs.out}")
+    # but best use the stream-specific subclasses
 
     """
-    def __init__(self):
-        self.buffer = StringIO()
-        self.err = 'error: CaptureStderr context is unfinished yet, called too early'
+    def __init__(self, out=True, err=True):
+        if out:
+            self.out_buf = StringIO()
+            self.out = 'error: CaptureStd context is unfinished yet, called too early'
+        else:
+            self.out_buf = None
+            self.out = 'not capturing stdout'
+
+        if err:
+            self.err_buf = StringIO()
+            self.err = 'error: CaptureStd context is unfinished yet, called too early'
+        else:
+            self.err_buf = None
+            self.err = 'not capturing stderr'
 
     def __enter__(self):
-        self.old = sys.stderr
-        sys.stderr = self.buffer
+        if self.out_buf:
+            self.out_old = sys.stdout
+            sys.stdout = self.out_buf
+
+        if self.err_buf:
+            self.err_old = sys.stderr
+            sys.stderr = self.err_buf
+
         return self
 
     def __exit__(self, *exc):
-        sys.stderr = self.old
-        self.err = apply_print_resets(self.buffer.getvalue())
+        if self.out_buf:
+            sys.stdout = self.out_old
+            self.out = apply_print_resets(self.out_buf.getvalue())
+
+        if self.err_buf:
+            sys.stderr = self.err_old
+            self.err = self.err_buf.getvalue()
 
     def __repr__(self):
-        return self.err
+        return self.out, self.err
+
+# in tests it's the best to capture only the stream that's wanted, otherwise
+# it's easy to miss things, so unless you need to capture both streams, use the
+# subclasses below are for less typing. Or configure `CaptureStd` to disable the
+# stream you don't want.
+
+class CaptureStdout(CaptureStd):
+    """ Same as CaptureStd but captures only stdout """
+    def __init__(self):
+        super().__init__(err=False)
+
+class CaptureStderr(CaptureStd):
+    """ Same as CaptureStd but captures only stderr """
+    def __init__(self):
+        super().__init__(out=False)

@@ -577,13 +577,22 @@ assert cs.out == final+"\n", f"captured: {cs.out}, expecting {final}"
 print(cs.out == str(cs) == f"{cs}") # True
 ```
 
-If you'd like to capture `stderr` instead use:
+If you'd like to capture `stderr` use the `CaptureStd` class instead:
 
 ```
 from utils.text import *
 with CaptureStderr() as cs: function_that_writes_to_stderr()
 print(cs.err)
 ```
+
+If you need to capture both streams at once, use the parent class `CaptureStd`:
+
+```
+from utils.text import *
+with CaptureStd() as cs: function_that_writes_to_stdout_and_stderr()
+print(cs.err, cs.out)
+```
+
 
 
 ### Testing memory leaks
