@@ -125,7 +125,7 @@ class ClassificationInterpretation():
                 f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
             
     def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
+        "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class in a multilabeled dataset."
         if samples >20:
             print("Max 20 samples")
             return
