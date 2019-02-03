@@ -90,8 +90,8 @@ class CaptureStd():
 
 # in tests it's the best to capture only the stream that's wanted, otherwise
 # it's easy to miss things, so unless you need to capture both streams, use the
-# subclasses below are for less typing. Or configure `CaptureStd` to disable the
-# stream you don't want.
+# subclasses below (less typing). Or alternatively, configure `CaptureStd` to
+# disable the stream you don't need to test.
 
 class CaptureStdout(CaptureStd):
     """ Same as CaptureStd but captures only stdout """
