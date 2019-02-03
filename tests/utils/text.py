@@ -83,7 +83,10 @@ class CaptureStd():
             self.err = self.err_buf.getvalue()
 
     def __repr__(self):
-        return self.out, self.err
+        msg = ''
+        if self.out_buf: msg += f"stdout: {self.out}\n"
+        if self.err_buf: msg += f"stderr: {self.err}\n"
+        return msg
 
 # in tests it's the best to capture only the stream that's wanted, otherwise
 # it's easy to miss things, so unless you need to capture both streams, use the
