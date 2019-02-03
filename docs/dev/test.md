@@ -573,11 +573,9 @@ msg = "Secret message\r"
 final = "Hello World"
 with CaptureStdout() as cs: print(msg + final)
 assert cs.out == final+"\n", f"captured: {cs.out}, expecting {final}"
-# and you can access the captured data in several ways:
-print(cs.out == str(cs) == f"{cs}") # True
 ```
 
-If you'd like to capture `stderr` use the `CaptureStd` class instead:
+If you'd like to capture `stderr` use the `CaptureStderr` class instead:
 
 ```
 from utils.text import *
@@ -585,7 +583,7 @@ with CaptureStderr() as cs: function_that_writes_to_stderr()
 print(cs.err)
 ```
 
-If you need to capture both streams at once, use the parent class `CaptureStd`:
+If you need to capture both streams at once, use the parent `CaptureStd` class:
 
 ```
 from utils.text import *
