@@ -522,6 +522,13 @@ class LabelLists(ItemLists):
         state = pickle.load(open(path/fn, 'rb'))
         return LabelLists.load_state(path, state)
 
+def _check_kwargs(ds:ItemList, tfms:TfmList, **kwargs):
+    if len(ds.items) >= 1:
+        x = ds[0]
+        try: x.apply_tfms(tfms, **kwargs)
+        except Exception as e: 
+            raise Exception(f"It's not possible to apply those transforms to your dataset:\n {e}")
+
 class LabelList(Dataset):
     "A list of inputs `x` and labels `y` with optional `tfms`."
     def __init__(self, x:ItemList, y:ItemList, tfms:TfmList=None, tfm_y:bool=False, **kwargs):
@@ -637,13 +644,17 @@ class LabelList(Dataset):
 
     def transform(self, tfms:TfmList, tfm_y:bool=None, **kwargs):
         "Set the `tfms` and `tfm_y` value to be applied to the inputs and targets."
-        if tfm_y is None: tfm_y = self.tfm_y
+        _check_kwargs(self.x, tfms, **kwargs)
+        if tfm_y is None: 
+            tfm_y = self.tfm_y
+            _check_kwargs(self.y, tfms, **kwargs)
         self.tfms,self.tfmargs = tfms,kwargs
         self.tfm_y,self.tfms_y,self.tfmargs_y = tfm_y,tfms,kwargs
         return self
 
     def transform_y(self, tfms:TfmList=None, **kwargs):
         "Set `tfms` to be applied to the targets only."
+        _check_kwargs(self.y, tfms, **kwargs)
         self.tfm_y=True
         if tfms is None: self.tfms_y,self.tfmargs_y = self.tfms,{**self.tfmargs, **kwargs}
         else:            self.tfms_y,self.tfmargs_y = tfms,kwargs
