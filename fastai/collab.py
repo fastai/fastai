@@ -26,8 +26,10 @@ class CollabList(TabularList):
 
 class EmbeddingNN(TabularModel):
     "Subclass `TabularModel` to create a NN suitable for collaborative filtering."
-    def __init__(self, emb_szs:ListSizes, **kwargs):
-        super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, **kwargs)
+    def __init__(self, emb_szs:ListSizes, layers:Collection[int]=None, ps:Collection[float]=None,
+                 emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, bn_final:bool=False):
+        super().__init__(emb_szs=emb_szs, n_cont=0, out_sz=1, layers=layers, ps=ps, emb_drop=emb_drop, y_range=y_range,
+                         use_bn=use_bn, bn_final=bn_final)
 
     def forward(self, users:LongTensor, items:LongTensor) -> Tensor:
         return super().forward(torch.stack([users,items], dim=1), None)
@@ -51,7 +53,9 @@ class CollabDataBunch(DataBunch):
     "Base `DataBunch` for collaborative filtering."
     @classmethod
     def from_df(cls, ratings:DataFrame, pct_val:float=0.2, user_name:Optional[str]=None, item_name:Optional[str]=None,
-                rating_name:Optional[str]=None, test:DataFrame=None, seed=None, **kwargs):
+                rating_name:Optional[str]=None, test:DataFrame=None, seed:int=None, path:PathOrStr='.', bs:int=64, 
+                num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, 
+                collate_fn:Callable=data_collate, no_check:bool=False) -> 'CollabDataBunch':
         "Create a `DataBunch` suitable for collaborative filtering from `ratings`."
         user_name   = ifnone(user_name,  ratings.columns[0])
         item_name   = ifnone(item_name,  ratings.columns[1])
@@ -60,7 +64,7 @@ class CollabDataBunch(DataBunch):
         src = (CollabList.from_df(ratings, cat_names=cat_names, procs=Categorify)
                .random_split_by_pct(valid_pct=pct_val, seed=seed).label_from_df(cols=rating_name))
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
-        return src.databunch(**kwargs)
+        return src.databunch(path=path, bs=bs, num_workers=num_workers, device=device, collate_fn=collate_fn, no_check=no_check)
 
 class CollabLearner(Learner):
     "`Learner` suitable for collaborative filtering."
@@ -87,12 +91,14 @@ class CollabLearner(Learner):
         layer = m.i_weight if is_item else m.u_weight
         return layer(idx)
 
-def collab_learner(data, n_factors:int=None, use_nn:bool=False, metrics=None,
-                   emb_szs:Dict[str,int]=None, wd:float=0.01, **kwargs)->Learner:
+def collab_learner(data, n_factors:int=None, use_nn:bool=False, emb_szs:Dict[str,int]=None, layers:Collection[int]=None, 
+                   ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, 
+                   bn_final:bool=False, **learn_kwargs)->Learner:
     "Create a Learner for collaborative filtering on `data`."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     u,m = data.classes.values()
-    if use_nn: model = EmbeddingNN(emb_szs=emb_szs, **kwargs)
-    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), **kwargs)
+    if use_nn: model = EmbeddingNN(emb_szs=emb_szs, layers=layers, ps=ps, emb_drop=emb_drop, y_range=y_range, 
+                                   use_bn=use_bn, bn_final=bn_final, **learn_kwargs)
+    else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range=y_range)
     return CollabLearner(data, model, metrics=metrics, wd=wd)
 
