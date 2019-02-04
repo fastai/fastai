@@ -86,6 +86,9 @@ class RNNLearner(Learner):
             preds[1] = preds[1][reverse_sampler,:] if preds[1].dim() > 1 else preds[1][reverse_sampler]
         return(preds)
 
+def _select_hidden(model, idxs):
+    model[0].hidden = [(h[0][:,idxs,:],h[1][:,idxs,:]) for h in model[0].hidden]
+    
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     
@@ -93,8 +96,7 @@ class LanguageLearner(RNNLearner):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
         self.model.reset()
-        xb, yb = self.data.one_item(text)
-        res = self.pred_batch(batch=(xb,yb))[0][-1]
+        xb,_ = self.data.one_item(text)
         new_idx = []
         for _ in progress_bar(range(n_words), leave=False):
             res = self.pred_batch(batch=(xb,yb))[0][-1]
@@ -105,6 +107,34 @@ class LanguageLearner(RNNLearner):
             new_idx.append(idx)
             xb = xb.new_tensor([idx])[None]
         return text + self.data.vocab.textify(new_idx)
+    
+    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1.):
+        ds = self.data.single_dl.dataset
+        self.model.reset()
+        xb, yb = self.data.one_item(text)
+        start_idx = xb.clone()
+        nodes = None
+        scores = xb.new_ones(1).float()
+        with torch.no_grad():
+            for k in range(n_words):
+                out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
+                if temperature != 1.: out.div_(temperature)
+                values, indices = out.topk(top_k, dim=-1)
+                scores = (-values * scores[:,None]).view(-1)
+                if nodes is None: 
+                    nodes = indices[0][:,None]
+                    _select_hidden(self.model, [0] * nodes.size(0))
+                else:
+                    indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
+                    sort_idx = scores.argsort()[:beam_sz]
+                    scores = scores[sort_idx]
+                    nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
+                                       indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
+                    nodes = nodes.view(-1, nodes.size(2))[sort_idx]
+                    _select_hidden(self.model, indices_idx[sort_idx])
+                xb = nodes[:,-1][:,None]
+        node_idx = torch.randint(0, nodes.size(0), (1,)).item()
+        return text + ' ' + self.data.vocab.textify([i.item() for i in nodes[node_idx]])
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
