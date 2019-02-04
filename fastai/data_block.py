@@ -90,7 +90,8 @@ class ItemList():
         "Create a new `ItemList` from `items`, keeping the same attributes."
         processor = ifnone(processor, self.processor)
         copy_d = {o:getattr(self,o) for o in self.copy_new}
-        return self.__class__(items=items, processor=processor, **copy_d, **kwargs)
+        kwargs = {**copy_d, **kwargs}
+        return self.__class__(items=items, processor=processor, **kwargs)
                 
     def add(self, items:'ItemList'): 
         self.items = np.concatenate([self.items, items.items], 0)
@@ -310,12 +311,10 @@ class CategoryListBase(ItemList):
         self.classes=classes
         self.filter_missing_y = True
         super().__init__(items, **kwargs)
+        self.copy_new.append('classes')
 
     @property
     def c(self): return len(self.classes)
-
-    def new(self, items, classes=None, **kwargs):
-        return super().new(items, classes=ifnone(classes, self.classes), **kwargs)
 
 class CategoryList(CategoryListBase):
     "Basic `ItemList` for single classification labels."
