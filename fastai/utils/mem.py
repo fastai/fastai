@@ -27,7 +27,7 @@ def b2mb(num):
 # for cpu returns GPUMemory(0, 0, 0)
 # for invalid gpu id returns GPUMemory(0, 0, 0)
 def gpu_mem_get(id=None):
-    "query nvidia for total, used and free memory for gpu in MBs. if id is not passed, currently selected torch device is used"
+    "get total, used and free memory (in MBs) for gpu `id`. if `id` is not passed, currently selected torch device is used"
     if not have_cuda: return GPUMemory(0, 0, 0)
     if id is None: id = torch.cuda.current_device()
     try:
@@ -40,17 +40,24 @@ def gpu_mem_get(id=None):
 # for gpu returns [ GPUMemory(total_0, used_0, free_0), GPUMemory(total_1, used_1, free_1), .... ]
 # for cpu returns []
 def gpu_mem_get_all():
-    "query nvidia for total, used and free memory for each available gpu in MBs"
+    "get total, used and free memory (in MBs) for each available gpu"
     if not have_cuda: return []
     return list(map(gpu_mem_get, range(pynvml.nvmlDeviceGetCount())))
 
+def gpu_mem_get_free_no_cache():
+    "get free memory (in MBs) for the currently selected gpu id, after emptying the cache"
+    torch.cuda.empty_cache()
+    return gpu_mem_get().free
+
 def gpu_mem_get_used_no_cache():
+    "get used memory (in MBs) for the currently selected gpu id, after emptying the cache"
     torch.cuda.empty_cache()
     return gpu_mem_get().used
 
 def gpu_mem_get_fast_used(gpu_handle):
+    "get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache, and needing the `gpu_handle` arg"
     info = pynvml.nvmlDeviceGetMemoryInfo(gpu_handle)
-    return int(info.used/2**20)
+    return b2mb(info.used)
 
 # for gpu returns: (gpu_with_max_free_ram_id, its_free_ram)
 # for cpu returns: (None, 0)
