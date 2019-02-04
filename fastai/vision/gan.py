@@ -14,27 +14,27 @@ def AvgFlatten():
     "Takes the average of the input."
     return Lambda(lambda x: x.mean(0).view(1))
 
-def basic_critic(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0, **kwargs):
+def basic_critic(in_size:int, n_channels:int, n_features:int=64, n_extra_layers:int=0, **conv_kwargs):
     "A basic critic for images `n_channels` x `in_size` x `in_size`."
-    layers = [conv_layer(n_channels, n_features, 4, 2, 1, leaky=0.2, norm_type=None, **kwargs)]#norm_type=None?
+    layers = [conv_layer(n_channels, n_features, 4, 2, 1, leaky=0.2, norm_type=None, **conv_kwargs)]#norm_type=None?
     cur_size, cur_ftrs = in_size//2, n_features
-    layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=0.2, **kwargs) for _ in range(n_extra_layers)]))
+    layers.append(nn.Sequential(*[conv_layer(cur_ftrs, cur_ftrs, 3, 1, leaky=0.2, **conv_kwargs) for _ in range(n_extra_layers)]))
     while cur_size > 4:
-        layers.append(conv_layer(cur_ftrs, cur_ftrs*2, 4, 2, 1, leaky=0.2, **kwargs))
+        layers.append(conv_layer(cur_ftrs, cur_ftrs*2, 4, 2, 1, leaky=0.2, **conv_kwargs))
         cur_ftrs *= 2 ; cur_size //= 2
     layers += [conv2d(cur_ftrs, 1, 4, padding=0), AvgFlatten()]
     return nn.Sequential(*layers)
 
-def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:int=64, n_extra_layers=0, **kwargs):
+def basic_generator(in_size:int, n_channels:int, noise_sz:int=100, n_features:int=64, n_extra_layers=0, **conv_kwargs):
     "A basic generator from `noise_sz` to images `n_channels` x `in_size` x `in_size`."
     cur_size, cur_ftrs = 4, n_features//2
     while cur_size < in_size:  cur_size *= 2; cur_ftrs *= 2
-    layers = [conv_layer(noise_sz, cur_ftrs, 4, 1, transpose=True, **kwargs)]
+    layers = [conv_layer(noise_sz, cur_ftrs, 4, 1, transpose=True, **conv_kwargs)]
     cur_size = 4
     while cur_size < in_size // 2:
-        layers.append(conv_layer(cur_ftrs, cur_ftrs//2, 4, 2, 1, transpose=True, **kwargs))
+        layers.append(conv_layer(cur_ftrs, cur_ftrs//2, 4, 2, 1, transpose=True, **conv_kwargs))
         cur_ftrs //= 2; cur_size *= 2
-    layers += [conv_layer(cur_ftrs, cur_ftrs, 3, 1, 1, transpose=True, **kwargs) for _ in range(n_extra_layers)]
+    layers += [conv_layer(cur_ftrs, cur_ftrs, 3, 1, 1, transpose=True, **conv_kwargs) for _ in range(n_extra_layers)]
     layers += [conv2d_trans(cur_ftrs, n_channels, 4, 2, 1, bias=False), nn.Tanh()]
     return nn.Sequential(*layers)
 
@@ -206,26 +206,26 @@ class GANLearner(Learner):
     "A `Learner` suitable for GANs."
     def __init__(self, data:DataBunch, generator:nn.Module, critic:nn.Module, gen_loss_func:LossFunction,
                  crit_loss_func:LossFunction, switcher:Callback=None, gen_first:bool=False, switch_eval:bool=True,
-                 show_img:bool=True, clip:float=None, **kwargs):
+                 show_img:bool=True, clip:float=None, **learn_kwargs):
         gan = GANModule(generator, critic)
         loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
         switcher = ifnone(switcher, partial(FixedGANSwitcher, n_crit=5, n_gen=1))
-        super().__init__(data, gan, loss_func=loss_func, callback_fns=[switcher], **kwargs)
+        super().__init__(data, gan, loss_func=loss_func, callback_fns=[switcher], **learn_kwargs)
         trainer = GANTrainer(self, clip=clip, switch_eval=switch_eval, show_img=show_img)
         self.gan_trainer = trainer
         self.callbacks.append(trainer)
 
     @classmethod
     def from_learners(cls, learn_gen:Learner, learn_crit:Learner, switcher:Callback=None,
-                      weights_gen:Tuple[float,float]=None, **kwargs):
+                      weights_gen:Tuple[float,float]=None, **learn_kwargs):
         "Create a GAN from `learn_gen` and `learn_crit`."
         losses = gan_loss_from_func(learn_gen.loss_func, learn_crit.loss_func, weights_gen=weights_gen)
-        return cls(learn_gen.data, learn_gen.model, learn_crit.model, *losses, switcher=switcher, **kwargs)
+        return cls(learn_gen.data, learn_gen.model, learn_crit.model, *losses, switcher=switcher, **learn_kwargs)
 
     @classmethod
-    def wgan(cls, data:DataBunch, generator:nn.Module, critic:nn.Module, switcher:Callback=None, clip:float=0.01, **kwargs):
+    def wgan(cls, data:DataBunch, generator:nn.Module, critic:nn.Module, switcher:Callback=None, clip:float=0.01, **learn_kwargs):
         "Create a WGAN from `data`, `generator` and `critic`."
-        return cls(data, generator, critic, NoopLoss(), WassersteinLoss(), switcher=switcher, clip=clip, **kwargs)
+        return cls(data, generator, critic, NoopLoss(), WassersteinLoss(), switcher=switcher, clip=clip, **learn_kwargs)
 
 class NoisyItem(ItemBase):
     "An random `ItemBase` of size `noise_sz`."

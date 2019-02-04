@@ -118,12 +118,11 @@ class RNNCore(nn.Module):
     def _one_hidden(self, l:int)->Tensor:
         "Return one hidden state."
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz)//self.ndir
-        return self.weights.new(self.ndir, self.bs, nh).zero_()
+        return one_param(self).new(self.ndir, self.bs, nh).zero_()
 
     def reset(self):
         "Reset the hidden states."
         [r.reset() for r in self.rnns if hasattr(r, 'reset')]
-        self.weights = next(self.parameters()).data
         if self.qrnn: self.hidden = [self._one_hidden(l) for l in range(self.n_layers)]
         else: self.hidden = [(self._one_hidden(l), self._one_hidden(l)) for l in range(self.n_layers)]
 

@@ -40,9 +40,13 @@ def test_logger():
     with CaptureStdout() as cs: learn.fit_one_cycle(3)
     csv_df = learn.csv_logger.read_logged_file()
     recorder_df = create_metrics_dataframe(learn)
-    pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=True)
+    # XXX: there is a bug in pandas:
+    # https://github.com/pandas-dev/pandas/issues/25068#issuecomment-460014120
+    # which quite often fails on CI.
+    # once it's resolved can change the setting back to check_less_precise=True (or better =3), until then using =2 as it works, but this check is less good.
+    pd.testing.assert_frame_equal(csv_df, recorder_df, check_exact=False, check_less_precise=2)
     stdout_df = convert_into_dataframe(cs.out)
-    pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=True)
+    pd.testing.assert_frame_equal(csv_df, stdout_df, check_exact=False, check_less_precise=2)
 
 @pytest.fixture(scope="module", autouse=True)
 def cleanup(request):

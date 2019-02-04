@@ -7,7 +7,8 @@ __all__ = ['OneCycleScheduler']
 
 class OneCycleScheduler(LearnerCallback):
     "Manage 1-Cycle style training as outlined in Leslie Smith's [paper](https://arxiv.org/pdf/1803.09820.pdf)."
-    def __init__(self, learn:Learner, lr_max:float, moms:Floats=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, tot_epochs:int=-1, start_epoch:int=1):
+    def __init__(self, learn:Learner, lr_max:float, moms:Floats=(0.95,0.85), div_factor:float=25., pct_start:float=0.3, 
+                 tot_epochs:int=None, start_epoch:int=1):
         super().__init__(learn)
         self.lr_max,self.div_factor,self.pct_start = lr_max,div_factor,pct_start
         self.moms=tuple(listify(moms,2))
@@ -21,7 +22,7 @@ class OneCycleScheduler(LearnerCallback):
 
     def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
         "Initialize our optimization params based on our annealing schedule."
-        if self.tot_epochs < 0: self.tot_epochs = n_epochs + self.start_epoch - 1
+        self.tot_epochs = ifnone(self.tot_epochs, n_epochs + self.start_epoch - 1)
         n = len(self.learn.data.train_dl) * self.tot_epochs
         a1 = int(n * self.pct_start)
         a2 = n-a1
@@ -46,6 +47,6 @@ class OneCycleScheduler(LearnerCallback):
             if self.lr_scheds[self.idx_s].is_done:
                 self.idx_s += 1
 
-    def on_epoch_end(self, **kwargs:Any)->None:
+    def on_epoch_end(self, epoch, **kwargs:Any)->None:
         "Tell Learner to stop if the cycle is finished."
-        return kwargs['epoch'] + self.start_epoch - 1 > self.tot_epochs
+        return epoch + self.start_epoch - 1 > self.tot_epochs

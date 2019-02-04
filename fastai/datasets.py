@@ -18,6 +18,7 @@ class URLs():
     COCO_TINY = f'{URL}coco_tiny'
     MNIST_SAMPLE = f'{URL}mnist_sample'
     MNIST_TINY = f'{URL}mnist_tiny'
+    MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny'
     IMDB = f'{S3_NLP}imdb'
     IMDB_SAMPLE = f'{URL}imdb_sample'
     HUMAN_NUMBERS = f'{URL}human_numbers'
@@ -38,10 +39,13 @@ class URLs():
     BIWI_HEAD_POSE = f"{S3_IMAGELOC}biwi_head_pose"
     LSUN_BEDROOMS = f'{S3_IMAGE}bedroom'
 
+# to create/update a checksum for ./mnist_var_size_tiny.tgz, run:
+# python -c 'import fastai.datasets; print(fastai.datasets._check_file("mnist_var_size_tiny.tgz"))'
 _checks = {URLs.COCO_SAMPLE:(3245877008, '006cd55d633d94b36ecaf661467830ec'),
            URLs.COCO_TINY:(801038, '367467451ac4fba79a647753c2c66d3a'),
            URLs.MNIST_SAMPLE:(3214948, '2dbc7ec6f9259b583af0072c55816a88'),
            URLs.MNIST_TINY:(342207, '56143e8f24db90d925d82a5a74141875'),
+           URLs.MNIST_VAR_SIZE_TINY:(565372, 'b71a930f4eb744a4a143a6c7ff7ed67f'),
            URLs.IMDB:(144440600, '90f9b1c4ff43a90d67553c9240dc0249'),
            URLs.IMDB_SAMPLE:(571827, '0842e61a9867caa2e6fbdb14fa703d61'),
            URLs.HUMAN_NUMBERS:(30252, '8a19c3bfa2bcb08cd787e741261f3ea2'),

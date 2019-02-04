@@ -67,14 +67,14 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                bn_final:bool=False, **kwargs:Any)->Learner:
+                bn_final:bool=False, **learn_kwargs:Any)->Learner:
     "Build convnet style learners."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
     model = nn.Sequential(body, head)
-    learn = Learner(data, model, **kwargs)
+    learn = Learner(data, model, **learn_kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)
@@ -83,26 +83,26 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
                  self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
-                 bottle:bool=False, cut:Union[int,Callable]=None, **kwargs:Any)->None:
+                 bottle:bool=False, cut:Union[int,Callable]=None, **learn_kwargs:Any)->None:
     "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
           self_attention=self_attention, y_range=y_range, norm_type=norm_type, last_cross=last_cross,
           bottle=bottle), data.device)
-    learn = Learner(data, model, **kwargs)
+    learn = Learner(data, model, **learn_kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[2], nn.init.kaiming_normal_)
     return learn
 
 @classmethod
-def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
     preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
     return cls(learn.data, *preds, ds_type=ds_type)
 
-def plot_top_losses(self, k, largest=True, figsize=(12,12)):
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12)):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
     tl_val,tl_idx = self.top_losses(k,largest)
     classes = self.data.classes
@@ -115,7 +115,7 @@ def plot_top_losses(self, k, largest=True, figsize=(12,12)):
         im.show(ax=axes.flat[i], title=
             f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
 
-def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
+def _cl_int_plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
     if samples >20:
         print("Max 20 samples")
@@ -156,9 +156,9 @@ def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_
         plt.show()
         if save_misclassified: return mismatchescontainer
 
-ClassificationInterpretation.from_learner = from_learner
-ClassificationInterpretation.plot_top_losses = plot_top_losses
-ClassificationInterpretation.plot_multi_top_losses = plot_multi_top_losses
+ClassificationInterpretation.from_learner = _cl_int_from_learner
+ClassificationInterpretation.plot_top_losses = _cl_int_plot_top_losses
+ClassificationInterpretation.plot_multi_top_losses = _cl_int_plot_multi_top_losses
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."

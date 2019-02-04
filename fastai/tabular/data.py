@@ -73,7 +73,7 @@ class TabularProcessor(PreProcessor):
             self.classes = ds.classes = OrderedDict({n:np.concatenate([['#na#'],c.cat.categories.values])
                                       for n,c in ds.xtra[ds.cat_names].items()})
             cat_cols = list(ds.xtra[ds.cat_names].columns.values)
-        else: ds.codes,ds.classes,cat_cols = None,None,[]
+        else: ds.codes,ds.classes,self.classes,cat_cols = None,None,None,[]
         if len(ds.cont_names) != 0:
             ds.conts = np.stack([c.astype('float32').values for n,c in ds.xtra[ds.cont_names].items()], 1)
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)

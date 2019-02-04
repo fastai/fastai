@@ -1,12 +1,18 @@
 import pytest
 from fastai.vision import *
 from fastai.vision.data import verify_image
+from utils.text import *
 import PIL
 import responses
 
 @pytest.fixture(scope="module")
 def path():
     path = untar_data(URLs.MNIST_TINY)
+    return path
+
+@pytest.fixture(scope="module")
+def path_var_size():
+    path = untar_data(URLs.MNIST_VAR_SIZE_TINY)
     return path
 
 def mnist_tiny_sanity_test(data):
@@ -40,13 +46,31 @@ def test_from_lists(path):
     current_labels = [int(str(l)) for l in data.valid_ds.y]
     assert len(expected_labels) == len(current_labels)
     assert np.all(np.array(expected_labels) == np.array(current_labels))
-    
+
 def test_from_csv_and_from_df(path):
     for func in ['from_csv', 'from_df']:
         files = []
         if func is 'from_df': data = ImageDataBunch.from_df(path, df=pd.read_csv(path/'labels.csv'), size=28)
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
+
+def test_from_plus_resize(path, path_var_size):
+    # in this test the 2 datasets are of (1) 28x28, (2) var-size but larger than
+    # 28x28, so we don't need to check whether the original size of the image is
+    # different from the resized one, we always resize to < 28x28
+    for p in [path, path_var_size]: # identical + var sized inputs
+        fnames = get_files(p/'train', recurse=True)
+        pat = r'/([^/]+)\/\d+.png$'
+        # check 3 different size arg are (1) supported and (2) no warnings are issued
+        for size in [14, (14,14), (14,20)]:
+            with CaptureStderr() as cs:
+                data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size)
+            assert len(cs.err)==0, f"got collate_fn warning {cs.err}"
+
+            x,_ = data.train_ds[0]
+            size_want = (size, size) if isinstance(size, int) else size
+            size_real = x.size
+            assert size_want == size_real, f"size mismatch after resize {size} expected {size_want}, got {size_real}"
 
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))

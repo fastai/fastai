@@ -556,25 +556,42 @@ def test_result_and_stdout():
 An important potential issue with capturing stdout is that it may contain `\r` characters that in normal `print` reset everything that has been printed so far. There is no problem with `pytest`, but with `pytest -s` these characters get included in the buffer, so to be able to have the test run w/ and w/o `-s`, you have to make an extra cleanup to the captured output, using `re.sub(r'^.*\r', '', buf, 0, re.M)`. You can use a test helper function for that:
 
 ```
-from utils.text import apply_print_resets
+from utils.text import *
 output = apply_print_resets(output)
 ```
 
 But, then we have a helper context manager wrapper to automatically take care of it all, regardless of whether it has some `\r`s in it or not, so it's a simple:
 ```
+from utils.text import *
 with CaptureStdout() as cs: function_that_writes_to_stdout()
 print(cs.out)
 ```
 Here is a full test example:
 ```
-from utils.text import CaptureStdout
+from utils.text import *
 msg = "Secret message\r"
 final = "Hello World"
 with CaptureStdout() as cs: print(msg + final)
 assert cs.out == final+"\n", f"captured: {cs.out}, expecting {final}"
-# and you can access the captured data in several ways:
-print(cs.out == str(cs) == f"{cs}") # True
 ```
+
+If you'd like to capture `stderr` use the `CaptureStderr` class instead:
+
+```
+from utils.text import *
+with CaptureStderr() as cs: function_that_writes_to_stderr()
+print(cs.err)
+```
+
+If you need to capture both streams at once, use the parent `CaptureStd` class:
+
+```
+from utils.text import *
+with CaptureStd() as cs: function_that_writes_to_stdout_and_stderr()
+print(cs.err, cs.out)
+```
+
+
 
 ### Testing memory leaks
 

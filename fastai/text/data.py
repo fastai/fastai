@@ -253,7 +253,7 @@ class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs=64, pad_idx=1, pad_first=True,
-               no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
+               device:torch.device=None, no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first, backwards=backwards)
@@ -264,7 +264,7 @@ class TextClasDataBunch(TextDataBunch):
             lengths = [len(t) for t in ds.x.items]
             sampler = SortSampler(ds.x, key=lengths.__getitem__)
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
-        return cls(*dataloaders, path=path, collate_fn=collate_fn, no_check=no_check)
+        return cls(*dataloaders, path=path, device=device, collate_fn=collate_fn, no_check=no_check)
 
 def open_text(fn:PathOrStr, enc='utf-8'):
     "Read the text in `fn`."
@@ -368,9 +368,7 @@ def _join_texts(texts:Collection[str], mark_fields:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    #text_col = f'{BOS} {FLD} {1} ' + df[0] if mark_fields else  f'{BOS} ' + df[0]
     text_col = f'{BOS} {FLD} {1} ' + df[0].astype(str) if mark_fields else  f'{BOS} ' + df[0].astype(str)
     for i in range(1,len(df.columns)):
-        #text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i].astype(str)   
     return text_col.values
