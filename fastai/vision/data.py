@@ -57,13 +57,12 @@ def _maybe_add_crop_pad(tfms):
     tfm_names = [[tfm.__name__ for tfm in o] for o in tfms]
     return [([crop_pad()] + o if 'crop_pad' not in n else o) for o,n in zip(tfms, tfm_names)]
 
-def _prep_tfm_kwargs(tfms, size, kwargs):
+def _prep_tfm_kwargs(tfms, size, resize_method:ResizeMethod=None):
     tfms = ifnone(tfms, [[],[]])
     default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
-    resize_method = ifnone(kwargs.get('resize_method', default_rsz), default_rsz)
+    resize_method = ifnone(resize_method, default_rsz)
     if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
-    kwargs['resize_method'] = resize_method
-    return tfms, kwargs
+    return tfms, resize_method
 
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Normalize `x` with `mean` and `std`."
@@ -103,10 +102,10 @@ class ImageDataBunch(DataBunch):
     def create_from_ll(cls, lls:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                 test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False,
-                resize_method:ResizeMethod=ResizeMethod.CROP, mult:int=None, padding_mode:str='reflection', 
+                resize_method:ResizeMethod=None, mult:int=None, padding_mode:str='reflection', 
                 mode:str='bilinear')->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
-        ds_tfms, kwargs = _prep_tfm_kwargs(ds_tfms, size, kwargs)
+        ds_tfms, resize_method = _prep_tfm_kwargs(ds_tfms, size, resize_method=resize_method)
         lls = lls.transform(tfms=ds_tfms, size=size, resize_method=resize_method, mult=mult, padding_mode=padding_mode, mode=mode)
         if test is not None: lls.add_test_folder(test)
         return lls.databunch(bs=bs, dl_tfms=dl_tfms, num_workers=num_workers, collate_fn=collate_fn, device=device, no_check=no_check)
