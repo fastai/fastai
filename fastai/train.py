@@ -122,7 +122,8 @@ class ClassificationInterpretation():
                 torch.add(cm, cm_slice, out=cm)
         return to_np(cm)
 
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1, norm_dec:int=2, **kwargs)->None:
+    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1, 
+                              norm_dec:int=2, **kwargs)->None:
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
@@ -154,3 +155,8 @@ class ClassificationInterpretation():
     def top_losses(self, k:int=None, largest=True):
         "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
         return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
+
+def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid):
+    "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."
+    return ClassificationInterpretation.from_learner(learn, ds_type=ds_type)
+Learner.interpret = _learner_interpret
