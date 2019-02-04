@@ -505,8 +505,11 @@ The rest of this section covers a variety of solutions for this problem.
 
 `fastai > 1.0.41` has been instrumented with the following features that will provide you a solution to this problem:
 
-1.  under non-ipython environment it doesn't do anything special
-2. under ipython it strips tb by default only for the "CUDA out of memory" exception, i.e. `%debug` magic will work under all circumstances but this one, and it'll leak memory in all of those until tb is reset
+1. under non-ipython environment it doesn't do anything special
+2. under ipython it strips tb by default only for the following exceptions:
+   * "CUDA out of memory"
+   * "device-side assert triggered"
+   that is the `%debug` magic will work under all other exceptions, and it'll leak memory until tb is reset.
 3.  The env var ` FASTAI_TB_CLEAR_FRAMES` changes this behavior when run under ipython,
 depending on its value:
 
