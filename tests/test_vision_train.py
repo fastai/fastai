@@ -4,6 +4,7 @@ from fastai.callbacks import *
 from fastai.utils.mem import *
 from utils.mem import *
 from math import isclose
+from fastai.train import ClassificationInterpretation
 
 use_gpu = torch.cuda.is_available()
 torch_preload_mem()
@@ -125,3 +126,14 @@ def test_models_meta(mnist_tiny, arch, zero_image):
     learn = create_cnn(mnist_tiny, arch, metrics=[accuracy, error_rate])
     pred = learn.predict(zero_image)
     assert pred is not None
+
+def test_ClassificationInterpretation(learn):
+    interp = ClassificationInterpretation.from_learner(learn)
+    print(interp.confusion_matrix())
+    interp.plot_confusion_matrix()
+    plt.show()
+    print(interp.most_confused())
+    losses, idxs = interp.top_losses()
+    print([losses[:10], idxs[:10]])
+    interp.plot_top_losses(4)
+    plt.show()

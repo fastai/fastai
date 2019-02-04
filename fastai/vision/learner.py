@@ -7,8 +7,9 @@ from . import models
 from ..callback import *
 from ..layers import *
 from ..callbacks.hooks import num_features_model
+from ..train import ClassificationInterpretation
 
-__all__ = ['create_cnn', 'create_body', 'create_head', 'ClassificationInterpretation', 'unet_learner']
+__all__ = ['create_cnn', 'create_body', 'create_head', 'unet_learner']
 # By default split models between first and second layer
 def _default_split(m:nn.Module): return (m[1],)
 # Split a resnet style model
@@ -95,117 +96,69 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
     apply_init(model[2], nn.init.kaiming_normal_)
     return learn
 
-class ClassificationInterpretation():
-    "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
-        self.data,self.probs,self.y_true,self.losses,self.ds_type = data,probs,y_true,losses,ds_type
-        self.pred_class = self.probs.argmax(dim=1)
+@classmethod
+def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
+    "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
+    preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
+    return cls(learn.data, *preds, ds_type=ds_type)
 
-    @classmethod
-    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
-        "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
-        preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds, ds_type=ds_type)
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12)):
+    "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
+    tl_val,tl_idx = self.top_losses(k,largest)
+    classes = self.data.classes
+    rows = math.ceil(math.sqrt(k))
+    fig,axes = plt.subplots(rows,rows,figsize=figsize)
+    fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
+    for i,idx in enumerate(tl_idx):
+        im,cl = self.data.valid_ds[idx]
+        cl = int(cl)
+        im.show(ax=axes.flat[i], title=
+            f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
 
-    def top_losses(self, k:int=None, largest=True):
-        "`k` largest(/smallest) losses and indexes, defaulting to all losses (sorted by `largest`)."
-        return self.losses.topk(ifnone(k, len(self.losses)), largest=largest)
+def _cl_int_plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
+    "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
+    if samples >20:
+        print("Max 20 samples")
+        return
+    losses, idxs = self.top_losses(self.data.c)
+    l_dim = len(losses.size())
+    if l_dim == 1: losses, idxs = self.top_losses()
+    infolist, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
+    truthlabels=np.asarray(self.y_true, dtype=int) 
+    classes_ids=[k for k in enumerate(self.data.classes)]
+    predclass=np.asarray(self.pred_class)
+    for i, pred in enumerate(predclass):
+        where_truth=np.nonzero((truthlabels[i]>0))[0]
+        mismatch=np.all(pred!=where_truth)
+        if mismatch: 
+            mismatches_idxs.append(i)
+            if l_dim > 1 : losses_mismatches.append((losses[i][pred],i))
+            else: losses_mismatches.append((losses[i],i))
+        if l_dim > 1: infotup=(i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
+        else: infotup=(i, pred, where_truth, losses[i], np.round(self.probs[i], decimals=3)[pred], mismatch)
+        infolist.append(infotup)
+    ds = self.data.dl(self.ds_type).dataset
+    mismatches = ds[mismatches_idxs]
+    ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
+    for w in ordlosses: ordlosses_idxs.append(w[1])
+    mismatches_ordered_byloss=ds[ordlosses_idxs]
+    print(str(len(mismatches))+' misclassified samples over '+str(len(self.data.valid_ds))+' samples in the validation set.')
+    for ima in range(len(mismatches_ordered_byloss)):
+        mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
+    for sampleN in range(samples):
+        actualclasses=''
+        for clas in infolist[ordlosses_idxs[sampleN]][2]:
+            actualclasses=actualclasses+' -- '+str(classes_ids[clas][1])
+        imag=mismatches_ordered_byloss[sampleN][0]
+        imag=show_image(imag, figsize=figsz)
+        imag.set_title(f"""Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]} \nActual: {actualclasses}\nLoss: {infolist[ordlosses_idxs[sampleN]][3]}\nProbability: {infolist[ordlosses_idxs[sampleN]][4]}""",
+                        loc='left')
+        plt.show()
+        if save_misclassified: return mismatchescontainer
 
-    def plot_top_losses(self, k, largest=True, figsize=(12,12)):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
-        tl_val,tl_idx = self.top_losses(k,largest)
-        classes = self.data.classes
-        rows = math.ceil(math.sqrt(k))
-        fig,axes = plt.subplots(rows,rows,figsize=figsize)
-        fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
-        for i,idx in enumerate(tl_idx):
-            im,cl = self.data.dl(self.ds_type).dataset[idx]
-            cl = int(cl)
-            im.show(ax=axes.flat[i], title=
-                f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
-            
-    def plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
-        "Show images in `top_losses` along with their prediction, actual, loss, and probability of actual class in a multilabeled dataset."
-        if samples >20:
-            print("Max 20 samples")
-            return
-        losses, idxs = self.top_losses(self.data.c)
-        l_dim = len(losses.size())
-        if l_dim == 1: losses, idxs = self.top_losses()
-        infolist, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
-        truthlabels=np.asarray(self.y_true, dtype=int) 
-        classes_ids=[k for k in enumerate(self.data.classes)]
-        predclass=np.asarray(self.pred_class)
-        for i, pred in enumerate(predclass):
-            where_truth=np.nonzero((truthlabels[i]>0))[0]
-            mismatch=np.all(pred!=where_truth)
-            if mismatch: 
-                mismatches_idxs.append(i)
-                if l_dim > 1 : losses_mismatches.append((losses[i][pred],i))
-                else: losses_mismatches.append((losses[i],i))
-            if l_dim > 1: infotup=(i, pred, where_truth, losses[i][pred], np.round(self.probs[i], decimals=3)[pred], mismatch)
-            else: infotup=(i, pred, where_truth, losses[i], np.round(self.probs[i], decimals=3)[pred], mismatch)
-            infolist.append(infotup)
-        ds = self.data.dl(self.ds_type).dataset
-        mismatches = ds[mismatches_idxs]
-        ordlosses=sorted(losses_mismatches, key = lambda x: x[0], reverse=True)
-        for w in ordlosses: ordlosses_idxs.append(w[1])
-        mismatches_ordered_byloss=ds[ordlosses_idxs]
-        print(str(len(mismatches))+' misclassified samples over '+str(len(self.data.valid_ds))+' samples in the validation set.')
-        for ima in range(len(mismatches_ordered_byloss)):
-            mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
-        for sampleN in range(samples):
-            actualclasses=''
-            for clas in infolist[ordlosses_idxs[sampleN]][2]:
-                actualclasses=actualclasses+' -- '+str(classes_ids[clas][1])
-            imag=mismatches_ordered_byloss[sampleN][0]
-            imag=show_image(imag, figsize=figsz)
-            imag.set_title(f"""Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]} \nActual: {actualclasses}\nLoss: {infolist[ordlosses_idxs[sampleN]][3]}\nProbability: {infolist[ordlosses_idxs[sampleN]][4]}""",
-                           loc='left')
-            plt.show()
-            if save_misclassified: return mismatchescontainer
-
-    def confusion_matrix(self, slice_size:int=None):
-        "Confusion matrix as an `np.ndarray`."
-        x=torch.arange(0,self.data.c)
-        if slice_size is None: cm = ((self.pred_class==x[:,None]) & (self.y_true==x[:,None,None])).sum(2)
-        else:
-            cm = torch.zeros(self.data.c, self.data.c, dtype=x.dtype)
-            for i in range(0, self.y_true.shape[0], slice_size):
-                cm_slice = ((self.pred_class[i:i+slice_size]==x[:,None])
-                            & (self.y_true[i:i+slice_size]==x[:,None,None])).sum(2)
-                torch.add(cm, cm_slice, out=cm)
-        return to_np(cm)
-
-    def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", norm_dec:int=2,
-                              slice_size:int=None, **kwargs)->None:
-        "Plot the confusion matrix, with `title` and using `cmap`."
-        # This function is mainly copied from the sklearn docs
-        cm = self.confusion_matrix(slice_size=slice_size)
-        plt.figure(**kwargs)
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title(title)
-        tick_marks = arange_of(self.data.classes)
-        plt.xticks(tick_marks, self.data.classes, rotation=90)
-        plt.yticks(tick_marks, self.data.classes, rotation=0)
-
-        if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        thresh = cm.max() / 2.
-        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
-            plt.text(j, i, coeff, horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
-
-        plt.tight_layout()
-        plt.ylabel('Actual')
-        plt.xlabel('Predicted')
-
-    def most_confused(self, min_val:int=1, slice_size:int=None)->Collection[Tuple[str,str,int]]:
-        "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
-        cm = self.confusion_matrix(slice_size=slice_size)
-        np.fill_diagonal(cm, 0)
-        res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
-                for i,j in zip(*np.where(cm>=min_val))]
-        return sorted(res, key=itemgetter(2), reverse=True)
+ClassificationInterpretation.from_learner = _cl_int_from_learner
+ClassificationInterpretation.plot_top_losses = _cl_int_plot_top_losses
+ClassificationInterpretation.plot_multi_top_losses = _cl_int_plot_multi_top_losses
 
 def _learner_interpret(learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create a `ClassificationInterpretation` object from `learner` on `ds_type` with `tta`."

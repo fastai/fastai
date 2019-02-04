@@ -38,4 +38,3 @@ class TabularModel(nn.Module):
         if self.y_range is not None:
             x = (self.y_range[1]-self.y_range[0]) * torch.sigmoid(x) + self.y_range[0]
         return x
-

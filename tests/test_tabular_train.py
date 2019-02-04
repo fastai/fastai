@@ -1,5 +1,6 @@
 import pytest
 from fastai.tabular import *
+from fastai.train import ClassificationInterpretation
 
 pytestmark = pytest.mark.integration
 path = untar_data(URLs.ADULT_SAMPLE)
@@ -72,4 +73,11 @@ def test_empty_cont():
     learn = tabular_learner(data, layers=[10], metrics=accuracy)
     learn.fit_one_cycle(1, 1e-1)
     assert learn.validate()[1] > 0.5
+
+def test_confusion_tabular(learn, out=True):
+    interp = ClassificationInterpretation.from_learner(learn)
+    assert isinstance(interp.confusion_matrix(), (np.ndarray))
+    print(interp.confusion_matrix())
+    interp.plot_confusion_matrix()
+    if out: plt.show()
 
