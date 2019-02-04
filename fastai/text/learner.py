@@ -48,8 +48,8 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
 class RNNLearner(Learner):
     "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
-                 alpha:float=2., beta:float=1., metrics=None, **kwargs):
-        super().__init__(data, model, **kwargs)
+                 alpha:float=2., beta:float=1., metrics=None, **learn_kwargs):
+        super().__init__(data, model, **learn_kwargs)
         self.callbacks.append(RNNTrainer(self, alpha=alpha, beta=beta))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
@@ -128,13 +128,13 @@ class LanguageLearner(RNNLearner):
 
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model:str=None,
-                  pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
+                  pretrained_fnames:OptStrTuple=None, **learn_kwargs) -> 'LanguageLearner':
     "Create a `Learner` with a language model from `data`."
     dps = default_dropout['language'] * drop_mult
     vocab_size = len(data.vocab.itos)
     model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                 weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
-    learn = LanguageLearner(data, model, bptt, split_func=lm_split, **kwargs)
+    learn = LanguageLearner(data, model, bptt, split_func=lm_split, **learn_kwargs)
     if pretrained_model is not None:
         model_path = untar_data(pretrained_model, data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
@@ -148,7 +148,7 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
 
 def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None, 
-               ps:Collection[float]=None, pretrained_model:str=None, **kwargs) -> 'TextClassifierLearner':
+               ps:Collection[float]=None, pretrained_model:str=None, **learn_kwargs) -> 'TextClassifierLearner':
     "Create a RNN classifier from `data`."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
@@ -158,7 +158,7 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=
     ps = [dps[4]] + ps
     model = get_rnn_classifier(bptt, max_len, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
-    learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **learn_kwargs)
     if pretrained_model is not None:
         model_path = untar_data(pretrained_model, data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
