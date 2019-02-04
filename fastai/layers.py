@@ -137,13 +137,13 @@ class MergeLayer(nn.Module):
 
     def forward(self, x): return torch.cat([x,x.orig], dim=1) if self.dense else (x+x.orig)
 
-def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, bottle:bool=False, **kwargs):
-    "Resnet block of `nf` features."
+def res_block(nf, dense:bool=False, norm_type:Optional[NormType]=NormType.Batch, bottle:bool=False, **conv_kwargs):
+    "Resnet block of `nf` features. `conv_kwargs` are passed to `conv_layer`."
     norm2 = norm_type
     if not dense and (norm_type==NormType.Batch): norm2 = NormType.BatchZero
     nf_inner = nf//2 if bottle else nf
-    return SequentialEx(conv_layer(nf, nf_inner, norm_type=norm_type, **kwargs),
-                      conv_layer(nf_inner, nf, norm_type=norm2, **kwargs),
+    return SequentialEx(conv_layer(nf, nf_inner, norm_type=norm_type, **conv_kwargs),
+                      conv_layer(nf_inner, nf, norm_type=norm2, **conv_kwargs),
                       MergeLayer(dense))
 
 def sigmoid_range(x, low, high):

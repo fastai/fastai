@@ -37,12 +37,15 @@ class PreProcessor():
     def process_one(self, item:Any):         return item
     def process(self, ds:Collection):        ds.items = array([self.process_one(item) for item in ds.items])
 
+PreProcessors = Union[PreProcessor, Collection[PreProcessor]]
+fastai_types[PreProcessors] = 'PreProcessors'
+
 class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
     def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, xtra:Any=None, 
-                 processor:PreProcessor=None, x:'ItemList'=None, ignore_empty:bool=False):
+                 processor:PreProcessors=None, x:'ItemList'=None, ignore_empty:bool=False):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
         self.items,self.x,self.ignore_empty = items,x,ignore_empty
@@ -61,14 +64,14 @@ class ItemList():
         items = [self[i] for i in range(min(5,len(self.items)))]
         return f'{self.__class__.__name__} ({len(self.items)} items)\n{items}...\nPath: {self.path}'
 
-    def process(self, processor=None):
+    def process(self, processor:PreProcessors=None):
         "Apply `processor` or `self.processor` to `self`."
         if processor is not None: self.processor = processor
         self.processor = listify(self.processor)
         for p in self.processor: p.process(self)
         return self
 
-    def process_one(self, item, processor=None):
+    def process_one(self, item:ItemBase, processor:PreProcessors=None):
         "Apply `processor` or `self.processor` to `item`."
         if processor is not None: self.processor = processor
         self.processor = listify(self.processor)
@@ -83,7 +86,7 @@ class ItemList():
         "Reconstruct one of the underlying item for its data `t`."
         return self[0].reconstruct(t,x) if has_arg(self[0].reconstruct, 'x') else self[0].reconstruct(t)
 
-    def new(self, items:Iterator, processor:PreProcessor=None, **kwargs)->'ItemList':
+    def new(self, items:Iterator, processor:PreProcessors=None, **kwargs)->'ItemList':
         "Create a new `ItemList` from `items`, keeping the same attributes."
         processor = ifnone(processor, self.processor)
         copy_d = {o:getattr(self,o) for o in self.copy_new}
@@ -99,26 +102,27 @@ class ItemList():
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
     @classmethod
-    def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse=True,
-                    include:Optional[Collection[str]]=None, **kwargs)->'ItemList':
+    def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse:bool=True,
+                    include:Optional[Collection[str]]=None, processor:PreProcessors=None, **kwargs)->'ItemList':
         """Create an `ItemList` in `path` from the filenames that have a suffix in `extensions`. 
         `recurse` determines if we search subfolders."""
         path = Path(path)
-        return cls(get_files(path, extensions, recurse=recurse, include=include), path=path, **kwargs)
+        return cls(get_files(path, extensions, recurse=recurse, include=include), path=path, processor=processor, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, **kwargs)->'ItemList':
+    def from_df(cls, df:DataFrame, path:PathOrStr='.', cols:IntsOrStrs=0, processor:PreProcessors=None, **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
         inputs = df.iloc[:,df_names_to_idx(cols, df)]
         assert inputs.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
-        res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, **kwargs)
+        res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, processor=processor, **kwargs)
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', **kwargs)->'ItemList':
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', 
+                 processor:PreProcessors=None, **kwargs)->'ItemList':
         "Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`."
         df = pd.read_csv(Path(path)/csv_name, header=header)
-        return cls.from_df(df, path=path, cols=cols, **kwargs)
+        return cls.from_df(df, path=path, cols=cols, processor=processor, **kwargs)
 
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
     def _relative_item_paths(self):   return [self._relative_item_path(i) for i in range_of(self.items)]
@@ -221,24 +225,24 @@ class ItemList():
         if isinstance(it, Collection):          return MultiCategoryList
         return ItemList #self.__class__
 
-    def label_from_list(self, labels:Iterator, **kwargs)->'LabelList':
+    def label_from_list(self, labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
         "Label `self.items` with `labels`."
         labels = array(labels, dtype=object)
-        label_cls = self.get_label_cls(labels, **kwargs)
+        label_cls = self.get_label_cls(labels, label_cls=label_cls, **kwargs)
         y = label_cls(labels, path=self.path, **kwargs)
         res = self._label_list(x=self, y=y)
         return res
 
-    def label_from_df(self, cols:IntsOrStrs=1, **kwargs):
+    def label_from_df(self, cols:IntsOrStrs=1, label_cls:Callable=None, **kwargs):
         "Label `self.items` from the values in `cols` in `self.xtra`."
         labels = self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)]
         assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
-        if is_listy(cols) and len(cols) > 1 and ('label_cls' not in kwargs or kwargs['label_cls'] == MultiCategoryList): 
-            new_kwargs = dict(one_hot=True, label_cls=MultiCategoryList, classes= cols)
+        if is_listy(cols) and len(cols) > 1 and (label_cls is None or label_cls == MultiCategoryList): 
+            new_kwargs,label_cls = dict(one_hot=True, classes= cols),MultiCategoryList
             kwargs = {**new_kwargs, **kwargs}
-        return self.label_from_list(_maybe_squeeze(labels), **kwargs)
+        return self.label_from_list(_maybe_squeeze(labels), label_cls=label_cls, **kwargs)
 
-    def label_const(self, const:Any=0, **kwargs)->'LabelList':
+    def label_const(self, const:Any=0, label_cls:Callable=None, **kwargs)->'LabelList':
         "Label every item with `const`."
         return self.label_from_func(func=lambda o: const, **kwargs)
 
@@ -246,15 +250,15 @@ class ItemList():
         "Label every item with an `EmptyLabel`."
         return self.label_from_func(func=lambda o: 0., label_cls=EmptyLabelList)
 
-    def label_from_func(self, func:Callable, **kwargs)->'LabelList':
+    def label_from_func(self, func:Callable, label_cls:Callable=None, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
-        return self.label_from_list([func(o) for o in self.items], **kwargs)
+        return self.label_from_list([func(o) for o in self.items], label_cls=label_cls, **kwargs)
 
-    def label_from_folder(self, **kwargs)->'LabelList':
+    def label_from_folder(self, label_cls:Callable=None, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
-        return self.label_from_func(func=lambda o: o.parts[-2], **kwargs)
+        return self.label_from_func(func=lambda o: o.parts[-2], label_cls=label_cls, **kwargs)
 
-    def label_from_re(self, pat:str, full_path:bool=False, **kwargs)->'LabelList':
+    def label_from_re(self, pat:str, full_path:bool=False, label_cls:Callable=None, **kwargs)->'LabelList':
         "Apply the re in `pat` to determine the label of every filename.  If `full_path`, search in the full name."
         pat = re.compile(pat)
         def _inner(o):
@@ -262,7 +266,7 @@ class ItemList():
             res = pat.search(s)
             assert res,f'Failed to find "{pat}" in "{s}"'
             return res.group(1)
-        return self.label_from_func(_inner, **kwargs)
+        return self.label_from_func(_inner, label_cls=label_cls, **kwargs)
 
 class EmptyLabelList(ItemList):
     "Basic `ItemList` for dummy labels."
