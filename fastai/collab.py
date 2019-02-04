@@ -100,5 +100,5 @@ def collab_learner(data, n_factors:int=None, use_nn:bool=False, emb_szs:Dict[str
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, layers=layers, ps=ps, emb_drop=emb_drop, y_range=y_range, 
                                    use_bn=use_bn, bn_final=bn_final, **learn_kwargs)
     else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range=y_range)
-    return CollabLearner(data, model, metrics=metrics, wd=wd)
+    return CollabLearner(data, model, **learn_kwargs)
 
