@@ -13,15 +13,15 @@ def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
 
 def fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr,
                   moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3,
-                  wd:float=None, callbacks:Optional[CallbackList]=None, **kwargs)->None:
+                  wd:float=None, callbacks:Optional[CallbackList]=None, tot_epochs:int=None, start_epoch:int=1)->None:
     "Fit a model following the 1cycle policy."
     max_lr = learn.lr_range(max_lr)
     callbacks = listify(callbacks)
-    callbacks.append(OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor,
-                                        pct_start=pct_start, **kwargs))
+    callbacks.append(OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor, pct_start=pct_start, tot_epochs=tot_epochs, 
+                                       start_epoch=start_epoch))
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
 
-def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=100, stop_div:bool=True, **kwargs:Any):
+def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=100, stop_div:bool=True, wd:float=None):
     "Explore lr from `start_lr` to `end_lr` over `num_it` iterations in `learn`. If `stop_div`, stops when loss diverges."
     start_lr = learn.lr_range(start_lr)
     start_lr = np.array(start_lr) if is_listy(start_lr) else start_lr
@@ -29,7 +29,7 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
     end_lr = np.array(end_lr) if is_listy(end_lr) else end_lr
     cb = LRFinder(learn, start_lr, end_lr, num_it, stop_div)
     a = int(np.ceil(num_it/len(learn.data.train_dl)))
-    learn.fit(a, start_lr, callbacks=[cb], **kwargs)
+    learn.fit(a, start_lr, callbacks=[cb], wd=wd)
 
 def to_fp16(learn:Learner, loss_scale:float=512., flat_master:bool=False)->Learner:
     "Put `learn` in FP16 precision mode."
