@@ -95,7 +95,9 @@ def gpu_mem_restore(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            if "CUDA out of memory" in str(e) or 'device-side assert triggered' in str(e) or tb_clear_frames=="1":
+            if ("CUDA out of memory" in str(e) or
+                "device-side assert triggered" in str(e) or
+                tb_clear_frames == "1"):
                 type, val, tb = get_ref_free_exc_info() # must!
                 raise type(val).with_traceback(tb) from None
             else: raise # re-raises the exact last exception
