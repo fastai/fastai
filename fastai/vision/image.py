@@ -513,7 +513,7 @@ def _resolve_tfms(tfms:TfmList):
     "Resolve every tfm in `tfms`."
     for f in listify(tfms): f.resolve()
 
-def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', **kwargs)->TensorImage:
+def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', remove_out:bool=True)->TensorImage:
     "Resample pixels in `coords` from `x` by `mode`, with `padding_mode` in ('reflection','border','zeros')."
     coords = coords.flow.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
     if mode=='bilinear': # hack to get smoother downwards resampling

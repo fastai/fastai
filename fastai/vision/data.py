@@ -102,11 +102,12 @@ class ImageDataBunch(DataBunch):
     @classmethod
     def create_from_ll(cls, lls:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False, 
-                **kwargs)->'ImageDataBunch':
+                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False,
+                resize_method:ResizeMethod=ResizeMethod.CROP, mult:int=None, padding_mode:str='reflection', 
+                mode:str='bilinear')->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
         ds_tfms, kwargs = _prep_tfm_kwargs(ds_tfms, size, kwargs)
-        lls = lls.transform(tfms=ds_tfms, size=size, **kwargs)
+        lls = lls.transform(tfms=ds_tfms, size=size, resize_method=resize_method, mult=mult, padding_mode=padding_mode, mode=mode)
         if test is not None: lls.add_test_folder(test)
         return lls.databunch(bs=bs, dl_tfms=dl_tfms, num_workers=num_workers, collate_fn=collate_fn, device=device, no_check=no_check)
 

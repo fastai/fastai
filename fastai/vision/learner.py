@@ -66,14 +66,14 @@ def create_head(nf:int, nc:int, lin_ftrs:Optional[Collection[int]]=None, ps:Floa
 def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pretrained:bool=True,
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
-                bn_final:bool=False, **kwargs:Any)->Learner:
+                bn_final:bool=False, **learn_kwargs:Any)->Learner:
     "Build convnet style learners."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
     nf = num_features_model(body) * 2
     head = custom_head or create_head(nf, data.c, lin_ftrs, ps=ps, bn_final=bn_final)
     model = nn.Sequential(body, head)
-    learn = Learner(data, model, **kwargs)
+    learn = Learner(data, model, **learn_kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[1], nn.init.kaiming_normal_)
@@ -82,14 +82,14 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
 def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, blur:bool=False,
                  self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
-                 bottle:bool=False, cut:Union[int,Callable]=None, **kwargs:Any)->None:
+                 bottle:bool=False, cut:Union[int,Callable]=None, **learn_kwargs:Any)->None:
     "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
     model = to_device(models.unet.DynamicUnet(body, n_classes=data.c, blur=blur, blur_final=blur_final,
           self_attention=self_attention, y_range=y_range, norm_type=norm_type, last_cross=last_cross,
           bottle=bottle), data.device)
-    learn = Learner(data, model, **kwargs)
+    learn = Learner(data, model, **learn_kwargs)
     learn.split(ifnone(split_on,meta['split']))
     if pretrained: learn.freeze()
     apply_init(model[2], nn.init.kaiming_normal_)
