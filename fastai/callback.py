@@ -3,10 +3,10 @@ from .basic_data import *
 from .torch_core import *
 
 __all__ = ['AverageMetric', 'Callback', 'CallbackHandler', 'OptimWrapper', 'SmoothenValue', 'Stepper', 'annealing_cos', 'CallbackList',
-           'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly', 'do_annealing_poly']
+           'annealing_exp', 'annealing_linear', 'annealing_no', 'annealing_poly']
 
 class OptimWrapper():
-    "Basic wrapper around an optimizer to simplify HP changes."
+    "Basic wrapper around `opt` to simplify hyper-parameters changes."
     def __init__(self, opt:optim.Optimizer, wd:Floats=0., true_wd:bool=False, bn_wd:bool=True):
         self.opt,self.true_wd,self.bn_wd = opt,true_wd,bn_wd
         self.opt_keys = list(self.opt.param_groups[0].keys())
@@ -17,12 +17,19 @@ class OptimWrapper():
     @classmethod
     def create(cls, opt_func:Union[type,Callable], lr:Union[float,Tuple,List],
                layer_groups:ModuleList, **kwargs:Any)->optim.Optimizer:
-        "Create an optim.Optimizer from `opt_func` with `lr`. Set lr on `layer_groups`."
+        "Create an `optim.Optimizer` from `opt_func` with `lr`. Set lr on `layer_groups`."
         split_groups = split_bn_bias(layer_groups)
         opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
         opt = cls(opt, **kwargs)
-        opt.lr = listify(lr, layer_groups)
+        opt.lr,opt.opt_func = listify(lr, layer_groups),opt_func
         return opt
+    
+    def new(self, layer_groups:ModuleList):
+        "Create a new `OptimWrapper` from `self` with another `layer_groups` but the same hyper-parameters."
+        opt_func = getattr(self, 'opt_func', self.opt.__class__)
+        split_groups = split_bn_bias(layer_groups)
+        opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
+        return self.create(opt_func, self.lr, layer_groups, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
 
     def __repr__(self)->str:
         return f'OptimWrapper over {repr(self.opt)}.\nTrue weight decay: {self.true_wd}'
@@ -42,35 +49,33 @@ class OptimWrapper():
     def zero_grad(self)->None:
         "Clear optimizer gradients."
         self.opt.zero_grad()
+        
+    #Passthrough to the inner opt.
+    def __getattr__(self,k:str)->Any: return getattr(self.opt, k, None)
+    
+    def clear(self):
+        "Reset the state of the inner optimizer."
+        sd = self.state_dict()
+        sd['state'] = {}
+        self.load_state_dict(sd)
 
     #Hyperparameters as properties
     @property
-    def lr(self)->float:
-        "Get learning rate."
-        return self._lr[-1]
-
+    def lr(self)->float: return self._lr[-1]
     @lr.setter
     def lr(self, val:float)->None:
-        "Set learning rate."
         self._lr = self.set_val('lr', listify(val, self._lr))
 
     @property
-    def mom(self)->float:
-        "Get momentum."
-        return self._mom[-1]
-
+    def mom(self)->float:return self._mom[-1]
     @mom.setter
     def mom(self, val:float)->None:
-        "Set momentum."
         if 'momentum' in self.opt_keys: self.set_val('momentum', listify(val, self._mom))
         elif 'betas' in self.opt_keys:  self.set_val('betas', (listify(val, self._mom), self._beta))
         self._mom = listify(val, self._mom)
 
     @property
-    def beta(self)->float:
-        "Get beta (or alpha as makes sense for given optimizer)."
-        return None if self._beta is None else self._beta[-1]
-
+    def beta(self)->float: return None if self._beta is None else self._beta[-1]
     @beta.setter
     def beta(self, val:float)->None:
         "Set beta (or alpha as makes sense for given optimizer)."
@@ -80,10 +85,7 @@ class OptimWrapper():
         self._beta = listify(val, self._beta)
 
     @property
-    def wd(self)->float:
-        "Get weight decay."
-        return self._wd[-1]
-
+    def wd(self)->float: return self._wd[-1]
     @wd.setter
     def wd(self, val:float)->None:
         "Set weight decay."
@@ -101,7 +103,7 @@ class OptimWrapper():
         if 'weight_decay' in self.opt_keys: self._wd = self.read_val('weight_decay')
 
     def set_val(self, key:str, val:Any, bn_groups:bool=True)->Any:
-        "Set the values inside the optimizer dictionary at the key."
+        "Set `val` inside the optimizer dictionary at `key`."
         if is_tuple(val): val = [(v1,v2) for v1,v2 in zip(*val)]
         for v,pg1,pg2 in zip(val,self.opt.param_groups[::2],self.opt.param_groups[1::2]):
             pg1[key] = v
@@ -109,14 +111,14 @@ class OptimWrapper():
         return val
 
     def read_val(self, key:str) -> Union[List[float],Tuple[List[float],List[float]]]:
-        "Read a hyperparameter key in the optimizer dictionary."
+        "Read a hyperparameter `key` in the optimizer dictionary."
         val = [pg[key] for pg in self.opt.param_groups[::2]]
         if is_tuple(val[0]): val = [o[0] for o in val], [o[1] for o in val]
         return val
 
 class Callback():
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
-    _order=0
+    _order=0 
     def on_train_begin(self, **kwargs:Any)->None:
         "To initialize constants in the callback."
         pass
@@ -148,15 +150,26 @@ class Callback():
     def on_train_end(self, **kwargs:Any)->None:
         "Useful for cleaning up things and saving files/models."
         pass
+    
+    def get_state(self, minimal:bool=True):
+        "Return the inner state of the `Callback`, `minimal` or not."
+        to_remove = ['exclude', 'not_min'] + getattr(self, 'exclude', []).copy()
+        if minimal: to_remove += getattr(self, 'not_min', []).copy()
+        return {k:v for k,v in self.__dict__.items() if k not in to_remove}
+    
+    def  __repr__(self): 
+        attrs = func_args(self.__init__)
+        to_remove = getattr(self, 'exclude', [])
+        list_repr = [self.__class__.__name__] + [f'{k}: {getattr(self, k)}' for k in attrs if k != 'self' and k not in to_remove]
+        return '\n'.join(list_repr) 
 
 class SmoothenValue():
-    "Create a smooth moving average for a value (loss, etc)."
+    "Create a smooth moving average for a value (loss, etc) using `beta`."
     def __init__(self, beta:float):
-        "Create smoother for value, beta should be 0<beta<1."
         self.beta,self.n,self.mov_avg = beta,0,0
 
     def add_value(self, val:float)->None:
-        "Add current value to calculate updated smoothed value."
+        "Add `val` to calculate updated smoothed value."
         self.n += 1
         self.mov_avg = self.beta * self.mov_avg + (1 - self.beta) * val
         self.smooth = self.mov_avg / (1 - self.beta ** self.n)
@@ -167,7 +180,7 @@ def _get_init_state(): return {'epoch':0, 'iteration':0, 'num_batch':0}
 
 @dataclass
 class CallbackHandler():
-    "Manage all of the registered callback objects, smoothing loss by momentum `beta`."
+    "Manage all of the registered `callbacks` and `metrics`, smoothing loss by momentum `beta`."
     callbacks:CallbackList=None
     metrics:CallbackList=None
     beta:float=0.98
@@ -186,6 +199,13 @@ class CallbackHandler():
         if call_mets: [getattr(met, f'on_{cb_name}')(**self.state_dict, **kwargs) for met in self.metrics]
         return [getattr(cb, f'on_{cb_name}')(**self.state_dict, **kwargs) for cb in self.callbacks]
 
+    def set_dl(self, dl:DataLoader):
+        "Set the current `dl` used."
+        if hasattr(self, 'cb_dl'): self.callbacks.remove(self.cb_dl)
+        if isinstance(dl.dataset, Callback):
+            self.callbacks.append(dl.dataset)
+            self.cb_dl = dl.dataset
+
     def on_train_begin(self, epochs:int, pbar:PBar, metrics:MetricFuncList)->None:
         "About to start learning."
         self.state_dict = _get_init_state()
@@ -199,11 +219,11 @@ class CallbackHandler():
         self('epoch_begin')
 
     def on_batch_begin(self, xb:Tensor, yb:Tensor, train:bool=True)->None:
-        "Handle new batch `xb`,`yb`."
+        "Handle new batch `xb`,`yb` in `train` or validation."
         self.state_dict['last_input'], self.state_dict['last_target'] = xb, yb
         self.state_dict['train'] = train
         cbs = self.callbacks if train else self.metrics + self.callbacks
-        for cb in self.callbacks:
+        for cb in cbs:
             a = cb.on_batch_begin(**self.state_dict)
             if a is not None: self.state_dict['last_input'], self.state_dict['last_target'] = a
         return self.state_dict['last_input'], self.state_dict['last_target']
@@ -242,7 +262,7 @@ class CallbackHandler():
         return stop
 
     def on_epoch_end(self, val_loss:Tensor)->bool:
-        "Epoch is done, process `val_metrics`."
+        "Epoch is done, process `val_loss`."
         self.state_dict['last_metrics'] = [val_loss] if val_loss is not None else None
         self.state_dict['epoch'] += 1
         if not self.state_dict['train']:
@@ -263,14 +283,17 @@ class AverageMetric(Callback):
         self.func, self.name = func, name
 
     def on_epoch_begin(self, **kwargs):
+        "Set the inner value to 0."
         self.val, self.count = 0.,0
 
-    def on_batch_end(self, last_output, last_target, train, **kwargs):
+    def on_batch_end(self, last_output, last_target, **kwargs):
+        "Update metric computation with `last_output` and `last_target`."
         if not is_listy(last_target): last_target=[last_target]
         self.count += last_target[0].size(0)
         self.val += last_target[0].size(0) * self.func(last_output, *last_target).detach().cpu()
 
     def on_epoch_end(self, **kwargs):
+        "Sets the final result in `self.metric`."
         self.metric = self.val/self.count
 
 def annealing_no(start:Number, end:Number, pct:float)->Number:
@@ -310,6 +333,5 @@ class Stepper():
 
     @property
     def is_done(self)->bool:
-        "Schedule completed."
+        "Return `True` if schedule completed."
         return self.n >= self.n_iter
-

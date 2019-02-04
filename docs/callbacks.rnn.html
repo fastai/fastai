@@ -24,8 +24,7 @@ summary: "Implementation of a callback for RNN training"
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This callback regroups a few tweaks to properly train RNNs. They all come from <a href="https://arxiv.org/abs/1708.02182">this article</a> by Stephen Merity et al.</p>
-<p><strong>Adjusting the learning rate to sequence length:</strong> since we're modifying the bptt at each batch, sometimes by a lot (we divide it by 2 randomly), the learning rate has to be adjusted to take this into account, mainly being multiplied by the ratio <code>seq_len/bptt</code>.</p>
-<p><strong>Activation Regularization:</strong> on top of weight decay, we apply another form of regularization that is pretty similar and consists in adding to the loss a scaled factor of the sum of all the squares of the ouputs (with dropout applied) of the various layers of the RNN. Intuitively, weight decay tries to get the network to learn small weights, this is to get the model to learn to produce smaller activations.</p>
+<p><strong>Activation Regularization:</strong> on top of weight decay, we apply another form of regularization that is pretty similar and consists in adding to the loss a scaled factor of the sum of all the squares of the outputs (with dropout applied) of the various layers of the RNN. Intuitively, weight decay tries to get the network to learn small weights, this is to get the model to learn to produce smaller activations.</p>
 <p><strong>Temporal Activation Regularization:</strong> lastly, we add to the loss a scaled factor of the sum of the squares of the <code>h_(t+1) - h_t</code>, where <code>h_i</code> is the output (before dropout is applied) of one layer of the RNN at the time step i (word i of the sentence). This will encourage the model to produce activations that don’t vary too fast between two consecutive words of the sentence.</p>
 
 </div>
@@ -40,8 +39,9 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RNNTrainer"><code>class</code> <code>RNNTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L9" class="source_link">[source]</a></h2><blockquote><p><code>RNNTrainer</code>(<code>learn</code>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <code>bptt</code>:<code>int</code>, <code>alpha</code>:<code>float</code>=<code>0.0</code>, <code>beta</code>:<code>float</code>=<code>0.0</code>, <code>adjust</code>:<code>bool</code>=<code>True</code>) :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h2 id="RNNTrainer"><code>class</code> <code>RNNTrainer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>RNNTrainer</code>(<strong><code>learn</code></strong>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
+<p><a href="/callback.html#Callback"><code>Callback</code></a> that regroups lr adjustment to seq_len, AR and TAR.</p>
 
 </div>
 
@@ -53,7 +53,20 @@ summary: "Implementation of a callback for RNN training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> that adds to learner the RNN tweaks for training on data with <code>bptt</code>. <code>alpha</code> is the scale for AR, <code>beta</code> is the scale for TAR. If <code>adjust</code> is False, the learning rate isn't adjusted to the sequence length.</p>
+<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> that adds to learner the RNN tweaks for training on data with <code>bptt</code>. <code>alpha</code> is the scale for AR, <code>beta</code> is the scale for TAR.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You don't call these yourself - they're called by fastai's <a href="/callback.html#Callback"><code>Callback</code></a> system automatically to enable the class's functionality.</p>
 
 </div>
 </div>
@@ -67,8 +80,30 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<code>last_output</code>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <code>kwargs</code>)</p>
+<h4 id="RNNTrainer.on_epoch_begin"><code>on_epoch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L15" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_begin</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<p>Reset the hidden state of the model.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="RNNTrainer.on_loss_begin"><code>on_loss_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>on_loss_begin</code>(<strong><code>last_output</code></strong>:<code>Tuple</code>[<code>Tensor</code>, <code>Tensor</code>, <code>Tensor</code>], <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Save the extra outputs for later and only returns the true output.</p>
 
 </div>
 
@@ -80,7 +115,7 @@ summary: "Implementation of a callback for RNN training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The fastai RNNs return <code>last_ouput</code> that are tuples of three elements, the true output (that is returned) and the hidden states before and after dropout (which are saved internally for the next function).</p>
+<p>The fastai RNNs return <code>last_output</code> that are tuples of three elements, the true output (that is returned) and the hidden states before and after dropout (which are saved internally for the next function).</p>
 
 </div>
 </div>
@@ -94,8 +129,9 @@ summary: "Implementation of a callback for RNN training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="RNNTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L25" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<code>last_loss</code>:<code>Rank0Tensor</code>, <code>last_input</code>:<code>Tensor</code>, <code>kwargs</code>)</p>
+<h4 id="RNNTrainer.on_backward_begin"><code>on_backward_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/rnn.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>on_backward_begin</code>(<strong><code>last_loss</code></strong>:<code>Rank0Tensor</code>, <strong><code>last_input</code></strong>:<code>Tensor</code>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<p>Apply AR and TAR to <code>last_loss</code>.</p>
 
 </div>
 
@@ -104,13 +140,6 @@ summary: "Implementation of a callback for RNN training"
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Adjusts the learning rate to the size of <code>last_input</code>. Adds to <code>last_loss</code> the AR and TAR.</p>
-
-</div>
-</div>
 </div>
 </div>
  

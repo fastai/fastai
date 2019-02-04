@@ -13,8 +13,17 @@ entries:
       output: web,pdf
       title: Installation
     - output: web,pdf
+      title: Installation Extras
+      url: /install.html
+    - output: web,pdf
       title: Troubleshooting
       url: /troubleshoot.html
+    - output: web,pdf
+      title: Performance
+      url: /performance.html
+    - output: web,pdf
+      title: Support
+      url: /support.html
     output: web
     title: Getting started
   - folderitems:
@@ -92,14 +101,17 @@ entries:
           title: vision.data
           url: /vision.data.html
         - output: web,pdf
+          title: vision.gan
+          url: /vision.gan.html
+        - output: web,pdf
           title: vision.model overview
           url: /vision.models.html
         - output: web,pdf
           title: vision.models.unet
           url: /vision.models.unet.html
         - output: web,pdf
-          title: vision.widgets
-          url: /widgets.html
+          title: widgets.image_cleaner
+          url: /widgets.image_cleaner.html
         title: vision
       - output: web
         subfolderitems:
@@ -165,7 +177,28 @@ entries:
     title: Core
   - folderitems:
     - output: web,pdf
-      title: Overview
+      title: Helpers
+      url: /utils.collect_env.html
+    output: web
+    title: Utils
+  - folderitems:
+    - output: web,pdf
+      title: Look at data
+      url: /tutorial.data.html
+    - output: web,pdf
+      title: Inference Learner
+      url: /tutorial.inference.html
+    - output: web,pdf
+      title: Custom ItemList
+      url: /tutorial.itemlist.html
+    output: web
+    title: Tutorials
+  - folderitems:
+    - output: web,pdf
+      title: Instructions
+      url: /gen_doc_main.html
+    - output: web,pdf
+      title: gen_doc
       url: /gen_doc.html
     - output: web,pdf
       title: gen_doc.gen_notebooks

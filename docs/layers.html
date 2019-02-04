@@ -25,6 +25,12 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Custom-fastai-modules">Custom fastai modules<a class="anchor-link" href="#Custom-fastai-modules">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -34,8 +40,9 @@ summary: "Provides essential functions to building and modifying `Model` archite
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="AdaptiveConcatPool2d"><code>class</code> <code>AdaptiveConcatPool2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L61" class="source_link">[source]</a></h2><blockquote><p><code>AdaptiveConcatPool2d</code>(<code>sz</code>:<code>Optional</code>[<code>int</code>]=<code>None</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="AdaptiveConcatPool2d"><code>class</code> <code>AdaptiveConcatPool2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L171" class="source_link">[source]</a></h3><blockquote><p><code>AdaptiveConcatPool2d</code>(<strong><code>sz</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
+<p>Layer that concats <code>AdaptiveAvgPool2d</code> and <code>AdaptiveMaxPool2d</code>.</p>
 
 </div>
 
@@ -50,7 +57,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Layer that concats <code>AdaptiveAvgPool2d</code> and <code>AdaptiveMaxPool2d</code>. Output will be <code>2*sz</code> or 2 if <code>sz</code> is None.</p>
+<p>The output will be <code>2*sz</code>, or just 2 if <code>sz</code> is None.</p>
 
 </div>
 </div>
@@ -59,7 +66,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <a href="/layers.html#AdaptiveConcatPool2d"><code>AdaptiveConcatPool2d</code></a> object uses adaptive average pooling and adaptive max pooling and concatenates them both. We use this because it provides the model with the information of both methods and improves performance. This technique is called <code>adaptive</code> because it allows us to decide on what output dimensions we want, instead of choosing the input's dimensions to fit a desired output size.</p>
 <p>Let's try training with Adaptive Average Pooling first, then with Adaptive Max Pooling and finally with the concatenation of them both to see how they fare in performance.</p>
-<p>We will first define a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> using <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveMaxPool2d">Adapative Max Pooling</a> by changing the source code a bit.</p>
+<p>We will first define a <a href="/layers.html#simple_cnn"><code>simple_cnn</code></a> using <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveMaxPool2d">Adaptive Max Pooling</a> by changing the source code a bit.</p>
 
 </div>
 </div>
@@ -73,7 +80,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <span class="n">data</span> <span class="o">=</span> <span class="n">ImageDataBunch</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -89,13 +96,13 @@ summary: "Provides essential functions to building and modifying `Model` archite
     <span class="n">nl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
     <span class="n">kernel_szs</span> <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">kernel_szs</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">nl</span><span class="p">)</span>
     <span class="n">strides</span>    <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">strides</span>   <span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">nl</span><span class="p">)</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">conv2d_relu</span><span class="p">(</span><span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">stride</span><span class="o">=</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">conv_layer</span><span class="p">(</span><span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">stride</span><span class="o">=</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">strides</span><span class="p">))]</span>
     <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveMaxPool2d</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Flatten</span><span class="p">()))</span>
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -110,7 +117,7 @@ summary: "Provides essential functions to building and modifying `Model` archite
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -119,13 +126,25 @@ summary: "Provides essential functions to building and modifying `Model` archite
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-0      0.082607    0.087943    0.970069  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.104029</th>
+    <th>0.073855</th>
+    <th>0.982336</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -134,7 +153,7 @@ epoch  train loss  valid loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now let's try with <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveAvgPool2d">Adapative Average Pooling</a> now.</p>
+<p>Now let's try with <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveAvgPool2d">Adaptive Average Pooling</a> now.</p>
 
 </div>
 </div>
@@ -150,13 +169,13 @@ epoch  train loss  valid loss  accuracy
     <span class="n">nl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
     <span class="n">kernel_szs</span> <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">kernel_szs</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">nl</span><span class="p">)</span>
     <span class="n">strides</span>    <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">strides</span>   <span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">nl</span><span class="p">)</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">conv2d_relu</span><span class="p">(</span><span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">stride</span><span class="o">=</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">conv_layer</span><span class="p">(</span><span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">stride</span><span class="o">=</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">strides</span><span class="p">))]</span>
     <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveAvgPool2d</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Flatten</span><span class="p">()))</span>
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -171,7 +190,7 @@ epoch  train loss  valid loss  accuracy
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -180,13 +199,25 @@ epoch  train loss  valid loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-0      0.151425    0.126878    0.957802  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.326732</th>
+    <th>0.269070</th>
+    <th>0.967125</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -211,13 +242,13 @@ epoch  train loss  valid loss  accuracy
     <span class="n">nl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
     <span class="n">kernel_szs</span> <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">kernel_szs</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">nl</span><span class="p">)</span>
     <span class="n">strides</span>    <span class="o">=</span> <span class="n">ifnone</span><span class="p">(</span><span class="n">strides</span>   <span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">nl</span><span class="p">)</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">conv2d_relu</span><span class="p">(</span><span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">stride</span><span class="o">=</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">conv_layer</span><span class="p">(</span><span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">actns</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_szs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">stride</span><span class="o">=</span><span class="n">strides</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">strides</span><span class="p">))]</span>
     <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">AdaptiveConcatPool2d</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Flatten</span><span class="p">()))</span>
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -232,7 +263,7 @@ epoch  train loss  valid loss  accuracy
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -241,13 +272,25 @@ epoch  train loss  valid loss  accuracy
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Total time: 00:02
-epoch  train loss  valid loss  accuracy
-0      0.076629    0.054396    0.983808  (00:02)
 
-</pre>
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.172055</th>
+    <th>0.113439</th>
+    <th>0.975957</th>
+  </tr>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -263,8 +306,9 @@ epoch  train loss  valid loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Lambda"><code>class</code> <code>Lambda</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>Lambda</code>(<code>func</code>:<code>LambdaFunc</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="Lambda"><code>class</code> <code>Lambda</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L10" class="source_link">[source]</a></h3><blockquote><p><code>Lambda</code>(<strong><code>func</code></strong>:<code>LambdaFunc</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
+<p>An easy way to create a pytorch layer for a simple <code>func</code>.</p>
 
 </div>
 
@@ -276,8 +320,7 @@ epoch  train loss  valid loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Lambda allows us to define functions and use them as layers in our networks inside a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential">Sequential</a> object.</p>
-<p>So, for example, say we want to apply a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.functional.log_softmax">log_softmax loss</a> and we need to change the shape of our output batches to be able to use this loss. We can add a layer that applies the necessary change in shape by calling:</p>
+<p>This is very useful to use functions as layers in our networks inside a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential">Sequential</a> object. So, for example, say we want to apply a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.functional.log_softmax">log_softmax loss</a> and we need to change the shape of our output batches to be able to use this loss. We can add a layer that applies the necessary change in shape by calling:</p>
 <p><code>Lambda(lambda x: x.view(x.size(0),-1))</code></p>
 
 </div>
@@ -310,7 +353,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -350,7 +393,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -378,9 +421,9 @@ epoch  train loss  valid loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Flatten"><code>Flatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L21" class="source_link">[source]</a></h4><blockquote><p><code>Flatten</code>() → <code>Tensor</code></p>
+<h2 id="Flatten"><code>class</code> <code>Flatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L23" class="source_link">[source]</a></h2><blockquote><p><code>Flatten</code>(<strong><code>full</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
-<p>Flattens <code>x</code> to a single dimension, often used at the end of a model.</p>
+<p>Flatten <code>x</code> to a single dimension, often used at the end of a model. <code>full</code> for rank-1 tensor</p>
 
 </div>
 
@@ -418,7 +461,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -446,7 +489,7 @@ epoch  train loss  valid loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PoolFlatten"><code>PoolFlatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L25" class="source_link">[source]</a></h4><blockquote><p><code>PoolFlatten</code>() → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h4 id="PoolFlatten"><code>PoolFlatten</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>PoolFlatten</code>() → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>Apply <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.AdaptiveAvgPool2d"><code>nn.AdaptiveAvgPool2d</code></a> to <code>x</code> and then flatten the result.</p>
 
@@ -485,7 +528,7 @@ epoch  train loss  valid loss  accuracy
     <span class="k">break</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -504,6 +547,13 @@ epoch  train loss  valid loss  accuracy
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Another use we give to the Lambda function is to resize batches with <a href="/layers.html#ResizeBatch"><code>ResizeBatch</code></a> when we have a layer that expects a different input than what comes from the previous one.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -513,7 +563,7 @@ epoch  train loss  valid loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ResizeBatch"><code>ResizeBatch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L17" class="source_link">[source]</a></h4><blockquote><p><code>ResizeBatch</code>(<code>size</code>:<code>int</code>) → <code>Tensor</code></p>
+<h4 id="ResizeBatch"><code>ResizeBatch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>ResizeBatch</code>(<strong>*<code>size</code></strong>:<code>int</code>) → <code>Tensor</code></p>
 </blockquote>
 <p>Layer that resizes x to <code>size</code>, good for connecting mismatched layers.</p>
 
@@ -525,13 +575,6 @@ epoch  train loss  valid loss  accuracy
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Another use we give to the Lambda function is to resize batches with <a href="/layers.html#ResizeBatch"><code>ResizeBatch</code></a> when we have a layer that expects a different input than what comes from the previous one. Let's see an example:</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
@@ -541,7 +584,7 @@ epoch  train loss  valid loss  accuracy
 <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -570,7 +613,7 @@ epoch  train loss  valid loss  accuracy
 <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -598,83 +641,7 @@ epoch  train loss  valid loss  accuracy
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="StdUpsample"><code>class</code> <code>StdUpsample</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L76" class="source_link">[source]</a></h2><blockquote><p><code>StdUpsample</code>(<code>n_in</code>:<code>int</code>, <code>n_out</code>:<code>int</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Increases the dimensionality of our data from <code>n_in</code> to <code>n_out</code> by applying a transposed convolution layer to the input and with batchnorm and a RELU activation.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="CrossEntropyFlat"><code>class</code> <code>CrossEntropyFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L94" class="source_link">[source]</a></h2><blockquote><p><code>CrossEntropyFlat</code>(<code>weight</code>=<code>None</code>, <code>size_average</code>=<code>None</code>, <code>ignore_index</code>=<code>-100</code>, <code>reduce</code>=<code>None</code>, <code>reduction</code>=<code>'elementwise_mean'</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss"><code>CrossEntropyLoss</code></a></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss">nn.CrossEntropyLoss</a>, but flattens input and target. Is used to calculate cross entropy on arrays (which Pytorch will not let us do with their <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss">nn.CrossEntropyLoss</a> function). An example of a use case is image segmentation models where the output in an image (or an array of pixels).</p>
-<p>The parameters are the same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss">nn.CrossEntropyLoss</a>: <code>weight</code> to rescale each class, <code>size_average</code> whether we want to sum the losses across elements in a batch or we want to add them up, <code>ignore_index</code> what targets do we want to ignore, <code>reduce</code> on whether we want to return a loss per batch element and <code>reduction</code> specifies which type of reduction (if any) we want to apply to our input.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="MSELossFlat"><code>class</code> <code>MSELossFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L100" class="source_link">[source]</a></h2><blockquote><p><code>MSELossFlat</code>(<code>size_average</code>=<code>None</code>, <code>reduce</code>=<code>None</code>, <code>reduction</code>=<code>'elementwise_mean'</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.MSELoss"><code>MSELoss</code></a></p>
-</blockquote>
-<p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.MSELoss"><code>nn.MSELoss</code></a>, but flattens input and target.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h2 id="Debugger"><code>class</code> <code>Debugger</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L70" class="source_link">[source]</a></h2><blockquote><p><code>Debugger</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="Debugger"><code>class</code> <code>Debugger</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L180" class="source_link">[source]</a></h3><blockquote><p><code>Debugger</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>A module to debug inside a model.</p>
 
@@ -688,7 +655,7 @@ epoch  train loss  valid loss  accuracy
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The debugger module allows us to peek inside a network while its training and see in detail what is going on. We can see inputs, ouputs and sizes at any point in the network.</p>
+<p>The debugger module allows us to peek inside a network while its training and see in detail what is going on. We can see inputs, outputs and sizes at any point in the network.</p>
 <p>For instance, if you run the following:</p>
 <div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
     <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span>  <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
@@ -725,7 +692,326 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="bn_drop_lin"><code>bn_drop_lin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L29" class="source_link">[source]</a></h4><blockquote><p><code>bn_drop_lin</code>(<code>n_in</code>:<code>int</code>, <code>n_out</code>:<code>int</code>, <code>bn</code>:<code>bool</code>=<code>True</code>, <code>p</code>:<code>float</code>=<code>0.0</code>, <code>actn</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<code>None</code>)</p>
+<h3 id="PixelShuffle_ICNR"><code>class</code> <code>PixelShuffle_ICNR</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L196" class="source_link">[source]</a></h3><blockquote><p><code>PixelShuffle_ICNR</code>(<strong><code>ni</code></strong>:<code>int</code>, <strong><code>nf</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>scale</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>blur</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>norm_type</code></strong>=<strong><em><code>&lt;NormType.Weight: 3&gt;</code></em></strong>, <strong><code>leaky</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Upsample by <code>scale</code> from <code>ni</code> filters to <code>nf</code> (default <code>ni</code>), using <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.PixelShuffle"><code>nn.PixelShuffle</code></a>, <a href="/layers.html#icnr"><code>icnr</code></a> init, and <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.weight_norm"><code>weight_norm</code></a>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="MergeLayer"><code>class</code> <code>MergeLayer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L132" class="source_link">[source]</a></h3><blockquote><p><code>MergeLayer</code>(<strong><code>dense</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Merge a shortcut with the result of the module by adding them or concatenating thme if <code>dense=True</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="PartialLayer"><code>class</code> <code>PartialLayer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L161" class="source_link">[source]</a></h3><blockquote><p><code>PartialLayer</code>(<strong><code>func</code></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Layer that applies <code>partial(func, **kwargs)</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="SigmoidRange"><code>class</code> <code>SigmoidRange</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L153" class="source_link">[source]</a></h3><blockquote><p><code>SigmoidRange</code>(<strong><code>low</code></strong>, <strong><code>high</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Sigmoid module with range <code>(low,x_max)</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="SequentialEx"><code>class</code> <code>SequentialEx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L111" class="source_link">[source]</a></h3><blockquote><p><code>SequentialEx</code>(<strong>*<code>layers</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Like <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>nn.Sequential</code></a>, but with ModuleList semantics, and can access module input</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="SelfAttention"><code>class</code> <code>SelfAttention</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L63" class="source_link">[source]</a></h3><blockquote><p><code>SelfAttention</code>(<strong><code>n_channels</code></strong>:<code>int</code>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Self attention layer for 2d.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="BatchNorm1dFlat"><code>class</code> <code>BatchNorm1dFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L280" class="source_link">[source]</a></h3><blockquote><p><code>BatchNorm1dFlat</code>(<strong><code>num_features</code></strong>, <strong><code>eps</code></strong>=<strong><em><code>1e-05</code></em></strong>, <strong><code>momentum</code></strong>=<strong><em><code>0.1</code></em></strong>, <strong><code>affine</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>track_running_stats</code></strong>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BatchNorm1d"><code>BatchNorm1d</code></a></p>
+</blockquote>
+<p><a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BatchNorm1d"><code>nn.BatchNorm1d</code></a>, but first flattens leading dimensions</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Loss-functions">Loss functions<a class="anchor-link" href="#Loss-functions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="FlattenedLoss"><code>class</code> <code>FlattenedLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L215" class="source_link">[source]</a></h3><blockquote><p><code>FlattenedLoss</code>(<strong><code>func</code></strong>, <strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<strong><em><code>-1</code></em></strong>, <strong><code>floatify</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>is_2d</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Same as <code>func</code>, but flattens input and target.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create an instance of <code>func</code> with <code>args</code> and <code>kwargs</code>. When passing an output and target, it</p>
+<ul>
+<li>puts <code>axis</code> first in output and target with a transpose</li>
+<li>casts the target to <code>float</code> is <code>floatify=True</code></li>
+<li>squeezes the <code>output</code> to two dimensions if <code>is_2d</code>, otherwise one dimension, squeezes the target to one dimension</li>
+<li>applied the instance of <code>func</code>.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="BCEFlat"><code>BCEFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L241" class="source_link">[source]</a></h4><blockquote><p><code>BCEFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<strong><em><code>-1</code></em></strong>, <strong><code>floatify</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BCELoss"><code>nn.BCELoss</code></a>, but flattens input and target.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="BCEWithLogitsFlat"><code>BCEWithLogitsFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L237" class="source_link">[source]</a></h4><blockquote><p><code>BCEWithLogitsFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<strong><em><code>-1</code></em></strong>, <strong><code>floatify</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BCEWithLogitsLoss"><code>nn.BCEWithLogitsLoss</code></a>, but flattens input and target.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="CrossEntropyFlat"><code>CrossEntropyFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L233" class="source_link">[source]</a></h4><blockquote><p><code>CrossEntropyFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<strong><em><code>-1</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.CrossEntropyLoss"><code>nn.CrossEntropyLoss</code></a>, but flattens input and target.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="MSELossFlat"><code>MSELossFlat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L245" class="source_link">[source]</a></h4><blockquote><p><code>MSELossFlat</code>(<strong>*<code>args</code></strong>, <strong><code>axis</code></strong>:<code>int</code>=<strong><em><code>-1</code></em></strong>, <strong><code>floatify</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Same as <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.MSELoss"><code>nn.MSELoss</code></a>, but flattens input and target.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NoopLoss"><code>class</code> <code>NoopLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L249" class="source_link">[source]</a></h2><blockquote><p><code>NoopLoss</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Just returns the mean of the <code>output</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="WassersteinLoss"><code>class</code> <code>WassersteinLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L253" class="source_link">[source]</a></h2><blockquote><p><code>WassersteinLoss</code>() :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>For WGAN.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Helper-functions-to-create-modules">Helper functions to create modules<a class="anchor-link" href="#Helper-functions-to-create-modules">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="bn_drop_lin"><code>bn_drop_lin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L48" class="source_link">[source]</a></h4><blockquote><p><code>bn_drop_lin</code>(<strong><code>n_in</code></strong>:<code>int</code>, <strong><code>n_out</code></strong>:<code>int</code>, <strong><code>bn</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>actn</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 
 </div>
@@ -753,9 +1039,9 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv2d"><code>conv2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L37" class="source_link">[source]</a></h4><blockquote><p><code>conv2d</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>, <code>padding</code>:<code>int</code>=<code>None</code>, <code>bias</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>Conv2d</code></a></p>
+<h4 id="conv2d"><code>conv2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L81" class="source_link">[source]</a></h4><blockquote><p><code>conv2d</code>(<strong><code>ni</code></strong>:<code>int</code>, <strong><code>nf</code></strong>:<code>int</code>, <strong><code>ks</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>stride</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>padding</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>bias</code></strong>=<strong><em><code>False</code></em></strong>, <strong><code>init</code></strong>:<code>LayerFunc</code>=<strong><em><code>'kaiming_normal_'</code></em></strong>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>Conv2d</code></a></p>
 </blockquote>
-<p>Create <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>nn.Conv2d</code></a> layer: <code>ni</code> inputs, <code>nf</code> outputs, <code>ks</code> kernel size. <code>padding</code> defaults to <code>k//2</code>.</p>
+<p>Create and initialize <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d"><code>nn.Conv2d</code></a> layer. <code>padding</code> defaults to <code>ks//2</code>.</p>
 
 </div>
 
@@ -774,36 +1060,9 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv2d_relu"><code>conv2d_relu</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L49" class="source_link">[source]</a></h4><blockquote><p><code>conv2d_relu</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>, <code>padding</code>:<code>int</code>=<code>None</code>, <code>bn</code>:<code>bool</code>=<code>False</code>, <code>bias</code>:<code>bool</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h4 id="conv2d_trans"><code>conv2d_trans</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L86" class="source_link">[source]</a></h4><blockquote><p><code>conv2d_trans</code>(<strong><code>ni</code></strong>:<code>int</code>, <strong><code>nf</code></strong>:<code>int</code>, <strong><code>ks</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>stride</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>padding</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>bias</code></strong>=<strong><em><code>False</code></em></strong>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ConvTranspose2d"><code>ConvTranspose2d</code></a></p>
 </blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/layers.html#conv2d"><code>conv2d</code></a> layer with <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ReLU"><code>nn.ReLU</code></a> activation and optional(<code>bn</code>) <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.BatchNorm2d"><code>nn.BatchNorm2d</code></a>: <code>ni</code> input, <code>nf</code> out filters, <code>ks</code> kernel, <code>stride</code>:stride, <code>padding</code>:padding, <code>bn</code>: batch normalization.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv2d_trans"><code>conv2d_trans</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>conv2d_trans</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>2</code>, <code>stride</code>:<code>int</code>=<code>2</code>, <code>padding</code>:<code>int</code>=<code>0</code>, <code>bias</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ConvTranspose2d"><code>ConvTranspose2d</code></a></p>
-</blockquote>
-<p>Create <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ConvTranspose2d"><code>nn.ConvTranspose2d</code></a> layer: <code>ni</code> inputs, <code>nf</code> outputs, <code>ks</code> kernel size, <code>stride</code>: stride. <code>padding</code> defaults to 0.</p>
+<p>Create <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ConvTranspose2d"><code>nn.ConvTranspose2d</code></a> layer.</p>
 
 </div>
 
@@ -822,7 +1081,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="conv_layer"><code>conv_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>conv_layer</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>, <code>ks</code>:<code>int</code>=<code>3</code>, <code>stride</code>:<code>int</code>=<code>1</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h4 id="conv_layer"><code>conv_layer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L94" class="source_link">[source]</a></h4><blockquote><p><code>conv_layer</code>(<strong><code>ni</code></strong>:<code>int</code>, <strong><code>nf</code></strong>:<code>int</code>, <strong><code>ks</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>stride</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>padding</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>None</code></em></strong>, <strong><code>is_1d</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>norm_type</code></strong>:<code>Optional</code>[<a href="/layers.html#NormType"><code>NormType</code></a>]=<strong><em><code>&lt;NormType.Batch: 1&gt;</code></em></strong>, <strong><code>use_activ</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>leaky</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>transpose</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>init</code></strong>:<code>Callable</code>=<strong><em><code>'kaiming_normal_'</code></em></strong>, <strong><code>self_attention</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
 
 </div>
@@ -835,8 +1094,8 @@ ipdb&gt;</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <a href="/layers.html#conv_layer"><code>conv_layer</code></a> function returns a sequence of <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d">nn.Conv2D</a>, <a href="https://arxiv.org/abs/1502.03167">BatchNorm2d</a> and a <a href="https://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf">leaky RELU</a> activation function.</p>
-<p><code>n_in</code> represents the number of size of the input <code>n_out</code> the size of the output, <code>ks</code> kernel size, <code>stride</code> the stride with which we want to apply the convolutions.</p>
+<p>The <a href="/layers.html#conv_layer"><code>conv_layer</code></a> function returns a sequence of <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Conv2d">nn.Conv2D</a>, <a href="https://arxiv.org/abs/1502.03167">BatchNorm</a> and a ReLU or <a href="https://ai.stanford.edu/~amaas/papers/relu_hybrid_icml2013_final.pdf">leaky RELU</a> activation function.</p>
+<p><code>n_in</code> represents the number of size of the input <code>n_out</code> the size of the output, <code>ks</code> kernel size, <code>stride</code> the stride with which we want to apply the convolutions. <code>bias</code> will decide if they have bias or not (if None, defaults to True unless using batchnorm). <code>norm_type</code> selects type of normalization (or <code>None</code>). If <code>leaky</code> is None, the activation is a standard <code>ReLU</code>, otherwise it's a <code>LeakyReLU</code> of slope <code>leaky</code>. Finally if <code>transpose=True</code>, the convolution is replaced by a <code>ConvTranspose2D</code>.</p>
 
 </div>
 </div>
@@ -850,7 +1109,7 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_embedding"><code>get_embedding</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>get_embedding</code>(<code>ni</code>:<code>int</code>, <code>nf</code>:<code>int</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="embedding"><code>embedding</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L273" class="source_link">[source]</a></h4><blockquote><p><code>embedding</code>(<strong><code>ni</code></strong>:<code>int</code>, <strong><code>nf</code></strong>:<code>int</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 
 </div>
@@ -877,9 +1136,9 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="simple_cnn"><code>simple_cnn</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>simple_cnn</code>(<code>actns</code>:<code>Collection</code>[<code>int</code>], <code>kernel_szs</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>strides</code>:<code>Collection</code>[<code>int</code>]=<code>None</code>, <code>bn</code>=<code>False</code>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h4 id="relu"><code>relu</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>relu</code>(<strong><code>inplace</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>leaky</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
-<p>CNN with <a href="/layers.html#conv2d_relu"><code>conv2d_relu</code></a> layers defined by <code>actns</code>, <code>kernel_szs</code> and <code>strides</code>, plus batchnorm if <code>bn</code>.</p>
+<p>Return a relu activation, maybe <code>leaky</code> and <code>inplace</code>.</p>
 
 </div>
 
@@ -898,8 +1157,51 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="std_upsample_head"><code>std_upsample_head</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L86" class="source_link">[source]</a></h4><blockquote><p><code>std_upsample_head</code>(<code>c</code>, <code>nfs</code>:<code>Collection</code>[<code>int</code>]) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="res_block"><code>res_block</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L140" class="source_link">[source]</a></h4><blockquote><p><code>res_block</code>(<strong><code>nf</code></strong>, <strong><code>dense</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>norm_type</code></strong>:<code>Optional</code>[<a href="/layers.html#NormType"><code>NormType</code></a>]=<strong><em><code>&lt;NormType.Batch: 1&gt;</code></em></strong>, <strong><code>bottle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<p>Resnet block of <code>nf</code> features.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="sigmoid_range"><code>sigmoid_range</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L149" class="source_link">[source]</a></h4><blockquote><p><code>sigmoid_range</code>(<strong><code>x</code></strong>, <strong><code>low</code></strong>, <strong><code>high</code></strong>)</p>
+</blockquote>
+<p>Sigmoid function with range <code>(low, high)</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="simple_cnn"><code>simple_cnn</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L257" class="source_link">[source]</a></h4><blockquote><p><code>simple_cnn</code>(<strong><code>actns</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>kernel_szs</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>strides</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>bn</code></strong>=<strong><em><code>False</code></em></strong>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+</blockquote>
+<p>CNN with <a href="/layers.html#conv_layer"><code>conv_layer</code></a> defined by <code>actns</code>, <code>kernel_szs</code> and <code>strides</code>, plus batchnorm if <code>bn</code>.</p>
 
 </div>
 
@@ -911,9 +1213,7 @@ ipdb&gt;</code></pre>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a sequence of upsample layers with a RELU at the beggining and a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ConvTranspose2d">nn.ConvTranspose2d</a>.</p>
-<p><code>nfs</code> is a list with the input and output sizes of each upsample layer and <code>c</code> is the output size of the final 2D Transpose Convolutional layer.</p>
-
+<h2 id="Initialization-of-modules">Initialization of modules<a class="anchor-link" href="#Initialization-of-modules">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -926,9 +1226,93 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="trunc_normal_"><code>trunc_normal_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<code>x</code>:<code>Tensor</code>, <code>mean</code>:<code>float</code>=<code>0.0</code>, <code>std</code>:<code>float</code>=<code>1.0</code>) → <code>Tensor</code></p>
+<h4 id="batchnorm_2d"><code>batchnorm_2d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L40" class="source_link">[source]</a></h4><blockquote><p><code>batchnorm_2d</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>norm_type</code></strong>:<a href="/layers.html#NormType"><code>NormType</code></a>=<strong><em><code>&lt;NormType.Batch: 1&gt;</code></em></strong>)</p>
+</blockquote>
+<p>A batchnorm2d layer with <code>nf</code> features initialized depending on <code>norm_type</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="icnr"><code>icnr</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L186" class="source_link">[source]</a></h4><blockquote><p><code>icnr</code>(<strong><code>x</code></strong>, <strong><code>scale</code></strong>=<strong><em><code>2</code></em></strong>, <strong><code>init</code></strong>=<strong><em><code>'kaiming_normal_'</code></em></strong>)</p>
+</blockquote>
+<p>ICNR init of <code>x</code>, with <code>scale</code> and <code>init</code> function.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="trunc_normal_"><code>trunc_normal_</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L268" class="source_link">[source]</a></h4><blockquote><p><code>trunc_normal_</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>mean</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>std</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>) → <code>Tensor</code></p>
 </blockquote>
 <p>Truncated normal initialization.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="icnr"><code>icnr</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L186" class="source_link">[source]</a></h4><blockquote><p><code>icnr</code>(<strong><code>x</code></strong>, <strong><code>scale</code></strong>=<strong><em><code>2</code></em></strong>, <strong><code>init</code></strong>=<strong><em><code>'kaiming_normal_'</code></em></strong>)</p>
+</blockquote>
+<p>ICNR init of <code>x</code>, with <code>scale</code> and <code>init</code> function.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="NormType">`NormType`</h2><blockquote><p><code>Enum</code> = [Batch, BatchZero, Weight, Spectral]</p>
+</blockquote>
+<p>An enumeration.</p>
 
 </div>
 

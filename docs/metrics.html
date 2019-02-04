@@ -40,7 +40,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>accuracy</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="accuracy"><code>accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Compute accuracy with <code>targs</code> when <code>input</code> is bs * n_classes.</p>
 
@@ -61,8 +61,27 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="accuracy_thresh"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.5</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>This metric is intended for classification of objects belonging to a single class.</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="accuracy_thresh"><code>accuracy_thresh</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L31" class="source_link">[source]</a></h4><blockquote><p><code>accuracy_thresh</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
+<p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> are the same size.</p>
 
 </div>
 
@@ -74,7 +93,7 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Compute accuracy when <code>y_pred</code> and <code>y_true</code> for multi-label models, based on comparing predictions to <code>thresh</code>, <code>sigmoid</code> will be applied to <code>y_pred</code> if the corresponding flag is True.</p>
+<p>Prediction are compared to <code>thresh</code> after <code>sigmoid</code> is maybe applied. Then we count the numbers that match the targets.</p>
 
 </div>
 </div>
@@ -88,7 +107,46 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L24" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<code>input</code>:<code>Tensor</code>, <code>targs</code>:<code>Tensor</code>, <code>iou</code>:<code>bool</code>=<code>False</code>) → <code>Rank0Tensor</code></p>
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>This function is intended for one-hot-encoded targets (often in a multiclassification problem).</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="top_k_accuracy"><code>top_k_accuracy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L36" class="source_link">[source]</a></h4><blockquote><p><code>top_k_accuracy</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>k</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Computes the Top-k accuracy (target is in the top k predictions).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L47" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>iou</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems.</p>
 
@@ -109,9 +167,135 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fbeta"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L7" class="source_link">[source]</a></h4><blockquote><p><code>fbeta</code>(<code>y_pred</code>:<code>Tensor</code>, <code>y_true</code>:<code>Tensor</code>, <code>thresh</code>:<code>float</code>=<code>0.2</code>, <code>beta</code>:<code>float</code>=<code>2</code>, <code>eps</code>:<code>float</code>=<code>1e-09</code>, <code>sigmoid</code>:<code>bool</code>=<code>True</code>) → <code>Rank0Tensor</code></p>
+<h4 id="error_rate"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Computes the f_beta between preds and targets</p>
+<p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="mean_squared_error"><code>mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L69" class="source_link">[source]</a></h4><blockquote><p><code>mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Mean squared error between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="mean_absolute_error"><code>mean_absolute_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>mean_absolute_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Mean absolute error between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="mean_squared_logarithmic_error"><code>mean_squared_logarithmic_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L79" class="source_link">[source]</a></h4><blockquote><p><code>mean_squared_logarithmic_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Mean squared logarithmic error between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="root_mean_squared_error"><code>root_mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L74" class="source_link">[source]</a></h4><blockquote><p><code>root_mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Root mean squared error between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="fbeta"><code>fbeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L12" class="source_link">[source]</a></h4><blockquote><p><code>fbeta</code>(<strong><code>y_pred</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>thresh</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>sigmoid</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>Computes the f_beta between <code>preds</code> and <code>targets</code></p>
 
 </div>
 
@@ -123,7 +307,7 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>See the <a href="https://en.wikipedia.org/wiki/F1_score">F1 score wikipedia page</a> for details.</p>
+<p><code>beta</code> determines the value of the fbeta applied, <code>eps</code> is there for numeric stability. If <code>sigmoid=True</code>, a sigmoid is applied to the predictions before comparing them to <code>thresh</code> then to the targets. See the <a href="https://en.wikipedia.org/wiki/F1_score">F1 score wikipedia page</a> for details on the fbeta score.</p>
 
 </div>
 </div>
@@ -137,9 +321,265 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<code>pred</code>:<code>Tensor</code>, <code>targ</code>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<div markdown="span" class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note: </b>This function is intended for one-hot-encoded targets (often in a multiclassification problem).</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="explained_variance"><code>explained_variance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>explained_variance</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
-<p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
+<p>Explained variance between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="r2_score"><code>r2_score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>r2_score</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+</blockquote>
+<p>R2 score (coefficient of determination) between <code>pred</code> and <code>targ</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following metrics are classes, don't forget to instantiate them when you pass them to a <a href="/basic_train.html#Learner"><code>Learner</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="RMSE"><code>class</code> <code>RMSE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L117" class="source_link">[source]</a></h3><blockquote><p><code>RMSE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+</blockquote>
+<p>Compute the root mean squared error.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="ExpRMSPE"><code>class</code> <code>ExpRMSPE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L122" class="source_link">[source]</a></h3><blockquote><p><code>ExpRMSPE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+</blockquote>
+<p>Compute the exponential of the root mean square error.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="Precision"><code>class</code> <code>Precision</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L211" class="source_link">[source]</a></h3><blockquote><p><code>Precision</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+</blockquote>
+<p>Compute the Precision.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="Recall"><code>class</code> <code>Recall</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L205" class="source_link">[source]</a></h3><blockquote><p><code>Recall</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+</blockquote>
+<p>Compute the Recall.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="FBeta"><code>class</code> <code>FBeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L218" class="source_link">[source]</a></h3><blockquote><p><code>FBeta</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+</blockquote>
+<p>Compute the F<code>beta</code> score.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="R2Score"><code>class</code> <code>R2Score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L107" class="source_link">[source]</a></h3><blockquote><p><code>R2Score</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+</blockquote>
+<p>Compute the R2 score (coefficient of determination).</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="ExplainedVariance"><code>class</code> <code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L112" class="source_link">[source]</a></h3><blockquote><p><code>ExplainedVariance</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+</blockquote>
+<p>Compute the explained variance.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="MatthewsCorreff"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L254" class="source_link">[source]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+</blockquote>
+<p>Compute the Matthews correlation coefficient. Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="KappaScore"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L238" class="source_link">[source]</a></h3><blockquote><p><code>KappaScore</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+</blockquote>
+<p>Compute the rate of agreement (Cohens Kappa). Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="ConfusionMatrix"><code>class</code> <code>ConfusionMatrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L133" class="source_link">[source]</a></h3><blockquote><p><code>ConfusionMatrix</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+</blockquote>
+<p>Computes the confusion matrix.</p>
 
 </div>
 
@@ -157,8 +597,8 @@ summary: "Useful metrics for training"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Creating a new metric can be as simple as creating a new function. If you metric is an average over the total number of elements in your dataset, just write the function that will compute it on a batch (taking <code>pred</code> and <code>targ</code> as arguments). It will then be automatically averaged over the batches (taking their different sizes into acount).</p>
-<p>Sometimes metrics aren't simple averages however. If we take the example of precision for instance, we have to divide the number of true positives by the number of predictions we made for that class. This isn't an average over the number of elements we have in the dataset, we only consider those where we made a positive prediction for a specific thing. Computing the precision for each batch, then averaging them will yield to a result that may be close to the real value, but won't be it exactly (and it really depends on how you deal with special case of 0 positive predicitions).</p>
+<p>Creating a new metric can be as simple as creating a new function. If your metric is an average over the total number of elements in your dataset, just write the function that will compute it on a batch (taking <code>pred</code> and <code>targ</code> as arguments). It will then be automatically averaged over the batches (taking their different sizes into account).</p>
+<p>Sometimes metrics aren't simple averages however. If we take the example of precision for instance, we have to divide the number of true positives by the number of predictions we made for that class. This isn't an average over the number of elements we have in the dataset, we only consider those where we made a positive prediction for a specific thing. Computing the precision for each batch, then averaging them will yield to a result that may be close to the real value, but won't be it exactly (and it really depends on how you deal with special case of 0 positive predictions).</p>
 <p>This why in fastai, every metric is implemented as a callback. If you pass a regular function, the library transforms it to a proper callback called <code>AverageCallback</code>. The callback metrics are only called during the validation phase, and only for the following events:</p>
 <ul>
 <li><code>on_epoch_begin</code> (for initialization)</li>
@@ -166,7 +606,7 @@ summary: "Useful metrics for training"
 <li><code>on_batch_end</code> (to analyze the last results and update our computation)</li>
 <li><code>on_epoch_end</code>(to wrap up the final result that should be stored in <code>.metric</code>)</li>
 </ul>
-<p>As an example, is here the exact implementation of the <a href="/callback.html#AverageMetric"><code>AverageMetric</code></a> callback that transforms a function like <a href="/metrics.html#accuracy"><code>accuracy</code></a> into a metric callback.</p>
+<p>As an example, the following code is the exact implementation of the <a href="/callback.html#AverageMetric"><code>AverageMetric</code></a> callback that transforms a function like <a href="/metrics.html#accuracy"><code>accuracy</code></a> into a metric callback.</p>
 
 </div>
 </div>
@@ -191,7 +631,7 @@ summary: "Useful metrics for training"
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -222,10 +662,144 @@ summary: "Useful metrics for training"
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following custom callback class example measures peak RAM usage during each epoch:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tracemalloc</span>
+<span class="k">class</span> <span class="nc">TraceMallocMetric</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;peak RAM&quot;</span>
+
+    <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">tracemalloc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">current</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span>  <span class="n">tracemalloc</span><span class="o">.</span><span class="n">get_traced_memory</span><span class="p">()</span>
+        <span class="n">tracemalloc</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">peak</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To deploy it, you need to pass an instance of this custom metric in the <a href="/metrics.html#metrics"><code>metrics</code></a> argument:</p>
+
+<pre><code>learn = create_cnn(data, model, metrics=[accuracy, TraceMallocMetric()])
+learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
+<p>And then the output changes to:</p>
+
+<pre><code>Total time: 00:54
+epoch   train_loss  valid_loss  accuracy    peak RAM
+   1    0.333352    0.084342    0.973800    2395541.000000
+   2    0.096196    0.038386    0.988300    2342145.000000
+   3    0.048722    0.029234    0.990200    2342680.000000</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As mentioner earlier, using the <a href="/metrics.html#metrics"><code>metrics</code></a> argument with a custom metrics class is limited in the number of phases of the callback system it can access, it can only return one numerical value and as you can see its output is hardcoded to have 6 points of precision in the output, even if the number is an int.</p>
+<p>To overcome these limitations callback classes should be used instead.</p>
+<p>For example, the following class:</p>
+<ul>
+<li>uses phases not available for the metric classes </li>
+<li>it reports 3 columns, instead of just one</li>
+<li>its column report ints, instead of floats</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tracemalloc</span>
+<span class="k">class</span> <span class="nc">TraceMallocMultiColMetric</span><span class="p">(</span><span class="n">LearnerCallback</span><span class="p">):</span>
+    <span class="n">_order</span><span class="o">=-</span><span class="mi">20</span> <span class="c1"># Needs to run before the recorder</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learn</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">learn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_max</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learn</span><span class="o">.</span><span class="n">recorder</span><span class="o">.</span><span class="n">add_metric_names</span><span class="p">([</span><span class="s1">&#39;used&#39;</span><span class="p">,</span> <span class="s1">&#39;max_used&#39;</span><span class="p">,</span> <span class="s1">&#39;peak&#39;</span><span class="p">])</span>
+            
+    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># track max memory usage during the train phase</span>
+        <span class="k">if</span> <span class="n">train</span><span class="p">:</span>
+            <span class="n">current</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span>  <span class="n">tracemalloc</span><span class="o">.</span><span class="n">get_traced_memory</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_max</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">on_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">tracemalloc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">current</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span>  <span class="n">tracemalloc</span><span class="o">.</span><span class="n">get_traced_memory</span><span class="p">()</span>
+        <span class="n">tracemalloc</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learn</span><span class="o">.</span><span class="n">recorder</span><span class="o">.</span><span class="n">add_metrics</span><span class="p">([</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_max</span><span class="p">,</span> <span class="n">peak</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note, that it subclasses <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> and not <a href="/callback.html#Callback"><code>Callback</code></a>, since the former provides extra features not available in the latter.</p>
+<p>Also <code>_order=-20</code> is crucial - without it the custom columns will not be added - it tells the callback system to run this callback before the recorder system.</p>
+<p>To deploy it, you need to pass the name of the class (not an instance!) of the class in the <code>callback_fns</code> argument. This is because the <code>learn</code> object doesn't exist yet, and it's required to instantiate <code>TraceMallocMultiColMetric</code>. The system will do it for us automatically as soon as the learn object has been created.</p>
+
+<pre><code>learn = create_cnn(data, model, metrics=[accuracy], callback_fns=TraceMallocMultiColMetric)
+learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
+<p>And then the output changes to:</p>
+
+<pre><code>Total time: 00:53
+epoch   train_loss valid_loss   accuracy     used   max_used   peak
+    1   0.321233    0.068252    0.978600    156504  2408404   2419891 
+    2   0.093551    0.032776    0.988500     79343  2408404   2348085
+    3   0.047178    0.025307    0.992100     79568  2408404   2342754</code></pre>
+<p>Another way to do the same is by using <code>learn.callbacks.append</code>, and this time we need to instantiate <code>TraceMallocMultiColMetric</code> with <code>learn</code> object which we now have, as it is called after the latter was created:</p>
+
+<pre><code>learn = create_cnn(data, model, metrics=[accuracy])
+learn.callbacks.append(TraceMallocMultiColMetric(learn))
+learn.fit_one_cycle(3, max_lr=1e-2)</code></pre>
+<p>Configuring the custom metrics in the <code>learn</code> object sets them to run in all future <a href="/basic_train.html#fit"><code>fit</code></a>-family calls. However, if you'd like to configure it for just one call, you can configure it directly inside <a href="/basic_train.html#fit"><code>fit</code></a> or <a href="/train.html#fit_one_cycle"><code>fit_one_cycle</code></a>:</p>
+
+<pre><code>learn = create_cnn(data, model, metrics=[accuracy])
+learn.fit_one_cycle(3, max_lr=1e-2, callbacks=TraceMallocMultiColMetric(learn))</code></pre>
+<p>And to stress the differences:</p>
+<ul>
+<li>the <code>callback_fns</code> argument expects a classname or a list of those</li>
+<li>the <a href="/callbacks.html#callbacks"><code>callbacks</code></a> argument expects an instance of a class or a list of those</li>
+<li><code>learn.callbacks.append</code> expects a single instance of a class</li>
+</ul>
+<p>For more examples, look inside fastai codebase and its test suite, search for classes that subclass either <a href="/callback.html#Callback"><code>Callback</code></a>, <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> and subclasses of those two.</p>
+<p>Finally, while the above examples all add to the metrics, it's not a requirement. A callback can do anything it wants and it is not required to add its outcomes to the metrics printout.</p>
+
+</div>
+</div>
 </div>
 </div>
  

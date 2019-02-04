@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This program will checkout a forked version of the original repository, sync it with the original, create a new branch and set it up for a PR.
 
@@ -31,6 +31,8 @@ from os.path import basename, exists
 from textwrap import dedent
 import sys
 from subprocess import call, PIPE, Popen
+from pathlib import Path
+
 
 PY3 = sys.version_info >= (3, 0)
 ME = basename(sys.argv[0])
@@ -43,7 +45,7 @@ def main():
     need_clone = clone_is_needed(args.url)
     if need_clone:
         clone(args.url, args.path)
-    after_git_clone('tools/run-after-git-clone')
+    run_after_git_clone()
     track_upstream(args.orig_repo_url)
     if was_already_forked:
         sync_with_master(args)
@@ -130,10 +132,11 @@ def clone(url, path):
     print(f'cd {path}')
 
 
-def after_git_clone(tool):
-    "Run fastai after cloning tool if exists."
-    if exists(tool):
-        print('\n\n*** run fastai repository setup')
+def run_after_git_clone():
+    "Run fastai's tools/run-after-git-clone if exists."
+    tool = Path("tools")/"run-after-git-clone"
+    if tool.exists():
+        print(f'\n\n*** run {tool}')
         run(f'{sys.executable} {tool}')
 
 
@@ -186,27 +189,29 @@ def print_instructions(args, need_clone):
     print(dedent(f'''
 
         Next do:
-        1. Switch to the working dir:
+
+        1. Switch to the branch dir, unless you're already there:
+
         {switch_command}
 
-        2. Validate you're on the right repo/branch:
+        2. Validate you're on the right repo/branch by pasting the following into your bash:
 
-        echo on repo: \$(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//') branch: \$(git branch | sed -n '/\* /s///p')"
+        echo on repo: $(git config --get remote.origin.url | sed 's|^.*//||; s/.*@//; s/[^:/]\+[:/]//; s/.git$//') branch: $(git branch | sed -n '/\* /s///p')
 
-        3. And do you work.
+        3. And do your work.
 
         4. When you're done:
 
         git add <newfiles>  # if you added new files
         git commit -a       # if you want to commit all modified/added files
-        git push            # push files into {args.new_branch_name} 
+        git push            # push files into {args.new_branch_name}
 
         5. Then go to:
           https://github.com/{args.user_name}/{args.repo_name}/tree/{args.new_branch_name}
 
-        review your changes and when you're happy with what you see, submit your PR. 
+        review your changes and when you're happy with what you see, submit your PR.
 
-        While it's very good to review your PR on github before submitting it, if you want to use a CLI solution, 
+        While it's very good to review your PR on github before submitting it, if you want to use a CLI solution,
         there are several solutions to choose from:
         * https://github.com/github/hub"
         * https://github.com/jd/git-pull-request"

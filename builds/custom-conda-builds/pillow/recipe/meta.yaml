@@ -1,0 +1,54 @@
+
+{% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
+
+package:
+  name: {{ data.name.lower() }}
+  version: {{ data.version }}
+
+source:
+  # run: python setup.py sdist to generate the light tarball
+  url: ../dist/{{ data.name }}-{{ data.version }}.tar.gz
+  #path: ..
+  #url: https://pypi.io/packages/source/P/Pillow/Pillow-{{ version }}.tar.gz
+  #sha256: 2ea3517cd5779843de8a759c2349a3cd8d3893e03ab47053b66d5ec6f8bc4f93
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - zlib
+    - libtiff
+    - libjpeg-turbo
+    - freetype
+    - tk
+  run:
+    - python
+    - libjpeg-turbo
+    - zlib
+    - libtiff
+    - freetype
+    - olefile
+    - tk
+
+test:
+  imports:
+    - PIL
+    - PIL.Image
+
+about:
+  home: https://pillow.readthedocs.io
+  license: PIL
+  license_file: LICENSE
+  summary: 'Pillow is the friendly PIL fork by Alex Clark and Contributors'
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - patricksnape
+    - pelson
+    - ocefpaf

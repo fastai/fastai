@@ -7,7 +7,7 @@ from pathlib import Path
 __all__ = ['read_nb', 'convert_nb', 'convert_all']
 
 class HandleLinksPreprocessor(Preprocessor):
-    "A preprocesser that replaces all the .ipynb by .html in links. "
+    "A preprocessor that replaces all the .ipynb by .html in links. "
     def preprocess_cell(self, cell, resources, index):
         if 'source' in cell and cell.cell_type == "markdown":
             cell.source = re.sub(r"\((.*)\.ipynb(.*)\)",r"(\1.html\2)",cell.source).replace('¶','')
@@ -21,7 +21,7 @@ exporter.exclude_output_prompt=True
 exporter.template_file = 'jekyll.tpl'
 path = Path(__file__).parent
 exporter.template_path.append(str(path))
-#Preprocesser that converts the .ipynb links in .html
+#Preprocessor that converts the .ipynb links in .html
 #exporter.register_preprocessor(HandleLinksPreprocessor, enabled=True)
 
 def read_nb(fname):

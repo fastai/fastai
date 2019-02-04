@@ -9,7 +9,10 @@
 sidebar_d = {
     'Getting started': {
         'Installation': 'https://github.com/fastai/fastai/blob/master/README.md#installation',
-        'Troubleshooting': '/troubleshoot'
+        'Installation Extras': '/install',
+        'Troubleshooting': '/troubleshoot',
+        'Performance': '/performance',
+        'Support': '/support'
     },
     'Training': {
         'Overview': '/training',
@@ -41,9 +44,10 @@ sidebar_d = {
                 'vision.transform': '/vision.transform',
                 'vision.image': '/vision.image',
                 'vision.data': '/vision.data',
+                'vision.gan': '/vision.gan',
                 'vision.model overview': '/vision.models',
                 'vision.models.unet': '/vision.models.unet',
-                'vision.widgets': '/widgets'
+                'widgets.image_cleaner': '/widgets.image_cleaner'
             }
         },
         'empty1': {
@@ -74,8 +78,17 @@ sidebar_d = {
         'core': '/core',
         'torch_core': '/torch_core',
     },
+    'Utils': {
+        'Helpers': '/utils.collect_env'
+    },
+    'Tutorials': {
+        'Look at data': '/tutorial.data',
+        'Inference Learner': '/tutorial.inference',
+        'Custom ItemList': '/tutorial.itemlist',
+    },
     'Doc authoring': {
-        'Overview': '/gen_doc',
+        'Instructions': '/gen_doc_main',
+        'gen_doc': '/gen_doc',
         'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',
         'gen_doc.nbdoc': '/gen_doc.nbdoc',
         'gen_doc.convert2html': '/gen_doc.convert2html',

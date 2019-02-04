@@ -34,8 +34,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DataBunch"><code>class</code> <code>DataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L136" class="source_link">[source]</a></h2><blockquote><p><code>DataBunch</code>(<code>train_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>valid_dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>test_dl</code>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>)</p>
+<h2 id="DataBunch"><code>class</code> <code>DataBunch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L80" class="source_link">[source]</a></h2><blockquote><p><code>DataBunch</code>(<strong><code>train_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>valid_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>fix_dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>test_dl</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
+<p>Bind <code>train_dl</code>,<code>valid_dl</code> and <code>test_dl</code> in a a data object.</p>
 
 </div>
 
@@ -47,8 +48,42 @@ summary: "Basic classes to contain the data for model training."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Bind together a <code>train_dl</code>, a <code>valid_dl</code> and optionally a <code>test_dl</code>, ensures they are on <code>device</code> and apply to them <code>tfms</code> as batch are drawn. <code>path</code> is used internally to store temporary files, <code>collate_fn</code> is passed to the pytorch <code>Dataloader</code> (replacing the one there) to explain how to collate the samples picked for a batch. By default, it applies data to the object sent (see in <a href="/vision.image.html#vision.image"><code>vision.image</code></a> why this can be important).</p>
-<p>An example of <code>tfms</code> to pass is normalization. <code>train_dl</code>, <code>valid_dl</code> and optionally <code>test_dl</code> will be wrapped in <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a>.</p>
+<p>It also ensure all the dataloaders are on <code>device</code> and apply to them <code>tfms</code> as batch are drawn (like normalization). <code>path</code> is used internally to store temporary files, <code>collate_fn</code> is passed to the pytorch <code>Dataloader</code> (replacing the one there) to explain how to collate the samples picked for a batch. By default, it applies data to the object sent (see in <a href="/vision.image.html#vision.image"><code>vision.image</code></a> or the <a href="/data_block.html">data block API</a> why this can be important).</p>
+<p><code>train_dl</code>, <code>valid_dl</code> and optionally <code>test_dl</code> will be wrapped in <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Factory-method">Factory method<a class="anchor-link" href="#Factory-method">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L107" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>train_ds</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>valid_ds</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>test_ds</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>bs</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>num_workers</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>DataBunch</code></p>
+</blockquote>
+<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>train_ds</code>, <code>valid_ds</code> and maybe <code>test_ds</code> with a batch size of <code>bs</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>num_workers</code> is the number of CPUs to use, <code>tfms</code>, <code>device</code> and <code>collate_fn</code> are passed to the init method.</p>
 
 </div>
 </div>
@@ -62,9 +97,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L150" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>train_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>valid_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>test_ds</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>=<code>None</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>tfms</code>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<code>None</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>) → <code>DataBunch</code></p>
-</blockquote>
-
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>You can pass regular pytorch Dataset here, but they'll require more attributes than the basic ones to work with the library. See below for more details.</div>
 </div>
 
 </div>
@@ -75,8 +108,7 @@ summary: "Basic classes to contain the data for model training."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>train_ds</code>, <code>valid_ds</code> and optionally <code>test_ds</code>, with batch size <code>bs</code> and by using <code>num_workers</code>. <code>tfms</code> and <code>device</code> are passed to the init method.</p>
-
+<h3 id="Visualization">Visualization<a class="anchor-link" href="#Visualization">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -89,7 +121,34 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.dl"><code>dl</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L163" class="source_link">[source]</a></h4><blockquote><p><code>dl</code>(<code>ds_type</code>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<code>&lt;DatasetType.Valid: 2&gt;</code>) → <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a></p>
+<h4 id="DataBunch.show_batch"><code>show_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L157" class="source_link">[source]</a></h4><blockquote><p><code>show_batch</code>(<strong><code>rows</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Train: 1&gt;</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Show a batch of data in <code>ds_type</code> on a few <code>rows</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Grabbing-some-data">Grabbing some data<a class="anchor-link" href="#Grabbing-some-data">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.dl"><code>dl</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>dl</code>(<strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>) → <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a></p>
 </blockquote>
 <p>Returns appropriate <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> for validation, training, or test (<code>ds_type</code>).</p>
 
@@ -110,7 +169,131 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L169" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<code>tfm</code>:<code>Callable</code>)</p>
+<h4 id="DataBunch.one_batch"><code>one_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>one_batch</code>(<strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Train: 1&gt;</code></em></strong>, <strong><code>detach</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>denorm</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cpu</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Collection</code>[<code>Tensor</code>]</p>
+</blockquote>
+<p>Get one batch from the data loader of <code>ds_type</code>. Optionally <code>detach</code> and <code>denorm</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.one_item"><code>one_item</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>one_item</code>(<strong><code>item</code></strong>, <strong><code>detach</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>denorm</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>cpu</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
+</blockquote>
+<p>Get <code>item</code> into a batch. Optionally <code>detach</code> and <code>denorm</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.sanity_check"><code>sanity_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L205" class="source_link">[source]</a></h4><blockquote><p><code>sanity_check</code>()</p>
+</blockquote>
+<p>Check the underlying data in the training set can be properly loaded.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Empty-DataBunch-for-inference">Empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for inference<a class="anchor-link" href="#Empty-DataBunch-for-inference">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.export"><code>export</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L169" class="source_link">[source]</a></h4><blockquote><p><code>export</code>(<strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
+</blockquote>
+<p>Export the minimal state of <code>self</code> for inference in <code>self.path/fname</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L652" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
+</blockquote>
+<p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This method should be used to create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> at inference, see the corresponding <a href="/tutorial.inference.html">tutorial</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Dataloader-transforms">Dataloader transforms<a class="anchor-link" href="#Dataloader-transforms">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="DataBunch.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L134" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<strong><code>tfm</code></strong>:<code>Callable</code>)</p>
 </blockquote>
 
 </div>
@@ -128,6 +311,78 @@ summary: "Basic classes to contain the data for model training."
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-a-custom-Dataset-in-fastai">Using a custom Dataset in fastai<a class="anchor-link" href="#Using-a-custom-Dataset-in-fastai">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you want to use your pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> in fastai, you may need to implement more attributes/methods if you want to use the full functionality of the library. Some functions can easily be used with your pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> if you just add an attribute, for others, the best would be to create your own <a href="/data_block.html#ItemList"><code>ItemList</code></a> by following <a href="/tutorial.itemlist.html">this tutorial</a>. Here is a full list of what the library will expect.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Basics">Basics<a class="anchor-link" href="#Basics">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First of all, you obviously need to implement the methods <code>__len__</code> and <code>__getitem__</code>, as indicated by the pytorch docs. Then the most needed things would be:</p>
+<ul>
+<li><code>c</code> attribute: it's used in most functions that directly create a <a href="/basic_train.html#Learner"><code>Learner</code></a> (<a href="/tabular.data.html#tabular_learner"><code>tabular_learner</code></a>, <a href="/text.learner.html#text_classifier_learner"><code>text_classifier_learner</code></a>, <a href="/vision.learner.html#unet_learner"><code>unet_learner</code></a>, <a href="/vision.learner.html#create_cnn"><code>create_cnn</code></a>) and represents the number of outputs of the final layer of your model (also the number of classes if applicable).</li>
+<li><code>classes</code> attribute: it's used by <a href="/vision.learner.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> and also in <a href="/collab.html#collab_learner"><code>collab_learner</code></a> (best to use <a href="/collab.html#CollabDataBunch.from_df"><code>CollabDataBunch.from_df</code></a> than a pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>) and represents the unique tags that appear in your data.</li>
+<li>maybe a <code>loss_func</code> attribute: that is going to be used by <a href="/basic_train.html#Learner"><code>Learner</code></a> as a default loss function, so if you know your custom <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> requires a particular loss, you can put it.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="For-a-specific-application">For a specific application<a class="anchor-link" href="#For-a-specific-application">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In text, your dataset will need to have a <code>vocab</code> attribute that should be an instance of <a href="/text.transform.html#Vocab"><code>Vocab</code></a>. It's used by <a href="/text.learner.html#text_classifier_learner"><code>text_classifier_learner</code></a> and <a href="/text.learner.html#language_model_learner"><code>language_model_learner</code></a> when building the model.</p>
+<p>In tabular, your dataset will need to have a <code>cont_names</code> attribute (for the names of continuous variables) and a <code>get_emb_szs</code> method that returns a list of tuple <code>(n_classes, emb_sz)</code> representing, for each categorical variable, the number of different codes (don't forget to add 1 for nan) and the corresponding embedding size. Those two are used with the <code>c</code> attribute by <a href="/tabular.data.html#tabular_learner"><code>tabular_learner</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Functions-that-really-won't-work">Functions that really won't work<a class="anchor-link" href="#Functions-that-really-won't-work">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To make those last functions work, you really need to use the <a href="/data_block.html">data block API</a> and maybe write your own <a href="/tutorial.itemlist.html">custom ItemList</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><a href="/basic_data.html#DataBunch.show_batch"><code>DataBunch.show_batch</code></a> (requires <code>.x.reconstruct</code>, <code>.y.reconstruct</code> and <code>.x.show_xys</code>)</li>
+<li><a href="/basic_train.html#Learner.predict"><code>Learner.predict</code></a> (requires <code>x.set_item</code>, <code>.y.analyze_pred</code>, <code>.y.reconstruct</code> and maybe <code>.x.reconstruct</code>)</li>
+<li><a href="/basic_train.html#Learner.show_results"><code>Learner.show_results</code></a> (requires <code>x.reconstruct</code>, <code>y.analyze_pred</code>, <code>y.reconstruct</code> and <code>x.show_xyzs</code>)</li>
+<li><code>DataBunch.set_item</code> (requires <code>x.set_item</code>)</li>
+<li><a href="/basic_train.html#Learner.backward"><code>Learner.backward</code></a> (uses <code>DataBunch.set_item</code>)</li>
+<li><a href="/basic_data.html#DataBunch.export"><code>DataBunch.export</code></a> (requires <code>export</code>)</li>
+</ul>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -137,8 +392,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DeviceDataLoader"><code>class</code> <code>DeviceDataLoader</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L81" class="source_link">[source]</a></h2><blockquote><p><code>DeviceDataLoader</code>(<code>dl</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>, <code>tfms</code>:<code>List</code>[<code>Callable</code>]=<code>None</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>skip_size1</code>:<code>bool</code>=<code>False</code>)</p>
+<h2 id="DeviceDataLoader"><code>class</code> <code>DeviceDataLoader</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L24" class="source_link">[source]</a></h2><blockquote><p><code>DeviceDataLoader</code>(<strong><code>dl</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>, <strong><code>tfms</code></strong>:<code>List</code>[<code>Callable</code>]=<strong><em><code>None</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>)</p>
 </blockquote>
+<p>Bind a <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a> to a <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>torch.device</code></a>.</p>
 
 </div>
 
@@ -170,8 +426,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L129" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<code>dataset</code>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <code>bs</code>:<code>int</code>=<code>64</code>, <code>shuffle</code>:<code>bool</code>=<code>False</code>, <code>device</code>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<code>device(type='cuda')</code>, <code>tfms</code>:<code>Collection</code>[<code>Callable</code>]=<code>None</code>, <code>num_workers</code>:<code>int</code>=<code>4</code>, <code>collate_fn</code>:<code>Callable</code>=<code>'data_collate'</code>, <code>kwargs</code>:<code>Any</code>)</p>
+<h4 id="DeviceDataLoader.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L73" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>dataset</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>bs</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>shuffle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>device(type='cuda')</code></em></strong>, <strong><code>tfms</code></strong>:<code>Collection</code>[<code>Callable</code>]=<strong><em><code>None</code></em></strong>, <strong><code>num_workers</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
+<p>Create DeviceDataLoader from <code>dataset</code> with <code>bs</code> and <code>shuffle</code>: process using <code>num_workers</code>.</p>
 
 </div>
 
@@ -183,7 +440,7 @@ summary: "Basic classes to contain the data for model training."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/basic_data.html#DeviceDataLoader"><code>DeviceDataLoader</code></a> on <code>device</code> from a <code>dataset</code> with batch size <code>bs</code>, <code>num_workers</code>processes and a given <code>collate_fn</code>. The dataloader will <code>shuffle</code> the data if that flag is set to True, and <code>tfms</code> are passed to the init method. All <code>kwargs</code> are passed to the pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a> class initialization.</p>
+<p>The given <code>collate_fn</code> will be used to put the samples together in one batch (by default it grabs their data attribute). <code>shuffle</code> means the dataloader will take the samples randomly if that flag is set to <code>True</code>, or in the right order otherwise. <code>tfms</code> are passed to the init method. All <code>kwargs</code> are passed to the pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader"><code>DataLoader</code></a> class initialization.</p>
 
 </div>
 </div>
@@ -203,9 +460,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.one_batch"><code>one_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L121" class="source_link">[source]</a></h4><blockquote><p><code>one_batch</code>() → <code>Collection</code>[<code>Tensor</code>]</p>
+<h4 id="DeviceDataLoader.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<strong><code>tfm</code></strong>:<code>Callable</code>)</p>
 </blockquote>
-<p>Get one batch from the data loader.</p>
+<p>Add <code>tfm</code> to <code>self.tfms</code>.</p>
 
 </div>
 
@@ -224,8 +481,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.add_tfm"><code>add_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>add_tfm</code>(<code>tfm</code>:<code>Callable</code>)</p>
+<h4 id="DeviceDataLoader.remove_tfm"><code>remove_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>remove_tfm</code>(<strong><code>tfm</code></strong>:<code>Callable</code>)</p>
 </blockquote>
+<p>Remove <code>tfm</code> from <code>self.tfms</code>.</p>
 
 </div>
 
@@ -234,13 +492,6 @@ summary: "Basic classes to contain the data for model training."
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Add a transform (i.e. same as <code>self.tfms.append(tfm)</code>).</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -251,8 +502,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DeviceDataLoader.remove_tfm"><code>remove_tfm</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L106" class="source_link">[source]</a></h4><blockquote><p><code>remove_tfm</code>(<code>tfm</code>:<code>Callable</code>)</p>
+<h4 id="DeviceDataLoader.new"><code>new</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>new</code>(<strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
+<p>Create a new copy of <code>self</code> with <code>kwargs</code> replacing current values.</p>
 
 </div>
 
@@ -261,13 +513,6 @@ summary: "Basic classes to contain the data for model training."
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Remove a transform.</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -278,7 +523,28 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DatasetType">`DatasetType`</h2><blockquote><p><code>Enum</code> = [Train, Valid, Test]</p>
+<h4 id="DeviceDataLoader.proc_batch"><code>proc_batch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>proc_batch</code>(<strong><code>b</code></strong>:<code>Tensor</code>) → <code>Tensor</code></p>
+</blockquote>
+<p>Proces batch <code>b</code> of <code>TensorImage</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="DatasetType">`DatasetType`</h2><blockquote><p><code>Enum</code> = [Train, Valid, Test, Single, Fix]</p>
 </blockquote>
 
 </div>
@@ -295,88 +561,6 @@ summary: "Basic classes to contain the data for model training."
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generic-classes">Generic classes<a class="anchor-link" href="#Generic-classes">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The first two last classes are just empty shell to be subclassed by one of the applications, the last one is there to create empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> (useful when we want a <a href="/basic_train.html#Learner"><code>Learner</code></a> on inference mode).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="DatasetBase"><code>class</code> <code>DatasetBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L9" class="source_link">[source]</a></h3><blockquote><p><code>DatasetBase</code>(<code>x</code>:<code>Collection</code>=<code>None</code>, <code>y</code>:<code>Collection</code>=<code>None</code>, <code>classes</code>:<code>Collection</code>=<code>None</code>, <code>c</code>:<code>Optional</code>[<code>int</code>]=<code>None</code>, <code>task_type</code>:<a href="/basic_data.html#TaskType"><code>TaskType</code></a>=<code>None</code>, <code>class2idx</code>:<code>Dict</code>[<code>Any</code>, <code>int</code>]=<code>None</code>, <code>as_array</code>:<code>bool</code>=<code>True</code>, <code>do_encode_y</code>:<code>bool</code>=<code>True</code>) :: <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a></p>
-</blockquote>
-<p>Base class for all fastai datasets.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>It groups <code>x</code> (inputs) with <code>y</code> (targets) and maybe <code>classes</code>. <code>c</code> is the number used by models to determine the number of outputs (number of classes or number of regression tasks). <code>task_type</code> can be set to No, Single, Multi or Regression, <code>class2idx</code> is the dictionary that will map ids to classes. If <code>as_array</code>, <code>x</code> and <code>y</code> are converted to arrays, if <code>do_encode_y</code>, the labels will be switched to their respective ids by using <code>class2idx</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="SingleClassificationDataset"><code>class</code> <code>SingleClassificationDataset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L73" class="source_link">[source]</a></h3><blockquote><p><code>SingleClassificationDataset</code>(<code>classes</code>) :: <a href="/basic_data.html#DatasetBase"><code>DatasetBase</code></a></p>
-</blockquote>
-<p>A <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> that contains no data, only <code>classes</code>, mainly used for inference with <code>set_item</code></p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TaskType">`TaskType`</h3><blockquote><p><code>Enum</code> = [No, Single, Multi, Regression]</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 </div>
  

@@ -48,12 +48,10 @@ Check `(docs*|course-v3).fast.ai` for broken links and anchors:
 ```
 cd tools/checklink
 ./checklink-docs.sh
-./checklink-docs-dev.sh
 ./checklink-course-v3.sh
 ```
 
-Each file logs to console and also into `checklink-docs.log`,
-`checklink-docs-dev.log` and `checklink-course-v3.log`
+Each file logs to console and also into `checklink-docs.log` and `checklink-course-v3.log`
 
 If you're on windows w/o bash and assuming you have [perl installed](https://learn.perl.org/installing/windows.html), you can run it directly like:
 

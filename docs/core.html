@@ -53,7 +53,122 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ifnone"><code>ifnone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>ifnone</code>(<code>a</code>:<code>Any</code>, <code>b</code>:<code>Any</code>) → <code>Any</code></p>
+<h4 id="has_arg"><code>has_arg</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L246" class="source_link">[source]</a></h4><blockquote><p><code>has_arg</code>(<strong><code>func</code></strong>, <strong><code>arg</code></strong>) → <code>bool</code></p>
+</blockquote>
+<p>Check if <code>func</code> accepts <code>arg</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Examples for two <a href="/core.html#core"><code>fastai.core</code></a> functions.  Docstring shown before calling <a href="/core.html#has_arg"><code>has_arg</code></a> for reference</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">has_arg</span><span class="p">(</span><span class="n">download_url</span><span class="p">,</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">has_arg</span><span class="p">(</span><span class="n">index_row</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>False</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">has_arg</span><span class="p">(</span><span class="n">index_row</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ifnone"><code>ifnone</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>ifnone</code>(<strong><code>a</code></strong>:<code>Any</code>, <strong><code>b</code></strong>:<code>Any</code>) → <code>Any</code></p>
 </blockquote>
 <p><code>a</code> if <code>a</code> is not None, otherwise <code>b</code>.</p>
 
@@ -66,6 +181,66 @@ summary: "Basic helper functions for the fastai library"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">param</span><span class="p">,</span><span class="n">alt_param</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="mi">5</span>
+<span class="n">ifnone</span><span class="p">(</span><span class="n">param</span><span class="p">,</span><span class="n">alt_param</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>5</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">param</span><span class="p">,</span><span class="n">alt_param</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">ifnone</span><span class="p">(</span><span class="n">param</span><span class="p">,</span><span class="n">alt_param</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1, 2, 3]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -74,7 +249,92 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is_listy"><code>is_listy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L48" class="source_link">[source]</a></h4><blockquote><p><code>is_listy</code>(<code>x</code>:<code>Any</code>) → <code>bool</code></p>
+<h4 id="is1d"><code>is1d</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>is1d</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>]) → <code>bool</code></p>
+</blockquote>
+<p>Return <code>True</code> if <code>a</code> is one-dimensional</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">two_d_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">two_d_array</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">is1d</span><span class="p">(</span><span class="n">two_d_array</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[ 0  1]
+ [ 2  3]
+ [ 4  5]
+ [ 6  7]
+ [ 8  9]
+ [10 11]]
+False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">is1d</span><span class="p">(</span><span class="n">two_d_array</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="is_listy"><code>is_listy</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L51" class="source_link">[source]</a></h4><blockquote><p><code>is_listy</code>(<strong><code>x</code></strong>:<code>Any</code>) → <code>bool</code></p>
 </blockquote>
 
 </div>
@@ -87,10 +347,211 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Check if <code>x</code> is a <code>Collection</code>.</p>
+<p>Check if <code>x</code> is a <code>Collection</code>. <code>Tuple</code> or <code>List</code> qualify</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">some_data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">is_listy</span><span class="p">(</span><span class="n">some_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">some_data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">is_listy</span><span class="p">(</span><span class="n">some_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">some_data</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">is_listy</span><span class="p">(</span><span class="n">some_data</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">is_listy</span><span class="p">(</span> <span class="p">[</span><span class="n">some_data</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">some_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">some_data</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">some_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3}
+dict_keys([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;])
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">is_listy</span><span class="p">(</span><span class="n">some_data</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">is_listy</span><span class="p">(</span><span class="n">some_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>False
+False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">is_listy</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">some_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -101,7 +562,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="is_tuple"><code>is_tuple</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L49" class="source_link">[source]</a></h4><blockquote><p><code>is_tuple</code>(<code>x</code>:<code>Any</code>) → <code>bool</code></p>
+<h4 id="is_tuple"><code>is_tuple</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>is_tuple</code>(<strong><code>x</code></strong>:<code>Any</code>) → <code>bool</code></p>
 </blockquote>
 
 </div>
@@ -119,6 +580,60 @@ summary: "Basic helper functions for the fastai library"
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">is_tuple</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">is_tuple</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Collection-related-functions">Collection related functions<a class="anchor-link" href="#Collection-related-functions">&#182;</a></h2>
@@ -134,7 +649,242 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="arrays_split"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>arrays_split</code>(<code>mask</code>:<code>ndarray</code>, <code>arrs</code>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
+<h4 id="arange_of"><code>arange_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L195" class="source_link">[source]</a></h4><blockquote><p><code>arange_of</code>(<strong><code>x</code></strong>)</p>
+</blockquote>
+<p>Same as <a href="/core.html#range_of"><code>range_of</code></a> but returns an array.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">arange_of</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([0, 1, 2])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">arange_of</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>numpy.ndarray</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="array"><code>array</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L256" class="source_link">[source]</a></h4><blockquote><p><code>array</code>(<strong><code>a</code></strong>, <strong><code>dtype</code></strong>:<code>type</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <code>ndarray</code></p>
+</blockquote>
+<p>Same as <code>np.array</code> but also handles generators</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([1, 2, 3])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that after we call the generator, we do not reset.  So the <a href="/core.html#array"><code>array</code></a> call has 5 less entries than it would if we ran from the start of the generator.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">data_gen</span><span class="p">():</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mf">100.01</span>
+    <span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">200</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mf">1.</span>
+
+<span class="n">ex_data_gen</span> <span class="o">=</span> <span class="n">data_gen</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">ex_data_gen</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>100.01
+101.01
+102.01
+103.01
+104.01
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">array</span><span class="p">(</span><span class="n">ex_data_gen</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([105.01, 106.01, 107.01, 108.01, ..., 196.01, 197.01, 198.01, 199.01])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ex_data_gen_int</span> <span class="o">=</span> <span class="n">data_gen</span><span class="p">()</span>
+
+<span class="n">array</span><span class="p">(</span><span class="n">ex_data_gen_int</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1">#Cast output to int array</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([100, 101, 102, 103, ..., 196, 197, 198, 199])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="arrays_split"><code>arrays_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>arrays_split</code>(<strong><code>mask</code></strong>:<code>ndarray</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
 <p>Given <code>arrs</code> is [a,b,...] and <code>mask</code>index - return[(a[mask],a[~mask]),(b[mask],b[~mask]),...].</p>
 
@@ -147,6 +897,142 @@ summary: "Basic helper functions for the fastai library"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">data_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">15</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">mask_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_a</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mask_a</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
+[14 13 12 11 10  9  8  7  6  5  4  3  2  1  0]
+[False False False False False False False False False False False  True  True  True  True]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">arrays_split</span><span class="p">(</span><span class="n">mask_a</span><span class="p">,</span><span class="n">data_a</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(array([11, 12, 13, 14]),),
+ (array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10]),)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">data_a</span><span class="p">,</span><span class="n">data_b</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(15, 2)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">arrays_split</span><span class="p">(</span><span class="n">mask_a</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">data_a</span><span class="p">,</span><span class="n">data_b</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="c1">#must match on dimension 0</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(array([[11,  3],
+         [12,  2],
+         [13,  1],
+         [14,  0]]),), (array([[ 0, 14],
+         [ 1, 13],
+         [ 2, 12],
+         [ 3, 11],
+         [ 4, 10],
+         [ 5,  9],
+         [ 6,  8],
+         [ 7,  7],
+         [ 8,  6],
+         [ 9,  5],
+         [10,  4]]),)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -155,7 +1041,180 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="extract_kwargs"><code>extract_kwargs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>extract_kwargs</code>(<code>names</code>:<code>StrList</code>, <code>kwargs</code>:<code>KWArgs</code>)</p>
+<h4 id="chunks"><code>chunks</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L55" class="source_link">[source]</a></h4><blockquote><p><code>chunks</code>(<strong><code>l</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n</code></strong>:<code>int</code>) → <code>Iterable</code></p>
+</blockquote>
+<p>Yield successive <code>n</code>-sized chunks from <code>l</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can transform a <code>Collection</code> into an <code>Iterable</code> of 'n' sized chunks by calling <a href="/core.html#chunks"><code>chunks</code></a>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 1]
+[2, 3]
+[4, 5]
+[6, 7]
+[8, 9]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 1, 2]
+[3, 4, 5]
+[6, 7, 8]
+[9]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="df_names_to_idx"><code>df_names_to_idx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L220" class="source_link">[source]</a></h4><blockquote><p><code>df_names_to_idx</code>(<strong><code>names</code></strong>:<code>IntsOrStrs</code>, <strong><code>df</code></strong>:<code>DataFrame</code>)</p>
+</blockquote>
+<p>Return the column indexes of <code>names</code> in <code>df</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ex_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;b&quot;</span><span class="p">:[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ex_df</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>   a  b
+0  1  2
+1  1  2
+2  1  2
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_names_to_idx</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">ex_df</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="extract_kwargs"><code>extract_kwargs</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>extract_kwargs</code>(<strong><code>names</code></strong>:<code>StrList</code>, <strong><code>kwargs</code></strong>:<code>KWArgs</code>)</p>
 </blockquote>
 <p>Extract the keys in <code>names</code> from the <code>kwargs</code>.</p>
 
@@ -168,6 +1227,64 @@ summary: "Basic helper functions for the fastai library"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">key_word_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;some_list&quot;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s2">&quot;param&quot;</span><span class="p">:</span><span class="s1">&#39;mean&#39;</span><span class="p">}</span>
+<span class="n">key_word_args</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;a&#39;: 2, &#39;some_list&#39;: [1, 2, 3], &#39;param&#39;: &#39;mean&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">extracted_val</span><span class="p">,</span><span class="n">remainder</span><span class="p">)</span> <span class="o">=</span> <span class="n">extract_kwargs</span><span class="p">([</span><span class="s1">&#39;param&#39;</span><span class="p">],</span><span class="n">key_word_args</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">extracted_val</span><span class="p">,</span><span class="n">remainder</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#39;param&#39;: &#39;mean&#39;} {&#39;a&#39;: 2, &#39;some_list&#39;: [1, 2, 3]}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -176,23 +1293,17 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="idx_dict"><code>idx_dict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L69" class="source_link">[source]</a></h4><blockquote><p><code>idx_dict</code>(<code>a</code>)</p>
+<h4 id="idx_dict"><code>idx_dict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>idx_dict</code>(<strong><code>a</code></strong>)</p>
 </blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>Create a dictionary value to index from <code>a</code>.</p>
 
 </div>
+
 </div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -202,7 +1313,7 @@ summary: "Basic helper functions for the fastai library"
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">idx_dict</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">])</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -232,10 +1343,204 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="listify"><code>listify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>listify</code>(<code>p</code>:<code>OptListOrItem</code>=<code>None</code>, <code>q</code>:<code>OptListOrItem</code>=<code>None</code>)</p>
+<h4 id="index_row"><code>index_row</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L232" class="source_link">[source]</a></h4><blockquote><p><code>index_row</code>(<strong><code>a</code></strong>:<code>Union</code>[<code>Collection</code>[<code>T_co</code>], <code>DataFrame</code>, <code>Series</code>], <strong><code>idxs</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>Any</code></p>
 </blockquote>
-<p>Make <code>p</code> same length as <code>q</code></p>
+<p>Return the slice of <code>a</code> corresponding to <code>idxs</code>.</p>
 
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+<span class="n">index_row</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>4</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">index_row</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>7</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">data</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="n">data_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>9</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">index_row</span><span class="p">(</span><span class="n">data_df</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    2
+1    7
+Name: 7, dtype: int64</pre>
 </div>
 
 </div>
@@ -253,7 +1558,174 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="random_split"><code>random_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>random_split</code>(<code>valid_pct</code>:<code>float</code>, <code>arrs</code>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
+<h4 id="listify"><code>listify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>listify</code>(<strong><code>p</code></strong>:<code>OptListOrItem</code>=<strong><em><code>None</code></em></strong>, <strong><code>q</code></strong>:<code>OptListOrItem</code>=<strong><em><code>None</code></em></strong>)</p>
+</blockquote>
+<p>Make <code>p</code> listy and the same length as <code>q</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_match</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">listify</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="n">to_match</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">listify</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">listify</span><span class="p">(</span><span class="mf">77.1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[77.1, 77.1, 77.1]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">listify</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1, 2, 3]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">listify</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1, 2, 3]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="random_split"><code>random_split</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L95" class="source_link">[source]</a></h4><blockquote><p><code>random_split</code>(<strong><code>valid_pct</code></strong>:<code>float</code>, <strong>*<code>arrs</code></strong>:<code>NPArrayableList</code>) → <code>SplitArrayList</code></p>
 </blockquote>
 <p>Randomly split <code>arrs</code> with <code>valid_pct</code> ratio. good for creating validation set.</p>
 
@@ -265,6 +1737,127 @@ summary: "Basic helper functions for the fastai library"
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Splitting is done here with <code>random.uniform()</code> so you may not get the exact split percentage for small data sets</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[[0, 1],
+ [2, 3],
+ [4, 5],
+ [6, 7],
+ [8, 9],
+ [10, 11],
+ [12, 13],
+ [14, 15],
+ [16, 17],
+ [18, 19]]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">random_split</span><span class="p">(</span><span class="mf">0.20</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(array([[ 0,  1],
+         [ 2,  3],
+         [ 6,  7],
+         [ 8,  9],
+         [10, 11],
+         [16, 17],
+         [18, 19]]),), (array([[ 4,  5],
+         [12, 13],
+         [14, 15]]),)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">random_split</span><span class="p">(</span><span class="mf">0.20</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(array([[ 0,  1],
+         [ 2,  3],
+         [ 4,  5],
+         [ 6,  7],
+         [ 8,  9],
+         [10, 11],
+         [12, 13],
+         [14, 15],
+         [16, 17],
+         [18, 19]]),), (array([], shape=(0, 2), dtype=int64),)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -274,7 +1867,86 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<code>df</code>:<code>DataFrame</code>, <code>col_names</code>)</p>
+<h4 id="range_of"><code>range_of</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L192" class="source_link">[source]</a></h4><blockquote><p><code>range_of</code>(<strong><code>x</code></strong>)</p>
+</blockquote>
+<p>Create a range from 0 to <code>len(x)</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">range_of</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[0, 1, 2]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">range_of</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="series2cat"><code>series2cat</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>series2cat</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong>*<code>col_names</code></strong>)</p>
 </blockquote>
 <p>Categorifies the columns <code>col_names</code> in <code>df</code>.</p>
 
@@ -287,6 +1959,199 @@ summary: "Basic helper functions for the fastai library"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="s2">&quot;b&quot;</span><span class="p">:[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">]})</span>
+<span class="n">data_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>f</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>e</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>f</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2</td>
+      <td>g</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2</td>
+      <td>g</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2</td>
+      <td>g</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    f
+1    e
+2    f
+3    g
+4    g
+5    g
+Name: b, dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">series2cat</span><span class="p">(</span><span class="n">data_df</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    f
+1    e
+2    f
+3    g
+4    g
+5    g
+Name: b, dtype: category
+Categories (3, object): [e &lt; f &lt; g]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">series2cat</span><span class="p">(</span><span class="n">data_df</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    1
+1    1
+2    1
+3    2
+4    2
+5    2
+Name: a, dtype: category
+Categories (2, int64): [1 &lt; 2]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -295,9 +2160,9 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="uniqueify"><code>uniqueify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L65" class="source_link">[source]</a></h4><blockquote><p><code>uniqueify</code>(<code>x</code>:<code>Series</code>) → <code>List</code></p>
+<h4 id="split_kwargs_by_func"><code>split_kwargs_by_func</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L250" class="source_link">[source]</a></h4><blockquote><p><code>split_kwargs_by_func</code>(<strong><code>kwargs</code></strong>, <strong><code>func</code></strong>)</p>
 </blockquote>
-<p>Return unique values of <code>x</code></p>
+<p>Split <code>kwargs</code> between those expected by <code>func</code> and the others.</p>
 
 </div>
 
@@ -307,12 +2172,166 @@ summary: "Basic helper functions for the fastai library"
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Return the unique elements in <code>x</code>.</p>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">key_word_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span><span class="s1">&#39;http://fast.ai&#39;</span><span class="p">,</span><span class="s1">&#39;dest&#39;</span><span class="p">:</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="s1">&#39;new_var&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;testvalue&#39;</span><span class="p">:</span><span class="mi">42</span><span class="p">}</span>
+<span class="n">split_kwargs_by_func</span><span class="p">(</span><span class="n">key_word_args</span><span class="p">,</span><span class="n">download_url</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>({&#39;url&#39;: &#39;http://fast.ai&#39;, &#39;dest&#39;: &#39;./&#39;},
+ {&#39;new_var&#39;: [1, 2, 3], &#39;testvalue&#39;: 42})</pre>
+</div>
+
+</div>
 
 </div>
 </div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="to_int"><code>to_int</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L59" class="source_link">[source]</a></h4><blockquote><p><code>to_int</code>(<strong><code>b</code></strong>:<code>Any</code>) → <code>Union</code>[<code>int</code>, <code>List</code>[<code>int</code>]]</p>
+</blockquote>
+<p>Convert <code>b</code> to an int or list of ints (if <a href="/core.html#is_listy"><code>is_listy</code></a>); raises exception if not convertible</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_int</span><span class="p">(</span><span class="mf">3.1415</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>3</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">3.4</span><span class="p">,</span><span class="mf">7.25</span><span class="p">]</span>
+<span class="n">to_int</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[1, 3, 7]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="uniqueify"><code>uniqueify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L72" class="source_link">[source]</a></h4><blockquote><p><code>uniqueify</code>(<strong><code>x</code></strong>:<code>Series</code>) → <code>List</code>[<code>T</code>]</p>
+</blockquote>
+<p>Return sorted unique values of <code>x</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uniqueify</span><span class="p">(</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">])</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;a&#39;, &#39;b&#39;, &#39;f&#39;, &#39;g&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -329,7 +2348,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L141" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<code>url</code>:<code>str</code>, <code>dest</code>:<code>str</code>, <code>overwrite</code>:<code>bool</code>=<code>False</code>, <code>pbar</code>:<code>ProgressBar</code>=<code>None</code>, <code>show_progress</code>=<code>True</code>, <code>chunk_size</code>=<code>1048576</code>, <code>timeout</code>=<code>4</code>)</p>
+<h4 id="download_url"><code>download_url</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L159" class="source_link">[source]</a></h4><blockquote><p><code>download_url</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>dest</code></strong>:<code>str</code>, <strong><code>overwrite</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>pbar</code></strong>:<code>ProgressBar</code>=<strong><em><code>None</code></em></strong>, <strong><code>show_progress</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>chunk_size</code></strong>=<strong><em><code>1048576</code></em></strong>, <strong><code>timeout</code></strong>=<strong><em><code>4</code></em></strong>, <strong><code>retries</code></strong>=<strong><em><code>5</code></em></strong>)</p>
 </blockquote>
 <p>Download <code>url</code> to <code>dest</code> unless it exists and not <code>overwrite</code>.</p>
 
@@ -350,7 +2369,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_classes"><code>find_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L71" class="source_link">[source]</a></h4><blockquote><p><code>find_classes</code>(<code>folder</code>:<code>Path</code>) → <code>FilePathList</code></p>
+<h4 id="find_classes"><code>find_classes</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L82" class="source_link">[source]</a></h4><blockquote><p><code>find_classes</code>(<strong><code>folder</code></strong>:<code>Path</code>) → <code>FilePathList</code></p>
 </blockquote>
 <p>List of label subdirectories in imagenet-style <code>folder</code>.</p>
 
@@ -371,7 +2390,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L163" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<code>fname</code>:<code>PathOrStr</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>Path</code></p>
+<h4 id="join_path"><code>join_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L201" class="source_link">[source]</a></h4><blockquote><p><code>join_path</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>) → <code>Path</code></p>
 </blockquote>
 <p>Return <code>Path(path)/Path(fname)</code>, <code>path</code> defaults to current dir.</p>
 
@@ -392,7 +2411,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L167" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<code>fnames</code>:<code>FilePathList</code>, <code>path</code>:<code>PathOrStr</code>=<code>'.'</code>) → <code>FilePathList</code></p>
+<h4 id="join_paths"><code>join_paths</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L205" class="source_link">[source]</a></h4><blockquote><p><code>join_paths</code>(<strong><code>fnames</code></strong>:<code>FilePathList</code>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>) → <code>FilePathList</code></p>
 </blockquote>
 <p>Join <code>path</code> to every file name in <code>fnames</code>.</p>
 
@@ -413,7 +2432,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L172" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<code>path</code>:<code>PathOrStr</code>) → <code>ndarray</code></p>
+<h4 id="loadtxt_str"><code>loadtxt_str</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L210" class="source_link">[source]</a></h4><blockquote><p><code>loadtxt_str</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>) → <code>ndarray</code></p>
 </blockquote>
 <p>Return <code>ndarray</code> of <code>str</code> of lines of text from <code>path</code>.</p>
 
@@ -434,7 +2453,7 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L177" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<code>fname</code>:<code>PathOrStr</code>, <code>texts</code>:<code>StrList</code>)</p>
+<h4 id="save_texts"><code>save_texts</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L215" class="source_link">[source]</a></h4><blockquote><p><code>save_texts</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>, <strong><code>texts</code></strong>:<code>StrList</code>)</p>
 </blockquote>
 <p>Save in <code>fname</code> the content of <code>texts</code>.</p>
 
@@ -448,132 +2467,7 @@ summary: "Basic helper functions for the fastai library"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Others">Others<a class="anchor-link" href="#Others">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L132" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>()</p>
-</blockquote>
-<p>All transformable dataset items use this type.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="camel2snake"><code>camel2snake</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L101" class="source_link">[source]</a></h4><blockquote><p><code>camel2snake</code>(<code>name</code>:<code>str</code>) → <code>str</code></p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Format <code>name</code> by removing capital letters from a class-style name and separates the subwords with underscores.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">camel2snake</span><span class="p">(</span><span class="s1">&#39;DeviceDataLoader&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;device_data_loader&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="even_mults"><code>even_mults</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>even_mults</code>(<code>start</code>:<code>float</code>, <code>stop</code>:<code>float</code>, <code>n</code>:<code>int</code>) → <code>ndarray</code></p>
-</blockquote>
-<p>Build evenly stepped schedule from <code>start</code> to <code>stop</code> in <code>n</code> steps.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="noop"><code>noop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>noop</code>(<code>x</code>)</p>
-</blockquote>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Return <code>x</code>.</p>
-
+<h2 id="Multiprocessing">Multiprocessing<a class="anchor-link" href="#Multiprocessing">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -607,7 +2501,28 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="partition"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>partition</code>(<code>a</code>:<code>Collection</code>, <code>sz</code>:<code>int</code>) → <code>List</code>[<code>Collection</code>]</p>
+<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L298" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<strong><code>func</code></strong>, <strong><code>arr</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>max_workers</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
+</blockquote>
+<p>Call <code>func</code> on every element of <code>arr</code> in parallel using <code>max_workers</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="partition"><code>partition</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L133" class="source_link">[source]</a></h4><blockquote><p><code>partition</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>sz</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
 </blockquote>
 <p>Split iterables <code>a</code> in equal parts of size <code>sz</code></p>
 
@@ -628,9 +2543,399 @@ summary: "Basic helper functions for the fastai library"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="partition_by_cores"><code>partition_by_cores</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>partition_by_cores</code>(<code>a</code>:<code>Collection</code>, <code>n_cpus</code>:<code>int</code>) → <code>List</code>[<code>Collection</code>]</p>
+<h4 id="partition_by_cores"><code>partition_by_cores</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L137" class="source_link">[source]</a></h4><blockquote><p><code>partition_by_cores</code>(<strong><code>a</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_cpus</code></strong>:<code>int</code>) → <code>List</code>[<code>Collection</code>[<code>T_co</code>]]</p>
 </blockquote>
 <p>Split data in <code>a</code> equally among <code>n_cpus</code> cores</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-block-API">Data block API<a class="anchor-link" href="#Data-block-API">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="ItemBase"><code>class</code> <code>ItemBase</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L147" class="source_link">[source]</a></h3><blockquote><p><code>ItemBase</code>(<strong><code>data</code></strong>:<code>Any</code>)</p>
+</blockquote>
+<p>Base item type in the fastai library.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All items used in fastai should subclass this. Must have a <a href="/tabular.data.html#tabular.data"><code>data</code></a> field that will be used when collating in mini-batches.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ItemBase.apply_tfms"><code>apply_tfms</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>apply_tfms</code>(<strong><code>tfms</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Subclass this method if you want to apply data augmentation with <code>tfms</code> to this <a href="/core.html#ItemBase"><code>ItemBase</code></a>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="ItemBase.show"><code>show</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>show</code>(<strong><code>ax</code></strong>:<code>Axes</code>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Subclass this method if you want to customize the way this <a href="/core.html#ItemBase"><code>ItemBase</code></a> is shown on <code>ax</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The default behavior is to set the string representation of this object as title of <code>ax</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="Category"><code>class</code> <code>Category</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L269" class="source_link">[source]</a></h3><blockquote><p><code>Category</code>(<strong><code>data</code></strong>, <strong><code>obj</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+<p>Basic class for single classification labels.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/core.html#Category"><code>Category</code></a> with an <code>obj</code> of index <a href="/tabular.data.html#tabular.data"><code>data</code></a> in a certain classes list.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="EmptyLabel"><code>class</code> <code>EmptyLabel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L264" class="source_link">[source]</a></h3><blockquote><p><code>EmptyLabel</code>() :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+<p>Should be used for a dummy label.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="MultiCategory"><code>class</code> <code>MultiCategory</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L275" class="source_link">[source]</a></h3><blockquote><p><code>MultiCategory</code>(<strong><code>data</code></strong>, <strong><code>obj</code></strong>, <strong><code>raw</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+<p>Basic class for multi-classification labels.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a <a href="/core.html#MultiCategory"><code>MultiCategory</code></a> with an <code>obj</code> that is a collection of labels. <a href="/tabular.data.html#tabular.data"><code>data</code></a> corresponds to the one-hot encoded labels and <code>raw</code> is a list of associated string.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="FloatItem"><code>class</code> <code>FloatItem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L280" class="source_link">[source]</a></h2><blockquote><p><code>FloatItem</code>(<strong><code>obj</code></strong>) :: <a href="/core.html#ItemBase"><code>ItemBase</code></a></p>
+</blockquote>
+<p>Basic class for float items.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Others">Others<a class="anchor-link" href="#Others">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="camel2snake"><code>camel2snake</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L113" class="source_link">[source]</a></h4><blockquote><p><code>camel2snake</code>(<strong><code>name</code></strong>:<code>str</code>) → <code>str</code></p>
+</blockquote>
+<p>Change <code>name</code> from camel to snake style.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">camel2snake</span><span class="p">(</span><span class="s1">&#39;DeviceDataLoader&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;device_data_loader&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="even_mults"><code>even_mults</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L118" class="source_link">[source]</a></h4><blockquote><p><code>even_mults</code>(<strong><code>start</code></strong>:<code>float</code>, <strong><code>stop</code></strong>:<code>float</code>, <strong><code>n</code></strong>:<code>int</code>) → <code>ndarray</code></p>
+</blockquote>
+<p>Build log-stepped array from <code>start</code> to <code>stop</code> in <code>n</code> steps.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="func_args"><code>func_args</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L241" class="source_link">[source]</a></h4><blockquote><p><code>func_args</code>(<strong><code>func</code></strong>) → <code>bool</code></p>
+</blockquote>
+<p>Return the arguments of <code>func</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="noop"><code>noop</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>noop</code>(<strong><code>x</code></strong>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Return <code>x</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="one_hot"><code>one_hot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L226" class="source_link">[source]</a></h4><blockquote><p><code>one_hot</code>(<strong><code>x</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>c</code></strong>:<code>int</code>)</p>
+</blockquote>
+<p>One-hot encode <code>x</code> with <code>c</code> classes.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="show_some"><code>show_some</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L316" class="source_link">[source]</a></h4><blockquote><p><code>show_some</code>(<strong><code>items</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_max</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>sep</code></strong>:<code>str</code>=<strong><em><code>','</code></em></strong>)</p>
+</blockquote>
+<p>Return the representation of the first  <code>n_max</code> elements in <code>items</code>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L307" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+</blockquote>
+<p>Like <code>plt.subplots</code> but with consistent axs shape, <code>kwargs</code> passed to <code>fig.suptitle</code> with <code>title</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="text2html_table"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L288" class="source_link">[source]</a></h4><blockquote><p><code>text2html_table</code>(<strong><code>items</code></strong>:<code>Tokens</code>, <strong><code>widths</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>str</code></p>
+</blockquote>
+<p>Put the texts in <code>items</code> in an HTML table, <code>widths</code> are the widths of the columns in %.</p>
 
 </div>
 

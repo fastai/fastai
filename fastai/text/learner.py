@@ -2,6 +2,7 @@
 from ..torch_core import *
 from ..basic_train import *
 from ..callbacks import *
+from ..data_block import CategoryList
 from ..basic_data import *
 from ..datasets import untar_data
 from ..metrics import accuracy
@@ -9,14 +10,14 @@ from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
 from .transform import *
 
-__all__ = ['RNNLearner', 'LanguageLearner', 'TextClassifierLearner', 'RNNLearner', 'convert_weights', 'lm_split', 
+__all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'lm_split',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
 
 default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
                    'classifier': np.array([0.4,0.5,0.05,0.3,0.4])}
 
 def convert_weights(wgts:Weights, stoi_wgts:Dict[str,int], itos_new:Collection[str]) -> Weights:
-    "Convert the model weights to go with a new vocabulary."
+    "Convert the model `wgts` to go with a new vocabulary."
     dec_bias, enc_wgts = wgts['1.decoder.bias'], wgts['0.encoder.weight']
     bias_m, wgts_m = dec_bias.mean(0), enc_wgts.mean(0)
     new_w = enc_wgts.new_zeros((len(itos_new),enc_wgts.size(1))).zero_()
@@ -45,35 +46,38 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
     return groups
 
 class RNNLearner(Learner):
-    "Basic class for a Learner in RNN."
+    "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
-                 adjust:bool=False, alpha:float=2., beta:float=1., **kwargs):
+                 alpha:float=2., beta:float=1., metrics=None, **kwargs):
         super().__init__(data, model, **kwargs)
-        self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta, adjust=adjust))
+        self.callbacks.append(RNNTrainer(self, alpha=alpha, beta=beta))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
-        self.metrics = [accuracy]
+        is_class = (hasattr(self.data.train_ds, 'y') and isinstance(self.data.train_ds.y, CategoryList))
+        self.metrics = ifnone(metrics, ([accuracy] if is_class else []))
 
     def save_encoder(self, name:str):
         "Save the encoder to `name` inside the model directory."
-        torch.save(self.model[0].state_dict(), self.path/self.model_dir/f'{name}.pth')
+        torch.save(get_model(self.model)[0].state_dict(), self.path/self.model_dir/f'{name}.pth')
 
     def load_encoder(self, name:str):
         "Load the encoder `name` from the model directory."
-        self.model[0].load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
+        get_model(self.model)[0].load_state_dict(torch.load(self.path/self.model_dir/f'{name}.pth'))
         self.freeze()
 
-    def load_pretrained(self, wgts_fname:str, itos_fname:str):
+    def load_pretrained(self, wgts_fname:str, itos_fname:str, strict:bool=True):
         "Load a pretrained model and adapts it to the data vocabulary."
         old_itos = pickle.load(open(itos_fname, 'rb'))
         old_stoi = {v:k for k,v in enumerate(old_itos)}
         wgts = torch.load(wgts_fname, map_location=lambda storage, loc: storage)
+        if 'model' in wgts: wgts = wgts['model']
         wgts = convert_weights(wgts, old_stoi, self.data.train_ds.vocab.itos)
-        self.model.load_state_dict(wgts)
-        
-    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None, 
+        self.model.load_state_dict(wgts, strict=strict)
+
+    def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None, pbar:Optional[PBar]=None,
                   ordered:bool=False) -> List[Tensor]:
         "Return predictions and targets on the valid, train, or test set, depending on `ds_type`."
+        self.model.reset()
         preds = super().get_preds(ds_type=ds_type, with_loss=with_loss, n_batch=n_batch, pbar=pbar)
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             sampler = [i for i in self.dl(ds_type).sampler]
@@ -84,42 +88,50 @@ class RNNLearner(Learner):
 
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
-    def predict(self, text:str, n_words:int=1, tokenizer:Tokenizer=None):
-        "Return the `n_words` that come after `text`. `tokenizer` should be the same one used as during training."
-        tokenizer = ifnone(tokenizer, Tokenizer())
-        tokens = tokenizer.process_all([text])
-        ds = self.data.valid_ds
-        ids = ds.vocab.numericalize(tokens[0]) 
-        self.model.reset()
-        pbar = master_bar(range(n_words))
-        for _ in pbar:
-            ds.set_item(ids)
-            res = self.pred_batch(pbar=pbar)
-            ids.append(res[-1].argmax())
-        ds.clear_item()
-        return self.data.train_ds.vocab.textify(ids)        
-
-class TextClassifierLearner(RNNLearner):
-    "Subclass of RNNLearner for predictions."
-    def predict(self, text:str, tokenizer:Tokenizer=None):
-        "Return prect class, label and probabilities for `text`. `tokenizer` should be the same one used as during training."
-        tokenizer = ifnone(tokenizer, Tokenizer())
-        tokens = tokenizer.process_all([text])
-        ds = self.data.valid_ds
-        ids = ds.vocab.numericalize(tokens[0]) 
-        self.model.reset()
-        ds.set_item(ids)
-        res = self.pred_batch()[0]
-        ds.clear_item()
-        pred_max = res.argmax()
-        return self.data.train_ds.classes[pred_max],pred_max,res
     
+    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
+        "Return the `n_words` that come after `text`."
+        ds = self.data.single_dl.dataset
+        self.model.reset()
+        xb, yb = self.data.one_item(text)
+        res = self.pred_batch(batch=(xb,yb))[0][-1]
+        new_idx = []
+        for _ in progress_bar(range(n_words), leave=False):
+            res = self.pred_batch(batch=(xb,yb))[0][-1]
+            if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
+            if min_p is not None: res[res < min_p] = 0.
+            if temperature != 1.: res.pow_(1 / temperature)
+            idx = torch.multinomial(res, 1).item()
+            new_idx.append(idx)
+            xb = xb.new_tensor([idx])[None]
+        return text + self.data.vocab.textify(new_idx)
+
+    def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
+        from IPython.display import display, HTML
+        "Show `rows` result of predictions on `ds_type` dataset."
+        ds = self.dl(ds_type).dataset
+        x,y = self.data.one_batch(ds_type, detach=False, denorm=False)
+        preds = self.pred_batch(batch=(x,y))
+        y = y.view(*x.size())
+        z = preds.view(*x.size(),-1).argmax(dim=2)
+        xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
+        ys = [ds.x.reconstruct(grab_idx(y, i)) for i in range(rows)]
+        zs = [ds.x.reconstruct(grab_idx(z, i)) for i in range(rows)]
+
+        items = [['text', 'target', 'pred']]
+        for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
+            txt_x = ' '.join(x.text.split(' ')[:max_len])
+            txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
+            txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
+            items.append([str(txt_x), str(txt_y), str(txt_z)])
+        display(HTML(text2html_table(items, ([34,33,33]))))
+
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
-                  drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model=None,
+                  drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model:str=None,
                   pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
-    "Create a `Learner` with a language model."
+    "Create a `Learner` with a language model from `data`."
     dps = default_dropout['language'] * drop_mult
-    vocab_size = data.train_ds.vocab_size
+    vocab_size = len(data.vocab.itos)
     model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                 weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
     learn = LanguageLearner(data, model, bptt, split_func=lm_split, **kwargs)
@@ -134,18 +146,22 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
         learn.freeze()
     return learn
 
-def text_classifier_learner(data:DataBunch, bptt:int=70, max_len:int=70*20, emb_sz:int=400, nh:int=1150, nl:int=3,
-               lin_ftrs:Collection[int]=None, ps:Collection[float]=None, pad_token:int=1,
-               drop_mult:float=1., qrnn:bool=False, **kwargs) -> 'TextClassifierLearner':
-    "Create a RNN classifier."
+def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
+               drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None, 
+               ps:Collection[float]=None, pretrained_model:str=None, **kwargs) -> 'TextClassifierLearner':
+    "Create a RNN classifier from `data`."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
     if ps is None:  ps = [0.1]
-    ds = data.train_ds
-    vocab_size, n_class = ds.vocab_size, data.c
+    vocab_size, n_class = len(data.vocab.itos), data.c
     layers = [emb_sz*3] + lin_ftrs + [n_class]
     ps = [dps[4]] + ps
-    model = get_rnn_classifier(bptt, max_len, n_class, vocab_size, emb_sz, nh, nl, pad_token,
+    model = get_rnn_classifier(bptt, max_len, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
-    learn = TextClassifierLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    if pretrained_model is not None:
+        model_path = untar_data(pretrained_model, data=False)
+        fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        learn.load_pretrained(*fnames, strict=False)
+        learn.freeze()
     return learn

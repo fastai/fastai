@@ -53,8 +53,8 @@ jobs:
     # Install dependencies and fastai git HEAD or PR
   - script: |
       python -m pip install --upgrade pip && pip3 install --upgrade setuptools
-      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-      # test that we can install fastai package (and torchvision)
+      pip install torch torchvision
+      # test that we can install fastai package
       pip install fastai
       pip uninstall -y fastai
       # install editable fastai, which tests the HEAD or PR
@@ -67,6 +67,14 @@ jobs:
       pip install pytest pytest-runner
     displayName: 'Install test deps'
     continueOnError: false
+
+    # Show PyPi Build Env
+  - script: |
+      echo "cwd:" `pwd`
+      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
+      pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+    displayName: 'Show build environment'
+    continueOnError: true
 
     # Run Tests
   - script: |
@@ -137,8 +145,7 @@ jobs:
       conda install -y conda
       conda install -y pip setuptools
       # pytorch + torchvision
-      conda install -y -c pytorch pytorch-nightly-cpu
-      conda install -y -c fastai torchvision-nightly-cpu
+      conda install -y -c pytorch pytorch torchvision
       # test that we can install fastai package
       conda install -y -c fastai fastai
       conda uninstall -y fastai
@@ -152,6 +159,14 @@ jobs:
       conda install -y pytest pytest-runner
     displayName: 'Install test deps'
     continueOnError: false
+
+    # Show Conda Build Env
+  - script: |
+      echo "cwd:" `pwd`
+      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
+      conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+    displayName: 'Show build environment'
+    continueOnError: true
 
     # Run Tests
   - script: |
@@ -186,72 +201,80 @@ jobs:
 ### MacOS CI ###
 ################
 
-- job: MacOS_PyPI
-  pool:
-    vmImage: 'macOS-10.13'
-
-  # Run the pipeline with multiple Python versions
-  strategy:
-    matrix:
-      Python36:
-        python.version: '3.6'
-      Python37:
-        python.version: '3.7'
-    maxParallel: 4
-
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '$(python.version)'
-      architecture: 'x64'
-
-    # Install dependencies and fastai git HEAD or PR
-  - script: |
-      python -m pip install --upgrade pip && pip3 install --upgrade setuptools
-      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-      # test that we can install fastai package (and torchvision)
-      pip install fastai
-      pip uninstall -y fastai
-      # install editable fastai, which tests the HEAD or PR
-      pip install -e .[dev]
-      # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
-      mkdir -p ~/.matplotlib
-      echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
-    displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
-    continueOnError: false
-
-     # Install Test deps
-  - script: |
-      pip install pytest pytest-runner
-    displayName: 'Install test deps'
-    continueOnError: false
-
-    # Run Tests
-  - script: |
-      py.test tests --cache-clear --junitxml=result.xml
-    displayName: 'Run tests'
-    continueOnError: false
-
-    # Publish test results to the Azure DevOps server
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFiles: 'result.xml'
-      testRunTitle: 'Python $(python.version)'
-      condition: succeededOrFailed()
-
-    # Jupyter Test
-  - script: |
-      # 1. test that we can run jupyter (have all the deps figured out)
-      # 2. that we can execute a fastai nb
-      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
-      # 3. check for expected in the output string and bail if it's not there.
-      echo "Testing expected output"
-      grep "Total time" examples/tabular.nbconvert.ipynb
-      # 4. test that python kernel is available
-      echo "Testing jupyter kernelspec list"
-      jupyter kernelspec list | grep python3
-    displayName: 'Run jupyter notebook tests'
-    continueOnError: false
+#- job: MacOS_PyPI
+#  pool:
+#    vmImage: 'macOS-10.13'
+#
+#  # Run the pipeline with multiple Python versions
+#  strategy:
+#    matrix:
+#      Python36:
+#        python.version: '3.6'
+#      Python37:
+#        python.version: '3.7'
+#    maxParallel: 4
+#
+#  steps:
+#  - task: UsePythonVersion@0
+#    inputs:
+#      versionSpec: '$(python.version)'
+#      architecture: 'x64'
+#
+#    # Install dependencies and fastai git HEAD or PR
+#  - script: |
+#      python -m pip install --upgrade pip && pip3 install --upgrade setuptools
+#      pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+#      # test that we can install fastai package (and torchvision)
+#      pip install fastai
+#      pip uninstall -y fastai
+#      # install editable fastai, which tests the HEAD or PR
+#      pip install -e .[dev]
+#      # workaround for matplotlib bug on macOS: https://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
+#      mkdir -p ~/.matplotlib
+#      echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+#    displayName: 'Upgrade pip and setuptools, install pytorch and fastai deps'
+#    continueOnError: false
+#
+#    # Install Test deps
+#  - script: |
+#      pip install pytest pytest-runner
+#    displayName: 'Install test deps'
+#    continueOnError: false
+#
+#     # Show PyPi Build Env
+#  - script: |
+#      echo "cwd:" `pwd`
+#      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
+#      pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+#    displayName: 'Show build environment'
+#    continueOnError: true
+#
+#    # Run Tests
+#  - script: |
+#      py.test tests --cache-clear --junitxml=result.xml
+#    displayName: 'Run tests'
+#    continueOnError: false
+#
+#    # Publish test results to the Azure DevOps server
+#  - task: PublishTestResults@2
+#    inputs:
+#      testResultsFiles: 'result.xml'
+#      testRunTitle: 'Python $(python.version)'
+#      condition: succeededOrFailed()
+#
+#    # Jupyter Test
+#  - script: |
+#      # 1. test that we can run jupyter (have all the deps figured out)
+#      # 2. that we can execute a fastai nb
+#      jupyter nbconvert --execute --ExecutePreprocessor.timeout=600 --to notebook examples/tabular.ipynb
+#      # 3. check for expected in the output string and bail if it's not there.
+#      echo "Testing expected output"
+#      grep "Total time" examples/tabular.nbconvert.ipynb
+#      # 4. test that python kernel is available
+#      echo "Testing jupyter kernelspec list"
+#      jupyter kernelspec list | grep python3
+#    displayName: 'Run jupyter notebook tests'
+#    continueOnError: false
 
 
 
@@ -294,8 +317,7 @@ jobs:
       conda install -y conda
       conda install -y pip setuptools
       # pytorch + torchvision
-      conda install -y -c pytorch pytorch-nightly-cpu
-      conda install -y -c fastai torchvision-nightly-cpu
+      conda install -y -c pytorch pytorch torchvision
       # test that we can install fastai package
       conda install -y -c fastai fastai
       conda uninstall -y fastai
@@ -312,6 +334,14 @@ jobs:
       conda install -y pytest pytest-runner
     displayName: 'Install test deps'
     continueOnError: false
+
+    # Show Conda Build Env
+  - script: |
+      echo "cwd:" `pwd`
+      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
+      conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
+    displayName: 'Show build environment'
+    continueOnError: true
 
     # Run Tests
   - script: |

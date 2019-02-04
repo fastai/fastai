@@ -24,7 +24,14 @@ If you're interested in using the library in your own projects, we're happy to h
 
 ### Install as pip package
 
-`pip install git+https://github.com/fastai/fastai.git`
+Do not use this method anymore, as it'll install `fastai-1.x` instead. (
+<s>`pip install git+https://github.com/fastai/fastai.git`</s>)
+If you don't want to use `conda`, but to install via `pip` do:
+1. Download project: `git clone https://github.com/fastai/fastai.git`
+1. Move into root folder: `cd fastai`
+1. Move into fastai-0.7 folder: `cd old`
+1. Install fastai-0.7: `pip install .`
+
 
 ### CPU only environment
 Use this if you do not have an NVidia GPU. Note you are encouraged to use Paperspace to access a GPU in the cloud by following this [guide](https://github.com/reshamas/fastai_deeplearn_part1/blob/master/tools/paperspace.md).

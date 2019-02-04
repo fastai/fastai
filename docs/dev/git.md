@@ -51,6 +51,12 @@ For more details run:
 
 While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the `fastai` package.
 
+And now we also have a python version of the same:
+```
+curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch-py
+chmod a+x fastai-make-pr-branch-py
+./fastai-make-pr-branch-py https your-github-username fastai new-feature
+```
 
 ### Step 1. Start With a Synced Fork Checkout
 
@@ -180,26 +186,38 @@ It's very important that you **always work inside a branch**. If you make any co
 
 ### Step 3. Prepare Your Checkout
 
-1. Install the prerequisites.
+1. Uninstall preinstalled `fastai`
+
+   In order for you to be able to test your code against this particular `fastai` checkout, first make sure to uninstall the released version of `fastai` that you may have already installed.
+
+   ```
+   conda uninstall -y fastai
+   ```
+
+   If you previously installed `fastai` via `pip` you don't need to uninstall it - `pip` will automatically do it for you when you install `fastai` in the next step.
+
+   Also this is probably a good time for you to deepen your understanding of [Editable installs](https://docs.fast.ai/dev/develop.html#editable-install-explained).
+
+2. Install the prerequisites.
 
    No matter which repository you contribute to, unless you have already done so install the developer prerequisites:
 
-   Use an existing checkout, or:
+   Use an existing checkout, or make one:
    ```
-   git clone https://github.com/fastai/fastai
-   cd fastai
+   git clone https://github.com/fastai/fastai fastai-fork
+   cd fastai-fork
    ```
-   and install the dev prerequisites:
+   and make an editable install with the developer prerequisites:
    ```
-   pip install -e .[dev]
+   pip install -e ".[dev]"
    ```
 
-2. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
+3. Now configure the nbstripout filters if you haven't yet done so (the helper script does it automatically for you if you have used it to create the PR branch).
 
    Move into the root of the repository where your PR branch is and run:
 
    ```
-   tools/run-after-git-clone
+   tools/run-after-git-clone # or python tools\run-after-git-clone on windows
    ```
 
 ### Step 4. Write Your Code
@@ -991,6 +1009,30 @@ revert only parts of your repository to a specific revision
 ```
 git checkout <rev> -- dir1 dir2 file1 file2
 ```
+
+#### Reset branch's HEAD to a given commit hash
+
+If somehow the HEAD of the branch got messed up and it got moved to some place in master, when someone by mistake merges it into master, here is how to reset it back. In this example we will use a release branch-1.0.36 with a postfix changes applied at a later time, resulting in tag `1.0.36.post`.
+
+1. find the last commit that was supposed to be the HEAD, e.g.: https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983
+
+   Either use this to help find the right commit:
+   ```
+   git log origin/release-1.0.36
+   ```
+
+   or using github's branch browse of a given tag ([1.0.36.post1](https://github.com/fastai/fastai/commits/1.0.36.post1) in this example).
+
+
+2. and now reset the branch's HEAD to it:
+
+   ```
+   git checkout release-1.0.36
+   git reset --hard 1c63e868d3
+   git push --force origin release-1.0.36
+   ```
+
+
 
 
 ### ignore

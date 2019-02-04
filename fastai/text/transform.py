@@ -1,12 +1,16 @@
 "NLP data processing; tokenizes text and creates vocab indexes"
 from ..torch_core import *
 
-__all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'deal_caps', 'fix_html', 'replace_rep', 'replace_wrep', 
-           'rm_useless_spaces', 'spec_add_spaces', 'BOS', 'FLD', 'UNK', 'PAD', 'TK_UP', 'TK_REP', 'TK_REP', 'TK_WREP', 
-           'default_rules', 'default_spec_tok']
+import spacy
+from spacy.symbols import ORTH
+
+__all__ = ['BaseTokenizer', 'SpacyTokenizer', 'Tokenizer', 'Vocab', 'fix_html', 'replace_all_caps', 'replace_rep', 'replace_wrep',
+           'rm_useless_spaces', 'spec_add_spaces', 'BOS', 'FLD', 'UNK', 'PAD', 'TK_MAJ', 'TK_UP', 'TK_REP', 'TK_REP', 'TK_WREP',
+           'deal_caps']
 
 BOS,FLD,UNK,PAD = 'xxbos','xxfld','xxunk','xxpad'
-TK_UP,TK_REP,TK_WREP = 'xxup','xxrep','xxwrep'
+TK_MAJ,TK_UP,TK_REP,TK_WREP = 'xxmaj','xxup','xxrep','xxwrep'
+defaults.text_spec_tok = [UNK,PAD,BOS,FLD,TK_MAJ,TK_UP,TK_REP,TK_WREP]
 
 
 class BaseTokenizer():
@@ -17,7 +21,6 @@ class BaseTokenizer():
 
 class SpacyTokenizer(BaseTokenizer):
     "Wrapper around a spacy tokenizer to make it a `BaseTokenizer`."
-
     def __init__(self, lang:str):
         self.tok = spacy.blank(lang)
 
@@ -52,13 +55,6 @@ def replace_wrep(t:str) -> str:
     re_wrep = re.compile(r'(\b\w+\W+)(\1{3,})')
     return re_wrep.sub(_replace_wrep, t)
 
-def deal_caps(t:str) -> str:
-    "Replace words in all caps in `t`."
-    res = []
-    for s in re.findall(r'\w+|\W+', t):
-        res += ([f' {TK_UP} ',s.lower()] if (s.isupper() and (len(s)>2)) else [s.lower()])
-    return ''.join(res)
-
 def fix_html(x:str) -> str:
     "List of replacements from html strings in `x`."
     re1 = re.compile(r'  +')
@@ -68,33 +64,53 @@ def fix_html(x:str) -> str:
         ' @-@ ','-').replace('\\', ' \\ ')
     return re1.sub(' ', html.unescape(x))
 
-default_rules = [fix_html, replace_rep, replace_wrep, deal_caps, spec_add_spaces, rm_useless_spaces]
-default_spec_tok = [BOS, FLD, UNK, PAD]
+def replace_all_caps(x:Collection[str]) -> Collection[str]:
+    "Add `TK_UP` for words in all caps in `x`."
+    res = []
+    for t in x:
+        if t.isupper() and len(t) > 1: res.append(TK_UP)
+        res.append(t)
+    return res
+
+def deal_caps(x:Collection[str]) -> Collection[str]:
+    "Replace all words in `x` by their lower version and add `TK_MAJ`."
+    res = []
+    for t in x:
+        if t[0].isupper() and t[1:].islower(): res.append(TK_MAJ)
+        res.append(t.lower())
+    return res
+
+defaults.text_pre_rules = [fix_html, replace_rep, replace_wrep, spec_add_spaces, rm_useless_spaces]
+defaults.text_post_rules = [replace_all_caps, deal_caps]
 
 class Tokenizer():
-    "Put together rules, a tokenizer function and a language to tokenize text with multiprocessing."
-    def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', rules:ListRules=None,
-                 special_cases:Collection[str]=None, n_cpus:int=None):
+    "Put together rules and a tokenizer function to tokenize text with multiprocessing."
+    def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', pre_rules:ListRules=None,
+                 post_rules:ListRules=None, special_cases:Collection[str]=None, n_cpus:int=None):
         self.tok_func,self.lang,self.special_cases = tok_func,lang,special_cases
-        self.rules = rules if rules else default_rules
-        self.special_cases = special_cases if special_cases else default_spec_tok
-        self.n_cpus = n_cpus or num_cpus()//2
+        self.pre_rules  = ifnone(pre_rules,  defaults.text_pre_rules )
+        self.post_rules = ifnone(post_rules, defaults.text_post_rules)
+        self.special_cases = special_cases if special_cases else defaults.text_spec_tok
+        self.n_cpus = ifnone(n_cpus, defaults.cpus)
 
     def __repr__(self) -> str:
         res = f'Tokenizer {self.tok_func.__name__} in {self.lang} with the following rules:\n'
-        for rule in self.rules: res += f' - {rule.__name__}\n'
+        for rule in self.pre_rules: res += f' - {rule.__name__}\n'
+        for rule in self.post_rules: res += f' - {rule.__name__}\n'
         return res
 
     def process_text(self, t:str, tok:BaseTokenizer) -> List[str]:
-        "Processe one text `t` with tokenizer `tok`."
-        for rule in self.rules: t = rule(t)
-        return tok.tokenizer(t)
+        "Process one text `t` with tokenizer `tok`."
+        for rule in self.pre_rules: t = rule(t)
+        toks = tok.tokenizer(t)
+        for rule in self.post_rules: toks = rule(toks)
+        return toks
 
     def _process_all_1(self, texts:Collection[str]) -> List[List[str]]:
         "Process a list of `texts` in one process."
         tok = self.tok_func(self.lang)
         if self.special_cases: tok.add_special_cases(self.special_cases)
-        return [self.process_text(t, tok) for t in texts]
+        return [self.process_text(str(t), tok) for t in texts]
 
     def process_all(self, texts:Collection[str]) -> List[List[str]]:
         "Process a list of `texts`."
@@ -103,9 +119,8 @@ class Tokenizer():
             return sum(e.map(self._process_all_1, partition_by_cores(texts, self.n_cpus)), [])
 
 class Vocab():
-    "Contain the correspondance between numbers and tokens and numericalize."
-
-    def __init__(self, itos:Dict[int,str]):
+    "Contain the correspondence between numbers and tokens and numericalize."
+    def __init__(self, itos:Collection[str]):
         self.itos = itos
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
 
@@ -117,12 +132,19 @@ class Vocab():
         "Convert a list of `nums` to their tokens."
         return sep.join([self.itos[i] for i in nums])
 
+    def __getstate__(self):
+        return {'itos':self.itos}
+
+    def __setstate__(self, state:dict):
+        self.itos = state['itos']
+        self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
+
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
-        "Create a vocabulary from a set of tokens."
+        "Create a vocabulary from a set of `tokens`."
         freq = Counter(p for o in tokens for p in o)
-        itos = [o for o,c in freq.most_common(max_vocab) if c > min_freq]
-        itos.insert(0, PAD)
-        if UNK in itos: itos.remove(UNK)
-        itos.insert(0, UNK)
+        itos = [o for o,c in freq.most_common(max_vocab) if c >= min_freq]
+        for o in reversed(defaults.text_spec_tok):
+            if o in itos: itos.remove(o)
+            itos.insert(0, o)
         return cls(itos)
