@@ -472,7 +472,7 @@ class RandTransform():
     "Wrap `Transform` to add randomized execution."
     tfm:Transform
     kwargs:dict
-    p:int=1.0
+    p:float=1.0
     resolved:dict = field(default_factory=dict)
     do_run:bool = True
     is_random:bool = True
