@@ -207,7 +207,7 @@ class ItemList():
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'ItemLists':
         "Split the data by using the names in `fname` for the validation set. `path` will override `self.path`."
         path = Path(ifnone(path, self.path))
-        valid_names = loadtxt_str(self.path/fname)
+        valid_names = loadtxt_str(path/fname)
         return self.split_by_files(valid_names)
 
     def split_from_df(self, col:IntsOrStrs=2):
