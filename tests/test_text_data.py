@@ -69,7 +69,7 @@ def test_from_csv_and_from_df():
     assert '@fastdotai' in data2.train_ds.vocab.itos,  "custom tokenzier not used by TextClasDataBunch"
     text_csv_file(path/'tmp.csv', ['neg','pos'])
     data3 = TextLMDataBunch.from_csv(path, 'tmp.csv', test='tmp.csv', label_cols=0, text_cols=["text"], bs=2)
-    assert len(data3.classes) == 1
+    assert isinstance(data3.train_ds.y[0], EmptyLabel)
     data4 = TextLMDataBunch.from_csv(path, 'tmp.csv', label_cols=0, text_cols=["text"], max_vocab=5, bs=2)
     assert 5 <= len(data4.train_ds.vocab.itos) <= 5+8 # +(8 special tokens - UNK/BOS/etc)
     data4.batch_size = 8
