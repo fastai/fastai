@@ -176,11 +176,11 @@ def model_summary(m:Collection[nn.Module], n:int=70):
         total_params += int(params)
         total_trainable_params += int(params) * trainable
         params, size, trainable = str(params), str(list(size)), str(trainable)
-        res += f"{layer:<20} {size:<20} {params:<10,} {trainable:<10}\n"
+        res += f"{layer:<20} {size:<20} {params:<10} {trainable:<10}\n"
         res += "_" * n + "\n"
-    res += f"\nTotal params: {total_params:,}\n"
-    res += f"Total trainable params: {total_trainable_params:,}\n"
-    res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
+    res += f"\nTotal params: {total_params}\n"
+    res += f"Total trainable params: {total_trainable_params}\n"
+    res += f"Total non-trainable params: {total_params - total_trainable_params}\n"
     return res
 
 Learner.summary = model_summary
