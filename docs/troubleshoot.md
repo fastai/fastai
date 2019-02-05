@@ -474,6 +474,19 @@ Of course, if you're not using `jupyter notebook` then you can just set the env 
    CUDA_LAUNCH_BLOCKING=1 my_pytorch_script.py
    ```
 
+### cuda runtime error (11) : invalid argument
+
+If you get an error:
+```
+RuntimeError: cuda runtime error (11) : invalid argument at .../src/THC/THCGeneral.cpp
+```
+it's possible that your pytorch build doesn't support the NVIDIA Driver you have installed.
+
+For example, you may have a newer NVIDIA driver with an older pytorch CUDA build, which most of the time should work, as it should be backward compatible, but that is not always the case. So make sure that if you run a recent NVIDIA driver you install pytorch that is built against the latest CUDA version. Follow the instructions [here](https://pytorch.org/get-started/locally/).
+
+You will find the table of different CUDA versions and their NVDIA driver counterparts [here](https://github.com/fastai/fastai/blob/master/README.md#is-my-system-supported).
+
+
 
 ## Memory Leakage On Exception
 
