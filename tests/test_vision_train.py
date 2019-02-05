@@ -127,6 +127,7 @@ def test_models_meta(mnist_tiny, arch, zero_image):
     pred = learn.predict(zero_image)
     assert pred is not None
 
+@pytest.mark.skip(reason="need to fix not to print charts")
 def test_ClassificationInterpretation(learn):
     interp = ClassificationInterpretation.from_learner(learn)
     print(interp.confusion_matrix())
