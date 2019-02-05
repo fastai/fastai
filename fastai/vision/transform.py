@@ -199,13 +199,13 @@ def rand_pad(padding:int, size:int, mode:str='reflection'):
     return [pad(padding=padding,mode=mode),
             crop(size=size, **rand_pos)]
 
-def rand_zoom(*args, **kwargs):
+def rand_zoom(scale:uniform=1.0, p:float=1.):
     "Randomized version of `zoom`."
-    return zoom(*args, **rand_pos, **kwargs)
+    return zoom(scale=scale, **rand_pos, p=p)
 
-def rand_crop(*args, **kwargs):
+def rand_crop(*args, padding_mode='reflection', p:float=1.):
     "Randomized version of `crop_pad`."
-    return crop_pad(*args, **rand_pos, **kwargs)
+    return crop_pad(*args, **rand_pos, padding_mode=padding_mode, p=p)
 
 def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     "Randomly zoom and/or crop."

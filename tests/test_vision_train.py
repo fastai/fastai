@@ -4,8 +4,9 @@ from fastai.callbacks import *
 from fastai.utils.mem import *
 from utils.mem import *
 from math import isclose
+from fastai.train import ClassificationInterpretation
 
-use_gpu = can_use_gpu()
+use_gpu = torch.cuda.is_available()
 torch_preload_mem()
 
 pytestmark = pytest.mark.integration
@@ -125,3 +126,11 @@ def test_models_meta(mnist_tiny, arch, zero_image):
     learn = create_cnn(mnist_tiny, arch, metrics=[accuracy, error_rate])
     pred = learn.predict(zero_image)
     assert pred is not None
+
+def test_ClassificationInterpretation(learn):
+    interp = ClassificationInterpretation.from_learner(learn)
+    assert isinstance(interp.confusion_matrix(), (np.ndarray))
+    assert interp.confusion_matrix().sum() == len(learn.data.valid_ds)
+    conf = interp.most_confused()
+    assert set(conf[0][:2]) == set(conf[1][:2]) == {'3', '7'}
+    

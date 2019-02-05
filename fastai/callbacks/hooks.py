@@ -93,7 +93,7 @@ class ActivationStats(HookCallback):
     def on_batch_end(self, train, **kwargs):
         "Take the stored results and puts it in `self.stats`"
         if train: self.stats.append(self.hooks.stored)
-    def on_train_end(self, **kwargs): 
+    def on_train_end(self, **kwargs):
         "Polish the final result."
         self.stats = tensor(self.stats).permute(2,1,0)
 
@@ -114,7 +114,12 @@ def model_sizes(m:nn.Module, size:tuple=(64,64))->Tuple[Sizes,Tensor,Hooks]:
 
 def num_features_model(m:nn.Module)->int:
     "Return the number of output features for `model`."
-    return model_sizes(m)[-1][1]
+    sz = 64
+    while True:
+        try: return model_sizes(m, size=(sz,sz))[-1][1]
+        except Exception as e:
+            sz *= 2
+            if sz > 2048: raise
 
 def total_params(m:nn.Module)->int:
     params, trainable = 0, False
@@ -171,12 +176,11 @@ def model_summary(m:Collection[nn.Module], n:int=70):
         total_params += int(params)
         total_trainable_params += int(params) * trainable
         params, size, trainable = str(params), str(list(size)), str(trainable)
-        res += f"{layer:<20} {size:<20} {params:<10} {trainable:<10}\n"
+        res += f"{layer:<20} {size:<20} {params:<10,} {trainable:<10}\n"
         res += "_" * n + "\n"
-    res += f"\nTotal params: {total_params}\n"
-    res += f"Total trainable params: {total_trainable_params}\n"
-    res += f"Total non-trainable params: {total_params - total_trainable_params}\n"
+    res += f"\nTotal params: {total_params:,}\n"
+    res += f"Total trainable params: {total_trainable_params:,}\n"
+    res += f"Total non-trainable params: {total_params - total_trainable_params:,}\n"
     return res
 
 Learner.summary = model_summary
-

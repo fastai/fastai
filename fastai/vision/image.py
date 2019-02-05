@@ -116,7 +116,7 @@ class Image(ItemBase):
                 if resize_method in (ResizeMethod.CROP,ResizeMethod.PAD):
                     x = tfm(x, size=_get_crop_target(size,mult=mult), padding_mode=padding_mode)
             else: x = tfm(x)
-        return x
+        return x.refresh()
 
     def refresh(self)->None:
         "Apply any logit, flow, or affine transfers that have been sent to the `Image`."
@@ -234,6 +234,8 @@ class ImageSegment(Image):
         ax = show_image(self, ax=ax, hide_axis=hide_axis, cmap=cmap, figsize=figsize,
                         interpolation='nearest', alpha=alpha, vmin=0)
         if title: ax.set_title(title)
+            
+    def reconstruct(self, t:Tensor): return ImageSegment(t)
 
 class ImagePoints(Image):
     "Support applying transforms to a `flow` of points."
@@ -320,6 +322,8 @@ class ImagePoints(Image):
         ax.scatter(pnt[:, 0], pnt[:, 1], **params)
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
+     
+    def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
 class ImageBBox(ImagePoints):
     "Support applying transforms to a `flow` of bounding boxes."
@@ -468,7 +472,7 @@ class RandTransform():
     "Wrap `Transform` to add randomized execution."
     tfm:Transform
     kwargs:dict
-    p:int=1.0
+    p:float=1.0
     resolved:dict = field(default_factory=dict)
     do_run:bool = True
     is_random:bool = True
@@ -509,7 +513,7 @@ def _resolve_tfms(tfms:TfmList):
     "Resolve every tfm in `tfms`."
     for f in listify(tfms): f.resolve()
 
-def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', **kwargs)->TensorImage:
+def _grid_sample(x:TensorImage, coords:FlowField, mode:str='bilinear', padding_mode:str='reflection', remove_out:bool=True)->TensorImage:
     "Resample pixels in `coords` from `x` by `mode`, with `padding_mode` in ('reflection','border','zeros')."
     coords = coords.flow.permute(0, 3, 1, 2).contiguous().permute(0, 2, 3, 1) # optimize layout for grid_sample
     if mode=='bilinear': # hack to get smoother downwards resampling
@@ -585,7 +589,7 @@ def _get_resize_target(img, crop_target, do_crop=False)->TensorImageSize:
     ch,r,c = img.shape
     target_r,target_c = crop_target
     ratio = (min if do_crop else max)(r/target_r, c/target_c)
-    return ch,round(r/ratio),round(c/ratio)
+    return ch,int(round(r/ratio)),int(round(c/ratio)) #Sometimes those are numpy numbers and round doesn't return an int.
 
 def plot_flat(r, c, figsize):
     "Shortcut for `enumerate(subplots.flatten())`"

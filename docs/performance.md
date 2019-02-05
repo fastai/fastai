@@ -199,7 +199,7 @@ else:
 
 ### Conda packages
 
-The `fastai` conda (test) channel has a `pillow` package built against a custom build of `libjpeg-turbo`. There are 3.6 and 3.7 linux builds:
+The `fastai` conda (test) channel has an experimental `pillow` package built against a custom build of `libjpeg-turbo`. There are python 3.6 and 3.7 linux builds:
 
 To install:
 ```
@@ -207,7 +207,7 @@ conda uninstall -y pillow libjpeg-turbo
 conda install -c fastai/label/test pillow
 ```
 
-There is also `pillow-simd-5.3.0.post0` built against `libjpeg-turbo` and with avx2 - only linux/py36.
+There is also an experimental `pillow-simd-5.3.0.post0` conda package built against `libjpeg-turbo` and compiled with `avx2`. Try it only for python 3.6 on linux. It probably won't work on your setup unless its CPU has the same capability as the one it was built on. So if it doesn't work, install `pillow-simd` from [source](https://pillow.readthedocs.io/en/latest/installation.html#building-from-source) instead.
 
 ```
 conda uninstall -y pillow libjpeg-turbo

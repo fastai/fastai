@@ -14,7 +14,7 @@ class TerminateOnNaNCallback(Callback):
 
     def on_batch_end(self, last_loss, epoch, num_batch, **kwargs:Any)->None:
         "Test if `last_loss` is NaN and interrupts training."
-        if self.stop: return True #to skip validation after stopping during traning
+        if self.stop: return True #to skip validation after stopping during training
         if torch.isnan(last_loss):
             print (f'Epoch/Batch ({epoch}/{num_batch}): Invalid loss, terminating training.')
             self.stop = True
@@ -92,6 +92,7 @@ class SaveModelCallback(TrackerCallback):
         else: #every="improvement"
             current = self.get_monitor_value()
             if current is not None and self.operator(current, self.best):
+                print(f'Better model found at epoch {epoch} with {self.monitor} value: {current}.')
                 self.best = current
                 self.learn.save(f'{self.name}')
 

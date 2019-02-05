@@ -3,7 +3,7 @@
 Most recent releases are shown at the top. Each release shows:
 
 - **New**: New classes, methods, functions, etc
-- **Changed**: Additional paramaters, changes to inputs or outputs, etc
+- **Changed**: Additional parameters, changes to inputs or outputs, etc
 - **Fixed**: Bug fixes that don't change documented behaviour
 
 Note that the top-most release is changes in the unreleased master branch on
@@ -11,23 +11,46 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-## 1.0.42.dev0 (Work In Progress)
+
+
+## 1.0.43.dev0 (Work In Progress)
 
 ### New:
 
-- `gpu_mem_restore` - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
-- `gpu_mem_restore_ctx` - same as `gpu_mem_restore`, but a context manager
+- More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
+- Backward option in `text_classifier_learner` (thanks to tpietruszka)
+- Automate custom dependency groups installation via extending `distutils`
+- Transformer and TransformerXL architectures
+
+### Changed:
+
+- `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
+
+### Fixed:
+
+- Fixed argument name in `ImageDataBunch.single_from_classes`.
+- Bud in `bb_pad_colalte` when no bboxes where left due to data augmentation (thanks to pouannes)
+- fix the conda package dependency for py36
+- Bugs in `ForgetMult` and check cuda version are consistent (thanks to mkardas)
+- Bug `label_empty()` got an unexpected keyword argument 'label_cls'
+- For a language model `predict` is now way faster
+
+## 1.0.42 (2019-01-24)
+
+### New:
+
+- `gpu_mem_restore` decorator - Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted
+- `gpu_mem_restore_ctx` context manager - same functionality as `gpu_mem_restore`
 - `PeakMemMetric` callback to profile general and GPU RAM used and peaked by epoch
 - `ClassificationInterpration.plot_multi_top_losses` (thanks to terriblissimo)
-- `load_learner` has a `cpu` flag to avoid loading on the GPU when there are none (thanks to pouannes)
+- `Learner.export` serializes the model on the CPU to avoid loading on the GPU when there are none (thanks to pouannes)
 
 ### Changed:
 
 ### Fixed:
 
-- any fastai function that internally uses fit() will no longer suffer from
-  unrecoverable 'CUDA out of memory error' and memory leakages triggered by manual
-  interrupt.
+- any fastai function that internally uses `fit()` will no longer suffer from
+  unrecoverable 'CUDA out of memory error' unless overridden by the `FASTAI_TB_CLEAR_FRAMES` environment variable, which also allows extending this protection to all other exceptions.
 - `DataBunch.show_batch` and `Learner.show_results` show at maximum batch_size elements
 - `DataBunch.show_batch` and `Learner.show_results` handle `rows=1` (thanks to xnutsive)
 - `LanguageModelPreLoader` is way faster (thanks to kasparlund)
@@ -49,7 +72,7 @@ of that change.
 
 - Bug when loading text data in multi-classification with `TextDataBunch.load`
 - Wrong values for metrics like MSE due to broadcasting errors
-- `ImageDataBunch` doesn't shuffle the valdiation labels anymore
+- `ImageDataBunch` doesn't shuffle the validation labels anymore
 
 
 ## 1.0.40 (2019-01-17)
@@ -157,7 +180,7 @@ of that change.
 
 - Windows fixes, including:
   - Most transforms can now be used in Windows with `num_workers`>0
-  - Avoid recusion error with data blocks API
+  - Avoid recursion error with data blocks API
   - Try to avoid default `np.int32` creation where possible
 - `y_range` for unet output activation
 - `Image.apply_tfms` doesn't accept any kwargs anymore
@@ -212,7 +235,7 @@ of that change.
 
 - `LanguageLearner.predict` now returns better text predictions
 - Unfreezing layers didn't create a new optimizer so the unfrozen layers weren't training
-- Bug in `TextDataBunch` with a mistmatched test set was causing problems on the validation set
+- Bug in `TextDataBunch` with a mismatched test set was causing problems on the validation set
 
 
 ## 1.0.31 (2018-12-01)
@@ -392,8 +415,8 @@ of that change.
 
 ### New:
 
-- `Learner.predict` works accross applications
-- `Learner.show_batch` works accross applications
+- `Learner.predict` works across applications
+- `Learner.show_batch` works across applications
 
 ### Changed:
 
@@ -428,7 +451,7 @@ of that change.
 - `CSVLogger` callback (thanks to devorfu)
 - Initial support for image regression problems
 - If a dataset class has `learner_type` then `create_cnn` uses that type to create the `Learner`
-- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems accross applications
+- Introduce TaskType in `DatasetBase` to deal with single/multi-class or regression problems across applications
 
 ### Changed:
 

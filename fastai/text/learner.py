@@ -9,6 +9,7 @@ from ..metrics import accuracy
 from ..train import GradientClipping
 from .models import get_language_model, get_rnn_classifier
 from .transform import *
+from .data import *
 
 __all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'lm_split',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
@@ -48,12 +49,13 @@ def rnn_classifier_split(model:nn.Module) -> List[nn.Module]:
 class RNNLearner(Learner):
     "Basic class for a `Learner` in NLP."
     def __init__(self, data:DataBunch, model:nn.Module, bptt:int=70, split_func:OptSplitFunc=None, clip:float=None,
-                 alpha:float=2., beta:float=1., metrics=None, **kwargs):
-        super().__init__(data, model, **kwargs)
-        self.callbacks.append(RNNTrainer(self, bptt, alpha=alpha, beta=beta))
+                 alpha:float=2., beta:float=1., metrics=None, **learn_kwargs):
+        super().__init__(data, model, **learn_kwargs)
+        self.callbacks.append(RNNTrainer(self, alpha=alpha, beta=beta))
         if clip: self.callback_fns.append(partial(GradientClipping, clip=clip))
         if split_func: self.split(split_func)
-        is_class = (hasattr(self.data.train_ds, 'y') and isinstance(self.data.train_ds.y, CategoryList))
+        is_class = (hasattr(self.data.train_ds, 'y') and (isinstance(self.data.train_ds.y, CategoryList) or 
+                                                          isinstance(self.data.train_ds.y, LMLabelList)))
         self.metrics = ifnone(metrics, ([accuracy] if is_class else []))
 
     def save_encoder(self, name:str):
@@ -86,22 +88,57 @@ class RNNLearner(Learner):
             preds[1] = preds[1][reverse_sampler,:] if preds[1].dim() > 1 else preds[1][reverse_sampler]
         return(preds)
 
+def _select_hidden(model, idxs):
+    model[0].hidden = [(h[0][:,idxs,:],h[1][:,idxs,:]) for h in model[0].hidden]
+    model[0].bs = len(idxs)
+    
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     
     def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
+        self.model.reset()
+        xb,yb = self.data.one_item(text)
+        new_idx = []
         for _ in progress_bar(range(n_words), leave=False):
-            self.model.reset()
-            xb, yb = self.data.one_item(text)
             res = self.pred_batch(batch=(xb,yb))[0][-1]
+            if len(new_idx) == 0: _select_hidden(self.model, [0])
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
-            text += f' {self.data.vocab.itos[idx]}'
-        return text
+            new_idx.append(idx)
+            xb = xb.new_tensor([idx])[None]
+        return text + ' ' + self.data.vocab.textify(new_idx)
+    
+    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1.):
+        ds = self.data.single_dl.dataset
+        self.model.reset()
+        xb, yb = self.data.one_item(text)
+        start_idx = xb.clone()
+        nodes = None
+        scores = xb.new_ones(1).float()
+        with torch.no_grad():
+            for k in range(n_words):
+                out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
+                if temperature != 1.: out.div_(temperature)
+                values, indices = out.topk(top_k, dim=-1)
+                scores = (-values * scores[:,None]).view(-1)
+                if nodes is None: 
+                    nodes = indices[0][:,None]
+                    _select_hidden(self.model, [0] * nodes.size(0))
+                else:
+                    indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
+                    sort_idx = scores.argsort()[:beam_sz]
+                    scores = scores[sort_idx]
+                    nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
+                                       indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
+                    nodes = nodes.view(-1, nodes.size(2))[sort_idx]
+                    _select_hidden(self.model, indices_idx[sort_idx])
+                xb = nodes[:,-1][:,None]
+        node_idx = torch.randint(0, nodes.size(0), (1,)).item()
+        return text + ' ' + self.data.vocab.textify([i.item() for i in nodes[node_idx]])
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
@@ -125,13 +162,13 @@ class LanguageLearner(RNNLearner):
 
 def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                   drop_mult:float=1., tie_weights:bool=True, bias:bool=True, qrnn:bool=False, pretrained_model:str=None,
-                  pretrained_fnames:OptStrTuple=None, **kwargs) -> 'LanguageLearner':
+                  pretrained_fnames:OptStrTuple=None, **learn_kwargs) -> 'LanguageLearner':
     "Create a `Learner` with a language model from `data`."
     dps = default_dropout['language'] * drop_mult
     vocab_size = len(data.vocab.itos)
     model = get_language_model(vocab_size, emb_sz, nh, nl, pad_token, input_p=dps[0], output_p=dps[1],
                 weight_p=dps[2], embed_p=dps[3], hidden_p=dps[4], tie_weights=tie_weights, bias=bias, qrnn=qrnn)
-    learn = LanguageLearner(data, model, bptt, split_func=lm_split, **kwargs)
+    learn = LanguageLearner(data, model, bptt, split_func=lm_split, **learn_kwargs)
     if pretrained_model is not None:
         model_path = untar_data(pretrained_model, data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
@@ -145,7 +182,7 @@ def language_model_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1
 
 def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=1150, nl:int=3, pad_token:int=1,
                drop_mult:float=1., qrnn:bool=False,max_len:int=70*20, lin_ftrs:Collection[int]=None, 
-               ps:Collection[float]=None, pretrained_model:str=None, **kwargs) -> 'TextClassifierLearner':
+               ps:Collection[float]=None, pretrained_model:str=None, **learn_kwargs) -> 'TextClassifierLearner':
     "Create a RNN classifier from `data`."
     dps = default_dropout['classifier'] * drop_mult
     if lin_ftrs is None: lin_ftrs = [50]
@@ -155,7 +192,7 @@ def text_classifier_learner(data:DataBunch, bptt:int=70, emb_sz:int=400, nh:int=
     ps = [dps[4]] + ps
     model = get_rnn_classifier(bptt, max_len, vocab_size, emb_sz, nh, nl, pad_token,
                 layers, ps, input_p=dps[0], weight_p=dps[1], embed_p=dps[2], hidden_p=dps[3], qrnn=qrnn)
-    learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **kwargs)
+    learn = RNNLearner(data, model, bptt, split_func=rnn_classifier_split, **learn_kwargs)
     if pretrained_model is not None:
         model_path = untar_data(pretrained_model, data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]

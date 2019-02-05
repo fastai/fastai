@@ -47,8 +47,9 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
     for i,s in enumerate(samples):
         imgs.append(s[0].data[None])
         bbs, lbls = s[1].data
-        bboxes[i,-len(lbls):] = bbs
-        labels[i,-len(lbls):] = tensor(lbls)
+        if not (bbs.nelement() == 0):
+            bboxes[i,-len(lbls):] = bbs
+            labels[i,-len(lbls):] = tensor(lbls)
     return torch.cat(imgs,0), (bboxes,labels)
 
 def _maybe_add_crop_pad(tfms):
@@ -56,13 +57,12 @@ def _maybe_add_crop_pad(tfms):
     tfm_names = [[tfm.__name__ for tfm in o] for o in tfms]
     return [([crop_pad()] + o if 'crop_pad' not in n else o) for o,n in zip(tfms, tfm_names)]
 
-def _prep_tfm_kwargs(tfms, size, kwargs):
+def _prep_tfm_kwargs(tfms, size, resize_method:ResizeMethod=None):
     tfms = ifnone(tfms, [[],[]])
     default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
-    resize_method = ifnone(kwargs.get('resize_method', default_rsz), default_rsz)
+    resize_method = ifnone(resize_method, default_rsz)
     if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
-    kwargs['resize_method'] = resize_method
-    return tfms, kwargs
+    return tfms, resize_method
 
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Normalize `x` with `mean` and `std`."
@@ -101,11 +101,12 @@ class ImageDataBunch(DataBunch):
     @classmethod
     def create_from_ll(cls, lls:LabelLists, bs:int=64, ds_tfms:Optional[TfmList]=None,
                 num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False, 
-                **kwargs)->'ImageDataBunch':
+                test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False,
+                resize_method:ResizeMethod=None, mult:int=None, padding_mode:str='reflection', 
+                mode:str='bilinear')->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
-        ds_tfms, kwargs = _prep_tfm_kwargs(ds_tfms, size, kwargs)
-        lls = lls.transform(tfms=ds_tfms, size=size, **kwargs)
+        ds_tfms, resize_method = _prep_tfm_kwargs(ds_tfms, size, resize_method=resize_method)
+        lls = lls.transform(tfms=ds_tfms, size=size, resize_method=resize_method, mult=mult, padding_mode=padding_mode, mode=mode)
         if test is not None: lls.add_test_folder(test)
         return lls.databunch(bs=bs, dl_tfms=dl_tfms, num_workers=num_workers, collate_fn=collate_fn, device=device, no_check=no_check)
 
@@ -121,7 +122,7 @@ class ImageDataBunch(DataBunch):
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr='.', label_delim:str=None, valid_pct:float=0.2,
+    def from_df(cls, path:PathOrStr, df:pd.DataFrame, folder:PathOrStr=None, label_delim:str=None, valid_pct:float=0.2,
                 fn_col:IntsOrStrs=0, label_col:IntsOrStrs=1, suffix:str='', **kwargs:Any)->'ImageDataBunch':
         "Create from a `DataFrame` `df`."
         src = (ImageItemList.from_df(df, path=path, folder=folder, suffix=suffix, cols=fn_col)
@@ -130,7 +131,7 @@ class ImageDataBunch(DataBunch):
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, folder:PathOrStr='.', label_delim:str=None, csv_labels:PathOrStr='labels.csv',
+    def from_csv(cls, path:PathOrStr, folder:PathOrStr=None, label_delim:str=None, csv_labels:PathOrStr='labels.csv',
                  valid_pct:float=0.2, fn_col:int=0, label_col:int=1, suffix:str='', header:Optional[Union[int,str]]='infer',
                  **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file in `path/csv_labels`."
@@ -156,16 +157,18 @@ class ImageDataBunch(DataBunch):
     def from_name_re(cls, path:PathOrStr, fnames:FilePathList, pat:str, valid_pct:float=0.2, **kwargs):
         "Create from list of `fnames` in `path` with re expression `pat`."
         pat = re.compile(pat)
-        def _get_label(fn): return pat.search(str(fn)).group(1)
+        def _get_label(fn): 
+            if isinstance(fn, Path): fn = fn.as_posix()
+            return pat.search(str(fn)).group(1)
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
     @staticmethod
-    def single_from_classes(path:Union[Path, str], classes:Collection[str], tfms:TfmList=None, **kwargs):
+    def single_from_classes(path:Union[Path, str], classes:Collection[str], ds_tfms:TfmList=None, **kwargs):
         "Create an empty `ImageDataBunch` in `path` with `classes`. Typically used for inference."
         warn("""This method is deprecated and will be removed in a future version, use `load_learner` after
              `Learner.export()`""", DeprecationWarning)
         sd = ImageItemList([], path=path, ignore_empty=True).no_split()
-        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(tfms, **kwargs).databunch()
+        return sd.label_const(0, label_cls=CategoryList, classes=classes).transform(ds_tfms, **kwargs).databunch()
 
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
@@ -281,13 +284,13 @@ class ImageItemList(ItemList):
         return super().from_folder(path=path, extensions=extensions, **kwargs)
 
     @classmethod
-    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr='.', suffix:str='', **kwargs)->'ItemList':
-        "Get the filenames in `col` of `df` and will had `path/folder` in front of them, `suffix` at the end."
+    def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr=None, suffix:str='', **kwargs)->'ItemList':
+        "Get the filenames in `col` of `df` and will had `folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
-        sep = os.path.sep
         res = super().from_df(df, path=path, cols=cols, **kwargs)
-        res.items = np.char.add(np.char.add(f'{folder}{sep}', res.items.astype(str)), suffix)
-        res.items = np.char.add(f'{res.path}{sep}', res.items)
+        pref = f'{res.path}{os.path.sep}'
+        if folder is not None: pref += f'{folder}{os.path.sep}'
+        res.items = np.char.add(np.char.add(pref, res.items.astype(str)), suffix)
         return res
 
     @classmethod

@@ -107,7 +107,7 @@ def _search_url(search_term:str, size:str='>400*300', format:str='jpg') -> str:
             _url_params(size, format) + '&sa=X&ei=XosDVaCXD8TasATItgE&ved=0CAcQ_AUoAg')
 
 def _img_fname(img_url:str) -> str:
-    "Return image file name including the extension given it's url."
+    "Return image file name including the extension given its url."
     return img_url.split('/')[-1]
 
 def _fetch_img_tuples(url:str, format:str='jpg', n_images:int=10) -> list:

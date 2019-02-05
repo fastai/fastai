@@ -27,7 +27,7 @@ summary: "Callbacks that saves the tracked metrics during training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="CSVLogger"><code>class</code> <code>CSVLogger</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L10" class="source_link">[source]</a></h2><blockquote><p><code>CSVLogger</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`filename`</b>:<code>str</code>=<b><i>`'history'`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="CSVLogger"><code>class</code> <code>CSVLogger</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L10" class="source_link">[source]</a></h2><blockquote><p><code>CSVLogger</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>filename</code></strong>:<code>str</code>=<strong><em><code>'history'</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>A <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a> that saves history of metrics while training <code>learn</code> into CSV <code>filename</code>.</p>
 
@@ -292,7 +292,7 @@ Total time: 00:01 <p><table style='width:375px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CSVLogger.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<b>`kwargs`</b>:<code>Any</code>)</p>
+<h4 id="CSVLogger.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Prepare file with metric names.</p>
 
@@ -313,7 +313,7 @@ Total time: 00:01 <p><table style='width:375px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CSVLogger.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L26" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<b>`epoch`</b>:<code>int</code>, <b>`smooth_loss`</b>:<code>Tensor</code>, <b>`last_metrics`</b>:<code>MetricsList</code>, <b>`kwargs`</b>:<code>Any</code>) → <code>bool</code></p>
+<h4 id="CSVLogger.on_epoch_end"><code>on_epoch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L26" class="source_link">[source]</a></h4><blockquote><p><code>on_epoch_end</code>(<strong><code>epoch</code></strong>:<code>int</code>, <strong><code>smooth_loss</code></strong>:<code>Tensor</code>, <strong><code>last_metrics</code></strong>:<code>MetricsList</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>) → <code>bool</code></p>
 </blockquote>
 <p>Add a line with <code>epoch</code> number, <code>smooth_loss</code> and <code>last_metrics</code>.</p>
 
@@ -334,7 +334,7 @@ Total time: 00:01 <p><table style='width:375px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="CSVLogger.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<b>`kwargs`</b>:<code>Any</code>)</p>
+<h4 id="CSVLogger.on_train_end"><code>on_train_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/csv_logger.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>on_train_end</code>(<strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Close the file.</p>
 

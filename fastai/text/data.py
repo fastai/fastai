@@ -3,11 +3,12 @@ from ..torch_core import *
 from .transform import *
 from ..basic_data import *
 from ..data_block import *
+from ..layers import *
 from ..callback import Callback
 
 __all__ = ['LanguageModelPreLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
            'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
-           'OpenFileProcessor']
+           'OpenFileProcessor', 'LMLabelList']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
@@ -42,7 +43,7 @@ class LanguageModelPreLoader(Callback):
         if self.ite_len is None: len(self)
         self.idx   = LanguageModelPreLoader.CircularIndex(len(self.dataset.x.items), not self.backwards)
         self.batch = np.zeros((self.bs, self.bptt+1), dtype=np.int64)
-        self.x, self.y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1] 
+        self.batch_x, self.batch_y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1] 
         #ro: index of the text we're at inside our datasets for the various batches
         self.ro    = np.zeros(self.bs, dtype=np.int64)
         #ri: index of the token we're at inside our current text for the various batches
@@ -74,7 +75,7 @@ class LanguageModelPreLoader(Callback):
             if self.idx is None: self.on_epoch_begin()
         self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j], 
                                               self.ro[j], self.ri[j], overlap=1, lengths=self.lengths)
-        return self.x[j], self.y[j]
+        return self.batch_x[j], self.batch_y[j]
 
     def fill_row(self, forward, items, idx, row, ro, ri, overlap,lengths):
         "Fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"
@@ -124,14 +125,17 @@ class SortishSampler(Sampler):
         sort_idx = np.concatenate((ck_idx[0], sort_idx))
         return iter(sort_idx)
 
-def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True) -> Tuple[LongTensor, LongTensor]:
-    "Function that collect samples and adds padding."
+def pad_collate(samples:BatchSamples, pad_idx:int=1, pad_first:bool=True, backwards:bool=False) -> Tuple[LongTensor, LongTensor]:
+    "Function that collect samples and adds padding. Flips token order if needed"
     samples = to_data(samples)
     max_len = max([len(s[0]) for s in samples])
     res = torch.zeros(len(samples), max_len).long() + pad_idx
+    if backwards: pad_first = not pad_first
     for i,s in enumerate(samples):
         if pad_first: res[i,-len(s[0]):] = LongTensor(s[0])
         else:         res[i,:len(s[0]):] = LongTensor(s[0])
+    if backwards:
+        res = res.flip(1)
     return res, tensor(np.array([s[1] for s in samples]))
 
 def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
@@ -159,7 +163,7 @@ class TextDataBunch(DataBunch):
                  test_ids:Collection[Collection[int]]=None, train_lbls:Collection[Union[int,float]]=None,
                  valid_lbls:Collection[Union[int,float]]=None, classes:Collection[Any]=None,
                  processor:PreProcessor=None, **kwargs) -> DataBunch:
-        "Create a `TextDataBunch` from ids, labels and a `vocab`."
+        "Create a `TextDataBunch` from ids, labels and a `vocab`. `kwargs` are passed to the dataloader creation."
         src = ItemLists(path, TextList(train_ids, vocab, path=path, processor=[]),
                         TextList(valid_ids, vocab, path=path, processor=[]))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(train_lbls, valid_lbls, classes=classes, processor=[])
@@ -182,10 +186,10 @@ class TextDataBunch(DataBunch):
     @classmethod#TODO: test
     def from_tokens(cls, path:PathOrStr, trn_tok:Collection[Collection[str]], trn_lbls:Collection[Union[int,float]],
                  val_tok:Collection[Collection[str]], val_lbls:Collection[Union[int,float]], vocab:Vocab=None,
-                 tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, **kwargs) -> DataBunch:
-        "Create a `TextDataBunch` from tokens and labels."
-        p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = _get_processor(tokenizer=None, vocab=vocab, **p_kwargs)[1]
+                 tst_tok:Collection[Collection[str]]=None, classes:Collection[Any]=None, max_vocab:int=60000, min_freq:int=3,
+                 **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from tokens and labels. `kwargs` are passed to the dataloader creation."
+        processor = NumericalizeProcessor(vocab=vocab, max_vocab=max_vocab, min_freq=min_freq)
         src = ItemLists(path, TextList(trn_tok, path=path, processor=processor),
                         TextList(val_tok, path=path, processor=processor))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_lists(trn_lbls, val_lbls, classes=classes)
@@ -195,10 +199,11 @@ class TextDataBunch(DataBunch):
     @classmethod
     def from_df(cls, path:PathOrStr, train_df:DataFrame, valid_df:DataFrame, test_df:Optional[DataFrame]=None,
                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, text_cols:IntsOrStrs=1,
-                label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
-        "Create a `TextDataBunch` from DataFrames."
-        p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
+                label_cols:IntsOrStrs=0, label_delim:str=None, chunksize:int=10000, max_vocab:int=60000,
+                min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from DataFrames. `kwargs` are passed to the dataloader creation."
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, chunksize=chunksize, max_vocab=max_vocab,
+                                   min_freq=min_freq, mark_fields=mark_fields)
         if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
@@ -210,23 +215,26 @@ class TextDataBunch(DataBunch):
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
                  tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1,
-                 label_cols:IntsOrStrs=0, label_delim:str=None, **kwargs) -> DataBunch:
-        "Create a `TextDataBunch` from texts in csv files."
+                 label_cols:IntsOrStrs=0, label_delim:str=None, chunksize:int=10000, max_vocab:int=60000,
+                min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
+        "Create a `TextDataBunch` from texts in csv files. `kwargs` are passed to the dataloader creation."
         df = pd.read_csv(Path(path)/csv_name, header=header)
         df = df.iloc[np.random.permutation(len(df))]
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
         test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
-        return cls.from_df(path, train_df, valid_df, test_df, tokenizer, vocab, classes, text_cols,
-                           label_cols, label_delim, **kwargs)
+        return cls.from_df(path, train_df, valid_df, test_df, tokenizer=tokenizer, vocab=vocab, classes=classes, text_cols=text_cols,
+                           label_cols=label_cols, label_delim=label_delim, chunksize=chunksize, max_vocab=max_vocab,
+                          min_freq=min_freq, mark_fields=mark_fields, **kwargs)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
-                    classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, **kwargs):
+                    classes:Collection[Any]=None, tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=10000, max_vocab:int=60000,
+                    min_freq:int=2, mark_fields:bool=False, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path).absolute()
-        p_kwargs, kwargs = split_kwargs_by_func(kwargs, _get_processor)
-        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, **p_kwargs)
+        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, chunksize=chunksize, max_vocab=max_vocab,
+                                   min_freq=min_freq, mark_fields=mark_fields)
         src = (TextList.from_folder(path, processor=processor)
                        .split_by_folder(train=train, valid=valid))
         src = src.label_for_lm() if cls==TextLMDataBunch else src.label_from_folder(classes=classes)
@@ -238,10 +246,11 @@ class TextLMDataBunch(TextDataBunch):
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, num_workers:int=0,
                device:torch.device=None, collate_fn:Callable=data_collate, dl_tfms:Optional[Collection[Callable]]=None, 
-               **kwargs) -> DataBunch:
+               bptt:int=70, backwards:bool=False) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=bs, **kwargs) for i,ds in enumerate(datasets)]
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=bs, bptt=bptt, backwards=backwards) 
+                    for i,ds in enumerate(datasets)]
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
         return cls(*dls, path=path, device=device, dl_tfms=dl_tfms, collate_fn=collate_fn, no_check=no_check)
@@ -250,10 +259,10 @@ class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
     def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs=64, pad_idx=1, pad_first=True,
-               no_check:bool=False, **kwargs) -> DataBunch:
+               device:torch.device=None, no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first)
+        collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first, backwards=backwards)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
         train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, drop_last=True, **kwargs)
         dataloaders = [train_dl]
@@ -261,7 +270,7 @@ class TextClasDataBunch(TextDataBunch):
             lengths = [len(t) for t in ds.x.items]
             sampler = SortSampler(ds.x, key=lengths.__getitem__)
             dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
-        return cls(*dataloaders, path=path, collate_fn=collate_fn, no_check=no_check)
+        return cls(*dataloaders, path=path, device=device, collate_fn=collate_fn, no_check=no_check)
 
 def open_text(fn:PathOrStr, enc='utf-8'):
     "Read the text in `fn`."
@@ -287,7 +296,7 @@ class TokenizeProcessor(PreProcessor):
 
 class NumericalizeProcessor(PreProcessor):
     "`PreProcessor` that numericalizes the tokens in `ds`."
-    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=2):
+    def __init__(self, ds:ItemList=None, vocab:Vocab=None, max_vocab:int=60000, min_freq:int=3):
         vocab = ifnone(vocab, ds.vocab if ds is not None else None)
         self.vocab,self.max_vocab,self.min_freq = vocab,max_vocab,min_freq
 
@@ -320,7 +329,7 @@ class TextList(ItemList):
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
         self.__class__ = LMTextList
-        return self.label_const(0, label_cls=LMLabel)
+        return self.label_const(0, label_cls=LMLabelList)
 
     def reconstruct(self, t:Tensor):
         idx = (t != self.pad_idx).nonzero().min()
@@ -351,23 +360,22 @@ class TextList(ItemList):
             items.append([str(txt_x), str(y), str(z)])
         display(HTML(text2html_table(items,  [85,7.5,7.5])))
 
-class LMLabel(CategoryList):
-    def predict(self, res): return res
-    def reconstruct(self,t:Tensor): return 0
+class LMLabelList(EmptyLabelList):
+    "Basic `ItemList` for dummy labels."
+    def __init__(self, items:Iterator, **kwargs):
+        super().__init__(items, **kwargs)
+        self.loss_func = CrossEntropyFlat()
 
 class LMTextList(TextList):
     "Special `TextList` for a language model."
     _bunch = TextLMDataBunch
     _is_lm = True
-    _label_cls = EmptyLabel
 
 def _join_texts(texts:Collection[str], mark_fields:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)
     if is1d(texts): texts = texts[:,None]
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
-    #text_col = f'{BOS} {FLD} {1} ' + df[0] if mark_fields else  f'{BOS} ' + df[0]
     text_col = f'{BOS} {FLD} {1} ' + df[0].astype(str) if mark_fields else  f'{BOS} ' + df[0].astype(str)
     for i in range(1,len(df.columns)):
-        #text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i]
         text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i].astype(str)   
     return text_col.values

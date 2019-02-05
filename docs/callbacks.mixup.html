@@ -184,7 +184,7 @@ The last trick we have to apply with this is that there can be some duplicates w
 <p><code>image0 * 0.1 + shuffle0 * (1-0.1) = image0 * 0.1 + image1 * 0.9</code></p>
 <p>and</p>
 <p><code>image1 * 0.9 + shuffle1 * (1-0.9) = image1 * 0.9 + image0 * 0.1</code></p>
-<p>will be the sames. Of course we have to be a bit unlucky but in practice, we saw there was a drop in accuracy by using this without removing those duplicates. To avoid them, the tricks is to replace the vector of parameters <code>t</code> we drew by:</p>
+<p>will be the same. Of course we have to be a bit unlucky but in practice, we saw there was a drop in accuracy by using this without removing those duplicates. To avoid them, the tricks is to replace the vector of parameters <code>t</code> we drew by:</p>
 <p><code>t = max(t, 1-t)</code></p>
 <p>The beta distribution with the two parameters equal is symmetric in any case, and this way we insure that the biggest coefficient is always near the first image (the non-shuffled batch).</p>
 
@@ -306,7 +306,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L6" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<b>`learn`</b>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <b>`alpha`</b>:<code>float</code>=<b><i>`0.4`</i></b>, <b>`stack_x`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`stack_y`</b>:<code>bool</code>=<b><i>`True`</i></b>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="MixUpCallback"><code>class</code> <code>MixUpCallback</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L6" class="source_link">[source]</a></h2><blockquote><p><code>MixUpCallback</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>alpha</code></strong>:<code>float</code>=<strong><em><code>0.4</code></em></strong>, <strong><code>stack_x</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>stack_y</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Callback that creates the mixed-up input and target.</p>
 
@@ -320,7 +320,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> for mixup on <code>learn</code> with a parameter <code>alpha</code> for the beta distribution. <code>stack_x</code> and <code>stack_y</code> determines if we stack our inputs/targets with the vector lambda drawn or do the linear combination (in general, we stack the inputs or ouputs when they correspond to categories or classes and do the linear combination otherwise).</p>
+<p>Create a <a href="/callback.html#Callback"><code>Callback</code></a> for mixup on <code>learn</code> with a parameter <code>alpha</code> for the beta distribution. <code>stack_x</code> and <code>stack_y</code> determines if we stack our inputs/targets with the vector lambda drawn or do the linear combination (in general, we stack the inputs or outputs when they correspond to categories or classes and do the linear combination otherwise).</p>
 
 </div>
 </div>
@@ -347,7 +347,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L12" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<b>`last_input`</b>, <b>`last_target`</b>, <b>`train`</b>, <b>`kwargs`</b>)</p>
+<h4 id="MixUpCallback.on_batch_begin"><code>on_batch_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L12" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_begin</code>(<strong><code>last_input</code></strong>, <strong><code>last_target</code></strong>, <strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Applies mixup to <code>last_input</code> and <code>last_target</code> if <code>train</code>.</p>
 
@@ -391,7 +391,7 @@ Total time: 00:23 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L32" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<b>`crit`</b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="MixUpLoss"><code>class</code> <code>MixUpLoss</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/mixup.py#L32" class="source_link">[source]</a></h3><blockquote><p><code>MixUpLoss</code>(<strong><code>crit</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Adapt the loss function <code>crit</code> to go with mixup.</p>
 

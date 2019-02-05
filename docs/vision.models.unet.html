@@ -27,7 +27,7 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="imgs/u-net-architecture.png" alt="U-Net architecure"></p>
+<p><img src="imgs/u-net-architecture.png" alt="U-Net architecture"></p>
 <p>This is the original U-Net. The difference here is that the left part is a pretrained model.</p>
 
 </div>
@@ -42,7 +42,7 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="DynamicUnet"><code>class</code> <code>DynamicUnet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L38" class="source_link">[source]</a></h2><blockquote><p><code>DynamicUnet</code>(<b>`encoder`</b>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <b>`n_classes`</b>:<code>int</code>, <b>`blur`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`blur_final`</b>=<b><i>`True`</i></b>, <b>`self_attention`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`y_range`</b>:<code>OptRange</code>=<b><i>`None`</i></b>, <b>`last_cross`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`bottle`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="/layers.html#SequentialEx"><code>SequentialEx</code></a></p>
+<h2 id="DynamicUnet"><code>class</code> <code>DynamicUnet</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L38" class="source_link">[source]</a></h2><blockquote><p><code>DynamicUnet</code>(<strong><code>encoder</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <strong><code>n_classes</code></strong>:<code>int</code>, <strong><code>blur</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>blur_final</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>self_attention</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>y_range</code></strong>:<code>OptRange</code>=<strong><em><code>None</code></em></strong>, <strong><code>last_cross</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>bottle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="/layers.html#SequentialEx"><code>SequentialEx</code></a></p>
 </blockquote>
 <p>Create a U-Net from a given architecture.</p>
 
@@ -71,7 +71,7 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UnetBlock"><code>class</code> <code>UnetBlock</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L14" class="source_link">[source]</a></h2><blockquote><p><code>UnetBlock</code>(<b>`up_in_c`</b>:<code>int</code>, <b>`x_in_c`</b>:<code>int</code>, <b>`hook`</b>:<a href="/callbacks.hooks.html#Hook"><code>Hook</code></a>, <b>`final_div`</b>:<code>bool</code>=<b><i>`True`</i></b>, <b>`blur`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`leaky`</b>:<code>float</code>=<b><i>`None`</i></b>, <b>`self_attention`</b>:<code>bool</code>=<b><i>`False`</i></b>, <b>`kwargs`</b>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h2 id="UnetBlock"><code>class</code> <code>UnetBlock</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/models/unet.py#L14" class="source_link">[source]</a></h2><blockquote><p><code>UnetBlock</code>(<strong><code>up_in_c</code></strong>:<code>int</code>, <strong><code>x_in_c</code></strong>:<code>int</code>, <strong><code>hook</code></strong>:<a href="/callbacks.hooks.html#Hook"><code>Hook</code></a>, <strong><code>final_div</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>blur</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>leaky</code></strong>:<code>float</code>=<strong><em><code>None</code></em></strong>, <strong><code>self_attention</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>A quasi-UNet block, using <code>PixelShuffle_ICNR upsampling</code>.</p>
 
@@ -85,7 +85,7 @@ summary: "Dynamic Unet that can use any pretrained model as a backbone."
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This block receives the output of the last block to be upsampled (size <code>up_in_c</code>) and the activations features from an intermediate layer of the <code>encoder</code> (size <code>x_in_c</code>, this is the lateral connection). The <code>hook</code> is set to this intermediate layer to store the output needed for this block. <code>final_div</code> determines if we devide the number of features by 2 with the upsampling, <code>blur</code> is to avoid checkerboard artifacts. If <code>leaky</code> is set, use a leaky ReLU with a slope equals to that parameter instead of a ReLU, and <code>self_attention</code> determines if we use a self-attention layer. <code>kwargs</code> are passed to <a href="/layers.html#conv_layer"><code>conv_layer</code></a>.</p>
+<p>This block receives the output of the last block to be upsampled (size <code>up_in_c</code>) and the activations features from an intermediate layer of the <code>encoder</code> (size <code>x_in_c</code>, this is the lateral connection). The <code>hook</code> is set to this intermediate layer to store the output needed for this block. <code>final_div</code> determines if we divide the number of features by 2 with the upsampling, <code>blur</code> is to avoid checkerboard artifacts. If <code>leaky</code> is set, use a leaky ReLU with a slope equals to that parameter instead of a ReLU, and <code>self_attention</code> determines if we use a self-attention layer. <code>kwargs</code> are passed to <a href="/layers.html#conv_layer"><code>conv_layer</code></a>.</p>
 
 </div>
 </div>

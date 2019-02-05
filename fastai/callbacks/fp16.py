@@ -32,6 +32,7 @@ def model_g2master_g(model_params:Sequence[Tensor], master_params:Sequence[Tenso
     if flat_master:
         for model_group,master_group in zip(model_params,master_params):
             if len(master_group) != 0:
+                if master_group[0].grad is None: master_group[0].grad = master_group[0].data.new(*master_group[0].data.size())
                 master_group[0].grad.data.copy_(parameters_to_vector([p.grad.data.float() for p in model_group]))
     else:
         for model_group,master_group in zip(model_params,master_params):
@@ -57,6 +58,7 @@ class MixedPrecision(LearnerCallback):
     def __init__(self, learn:Learner, loss_scale:float=512., flat_master:bool=False):
         super().__init__(learn)
         self.loss_scale,self.flat_master = loss_scale,flat_master
+        self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
 
     def on_train_begin(self, **kwargs:Any)->None:
@@ -78,18 +80,22 @@ class MixedPrecision(LearnerCallback):
 
     def on_loss_begin(self, last_output:Tensor, **kwargs:Any) -> Tensor:
         "Convert half precision output to FP32 to avoid reduction overflow."
-        return last_output.float()
+        return to_float(last_output)
 
     def on_backward_begin(self, last_loss:Rank0Tensor, **kwargs:Any) -> Rank0Tensor:
         "Scale gradients up by `self.loss_scale` to prevent underflow."
         #To avoid gradient underflow, we scale the gradients
-        return last_loss * self.loss_scale
+        ret_loss = last_loss * self.loss_scale
+        if torch.isnan(ret_loss): 
+            warn(f"You have a `loss_scale` factor that is too high, try to divide it by 2 (current value: {self.loss_scale}).")
+        return ret_loss
 
     def on_backward_end(self, **kwargs:Any ):
         "Convert the gradients back to FP32 and divide them by the scale."
         model_g2master_g(self.model_params, self.master_params, self.flat_master)
         for group in self.master_params:
-            for param in group: param.grad.div_(self.loss_scale)
+            for param in group: 
+                if param.grad is not None: param.grad.div_(self.loss_scale)
 
     def on_step_end(self, **kwargs:Any)->None:
         "Update the params from master to model and zero grad."

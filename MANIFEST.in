@@ -4,6 +4,8 @@ include HISTORY.md
 include LICENSE
 include README.md
 include fastai/gen_doc/*tpl
+include fastai/text/models/forget_mult*cpp
+include fastai/text/models/forget_mult*cu
 
 recursive-include tests *
 recursive-exclude * __pycache__
