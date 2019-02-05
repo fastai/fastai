@@ -259,7 +259,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L652" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
+<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L669" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
 </blockquote>
 <p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
 
@@ -335,7 +335,7 @@ summary: "Basic classes to contain the data for model training."
 <p>First of all, you obviously need to implement the methods <code>__len__</code> and <code>__getitem__</code>, as indicated by the pytorch docs. Then the most needed things would be:</p>
 <ul>
 <li><code>c</code> attribute: it's used in most functions that directly create a <a href="/basic_train.html#Learner"><code>Learner</code></a> (<a href="/tabular.data.html#tabular_learner"><code>tabular_learner</code></a>, <a href="/text.learner.html#text_classifier_learner"><code>text_classifier_learner</code></a>, <a href="/vision.learner.html#unet_learner"><code>unet_learner</code></a>, <a href="/vision.learner.html#create_cnn"><code>create_cnn</code></a>) and represents the number of outputs of the final layer of your model (also the number of classes if applicable).</li>
-<li><code>classes</code> attribute: it's used by <a href="/vision.learner.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> and also in <a href="/collab.html#collab_learner"><code>collab_learner</code></a> (best to use <a href="/collab.html#CollabDataBunch.from_df"><code>CollabDataBunch.from_df</code></a> than a pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>) and represents the unique tags that appear in your data.</li>
+<li><code>classes</code> attribute: it's used by <a href="/train.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> and also in <a href="/collab.html#collab_learner"><code>collab_learner</code></a> (best to use <a href="/collab.html#CollabDataBunch.from_df"><code>CollabDataBunch.from_df</code></a> than a pytorch <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>) and represents the unique tags that appear in your data.</li>
 <li>maybe a <code>loss_func</code> attribute: that is going to be used by <a href="/basic_train.html#Learner"><code>Learner</code></a> as a default loss function, so if you know your custom <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a> requires a particular loss, you can put it.</li>
 </ul>
 

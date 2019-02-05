@@ -361,7 +361,7 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="OneCycleScheduler"><code>class</code> <code>OneCycleScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>OneCycleScheduler</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>lr_max</code></strong>:<code>float</code>, <strong><code>moms</code></strong>:<code>Floats</code>=<strong><em><code>(0.95, 0.85)</code></em></strong>, <strong><code>div_factor</code></strong>:<code>float</code>=<strong><em><code>25.0</code></em></strong>, <strong><code>pct_start</code></strong>:<code>float</code>=<strong><em><code>0.3</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
+<h2 id="OneCycleScheduler"><code>class</code> <code>OneCycleScheduler</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L8" class="source_link">[source]</a></h2><blockquote><p><code>OneCycleScheduler</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>lr_max</code></strong>:<code>float</code>, <strong><code>moms</code></strong>:<code>Floats</code>=<strong><em><code>(0.95, 0.85)</code></em></strong>, <strong><code>div_factor</code></strong>:<code>float</code>=<strong><em><code>25.0</code></em></strong>, <strong><code>pct_start</code></strong>:<code>float</code>=<strong><em><code>0.3</code></em></strong>, <strong><code>tot_epochs</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>start_epoch</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) :: <a href="/basic_train.html#LearnerCallback"><code>LearnerCallback</code></a></p>
 </blockquote>
 <p>Manage 1-Cycle style training as outlined in Leslie Smith's <a href="https://arxiv.org/pdf/1803.09820.pdf">paper</a>.</p>
 
@@ -389,7 +389,7 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="OneCycleScheduler.steps"><code>steps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L16" class="source_link">[source]</a></h4><blockquote><p><code>steps</code>(<strong>*<code>steps_cfg</code></strong>:<code>StartOptEnd</code>)</p>
+<h4 id="OneCycleScheduler.steps"><code>steps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L18" class="source_link">[source]</a></h4><blockquote><p><code>steps</code>(<strong>*<code>steps_cfg</code></strong>:<code>StartOptEnd</code>)</p>
 </blockquote>
 
 </div>
@@ -429,7 +429,7 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="OneCycleScheduler.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L21" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>n_epochs</code></strong>:<code>int</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="OneCycleScheduler.on_train_begin"><code>on_train_begin</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L23" class="source_link">[source]</a></h4><blockquote><p><code>on_train_begin</code>(<strong><code>n_epochs</code></strong>:<code>int</code>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 
 </div>
@@ -456,7 +456,7 @@ Total time: 00:05 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="OneCycleScheduler.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="OneCycleScheduler.on_batch_end"><code>on_batch_end</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/one_cycle.py#L39" class="source_link">[source]</a></h4><blockquote><p><code>on_batch_end</code>(<strong><code>train</code></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 
 </div>

@@ -3,11 +3,12 @@ from ..torch_core import *
 from .transform import *
 from ..basic_data import *
 from ..data_block import *
+from ..layers import *
 from ..callback import Callback
 
 __all__ = ['LanguageModelPreLoader', 'SortSampler', 'SortishSampler', 'TextList', 'pad_collate', 'TextDataBunch',
            'TextLMDataBunch', 'TextClasDataBunch', 'Text', 'open_text', 'TokenizeProcessor', 'NumericalizeProcessor',
-           'OpenFileProcessor']
+           'OpenFileProcessor', 'LMLabelList']
 
 TextMtd = IntEnum('TextMtd', 'DF TOK IDS')
 text_extensions = {'.txt'}
@@ -328,7 +329,7 @@ class TextList(ItemList):
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
         self.__class__ = LMTextList
-        return self.label_const(0, label_cls=LMLabel)
+        return self.label_const(0, label_cls=LMLabelList)
 
     def reconstruct(self, t:Tensor):
         idx = (t != self.pad_idx).nonzero().min()
@@ -359,15 +360,16 @@ class TextList(ItemList):
             items.append([str(txt_x), str(y), str(z)])
         display(HTML(text2html_table(items,  [85,7.5,7.5])))
 
-class LMLabel(CategoryList):
-    def predict(self, res): return res
-    def reconstruct(self,t:Tensor): return 0
+class LMLabelList(EmptyLabelList):
+    "Basic `ItemList` for dummy labels."
+    def __init__(self, items:Iterator, **kwargs):
+        super().__init__(items, **kwargs)
+        self.loss_func = CrossEntropyFlat()
 
 class LMTextList(TextList):
     "Special `TextList` for a language model."
     _bunch = TextLMDataBunch
     _is_lm = True
-    _label_cls = EmptyLabel
 
 def _join_texts(texts:Collection[str], mark_fields:bool=False):
     if not isinstance(texts, np.ndarray): texts = np.array(texts)

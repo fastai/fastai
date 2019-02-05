@@ -1157,9 +1157,9 @@ ipdb&gt;</code></pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="res_block"><code>res_block</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L140" class="source_link">[source]</a></h4><blockquote><p><code>res_block</code>(<strong><code>nf</code></strong>, <strong><code>dense</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>norm_type</code></strong>:<code>Optional</code>[<a href="/layers.html#NormType"><code>NormType</code></a>]=<strong><em><code>&lt;NormType.Batch: 1&gt;</code></em></strong>, <strong><code>bottle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="res_block"><code>res_block</code><a href="https://github.com/fastai/fastai/blob/master/fastai/layers.py#L140" class="source_link">[source]</a></h4><blockquote><p><code>res_block</code>(<strong><code>nf</code></strong>, <strong><code>dense</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>norm_type</code></strong>:<code>Optional</code>[<a href="/layers.html#NormType"><code>NormType</code></a>]=<strong><em><code>&lt;NormType.Batch: 1&gt;</code></em></strong>, <strong><code>bottle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>conv_kwargs</code></strong>)</p>
 </blockquote>
-<p>Resnet block of <code>nf</code> features.</p>
+<p>Resnet block of <code>nf</code> features. <code>conv_kwargs</code> are passed to <a href="/layers.html#conv_layer"><code>conv_layer</code></a>.</p>
 
 </div>
 

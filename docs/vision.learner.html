@@ -50,7 +50,7 @@ summary: "`Learner` support for computer vision"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_cnn"><code>create_cnn</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L66" class="source_link">[source]</a></h4><blockquote><p><code>create_cnn</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>cut</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>None</code></em></strong>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Floats</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>split_on</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>ModuleList</code>], <code>NoneType</code>]=<strong><em><code>None</code></em></strong>, <strong><code>bn_final</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
+<h4 id="create_cnn"><code>create_cnn</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L67" class="source_link">[source]</a></h4><blockquote><p><code>create_cnn</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>cut</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>None</code></em></strong>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Floats</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>custom_head</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>split_on</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>ModuleList</code>], <code>NoneType</code>]=<strong><em><code>None</code></em></strong>, <strong><code>bn_final</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>:<code>Any</code>) → <a href="/basic_train.html#Learner"><code>Learner</code></a></p>
 </blockquote>
 <p>Build convnet style learners.</p>
 
@@ -73,7 +73,7 @@ summary: "`Learner` support for computer vision"
 <p>The blocks are defined by the <code>lin_ftrs</code> and <code>ps</code> arguments. Specifically, the first block will have a number of inputs inferred from the backbone <code>arch</code> and the last one will have a number of outputs equal to <code>data.c</code> (which contains the number of classes of the data) and the intermediate blocks have a number of inputs/outputs determined by <code>lin_frts</code> (of course a block has a number of inputs equal to the number of outputs of the previous block). The default is to have an intermediate hidden size of 512 (which makes two blocks <code>model_activation</code> -&gt; 512 -&gt; <code>n_classes</code>). If you pass a float then the final dropout layer will have the value <code>ps</code>, and the remaining will be <code>ps/2</code>. If you pass a list then the values are used for dropout probabilities directly.</p>
 <p>Note that the very last block doesn't have a <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.ReLU"><code>nn.ReLU</code></a> activation, to allow you to use any final activation you want (generally included in the loss function in pytorch). Also, the backbone will be frozen if you choose <code>pretrained=True</code> (so only the head will train if you call <a href="/basic_train.html#fit"><code>fit</code></a>) so that you can immediately start phase one of training as described above.</p>
 <p>Alternatively, you can define your own <code>custom_head</code> to put on top of the backbone. If you want to specify where to split <code>arch</code> you should so in the argument <code>cut</code> which can either be the index of a specific layer (the result will not include that layer) or a function that, when passed the model, will return the backbone you want.</p>
-<p>The final model obtained by stacking the backbone and the head (custom or defined as we saw) is then separated in groups for gradual unfreezing or differential learning rates. You can specify of to split the backbone in groups with the optional argument <code>split_on</code> (should be a function that returns those groups when given the backbone).</p>
+<p>The final model obtained by stacking the backbone and the head (custom or defined as we saw) is then separated in groups for gradual unfreezing or differential learning rates. You can specify how to split the backbone in groups with the optional argument <code>split_on</code> (should be a function that returns those groups when given the backbone).</p>
 <p>The <code>kwargs</code> will be passed on to <a href="/basic_train.html#Learner"><code>Learner</code></a>, so you can put here anything that <a href="/basic_train.html#Learner"><code>Learner</code></a> will accept (<a href="/metrics.html#metrics"><code>metrics</code></a>, <code>loss_func</code>, <code>opt_func</code>...)</p>
 
 </div>
@@ -158,7 +158,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="unet_learner"><code>unet_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L82" class="source_link">[source]</a></h4><blockquote><p><code>unet_learner</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>blur_final</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>norm_type</code></strong>:<code>Optional</code>[<a href="/layers.html#NormType"><code>NormType</code></a>]=<strong><em><code>'NormType'</code></em></strong>, <strong><code>split_on</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>ModuleList</code>], <code>NoneType</code>]=<strong><em><code>None</code></em></strong>, <strong><code>blur</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>self_attention</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>y_range</code></strong>:<code>OptRange</code>=<strong><em><code>None</code></em></strong>, <strong><code>last_cross</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>bottle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>cut</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>:<code>Any</code>)</p>
+<h4 id="unet_learner"><code>unet_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>unet_learner</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>blur_final</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>norm_type</code></strong>:<code>Optional</code>[<a href="/layers.html#NormType"><code>NormType</code></a>]=<strong><em><code>'NormType'</code></em></strong>, <strong><code>split_on</code></strong>:<code>Union</code>[<code>Callable</code>, <code>Collection</code>[<code>ModuleList</code>], <code>NoneType</code>]=<strong><em><code>None</code></em></strong>, <strong><code>blur</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>self_attention</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>y_range</code></strong>:<code>OptRange</code>=<strong><em><code>None</code></em></strong>, <strong><code>last_cross</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>bottle</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>cut</code></strong>:<code>Union</code>[<code>int</code>, <code>Callable</code>]=<strong><em><code>None</code></em></strong>, <strong>**<code>learn_kwargs</code></strong>:<code>Any</code>)</p>
 </blockquote>
 <p>Build Unet learner from <code>data</code> and <code>arch</code>.</p>
 
@@ -306,7 +306,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_body"><code>create_body</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L47" class="source_link">[source]</a></h4><blockquote><p><code>create_body</code>(<strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cut</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>body_fn</code></strong>:<code>Callable</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="create_body"><code>create_body</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L48" class="source_link">[source]</a></h4><blockquote><p><code>create_body</code>(<strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>pretrained</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>cut</code></strong>:<code>Optional</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>body_fn</code></strong>:<code>Callable</code>[<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>, <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>]=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>Cut off the body of a typically pretrained <code>model</code> at <code>cut</code> or as specified by <code>body_fn</code>.</p>
 
@@ -327,7 +327,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="create_head"><code>create_head</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L54" class="source_link">[source]</a></h4><blockquote><p><code>create_head</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>nc</code></strong>:<code>int</code>, <strong><code>lin_ftrs</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Floats</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>bn_final</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="create_head"><code>create_head</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L55" class="source_link">[source]</a></h4><blockquote><p><code>create_head</code>(<strong><code>nf</code></strong>:<code>int</code>, <strong><code>nc</code></strong>:<code>int</code>, <strong><code>lin_ftrs</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Floats</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>bn_final</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
 
 </div>
@@ -354,7 +354,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ClassificationInterpretation"><code>class</code> <code>ClassificationInterpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L98" class="source_link">[source]</a></h3><blockquote><p><code>ClassificationInterpretation</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>probs</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>losses</code></strong>:<code>Tensor</code>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>)</p>
+<h3 id="ClassificationInterpretation"><code>class</code> <code>ClassificationInterpretation</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L101" class="source_link">[source]</a></h3><blockquote><p><code>ClassificationInterpretation</code>(<strong><code>data</code></strong>:<a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>, <strong><code>probs</code></strong>:<code>Tensor</code>, <strong><code>y_true</code></strong>:<code>Tensor</code>, <strong><code>losses</code></strong>:<code>Tensor</code>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>)</p>
 </blockquote>
 <p>Interpretation methods for classification models.</p>
 
@@ -405,9 +405,9 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.from_learner"><code>from_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L104" class="source_link">[source]</a></h4><blockquote><p><code>from_learner</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>, <strong><code>tta</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="_cl_int_from_learner"><code>_cl_int_from_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L99" class="source_link">[source]</a></h4><blockquote><p><code>_cl_int_from_learner</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>, <strong><code>tta</code></strong>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
-<p>Create an instance of <a href="/vision.learner.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a>. <code>tta</code> indicates if we want to use Test Time Augmentation.</p>
+<p>Create an instance of <a href="/train.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a>. <code>tta</code> indicates if we want to use Test Time Augmentation.</p>
 
 </div>
 
@@ -433,9 +433,9 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="interpret"><code>interpret</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L210" class="source_link">[source]</a></h4><blockquote><p><code>interpret</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>, <strong><code>tta</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="interpret"><code>interpret</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L163" class="source_link">[source]</a></h4><blockquote><p><code>interpret</code>(<strong><code>learn</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>ds_type</code></strong>:<a href="/basic_data.html#DatasetType"><code>DatasetType</code></a>=<strong><em><code>&lt;DatasetType.Valid: 2&gt;</code></em></strong>, <strong><code>tta</code></strong>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
-<p>Create a <a href="/vision.learner.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> object from <code>learner</code> on <code>ds_type</code> with <code>tta</code>.</p>
+<p>Create a <a href="/train.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> object from <code>learner</code> on <code>ds_type</code> with <code>tta</code>.</p>
 
 </div>
 
@@ -461,7 +461,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.plot_top_losses"><code>plot_top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L114" class="source_link">[source]</a></h4><blockquote><p><code>plot_top_losses</code>(<strong><code>k</code></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>figsize</code></strong>=<strong><em><code>(12, 12)</code></em></strong>)</p>
+<h4 id="_cl_int_plot_top_losses"><code>_cl_int_plot_top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L105" class="source_link">[source]</a></h4><blockquote><p><code>_cl_int_plot_top_losses</code>(<strong><code>k</code></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>figsize</code></strong>=<strong><em><code>(12, 12)</code></em></strong>)</p>
 </blockquote>
 <p>Show images in <code>top_losses</code> along with their prediction, actual, loss, and probability of predicted class.</p>
 
@@ -521,7 +521,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.top_losses"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L110" class="source_link">[source]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="ClassificationInterpretation.top_losses"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L155" class="source_link">[source]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
 <p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>).</p>
 
@@ -579,7 +579,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.plot_multi_top_losses"><code>plot_multi_top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>plot_multi_top_losses</code>(<strong><code>samples</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>figsz</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>]=<strong><em><code>(8, 8)</code></em></strong>, <strong><code>save_misclassified</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="_cl_int_plot_multi_top_losses"><code>_cl_int_plot_multi_top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L118" class="source_link">[source]</a></h4><blockquote><p><code>_cl_int_plot_multi_top_losses</code>(<strong><code>samples</code></strong>:<code>int</code>=<strong><em><code>3</code></em></strong>, <strong><code>figsz</code></strong>:<code>Tuple</code>[<code>int</code>, <code>int</code>]=<strong><em><code>(8, 8)</code></em></strong>, <strong><code>save_misclassified</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
 <p>Show images in <code>top_losses</code> along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset.</p>
 
@@ -609,7 +609,7 @@ Note that you can pass <code>save_misclassified=True</code> (by default it's <co
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.plot_confusion_matrix"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L180" class="source_link">[source]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="ClassificationInterpretation.plot_confusion_matrix"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L125" class="source_link">[source]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Plot the confusion matrix, with <code>title</code> and using <code>cmap</code>.</p>
 
@@ -668,7 +668,7 @@ Note that you can pass <code>save_misclassified=True</code> (by default it's <co
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.confusion_matrix"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L168" class="source_link">[source]</a></h4><blockquote><p><code>confusion_matrix</code>(<strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="ClassificationInterpretation.confusion_matrix"><code>confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L113" class="source_link">[source]</a></h4><blockquote><p><code>confusion_matrix</code>(<strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>)</p>
 </blockquote>
 <p>Confusion matrix as an <code>np.ndarray</code>.</p>
 
@@ -719,7 +719,7 @@ Note that you can pass <code>save_misclassified=True</code> (by default it's <co
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.most_confused"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py#L202" class="source_link">[source]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
+<h4 id="ClassificationInterpretation.most_confused"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
 </blockquote>
 <p>Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences.</p>
 
@@ -744,7 +744,7 @@ Note that you can pass <code>save_misclassified=True</code> (by default it's <co
 <pre><code>RuntimeError: $ Torch: not enough memory: you tried to allocate 64GB. Buy new RAM!
 
 </code></pre>
-<p>In this case it is possible to force <a href="/vision.learner.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> to compute the confusion matrix for data slices and then aggregate the result by specifying slice_size parameter.</p>
+<p>In this case it is possible to force <a href="/train.html#ClassificationInterpretation"><code>ClassificationInterpretation</code></a> to compute the confusion matrix for data slices and then aggregate the result by specifying slice_size parameter.</p>
 
 </div>
 </div>

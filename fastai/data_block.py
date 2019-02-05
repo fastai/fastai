@@ -245,7 +245,7 @@ class ItemList():
 
     def label_const(self, const:Any=0, label_cls:Callable=None, **kwargs)->'LabelList':
         "Label every item with `const`."
-        return self.label_from_func(func=lambda o: const, **kwargs)
+        return self.label_from_func(func=lambda o: const, label_cls=label_cls, **kwargs)
 
     def label_empty(self, **kwargs):
         "Label every item with an `EmptyLabel`."
@@ -524,6 +524,7 @@ class LabelLists(ItemLists):
         return LabelLists.load_state(path, state)
 
 def _check_kwargs(ds:ItemList, tfms:TfmList, **kwargs):
+    tfms = listify(tfms)
     if (tfms is None or len(tfms) == 0) and len(kwargs) == 0: return
     if len(ds.items) >= 1:
         x = ds[0]

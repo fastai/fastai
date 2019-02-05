@@ -107,7 +107,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="untar_data"><code>untar_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>None</code></em></strong>, <strong><code>dest</code></strong>:<code>PathOrStr</code>=<strong><em><code>None</code></em></strong>, <strong><code>data</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>force_download</code></strong>=<strong><em><code>False</code></em></strong>) → <code>Path</code></p>
+<h4 id="untar_data"><code>untar_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L151" class="source_link">[source]</a></h4><blockquote><p><code>untar_data</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>None</code></em></strong>, <strong><code>dest</code></strong>:<code>PathOrStr</code>=<strong><em><code>None</code></em></strong>, <strong><code>data</code></strong>=<strong><em><code>True</code></em></strong>, <strong><code>force_download</code></strong>=<strong><em><code>False</code></em></strong>) → <code>Path</code></p>
 </blockquote>
 <p>Download <code>url</code> to <code>fname</code> if it doesn't exist, and un-tgz to folder <code>dest</code>.</p>
 
@@ -157,7 +157,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="download_data"><code>download_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>download_data</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>None</code></em></strong>, <strong><code>data</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Path</code></p>
+<h4 id="download_data"><code>download_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L136" class="source_link">[source]</a></h4><blockquote><p><code>download_data</code>(<strong><code>url</code></strong>:<code>str</code>, <strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>None</code></em></strong>, <strong><code>data</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) → <code>Path</code></p>
 </blockquote>
 <p>Download <code>url</code> to destination <code>fname</code>.</p>
 
@@ -215,7 +215,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="datapath4file"><code>datapath4file</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L126" class="source_link">[source]</a></h4><blockquote><p><code>datapath4file</code>(<strong><code>filename</code></strong>)</p>
+<h4 id="datapath4file"><code>datapath4file</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L130" class="source_link">[source]</a></h4><blockquote><p><code>datapath4file</code>(<strong><code>filename</code></strong>)</p>
 </blockquote>
 <p>Return data path to <code>filename</code>, checking locally first then in the config file.</p>
 
@@ -245,7 +245,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="url2path"><code>url2path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L113" class="source_link">[source]</a></h4><blockquote><p><code>url2path</code>(<strong><code>url</code></strong>, <strong><code>data</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="url2path"><code>url2path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L117" class="source_link">[source]</a></h4><blockquote><p><code>url2path</code>(<strong><code>url</code></strong>, <strong><code>data</code></strong>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
 <p>Change <code>url</code> to a path.</p>
 
@@ -266,7 +266,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Config"><code>class</code> <code>Config</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L65" class="source_link">[source]</a></h2><blockquote><p><code>Config</code>()</p>
+<h2 id="Config"><code>class</code> <code>Config</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L69" class="source_link">[source]</a></h2><blockquote><p><code>Config</code>()</p>
 </blockquote>
 <p>Creates a default config file at <code>~/.fastai/config.yml</code></p>
 
@@ -294,7 +294,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Config.get_path"><code>get_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>get_path</code>(<strong><code>path</code></strong>)</p>
+<h4 id="Config.get_path"><code>get_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L82" class="source_link">[source]</a></h4><blockquote><p><code>get_path</code>(<strong><code>path</code></strong>)</p>
 </blockquote>
 <p>Get the <code>path</code> in the config file.</p>
 
@@ -322,7 +322,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Config.data_path"><code>data_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>data_path</code>()</p>
+<h4 id="Config.data_path"><code>data_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L87" class="source_link">[source]</a></h4><blockquote><p><code>data_path</code>()</p>
 </blockquote>
 <p>Get the path to data in the config file.</p>
 
@@ -350,7 +350,7 @@ Configure the default <code>data_path</code> by editing <code>~/.fastai/config.y
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Config.model_path"><code>model_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L88" class="source_link">[source]</a></h4><blockquote><p><code>model_path</code>()</p>
+<h4 id="Config.model_path"><code>model_path</code><a href="https://github.com/fastai/fastai/blob/master/fastai/datasets.py#L92" class="source_link">[source]</a></h4><blockquote><p><code>model_path</code>()</p>
 </blockquote>
 <p>Get the path to fastai pretrained models in the config file.</p>
 
