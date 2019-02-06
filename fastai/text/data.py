@@ -233,7 +233,7 @@ class TextDataBunch(DataBunch):
                     min_freq:int=2, mark_fields:bool=False, **kwargs):
         "Create a `TextDataBunch` from text files in folders."
         path = Path(path).absolute()
-        processor = _get_processor(tokenizer=tokenizer, vocab=vocab, chunksize=chunksize, max_vocab=max_vocab,
+        processor = [OpenFileProcessor()] + _get_processor(tokenizer=tokenizer, vocab=vocab, chunksize=chunksize, max_vocab=max_vocab,
                                    min_freq=min_freq, mark_fields=mark_fields)
         src = (TextList.from_folder(path, processor=processor)
                        .split_by_folder(train=train, valid=valid))
