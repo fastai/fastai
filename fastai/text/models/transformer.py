@@ -33,9 +33,10 @@ def feed_forward(d_model:int, d_ff:int, p_ff:float=0., act:Activation=Activation
 class MultiHeadAttention(nn.Module):
     "MutiHeadAttention."
     
-    def __init__(self, n_heads:int, d_model:int, d_head:int, p_res:float=0., p_att:float=0., bias:bool=True,
+    def __init__(self, n_heads:int, d_model:int, d_head:int=None, p_res:float=0., p_att:float=0., bias:bool=True,
                  scale:bool=True):
         super().__init__()
+        d_head = ifnone(d_head, d_model//n_heads)
         self.n_heads,self.d_head,self.scale = n_heads,d_head,scale
         self.attention = nn.Linear(d_model, 3 * n_heads * d_head, bias=bias)
         self.out = nn.Linear(n_heads * d_head, d_model, bias=bias)
@@ -110,7 +111,7 @@ class MultiHeadRelativeAttention(MultiHeadAttention):
         #### compute attention score (AC is (a) + (c) and BS is (b) + (d) in the paper)
         AC = torch.matmul(wq+u,wk)
         BD = _line_shift(torch.matmul(wq+v, wkr))
-        attn_score = (AC + BD).mul_(1/(self.d_head ** 0.5))
+        if self.scale: attn_score = (AC + BD).mul_(1/(self.d_head ** 0.5))
         if mask is not None: 
             attn_score = attn_score.float().masked_fill(mask, -float('inf')).type_as(attn_score)
         attn_prob = self.drop_att(F.softmax(attn_score, dim=-1))
