@@ -11,7 +11,7 @@ from .models import get_language_model, get_rnn_classifier
 from .transform import *
 from .data import *
 
-__all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'lm_split',
+__all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'lm_split', 'decode_spec_tokens',
            'rnn_classifier_split', 'language_model_learner', 'text_classifier_learner', 'default_dropout']
 
 default_dropout = {'language': np.array([0.25, 0.1, 0.2, 0.02, 0.15]),
@@ -91,11 +91,31 @@ class RNNLearner(Learner):
 def _select_hidden(model, idxs):
     model[0].hidden = [(h[0][:,idxs,:],h[1][:,idxs,:]) for h in model[0].hidden]
     model[0].bs = len(idxs)
-    
+
+def decode_spec_tokens(tokens):
+    new_toks,rule,arg = [],None,None
+    for t in tokens:
+        if t in [TK_MAJ, TK_UP, TK_REP, TK_WREP]: rule = t
+        elif rule is None: new_toks.append(t)
+        elif rule == TK_MAJ: 
+            new_toks.append(t[:1].upper() + t[1:].lower())
+            rule = None
+        elif rule == TK_UP:  
+            new_toks.append(t.upper())
+            rule = None
+        elif arg is None: 
+            try:    arg = int(t)
+            except: rule = None
+        else:
+            if rule == TK_REP: new_toks.append(t * arg)
+            else:              new_toks += [t] * arg
+    return new_toks
+
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     
-    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None):
+    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, 
+                decoder:Callable=decode_spec_tokens):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
         self.model.reset()
@@ -110,9 +130,10 @@ class LanguageLearner(RNNLearner):
             idx = torch.multinomial(res, 1).item()
             new_idx.append(idx)
             xb = xb.new_tensor([idx])[None]
-        return text + ' ' + self.data.vocab.textify(new_idx)
+        return text + ' ' + ' '.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
     
-    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1.):
+    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
+                    decoder:Callable=decode_spec_tokens):
         ds = self.data.single_dl.dataset
         self.model.reset()
         xb, yb = self.data.one_item(text)
@@ -138,7 +159,7 @@ class LanguageLearner(RNNLearner):
                     _select_hidden(self.model, indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         node_idx = torch.randint(0, nodes.size(0), (1,)).item()
-        return text + ' ' + self.data.vocab.textify([i.item() for i in nodes[node_idx]])
+        return text + ' ' + ' '.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx]], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
