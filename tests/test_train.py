@@ -16,13 +16,13 @@ def test_lr_find(learn):
     "Tests API: lr_find"
     wd, start_lr, num_it, end_lr = 0.002, 1e-06, 90, 10
     lr_find(learn=learn, start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=True, wd=wd)
-    assert(len(learn.recorder.moms) == len(learn.recorder.lrs))
-    assert(learn.recorder.lrs[0] == start_lr)
-    assert(learn.recorder.moms[0] == 0.9)
-    assert(learn.recorder.lrs[-1] < learn.recorder.opt.lr)
-    assert(learn.recorder.opt.wd == wd)
+    assert len(learn.recorder.moms) == len(learn.recorder.lrs)
+    assert learn.recorder.lrs[0] == start_lr
+    assert learn.recorder.moms[0] == 0.9
+    assert learn.recorder.lrs[-1] < learn.recorder.opt.lr
+    assert learn.recorder.opt.wd == wd
     lr_find(learn=learn, start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=False, wd=wd)
-    assert(len(learn.recorder.lrs) == num_it)
+    assert len(learn.recorder.lrs) == num_it
 
 def test_fit(learn):
     "Tests API: Learner.fit"
