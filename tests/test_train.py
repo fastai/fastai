@@ -14,15 +14,12 @@ def learn():
 
 def test_lr_find(learn):
     "Tests API: lr_find"
-    wd=0.002
-    start_lr = 1e-06
-    num_it = 90
-    end_lr = 10
+    wd, start_lr, num_it, end_lr = 0.002, 1e-06, 90, 10
     lr_find(learn=learn, start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=True, wd=wd)
     assert(len(learn.recorder.moms) == len(learn.recorder.lrs))
     assert(learn.recorder.lrs[0] == start_lr)
     assert(learn.recorder.moms[0] == 0.9)
-    assert(learn.recorder.lrs[len(learn.recorder.lrs) - 1] < learn.recorder.opt.lr)
+    assert(learn.recorder.lrs[-1] < learn.recorder.opt.lr)
     assert(learn.recorder.opt.wd == wd)
     lr_find(learn=learn, start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=False, wd=wd)
     assert(len(learn.recorder.lrs) == num_it)
@@ -30,9 +27,7 @@ def test_lr_find(learn):
 def test_fit(learn):
     "Tests API: Learner.fit"
     # Test confirms learning rate and momentum are stable, see difference to test_fit_one_cycle
-    learning_rate = 3e-3
-    weight_decay = 1e-2
-    eps = 4
+    learning_rate, weight_decay, eps = 3e-3, 1e-2,  4
     with CaptureStdout() as cs:  learn.fit(epochs=eps, lr=learning_rate, wd=weight_decay)
     assert set(learn.recorder.lrs) == {learning_rate}
     assert set(learn.recorder.moms) == {learn.recorder.moms[0]}
@@ -42,8 +37,7 @@ def test_fit_one_cycle(learn):
     # Test confirms expected behavior change of learning rate and momentum
     # see graphical representation here: output cell 17 of, learn.sched.plot_lr() in
     # https://github.com/sgugger/Deep-Learning/blob/master/Cyclical%20LR%20and%20momentums.ipynb
-    lr = 3e-3
-    cycle_length = 4
+    lr, cycle_length = 3e-3,  4
     with CaptureStdout() as cs: learn.fit_one_cycle(cycle_length, lr)
     listlrs = list(learn.recorder.lrs)
     listmoms = list(learn.recorder.moms)
