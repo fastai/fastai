@@ -202,6 +202,9 @@ class DataBunch():
         self.train_dl.batch_size,self.valid_dl.batch_size = v,v
         if self.test_dl is not None: self.test_dl.batch_size = v
 
+    @property
+    def classes(self): return self.train_ds.y.classes
+    
     def sanity_check(self):
         "Check the underlying data in the training set can be properly loaded."
         final_message = "You can deactivate this warning by passing `no_check=True`."
