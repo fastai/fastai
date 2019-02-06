@@ -93,7 +93,7 @@ def test_classifier():
         try:
             expected_classes = n_labels if n_labels > 1 else 2
             df = text_df(n_labels=n_labels)
-            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), text_cols=["text"], bs=4)
+            data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, label_cols=list(range(n_labels)), text_cols=["text"], bs=2)
             classifier = text_classifier_learner(data, bptt=10)
             assert last_layer(classifier.model).out_features == expected_classes
             assert len(data.train_dl) == math.ceil(len(data.train_ds)/data.train_dl.batch_size)

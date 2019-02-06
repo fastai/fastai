@@ -244,12 +244,13 @@ class TextDataBunch(DataBunch):
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
-    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, num_workers:int=0,
-               device:torch.device=None, collate_fn:Callable=data_collate, dl_tfms:Optional[Collection[Callable]]=None, 
-               bptt:int=70, backwards:bool=False) -> DataBunch:
+    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, val_bs:int=None, 
+               num_workers:int=0, device:torch.device=None, collate_fn:Callable=data_collate, 
+               dl_tfms:Optional[Collection[Callable]]=None, bptt:int=70, backwards:bool=False) -> DataBunch:
         "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=bs, bptt=bptt, backwards=backwards) 
+        val_bs = ifnone(val_bs, bs)
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=(bs if i==0 else val_bs), bptt=bptt, backwards=backwards) 
                     for i,ds in enumerate(datasets)]
         val_bs = bs
         dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
@@ -258,18 +259,19 @@ class TextLMDataBunch(TextDataBunch):
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
-    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs=64, pad_idx=1, pad_first=True,
-               device:torch.device=None, no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
+    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=32, val_bs:int=None, pad_idx=1, 
+               pad_first=True, device:torch.device=None, no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
         "Function that transform the `datasets` in a `DataBunch` for classification."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
+        val_bs = ifnone(val_bs, bs)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first, backwards=backwards)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
-        train_dl = DataLoader(datasets[0], batch_size=bs//2, sampler=train_sampler, drop_last=True, **kwargs)
+        train_dl = DataLoader(datasets[0], batch_size=bs, sampler=train_sampler, drop_last=True, **kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             lengths = [len(t) for t in ds.x.items]
             sampler = SortSampler(ds.x, key=lengths.__getitem__)
-            dataloaders.append(DataLoader(ds, batch_size=bs, sampler=sampler, **kwargs))
+            dataloaders.append(DataLoader(ds, batch_size=val_bs, sampler=sampler, **kwargs))
         return cls(*dataloaders, path=path, device=device, collate_fn=collate_fn, no_check=no_check)
 
 def open_text(fn:PathOrStr, enc='utf-8'):

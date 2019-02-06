@@ -21,6 +21,7 @@ of that change.
 - Backward option in `text_classifier_learner` (thanks to tpietruszka)
 - Automate custom dependency groups installation via extending `distutils`
 - Transformer and TransformerXL architectures
+- Add `val_bs` parameter to all `DataBunch` creation methods
 
 ### Changed:
 
