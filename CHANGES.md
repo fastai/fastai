@@ -22,6 +22,7 @@ of that change.
 - Automate custom dependency groups installation via extending `distutils`
 - Transformer and TransformerXL architectures
 - Add `val_bs` parameter to all `DataBunch` creation methods
+- `LanguageLearner.beam_search` to make text generation using beam search
 
 ### Changed:
 
@@ -34,7 +35,7 @@ of that change.
 - fix the conda package dependency for py36
 - Bugs in `ForgetMult` and check cuda version are consistent (thanks to mkardas)
 - Bug `label_empty()` got an unexpected keyword argument 'label_cls'
-- For a language model `predict` is now way faster
+- For a language model `predict` is now way faster and more accurate
 
 ## 1.0.42 (2019-01-24)
 

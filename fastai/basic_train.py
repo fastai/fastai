@@ -250,8 +250,9 @@ class Learner():
     def purge(self):
         path,data = self.path,self.data
         self.export(fname = 'tmp.pkl')
-        destroy(self)
+        del self
         gc.collect()
+        torch.cuda.empty_cache() 
         learn = load_learner(path, 'tmp.pkl')
         learn.data = data
         os.remove(path/'tmp.pkl')
