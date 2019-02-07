@@ -114,8 +114,7 @@ def decode_spec_tokens(tokens):
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     
-    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, 
-                decoder:Callable=decode_spec_tokens):
+    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, sep=' '):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
         self.model.reset()
@@ -130,10 +129,9 @@ class LanguageLearner(RNNLearner):
             idx = torch.multinomial(res, 1).item()
             new_idx.append(idx)
             xb = xb.new_tensor([idx])[None]
-        return text + ' ' + ' '.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
+        return text + sep + sep.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
     
-    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
-                    decoder:Callable=decode_spec_tokens):
+    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1., sep=' '):
         ds = self.data.single_dl.dataset
         self.model.reset()
         xb, yb = self.data.one_item(text)
@@ -159,7 +157,7 @@ class LanguageLearner(RNNLearner):
                     _select_hidden(self.model, indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         node_idx = torch.randint(0, nodes.size(0), (1,)).item()
-        return text + ' ' + ' '.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx]], sep=None)))
+        return text + sep + sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx]], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
