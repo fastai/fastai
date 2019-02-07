@@ -112,7 +112,8 @@ def decode_spec_tokens(tokens):
 class LanguageLearner(RNNLearner):
     "Subclass of RNNLearner for predictions."
     
-    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, sep=' '):
+    def predict(self, text:str, n_words:int=1, no_unk:bool=True, temperature:float=1., min_p:float=None, sep:str=' ',
+                decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text`."
         ds = self.data.single_dl.dataset
         self.model.reset()
@@ -129,7 +130,9 @@ class LanguageLearner(RNNLearner):
             xb = xb.new_tensor([idx])[None]
         return text + sep + sep.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
     
-    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1., sep=' '):
+    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1., sep:str=' ',
+                    decoder=decode_spec_tokens):
+        "Return the `n_words` that come after `text` using beam search."
         ds = self.data.single_dl.dataset
         self.model.reset()
         xb, yb = self.data.one_item(text)

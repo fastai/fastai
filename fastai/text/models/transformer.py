@@ -9,6 +9,7 @@ __all__ = ['Activation', 'PositionalEncoding', 'GeLU', 'Swish', 'feed_forward', 
 Activation = Enum('Activation', 'ReLU Swish GeLU')
 
 class PositionalEncoding(nn.Module):
+    "Encode the position with a sinusoid."
     def __init__(self, d:int):
         super().__init__()
         self.register_buffer('freq', 1 / (10000 ** (torch.arange(0., d, 2.)/d)))
@@ -139,6 +140,7 @@ class MultiHeadRelativeAttention(MultiHeadAttention):
         return attn_vec.contiguous().view(bs, x_len, -1)
 
 class DecoderLayer(nn.Module):
+    "Basic block of a Transformer model."
     #Can't use Sequential directly cause more than one input...
     def __init__(self, n_heads:int, d_model:int, d_head:int, d_inner:int, resid_p:float=0., attn_p:float=0., ff_p:float=0.,
                  bias:bool=True, scale:bool=True, act:Activation=Activation.ReLU, double_drop:bool=True,
@@ -150,6 +152,7 @@ class DecoderLayer(nn.Module):
     def forward(self, x:Tensor, mask:Tensor=None, **kwargs): return self.ff(self.mhra(x, mask=mask, **kwargs))
 
 class Transformer(nn.Module):
+    "Transformer model: https://arxiv.org/abs/1706.03762."
     def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int, 
                  resid_p:float=0., attn_p:float=0., ff_p:float=0., embed_p:float=0., bias:bool=True, scale:bool=True,
                  act:Activation=Activation.ReLU, double_drop:bool=True, attn_cls:Callable=MultiHeadAttention,
@@ -174,6 +177,7 @@ class Transformer(nn.Module):
         return ([inp],[inp]) #For the LinearDecoder
 
 class TransformerXL(nn.Module):
+    "TransformerXL model: https://arxiv.org/abs/1901.02860."
     def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int, 
                  resid_p:float=0., attn_p:float=0., ff_p:float=0., embed_p:float=0., bias:bool=False, scale:bool=True,
                  act:Activation=Activation.ReLU, double_drop:bool=True, attn_cls:Callable=MultiHeadRelativeAttention,
