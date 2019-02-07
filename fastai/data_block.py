@@ -62,7 +62,7 @@ class ItemList():
         return self.items[i]
     def __repr__(self)->str:
         items = [self[i] for i in range(min(5,len(self.items)))]
-        return f'{self.__class__.__name__} ({len(self.items)} items)\n{items}...\nPath: {self.path}'
+        return f'{self.__class__.__name__} ({len(self.items)} items)\n{show_some(items)}\nPath: {self.path}'
 
     def process(self, processor:PreProcessors=None):
         "Apply `processor` or `self.processor` to `self`."
@@ -551,8 +551,12 @@ class LabelList(Dataset):
         self.item = None
 
     def __repr__(self)->str:
-        x = f'{self.x}' # force this to happen first
-        return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'
+        items = [self[i] for i in range(min(5,len(self.items)))]
+        res = f'{self.__class__.__name__} ({len(self.items)} items)\n'
+        res += f'x: {self.x.__class__.__name__}\n{show_some([i[0] for i in items])}\n'
+        res += f'y: {self.y.__class__.__name__}\n{show_some([i[1] for i in items])}\n'
+        return res + f'Path: {self.path}'        
+        
     def predict(self, res):
         "Delegates predict call on `res` to `self.y`."
         return self.y.predict(res)
