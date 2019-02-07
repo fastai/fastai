@@ -184,13 +184,13 @@ def split_model(model:nn.Module, splits:Collection[Union[nn.Module,ModuleList]],
 #TODO: add the test to put bias with bn layers
 def split_bn_bias(layer_groups:ModuleList)->ModuleList:
     "Split the layers in `layer_groups` into batchnorm (`bn_types`) and non-batchnorm groups."
-    split_groups = []
+    split_groups = nn.ModuleList()
     for l in layer_groups:
-        l1,l2 = [],[]
+        l1,l2 = nn.ModuleList(),nn.ModuleList()
         for c in l.children():
             if isinstance(c, bn_types): l2.append(c)
             else:                       l1.append(c)
-        split_groups += [nn.Sequential(*l1), nn.Sequential(*l2)]
+        split_groups += [l1, l2]
     return split_groups
 
 def set_bn_eval(m:nn.Module)->None:
