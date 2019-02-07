@@ -141,7 +141,6 @@ class LanguageLearner(RNNLearner):
         with torch.no_grad():
             for k in range(n_words):
                 out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
-                if temperature != 1.: out.div_(temperature)
                 values, indices = out.topk(top_k, dim=-1)
                 scores = (-values * scores[:,None]).view(-1)
                 if nodes is None: 
@@ -156,7 +155,8 @@ class LanguageLearner(RNNLearner):
                     nodes = nodes.view(-1, nodes.size(2))[sort_idx]
                     _select_hidden(self.model, indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
-        node_idx = torch.randint(0, nodes.size(0), (1,)).item()
+        if temperature != 1.: scores.div_(temperature)
+        node_idx = torch.multinomial(1-scores, 1).item()
         return text + sep + sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx]], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
