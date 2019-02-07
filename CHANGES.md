@@ -15,6 +15,10 @@ of that change.
 
 ## 1.0.43.dev0 (Work In Progress)
 
+### Breaking change:
+
+- `language_model_learner`and `text_classifier_learner` have a different syntax: `(data, arch, pretrained=True,...)` to mimic the behaivor of `create_cnn`
+
 ### New:
 
 - More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
