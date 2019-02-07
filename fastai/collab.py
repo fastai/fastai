@@ -73,10 +73,13 @@ class CollabLearner(Learner):
         "Fetch item or user (based on `is_item`) for all in `arr`. (Set model to `cpu` and no grad.)"
         m = self.model.eval().cpu()
         requires_grad(m,False)
-        u_class,i_class = self.data.classes.values()
+        u_class,i_class = self.data.train_ds.x.classes.values()
         classes = i_class if is_item else u_class
         c2i = {v:k for k,v in enumerate(classes)}
-        return tensor([c2i[o] for o in arr])
+        try: return tensor([c2i[o] for o in arr])
+        except Exception as e: 
+            print(f"""You're trying to access {'an item' if is_item else 'a user'} that isn't in the training data.
+                  If it was in your original data, it may have been split such that it's only in the validation set now.""")
 
     def bias(self, arr:Collection, is_item:bool=True):
         "Bias for item or user (based on `is_item`) for all in `arr`. (Set model to `cpu` and no grad.)"

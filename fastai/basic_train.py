@@ -246,6 +246,16 @@ class Learner():
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             get_model(self.model).load_state_dict(state, strict=strict)
         return self
+    
+    def purge(self):
+        path,data = self.path,self.data
+        self.export(fname = 'tmp.pkl')
+        destroy(self)
+        gc.collect()
+        learn = load_learner(path, 'tmp.pkl')
+        learn.data = data
+        os.remove(path/'tmp.pkl')
+        return learn
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
                   pbar:Optional[PBar]=None) -> List[Tensor]:
