@@ -79,7 +79,7 @@ class DeviceDataLoader():
 
 class DataBunch():
     "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
-    
+
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, dl_tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate, no_check:bool=False):
@@ -106,7 +106,7 @@ class DataBunch():
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
-               val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, 
+               val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None,
                device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False)->'DataBunch':
         "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
@@ -170,7 +170,7 @@ class DataBunch():
         "Export the minimal state of `self` for inference in `self.path/fname`."
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
         self.valid_ds.export(self.path/fname, **xtra)
-    
+
     def _grab_dataset(self, dl:DataLoader):
         ds = dl.dl.dataset
         while hasattr(ds, 'dataset'): ds = ds.dataset
@@ -204,12 +204,12 @@ class DataBunch():
 
     @property
     def classes(self): return self.train_ds.y.classes
-    
+
     def sanity_check(self):
         "Check the underlying data in the training set can be properly loaded."
         final_message = "You can deactivate this warning by passing `no_check=True`."
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
-        if len(self.train_dl) == 0: 
+        if len(self.train_dl) == 0:
             warn(f"""Your training dataloader is empty, you have only {len(self.train_dl.dataset)} items in your training set.
                  Your batch size is {self.train_dl.batch_size}, you should lower it.""")
             print(final_message)
@@ -238,3 +238,4 @@ class DataBunch():
             except: pass
             warn(message)
             print(final_message)
+

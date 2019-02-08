@@ -5,3 +5,4 @@ from torchvision.models import vgg16_bn,vgg19_bn,alexnet
 from .darknet import *
 from .unet import *
 from .wrn import *
+from .xception import *
