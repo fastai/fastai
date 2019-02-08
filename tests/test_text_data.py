@@ -121,9 +121,9 @@ def df_test_collate(data):
 def test_load_and_save_test():
     path = untar_data(URLs.IMDB_SAMPLE)
     df = text_df(['neg','pos'])
-    data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols="text")
+    data = TextClasDataBunch.from_df(path, train_df=df, valid_df=df, test_df=df, label_cols=0, text_cols="text", bs=10)
     data.save()
-    data1 = TextClasDataBunch.load(path)
+    data1 = TextClasDataBunch.load(path, bs=10)
     assert np.all(data.classes == data1.classes)
     assert np.all(data.train_ds.y.items == data1.train_ds.y.items)
     str1 = np.array([str(o) for o in data.train_ds.y])
@@ -151,7 +151,6 @@ def test_from_ids_works_for_equally_length_sentences():
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
-    text_classifier_learner(data).fit(1)
 
 def test_from_ids_works_for_variable_length_sentences():
     ids = [np.array([0]),np.array([0,1])]*5 # notice diffrent number of elements in arrays
@@ -159,7 +158,6 @@ def test_from_ids_works_for_variable_length_sentences():
     data = TextClasDataBunch.from_ids('/tmp', vocab=Vocab({0: BOS, 1:PAD}),
                                       train_ids=ids, train_lbls=lbl,
                                       valid_ids=ids, valid_lbls=lbl, classes={0:0}, bs=8)
-    text_classifier_learner(data).fit(1)
 
 def test_regression():
     path = untar_data(URLs.IMDB_SAMPLE)

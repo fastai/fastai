@@ -1,8 +1,9 @@
 from ...torch_core import *
 from ...layers import *
 
-__all__ = ['EmbeddingDropout', 'LinearDecoder', 'MultiBatchRNNCore', 'PoolingLinearClassifier', 'RNNCore', 'RNNDropout', 
-           'SequentialRNN', 'WeightDropout', 'dropout_mask', 'get_language_model', 'get_rnn_classifier']
+__all__ = ['EmbeddingDropout', 'LinearDecoder', 'PoolingLinearClassifier', 'AWD_LSTM', 'RNNDropout', 
+           'SequentialRNN', 'WeightDropout', 'dropout_mask', 'awd_lstm_lm_split', 'awd_lstm_clas_split',
+           'awd_lstm_lm_config', 'awd_lstm_clas_config']
 
 def dropout_mask(x:Tensor, sz:Collection[int], p:float):
     "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
@@ -70,7 +71,7 @@ class EmbeddingDropout(nn.Module):
         return F.embedding(words, masked_embed, self.pad_idx, self.emb.max_norm,
                            self.emb.norm_type, self.emb.scale_grad_by_freq, self.emb.sparse)
 
-class RNNCore(nn.Module):
+class AWD_LSTM(nn.Module):
     "AWD-LSTM/QRNN inspired by https://arxiv.org/abs/1708.02182."
 
     initrange=0.1
@@ -150,28 +151,6 @@ class SequentialRNN(nn.Sequential):
         for c in self.children():
             if hasattr(c, 'reset'): c.reset()
 
-class MultiBatchRNNCore(RNNCore):
-    "Create a RNNCore module that can process a full sentence."
-
-    def __init__(self, bptt:int, max_seq:int, *args, **kwargs):
-        self.max_seq,self.bptt = max_seq,bptt
-        super().__init__(*args, **kwargs)
-
-    def concat(self, arrs:Collection[Tensor])->Tensor:
-        "Concatenate the `arrs` along the batch dimension."
-        return [torch.cat([l[si] for l in arrs], dim=1) for si in range_of(arrs[0])]
-
-    def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
-        bs,sl = input.size()
-        self.reset()
-        raw_outputs, outputs = [],[]
-        for i in range(0, sl, self.bptt):
-            r, o = super().forward(input[:,i: min(i+self.bptt, sl)])
-            if i>(sl-self.max_seq):
-                raw_outputs.append(r)
-                outputs.append(o)
-        return self.concat(raw_outputs), self.concat(outputs)
-
 class PoolingLinearClassifier(nn.Module):
     "Create a linear classifier with pooling."
 
@@ -198,23 +177,19 @@ class PoolingLinearClassifier(nn.Module):
         x = self.layers(x)
         return x, raw_outputs, outputs
 
-def get_language_model(vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int, tie_weights:bool=True,
-                       qrnn:bool=False, bias:bool=True, bidir:bool=False, output_p:float=0.4, hidden_p:float=0.2, input_p:float=0.6,
-                       embed_p:float=0.1, weight_p:float=0.5)->nn.Module:
-    "Create a full AWD-LSTM."
-    rnn_enc = RNNCore(vocab_sz, emb_sz, n_hid=n_hid, n_layers=n_layers, pad_token=pad_token, qrnn=qrnn, bidir=bidir,
-                 hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
-    enc = rnn_enc.encoder if tie_weights else None
-    model = SequentialRNN(rnn_enc, LinearDecoder(vocab_sz, emb_sz, output_p, tie_encoder=enc, bias=bias))
-    model.reset()
-    return model
+def awd_lstm_lm_split(model:nn.Module) -> List[nn.Module]:
+    "Split a RNN `model` in groups for differential learning rates."
+    groups = [[rnn, dp] for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
+    return groups + [[model[0].encoder, model[0].encoder_dp, model[1]]]
+    
+def awd_lstm_clas_split(model:nn.Module) -> List[nn.Module]:
+    "Split a RNN `model` in groups for differential learning rates."
+    groups = [[model[0].module.encoder, model[0].module.encoder_dp]]
+    groups += [[rnn, dp] for rnn, dp in zip(model[0].module.rnns, model[0].module.hidden_dps)]
+    return groups + [[model[1]]]
 
-def get_rnn_classifier(bptt:int, max_seq:int, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int,
-                       pad_token:int, layers:Collection[int], drops:Collection[float], bidir:bool=False, qrnn:bool=False,
-                       hidden_p:float=0.2, input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5)->nn.Module:
-    "Create a RNN classifier model."
-    rnn_enc = MultiBatchRNNCore(bptt, max_seq, vocab_sz, emb_sz, n_hid, n_layers, pad_token=pad_token, bidir=bidir,
-                      qrnn=qrnn, hidden_p=hidden_p, input_p=input_p, embed_p=embed_p, weight_p=weight_p)
-    model = SequentialRNN(rnn_enc, PoolingLinearClassifier(layers, drops))
-    model.reset()
-    return model
+awd_lstm_lm_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.25, 
+                          hidden_p=0.1, input_p=0.2, embed_p=0.02, weight_p=0.15, tie_weights=True, out_bias=True)
+
+awd_lstm_clas_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.4, 
+                       hidden_p=0.2, input_p=0.6, embed_p=0.1, weight_p=0.5)

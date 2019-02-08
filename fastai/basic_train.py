@@ -232,8 +232,9 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
+        if purge: self.purge(clear_opt = ifnone(with_opt, False))
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
@@ -247,20 +248,22 @@ class Learner():
             get_model(self.model).load_state_dict(state, strict=strict)
         return self
     
-    def purge(self):
+    def purge(self, clear_opt:bool=True):#TODO: opt
+        "Purge the `Learner` of all cached attributes to release some GPU memory."
         path = self.path
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         state['model'] = self.model
         torch.save(state, open(self.path/'tmp.pkl', 'wb'))
+        del self.opt.opt
         for a in args + ['model', 'callbacks']: delattr(self, a)
         gc.collect()
         torch.cuda.empty_cache()
         state = torch.load(Path(path)/'tmp.pkl')
         for a in args + ['model']: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
-        self.callbacks = [load_callback(c,s, res) for c,s in cb_state.items()]
+        self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
         del state
         gc.collect()
         torch.cuda.empty_cache() 
