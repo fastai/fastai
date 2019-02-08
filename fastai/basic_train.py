@@ -437,7 +437,11 @@ class Recorder(LearnerCallback):
         if show_moms:
             _, axs = plt.subplots(1,2, figsize=(12,4))
             axs[0].plot(iterations, self.lrs)
+            axs[0].set_xlabel('Iterations')
+            axs[0].set_ylabel('Learning Rate')
             axs[1].plot(iterations, self.moms)
+            axs[1].set_xlabel('Iterations')
+            axs[1].set_ylabel('Momentum')
         else: plt.plot(iterations, self.lrs)
 
     def plot(self, skip_start:int=10, skip_end:int=5)->None:
