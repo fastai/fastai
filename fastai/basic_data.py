@@ -61,7 +61,7 @@ class DeviceDataLoader():
                                 self.collate_fn)
 
     def proc_batch(self,b:Tensor)->Tensor:
-        "Proces batch `b` of `TensorImage`."
+        "Process batch `b` of `TensorImage`."
         b = to_device(b, self.device)
         for f in listify(self.tfms): b = f(b)
         return b
