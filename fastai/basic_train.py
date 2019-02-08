@@ -365,6 +365,7 @@ class LearnerCallback(Callback):
         setattr(self.learn, self.cb_name, self)
 
     def __getattr__(self,k): return getattr(self.learn, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     @property
     def learn(self) -> Learner: return self._learn()

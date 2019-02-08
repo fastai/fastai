@@ -432,7 +432,9 @@ class ItemLists():
             self.process()
             return self
         return _inner
-
+                
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+    
     @property
     def lists(self):
         res = [self.train,self.valid]
@@ -580,7 +582,9 @@ class LabelList(Dataset):
         res = getattr(y, k, None)
         if res is not None: return res
         raise AttributeError(k)
-
+                
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+                
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         idxs = try_int(idxs)
         if isinstance(idxs, numbers.Integral):

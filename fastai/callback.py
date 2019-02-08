@@ -52,7 +52,8 @@ class OptimWrapper():
         
     #Passthrough to the inner opt.
     def __getattr__(self,k:str)->Any: return getattr(self.opt, k, None)
-    
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+           
     def clear(self):
         "Reset the state of the inner optimizer."
         sd = self.state_dict()
