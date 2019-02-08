@@ -260,7 +260,7 @@ def tfmer_clas_split(model:nn.Module) -> List[nn.Module]:
 
 tfmerXL_lm_config = dict(ctx_len=150, n_layers=12, n_heads=10, d_model=410, d_head=41, d_inner=2100, resid_p=0.1, attn_p=0.1,
                          ff_p=0.1, embed_p=0.1, output_p=0.1, bias=False, scale=True, act=Activation.ReLU, double_drop=True,
-                         tie_weights=True, out_bias=False, init=init_transformer, mem_len=150)
+                         tie_weights=True, out_bias=True, init=init_transformer, mem_len=150)
 
 tfmerXL_clas_config = dict(ctx_len=150, n_layers=12, n_heads=10, d_model=410, d_head=41, d_inner=2100, resid_p=0.1, attn_p=0.1,
                          ff_p=0.1, embed_p=0.1, output_p=0.1, bias=False, scale=True, act=Activation.ReLU, double_drop=True,
