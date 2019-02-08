@@ -266,7 +266,8 @@ class ItemList():
             s = str((os.path.join(self.path,o) if full_path else o).as_posix())
             res = pat.search(s)
             assert res,f'Failed to find "{pat}" in "{s}"'
-            return res.group(1)
+            try: return res.group(1)
+            except AttributeError: return res
         return self.label_from_func(_inner, label_cls=label_cls, **kwargs)
 
 class EmptyLabelList(ItemList):
