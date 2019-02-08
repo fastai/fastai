@@ -205,6 +205,8 @@ class TransformerXL(nn.Module):
                 cat = torch.cat([self.hidden[i], hids[i]], dim=1)
                 self.hidden[i] = cat[:,-self.mem_len:].detach()
     
+    def select_hidden(self, idxs): self.hidden = [h[idxs] for h in self.hidden]
+    
     def forward(self, x):
         bs,x_len = x.size()
         inp = self.drop_emb(self.encoder(x)) #.mul_(self.d_model ** 0.5)

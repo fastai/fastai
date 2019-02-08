@@ -120,6 +120,11 @@ class AWD_LSTM(nn.Module):
         "Return one hidden state."
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz)//self.ndir
         return one_param(self).new(self.ndir, self.bs, nh).zero_()
+    
+    def select_hidden(self, idxs):
+        if self.qrnn: self.hidden = [h[:,idxs,:] for h in self.hidden]
+        else: self.hidden = [(h[0][:,idxs,:],h[1][:,idxs,:]) for h in self.hidden]
+        self.bs = len(idxs)
 
     def reset(self):
         "Reset the hidden states."
