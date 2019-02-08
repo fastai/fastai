@@ -382,9 +382,6 @@ class Recorder(LearnerCallback):
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
         self.no_val,self.silent = False,False
-        self.min_g_lr = None
-
-    def min_g_lr(self): return self.min_g_lr
     
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
@@ -460,7 +457,7 @@ class Recorder(LearnerCallback):
         mg = (np.gradient(np.array([x.item() for x in losses]))).argmin()
         print(f"Min numerical gradient: {lrs[mg]:.2E}")
         ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
-        self.min_g_lr = lrs[mg]
+        self.min_grad_lr = lrs[mg]
         
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
