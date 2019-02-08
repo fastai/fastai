@@ -4,6 +4,7 @@ import inspect,importlib,enum,os,re
 from IPython.core.display import display, Markdown, HTML
 from nbconvert import HTMLExporter
 from IPython.core import page
+from IPython import get_ipython
 from typing import Dict, Any, AnyStr, List, Sequence, TypeVar, Tuple, Optional, Union
 from .docstrings import *
 from .core import *
@@ -19,6 +20,7 @@ FASTAI_DOCS = 'https://docs.fast.ai'
 use_relative_links = True
 
 _typing_names = {t:n for t,n in fastai_types.items() if t.__module__=='typing'}
+arg_prefixes = {inspect._VAR_POSITIONAL: '\*', inspect._VAR_KEYWORD:'\*\*'}
 
 
 def is_enum(cls): return cls == enum.Enum or cls == enum.EnumMeta
@@ -61,12 +63,14 @@ def partial_repr(t):
 def anno_repr(a): return type_repr(a)
 
 def format_param(p):
-    res = code_esc(p.name)
+    "Formats function param to `param1:Type=val`. Font weights: param1=bold, val=bold+italic"
+    arg_prefix = arg_prefixes.get(p.kind, '') # asterisk prefix for *args and **kwargs
+    res = f"**{arg_prefix}{code_esc(p.name)}**"
     if hasattr(p, 'annotation') and p.annotation != p.empty: res += f':{anno_repr(p.annotation)}'
     if p.default != p.empty:
         default = getattr(p.default, 'func', p.default)
         default = getattr(default, '__name__', default)
-        res += f'=`{repr(default)}`'
+        res += f'=***`{repr(default)}`***'
     return res
 
 def format_ft_def(func, full_name:str=None)->str:
@@ -124,9 +128,8 @@ def doc(elt):
         md += f'\n\n<a href="{get_fn_link(elt)}" target="_blank" rel="noreferrer noopener">Show in docs</a>'
     output = HTMLExporter().markdown2html(md)
     use_relative_links = True
-    page.page({'text/html': output})
-    #display(Markdown(md))
-
+    try:    page.page({'text/html': output})
+    except: display(Markdown(md))
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False)->str:
     "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
@@ -187,7 +190,7 @@ def import_mod(mod_name:str, ignore_errors=False):
         if len(splits) > 1 : mod = importlib.import_module('.' + '.'.join(splits[1:]), splits[0])
         else: mod = importlib.import_module(mod_name)
         return mod
-    except: 
+    except:
         if not ignore_errors: print(f"Module {mod_name} doesn't exist.")
 
 def show_doc_from_name(mod_name, ft_name:str, doc_string:bool=True, arg_comments:dict={}, alt_doc_string:str=''):
@@ -275,7 +278,7 @@ def show_video(url):
     return display(HTML(data))
 
 def show_video_from_youtube(code, start=0):
-    "Display video from Youtube with a `code` and a `start` time." 
+    "Display video from Youtube with a `code` and a `start` time."
     url = f'https://www.youtube.com/embed/{code}?start={start}&amp;rel=0&amp;controls=0&amp;showinfo=0'
     return show_video(url)
 

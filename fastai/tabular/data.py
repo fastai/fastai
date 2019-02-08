@@ -57,6 +57,7 @@ class TabularProcessor(PreProcessor):
     def process(self, ds):
         if ds.xtra is None:
             ds.classes,ds.cat_names,ds.cont_names = self.classes,self.cat_names,self.cont_names
+            ds.preprocessed = True
             return
         for i,proc in enumerate(self.procs):
             if isinstance(proc, TabularProc): proc(ds.xtra, test=True)
@@ -72,30 +73,32 @@ class TabularProcessor(PreProcessor):
             self.classes = ds.classes = OrderedDict({n:np.concatenate([['#na#'],c.cat.categories.values])
                                       for n,c in ds.xtra[ds.cat_names].items()})
             cat_cols = list(ds.xtra[ds.cat_names].columns.values)
-        else: ds.codes,ds.classes,cat_cols = None,None,[]
+        else: ds.codes,ds.classes,self.classes,cat_cols = None,None,None,[]
         if len(ds.cont_names) != 0:
             ds.conts = np.stack([c.astype('float32').values for n,c in ds.xtra[ds.cont_names].items()], 1)
             cont_cols = list(ds.xtra[ds.cont_names].columns.values)
         else: ds.conts,cont_cols = None,[]
         ds.col_names = cat_cols + cont_cols
+        ds.preprocessed = True
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
-
     @classmethod
     def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, 
-                test_df=None, **kwargs)->DataBunch:
-        "Create a `DataBunch` from `df` and `valid_idx` with `dep_var`."
-        cat_names = ifnone(cat_names, [])
+                test_df=None, bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, 
+                device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False)->DataBunch:
+        "Create a `DataBunch` from `df` and `valid_idx` with `dep_var`. `kwargs` are passed to `DataBunch.create`."
+        cat_names = ifnone(cat_names, []).copy()
         cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
         procs = listify(procs)
         src = (TabularList.from_df(df, path=path, cat_names=cat_names, cont_names=cont_names, procs=procs)
-                           .split_by_idx(valid_idx)
-                           .label_from_df(cols=dep_var, classes=classes))
+                           .split_by_idx(valid_idx))
+        src = src.label_from_df(cols=dep_var) if classes is None else src.label_from_df(cols=dep_var, classes=classes)
         if test_df is not None: src.add_test(TabularList.from_df(test_df, cat_names=cat_names, cont_names=cont_names,
                                                                  processor = src.train.x.processor))
-        return src.databunch(**kwargs)
+        return src.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, device=device, 
+                             collate_fn=collate_fn, no_check=no_check)
 
 class TabularList(ItemList):
     "Basic `ItemList` for tabular data."
@@ -110,13 +113,15 @@ class TabularList(ItemList):
         if cont_names is None: cont_names = []
         self.cat_names,self.cont_names,self.procs = cat_names,cont_names,procs
         self.copy_new += ['cat_names', 'cont_names', 'procs']
+        self.preprocessed = False
 
     @classmethod
     def from_df(cls, df:DataFrame, cat_names:OptStrList=None, cont_names:OptStrList=None, procs=None, **kwargs)->'ItemList':
         "Get the list of inputs in the `col` of `path/csv_name`."
-        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df, **kwargs)
+        return cls(items=range(len(df)), cat_names=cat_names, cont_names=cont_names, procs=procs, xtra=df.copy(), **kwargs)
 
     def get(self, o):
+        if not self.preprocessed: return self.xtra.iloc[o] if hasattr(self, 'xtra') else self.items[o]
         codes = [] if self.codes is None else self.codes[o]
         conts = [] if self.conts is None else self.conts[o]
         return self._item_cls(codes, conts, self.classes, self.col_names)
@@ -134,9 +139,11 @@ class TabularList(ItemList):
         items = [xs[0].names + ['target']]
         for i, (x,y) in enumerate(zip(xs,ys)):
             res = []
-            for c, n in zip(x.cats, x.names[:len(x.cats)]):
+            cats = x.cats if len(x.cats.size()) > 0 else []
+            conts = x.conts if len(x.conts.size()) > 0 else []
+            for c, n in zip(cats, x.names[:len(cats)]):
                 res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in x.conts] + [str(y)]
+            res += [f'{c:.4f}' for c in conts] + [str(y)]
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
 
@@ -146,17 +153,19 @@ class TabularList(ItemList):
         items = [xs[0].names + ['target', 'prediction']]
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             res = []
-            for c, n in zip(x.cats, x.names[:len(x.cats)]):
+            cats = x.cats if len(x.cats.size()) > 0 else []
+            conts = x.conts if len(x.conts.size()) > 0 else []
+            for c, n in zip(cats, x.names[:len(cats)]):
                 res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in x.conts] + [str(y),str(z)]
+            res += [f'{c:.4f}' for c in conts] + [str(y),str(z)]
             items.append(res)
         display(HTML(text2html_table(items, [10] * len(items[0]))))
 
 def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
-        ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **kwargs):
+        ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **learn_kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers, ps=ps, emb_drop=emb_drop,
                          y_range=y_range, use_bn=use_bn)
-    return Learner(data, model, metrics=metrics, **kwargs)
+    return Learner(data, model, metrics=metrics, **learn_kwargs)
 

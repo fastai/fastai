@@ -1,5 +1,4 @@
 import pytest
-from fastai import *
 from fastai.vision import *
 
 def bbox2pic(corners, size):
@@ -120,3 +119,9 @@ def test_crop_without_size():
     img = open_image(path/files[0])
     tfms = get_transforms()
     img = img.apply_tfms(tfms[0])
+
+def test_crops_with_tensor_image_sizes():
+    img = img_test([3,3])
+    crops = [crop(size=(1,4,4), row_pct=r, col_pct=c) for r,c in zip([0.,0.,0.5,0.99,0.99], [0.,0.99,0.5,0.,0.99])]
+    check_tfms(img, crops, [[3,3], [3,2],[2,2],[2,3],[2,2]])
+

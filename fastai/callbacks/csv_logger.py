@@ -7,14 +7,11 @@ from ..basic_train import Learner, LearnerCallback
 
 __all__ = ['CSVLogger']
 
-@dataclass
 class CSVLogger(LearnerCallback):
     "A `LearnerCallback` that saves history of metrics while training `learn` into CSV `filename`."
-    filename: str = 'history'
-
-    def __post_init__(self): 
-        super().__post_init__()
-        self.path = self.learn.path/f'{self.filename}.csv'
+    def __init__(self, learn:Learner, filename: str = 'history'): 
+        super().__init__(learn)
+        self.filename,self.path = filename,self.learn.path/f'{filename}.csv'
 
     def read_logged_file(self):  
         "Read the content of saved file"

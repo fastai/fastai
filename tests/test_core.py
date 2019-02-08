@@ -1,6 +1,6 @@
 import pytest, torch
 import numpy as np
-from fastai import *
+from fastai.basics import *
 from tempfile import TemporaryDirectory
 
 def test_cpus(): assert num_cpus() >= 1
@@ -104,10 +104,8 @@ def test_find_classes():
     classes = ['class_0', 'class_1', 'class_2']
     for class_num in classes:
         os.mkdir(path/class_num)
-    try:
-        assert find_classes(path)==[Path('./classes_test/class_0').resolve(),Path('./classes_test/class_1').resolve(),Path('./classes_test/class_2').resolve()]
-    finally:
-        shutil.rmtree(path)
+    try: assert [o.name for o in find_classes(path)]==classes
+    finally: shutil.rmtree(path)
 
 def test_arrays_split():
     a = arrays_split([0,3],[1, 2, 3, 4, 5], ['a', 'b', 'c', 'd', 'e'])
@@ -180,4 +178,15 @@ def test_df_names_to_idx():
 
 def test_one_hot():
     assert all(one_hot([0,-1], 5) == np.array([1,0,0,0,1]))
+
+def test_subplots_multi_row_cols():
+    axs = subplots(4, 4, figsize=(10, 10))
+    assert len(axs) == 4
+    assert (len(axs[0]) == 4)
+    assert (len(axs.flatten()) == 16)
+
+def test_subplots_single():
+    axs = subplots(1,1, figsize=(10, 10))
+    assert (len(axs) == 1)
+    assert (len(axs[0]) == 1)
 

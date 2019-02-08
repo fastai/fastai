@@ -1,6 +1,6 @@
 from ..core import *
 from ..callback import *
-from ..basic_train import Learner
+from ..basic_train import Learner, LearnerCallback
 
 __all__ = ['GeneralScheduler', 'TrainingPhase']
 
@@ -18,10 +18,11 @@ class TrainingPhase():
         self.mom_step = Stepper(self.moms, self.length, self.mom_anneal)
 
 @dataclass
-class GeneralScheduler(Callback):
+class GeneralScheduler(LearnerCallback):
     "Schedule multiple `TrainingPhase` for a `Learner`."
-    learn:Learner
-    phases:Collection[TrainingPhase]
+    def __init__(self, learn:Learner, phases):
+        super().__init__(learn)
+        self.phases = phases
 
     def on_train_begin(self, n_epochs:int, **kwargs:Any)->None:
         "Initialize the lr and mom schedules for training."

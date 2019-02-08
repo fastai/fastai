@@ -1,6 +1,6 @@
 import pytest
-from fastai import *
 from fastai.tabular import *
+from fastai.train import ClassificationInterpretation
 
 pytestmark = pytest.mark.integration
 path = untar_data(URLs.ADULT_SAMPLE)
@@ -9,7 +9,7 @@ path = untar_data(URLs.ADULT_SAMPLE)
 def learn():
     df = pd.read_csv(path/'adult.csv')
     procs = [FillMissing, Categorify, Normalize]
-    dep_var = '>=50k'
+    dep_var = 'salary'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
     cont_names = ['age', 'fnlwgt', 'education-num']
     test = TabularList.from_df(df.iloc[800:1000].copy(), path=path, cat_names=cat_names, cont_names=cont_names)
@@ -65,7 +65,7 @@ def test_normalize(learn):
 def test_empty_cont():
     df = pd.read_csv(path/'adult.csv')
     procs = [FillMissing, Categorify, Normalize]
-    dep_var = '>=50k'
+    dep_var = 'salary'
     cat_names = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
     data = (TabularList.from_df(df, path=path, cat_names=cat_names, procs=procs)
             .split_by_idx(list(range(990,1000)))
@@ -74,3 +74,7 @@ def test_empty_cont():
     learn.fit_one_cycle(1, 1e-1)
     assert learn.validate()[1] > 0.5
 
+def test_confusion_tabular(learn):
+    interp = ClassificationInterpretation.from_learner(learn)
+    assert isinstance(interp.confusion_matrix(), (np.ndarray))
+    assert interp.confusion_matrix().sum() == len(learn.data.valid_ds)

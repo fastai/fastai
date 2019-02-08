@@ -201,7 +201,8 @@ def apply_cats(df, trn):
     """
     for n,c in df.items():
         if (n in trn.columns) and (trn[n].dtype.name=='category'):
-            df[n] = pd.Categorical(c, categories=trn[n].cat.categories, ordered=True)
+            df[n] = c.astype('category').cat.as_ordered()
+            df[n].cat.set_categories(trn[n].cat.categories, ordered=True, inplace=True)
 
 def fix_missing(df, col, name, na_dict):
     """ Fill missing data in a column of df with the median, and add a {name}_na column

@@ -3,7 +3,7 @@
 # notes:
 # 'target: | target1 target2' syntax enforces the exact order
 
-.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs git-not-dirty git-pull help release tag-version-push test test-install-conda test-installtest-install-pyp upload upload-conda upload-pypi
+.PHONY: bump bump-dev bump-major bump-major-dev bump-minor bump-minor-dev bump-post-release clean clean-build clean-build-conda clean-build-pypi clean-conda clean-pyc clean-pyc-conda clean-pyc-pypi clean-pypi clean-test clean-test-conda clean-test-pypi commit-release-push commit-hotfix-push commit-tag dist-conda dist-pypi dist-pypi-bdist dist-pypi-sdist docs sanity-check git-pull help release tag-version-push test test-cpu test-install-conda test-install test-install-pyp upload upload-conda upload-pypi install-conda-local
 
 define get_cur_branch
 $(shell git branch | sed -n '/\* /s///p')
@@ -147,7 +147,9 @@ upload-conda: ## upload conda package
 	@echo "\n\n*** Uploading" conda-dist/noarch/*tar.bz2 "to fastai@anaconda.org\n"
 	anaconda upload conda-dist/noarch/*tar.bz2 -u fastai
 
-
+install-conda-local: ## install the locally built conda package
+	@echo "\n\n*** Installing the local build of" conda-dist/noarch/*tar.bz2
+	conda install -y -c ./conda-dist/ -c fastai fastai==$(version)
 
 ##@ Combined (pip and conda)
 
@@ -166,6 +168,12 @@ install: clean ## install the package to the active python's site-packages
 test: ## run tests with the default python
 	python setup.py --quiet test
 
+test-fast: ## run tests in parallel (requires pip install pytest-xdist)
+	pytest -n 3
+
+test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
+	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
+
 tools-update: ## install/update build tools
 	@echo "\n\n*** Updating build tools"
 	conda install -y conda-verify conda-build anaconda-client
@@ -174,7 +182,7 @@ tools-update: ## install/update build tools
 release: ## do it all (other than testing)
 	${MAKE} tools-update
 	${MAKE} master-branch-switch
-	${MAKE} git-not-dirty
+	${MAKE} sanity-check
 	${MAKE} test
 	${MAKE} bump
 	${MAKE} changes-finalize
@@ -201,14 +209,17 @@ git-pull: ## git pull
 	git pull
 	git status
 
-git-not-dirty:
-	@echo "*** Checking that everything is committed"
+sanity-check:
+	@echo "\n\n*** Checking that everything is committed"
 	@if [ -n "$(shell git status -s)" ]; then\
 		echo "git status is not clean. You have uncommitted git files";\
 		exit 1;\
 	else\
 		echo "git status is clean";\
     fi
+
+	@echo "\n\n*** Checking master branch version: should always be: X.Y.Z.dev0"
+	@perl -le '$$_=shift; $$v="initial version: $$_"; /\.dev0$$/ ? print "Good $$v" : die "Bad $vv, expecting \.dev0"' $(version)
 
 prev-branch-switch:
 	@echo "\n\n*** [$(cur_branch)] Switching to prev branch"
@@ -230,6 +241,11 @@ master-branch-switch:
 	git checkout master
 	$(call echo_cur_branch)
 
+commit-version: ## commit and tag the release
+	@echo "\n\n*** [$(cur_branch)] Start release branch: $(version)"
+	git commit -m "starting release branch: $(version)" $(version_file)
+	$(call echo_cur_branch)
+
 commit-dev-cycle-push: ## commit version and CHANGES and push
 	@echo "\n\n*** [$(cur_branch)] Start new dev cycle: $(version)"
 	git commit -m "new dev cycle: $(version)" $(version_file) CHANGES.md
@@ -237,17 +253,19 @@ commit-dev-cycle-push: ## commit version and CHANGES and push
 	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push
 
-commit-version: ## commit and tag the release
-	@echo "\n\n*** [$(cur_branch)] Start release branch: $(version)"
-	git commit -m "starting release branch: $(version)" $(version_file)
-	$(call echo_cur_branch)
-
 commit-release-push: ## commit CHANGES.md, push/set upstream
 	@echo "\n\n*** [$(cur_branch)] Commit CHANGES.md"
 	git commit -m "version $(version) release" CHANGES.md || echo "no changes to commit"
 
 	@echo "\n\n*** [$(cur_branch)] Push changes"
 	git push --set-upstream origin release-$(version)
+
+commit-hotfix-push: ## commit version and CHANGES and push
+	@echo "\n\n*** [$(cur_branch)] Complete hotfix: $(version)"
+	git commit -m "hotfix: $(version)" $(version_file) CHANGES.md
+
+	@echo "\n\n*** [$(cur_branch)] Push changes"
+	git push
 
 tag-version-push: ## tag the release
 	@echo "\n\n*** [$(cur_branch)] Tag $(version) version"

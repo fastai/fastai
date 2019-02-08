@@ -71,7 +71,7 @@ jobs:
     # Show PyPi Build Env
   - script: |
       echo "cwd:" `pwd`
-      python -c 'import fastai; fastai.show_install(0)'
+      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
       pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
     displayName: 'Show build environment'
     continueOnError: true
@@ -163,7 +163,7 @@ jobs:
     # Show Conda Build Env
   - script: |
       echo "cwd:" `pwd`
-      python -c 'import fastai; fastai.show_install(0)'
+      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
       conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
     displayName: 'Show build environment'
     continueOnError: true
@@ -244,7 +244,7 @@ jobs:
 #     # Show PyPi Build Env
 #  - script: |
 #      echo "cwd:" `pwd`
-#      python -c 'import fastai; fastai.show_install(0)'
+#      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
 #      pip list | egrep -v '^(Package|-----)' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
 #    displayName: 'Show build environment'
 #    continueOnError: true
@@ -338,7 +338,7 @@ jobs:
     # Show Conda Build Env
   - script: |
       echo "cwd:" `pwd`
-      python -c 'import fastai; fastai.show_install(0)'
+      python -c 'import fastai.utils.collect_env; fastai.utils.collect_env.show_install(0)'
       conda list | egrep -v '^#' | perl -ne 's/_/-/g; @x=split /\s+/, lc $_; print "$x[0]==$x[1]\n"' | sort | uniq
     displayName: 'Show build environment'
     continueOnError: true

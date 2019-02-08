@@ -1,0 +1,36 @@
+{% set name = "plac" %}
+{% set version = "0.9.9" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-1.0.0.tar.gz
+  sha256: b03f967f535b3bf5a71b191fa5eb09872a5cfb1e3b377efc4138995e10ba36d7
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+about:
+  home: https://github.com/micheles/plac
+  license: BSD
+  license_family: BSD
+  license_file: 
+  summary: The smartest command line arguments parser in the world
+  doc_url: http://micheles.github.io/plac/
+  dev_url: https://github.com/micheles/plac
+
+extra:
+  recipe-maintainers:
+    - fastai

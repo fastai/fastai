@@ -3,7 +3,7 @@ from ..torch_core import *
 from .image import *
 from .image import _affine_mult
 
-__all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
+__all__ = ['brightness', 'contrast', 'crop', 'crop_pad', 'cutout', 'dihedral', 'dihedral_affine', 'flip_affine', 'flip_lr',
            'get_transforms', 'jitter', 'pad', 'perspective_warp', 'rand_pad', 'rand_crop', 'rand_zoom', 'rotate', 'skew', 'squish',
            'rand_resize_crop', 'symmetric_warp', 'tilt', 'zoom', 'zoom_crop']
 
@@ -115,18 +115,38 @@ def _pad(x, padding:int, mode='reflection'):
 
 pad = TfmPixel(_pad, order=-10)
 
+def _cutout(x, n_holes:uniform_int=1, length:uniform_int=40):
+    "Cut out `n_holes` number of square holes of size `length` in image at random locations."
+    h,w = x.shape[1:]
+    for n in range(n_holes):
+        h_y = np.random.randint(0, h)
+        h_x = np.random.randint(0, w)
+        y1 = int(np.clip(h_y - length / 2, 0, h))
+        y2 = int(np.clip(h_y + length / 2, 0, h))
+        x1 = int(np.clip(h_x - length / 2, 0, w))
+        x2 = int(np.clip(h_x + length / 2, 0, w))
+        x[:, y1:y2, x1:x2] = 0
+    return x
+
+cutout = TfmPixel(_cutout, order=20)
+
+def _minus_epsilon(row_pct:float, col_pct:float, eps:float=1e-7):
+    if row_pct==1.: row_pct -= 1e-7
+    if col_pct==1.: col_pct -= 1e-7
+    return row_pct,col_pct
 
 def _crop_default(x, size, row_pct:uniform=0.5, col_pct:uniform=0.5):
     "Crop `x` to `size` pixels. `row_pct`,`col_pct` select focal point of crop."
-    size = listify(size,2)
-    rows,cols = size
+    rows,cols = tis2hw(size)
+    row_pct,col_pct = _minus_epsilon(row_pct,col_pct)
     row = int((x.size(1)-rows+1) * row_pct)
     col = int((x.size(2)-cols+1) * col_pct)
     return x[:, row:row+rows, col:col+cols].contiguous()
 
 def _crop_image_points(x, size, row_pct=0.5, col_pct=0.5):
     h,w = x.size
-    rows,cols = listify(size, 2)
+    rows,cols = tis2hw(size)
+    row_pct,col_pct = _minus_epsilon(row_pct,col_pct)
     x.flow.flow.mul_(torch.Tensor([w/cols, h/rows])[None])
     row = int((h-rows+1) * row_pct)
     col = int((w-cols+1) * col_pct)
@@ -144,9 +164,10 @@ crop = TfmPixel(_crop)
 def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
     padding_mode = _pad_mode_convert[padding_mode]
-    size = listify(size,2)
-    if x.shape[1:] == size: return x
+    size = tis2hw(size)
+    if x.shape[1:] == torch.Size(size): return x
     rows,cols = size
+    row_pct,col_pct = _minus_epsilon(row_pct,col_pct)
     if x.size(1)<rows or x.size(2)<cols:
         row_pad = max((rows-x.size(1)+1)//2, 0)
         col_pad = max((cols-x.size(2)+1)//2, 0)
@@ -157,7 +178,7 @@ def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5,
     return x.contiguous() # without this, get NaN later - don't know why
 
 def _crop_pad_image_points(x, size, padding_mode='reflection', row_pct = 0.5, col_pct = 0.5):
-    size = listify(size,2)
+    size = tis2hw(size)
     rows,cols = size
     if x.size[0]<rows or x.size[1]<cols:
         row_pad = max((rows-x.size[0]+1)//2, 0)
@@ -178,13 +199,13 @@ def rand_pad(padding:int, size:int, mode:str='reflection'):
     return [pad(padding=padding,mode=mode),
             crop(size=size, **rand_pos)]
 
-def rand_zoom(*args, **kwargs):
+def rand_zoom(scale:uniform=1.0, p:float=1.):
     "Randomized version of `zoom`."
-    return zoom(*args, **rand_pos, **kwargs)
+    return zoom(scale=scale, **rand_pos, p=p)
 
-def rand_crop(*args, **kwargs):
+def rand_crop(*args, padding_mode='reflection', p:float=1.):
     "Randomized version of `crop_pad`."
-    return crop_pad(*args, **rand_pos, **kwargs)
+    return crop_pad(*args, **rand_pos, padding_mode=padding_mode, p=p)
 
 def zoom_crop(scale:float, do_rand:bool=False, p:float=1.0):
     "Randomly zoom and/or crop."
@@ -201,7 +222,7 @@ def _find_coeffs(orig_pts:Points, targ_pts:Points)->Tensor:
         matrix.append([0, 0, 0, p1[0], p1[1], 1, -p2[1]*p1[0], -p2[1]*p1[1]])
 
     A = FloatTensor(matrix)
-    B = FloatTensor(orig_pts).view(8)
+    B = FloatTensor(orig_pts).view(8, 1)
     #The 8 scalars we seek are solution of AX = B
     return torch.gesv(B,A)[0][:,0]
 

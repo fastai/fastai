@@ -12,7 +12,7 @@ def test_tensor_with_list():
     assert torch.all(r==exp)
 
 def test_tensor_with_ndarray():
-    b=np.array(a)
+    b=np.array(a, dtype=np.int64)
     r = tensor(b)
     assert np_address(r.numpy()) == np_address(b)
     assert torch.all(r==exp)
@@ -97,3 +97,8 @@ def test_tensor_array_monkey_patch():
     t = torch.ones(a)
     t = np.array(t,dtype=float)
     assert np.all(t == t), "Tensors did not properly convert to numpy arrays with a dtype set"
+
+def test_keep_parameter():
+    sa = SelfAttention(128)
+    flat = nn.Sequential(*flatten_model(sa))
+    for p in sa.parameters(): assert id(p) in [id(a) for a in flat.parameters()]

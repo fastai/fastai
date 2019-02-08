@@ -1,5 +1,5 @@
 import pytest
-from fastai import *
+from fastai.basics import *
 from fastai.collab import *
 
 @pytest.fixture(scope="module")
