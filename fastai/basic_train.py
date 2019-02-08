@@ -444,7 +444,7 @@ class Recorder(LearnerCallback):
             axs[1].set_ylabel('Momentum')
         else: plt.plot(iterations, self.lrs)
 
-    def plot(self, skip_start:int=10, skip_end:int=5,min_grad:bool=False)->float:
+    def plot(self, skip_start:int=10, skip_end:int=5, min_grad:bool=False)->float:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
