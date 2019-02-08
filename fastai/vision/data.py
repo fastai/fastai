@@ -160,7 +160,8 @@ class ImageDataBunch(DataBunch):
         pat = re.compile(pat)
         def _get_label(fn): 
             if isinstance(fn, Path): fn = fn.as_posix()
-            return pat.search(str(fn)).group(1)
+            try: return pat.search(str(fn)).group(1)
+            except AttributeError: return pat.search(str(fn))
         return cls.from_name_func(path, fnames, _get_label, valid_pct=valid_pct, **kwargs)
 
     @staticmethod
