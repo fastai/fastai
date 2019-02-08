@@ -135,10 +135,13 @@ def hook_params(modules:Collection[nn.Module])->Hooks:
 def params_size(m: Union[nn.Module,Learner], size: tuple = (64, 64))->Tuple[Sizes, Tensor, Hooks]:
     "Pass a dummy input through the model to get the various sizes. Returns (res,x,hooks) if `full`"
     if isinstance(m, Learner):
-        size = m.data.one_batch(detach=False, denorm=False)[0].shape[-2:]
+        x = m.data.one_batch(detach=False, denorm=False)[0]
+        x = [o[:1] for o in x]  if is_listy(x) else x[:1]
         m = m.model
-    ch_in = in_channels(m)
-    x = next(m.parameters()).new(1, ch_in, *size)
+    elif isinstance(m, nn.Module):
+        ch_in = in_channels(m)
+        x = next(m.parameters()).new(1, ch_in, *size)
+    else: raise TypeError('You should either pass in a Learner or nn.Module')
     hooks_outputs = hook_outputs(flatten_model(m))
     hooks_params = hook_params(flatten_model(m))
     hooks = zip(hooks_outputs, hooks_params)
