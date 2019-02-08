@@ -383,7 +383,7 @@ class Recorder(LearnerCallback):
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
         self.no_val,self.silent = False,False
-
+    
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
@@ -446,7 +446,7 @@ class Recorder(LearnerCallback):
         else: plt.plot(iterations, self.lrs)
 
     def plot(self, skip_start:int=10, skip_end:int=5)->None:
-        "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`."
+        "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
         _, ax = plt.subplots(1,1)
@@ -455,7 +455,11 @@ class Recorder(LearnerCallback):
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
-
+        mg = (np.gradient(np.array([x.item() for x in losses]))).argmin()
+        print(f"Min numerical gradient: {lrs[mg]:.2E}")
+        ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
+        self.min_grad_lr = lrs[mg]
+        
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
         last = ifnone(last,len(self.nb_batches))
