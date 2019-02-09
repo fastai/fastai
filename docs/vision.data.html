@@ -23,9 +23,18 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 <p>This module contains the classes that define datasets handling <a href="/vision.image.html#Image"><code>Image</code></a> objects and their transformations. As usual, we'll start with a quick overview, before we get in to the detailed API docs.</p>
 <p>Before any work can be done a dataset needs to be converted into a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> object, and in the case of the computer vision data - specifically into an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> subclass.</p>
 <p>This is done with the help of <a href="/data_block.html">data block API</a> and the <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a> class and its subclasses.</p>
-<p>However, there is also a group of shortcut methods provided by <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> which reduce the multiple stages of the data block API, into a single wrapper method. The shortcut methods work really well for Imagenet-style of datasets and some other situations.</p>
-<p>If you're just starting out you may choose to experiment with these shortcut methods, as they are also used in the first lessons of the fastai deep learning course. However, you can completely skip them and start building your code using the data block API from the very beginning. Internally, these shortcuts still use the data block API.</p>
-<p>The first part of this document is dedicated to the shortcut <code>ImageDataBunch</code> factory methods. Then all the other computer vision data-specific methods that are used with the data block API are presented.</p>
+<p>However, there is also a group of shortcut methods provided by <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> which reduce the multiple stages of the data block API, into a single wrapper method. These shortcuts methods work really well for:</p>
+<ul>
+<li>Imagenet-style of datasets (<a href="/vision.data.html#ImageDataBunch.from_folder"><code>ImageDataBunch.from_folder</code></a>)</li>
+<li>A pandas <code>DataFrame</code> with a column of filenames and a column of labels which can be strings for classification, strings separated by a <code>label_delim</code> for multi-classification or floats for a regression problem (<a href="/vision.data.html#ImageDataBunch.from_df"><code>ImageDataBunch.from_df</code></a>)</li>
+<li>A csv file with the same format as above (<a href="/vision.data.html#ImageDataBunch.from_csv"><code>ImageDataBunch.from_csv</code></a>)</li>
+<li>A list of filenames and a list of targets (<a href="/vision.data.html#ImageDataBunch.from_lists"><code>ImageDataBunch.from_lists</code></a>)</li>
+<li>A list of filenames and a function to get the target from the filename (<a href="/vision.data.html#ImageDataBunch.from_name_func"><code>ImageDataBunch.from_name_func</code></a>)</li>
+<li>A list of filenames and a regex pattern to get the target from the filename (<a href="/vision.data.html#ImageDataBunch.from_name_re"><code>ImageDataBunch.from_name_re</code></a>)</li>
+</ul>
+<p>In the last five factory methods, a random split is performed between train and validation, in the first one it can be a random split or a separation from a training and a validation folder.</p>
+<p>If you're just starting out you may choose to experiment with these shortcut methods, as they are also used in the first lessons of the fastai deep learning course. However, you can completely skip them and start building your code using the data block API from the very beginning. Internally, these shortcuts use this API anyway.</p>
+<p>The first part of this document is dedicated to the shortcut <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> factory methods. Then all the other computer vision data-specific methods that are used with the data block API are presented.</p>
 
 </div>
 </div>
