@@ -203,7 +203,7 @@ The `fastai` conda (test) channel has an experimental `pillow` package built aga
 
 To install:
 ```
-conda uninstall -y pillow libjpeg-turbo
+conda uninstall -y --force pillow libjpeg-turbo
 conda install -c fastai/label/test pillow
 ```
 
