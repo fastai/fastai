@@ -50,6 +50,7 @@ defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis')
 
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
+def is_dict(x:Any)->bool: return isinstance(x, dict)
 def noop(x): return x
 
 def chunks(l:Collection, n:int)->Iterable:

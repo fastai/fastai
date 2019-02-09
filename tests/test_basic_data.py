@@ -54,3 +54,13 @@ def test_DataBunch_show_batch(capsys):
 ##def test_DataBunch_export():
 ##     data = fake_data()
 ##     data.export()
+
+def test_DeviceDataLoader_getitem():
+    class DictDataset(Dataset):
+        def __getitem__(self, idx):
+            return {"a":np.ones((3,)),"b":np.zeros((2,))}
+        def __len__(self):
+            return 10
+
+    ds = DictDataset()
+    next(iter(DeviceDataLoader.create(ds)))

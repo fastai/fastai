@@ -108,6 +108,7 @@ def to_device(b:Tensors, device:torch.device):
     "Recursively put `b` on `device`."
     device = ifnone(device, defaults.device)
     if is_listy(b): return [to_device(o, device) for o in b]
+    if is_dict(b): return {k: to_device(v, device) for k, v in b.items()}
     return b.to(device)
 
 def data_collate(batch:ItemsList)->Tensor:
