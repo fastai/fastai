@@ -485,6 +485,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Refer to <a href="#ImageDataBunch.create_from_ll"><code>create_from_ll</code></a> to see all the <code>**kwargs</code> arguments.</p>
 <p>"<em>Imagenet-style</em>" datasets look something like this (note that the test folder is optional):</p>
 
 <pre><code>path\
@@ -545,6 +546,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Refer to <a href="#ImageDataBunch.create_from_ll"><code>create_from_ll</code></a> to see all the <code>**kwargs</code> arguments.</p>
 <p>Create <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> from <code>path</code> by splitting the data in <code>folder</code> and labelled in a file <code>csv_labels</code> between a training and validation set. Use <code>valid_pct</code> to indicate the percentage of the total images for the validation set. An optional <code>test</code> folder contains unlabelled data and <code>suffix</code> contains an optional suffix to add to the filenames in <code>csv_labels</code> (such as '.jpg'). <code>fn_col</code> is the number (or the name) of the the column containing the filenames and <code>label_col</code> is the number(s) (or the name(s)) of the column containing the labels. If <code>label_delim</code> is passed, split what's in the label column according to that separator.</p>
 <p>For example:</p>
 
@@ -587,6 +589,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Refer to <a href="#ImageDataBunch.create_from_ll"><code>create_from_ll</code></a> to see all the <code>**kwargs</code> arguments.</p>
 <p>Same as <a href="/vision.data.html#ImageDataBunch.from_csv"><code>ImageDataBunch.from_csv</code></a>, but passing in a <code>DataFrame</code> instead of a csv file. E.gL</p>
 
 </div>
@@ -720,6 +723,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Refer to <a href="#ImageDataBunch.create_from_ll"><code>create_from_ll</code></a> to see all the <code>**kwargs</code> arguments.</p>
 <p>Creates an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> from <code>fnames</code>, calling a regular expression (containing one <em>re group</em>) on the file names to get the labels, putting aside <code>valid_pct</code> for the validation. In the same way as <a href="/vision.data.html#ImageDataBunch.from_csv"><code>ImageDataBunch.from_csv</code></a>, an optional <code>test</code> folder contains unlabelled data.</p>
 <p>Our previously created dataframe contains the labels in the filenames so we can leverage it to test this new method. <a href="/vision.data.html#ImageDataBunch.from_name_re"><code>ImageDataBunch.from_name_re</code></a> needs the exact path of each file so we will append the data path to each filename before creating our <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> object.</p>
 
@@ -822,6 +826,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Refer to <a href="#ImageDataBunch.create_from_ll"><code>create_from_ll</code></a> to see all the <code>**kwargs</code> arguments.</p>
 <p>Works in the same way as <a href="/vision.data.html#ImageDataBunch.from_name_re"><code>ImageDataBunch.from_name_re</code></a>, but instead of a regular expression it expects a function that will determine how to extract the labels from the filenames. (Note that <code>from_name_re</code> uses this function in its implementation).</p>
 <p>To test it we could build a function with our previous regex. Let's try another, similar approach to show that the labels can be obtained in a different way.</p>
 
@@ -882,6 +887,7 @@ summary: "Basic dataset for computer vision and helper function to get a DataBun
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Refer to <a href="#ImageDataBunch.create_from_ll"><code>create_from_ll</code></a> to see all the <code>**kwargs</code> arguments.</p>
 <p>The most flexible factory function; pass in a list of <code>labels</code> that correspond to each of the filenames in <code>fnames</code>.</p>
 <p>To show an example we have to build the labels list outside our <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> object and give it as an argument when we call <code>from_lists</code>. Let's use our previously created function to create our labels list.</p>
 
