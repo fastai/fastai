@@ -65,11 +65,9 @@ def test_model_summary_collab():
 #    _ = model_summary(BasicBlock())
 
 def test_hook_output_basics(mnist_path):
-    path = mnist_path
-    print(path)
-    data = ImageDataBunch.from_folder(path, size=128, bs=2)
+    data = ImageDataBunch.from_folder(mnist_path, size=128, bs=2)
     learn = create_cnn(data, models.resnet18)
-    # need to train to get something meaningful, but for just checking shape its fine w/o
+    # need to train to get something meaningful, but for just checking shape its fine w/o it
     m = learn.model.eval()
     x,y = data.train_ds[0]
     xb,_ = data.one_item(x)
