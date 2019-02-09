@@ -226,11 +226,11 @@ class DataBunch():
             except: fails.append(i)
         if len(fails) > 0:
             if len(fails) == len(idx):
-                warn_msg = "There seems to be something wrong with your dataset, can't access any element of self.train_ds.\n"
+                warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access any element of self.train_ds.\n"
                 warn_msg += f"Tried: {show_some(idx)}"
             else:
-                warn_msg = "There seems to be something wrong with your dataset, can't access these elements "
-                warn_msg += f"in self.train_ds: {show_some(fails)}"
+                warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access these elements in self.train_ds"
+                warn_msg += f": {show_some(fails)}"
             warn(warn_msg)
             print(final_message)
             return
