@@ -110,5 +110,5 @@ dependencies:
   - ipywidgets
   - nbconvert
   - PyHamcrest
-  - pdpbox=0.1.0
+  - pdpbox==0.1.0
   - scikit-misc
