@@ -62,7 +62,7 @@ class ItemList():
         return self.items[i]
     def __repr__(self)->str:
         items = [self[i] for i in range(min(5,len(self.items)))]
-        return f'{self.__class__.__name__} ({len(self.items)} items)\n{items}...\nPath: {self.path}'
+        return f'{self.__class__.__name__} ({len(self.items)} items)\n{show_some(items)}\nPath: {self.path}'
 
     def process(self, processor:PreProcessors=None):
         "Apply `processor` or `self.processor` to `self`."
@@ -207,7 +207,7 @@ class ItemList():
     def split_by_fname_file(self, fname:PathOrStr, path:PathOrStr=None)->'ItemLists':
         "Split the data by using the names in `fname` for the validation set. `path` will override `self.path`."
         path = Path(ifnone(path, self.path))
-        valid_names = loadtxt_str(self.path/fname)
+        valid_names = loadtxt_str(path/fname)
         return self.split_by_files(valid_names)
 
     def split_from_df(self, col:IntsOrStrs=2):
@@ -432,7 +432,9 @@ class ItemLists():
             self.process()
             return self
         return _inner
-
+                
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+    
     @property
     def lists(self):
         res = [self.train,self.valid]
@@ -482,12 +484,13 @@ class LabelLists(ItemLists):
             if getattr(ds, 'warn', False): warn(ds.warn)
         return self
 
-    def databunch(self, path:PathOrStr=None, bs:int=64, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, 
-                  device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False, **kwargs)->'DataBunch':
+    def databunch(self, path:PathOrStr=None, bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus, 
+                  dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate, 
+                  no_check:bool=False, **kwargs)->'DataBunch':
         "Create an `DataBunch` from self, `path` will override `self.path`, `kwargs` are passed to `DataBunch.create`."
         path = Path(ifnone(path, self.path))
-        data = self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, bs=bs, num_workers=num_workers, 
-                                    device=device, collate_fn=collate_fn, no_check=no_check, **kwargs)
+        data = self.x._bunch.create(self.train, self.valid, test_ds=self.test, path=path, bs=bs, val_bs=val_bs, 
+                                    num_workers=num_workers, device=device, collate_fn=collate_fn, no_check=no_check, **kwargs)
         if getattr(self, 'normalize', False):#In case a normalization was serialized
             norm = self.normalize
             data.normalize((norm['mean'], norm['std']), do_x=norm['do_x'], do_y=norm['do_y'])
@@ -550,8 +553,12 @@ class LabelList(Dataset):
         self.item = None
 
     def __repr__(self)->str:
-        x = f'{self.x}' # force this to happen first
-        return f'{self.__class__.__name__}\ny: {self.y}\nx: {x}'
+        items = [self[i] for i in range(min(5,len(self.items)))]
+        res = f'{self.__class__.__name__} ({len(self.items)} items)\n'
+        res += f'x: {self.x.__class__.__name__}\n{show_some([i[0] for i in items])}\n'
+        res += f'y: {self.y.__class__.__name__}\n{show_some([i[1] for i in items])}\n'
+        return res + f'Path: {self.path}'        
+        
     def predict(self, res):
         "Delegates predict call on `res` to `self.y`."
         return self.y.predict(res)
@@ -575,7 +582,9 @@ class LabelList(Dataset):
         res = getattr(y, k, None)
         if res is not None: return res
         raise AttributeError(k)
-
+                
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+                
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         idxs = try_int(idxs)
         if isinstance(idxs, numbers.Integral):

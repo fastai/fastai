@@ -83,11 +83,11 @@ class TabularProcessor(PreProcessor):
 
 class TabularDataBunch(DataBunch):
     "Create a `DataBunch` suitable for tabular data."
-
     @classmethod
     def from_df(cls, path, df:DataFrame, dep_var:str, valid_idx:Collection[int], procs:OptTabTfms=None,
                 cat_names:OptStrList=None, cont_names:OptStrList=None, classes:Collection=None, 
-                test_df=None, bs:int=64, **kwargs)->DataBunch:
+                test_df=None, bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, 
+                device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False)->DataBunch:
         "Create a `DataBunch` from `df` and `valid_idx` with `dep_var`. `kwargs` are passed to `DataBunch.create`."
         cat_names = ifnone(cat_names, []).copy()
         cont_names = ifnone(cont_names, list(set(df)-set(cat_names)-{dep_var}))
@@ -97,7 +97,8 @@ class TabularDataBunch(DataBunch):
         src = src.label_from_df(cols=dep_var) if classes is None else src.label_from_df(cols=dep_var, classes=classes)
         if test_df is not None: src.add_test(TabularList.from_df(test_df, cat_names=cat_names, cont_names=cont_names,
                                                                  processor = src.train.x.processor))
-        return src.databunch(bs=bs, **kwargs)
+        return src.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, device=device, 
+                             collate_fn=collate_fn, no_check=no_check)
 
 class TabularList(ItemList):
     "Basic `ItemList` for tabular data."

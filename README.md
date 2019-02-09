@@ -29,8 +29,6 @@ This document is written for `fastai v1`, which we use for the current, third ve
 
 `fastai-1.x` can be installed with either `conda` or `pip` package managers and also from source. At the moment you can't just run *install*, since you first need to get the correct `pytorch` version installed - thus to get `fastai-1.x` installed choose one of the installation recipes below using your favourite python package manager. Note that **PyTorch v1** and **Python 3.6** are the minimal version requirements.
 
-If your system has a [recent NVIDIA card](https://www.geforce.com/hardware/technology/cuda/supported-gpus) with the correctly configured NVIDIA driver please follow the GPU installation instructions. Otherwise, the CPU-ones.
-
 It's highly recommended you install `fastai` and its dependencies in a virtual environment ([`conda`](https://conda.io/docs/user-guide/tasks/manage-environments.html) or others), so that you don't interfere with system-wide python packages. It's not that you must, but if you experience problems with any dependency packages, please consider using a fresh virtual environment just for `fastai`.
 
 If you experience installation problems, please read about [installation issues](https://github.com/fastai/fastai/blob/master/README.md#installation-issues).
@@ -44,6 +42,8 @@ More advanced installation issues, such as installing only partial dependencies 
 ```bash
 conda install -c pytorch -c fastai fastai
 ```
+
+This will install the `pytorch` build with the latest `cudatoolkit` version. If you need a higher or lower `CUDA XX` build (e.g. CUDA 9.0), following the instructions [here](https://pytorch.org/get-started/locally/), to install the desired `pytorch` build.
 
 Note that JPEG decoding can be a bottleneck, particularly if you have a fast GPU. You can optionally install an optimized JPEG decoder as follows (Linux):
 
@@ -59,6 +59,8 @@ If you only care about faster JPEG decompression, it can be `pillow` or `pillow-
 ```bash
 pip install fastai
 ```
+
+By default pip will install the latest `pytorch` with the latest `cudatoolkit`. If your hardware doesn't support the latest `cudatoolkit`, follow the instructions [here](https://pytorch.org/get-started/locally/), to install a `pytorch` build that fits your hardware.
 
 ### Bug Fix Install
 
@@ -78,8 +80,6 @@ cd fastai
 tools/run-after-git-clone
 pip install -e ".[dev]"
 ```
-
-Note that this will install the `cuda9.0` `pytorch` build via default dependencies. If you need a higher or lower `cudaXX` build, following the instructions [here]( https://pytorch.org/get-started/locally/), to install the desired `pytorch` build.
 
 Next, you can test that the build works by starting the jupyter notebook:
 
@@ -135,7 +135,7 @@ conda install conda
 
 2. CPU or GPU
 
-   The `pytorch` binary package comes with its own CUDA, CuDNN, NCCL, MKL, and other libraries so you don't have to install system-wide NVIDIA's CUDA and related libraries if you don't need them for something else. If you have them installed already it doesn't matter which NVIDIA's CUDA version library you have installed system-wide. Your system could have CUDA 9.0 libraries, and you can still use `pytorch` build with `cuda9.2` libraries without any problem, since the `pytorch` binary package is self-contained.
+   The `pytorch` binary package comes with its own CUDA, CuDNN, NCCL, MKL, and other libraries so you don't have to install system-wide NVIDIA's CUDA and related libraries if you don't need them for something else. If you have them installed already it doesn't matter which NVIDIA's CUDA version library you have installed system-wide. Your system could have CUDA 9.0 libraries, and you can still use `pytorch` build with CUDA 10.0 libraries without any problem, since the `pytorch` binary package is self-contained.
 
    The only requirement is that you have installed and configured the NVIDIA driver correctly. Usually you can test that by running `nvidia-smi`. While it's possible that this application is not available on your system, it's very likely that if it doesn't work, than your don't have your NVIDIA drivers configured properly. And remember that a reboot is always required after installing NVIDIA drivers.
 
@@ -165,17 +165,18 @@ conda install conda
     | CUDA 9.0     | >= 384.81             |
     | CUDA 8.0     | >= 367.48             |
 
-   So if your NVIDIA driver is less than 384, then you can only use `cuda80`. Of course, you can upgrade your drivers to more recent ones if your card supports it.
+   So if your NVIDIA driver is less than 384, then you can only use CUDA 8.0. Of course, you can upgrade your drivers to more recent ones if your card supports it.
 
    You can find a complete table with all variations [here](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html).
 
-   If you use NVIDIA driver 410+, you most likely want to install the `cuda100` pytorch variant, via:
+   If you use NVIDIA driver 410+, you most likely want to install the `cudatoolkit=10.0` pytorch variant, via:
    ```bash
-   conda install -c pytorch pytorch cuda100
+   conda install -c pytorch pytorch cudatoolkit=10.0
    ```
-   or if you need a lower version (`cuda90` is installed by default), use:
+   or if you need a lower version, use one of:
    ```bash
-   conda install -c pytorch pytorch cuda80
+   conda install -c pytorch pytorch cudatoolkit=8.0
+   conda install -c pytorch pytorch cudatoolkit=9.0
    ```
    For other options refer to the complete list of [the available pytorch variants](https://pytorch.org/get-started/locally/).
 
@@ -186,6 +187,7 @@ In order to update your environment, simply install `fastai` in exactly the same
 Top level files `environment.yml` and `environment-cpu.yml` belong to the old fastai (0.7). `conda env update` is no longer the way to update your `fastai-1.x` environment. These files remain because the fastai course-v2 video instructions rely on this setup. Eventually, once fastai course-v3 p1 and p2 will be completed, they will probably be moved to where they belong - under `old/`.
 
 ## Contribution guidelines
+
 If you want to contribute to `fastai`, be sure to review the [contribution guidelines](https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md). This project adheres to fastai's [code of conduct](https://github.com/fastai/fastai/blob/master/CODE-OF-CONDUCT.md). By participating, you are expected to uphold this code.
 
 We use GitHub issues for tracking requests and bugs, so please see [fastai forum](https://forums.fast.ai/) for general questions and discussion.

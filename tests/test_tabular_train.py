@@ -74,10 +74,7 @@ def test_empty_cont():
     learn.fit_one_cycle(1, 1e-1)
     assert learn.validate()[1] > 0.5
 
-def test_confusion_tabular(learn, out=True):
+def test_confusion_tabular(learn):
     interp = ClassificationInterpretation.from_learner(learn)
     assert isinstance(interp.confusion_matrix(), (np.ndarray))
-    print(interp.confusion_matrix())
-    interp.plot_confusion_matrix()
-    if out: plt.show()
-
+    assert interp.confusion_matrix().sum() == len(learn.data.valid_ds)

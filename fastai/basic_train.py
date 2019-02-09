@@ -232,8 +232,9 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
+        if purge: self.purge(clear_opt = ifnone(with_opt, False))
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
@@ -245,6 +246,28 @@ class Learner():
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             get_model(self.model).load_state_dict(state, strict=strict)
+        return self
+    
+    def purge(self, clear_opt:bool=True):#TODO: opt
+        "Purge the `Learner` of all cached attributes to release some GPU memory."
+        path = self.path
+        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
+        state = {a:getattr(self,a) for a in args}
+        state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
+        state['model'] = self.model
+        torch.save(state, open(self.path/'tmp.pkl', 'wb'))
+        del self.opt.opt
+        for a in args + ['model', 'callbacks']: delattr(self, a)
+        gc.collect()
+        torch.cuda.empty_cache()
+        state = torch.load(Path(path)/'tmp.pkl')
+        for a in args + ['model']: setattr(self, a, state[a])
+        cb_state = state.pop('cb_state')
+        self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
+        del state
+        gc.collect()
+        torch.cuda.empty_cache() 
+        os.remove(path/'tmp.pkl')
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
@@ -342,6 +365,7 @@ class LearnerCallback(Callback):
         setattr(self.learn, self.cb_name, self)
 
     def __getattr__(self,k): return getattr(self.learn, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     @property
     def learn(self) -> Learner: return self._learn()
@@ -359,7 +383,7 @@ class Recorder(LearnerCallback):
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
         self.no_val,self.silent = False,False
-
+    
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
@@ -414,11 +438,15 @@ class Recorder(LearnerCallback):
         if show_moms:
             _, axs = plt.subplots(1,2, figsize=(12,4))
             axs[0].plot(iterations, self.lrs)
+            axs[0].set_xlabel('Iterations')
+            axs[0].set_ylabel('Learning Rate')
             axs[1].plot(iterations, self.moms)
+            axs[1].set_xlabel('Iterations')
+            axs[1].set_ylabel('Momentum')
         else: plt.plot(iterations, self.lrs)
 
     def plot(self, skip_start:int=10, skip_end:int=5)->None:
-        "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`."
+        "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
         _, ax = plt.subplots(1,1)
@@ -427,7 +455,11 @@ class Recorder(LearnerCallback):
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
-
+        mg = (np.gradient(np.array([x.item() for x in losses]))).argmin()
+        print(f"Min numerical gradient: {lrs[mg]:.2E}")
+        ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
+        self.min_grad_lr = lrs[mg]
+        
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
         last = ifnone(last,len(self.nb_batches))

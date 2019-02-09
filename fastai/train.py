@@ -127,6 +127,7 @@ class ClassificationInterpretation():
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
+        if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         plt.figure(**kwargs)
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
@@ -134,7 +135,6 @@ class ClassificationInterpretation():
         plt.xticks(tick_marks, self.data.y.classes, rotation=90)
         plt.yticks(tick_marks, self.data.y.classes, rotation=0)
 
-        if normalize: cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
             coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'

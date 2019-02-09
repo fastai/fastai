@@ -129,11 +129,8 @@ def test_models_meta(mnist_tiny, arch, zero_image):
 
 def test_ClassificationInterpretation(learn):
     interp = ClassificationInterpretation.from_learner(learn)
-    print(interp.confusion_matrix())
-    interp.plot_confusion_matrix()
-    plt.show()
-    print(interp.most_confused())
-    losses, idxs = interp.top_losses()
-    print([losses[:10], idxs[:10]])
-    interp.plot_top_losses(4)
-    plt.show()
+    assert isinstance(interp.confusion_matrix(), (np.ndarray))
+    assert interp.confusion_matrix().sum() == len(learn.data.valid_ds)
+    conf = interp.most_confused()
+    assert set(conf[0][:2]) == set(conf[1][:2]) == {'3', '7'}
+    
