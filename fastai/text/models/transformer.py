@@ -15,7 +15,7 @@ class PositionalEncoding(nn.Module):
         self.register_buffer('freq', 1 / (10000 ** (torch.arange(0., d, 2.)/d)))
     
     def forward(self, pos:Tensor, bs:int=None):
-        inp = torch.ger(pos, self.freq)
+        inp = torch.ger(pos.float(), self.freq)
         enc = torch.cat([inp.sin(), inp.cos()], dim=-1)
         return enc
 
@@ -223,7 +223,7 @@ class TransformerXL(nn.Module):
             inp = layer(inp, r=pos_enc, u=self.u, v=self.v, mask=mask, mem=mem)
             hids.append(inp)
         core_out = inp[:,-x_len:]
-        self._update_mems(hids)
+        if self.mem_len > 0 : self._update_mems(hids)
         return (self.hidden if self.mem_len > 0 else [core_out]),[core_out]
 
 def init_transformer(m):
