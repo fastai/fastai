@@ -225,12 +225,11 @@ class DataBunch():
             try:    samples.append(self.train_dl.dataset[i])
             except: fails.append(i)
         if len(fails) > 0:
+            warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access"
             if len(fails) == len(idx):
-                warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access any element of self.train_ds.\n"
-                warn_msg += f"Tried: {show_some(idx)}"
+                warn_msg += f" any element of self.train_ds.\nTried: {show_some(idx)}"
             else:
-                warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access these elements in self.train_ds"
-                warn_msg += f": {show_some(fails)}"
+                warn_msg += f" these elements in self.train_ds: {show_some(fails)}"
             warn(warn_msg)
             print(final_message)
             return
