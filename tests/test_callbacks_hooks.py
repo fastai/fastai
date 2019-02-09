@@ -7,6 +7,8 @@ from fastai.text import *
 from fastai.tabular import *
 from fastai.collab import *
 
+use_gpu = torch.cuda.is_available()
+
 @pytest.fixture(scope="module")
 def mnist_path():
     path = untar_data(URLs.MNIST_TINY)
@@ -71,7 +73,7 @@ def test_hook_output_basics(mnist_path):
     m = learn.model.eval()
     x,y = data.train_ds[0]
     xb,_ = data.one_item(x)
-    xb = xb.cuda()
+    if use_gpu: xb = xb.cuda()
 
     def hooked(cat=y):
         with hook_output(m[0]) as hook_forward:
