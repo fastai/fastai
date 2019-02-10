@@ -35,10 +35,9 @@ def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool
 
 def top_k_accuracy(input:Tensor, targs:Tensor, k:int=5)->Rank0Tensor:
     "Computes the Top-k accuracy (target is in the top k predictions)."
-    n = targs.shape[0]
-    input = input.topk(k=k, dim=-1)[1].view(n, -1)
-    targs = targs.view(n,-1)
-    return (input == targs).sum(dim=1, dtype=torch.float32).mean()
+    input = input.topk(k=k, dim=-1)[1]
+    targs = targs.unsqueeze(dim=-1).expand_as(input)
+    return (input == targs).max(dim=-1)[0].float().mean()
 
 def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
     "1 - `accuracy`"
