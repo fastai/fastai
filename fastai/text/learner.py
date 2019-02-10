@@ -132,25 +132,22 @@ class LanguageLearner(RNNLearner):
         ds = self.data.single_dl.dataset
         self.model.reset()
         xb, yb = self.data.one_item(text)
-        start_idx = xb.clone()
         nodes = None
+        xb = xb.repeat(top_k, 1)
+        nodes = xb.clone()
         scores = xb.new_ones(1).float()
         with torch.no_grad():
-            for k in range(n_words):
+            for k in progress_bar(range(n_words), leave=False):
                 out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
                 values, indices = out.topk(top_k, dim=-1)
                 scores = (-values * scores[:,None]).view(-1)
-                if nodes is None: 
-                    nodes = indices[0][:,None]
-                    self.model[0].select_hidden([0] * nodes.size(0))
-                else:
-                    indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
-                    sort_idx = scores.argsort()[:beam_sz]
-                    scores = scores[sort_idx]
-                    nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
-                                       indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
-                    nodes = nodes.view(-1, nodes.size(2))[sort_idx]
-                    self.model[0].select_hidden(indices_idx[sort_idx])
+                indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
+                sort_idx = scores.argsort()[:beam_sz]
+                scores = scores[sort_idx]
+                nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
+                                indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
+                nodes = nodes.view(-1, nodes.size(2))[sort_idx]
+                self.model[0].select_hidden(indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
         node_idx = torch.multinomial(1-scores, 1).item()
