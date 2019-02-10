@@ -9,12 +9,61 @@ p2 = torch.Tensor([[0,0,0,0,0],[0,1,0,0,0]]).expand(5,2,-1).float()
 t1 = torch.arange(5)
 t2 = torch.Tensor([1,1,1,1,0]).expand(5,-1)
 
+# Test data for multi-class single-label sequential models (like language models)
+# batch size: 5, sequence length: 4, classes: 4
+seq_targs = torch.arange(4).expand(5,-1)
+seq_preds_perfect = torch.Tensor([
+    [0.6, 0.3, 0.08, 0.02],
+    [0.02, 0.6, 0.3, 0.08],
+    [0.08, 0.02, 0.6, 0.3],
+    [0.3, 0.08, 0.02, 0.6],
+]).expand(5,4,-1)
+seq_preds_wrong = torch.Tensor([
+    [0.02, 0.6, 0.3, 0.08],
+    [0.08, 0.02, 0.6, 0.3],
+    [0.3, 0.08, 0.02, 0.6],
+    [0.6, 0.3, 0.08, 0.02],
+]).expand(5,4,-1)
+seq_preds = torch.Tensor([
+    [0.6, 0.3, 0.08, 0.02],
+    [0.08, 0.3, 0.6, 0.02],
+    [0.3, 0.02, 0.08, 0.6],
+    [0.6, 0.3, 0.08, 0.02],
+]).expand(5,4,-1)
+
 @pytest.mark.parametrize("p, t, expect", [
     (p1, t1, 0.2),
     (torch.eye(5), t1, 1),
+    (seq_preds_perfect, seq_targs, 1),
+    (seq_preds_wrong, seq_targs, 0),
+    (seq_preds, seq_targs, 0.25),
 ])
 def test_accuracy(p, t, expect):
     assert np.isclose(accuracy(p, t).item(), expect)
+
+@pytest.mark.parametrize("p, t, k, expect", [
+    # should behave like `accuracy` for k = 1
+    (p1, t1, 1, 0.2),
+    (torch.eye(5), t1, 1, 1),
+    (seq_preds_perfect, seq_targs, 1, 1),
+    (seq_preds_wrong, seq_targs, 1, 0),
+    (seq_preds, seq_targs, 1, 0.25),
+    # should always return 1.0 for k = num_classes = 4
+    (seq_preds_perfect, seq_targs, 4, 1),
+    (seq_preds_wrong, seq_targs, 4, 1),
+    (seq_preds, seq_targs, 4, 1),
+    # perfect predictions should result in 1 for all k
+    (seq_preds_perfect, seq_targs, 2, 1),
+    (seq_preds_perfect, seq_targs, 3, 1),
+    # totally wrong predictions should result in 0 for all k
+    (seq_preds_wrong, seq_targs, 2, 0),
+    (seq_preds_wrong, seq_targs, 3, 0),
+    # all other cases
+    (seq_preds, seq_targs, 2, 0.5),
+    (seq_preds, seq_targs, 3, 0.75),
+])
+def test_top_k_accuracy(p, t, k, expect):
+    assert np.isclose(top_k_accuracy(p, t, k).item(), expect)
 
 @pytest.mark.parametrize("p, t, expect", [
     (p1, t1, 0.8),
