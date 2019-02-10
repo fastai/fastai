@@ -56,6 +56,12 @@ def test_from_csv_and_from_df(path):
 
 rms = ['PAD', 'CROP', 'SQUISH']
 
+def check_resized(data, size, args):
+    x,_ = data.train_ds[0]
+    size_want = (size, size) if isinstance(size, int) else size
+    size_real = x.size
+    assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
+
 def test_resize_from_name_re(path, path_var_size):
     # in this test the 2 datasets are of (1) 28x28, (2) var-size but larger than
     # 28x28, so we don't need to check whether the original size of the image is
@@ -70,11 +76,7 @@ def test_resize_from_name_re(path, path_var_size):
                 with CaptureStderr() as cs:
                     data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size, resize_method=rm)
                 assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
-
-                x,_ = data.train_ds[0]
-                size_want = (size, size) if isinstance(size, int) else size
-                size_real = x.size
-                assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
+                check_resized(data, size, args)
 
 @pytest.mark.skip(reason="needs fixing")
 def test_resize_data_block(path, path_var_size):
@@ -92,12 +94,7 @@ def test_resize_data_block(path, path_var_size):
                             .databunch(bs=2)
                             )
                 assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
-
-                x,_ = data.train_ds[0]
-                size_want = (size, size) if isinstance(size, int) else size
-                size_real = x.size
-                assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
-
+                check_resized(data, size, args)
 
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
