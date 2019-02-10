@@ -52,18 +52,6 @@ def bb_pad_collate(samples:BatchSamples, pad_idx:int=0) -> Tuple[FloatTensor, Tu
             labels[i,-len(lbls):] = tensor(lbls)
     return torch.cat(imgs,0), (bboxes,labels)
 
-def _maybe_add_crop_pad(tfms):
-    assert is_listy(tfms) and len(tfms) == 2, "Please pass a list of two lists of transforms (train and valid)."
-    tfm_names = [[tfm.__name__ for tfm in o] for o in tfms]
-    return [([crop_pad()] + o if 'crop_pad' not in n else o) for o,n in zip(tfms, tfm_names)]
-
-def _prep_tfm_kwargs(tfms, size, resize_method:ResizeMethod=None):
-    tfms = ifnone(tfms, [[],[]])
-    default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
-    resize_method = ifnone(resize_method, default_rsz)
-    if resize_method <= 2: tfms = _maybe_add_crop_pad(tfms)
-    return tfms, resize_method
-
 def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
     "Normalize `x` with `mean` and `std`."
     return (x-mean[...,None,None]) / std[...,None,None]
@@ -105,7 +93,6 @@ class ImageDataBunch(DataBunch):
                 resize_method:ResizeMethod=None, mult:int=None, padding_mode:str='reflection', 
                 mode:str='bilinear')->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
-        ds_tfms, resize_method = _prep_tfm_kwargs(ds_tfms, size, resize_method=resize_method)
         lls = lls.transform(tfms=ds_tfms, size=size, resize_method=resize_method, mult=mult, padding_mode=padding_mode, mode=mode)
         if test is not None: lls.add_test_folder(test)
         return lls.databunch(bs=bs, val_bs=val_bs, dl_tfms=dl_tfms, num_workers=num_workers, collate_fn=collate_fn, 

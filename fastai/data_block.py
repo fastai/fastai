@@ -453,7 +453,8 @@ class ItemLists():
 
     def transform(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
         "Set `tfms` to be applied to the xs of the train and validation set."
-        if not tfms: return self
+        if not tfms: tfms=(None,None)
+        assert is_listy(tfms) and len(tfms) == 2, "Please pass a list of two lists of transforms (train and valid)."
         self.train.transform(tfms[0], **kwargs)
         self.valid.transform(tfms[1], **kwargs)
         if self.test: self.test.transform(tfms[1], **kwargs)

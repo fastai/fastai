@@ -78,7 +78,6 @@ def test_resize_from_name_re(path, path_var_size):
                 assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
                 check_resized(data, size, args)
 
-@pytest.mark.skip(reason="needs fixing")
 def test_resize_data_block(path, path_var_size):
     # see notes in test_resize_from_name_re - probably need to refactor
     for p in [path, path_var_size]: # identical + var sized inputs
