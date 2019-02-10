@@ -5,6 +5,8 @@ from utils.text import *
 import PIL
 import responses
 
+rms = {ResizeMethod.PAD:'PAD', ResizeMethod.CROP:'CROP', ResizeMethod.SQUISH:'SQUISH'}
+
 @pytest.fixture(scope="module")
 def path():
     path = untar_data(URLs.MNIST_TINY)
@@ -54,23 +56,46 @@ def test_from_csv_and_from_df(path):
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
 
-def test_from_plus_resize(path, path_var_size):
+def test_resize_from_name_re(path, path_var_size):
     # in this test the 2 datasets are of (1) 28x28, (2) var-size but larger than
     # 28x28, so we don't need to check whether the original size of the image is
     # different from the resized one, we always resize to < 28x28
     for p in [path, path_var_size]: # identical + var sized inputs
         fnames = get_files(p/'train', recurse=True)
         pat = r'/([^/]+)\/\d+.png$'
-        # check 3 different size arg are (1) supported and (2) no warnings are issued
         for size in [14, (14,14), (14,20)]:
-            with CaptureStderr() as cs:
-                data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size)
-            assert len(cs.err)==0, f"got collate_fn warning {cs.err}"
+            for rm in rms.keys():
+                args = f"path={p}, size={size}, resize_method={rms[rm]}"
+                with CaptureStderr() as cs:
+                    data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size)
+                assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
 
-            x,_ = data.train_ds[0]
-            size_want = (size, size) if isinstance(size, int) else size
-            size_real = x.size
-            assert size_want == size_real, f"size mismatch after resize {size} expected {size_want}, got {size_real}"
+                x,_ = data.train_ds[0]
+                size_want = (size, size) if isinstance(size, int) else size
+                size_real = x.size
+                assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
+
+@pytest.mark.skip(reason="needs fixing")
+def test_resize_data_block(path, path_var_size):
+    # see notes in test_resize_from_name_re - probably need to refactor
+    for p in [path, path_var_size]: # identical + var sized inputs
+        for size in [14, (14,14), (14,20)]:
+            for rm in rms.keys():
+                args = f"path={p}, size={size}, resize_method={rms[rm]}"
+                with CaptureStderr() as cs:
+                    data = (ImageItemList.from_folder(p)
+                            .no_split()
+                            .label_from_folder()
+                            .transform(size=size, resize_method=rm)
+                            .databunch(bs=2)
+                            )
+                assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
+
+                x,_ = data.train_ds[0]
+                size_want = (size, size) if isinstance(size, int) else size
+                size_real = x.size
+                assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
+
 
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))
