@@ -478,9 +478,9 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> widget gives you a way to quickly bootstrap your image dataset without leaving the notebook. It searches and downloads images that match the search criteria and resolution / quality requirements and stores them on your filesystem within the provided <code>path</code>.</p>
+<p><a href="/widgets.image_cleaner.html#ImageDownloader"><code>ImageDownloader</code></a> widget gives you a way to quickly bootstrap your image dataset without leaving the notebook. It searches and downloads images that match the search criteria and resolution / quality requirements and stores them on your filesystem within the provided <code>path</code>.</p>
 <p>Images for each search query (or label) are stored in a separate folder within <code>path</code>. For example, if you pupulate <code>tiger</code> with a <code>path</code> setup to <code>./data</code>, you'll get a folder <code>./data/tiger/</code> with the tiger images in it.</p>
-<p><a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> will automatically clean up and verify the downloaded images with <a href="/vision.data.html#verify_images"><code>verify_images()</code></a> after downloading them.</p>
+<p><a href="/widgets.image_cleaner.html#ImageDownloader"><code>ImageDownloader</code></a> will automatically clean up and verify the downloaded images with <a href="/vision.data.html#verify_images"><code>verify_images()</code></a> after downloading them.</p>
 
 </div>
 </div>
@@ -629,7 +629,7 @@ Total time: 00:17 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>After populating images with <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a>, you can get a an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> by calling <code>ImageDataBunch.from_folder(path, size=size)</code>, or using the data block API.</p>
+<p>After populating images with <a href="/widgets.image_cleaner.html#ImageDownloader"><code>ImageDownloader</code></a>, you can get a an <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> by calling <code>ImageDataBunch.from_folder(path, size=size)</code>, or using the data block API.</p>
 
 </div>
 </div>
@@ -811,7 +811,7 @@ Total time: 00:33 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Downloading-more-than-a-hundred-images">Downloading more than a hundred images<a class="anchor-link" href="#Downloading-more-than-a-hundred-images">&#182;</a></h4><p>To fetch more than a hundred images, <a href="/widgets.image_downloader.html#ImageDownloader"><code>ImageDownloader</code></a> uses <code>selenium</code> and <code>chromedriver</code> to scroll through the Google Images search results page and scrape image URLs. They're not required as dependencies by default. If you don't have them installed on your system, the widget will show you an error message.</p>
+<h4 id="Downloading-more-than-a-hundred-images">Downloading more than a hundred images<a class="anchor-link" href="#Downloading-more-than-a-hundred-images">&#182;</a></h4><p>To fetch more than a hundred images, <a href="/widgets.image_cleaner.html#ImageDownloader"><code>ImageDownloader</code></a> uses <code>selenium</code> and <code>chromedriver</code> to scroll through the Google Images search results page and scrape image URLs. They're not required as dependencies by default. If you don't have them installed on your system, the widget will show you an error message.</p>
 <p>To install <code>selenium</code>, just <code>pip install selenium</code> in your fastai environment.</p>
 <p><strong>On a mac</strong>, you can install <code>chromedriver</code> with <code>brew cask install chromedriver</code>.</p>
 <p><strong>On Ubuntu</strong>

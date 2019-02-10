@@ -20,7 +20,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.awd_lstm.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
+<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
 <p>This being given, there are five different dropouts in the AWD-LSTM:</p>
 <ul>
 <li>the first one, embedding dropout, is applied when we look the ids of our tokens inside the embedding matrix (to transform them from numbers to a vector of float). We zero some lines of it, so random ids are sent to a vector of zeros instead of being sent to their embedding vector.</li>
@@ -544,7 +544,7 @@ tensor([[-0.0702,  0.5725],
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Such a mask is then expanded in the sequence length dimension and multiplied by the input to do an <a href="/text.models.awd_lstm.html#RNNDropout"><code>RNNDropout</code></a>.</p>
+<p>Such a mask is then expanded in the sequence length dimension and multiplied by the input to do an <a href="/text.models.html#RNNDropout"><code>RNNDropout</code></a>.</p>
 
 </div>
 </div>
