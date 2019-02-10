@@ -5,8 +5,6 @@ from utils.text import *
 import PIL
 import responses
 
-rms = {ResizeMethod.PAD:'PAD', ResizeMethod.CROP:'CROP', ResizeMethod.SQUISH:'SQUISH'}
-
 @pytest.fixture(scope="module")
 def path():
     path = untar_data(URLs.MNIST_TINY)
@@ -56,6 +54,8 @@ def test_from_csv_and_from_df(path):
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
 
+rms = ['PAD', 'CROP', 'SQUISH']
+
 def test_resize_from_name_re(path, path_var_size):
     # in this test the 2 datasets are of (1) 28x28, (2) var-size but larger than
     # 28x28, so we don't need to check whether the original size of the image is
@@ -64,10 +64,11 @@ def test_resize_from_name_re(path, path_var_size):
         fnames = get_files(p/'train', recurse=True)
         pat = r'/([^/]+)\/\d+.png$'
         for size in [14, (14,14), (14,20)]:
-            for rm in rms.keys():
-                args = f"path={p}, size={size}, resize_method={rms[rm]}"
+            for rm_name in rms:
+                rm = getattr(ResizeMethod, rm_name)
+                args = f"path={p}, size={size}, resize_method={rm_name}"
                 with CaptureStderr() as cs:
-                    data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size)
+                    data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size, resize_method=rm)
                 assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
 
                 x,_ = data.train_ds[0]
@@ -80,8 +81,9 @@ def test_resize_data_block(path, path_var_size):
     # see notes in test_resize_from_name_re - probably need to refactor
     for p in [path, path_var_size]: # identical + var sized inputs
         for size in [14, (14,14), (14,20)]:
-            for rm in rms.keys():
-                args = f"path={p}, size={size}, resize_method={rms[rm]}"
+            for rm_name in rms:
+                rm = getattr(ResizeMethod, rm_name)
+                args = f"path={p}, size={size}, resize_method={rm_name}"
                 with CaptureStderr() as cs:
                     data = (ImageItemList.from_folder(p)
                             .no_split()
