@@ -15,16 +15,23 @@ of that change.
 
 ## 1.0.43.dev0 (Work In Progress)
 
+### Breaking change:
+
+- `language_model_learner`and `text_classifier_learner` have a different syntax: `(data, arch, pretrained=True,...)` to mimic the behaivor of `create_cnn`
+
 ### New:
 
 - More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
 - Backward option in `text_classifier_learner` (thanks to tpietruszka)
 - Automate custom dependency groups installation via extending `distutils`
 - Transformer and TransformerXL architectures
+- Add `val_bs` parameter to all `DataBunch` creation methods
+- `LanguageLearner.beam_search` to make text generation using beam search
 
 ### Changed:
 
 - `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
+- `model_summary` only supports `Learner` now
 
 ### Fixed:
 
@@ -33,7 +40,7 @@ of that change.
 - fix the conda package dependency for py36
 - Bugs in `ForgetMult` and check cuda version are consistent (thanks to mkardas)
 - Bug `label_empty()` got an unexpected keyword argument 'label_cls'
-- For a language model `predict` is now way faster
+- For a language model `predict` is now way faster and more accurate
 
 ## 1.0.42 (2019-01-24)
 

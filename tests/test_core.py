@@ -53,6 +53,11 @@ def test_tuple():
     assert is_tuple([1])         == False
     assert is_tuple(1)           == False
 
+def test_dict():
+    assert is_dict({1:2,3:4})  == True
+    assert is_dict([1,2,3])    == False
+    assert is_dict((1,2,3))    == False
+
 def test_noop():
     assert noop(1) is 1
 

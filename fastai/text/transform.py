@@ -130,7 +130,7 @@ class Vocab():
 
     def textify(self, nums:Collection[int], sep=' ') -> List[str]:
         "Convert a list of `nums` to their tokens."
-        return sep.join([self.itos[i] for i in nums])
+        return sep.join([self.itos[i] for i in nums]) if sep is not None else [self.itos[i] for i in nums]
 
     def __getstate__(self):
         return {'itos':self.itos}

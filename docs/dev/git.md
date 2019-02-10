@@ -249,7 +249,7 @@ Test that your changes don't break things. Choose one according to which project
 
    ```
    cd docs_src
-   run_tests.sh
+   ./run_tests.sh
    ```
    You will need at least 8GB free GPU RAM to run these tests.
 

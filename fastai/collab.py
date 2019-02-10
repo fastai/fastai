@@ -54,8 +54,8 @@ class CollabDataBunch(DataBunch):
     @classmethod
     def from_df(cls, ratings:DataFrame, pct_val:float=0.2, user_name:Optional[str]=None, item_name:Optional[str]=None,
                 rating_name:Optional[str]=None, test:DataFrame=None, seed:int=None, path:PathOrStr='.', bs:int=64, 
-                num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, 
-                collate_fn:Callable=data_collate, no_check:bool=False) -> 'CollabDataBunch':
+                val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, 
+                device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False) -> 'CollabDataBunch':
         "Create a `DataBunch` suitable for collaborative filtering from `ratings`."
         user_name   = ifnone(user_name,  ratings.columns[0])
         item_name   = ifnone(item_name,  ratings.columns[1])
@@ -64,7 +64,8 @@ class CollabDataBunch(DataBunch):
         src = (CollabList.from_df(ratings, cat_names=cat_names, procs=Categorify)
                .random_split_by_pct(valid_pct=pct_val, seed=seed).label_from_df(cols=rating_name))
         if test is not None: src.add_test(CollabList.from_df(test, cat_names=cat_names))
-        return src.databunch(path=path, bs=bs, num_workers=num_workers, device=device, collate_fn=collate_fn, no_check=no_check)
+        return src.databunch(path=path, bs=bs, val_bs=val_bs, num_workers=num_workers, device=device, 
+                             collate_fn=collate_fn, no_check=no_check)
 
 class CollabLearner(Learner):
     "`Learner` suitable for collaborative filtering."
@@ -72,10 +73,13 @@ class CollabLearner(Learner):
         "Fetch item or user (based on `is_item`) for all in `arr`. (Set model to `cpu` and no grad.)"
         m = self.model.eval().cpu()
         requires_grad(m,False)
-        u_class,i_class = self.data.classes.values()
+        u_class,i_class = self.data.train_ds.x.classes.values()
         classes = i_class if is_item else u_class
         c2i = {v:k for k,v in enumerate(classes)}
-        return tensor([c2i[o] for o in arr])
+        try: return tensor([c2i[o] for o in arr])
+        except Exception as e: 
+            print(f"""You're trying to access {'an item' if is_item else 'a user'} that isn't in the training data.
+                  If it was in your original data, it may have been split such that it's only in the validation set now.""")
 
     def bias(self, arr:Collection, is_item:bool=True):
         "Bias for item or user (based on `is_item`) for all in `arr`. (Set model to `cpu` and no grad.)"

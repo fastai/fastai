@@ -20,6 +20,9 @@ torch.utils.data.DataLoader.__init__ = intercept_args
 def DataLoader___getattr__(dl, k:str)->Any: return getattr(dl.dataset, k)
 DataLoader.__getattr__ = DataLoader___getattr__
 
+def DataLoader___setstate__(dl, data:Any): dl.__dict__.update(data)
+DataLoader.__setstate__ = DataLoader___setstate__
+
 @dataclass
 class DeviceDataLoader():
     "Bind a `DataLoader` to a `torch.device`."
@@ -33,6 +36,7 @@ class DeviceDataLoader():
 
     def __len__(self)->int: return len(self.dl)
     def __getattr__(self,k:str)->Any: return getattr(self.dl, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     @property
     def batch_size(self):   return self.dl.batch_size
@@ -61,7 +65,7 @@ class DeviceDataLoader():
                                 self.collate_fn)
 
     def proc_batch(self,b:Tensor)->Tensor:
-        "Proces batch `b` of `TensorImage`."
+        "Process batch `b` of `TensorImage`."
         b = to_device(b, self.device)
         for f in listify(self.tfms): b = f(b)
         return b
@@ -79,7 +83,7 @@ class DeviceDataLoader():
 
 class DataBunch():
     "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
-    
+
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, dl_tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
                  collate_fn:Callable=data_collate, no_check:bool=False):
@@ -106,16 +110,17 @@ class DataBunch():
 
     @classmethod
     def create(cls, train_ds:Dataset, valid_ds:Dataset, test_ds:Optional[Dataset]=None, path:PathOrStr='.', bs:int=64,
-               num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
-               collate_fn:Callable=data_collate, no_check:bool=False)->'DataBunch':
+               val_bs:int=None, num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None,
+               device:torch.device=None, collate_fn:Callable=data_collate, no_check:bool=False)->'DataBunch':
         "Create a `DataBunch` from `train_ds`, `valid_ds` and maybe `test_ds` with a batch size of `bs`."
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
-        val_bs = bs
+        val_bs = ifnone(val_bs, bs)
         dls = [DataLoader(d, b, shuffle=s, drop_last=s, num_workers=num_workers) for d,b,s in
                zip(datasets, (bs,val_bs,val_bs,val_bs), (True,False,False,False)) if d is not None]
         return cls(*dls, path=path, device=device, dl_tfms=dl_tfms, collate_fn=collate_fn, no_check=no_check)
 
     def __getattr__(self,k:int)->Any: return getattr(self.train_dl, k)
+    def __setstate__(self,data:Any): self.__dict__.update(data)
 
     def dl(self, ds_type:DatasetType=DatasetType.Valid)->DeviceDataLoader:
         "Returns appropriate `Dataset` for validation, training, or test (`ds_type`)."
@@ -170,7 +175,7 @@ class DataBunch():
         "Export the minimal state of `self` for inference in `self.path/fname`."
         xtra = dict(normalize=self.norm.keywords) if getattr(self, 'norm', False) else {}
         self.valid_ds.export(self.path/fname, **xtra)
-    
+
     def _grab_dataset(self, dl:DataLoader):
         ds = dl.dl.dataset
         while hasattr(ds, 'dataset'): ds = ds.dataset
@@ -202,11 +207,14 @@ class DataBunch():
         self.train_dl.batch_size,self.valid_dl.batch_size = v,v
         if self.test_dl is not None: self.test_dl.batch_size = v
 
+    @property
+    def classes(self): return self.train_ds.y.classes
+
     def sanity_check(self):
         "Check the underlying data in the training set can be properly loaded."
         final_message = "You can deactivate this warning by passing `no_check=True`."
         if not hasattr(self.train_ds, 'items') or len(self.train_ds.items) == 0 or not hasattr(self.train_dl, 'batch_sampler'): return
-        if len(self.train_dl) == 0: 
+        if len(self.train_dl) == 0:
             warn(f"""Your training dataloader is empty, you have only {len(self.train_dl.dataset)} items in your training set.
                  Your batch size is {self.train_dl.batch_size}, you should lower it.""")
             print(final_message)
@@ -217,12 +225,11 @@ class DataBunch():
             try:    samples.append(self.train_dl.dataset[i])
             except: fails.append(i)
         if len(fails) > 0:
+            warn_msg = "There seems to be something wrong with your dataset, for example, in the first batch can't access"
             if len(fails) == len(idx):
-                warn_msg = "There seems to be something wrong with your dataset, can't access any element of self.train_ds.\n"
-                warn_msg += f"Tried: {show_some(idx)}"
+                warn_msg += f" any element of self.train_ds.\nTried: {show_some(idx)}"
             else:
-                warn_msg = "There seems to be something wrong with your dataset, can't access these elements "
-                warn_msg += f"in self.train_ds: {show_some(fails)}"
+                warn_msg += f" these elements in self.train_ds: {show_some(fails)}"
             warn(warn_msg)
             print(final_message)
             return
