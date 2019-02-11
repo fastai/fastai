@@ -18,12 +18,6 @@ From the fastai repo or your forked branch, install the required developer modul
 pip install -e ".[dev]"
 ```
 
-Since git's original `diff` and `merge` tools do not handle the special Jupyter Notebook formats well, we need to configure git to use notebook's customized `diff` and `merge` tools, [nbdime](https://nbdime.readthedocs.io/en/latest/):
-
-```bash
-nbdime config-git --enable --global
-```
-
 If you're on windows, you also need to convert the Unix symlink between `docs_src\imgs` and `docs\imgs`. You will need to (1) remove `docs_src\imgs`, (2) execute `cmd.exe` as administrator, and (3) finally, in the `docs_src` folder, execute:
 
 ```bash
