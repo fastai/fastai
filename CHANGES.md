@@ -28,6 +28,7 @@ of that change.
 - Add `val_bs` parameter to all `DataBunch` creation methods
 - `LanguageLearner.beam_search` to make text generation using beam search
 - Dynamic loss scaling (with `to_fp16(dynamic=True)`), thanks to flpeters
+- `Learner.purge` to purge the `Learner` of needless objects that may take GPU memory
 
 ### Changed:
 
