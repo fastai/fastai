@@ -16,7 +16,6 @@ Note: windows users, not using bash emulation, will need to invoke the command a
 
     python tools\run-after-git-clone
 
-
 ### after-git-clone #1: a mandatory notebook strip out
 
 Currently we only store `source` code cells under git (and a few extra fields for documentation notebooks). If you would like to commit or submit a PR, you need to confirm to that standard.
@@ -46,8 +45,6 @@ or alternatively run:
 
     tools/trust-origin-git-config -t
 
-
-
 ### after-git-clone #2: automatically updating doc notebooks to be trusted on git pull
 
 We want the doc notebooks to be already trusted when you load them in `jupyter notebook`, so this script which should be run once upon `git clone`, will install a `git` `post-merge` hook into your local check out.
@@ -66,53 +63,25 @@ To distrust run:
 
     rm .git/hooks/post-merge
 
-
-
-
-## Unstripped Notebook Repair
-
-If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
-
-   ```
-   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
-   tools/trust-origin-git-config -d
-   git commit -a
-   git push
-   tools/trust-origin-git-config
-   ```
-
-Inside the `course-v3` repo, it'd be the same, but the notebooks are in a different location, so:
-
-   ```
-   tools/fastai-nbstripout -d nbs/*/*ipynb
-   ```
-
-and in the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks and we strip them out differently:
-
-   ```
-   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
-   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
-   ```
-
 ## Development Editable Install
 
 For deploying the `fastai` module's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
 
-   ```
+   ```bash
    pip   uninstall fastai
    conda uninstall fastai
    ```
 
 And then do an editable install, from inside the cloned `fastai` directory:
 
-   ```
+   ```bash
    cd fastai
    pip install -e ".[dev]"
    ```
 
 It's almost the same as:
 
-   ```
+   ```bash
    pip install -e .
    ```
 
@@ -122,12 +91,11 @@ Best not to use `python setup.py develop` method [doc](https://setuptools.readth
 
 When you'd like to sync your codebase with the `master`, simply go back into the cloned `fastai` directory and update it:
 
-
-   ```
+   ```bash
    git pull
    ```
-You don't need to do anything else.
 
+You don't need to do anything else.
 
 ### Editable Install Explained
 
@@ -139,7 +107,8 @@ This section will demonstrate how the editable installs works with `fastai`, inc
 First, make sure you're in the correct [python environment](https://docs.fast.ai/install.html#virtual-environment) (`conda activate fastai`, or whatever you called your environment if any, perhaps you're using a system-wide install, then you don't need to activate anything, though it's much safer to use a dedicated virtual env for working with `fastai`).
 
 Let's start by uninstalling `fastai`:
-```
+
+```bash
 pip   uninstall -y fastai
 conda uninstall -y fastai
 ```
@@ -147,16 +116,19 @@ conda uninstall -y fastai
 `sys.path` is a list of system paths that python uses to search for modules to load during `import`.
 
 Before an editable `fastai` install is added, we have the following `sys.path`:
-```
+
+```bash
 python -c 'import sys, pprint; pprint.pprint(sys.path)'
 ['',
  '~/.local/lib/python3.6/site-packages',
  '~/anaconda3/envs/fastai/lib/python3.6/site-packages']
 ```
+
 Several entries were removed to make the lists easier to compare.
 
 Now let's perform an editable install for `fastai`:
-```
+
+```bash
 cd ~/github
 git clone https://github.com/fastai/fastai
 cd fastai
@@ -164,7 +136,8 @@ pip install -e ".[dev]"
 ```
 
 And let's look at  `sys.path` again:
-```
+
+```bash
 python -c 'import sys, pprint; pprint.pprint(sys.path)'
 ['',
  '~/.local/lib/python3.6/site-packages',
@@ -177,11 +150,13 @@ You can see that the path of my github checkout of `fastai` was added to the end
 This setup makes it possible to edit python modules under  `~/github/fastai/fastai/*/*py` and have python load those files in programs running inside `conda`'s `fastai` environment automatically.
 
 And you can see how python+pip accomplish that:
-```
+
+```bash
 pip uninstall fastai
 Uninstalling fastai-1.0.38.dev0:
   Would remove: ~/anaconda3/envs/fastai/lib/python3.6/site-packages/fastai.egg-link
 ```
+
 And inside `fastai.egg-link` you will find `~/github/fastai`.
 
 One important lesson here is that you must not have a normally installed `fastai` co-exist with an editable install. As you can tell from the contents of `sys.path` the editable path is added last to the module search path. Therefore, if you have a normally installed `fastai` package, python will use that instead of the editable install, which is probably not what you want.
@@ -190,7 +165,7 @@ This problem doesn't exist with pip. If you install a pip `fastai` package and t
 
 This is not the situation with conda packages. If you do:
 
-```
+```bash
 conda install -c fastai fastai
 cd ~/github/fastai
 pip install -e ".[dev]"
@@ -198,7 +173,7 @@ pip install -e ".[dev]"
 
 You end up with 2 installations of `fastai`, having the conda `fastai` package loaded by python and the editable install practically invisible to python (as it will find the conda package first):
 
-```
+```bash
 $ ls -l ~/anaconda3/envs/fastai/lib/python3.6/site-packages/fastai*
 ~/anaconda3/envs/fastai/lib/python3.6/site-packages/fastai
 ~/anaconda3/envs/fastai/lib/python3.6/site-packages/fastai-1.0.37-py3.7.egg-info
@@ -206,7 +181,7 @@ $ ls -l ~/anaconda3/envs/fastai/lib/python3.6/site-packages/fastai*
 
 So if you script your editable installation, always make sure to uninstall any previously installed conda `fastai` packages:
 
-```
+```bash
 pip   uninstall -y fastai
 conda uninstall -y fastai
 cd ~/github/fastai
@@ -215,7 +190,7 @@ pip install -e ".[dev]"
 
 Also, note, that `conda` can also perform an editable install:
 
-```
+```bash
 cd ~/github/fastai
 conda develop .
 python -c 'import sys, pprint; pprint.pprint(sys.path)'
@@ -233,17 +208,16 @@ We don't recommend using this approach, because, it doesn't play well with conda
 
 To uninstall the editable conda version you must use:
 
-```
+```bash
 cd ~/github/fastai
 conda develop -u .
 ```
-
 
 ## `fastai` Versions and Timeline
 
 The timeline the `fastai` project follows is:
 
-```
+```txt
 ...
 1.0.14
 1.0.15.dev0
@@ -256,12 +230,11 @@ So that if your `fastai/version.py` or `fastai.__version__` doesn't include `.de
 
 When a new release cycle starts it starts with `.dev0` in it, for example, `1.0.15.dev0`. When that cycle is complete and a release is made, it becomes `1.0.15`. Think of `.dev0` as a pre-release.
 
-
 ## Switching Conda Environments in Jupyter
 
 Other than the normal switching environments with restarts:
 
-   ```
+   ```bash
    source activate env1
    jupyter notebook
    (Ctrl-C to kill jupyter)
@@ -271,15 +244,14 @@ Other than the normal switching environments with restarts:
 
 You can install [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels), which provides a separate jupyter kernel for each conda environment, along with the appropriate code to handle their setup. This makes switching conda environments as simple as switching jupyter kernel (e.g. from the kernel menu). And you don't need to worry which environment you started `jupyter notebook` from - just choose the right environment from the notebook.
 
-
-
 ## Stripping Out Jupyter Notebooks
 
 Our setup on all `fastai` projects requires that `*.ipynb` notebooks get stripped during the commit, which is accomplished by `fastai-nbstripout` which runs as a filter during `git commit`. Therefore, when you clone any of the `fastai` projects that contain jupyter notebooks you must always run:
 
-```
+```bash
 tools/run-after-git-clone
 ```
+
 which registers the filters. This needs to be done once per `git clone`.
 
 Unfortunately, we can't enforce this, because github doesn't allow server-side hooks.
@@ -295,39 +267,30 @@ Alternatively, you can watch CI builds for the project you committed to:
 
 It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
 
-Should you make the mistake and commit some unstripped out notebooks, here is how you fix it:
+### Unstripped Notebook Repair
 
-1. disable the filter
+If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
 
-   ```
+   ```bash
+   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
    tools/trust-origin-git-config -d
-   ```
-
-2. strip out the notebook
-
-   ```
-   tools/fastai-nbstripout -d path/to/notebooks
-   ```
-   with an exception of `fastai_docs/dev_nb/*ipynb` notebooks, which need to be stripped with:
-   ```
-   tools/fastai-nbstripout path/to/notebooks
-   ```
-   without any arguments `outputs` are stripped, `-d` doesn't strip out the `outputs`.
-
-3. commit
-
-   ```
-   git commit path/to/notebooks
+   git commit -a
    git push
-   ```
-
-4. re-enable the filter (very important!)
-
-   ```
    tools/trust-origin-git-config
    ```
 
+Inside the `course-v3` repo, it'd be the same, but the notebooks are in a different location, so:
 
+   ```bash
+   tools/fastai-nbstripout -d nbs/*/*ipynb
+   ```
+
+and in the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks and we strip them out differently:
+
+   ```bash
+   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
+   ```
 
 ## Full Diffs Mailing List
 
@@ -343,7 +306,7 @@ Chances are that your email client may put the emails into your spam folder, so 
 
 You will probably want to filter these emails into a dedicated folder. If so, use the `List-ID` email header in the configuration of your email:
 
-```
+```txt
 List-ID: <fastai-diff.googlegroups.com>
 ```
 
@@ -351,17 +314,20 @@ List-ID: <fastai-diff.googlegroups.com>
 
 To fix links to have `.html` again (both needed):
 
-```
+```bash
 perl -pi -e 's|href="(/[^"#]+)(#[^"]+)?"|href="$1.html$2"|g' docs/*html docs_src/*ipynb
 perl -pi -e 's{https?://((?:docs|docs-dev|course-v3).fast.ai/)([\w\._-]+)(#[\w-_\.]+)?}{http://$1$2 .html$3}g' docs/*md
 perl -pi -e 's{https?://((?:docs|docs-dev|course-v3).fast.ai/)}{https://$1}g' docs/*md README.md
 ```
 
 How to safely and efficiently search/replace files in git repo using CLI. The operation must not touch anything under `.git`:
-```
+
+```bash
 find . -type d -name ".git" -prune -o -type f -exec perl -pi -e 's|OLDSTR|NEWSTR|g' {} \;
 ```
+
 but it `touch(1)`es all files which slows down git-side, so we want to do it on files that actually contain the old pattern:
-```
+
+```bash
 grep --exclude-dir=.git -lIr "OLDSTR" . | xargs -n1 perl -pi -e 's|OLDSTR|NEWSTR|g'
 ```
