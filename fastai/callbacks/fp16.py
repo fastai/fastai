@@ -62,10 +62,12 @@ def grad_overflow(param_group):
     return False
                 
 class MixedPrecision(LearnerCallback):
+    _order = 999 #Need to run after things that could call on_backward_begin and change the loss
     "Callback that handles mixed-precision training."
-    def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, flat_master:bool=False):
+    def __init__(self, learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, clip:float=None,
+                 flat_master:bool=False):
         super().__init__(learn)
-        self.flat_master,self.dynamic,self.max_noskip = flat_master,dynamic,max_noskip
+        self.flat_master,self.dynamic,self.max_noskip,self.clip = flat_master,dynamic,max_noskip,clip
         self.loss_scale = ifnone(loss_scale, 2**32 if dynamic else 512)
         self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
@@ -111,6 +113,8 @@ class MixedPrecision(LearnerCallback):
             for group in self.master_params:
                 for param in group: 
                     if param.grad is not None: param.grad.div_(self.loss_scale)
+            if self.clip is not None: 
+                for group in self.master_params: nn.utils.clip_grad_norm_(group, self.clip)
             if not self.dynamic: return
             self.noskip += 1
             if self.noskip >= self.max_noskip:
