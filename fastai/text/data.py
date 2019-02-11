@@ -288,7 +288,9 @@ class TokenizeProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
-    def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
+    def process_one(self, item):  
+        return self.tokenizer._process_all_1(_join_texts([item], self.mark_fields))[0]
+    
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields)
         tokens = []
