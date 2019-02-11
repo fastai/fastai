@@ -82,8 +82,7 @@ class RNNLearner(Learner):
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
-            preds[0] = preds[0][reverse_sampler,:] if preds[0].dim() > 1 else preds[0][reverse_sampler]
-            preds[1] = preds[1][reverse_sampler,:] if preds[1].dim() > 1 else preds[1][reverse_sampler]
+            preds[0],preds[1] = preds[0][reverse_sampler],preds[1][reverse_sampler]
         return(preds)
 
 def decode_spec_tokens(tokens):
