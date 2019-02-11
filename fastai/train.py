@@ -31,10 +31,12 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
     a = int(np.ceil(num_it/len(learn.data.train_dl)))
     learn.fit(a, start_lr, callbacks=[cb], wd=wd)
 
-def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, flat_master:bool=False)->Learner:
+def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, clip:float=None,
+            flat_master:bool=False)->Learner:
     "Put `learn` in FP16 precision mode."
     learn.model = model2half(learn.model)
-    learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, flat_master=flat_master)
+    learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, clip=clip, 
+                                 flat_master=flat_master)
     learn.callbacks.append(learn.mp_cb)
     return learn
 
@@ -148,7 +150,7 @@ class ClassificationInterpretation():
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
-        res = [(self.dataclasses[i],self.data.classes[j],cm[i,j])
+        res = [(self.data.classes[i],self.data.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
     
