@@ -156,8 +156,9 @@ class Transformer(nn.Module):
     def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int, 
                  resid_p:float=0., attn_p:float=0., ff_p:float=0., embed_p:float=0., bias:bool=True, scale:bool=True,
                  act:Activation=Activation.ReLU, double_drop:bool=True, attn_cls:Callable=MultiHeadAttention,
-                 learned_pos_enc:bool=True):
+                 learned_pos_enc:bool=True, mask:bool=True):
         super().__init__()
+        self.mask = mask
         self.encoder = nn.Embedding(vocab_sz, d_model)
         self.pos_enc = nn.Embedding(ctx_len, d_model) if learned_pos_enc else PositionalEncoding(d_model)
         self.drop_emb = nn.Dropout(embed_p)
@@ -171,7 +172,7 @@ class Transformer(nn.Module):
         bs, x_len = x.size()
         pos = torch.arange(0, x_len, device=x.device, dtype=x.dtype)
         inp = self.drop_emb(self.encoder(x) + self.pos_enc(pos)[None]) #.mul_(self.d_model ** 0.5)
-        mask = torch.triu(x.new_ones(x_len, x_len), diagonal=1).byte()[None,None]
+        mask = torch.triu(x.new_ones(x_len, x_len), diagonal=1).byte()[None,None] if self.mask else None
         #[None,:,:None] for einsum implementation of attention
         for layer in self.layers: inp = layer(inp, mask=mask)
         return ([inp],[inp]) #For the LinearDecoder
@@ -181,20 +182,21 @@ class TransformerXL(nn.Module):
     def __init__(self, vocab_sz:int, ctx_len:int, n_layers:int, n_heads:int, d_model:int, d_head:int, d_inner:int, 
                  resid_p:float=0., attn_p:float=0., ff_p:float=0., embed_p:float=0., bias:bool=False, scale:bool=True,
                  act:Activation=Activation.ReLU, double_drop:bool=True, attn_cls:Callable=MultiHeadRelativeAttention,
-                 learned_pos_enc:bool=False, mem_len:int=0):
+                 learned_pos_enc:bool=False, mask:bool=True, mem_len:int=0):
         super().__init__()
         self.encoder = nn.Embedding(vocab_sz, d_model)
         self.pos_enc = nn.Embedding(ctx_len, d_model) if learned_pos_enc else PositionalEncoding(d_model)
         self.drop_emb = nn.Dropout(embed_p)
         self.u = nn.Parameter(torch.Tensor(n_heads, 1, d_head)) #Remove 1 for einsum implementation of attention
         self.v = nn.Parameter(torch.Tensor(n_heads, 1, d_head)) #Remove 1 for einsum implementation of attention
-        self.mem_len,self.n_layers,self.d_model = mem_len,n_layers,d_model
+        self.mem_len,self.n_layers,self.d_model,self.mask = mem_len,n_layers,d_model,mask
         if self.mem_len > 0: self.reset()
         self.layers = nn.ModuleList([DecoderLayer(n_heads, d_model, d_head, d_inner, resid_p=resid_p, attn_p=attn_p,
                       ff_p=ff_p, bias=bias, scale=scale, act=act, double_drop=double_drop, 
                       attn_cls=attn_cls) for k in range(n_layers)])
     
     def reset(self):
+        "Reset the internal memory."
         self.hidden = [next(self.parameters()).data.new(0) for i in range(self.n_layers+1)]
 
     def _update_mems(self, hids):
@@ -212,7 +214,7 @@ class TransformerXL(nn.Module):
         inp = self.drop_emb(self.encoder(x)) #.mul_(self.d_model ** 0.5)
         m_len = self.hidden[0].size(1) if hasattr(self, 'hidden') and len(self.hidden[0].size()) > 1 else 0
         seq_len = m_len + x_len
-        mask = torch.triu(x.new_ones(x_len, seq_len), diagonal=1+m_len).byte()[None,None]
+        mask = torch.triu(x.new_ones(x_len, seq_len), diagonal=1+m_len).byte()[None,None] if self.mask else None
         #[None,:,:None] for einsum implementation of attention
         hids = []
         pos = torch.arange(seq_len-1, -1, -1, device=inp.device, dtype=inp.dtype)
@@ -240,11 +242,11 @@ def init_transformer(m):
 
 tfmer_lm_config = dict(ctx_len=512, n_layers=12, n_heads=12, d_model=768, d_head=64, d_inner=3072, resid_p=0.1, attn_p=0.1,
                          ff_p=0.1, embed_p=0.1, output_p=0., bias=True, scale=True, act=Activation.GeLU, double_drop=False,
-                         tie_weights=True, out_bias=False, init=init_transformer)
+                         tie_weights=True, out_bias=False, init=init_transformer, mask=True)
 
 tfmer_clas_config = dict(ctx_len=512, n_layers=12, n_heads=12, d_model=768, d_head=64, d_inner=3072, resid_p=0.1, attn_p=0.1,
                          ff_p=0.1, embed_p=0.1, output_p=0., bias=True, scale=True, act=Activation.GeLU, double_drop=False,
-                         init=init_transformer)
+                         init=init_transformer, mask=False)
 
 def tfmer_lm_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."
@@ -262,11 +264,11 @@ def tfmer_clas_split(model:nn.Module) -> List[nn.Module]:
 
 tfmerXL_lm_config = dict(ctx_len=150, n_layers=12, n_heads=10, d_model=410, d_head=41, d_inner=2100, resid_p=0.1, attn_p=0.1,
                          ff_p=0.1, embed_p=0.1, output_p=0.1, bias=False, scale=True, act=Activation.ReLU, double_drop=True,
-                         tie_weights=True, out_bias=True, init=init_transformer, mem_len=150)
+                         tie_weights=True, out_bias=True, init=init_transformer, mem_len=150, mask=True)
 
 tfmerXL_clas_config = dict(ctx_len=150, n_layers=12, n_heads=10, d_model=410, d_head=41, d_inner=2100, resid_p=0.1, attn_p=0.1,
                          ff_p=0.1, embed_p=0.1, output_p=0.1, bias=False, scale=True, act=Activation.ReLU, double_drop=True,
-                         init=init_transformer, mem_len=150)
+                         init=init_transformer, mem_len=150, mask=False)
 
 def tfmerXL_lm_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."
