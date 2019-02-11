@@ -111,7 +111,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12)):
     fig,axes = plt.subplots(rows,cols,figsize=figsize)
     fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
     for i,idx in enumerate(tl_idx):
-        im,cl = self.data.valid_ds[idx]
+        im,cl = self.data.dl(self.ds_type).dataset[idx]
         cl = int(cl)
         im.show(ax=axes.flat[i], title=
             f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')

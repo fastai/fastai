@@ -148,7 +148,7 @@ class ClassificationInterpretation():
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
         cm = self.confusion_matrix(slice_size=slice_size)
         np.fill_diagonal(cm, 0)
-        res = [(self.data.y.classes[i],self.data.y.classes[j],cm[i,j])
+        res = [(self.dataclasses[i],self.data.classes[j],cm[i,j])
                 for i,j in zip(*np.where(cm>min_val))]
         return sorted(res, key=itemgetter(2), reverse=True)
     
