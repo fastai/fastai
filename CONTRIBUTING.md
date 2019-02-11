@@ -47,6 +47,19 @@ Here are some ways that you can learn a lot about the library, whilst also contr
 
 * If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to `nbstripout` the notebooks, as explained [here](https://docs.fast.ai/dev/develop.html).
 
+
+## Guidelines for PR submission
+
+* Keep each PR focused. While it's more convenient, do not combine several unrelated fixes together. Create as many branches as needing to keep each PR focused.
+
+* Do not mix style changes/fixes with "functional" changes. It's very difficult to review such PRs and it most likely get rejected.
+
+* Do not add/remove vertical whitespace. Preserve the original style of the file you edit as much as you can.
+
+* Do not turn an already submitted PR into your development playground. If after you submitted PR, you discovered that more work is needed - close the PR, do the required work and then submit a new PR. Otherwise each of your commits requires attention from maintainers of the project.
+
+* If, however, you submitted a PR and received a request for changes, you should proceed with commits inside that PR, so that the maintainer can see the incremental fixes and won't need to review the whole PR again. In the exception case where you realize it'll take many many commits to complete the requests, then it's probably best to close the PR, do the work and then submit it again. Use common sense where you'd choose one way over another.
+
 ## Do you have questions about the source code?
 
 * Please ask it on the [fastai forum](http://forums.fast.ai/) (after searching someone didn't ask the same one before with a quick search). We'd rather have the maximum of discussions there so that the largest number can benefit from it.
