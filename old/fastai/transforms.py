@@ -1,5 +1,6 @@
 from .imports import *
 from .layer_optimizer import *
+import cv2
 from enum import IntEnum
 
 def scale_min(im, targ, interpolation=cv2.INTER_AREA):
