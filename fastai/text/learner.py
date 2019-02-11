@@ -187,7 +187,7 @@ def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:
     return model if init is None else model.apply(init)
 
 def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:float=1., pretrained:bool=True,
-                           **learn_kwargs) -> 'LanguageLearner':
+                           pretrained_fnames:OptStrTuple=None, **learn_kwargs) -> 'LanguageLearner':
     "Create a `Learner` with a language model from `data` and `arch`."
     model = get_language_model(arch, len(data.vocab.itos), config=config, drop_mult=drop_mult)
     meta = _model_meta[arch]
@@ -198,6 +198,10 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
             return learn
         model_path = untar_data(meta['url'], data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        learn.load_pretrained(*fnames)
+        learn.freeze()
+    if pretrained_fnames is not None:
+        fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
         learn.load_pretrained(*fnames)
         learn.freeze()
     return learn
