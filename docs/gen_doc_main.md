@@ -389,19 +389,27 @@ so you don't need to remember the flag.
 
 ## Testing site locally
 
-### For Debian/Ubuntu Users
- 
 Install prerequisites:
 
-```bash
-sudo apt install ruby-bundler
-```
+* Debian/Ubuntu:
 
-When running this one it will ask for your user's password (basically running a sudo operation):
+   ```bash
+   sudo apt install ruby-bundler
+   ```
 
-```bash
-bundle install jekyll
-```
+   When running this one it will ask for your user's password (basically running a sudo operation):
+
+   ```bash
+   bundle install jekyll
+   ```
+
+* Mac OS:
+
+   ```
+   gem install bundler
+   cd docs
+   bundle install
+   ```
 
 Start the website:
 
@@ -412,23 +420,6 @@ bundle exec jekyll serve
 
 it will tell you which localhost url to go to to see the site.
 
-### For Mac OS Users
-
-Install prerequisites:
-
-```
-gem install bundler
-cd docs
-bundle install
-```
-
-Start the website:
-
-```
-bundle exec jekyll serve
-```
-
-it will tell you which localhost url to go to to see the site.
 
 ## Cleanups
 
