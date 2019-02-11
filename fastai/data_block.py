@@ -401,8 +401,8 @@ class FloatList(ItemList):
 
 class ItemLists():
     "An `ItemList` for each of `train` and `valid` (optional `test`)."
-    def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList, test:ItemList=None):
-        self.path,self.train,self.valid,self.test = Path(path),train,valid,test
+    def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList):
+        self.path,self.train,self.valid,self.test = Path(path),train,valid,None
         if not self.train.ignore_empty and len(self.train.items) == 0:
             warn("Your training set is empty. Is this is by design, pass `ignore_empty=True` to remove this warning.")
         if not self.valid.ignore_empty and len(self.valid.items) == 0:
