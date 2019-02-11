@@ -31,10 +31,10 @@ def lr_find(learn:Learner, start_lr:Floats=1e-7, end_lr:Floats=10, num_it:int=10
     a = int(np.ceil(num_it/len(learn.data.train_dl)))
     learn.fit(a, start_lr, callbacks=[cb], wd=wd)
 
-def to_fp16(learn:Learner, loss_scale:float=512., flat_master:bool=False)->Learner:
+def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:bool=False, flat_master:bool=False)->Learner:
     "Put `learn` in FP16 precision mode."
     learn.model = model2half(learn.model)
-    learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, flat_master=flat_master)
+    learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, flat_master=flat_master)
     learn.callbacks.append(learn.mp_cb)
     return learn
 
