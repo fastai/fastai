@@ -81,12 +81,12 @@ Unfortunately, we can't enforce this, because github doesn't allow server-side h
 
 So it's your responsibility to watch the status of your commits at the commits page:
 
-* https://github.com/fastai/fastai/commits/master
-* https://github.com/fastai/course-v3/commits
+* [fastai](https://github.com/fastai/fastai/commits/master)
+* [course-v3](https://github.com/fastai/course-v3/commits)
 
 Alternatively, you can watch CI builds for the project you committed to:
 
-* https://dev.azure.com/fastdotai/fastai/_build?definitionId=7
+* [fastai @ azure CI](https://dev.azure.com/fastdotai/fastai/_build?definitionId=7)
 
 It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
 
