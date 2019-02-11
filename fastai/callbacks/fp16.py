@@ -55,9 +55,11 @@ def master2model(model_params:Sequence[Tensor], master_params:Sequence[Tensor], 
 
 class MixedPrecision(LearnerCallback):
     "Callback that handles mixed-precision training."
-    def __init__(self, learn:Learner, loss_scale:float=512., flat_master:bool=False):
+    def __init__(self, learn:Learner, loss_scale:float=512., max_noskip:int=2000, max_loss_scale:float=2.**24, flat_master:bool=False):
         super().__init__(learn)
         self.loss_scale,self.flat_master = loss_scale,flat_master
+        self.max_noskip, self.max_loss_scale = max_noskip, max_loss_scale
+        self.noskip = 0
         self.not_min += ['model_params', 'master_params']
         assert torch.backends.cudnn.enabled, "Mixed precision training requires cudnn."
 
@@ -90,12 +92,31 @@ class MixedPrecision(LearnerCallback):
             warn(f"You have a `loss_scale` factor that is too high, try to divide it by 2 (current value: {self.loss_scale}).")
         return ret_loss
 
-    def on_backward_end(self, **kwargs:Any ):
+    def on_backward_end(self, **kwargs:Any)->None:
         "Convert the gradients back to FP32 and divide them by the scale."
         model_g2master_g(self.model_params, self.master_params, self.flat_master)
-        for group in self.master_params:
-            for param in group: 
-                if param.grad is not None: param.grad.div_(self.loss_scale)
+        def auto_scale_overflow():
+            for group in self.master_params:
+                for param in group: 
+                    if param.grad is not None:
+                        s = float(param.grad.data.float().sum())
+                        if s == float('inf') or s == float('-inf') or s != s:
+                            return True
+                        else:
+                            param.grad.div_(self.loss_scale)
+            return False
+        if auto_scale_overflow():
+            self.loss_scale /= 2
+            self.noskip = 0
+            opt_step = self.learn.opt.step
+            def skip_step():
+                self.learn.opt.step = opt_step
+            self.learn.opt.step = skip_step
+        else:
+            self.noskip += 1
+            if self.noskip >= self.max_noskip:
+                self.loss_scale = min(self.loss_scale * 2, self.max_loss_scale)
+                self.noskip = 0
 
     def on_step_end(self, **kwargs:Any)->None:
         "Update the params from master to model and zero grad."
