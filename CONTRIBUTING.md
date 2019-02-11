@@ -48,7 +48,7 @@ Here are some ways that you can learn a lot about the library, whilst also contr
 * If your PR involves jupyter notebooks (`.ipynb`) you must instrument your git to `nbstripout` the notebooks, as explained [here](https://docs.fast.ai/dev/develop.html).
 
 
-## Guidelines for PR submission
+## Guidelines for PR submissions
 
 * Keep each PR focused. While it's more convenient, do not combine several unrelated fixes together. Create as many branches as needing to keep each PR focused.
 
