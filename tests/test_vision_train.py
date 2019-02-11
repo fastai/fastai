@@ -132,5 +132,5 @@ def test_ClassificationInterpretation(learn):
     assert isinstance(interp.confusion_matrix(), (np.ndarray))
     assert interp.confusion_matrix().sum() == len(learn.data.valid_ds)
     conf = interp.most_confused()
-    assert set(conf[0][:2]) == set(conf[1][:2]) == {'3', '7'}
+    assert len(conf) == 0 or (set(conf[0][:2]) == set(conf[1][:2]) == {'3', '7'})
     
