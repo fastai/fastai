@@ -232,7 +232,7 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
         if purge: self.purge(clear_opt = ifnone(with_opt, False))
         if device is None: device = self.data.device
@@ -256,7 +256,7 @@ class Learner():
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         state['model'] = self.model
         torch.save(state, open(self.path/'tmp.pkl', 'wb'))
-        del self.opt.opt
+        if clear_opt: delattr(self, 'opt')
         for a in args + ['model', 'callbacks']: delattr(self, a)
         gc.collect()
         torch.cuda.empty_cache()
