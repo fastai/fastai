@@ -27,11 +27,13 @@ of that change.
 - Transformer and TransformerXL architectures
 - Add `val_bs` parameter to all `DataBunch` creation methods
 - `LanguageLearner.beam_search` to make text generation using beam search
+- Dynamic loss scaling (with `to_fp16(dynamic=True)`), thanks to flpeters
 
 ### Changed:
 
 - `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
 - `model_summary` only supports `Learner` now
+- `Learner.bn_wd` controls if we apply weight decay to all layer classes in `bn_types` and all bias parameter of layers classes in `bias_types`
 
 ### Fixed:
 
