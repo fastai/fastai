@@ -100,7 +100,7 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
 def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
     preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
-    return cls(learn.data,learn, *preds, ds_type=ds_type)
+    return cls(learn, *preds, ds_type=ds_type)
 
 def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12),heatmap:bool=True):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
