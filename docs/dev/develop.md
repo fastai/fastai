@@ -67,6 +67,73 @@ To distrust run:
     rm .git/hooks/post-merge
 
 
+
+## Stripping Out Jupyter Notebooks
+
+Our setup on all `fastai` projects requires that `*.ipynb` notebooks get stripped during the commit, which is accomplished by `fastai-nbstripout` which runs as a filter during `git commit`. Therefore, when you clone any of the `fastai` projects that contain jupyter notebooks you must always run:
+
+```
+tools/run-after-git-clone
+```
+which registers the filters. This needs to be done once per `git clone`.
+
+Unfortunately, we can't enforce this, because github doesn't allow server-side hooks.
+
+So it's your responsibility to watch the status of your commits at the commits page:
+
+* https://github.com/fastai/fastai/commits/master
+* https://github.com/fastai/course-v3/commits
+
+Alternatively, you can watch CI builds for the project you committed to:
+
+* https://dev.azure.com/fastdotai/fastai/_build?definitionId=7
+
+It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
+
+
+## Unstripped Notebook Repair
+
+If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
+
+1. disable the filter
+
+   ```
+   tools/trust-origin-git-config -d
+   ```
+
+2. strip out the notebooks
+
+   ```
+   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
+   ```
+
+3. commit
+
+   ```
+   git commit path/to/notebooks
+   git push
+   ```
+
+4. re-enable the filter (very important!)
+
+   ```
+   tools/trust-origin-git-config -e
+   ```
+
+Inside the `course-v3` repo, it'd be the same, but since the notebooks are in a different location, step 2 is:
+
+   ```
+   tools/fastai-nbstripout -d nbs/*/*ipynb
+   ```
+
+In the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks, therefore in step 2 we strip them out differently:
+
+   ```
+   tools/fastai-nbstripout    dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
+   ```
+
+
 ## Development Editable Install
 
 For deploying the `fastai` module's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
@@ -243,72 +310,6 @@ Other than the normal switching environments with restarts:
 
 You can install [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels), which provides a separate jupyter kernel for each conda environment, along with the appropriate code to handle their setup. This makes switching conda environments as simple as switching jupyter kernel (e.g. from the kernel menu). And you don't need to worry which environment you started `jupyter notebook` from - just choose the right environment from the notebook.
 
-
-
-## Stripping Out Jupyter Notebooks
-
-Our setup on all `fastai` projects requires that `*.ipynb` notebooks get stripped during the commit, which is accomplished by `fastai-nbstripout` which runs as a filter during `git commit`. Therefore, when you clone any of the `fastai` projects that contain jupyter notebooks you must always run:
-
-```
-tools/run-after-git-clone
-```
-which registers the filters. This needs to be done once per `git clone`.
-
-Unfortunately, we can't enforce this, because github doesn't allow server-side hooks.
-
-So it's your responsibility to watch the status of your commits at the commits page:
-
-* https://github.com/fastai/fastai/commits/master
-* https://github.com/fastai/course-v3/commits
-
-Alternatively, you can watch CI builds for the project you committed to:
-
-* https://dev.azure.com/fastdotai/fastai/_build?definitionId=7
-
-It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
-
-
-## Unstripped Notebook Repair
-
-If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
-
-1. disable the filter
-
-   ```
-   tools/trust-origin-git-config -d
-   ```
-
-2. strip out the notebooks
-
-   ```
-   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
-   ```
-
-3. commit
-
-   ```
-   git commit path/to/notebooks
-   git push
-   ```
-
-4. re-enable the filter (very important!)
-
-   ```
-   tools/trust-origin-git-config -e
-   ```
-
-Inside the `course-v3` repo, it'd be the same, but since the notebooks are in a different location, step 2 is:
-
-   ```
-   tools/fastai-nbstripout -d nbs/*/*ipynb
-   ```
-
-In the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks, therefore in step 2 we strip them out differently:
-
-   ```
-   tools/fastai-nbstripout    dev_nb/*ipynb dev_nb/experiments/*ipynb
-   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
-   ```
 
 
 
