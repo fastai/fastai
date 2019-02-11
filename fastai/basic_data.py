@@ -82,7 +82,7 @@ class DeviceDataLoader():
                    device=device, tfms=tfms, collate_fn=collate_fn)
 
 class DataBunch():
-    "Bind `train_dl`,`valid_dl` and `test_dl` in a a data object."
+    "Bind `train_dl`,`valid_dl` and `test_dl` in a data object."
 
     def __init__(self, train_dl:DataLoader, valid_dl:DataLoader, fix_dl:DataLoader=None, test_dl:Optional[DataLoader]=None,
                  device:torch.device=None, dl_tfms:Optional[Collection[Callable]]=None, path:PathOrStr='.',
