@@ -50,6 +50,7 @@ defaults = SimpleNamespace(cpus=_default_cpus, cmap='viridis')
 
 def is_listy(x:Any)->bool: return isinstance(x, (tuple,list))
 def is_tuple(x:Any)->bool: return isinstance(x, tuple)
+def is_dict(x:Any)->bool: return isinstance(x, dict)
 def noop(x): return x
 
 def chunks(l:Collection, n:int)->Iterable:
@@ -148,12 +149,12 @@ class ItemBase():
     "Base item type in the fastai library."
     def __init__(self, data:Any): self.data=self.obj=data
     def __repr__(self): return f'{self.__class__.__name__} {self}'
-    def show(self, ax:plt.Axes, **kwargs): 
+    def show(self, ax:plt.Axes, **kwargs):
         "Subclass this method if you want to customize the way this `ItemBase` is shown on `ax`."
         ax.set_title(str(self))
     def apply_tfms(self, tfms:Collection, **kwargs):
         "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
-        if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of items ({self.__class__.__name__})")
+        if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of item ({self.__class__.__name__})")
         return self
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,

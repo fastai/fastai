@@ -31,6 +31,7 @@ of that change.
 ### Changed:
 
 - `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
+- `model_summary` only supports `Learner` now
 
 ### Fixed:
 

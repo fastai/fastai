@@ -1,6 +1,7 @@
 from .torch_core import *
 from .basic_data import *
 from .layers import *
+from numbers import Integral
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
            'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor', 'EmptyLabelList']
@@ -99,7 +100,7 @@ class ItemList():
 
     def __getitem__(self,idxs:int)->Any:
         idxs = try_int(idxs)
-        if isinstance(idxs, numbers.Integral): return self.get(idxs)
+        if isinstance(idxs, Integral): return self.get(idxs)
         else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
 
     @classmethod
@@ -222,7 +223,7 @@ class ItemList():
         it = index_row(labels,0)
         if label_delim is not None:             return MultiCategoryList
         if isinstance(it, (float, np.float32)): return FloatList
-        if isinstance(try_int(it), (str,numbers.Integral)):  return CategoryList
+        if isinstance(try_int(it), (str, Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList
         return ItemList #self.__class__
 
@@ -432,7 +433,9 @@ class ItemLists():
             self.process()
             return self
         return _inner
-
+                
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+    
     @property
     def lists(self):
         res = [self.train,self.valid]
@@ -450,7 +453,8 @@ class ItemLists():
 
     def transform(self, tfms:Optional[Tuple[TfmList,TfmList]]=(None,None), **kwargs):
         "Set `tfms` to be applied to the xs of the train and validation set."
-        if not tfms: return self
+        if not tfms: tfms=(None,None)
+        assert is_listy(tfms) and len(tfms) == 2, "Please pass a list of two lists of transforms (train and valid)."
         self.train.transform(tfms[0], **kwargs)
         self.valid.transform(tfms[1], **kwargs)
         if self.test: self.test.transform(tfms[1], **kwargs)
@@ -580,10 +584,12 @@ class LabelList(Dataset):
         res = getattr(y, k, None)
         if res is not None: return res
         raise AttributeError(k)
-
+                
+    def __setstate__(self,data:Any): self.__dict__.update(data)
+                
     def __getitem__(self,idxs:Union[int,np.ndarray])->'LabelList':
         idxs = try_int(idxs)
-        if isinstance(idxs, numbers.Integral):
+        if isinstance(idxs, Integral):
             if self.item is None: x,y = self.x[idxs],self.y[idxs]
             else:                 x,y = self.item   ,0
             if self.tfms or self.tfmargs:

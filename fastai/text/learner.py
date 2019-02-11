@@ -86,10 +86,6 @@ class RNNLearner(Learner):
             preds[1] = preds[1][reverse_sampler,:] if preds[1].dim() > 1 else preds[1][reverse_sampler]
         return(preds)
 
-def _select_hidden(model, idxs):
-    model[0].hidden = [(h[0][:,idxs,:],h[1][:,idxs,:]) for h in model[0].hidden]
-    model[0].bs = len(idxs)
-
 def decode_spec_tokens(tokens):
     new_toks,rule,arg = [],None,None
     for t in tokens:
@@ -119,9 +115,9 @@ class LanguageLearner(RNNLearner):
         self.model.reset()
         xb,yb = self.data.one_item(text)
         new_idx = []
-        for _ in progress_bar(range(n_words), leave=False):
+        for _ in range(n_words): #progress_bar(range(n_words), leave=False):
             res = self.pred_batch(batch=(xb,yb))[0][-1]
-            if len(new_idx) == 0: _select_hidden(self.model, [0])
+            #if len(new_idx) == 0: self.model[0].select_hidden([0])
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
             if min_p is not None: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(1 / temperature)
@@ -136,25 +132,22 @@ class LanguageLearner(RNNLearner):
         ds = self.data.single_dl.dataset
         self.model.reset()
         xb, yb = self.data.one_item(text)
-        start_idx = xb.clone()
         nodes = None
+        xb = xb.repeat(top_k, 1)
+        nodes = xb.clone()
         scores = xb.new_ones(1).float()
         with torch.no_grad():
-            for k in range(n_words):
+            for k in progress_bar(range(n_words), leave=False):
                 out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
                 values, indices = out.topk(top_k, dim=-1)
                 scores = (-values * scores[:,None]).view(-1)
-                if nodes is None: 
-                    nodes = indices[0][:,None]
-                    _select_hidden(self.model, [0] * nodes.size(0))
-                else:
-                    indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
-                    sort_idx = scores.argsort()[:beam_sz]
-                    scores = scores[sort_idx]
-                    nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
-                                       indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
-                    nodes = nodes.view(-1, nodes.size(2))[sort_idx]
-                    _select_hidden(self.model, indices_idx[sort_idx])
+                indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
+                sort_idx = scores.argsort()[:beam_sz]
+                scores = scores[sort_idx]
+                nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
+                                indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
+                nodes = nodes.view(-1, nodes.size(2))[sort_idx]
+                self.model[0].select_hidden(indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
         node_idx = torch.multinomial(1-scores, 1).item()

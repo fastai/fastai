@@ -106,8 +106,9 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12)):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
     tl_val,tl_idx = self.top_losses(k,largest)
     classes = self.data.classes
-    rows = math.ceil(math.sqrt(k))
-    fig,axes = plt.subplots(rows,rows,figsize=figsize)
+    cols = math.ceil(math.sqrt(k))
+    rows = math.ceil(k/cols)
+    fig,axes = plt.subplots(rows,cols,figsize=figsize)
     fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
     for i,idx in enumerate(tl_idx):
         im,cl = self.data.valid_ds[idx]

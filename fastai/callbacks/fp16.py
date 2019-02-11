@@ -9,8 +9,8 @@ __all__ = ['MixedPrecision']
 
 def get_master(layer_groups:ModuleList, flat_master:bool=False) -> Tuple[List[List[Tensor]], List[List[Tensor]]]:
     "Return two lists, one for the model parameters in FP16 and one for the master parameters in FP32."
-    split_groups = split_bn_bias(layer_groups)
-    model_params = [[param for param in lg.parameters() if param.requires_grad] for lg in split_groups]
+    split_params = split_no_wd_params(layer_groups)
+    model_params = [[param for param in pg if param.requires_grad] for pg in split_params]
     if flat_master:
         master_params = []
         for lg in model_params:

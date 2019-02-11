@@ -124,7 +124,7 @@ Now, you can start working on the docstrings of the new or updated functions and
 Say you added a method to `data_block.py`:
 
 ```
-def def foobar(self, times:int=1)->'str':
+def foobar(self, times:int=1)->'str':
     "This functions returns FooBar * times"
     return "FooBar" * times
 ```

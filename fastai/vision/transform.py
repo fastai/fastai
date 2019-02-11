@@ -192,6 +192,11 @@ def _crop_pad(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct
 
 crop_pad = TfmCrop(_crop_pad)
 
+def _image_maybe_add_crop_pad(img, tfms):
+    tfm_names = [tfm.__name__ for tfm in tfms]
+    return [crop_pad()] + tfms if 'crop_pad' not in tfm_names else tfms
+Image._maybe_add_crop_pad = _image_maybe_add_crop_pad
+
 rand_pos = {'row_pct':(0,1), 'col_pct':(0,1)}
 
 def rand_pad(padding:int, size:int, mode:str='reflection'):

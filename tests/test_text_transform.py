@@ -16,3 +16,15 @@ def test_tokenize():
     assert toks[1][:6] == ['xxmaj', 'lorem', 'ipsum', 'dolor', 'sit', 'amet,']
     assert ' '.join(toks[2]) == "xxmaj i'm suddenly xxup shouting xxup for xxup no xxup reason"
 
+def test_tokenize_handles_empty_lines():
+    texts = ['= Markdown Title =\n\nMakrdown Title does not have spaces around']
+    tokenizer = Tokenizer(BaseTokenizer)
+    toks = tokenizer.process_all(texts)
+    assert toks[0] == ['=', 'xxmaj', 'markdown', 'xxmaj', 'title', '=', '\n', '\n',
+                       'xxmaj', 'makrdown', 'xxmaj', 'title', 'does', 'not', 'have', 'spaces', 'around']
+
+def test_tokenize_ignores_extraneous_space():
+    texts = ['test ']
+    tokenizer = Tokenizer(BaseTokenizer)
+    toks = tokenizer.process_all(texts)
+    assert toks[0] == ['test']
