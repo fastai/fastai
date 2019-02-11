@@ -13,7 +13,19 @@ of that change.
 
 
 
-## 1.0.43.dev0 (Work In Progress)
+
+
+## 1.0.44.dev0 (Work In Progress)
+
+### New:
+
+### Changed:
+
+### Fixed:
+
+
+
+## 1.0.43 (2019-02-11)
 
 ### Breaking change:
 
