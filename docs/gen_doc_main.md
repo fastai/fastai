@@ -389,6 +389,8 @@ so you don't need to remember the flag.
 
 ## Testing site locally
 
+### For Debian/Ubuntu Users
+ 
 Install prerequisites:
 
 ```bash
@@ -405,6 +407,24 @@ Start the website:
 
 ```bash
 cd docs
+bundle exec jekyll serve
+```
+
+it will tell you which localhost url to go to to see the site.
+
+### For Mac OS Users
+
+Install prerequisites:
+
+```
+gem install bundler
+cd docs
+bundle install
+```
+
+Start the website:
+
+```
 bundle exec jekyll serve
 ```
 
