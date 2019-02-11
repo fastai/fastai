@@ -67,33 +67,6 @@ To distrust run:
     rm .git/hooks/post-merge
 
 
-
-
-## Unstripped Notebook Repair
-
-If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
-
-   ```
-   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
-   tools/trust-origin-git-config -d
-   git commit -a
-   git push
-   tools/trust-origin-git-config
-   ```
-
-Inside the `course-v3` repo, it'd be the same, but the notebooks are in a different location, so:
-
-   ```
-   tools/fastai-nbstripout -d nbs/*/*ipynb
-   ```
-
-and in the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks and we strip them out differently:
-
-   ```
-   tools/fastai-nbstripout dev_nb/*ipynb dev_nb/experiments/*ipynb
-   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
-   ```
-
 ## Development Editable Install
 
 For deploying the `fastai` module's files, while being able to edit them, make sure to uninstall any previously installed `fastai`:
@@ -121,7 +94,6 @@ but adding `[dev]` tells pip to install optional packages in the `dev` group of 
 Best not to use `python setup.py develop` method [doc](https://setuptools.readthedocs.io/en/latest/setuptools.html#develop-deploy-the-project-source-in-development-mode).
 
 When you'd like to sync your codebase with the `master`, simply go back into the cloned `fastai` directory and update it:
-
 
    ```
    git pull
@@ -295,7 +267,10 @@ Alternatively, you can watch CI builds for the project you committed to:
 
 It's very important that you do that on a consistent basis, because when you make this mistake you affect everybody who works on the same project. You basically make it impossible for other developers to `git pull` without some workarounds.
 
-Should you make the mistake and commit some unstripped out notebooks, here is how you fix it:
+
+## Unstripped Notebook Repair
+
+If you or someone forgot to run `tools/run-after-git-clone` after `git clone` and committed unstripped notebooks, here is how to repair it in the `fastai` repo:
 
 1. disable the filter
 
@@ -303,16 +278,11 @@ Should you make the mistake and commit some unstripped out notebooks, here is ho
    tools/trust-origin-git-config -d
    ```
 
-2. strip out the notebook
+2. strip out the notebooks
 
    ```
-   tools/fastai-nbstripout -d path/to/notebooks
+   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
    ```
-   with an exception of `fastai_docs/dev_nb/*ipynb` notebooks, which need to be stripped with:
-   ```
-   tools/fastai-nbstripout path/to/notebooks
-   ```
-   without any arguments `outputs` are stripped, `-d` doesn't strip out the `outputs`.
 
 3. commit
 
@@ -324,7 +294,20 @@ Should you make the mistake and commit some unstripped out notebooks, here is ho
 4. re-enable the filter (very important!)
 
    ```
-   tools/trust-origin-git-config
+   tools/trust-origin-git-config -e
+   ```
+
+Inside the `course-v3` repo, it'd be the same, but since the notebooks are in a different location, step 2 is:
+
+   ```
+   tools/fastai-nbstripout -d nbs/*/*ipynb
+   ```
+
+In the `fastai_docs` repo, we have two different types of notebooks: "code" and "docs" notebooks, therefore in step 2 we strip them out differently:
+
+   ```
+   tools/fastai-nbstripout    dev_nb/*ipynb dev_nb/experiments/*ipynb
+   tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
    ```
 
 
