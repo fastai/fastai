@@ -252,7 +252,6 @@ class KappaScore(ConfusionMatrix):
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
-        
         if self.weights is None:
             w = torch.ones((self.n_classes, self.n_classes))
             w[self.x, self.x] = 0
@@ -265,10 +264,8 @@ class KappaScore(ConfusionMatrix):
                 w = (w - torch.t(w)) ** 2
         else:
             raise ValueError("Unknown kappa weighting type.")
-    
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
         self.metric = 1 - k
-        
 
 class MatthewsCorreff(ConfusionMatrix):
     """    
