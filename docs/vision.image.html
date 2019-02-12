@@ -1817,9 +1817,9 @@ summary: "Image class, variants and internal data augmentation pipeline"
 </ul>
 <p>This is why all transforms have an attribute (such as <a href="/vision.image.html#TfmAffine"><code>TfmAffine</code></a>, <a href="/vision.image.html#TfmCoord"><code>TfmCoord</code></a>, <a href="/vision.image.html#TfmCrop"><code>TfmCrop</code></a> or <a href="/vision.image.html#TfmPixel"><code>TfmPixel</code></a>) so that the fastai library can regroup them and apply them all together at the right step. In terms of implementation:</p>
 <ul>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L525"><code>_affine_grid</code></a> is reponsible for creating the grid of coordinates</li>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L535"><code>_affine_mult</code></a> is in charge of doing the affine multiplication on that grid</li>
-<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L512"><code>_grid_sample</code></a>is the function that is responsible for the interpolation step</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L532"><code>_affine_grid</code></a> is reponsible for creating the grid of coordinates</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L542"><code>_affine_mult</code></a> is in charge of doing the affine multiplication on that grid</li>
+<li><a href="https://github.com/fastai/fastai/blob/master/fastai/vision/image.py#L519"><code>_grid_sample</code></a>is the function that is responsible for the interpolation step</li>
 </ul>
 
 </div>
