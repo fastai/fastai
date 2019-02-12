@@ -234,7 +234,7 @@ class FBeta(CMScores):
             
     def on_train_end(self, **kwargs): self.average = self.avg
 
-class KappaScore(ConfusionMatrix, weights=None):
+class KappaScore(ConfusionMatrix):
     """
     Compute the rate of agreement (Cohens Kappa).
     Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
@@ -246,19 +246,20 @@ class KappaScore(ConfusionMatrix, weights=None):
     "linear" means off-diagonal ConfusionMatrix elements are weighted in linear proportion to their distance from the diagonal;
     "quadratic" means squared weights.
     """
+    weights:Optional[str]=None      # None, `linear`, or `quadratic`
     
     def on_epoch_end(self, **kwargs):
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
         
-        if weights is None:
+        if self.weights is None:
             w = torch.ones((self.n_classes, self.n_classes))
             w[self.x, self.x] = 0
-        elif weights == "linear" or weights == "quadratic":
+        elif self.weights == "linear" or self.weights == "quadratic":
             w = torch.zeros((self.n_classes, self.n_classes))
             w += torch.arange(self.n_classes, dtype=torch.float)
-            if weights == "linear":
+            if self.weights == "linear":
                 w = torch.abs(w - torch.t(w))
             else:
                 w = (w - torch.t(w)) ** 2
