@@ -964,34 +964,56 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    git checkout release-1.0.36
    ```
 
-2. Apply desired fixes, document them in `CHANGES.md` and commit/push all changes to the branch.
+2. Apply the fix.
 
-3. Test.
+   a. Apply the desired fixes, e.g. applying some specific fix commit:
+
+   ```
+   git cherry-pick 34499e1b8
+   git push
+   ```
+
+   b. Document the fixes in `CHANGES.md` (the reason for this hotfix)
+
+   c. commit/push all changes to the branch.
+
+   ```
+   git commit CHANGES.md whatever-files-were-fixed
+   git push
+   ```
+
+3. Check that everything is committed and good to go.
+
+   ```
+   make sanity-check
+   ```
+
+4. Test.
 
    ```
    make test
    ```
 
-4. Adjust version.
+5. Adjust version.
 
    According to [PEP-0440](https://www.python.org/dev/peps/pep-0440/#post-releases) add `.post1` to the version, or if it already was a `.postX`, increment its version:
    ```
    make bump-post-release
    ```
 
-5. Commit and push all the changes to the branch.
+6. Commit and push all the changes to the branch.
 
    ```
    make commit-hotfix-push
    ```
 
-6. Make a new tag with the new version.
+7. Make a new tag with the new version.
 
    ```
    make tag-version-push
    ```
 
-7. Make updated release.
+8. Make updated release.
 
    ```
    make dist
@@ -1011,7 +1033,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make upload-pypi
    ```
 
-8. Test release.
+9. Test release.
 
    If you made a release on both platforms:
    ```
@@ -1026,12 +1048,14 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make test-install-conda
    ```
 
-
-9. Don't forget to switch back to the master branch for continued development.
+10. Don't forget to switch back to the master branch for continued development.
 
    ```
    make master-branch-switch
    ```
+
+When finished, make sure that the fix is in the `master` branch too, in case it was fixed in the release branch first.
+
 
 
 
