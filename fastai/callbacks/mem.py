@@ -48,7 +48,7 @@ class PeakMemMetric(LearnerCallback):
         gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_id)
 
         while True:
-            gpu_mem_used = gpu_mem_get_fast_used(gpu_handle)
+            gpu_mem_used = gpu_mem_get_used_fast(gpu_handle)
             self.gpu_mem_used_peak = max(gpu_mem_used, self.gpu_mem_used_peak)
             if not self.peak_monitoring: break
             time.sleep(0.001) # 1msec

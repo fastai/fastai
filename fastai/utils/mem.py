@@ -49,7 +49,7 @@ def gpu_mem_get_used_no_cache():
     torch.cuda.empty_cache()
     return gpu_mem_get().used
 
-def gpu_mem_get_fast_used(gpu_handle):
+def gpu_mem_get_used_fast(gpu_handle):
     "get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache, and needing the `gpu_handle` arg"
     info = pynvml.nvmlDeviceGetMemoryInfo(gpu_handle)
     return b2mb(info.used)
@@ -148,6 +148,6 @@ class GPUMemTrace():
     def peak_monitor_func(self):
         gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(torch.cuda.current_device())
         while True:
-            self.used_peak = max(gpu_mem_get_fast_used(gpu_handle), self.used_peak)
+            self.used_peak = max(gpu_mem_get_used_fast(gpu_handle), self.used_peak)
             if not self.peak_monitoring: break
             time.sleep(0.001) # 1msec
