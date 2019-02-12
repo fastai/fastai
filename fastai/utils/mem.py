@@ -83,6 +83,7 @@ def gpu_mem_restore(func):
                 "device-side assert triggered" in str(e) or
                 tb_clear_frames == "1"):
                 type, val, tb = get_ref_free_exc_info() # must!
+                gc.collect()
                 raise type(val).with_traceback(tb) from None
             else: raise # re-raises the exact last exception
     return wrapper
@@ -93,6 +94,7 @@ class gpu_mem_restore_ctx():
     def __exit__(self, exc_type, exc_val, exc_tb):
         if not exc_val: return True
         traceback.clear_frames(exc_tb)
+        gc.collect()
         raise exc_type(exc_val).with_traceback(exc_tb) from None
 
 class GPUMemTrace():
