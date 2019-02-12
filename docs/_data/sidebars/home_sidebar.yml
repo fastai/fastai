@@ -218,6 +218,9 @@ entries:
     output: web
     title: Doc authoring
   - folderitems:
+    - external_url: https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md
+      output: web,pdf
+      title: Contributing
     - output: web,pdf
       title: Dev Notes
       url: /dev/develop.html

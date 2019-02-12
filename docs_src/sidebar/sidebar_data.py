@@ -96,6 +96,7 @@ sidebar_d = {
         'gen_doc.convert2html': '/gen_doc.convert2html',
     },
     'Library development': {
+        'Contributing': 'https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md',
         'Dev Notes': '/dev/develop',
         'GPU Notes': '/dev/gpu',
         'git notes': '/dev/git',
