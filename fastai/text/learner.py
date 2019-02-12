@@ -125,8 +125,8 @@ class LanguageLearner(RNNLearner):
             xb = xb.new_tensor([idx])[None]
         return text + sep + sep.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
 
-    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1., sep:str=' ',
-                    decoder=decode_spec_tokens):
+    def beam_search(self, text:str, n_words:int, no_unk:bool=True, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
+                    sep:str=' ', decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text` using beam search."
         ds = self.data.single_dl.dataset
         self.model.reset()
@@ -138,6 +138,7 @@ class LanguageLearner(RNNLearner):
         with torch.no_grad():
             for k in progress_bar(range(n_words), leave=False):
                 out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
+                if no_unk: out[:,self.data.vocab.stoi[UNK]] = -float('Inf')
                 values, indices = out.topk(top_k, dim=-1)
                 scores = (-values + scores[:,None]).view(-1)
                 indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
