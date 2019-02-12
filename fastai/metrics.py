@@ -234,18 +234,37 @@ class FBeta(CMScores):
             
     def on_train_end(self, **kwargs): self.average = self.avg
 
-class KappaScore(ConfusionMatrix):
+class KappaScore(ConfusionMatrix, weights=None):
     """
     Compute the rate of agreement (Cohens Kappa).
     Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
+    
+    Parameters
+    ----------
+    weights : str, optional
+    Weighting type used to calculate the Kappa score. None means unweighted; 
+    "linear" means off-diagonal ConfusionMatrix elements are weighted in linear proportion to their distance from the diagonal;
+    "quadratic" means squared weights.
     """
     
     def on_epoch_end(self, **kwargs):
-        w = torch.ones((self.n_classes, self.n_classes))
-        w[self.x, self.x] = 0
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
+        
+        if weights is None:
+            w = torch.ones((self.n_classes, self.n_classes))
+            w[self.x, self.x] = 0
+        elif weights == "linear" or weights == "quadratic":
+            w = torch.zeros((self.n_classes, self.n_classes))
+            w += torch.arange(self.n_classes, dtype=torch.float)
+            if weights == "linear":
+                w = torch.abs(w - torch.t(w))
+            else:
+                w = (w - torch.t(w)) ** 2
+        else:
+            raise ValueError("Unknown kappa weighting type.")
+    
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
         self.metric = 1 - k
         
