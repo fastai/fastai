@@ -109,7 +109,7 @@ class ClassificationInterpretation():
     def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
         "Create an instance of `ClassificationInterpretation`"
         preds = learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds)
+        return cls(learn, *preds)
 
     def confusion_matrix(self, slice_size:int=1):
         "Confusion matrix as an `np.ndarray`."

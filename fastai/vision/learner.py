@@ -114,18 +114,19 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12),heatmap:bool=
         cl = int(cl)
         im.show(ax=axes.flat[i], title=
             f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
-        if(heatmap):
-            xb,_ = self.data.one_item(im)
-            xb = xb.cuda()
+        if heatmap:
+            xb,_ = self.data.one_item(im,detach=False, denorm=False)
             m = self.learn.model.eval()
             with hook_output(m[0]) as hook_a:
-                with hook_output(m[0], grad= True) as hook_g:
-                    preds = m(xb)
-                    preds[0,cl].backward()
+                 with hook_output(m[0], grad= True) as hook_g:
+                     preds = m(xb)
+                     preds[0,cl].backward()
             acts = hook_a.stored[0].cpu()
-            avg_acts =acts.mean(0)
+            grad = hook_g.stored[0][0].cpu()
+            grad_chan = grad.mean(1).mean(1)
+            mult = (acts*grad_chan[...,None,None]).mean(0)
             sz = im.shape[-1]
-            axes.flat[i].imshow(avg_acts, alpha =0.6, extent= (0,sz,sz,0), interpolation='bilinear', cmap='magma')
+            axes.flat[i].imshow(mult, alpha =0.6, extent= (0,sz,sz,0), interpolation='bilinear', cmap='magma')
 
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
