@@ -1457,6 +1457,18 @@ Now repeat the same for "Pull request validation".
 Choose 'Save', under "Save & Queue".
 
 
+#### Skipping Jobs
+
+To skip a specific job from running, edit the spec to include:
+
+```
+- job: Foo
+  condition: False
+```
+
+Other conditions are documented [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml).
+
+
 #### Manual Jobs
 
 To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and in the Commit field either nothing or enter the desired commit hash. This is the way to get occasional CI builds against non-master branches, which is useful when testing a new pipeline.
