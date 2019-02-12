@@ -139,19 +139,3 @@ def test_order_preds():
     preds = learn.get_preds(ordered=True)
     true_value = np.array([learn.data.train_ds.c2i[o] for o in df_val.iloc[:200,0]])
     np.all(true_value==preds[1].numpy())
-
-def test_beam_search():
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(1111)
-        torch.backends.cudnn.deterministic = True
-    else:
-        torch.manual_seed(1111)
-    np.random.seed(1111)
-    
-    path = untar_data(URLs.IMDB_SAMPLE)
-    data = TextLMDataBunch.from_csv(path, 'texts.csv')
-    learn = language_model_learner(data, AWD_LSTM, drop_mult=0.5,pretrained=True)
-    beam_1 = learn.beam_search("this is a test of",10,top_k=10,beam_sz=10)
-    beam_2 = learn.beam_search("this is a test of",15)
-    assert beam_1 == "this is a test of interest in the United States Navy and"
-    assert beam_2 == "this is a test of the United States and United States Secret Service ("
