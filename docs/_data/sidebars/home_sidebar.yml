@@ -73,8 +73,11 @@ entries:
           title: CSV Logger
           url: /callbacks.csv_logger.html
         - output: web,pdf
-          title: Tracking callbacks
+          title: Tracking
           url: /callbacks.tracker.html
+        - output: web,pdf
+          title: Memory Profiling
+          url: /callbacks.mem.html
         title: callbacks
     output: web
     title: Training

@@ -31,7 +31,8 @@ sidebar_d = {
                 'RNNTrainer': '/callbacks.rnn',
                 'GeneralScheduler': '/callbacks.general_sched',
                 'CSV Logger': '/callbacks.csv_logger',
-                'Tracking callbacks': '/callbacks.tracker'
+                'Tracking': '/callbacks.tracker',
+                'Memory Profiling': '/callbacks.mem',
             }
         },
     },
