@@ -79,7 +79,8 @@ sidebar_d = {
         'torch_core': '/torch_core',
     },
     'Utils': {
-        'Helpers': '/utils.collect_env'
+        'Helpers': '/utils.collect_env',
+        'Memory Management': '/utils.mem',
     },
     'Tutorials': {
         'Overview': '/tutorials',

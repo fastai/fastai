@@ -179,6 +179,9 @@ entries:
     - output: web,pdf
       title: Helpers
       url: /utils.collect_env.html
+    - output: web,pdf
+      title: Memory Management
+      url: /utils.mem.html
     output: web
     title: Utils
   - folderitems:
