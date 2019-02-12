@@ -82,6 +82,7 @@ sidebar_d = {
         'Helpers': '/utils.collect_env'
     },
     'Tutorials': {
+        'Overview': '/tutorials',
         'Look at data': '/tutorial.data',
         'Inference Learner': '/tutorial.inference',
         'Custom ItemList': '/tutorial.itemlist',

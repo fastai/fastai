@@ -183,6 +183,9 @@ entries:
     title: Utils
   - folderitems:
     - output: web,pdf
+      title: Overview
+      url: /tutorials.html
+    - output: web,pdf
       title: Look at data
       url: /tutorial.data.html
     - output: web,pdf
