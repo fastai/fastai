@@ -26,6 +26,8 @@ of that change.
 
 ### Fixed:
 
+- `extensions` are checked with a case-insensitive match.
+
 
 
 ## 1.0.43 (2019-02-11)
