@@ -6,6 +6,7 @@ docs  : https://docs.fast.ai/train.html
 import pytest, fastai
 from utils.fakes import *
 from utils.text import *
+from fastai.gen_doc.doctest import this_tests
 
 @pytest.fixture(scope="module")
 def learn():
@@ -13,6 +14,7 @@ def learn():
     return learn
 
 def test_lr_find(learn):
+    this_tests(Learner.lr_find)
     wd, start_lr, num_it, end_lr = 0.002, 1e-06, 90, 10
     lr_find(learn=learn, start_lr=start_lr, end_lr=end_lr, num_it=num_it, stop_div=True, wd=wd)
     assert len(learn.recorder.moms) == len(learn.recorder.lrs)
@@ -24,6 +26,7 @@ def test_lr_find(learn):
     assert len(learn.recorder.lrs) == num_it
 
 def test_fit(learn):
+    this_tests(Learner.fit)
     # Test confirms learning rate and momentum are stable, see difference to test_fit_one_cycle
     learning_rate, weight_decay, eps = 3e-3, 1e-2,  4
     with CaptureStdout() as cs:  learn.fit(epochs=eps, lr=learning_rate, wd=weight_decay)
@@ -31,6 +34,7 @@ def test_fit(learn):
     assert set(learn.recorder.moms) == {learn.recorder.moms[0]}
 
 def test_fit_one_cycle(learn):
+    this_tests(Learner.fit_one_cycle)
     # Test confirms expected behavior change of learning rate and momentum
     # see graphical representation here: output cell 17 of, learn.sched.plot_lr() in
     # https://github.com/sgugger/Deep-Learning/blob/master/Cyclical%20LR%20and%20momentums.ipynb
