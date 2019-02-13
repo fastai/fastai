@@ -38,7 +38,7 @@ learn.fit_one_cycle(epochs)
 preds,y = learn.get_preds(...)
 ```
 
-Typically if you picked the batch size right and your model is not too deep and dense, you may be able to complete this whole notebook on say 8GB of GPU RAM. If the model you picked is memory intensive, you might successfully complete the training of the NN head added by fastai (the part before unfreeze), but will be unable to finetune because its memory requirements are much bigger. Finally, you might be able to have just enough memory to finetune, but alas no memory will be left for the prediction phase (especially if it's a complex prediction).
+Typically if you picked the batch size right and your model is not too deep and dense, you may be able to complete this whole notebook on, say, 8GB of GPU RAM. If the model you picked is memory intensive, you might successfully complete the training of the NN head added by fastai (the part before unfreeze), but will be unable to finetune because its memory requirements are much bigger. Finally, you might be able to have just enough memory to finetune, but, alas, no memory will be left for the prediction phase (especially if it's a complex prediction).
 
 But, of course, this was a very basic example. A more advanced approach will, for example, start with the basic training, followed by finetuning stage, then will change the size of the input images and repeat head training and finetuning, and then again. And there are many other stages that can be added.
 
@@ -84,6 +84,12 @@ learn.load('saved')
 
 the call to `learn.purge()` is not needed.
 
+You don't need to inject `learn.purge()` between training cycles of the same setup:
+```
+learn.fit_one_cycle(epochs=10)
+learn.fit_one_cycle(epochs=10)
+```
+The subsequent invocations of the training function do not consume more GPU RAM. Remember, when you train you just change the numbers in the nodes, but all the memory that is required for those numbers has already been allocated.
 
 
 ### Inference
