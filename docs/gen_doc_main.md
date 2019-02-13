@@ -176,13 +176,20 @@ and then as in the previous section, check the diff, commit and push.
 
 ### Creating a new documentation notebook from existing module
 
-If a fastai.* module already exists but there is no associated documentation notebook (docs_src/*.ipynb), you can generate one by running the following:
+If a `fastai.*` python module already exists, but there is no associated documentation notebook (`docs_src/*.ipynb`), you can auto-generate one by running the following:
 
 ```bash
 tools/build-docs fastai.subpackage.module
 ```
 
 This will create a skeleton documentation notebook - `docs_src/subpackage.module.ipynb`. It will populate with all the module methods. These will need to be documented.
+
+Do note that if you want to change the default header levels (e.g. h3 or h2 instead of h2), you can adjust them with an explicit `title_level` argument in the corresponding `show_doc()` entry. For example:
+
+```
+show_doc(...., title_level=4)
+```
+See the documentation for [show_doc](/gen_doc.nbdoc.html#show_doc) for more options.
 
 ### Borked rendering
 
