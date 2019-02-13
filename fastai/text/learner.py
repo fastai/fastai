@@ -150,7 +150,7 @@ class LanguageLearner(RNNLearner):
                 self.model[0].select_hidden(indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
-        node_idx = torch.multinomial(1-torch.exp(-scores), 1).item()
+        node_idx = torch.multinomial(torch.exp(-scores), 1).item()
         return sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx][1:] ], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
