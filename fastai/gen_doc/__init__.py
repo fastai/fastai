@@ -1,1 +1,1 @@
-from . import gen_notebooks, nbdoc, core, doctest
+from . import gen_notebooks, nbdoc, core, doctest, nbtest
