@@ -47,7 +47,7 @@ def set_default(obj):
 
 def stop_doctest_collector():
     fastai_dir = abspath(join(dirname( __file__ ), '..', 'fastai'))
-    with open(fastai_dir + '/TestAPIRegister.json', 'w') as f:
+    with open(fastai_dir + '/test_api_db.json', 'w') as f:
         json.dump(obj=RegisterTestsperAPI.apiTestsMap,fp=f, indent = 4, sort_keys= True, default=set_default )   
 
 @pytest.fixture
