@@ -34,29 +34,18 @@ https://github.com/fastai/fastai/tree/master/fastai
 
 Below you will find detailed 5 steps towards creating a PR.
 
-### Helper Program
+### One-Click Solution
 
-There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it:
+There is a smart [program](https://github.com/fastai/fastai/blob/master/tools/fastai-make-pr-branch-py) that can do all the heavy lifting of the first 2 steps for you. Then you just need to do your work, commit changes and submit PR. To run it, go to the root of the project folder, and execute
 
-```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch
-chmod a+x fastai-make-pr-branch
-./fastai-make-pr-branch https your-github-username fastai new-feature
+```bash
+tools/fastai-make-pr-branch-py
 ```
 
-For more details run:
-```
-./fastai-make-pr-branch
-```
+Then, follow the instruction printed out in the terminal.
 
-While this is new and experimental, you probably want to place that script somewhere in your `$PATH`, so that you could invoke it from anywhere. Once it is well tested, it'll probably get installed automatically with the `fastai` package.
+The smart program automates Step 1 to Step 3 for you. If you are interested in what the program does, feel free to read them; if not, skip to Step 4.
 
-And now we also have a python version of the same:
-```
-curl -O https://raw.githubusercontent.com/fastai/fastai/master/tools/fastai-make-pr-branch-py
-chmod a+x fastai-make-pr-branch-py
-./fastai-make-pr-branch-py https your-github-username fastai new-feature
-```
 
 ### Step 1. Start With a Synced Fork Checkout
 
