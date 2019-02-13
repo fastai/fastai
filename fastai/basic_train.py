@@ -248,10 +248,10 @@ class Learner():
             get_model(self.model).load_state_dict(state, strict=strict)
         return self
     
-    def purge(self, clear_opt:bool=True):#TODO: opt
+    def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
         path = self.path
-        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
+        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns', 'layer_groups']
         state = {a:getattr(self,a) for a in args}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         state['model'] = self.model
