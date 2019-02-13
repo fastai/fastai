@@ -237,14 +237,6 @@ class FBeta(CMScores):
 class KappaScore(ConfusionMatrix):
     """
     Compute the rate of agreement (Cohens Kappa).
-    Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
-    
-    Parameters
-    ----------
-    weights : str, optional
-    Weighting type used to calculate the Kappa score. None means unweighted; 
-    "linear" means off-diagonal ConfusionMatrix elements are weighted in linear proportion to their distance from the diagonal;
-    "quadratic" means squared weights.
     """
     weights:Optional[str]=None      # None, `linear`, or `quadratic`
     
@@ -258,19 +250,15 @@ class KappaScore(ConfusionMatrix):
         elif self.weights == "linear" or self.weights == "quadratic":
             w = torch.zeros((self.n_classes, self.n_classes))
             w += torch.arange(self.n_classes, dtype=torch.float)
-            if self.weights == "linear":
-                w = torch.abs(w - torch.t(w))
-            else:
-                w = (w - torch.t(w)) ** 2
+            w = torch.abs(w - torch.t(w)) if self.weights == "linear" else (w - torch.t(w)) ** 2
         else:
-            raise ValueError("Unknown kappa weighting type.")
+            raise ValueError('Unknown weights attribute given. Expected None, "linear", or "quadratic".')
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
         self.metric = 1 - k
 
 class MatthewsCorreff(ConfusionMatrix):
     """    
     Compute the Matthews correlation coefficient.
-    Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
     """
 
     def on_epoch_end(self, **kwargs):
