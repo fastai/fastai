@@ -127,7 +127,7 @@ And also you need to know about the current bug in ipython that may prevent you 
 
 3. Model training is where the bulk of GPU RAM is being consumed. When the very first batch of the very first epoch goes through the model, the GPU RAM usage spikes because it needs to set things up and a lot more temporary memory is used. However the pytorch allocator is very efficient and if there is little GPU RAM available, the spike will be minimal. From batch 2 onwards and for all the following epoch of the same training the memory consumption would be constant. Thus if the first few seconds of training were successful, the rest of the training should complete too.
 
-If you'd like to get a sense of how much memory each stage uses, here are the tools to use:
+If you'd like to get a sense of how much memory each stage uses (bypassing pytorch caching, which you can't with `nvidia-smi`), here are the tools to use:
 
 * For per-notebook and per-cell: [ipyexperiments](https://github.com/stas00/ipyexperiments/).
 * For per-epoch use: [`PeakMemMetric`](/callbacks.mem.html#PeakMemMetric).
