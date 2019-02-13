@@ -6,6 +6,16 @@ title: Doc Maintenance
 
 Here is how you can contribute to the `fastai` documentation:
 
+### WARNING: Use Jupyter Notebook, NOT Jupyter Lab
+
+The current version of Jupyter Lab, as of February 16, 2019, is incompatible with our source control and build process of the notebooks. Changes from Jupyter Lab, when committed, will cause all sorts of problems, including
+
+- Failed CI test, specifically the `nbstripout_config` test. You will see a red cross next to your commit in Github.
+- Errors when merging the changes in another repository.
+- When you run `git status`, the notebook is always shown as modified. Even after running `git reset --hard` to reset your repository, it will not go away.
+
+If you have unfortunately made commits after making changes in Jupyter Lab and wrecked your repository, please follow the instructions in [Unstripped Notebook Repair](https://docs.fast.ai/dev/develop.html#unstripped-notebook-repair) for a fix.
+
 ### Step 1. Create a `fastai` git branch
 
 The process of creating a branch (with fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
