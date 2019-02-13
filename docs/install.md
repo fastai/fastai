@@ -33,7 +33,8 @@ The `fastai` library doesn't require the jupyter environment to work, therefore 
 * conda
 
    ```bash
-   conda install jupyter notebook jupyter_contrib_nbextensions
+   conda install jupyter notebook
+   conda install -c conda-forge jupyter_contrib_nbextensions
    ```
 
    Some users also [seem to need](https://stackoverflow.com/questions/39604271/conda-environments-not-showing-up-in-jupyter-notebook) this conda package to be able to choose the right kernel environment, however, most likely you won't need this package.
