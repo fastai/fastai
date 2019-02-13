@@ -131,7 +131,7 @@ If you'd like to get a sense of how much memory each stage uses, here are the to
 
 * For per-notebook and per-cell: [ipyexperiments](https://github.com/stas00/ipyexperiments/).
 * For per-epoch use: [`PeakMemMetric`](/callbacks.mem.html#PeakMemMetric).
-* For even more fine-grained profiling:  [GPUMemTrace])https://docs.fast.ai/utils.mem.html#GPUMemTrace).
+* For even more fine-grained profiling:  [GPUMemTrace](https://docs.fast.ai/utils.mem.html#GPUMemTrace).
 
 
 **Real memory usage**
