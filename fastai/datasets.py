@@ -38,6 +38,7 @@ class URLs():
     CAMVID_TINY = f'{URL}camvid_tiny'
     BIWI_HEAD_POSE = f"{S3_IMAGELOC}biwi_head_pose"
     LSUN_BEDROOMS = f'{S3_IMAGE}bedroom'
+    OPENAI_TRANSFORMER = f'{S3_MODEL}transformer'
 
 # to create/update a checksum for ./mnist_var_size_tiny.tgz, run:
 # python -c 'import fastai.datasets; print(fastai.datasets._check_file("mnist_var_size_tiny.tgz"))'
@@ -63,7 +64,8 @@ _checks = {URLs.COCO_SAMPLE:(3245877008, '006cd55d633d94b36ecaf661467830ec'),
            URLs.CAMVID:(598913237, '648371e4f3a833682afb39b08a3ce2aa'),
            URLs.CAMVID_TINY:(2314212, '2cf6daf91b7a2083ecfa3e9968e9d915'),
            URLs.BIWI_HEAD_POSE:(452316199, '00f4ccf66e8cba184bc292fdc08fb237'),
-           URLs.LSUN_BEDROOMS:(4579163978, '35d84f38f8a15fe47e66e460c8800d68')}
+           URLs.LSUN_BEDROOMS:(4579163978, '35d84f38f8a15fe47e66e460c8800d68'),
+           URLs.OPENAI_TRANSFORMER:(432848315, '024b0d2203ebb0cd1fc64b27cf8af18e')}
 
 #TODO: This can probably be coded more shortly and nicely.
 class Config():

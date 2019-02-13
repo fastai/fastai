@@ -290,7 +290,7 @@ class CategoryProcessor(PreProcessor):
 
     def generate_classes(self, items):
         "Generate classes from `items` by taking the sorted unique values."
-        return uniqueify(items)
+        return uniqueify(items, sort=True)
 
     def process_one(self,item):
         if isinstance(item, EmptyLabel): return item

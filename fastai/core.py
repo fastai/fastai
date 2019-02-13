@@ -70,10 +70,10 @@ def is1d(a:Collection)->bool:
     "Return `True` if `a` is one-dimensional"
     return len(a.shape) == 1 if hasattr(a, 'shape') else True
 
-def uniqueify(x:Series)->List:
+def uniqueify(x:Series, sort:bool=False)->List:
     "Return sorted unique values of `x`."
     res = list(OrderedDict.fromkeys(x).keys())
-    res.sort()
+    if sort: res.sort()
     return res
 
 def idx_dict(a): 
