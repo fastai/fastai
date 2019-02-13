@@ -90,7 +90,7 @@ the call to `learn.purge()` is not needed.
 
 For inference we only need the saved model and the data to predict on, and nothing else that was used during the training. So to use even less memory (general RAM this time), the lean approach is to `learn.export()` and `learn.purge()` at the end of the training, and then to `load_learner()` before the prediction stage is started.
 
-``
+```
 # end of training
 learn.fit_one_cycle(epochs)
 learn.freeze()
