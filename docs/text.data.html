@@ -349,7 +349,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To avoid losing time preprocessing the text data more than once, you should save/load your <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> using thse methods.</p>
+<p>To avoid losing time preprocessing the text data more than once, you should save and load your <a href="/text.data.html#TextDataBunch"><code>TextDataBunch</code></a> using <a href="/basic_data.html#DataBunch.save"><code>DataBunch.save</code></a> and <a href="/basic_data.html#load_data"><code>load_data</code></a>.</p>
 
 </div>
 </div>
@@ -384,9 +384,7 @@ summary: "Basic dataset for NLP tasks and helper functions to create a DataBunch
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L145" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<strong><code>fname</code></strong>=<strong><em><code>'data_save.pkl'</code></em></strong>)</p>
-</blockquote>
-
+<div markdown="span" class="alert alert-danger" role="alert"><i class="fa fa-danger-circle"></i> <b>Warning: </b>This method should only be used to load back `TextDataBunch` saved in v1.0.43 or before, it is now deprecated.</div>
 </div>
 
 </div>
