@@ -124,9 +124,9 @@ class LanguageLearner(RNNLearner):
             new_idx.append(idx)
             xb = xb.new_tensor([idx])[None]
         return text + sep + sep.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
-    
-    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1., sep:str=' ',
-                    decoder=decode_spec_tokens):
+
+    def beam_search(self, text:str, n_words:int, no_unk:bool=True, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
+                    sep:str=' ', decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text` using beam search."
         ds = self.data.single_dl.dataset
         self.model.reset()
@@ -134,12 +134,13 @@ class LanguageLearner(RNNLearner):
         nodes = None
         xb = xb.repeat(top_k, 1)
         nodes = xb.clone()
-        scores = xb.new_ones(1).float()
+        scores = xb.new_zeros(1).float()
         with torch.no_grad():
             for k in progress_bar(range(n_words), leave=False):
                 out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
+                if no_unk: out[:,self.data.vocab.stoi[UNK]] = -float('Inf')
                 values, indices = out.topk(top_k, dim=-1)
-                scores = (-values * scores[:,None]).view(-1)
+                scores = (-values + scores[:,None]).view(-1)
                 indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
                 sort_idx = scores.argsort()[:beam_sz]
                 scores = scores[sort_idx]
@@ -149,8 +150,8 @@ class LanguageLearner(RNNLearner):
                 self.model[0].select_hidden(indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
-        node_idx = torch.multinomial(1-scores, 1).item()
-        return text + sep + sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx]], sep=None)))
+        node_idx = torch.multinomial(1-torch.exp(-scores), 1).item()
+        return sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx][1:] ], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
