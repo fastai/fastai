@@ -99,15 +99,16 @@ Learner.clip_grad = clip_grad
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
-        self.data,self.probs,self.y_true,self.losses,self.ds_type = data,probs,y_true,losses,ds_type
+    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
+        self.data,self.probs,self.y_true,self.losses,self.ds_type, self.learn= learn.data,probs,y_true,losses,ds_type,learn
         self.pred_class = self.probs.argmax(dim=1)
+        
 
     @classmethod
-    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid):
+    def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
         "Create an instance of `ClassificationInterpretation`"
         preds = learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds)
+        return cls(learn, *preds)
 
     def confusion_matrix(self, slice_size:int=1):
         "Confusion matrix as an `np.ndarray`."
