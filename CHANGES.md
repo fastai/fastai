@@ -19,9 +19,14 @@ of that change.
 
 ### New:
 
+- `DataBunch.save()` now works on every application, load the data back with `load_data`. 
+- `TextDataBunch.load` is kept for now to let people use it for loading old serialized text data, but is deprecated.
+
 ### Changed:
 
 ### Fixed:
+
+- `extensions` are checked with a case-insensitive match.
 
 
 

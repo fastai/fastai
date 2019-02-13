@@ -146,18 +146,6 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
 class TextDataBunch(DataBunch):
     "General class to get a `DataBunch` for NLP. Subclassed by `TextLMDataBunch` and `TextClasDataBunch`."
 
-    def save(self, cache_name:PathOrStr='tmp'):
-        "Save the `DataBunch` in `self.path/cache_name` folder."
-        os.makedirs(self.path/cache_name, exist_ok=True)
-        cache_path = self.path/cache_name
-        pickle.dump(self.train_ds.vocab.itos, open(cache_path/'itos.pkl','wb'))
-        np.save(cache_path/f'train_ids.npy', self.train_ds.x.items)
-        np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
-        np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
-        np.save(cache_path/f'valid_lbl.npy', self.valid_ds.y.items)
-        if self.test_dl is not None: np.save(cache_path/f'test_ids.npy', self.test_ds.x.items)
-        if hasattr(self.train_ds, 'classes'): save_texts(cache_path/'classes.txt', self.train_ds.classes)
-
     @classmethod
     def from_ids(cls, path:PathOrStr, vocab:Vocab, train_ids:Collection[Collection[int]], valid_ids:Collection[Collection[int]],
                  test_ids:Collection[Collection[int]]=None, train_lbls:Collection[Union[int,float]]=None,
@@ -175,6 +163,8 @@ class TextDataBunch(DataBunch):
     @classmethod
     def load(cls, path:PathOrStr, cache_name:PathOrStr='tmp', processor:PreProcessor=None, **kwargs):
         "Load a `TextDataBunch` from `path/cache_name`. `kwargs` are passed to the dataloader creation."
+        warn("""This method is deprecated and only kept to load data serialized in v1.0.43 or earlier. 
+                Use `load_data` for data saved with v1.0.44 or later.""", DeprecationWarning) 
         cache_path = Path(path)/cache_name
         vocab = Vocab(pickle.load(open(cache_path/'itos.pkl','rb')))
         train_ids,train_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')

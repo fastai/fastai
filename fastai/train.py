@@ -35,6 +35,7 @@ def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:b
             flat_master:bool=False)->Learner:
     "Put `learn` in FP16 precision mode."
     learn.model = model2half(learn.model)
+    learn.data.add_tfm(batch_to_half)
     learn.mp_cb = MixedPrecision(learn, loss_scale=loss_scale, max_noskip=max_noskip, dynamic=dynamic, clip=clip, 
                                  flat_master=flat_master)
     learn.callbacks.append(learn.mp_cb)
@@ -42,11 +43,7 @@ def to_fp16(learn:Learner, loss_scale:float=None, max_noskip:int=1000, dynamic:b
 
 def to_fp32(learn:Learner):
     "Put `learn` back to FP32 precision mode."
-    learn.data.train_dl.remove_tfm(batch_to_half)
-    if hasattr(learn.data, 'valid_dl') and learn.data.valid_dl is not None:
-        learn.data.valid_dl.remove_tfm(batch_to_half)
-    if hasattr(learn.data, 'test_dl') and learn.data.test_dl is not None:
-        learn.data.test_dl.remove_tfm(batch_to_half)
+    learn.data.remove_tfm(batch_to_half)
     for cb in learn.callbacks: 
         if isinstance(cb, MixedPrecision): learn.callbacks.remove(cb)
     learn.model = learn.model.float()
@@ -102,15 +99,16 @@ Learner.clip_grad = clip_grad
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
-    def __init__(self, data:DataBunch, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
-        self.data,self.probs,self.y_true,self.losses,self.ds_type = data,probs,y_true,losses,ds_type
+    def __init__(self, learn:Learner, probs:Tensor, y_true:Tensor, losses:Tensor, ds_type:DatasetType=DatasetType.Valid):
+        self.data,self.probs,self.y_true,self.losses,self.ds_type, self.learn= learn.data,probs,y_true,losses,ds_type,learn
         self.pred_class = self.probs.argmax(dim=1)
+        
 
     @classmethod
-    def from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid):
+    def from_learner(cls, learn: Learner,  ds_type:DatasetType=DatasetType.Valid):
         "Create an instance of `ClassificationInterpretation`"
         preds = learn.get_preds(ds_type=ds_type, with_loss=True)
-        return cls(learn.data, *preds)
+        return cls(learn, *preds)
 
     def confusion_matrix(self, slice_size:int=1):
         "Confusion matrix as an `np.ndarray`."

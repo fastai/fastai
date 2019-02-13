@@ -28,7 +28,7 @@ def test_from_folder(path):
         mnist_tiny_sanity_test(data)
 
 def test_from_name_re(path):
-    fnames = get_files(path/'train', recurse=True)
+    fnames = get_image_files(path/'train', recurse=True)
     pat = r'/([^/]+)\/\d+.png$'
     data = ImageDataBunch.from_name_re(path, fnames, pat, ds_tfms=(rand_pad(2, 28), []))
     mnist_tiny_sanity_test(data)
@@ -68,7 +68,7 @@ def test_image_resize(path, path_var_size):
     # (2) var-size but larger than 28x28,
     # and the resizes are always less than 28x28, so it always tests a real resize
     for p in [path, path_var_size]: # identical + var sized inputs
-        fnames = get_files(p/'train', recurse=True)
+        fnames = get_image_files(p/'train', recurse=True)
         pat = r'/([^/]+)\/\d+.png$'
         for size in [14, (14,14), (14,20)]:
             for rm_name in rms:

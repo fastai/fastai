@@ -6,7 +6,6 @@ from pandas.api.types import is_string_dtype, is_numeric_dtype, is_categorical_d
 from sklearn.ensemble import forest
 from sklearn.tree import export_graphviz
 
-
 def set_plot_sizes(sml, med, big):
     plt.rc('font', size=sml)          # controls default text sizes
     plt.rc('axes', titlesize=sml)     # fontsize of the axes title
@@ -269,8 +268,8 @@ def numericalize(df, col, name, max_n_cat):
     1     2    b    2
     2     3    a    1
     """
-    if is_categorical_dtype(col) and ( max_n_cat is None or len(col.cat.categories)>max_n_cat):
-        df[name] = col.cat.codes+1
+    if not is_numeric_dtype(col) and ( max_n_cat is None or len(col.cat.categories)>max_n_cat):
+        df[name] = pd.Categorical(col).codes+1
 
 def scale_vars(df, mapper):
     warnings.filterwarnings('ignore', category=sklearn.exceptions.DataConversionWarning)
@@ -357,7 +356,7 @@ def proc_df(df, y_fld=None, skip_flds=None, ignore_flds=None, do_scale=False, na
     if preproc_fn: preproc_fn(df)
     if y_fld is None: y = None
     else:
-        if not is_numeric_dtype(df[y_fld]): df[y_fld] = df[y_fld].cat.codes
+        if not is_numeric_dtype(df[y_fld]): df[y_fld] = pd.Categorical(df[y_fld]).codes
         y = df[y_fld].values
         skip_flds += [y_fld]
     df.drop(skip_flds, axis=1, inplace=True)

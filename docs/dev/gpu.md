@@ -200,7 +200,9 @@ It also might be helpful to note that `torch.cuda.memory_cached()` doesn't show 
 
 How can we do a lot of experimentation in a given jupyter notebook w/o needing to restart the kernel all the time? You can delete the variables that hold the memory, can call `import gc; gc.collect()` to reclaim memory by deleted objects with circular references, optionally (if you have just one process) calling `torch.cuda.empty_cache()` and you can now re-use the GPU memory inside the same kernel.
 
-To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `cuda: out of memory` errors and detecting various other memory leaks.
+To automate this process, and get various stats on memory consumption, you can use [IPyExperiments](https://github.com/stas00/ipyexperiments). Other than helping you to reclaim general and GPU RAM, it is also helpful with efficiently tuning up your notebook parameters to avoid `CUDA: out of memory` errors and detecting various other memory leaks.
+
+And also make sure you read the tutorial on `learn.purge` and its friends [here](/tutorial.resources.html), which provide an even better solution.
 
 
 ### GPU RAM Fragmentation

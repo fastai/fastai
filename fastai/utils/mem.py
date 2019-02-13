@@ -23,9 +23,6 @@ def b2mb(num):
     """ convert Bs to MBs and round down """
     return int(num/2**20)
 
-# for gpu returns GPUMemory(total, used, free)
-# for cpu returns GPUMemory(0, 0, 0)
-# for invalid gpu id returns GPUMemory(0, 0, 0)
 def gpu_mem_get(id=None):
     "get total, used and free memory (in MBs) for gpu `id`. if `id` is not passed, currently selected torch device is used"
     if not have_cuda: return GPUMemory(0, 0, 0)
@@ -37,8 +34,6 @@ def gpu_mem_get(id=None):
     except:
         return GPUMemory(0, 0, 0)
 
-# for gpu returns [ GPUMemory(total_0, used_0, free_0), GPUMemory(total_1, used_1, free_1), .... ]
-# for cpu returns []
 def gpu_mem_get_all():
     "get total, used and free memory (in MBs) for each available gpu"
     if not have_cuda: return []
@@ -54,13 +49,11 @@ def gpu_mem_get_used_no_cache():
     torch.cuda.empty_cache()
     return gpu_mem_get().used
 
-def gpu_mem_get_fast_used(gpu_handle):
+def gpu_mem_get_used_fast(gpu_handle):
     "get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache, and needing the `gpu_handle` arg"
     info = pynvml.nvmlDeviceGetMemoryInfo(gpu_handle)
     return b2mb(info.used)
 
-# for gpu returns: (gpu_with_max_free_ram_id, its_free_ram)
-# for cpu returns: (None, 0)
 def gpu_with_max_free_mem():
     "get [gpu_id, its_free_ram] for the first gpu with highest available RAM"
     mem_all = gpu_mem_get_all()
@@ -75,22 +68,6 @@ def get_ref_free_exc_info():
     traceback.clear_frames(tb)
     return (type, val, tb)
 
-# this is a decorator to be used with any functions that interact with CUDA (top-level is fine)
-#
-# ipython has a feature where it stores tb with all the locals() tied in, which
-# prevents gc.collect from freeing those variables, therefore we cleanse the tb
-# before handing it over to ipython.
-#
-# under non-ipython environment it doesn't do anything.
-#
-# under ipython currently it strips tb by default only for the "CUDA out of memory" exception.
-#
-# The env var FASTAI_TB_CLEAR_FRAMES changes this behavior when run under ipython,
-# depending on its value: (os.environ['FASTAI_TB_CLEAR_FRAMES']="0")
-#
-# "0": never  strip tb (makes it possible to always use %debug magic, but with leaks)
-# "1": always strip tb (never need to worry about leaks, but %debug won't work)
-#
 def gpu_mem_restore(func):
     "Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted"
     @functools.wraps(func)
@@ -106,49 +83,19 @@ def gpu_mem_restore(func):
                 "device-side assert triggered" in str(e) or
                 tb_clear_frames == "1"):
                 type, val, tb = get_ref_free_exc_info() # must!
+                gc.collect()
                 raise type(val).with_traceback(tb) from None
             else: raise # re-raises the exact last exception
     return wrapper
 
-
-# if function decorator is not a good option, use context manager, example:
-# with gpu_mem_restore_ctx():
-#    learn.fit_one_cycle(1,1e-2)
-# this particular one will clear tb on any exception
 class gpu_mem_restore_ctx():
     "context manager to reclaim RAM if an exception happened under ipython"
     def __enter__(self): return self
     def __exit__(self, exc_type, exc_val, exc_tb):
         if not exc_val: return True
         traceback.clear_frames(exc_tb)
+        gc.collect()
         raise exc_type(exc_val).with_traceback(exc_tb) from None
-
-
-#
-# memtrace = GPUMemTrace()
-# memtrace.start() # start tracing
-#
-# some_code()
-# memtrace.report() # print intermediary cumulative report
-# used, peak =  memtrace.data() # same but as data
-#
-# some_code()
-# memtrace.report('2nd run') # print intermediary cumulative report
-# used, peak =  memtrace.data()
-#
-# for i in range(10):
-#     memtrace.reset()
-#     code()
-#     memtrace.report(f'i={i}') # report for just the last code run since reset
-#
-# combine report+reset
-# memtrace.reset()
-# for i in range(10):
-#     code()
-#     memtrace.report_n_reset(f'i={i}') # report for just the last code run since reset
-#
-# memtrace.stop() # stop the monitor thread
-#
 
 class GPUMemTrace():
     "Trace GPU allocated and peak memory usage"
@@ -203,6 +150,6 @@ class GPUMemTrace():
     def peak_monitor_func(self):
         gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(torch.cuda.current_device())
         while True:
-            self.used_peak = max(gpu_mem_get_fast_used(gpu_handle), self.used_peak)
+            self.used_peak = max(gpu_mem_get_used_fast(gpu_handle), self.used_peak)
             if not self.peak_monitoring: break
             time.sleep(0.001) # 1msec

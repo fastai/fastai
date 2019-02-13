@@ -232,7 +232,7 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
         if purge: self.purge(clear_opt = ifnone(with_opt, False))
         if device is None: device = self.data.device
