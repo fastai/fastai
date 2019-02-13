@@ -9,3 +9,5 @@ title: Tutorials Overview
 * [Inference Learner](/tutorial.inference.html) - This is an intermediate tutorial, that explains how to create a `Learner` for inference.
 
 * [Custom ItemList](/tutorial.itemlist.html) - This is an advanced tutorial, that explains how to create your custom subclasses of `ItemBase` or `ItemList`.
+
+* [Deep Learning on a Shoestring](/tutorial.resources.html) - This tutorial will teach you how to make a little GPU RAM to go a long way, and avoid the need to restart the notebook kernel all the time.
