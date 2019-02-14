@@ -4,26 +4,20 @@ This is https://github.com/w3c/link-checker with some custom tweaks.
 
 ## Prerequisites
 
-### For Ubuntu/Debian Users
+* Debian/Ubuntu:
 
-Install:
+   ```
+   sudo apt install w3c-linkchecker
+   ```
 
-```
-sudo apt install w3c-linkchecker
-```
+   See "More on Prerequisites" below for other ways to install this prerequisite if the above doesn't work.
 
-See "More on Prerequisites" below for other ways to install this prerequisite if the above doesn't work.
+* Mac OS:
 
-### For Mac OS Users
-
-Install:
-
-```bash
-brew install perl # Make sure that we have the most updated perl version installed
-perl -MCPAN -e 'install W3C::LinkChecker' # Install the link checker
-```
-
-### Other dependencies
+   ```bash
+   brew install perl # Make sure that we have the most updated perl version installed
+   perl -MCPAN -e 'install W3C::LinkChecker' # Install the link checker
+   ```
 
 To run this link checker again a local checkout, you also need to install `jekyll`:
 
