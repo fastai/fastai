@@ -123,7 +123,7 @@ class ClassificationInterpretation():
         return to_np(cm)
 
     def plot_confusion_matrix(self, normalize:bool=False, title:str='Confusion matrix', cmap:Any="Blues", slice_size:int=1, 
-                              norm_dec:int=2, **kwargs)->None:
+                              norm_dec:int=2, plot_txt:bool=True, **kwargs)->None:
         "Plot the confusion matrix, with `title` and using `cmap`."
         # This function is mainly copied from the sklearn docs
         cm = self.confusion_matrix(slice_size=slice_size)
@@ -135,10 +135,11 @@ class ClassificationInterpretation():
         plt.xticks(tick_marks, self.data.y.classes, rotation=90)
         plt.yticks(tick_marks, self.data.y.classes, rotation=0)
 
-        thresh = cm.max() / 2.
-        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
-            plt.text(j, i, coeff, horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+        if plot_txt:
+            thresh = cm.max() / 2.
+            for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+                coeff = f'{cm[i, j]:.{norm_dec}f}' if normalize else f'{cm[i, j]}'
+                plt.text(j, i, coeff, horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         plt.tight_layout()
         plt.ylabel('Actual')
