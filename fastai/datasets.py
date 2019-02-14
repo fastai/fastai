@@ -37,7 +37,7 @@ class URLs():
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
 
-    # image classification fastai datasets
+    # image classification datasets
     CALTECH_101  = f'{S3_IMAGE}caltech_101'
     CARS         = f'{S3_IMAGE}stanford-cars'
     CIFAR_100    = f'{S3_IMAGE}cifar100'
@@ -47,7 +47,7 @@ class URLs():
     MNIST        = f'{S3_IMAGE}mnist_png'
     PETS         = f'{S3_IMAGE}oxford-iiit-pet'
 
-    # NLP fastai datasets
+    # NLP datasets
     AG_NEWS                 = f'{S3_NLP}ag_news_csv'
     AMAZON_REVIEWS          = f'{S3_NLP}amazon_review_full_csv'
     AMAZON_REVIEWS_POLARITY = f'{S3_NLP}amazon_review_polarity_csv'
@@ -60,7 +60,7 @@ class URLs():
     YELP_REVIEWS            = f'{S3_NLP}yelp_review_full_csv'
     YELP_REVIEWS_POLARITY   = f'{S3_NLP}yelp_review_polarity_csv'
 
-    # Image localization fastai datasets
+    # Image localization datasets
     BIWI_HEAD_POSE     = f"{S3_IMAGELOC}biwi_head_pose"
     CAMVID             = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY        = f'{URL}camvid_tiny'
