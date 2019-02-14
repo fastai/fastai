@@ -205,7 +205,7 @@ class TextDataBunch(DataBunch):
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
                  tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, delimiter:str=None, header='infer',
-                 col_names:Optional[Collection[str]]:None, text_cols:IntsOrStrs=1, label_cols:IntsOrStrs=0, label_delim:str=None,
+                 col_names:Optional[Collection[str]]=None, text_cols:IntsOrStrs=1, label_cols:IntsOrStrs=0, label_delim:str=None,
                  chunksize:int=10000, max_vocab:int=60000, min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files. `kwargs` are passed to the dataloader creation."
         df = pd.read_csv(Path(path)/csv_name, header=header, delimiter=delimiter, names=col_names)
