@@ -138,10 +138,10 @@ class DataBunch():
 
     def add_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.add_tfm(tfm)
-            
+
     def remove_tfm(self,tfm:Callable)->None:
         for dl in self.dls: dl.remove_tfm(tfm)
-            
+
     def save(self, fname='data_save.pkl'):
         "Save the `DataBunch` in `self.path/fname`."
         if not getattr(self, 'label_list', False):
@@ -155,7 +155,7 @@ class DataBunch():
         vdl = self.valid_dl
         dl = DataLoader(self.label_list.test, vdl.batch_size, shuffle=False, drop_last=False, num_workers=vdl.num_workers)
         self.test_dl = DeviceDataLoader(dl, vdl.device, vdl.tfms, vdl.collate_fn)
-        
+
     def one_batch(self, ds_type:DatasetType=DatasetType.Train, detach:bool=True, denorm:bool=True, cpu:bool=True)->Collection[Tensor]:
         "Get one batch from the data loader of `ds_type`. Optionally `detach` and `denorm`."
         dl = self.dl(ds_type)
@@ -260,8 +260,8 @@ class DataBunch():
             warn(message)
             print(final_message)
 
-def load_data(path:PathOrStr, fname:str='data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus, 
-                  dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate, 
+def load_data(path:PathOrStr, fname:str='data_save.pkl', bs:int=64, val_bs:int=None, num_workers:int=defaults.cpus,
+                  dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None, collate_fn:Callable=data_collate,
                   no_check:bool=False, **kwargs)->DataBunch:
     "Load from `path/fname` a saved `DataBunch`."
     ll = torch.load(Path(path)/fname, map_location='cpu') if defaults.device == torch.device('cpu') else torch.load(Path(path)/fname)
