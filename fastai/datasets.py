@@ -32,8 +32,28 @@ class URLs():
     WT103_1 = f'{S3_MODEL}wt103-1'
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
-    PETS = f'{S3_IMAGE}oxford-iiit-pet'
+    # image classification fastai datasets
     MNIST = f'{S3_IMAGE}mnist_png'
+    CIFAR_100 = f'{S3_IMAGE}cifar100'
+    CUB_200_2011 = f'{S3_IMAGE}CUB_200_2011'
+    CALTECH_101 = f'{S3_IMAGE}caltech_101'
+    PETS = f'{S3_IMAGE}oxford-iiit-pet'
+    FLOWERS = f'{S3_IMAGE}oxford-102-flowers'
+    FOOD = f'{S3_IMAGE}food-101'
+    CARS = f'{S3_IMAGE}stanford-cars'
+    # NLP fastai datasets
+    WIKITEXT = f'{S3_NLP}wikitext-103'
+    WIKITEXT_TINY = f'{S3_NLP}wikitext-2'
+    MT_ENG_FRA = f'{S3_NLP}giga-fren'
+    AG_NEWS = f'{S3_NLP}ag_news_csv'
+    AMAZON_REVIEWS = f'{S3_NLP}amazon_review_full_csv'
+    AMAZON_POLARITY = f'{S3_NLP}amazon_review_polarity_csv'
+    DBPEDIA = f'{S3_NLP}dbpedia_csv'
+    SOGOU_NEWS = f'{S3_NLP}sogou_news_csv'
+    YAHOO_ANSWERS = f'{S3_NLP}yahoo_answers_csv'
+    YELP_REVIEWS = f'{S3_NLP}yelp_review_full_csv'
+    YELP_POLARITY = f'{S3_NLP}yelp_review_polarity_csv'
+    # Image localization fastai datasets
     CAMVID = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY = f'{URL}camvid_tiny'
     BIWI_HEAD_POSE = f"{S3_IMAGELOC}biwi_head_pose"
@@ -61,6 +81,24 @@ _checks = {URLs.COCO_SAMPLE:(3245877008, '006cd55d633d94b36ecaf661467830ec'),
            URLs.DOGS:(839285364, '3e483c8d6ef2175e9d395a6027eb92b7'),
            URLs.PETS:(811706944, 'e4db5c768afd933bb91f5f594d7417a4'),
            URLs.MNIST:(15683414, '03639f83c4e3d19e0a3a53a8a997c487'),
+           URLs.CIFAR_100:(169168619, 'e5e65dcb54b9d3913f7b8a9ad6607e62'),
+           URLs.CUB_200_2011:(1150585339, 'd2acaa99439dff0483c7bbac1bfe2a92'),
+           URLs.CALTECH_101:(131740031, 'd673425306e98ee4619fcdeef8a0e876'),
+           URLs.FLOWERS:(345236087, '5666e01c1311b4c67fcf20d2b3850a88'),
+           URLs.FOOD:(5686607260, '1a540ebf1fb40b2bf3f2294234ba7907'),
+           URLs.CARS:(1957803273, '9045d6673c9ced0889f41816f6bf2f9f'),
+           URLs.WIKITEXT:(190200704, '2dd8cf8693b3d27e9c8f0a7df054b2c7'),
+           URLs.WIKITEXT_TINY:(4070055, '2a82d47a7b85c8b6a8e068dc4c1d37e7'),
+           URLs.MT_ENG_FRA:(2598183296, '69573f58e2c850b90f2f954077041d8c'),
+           URLs.AG_NEWS:(11784419, 'b86f328f4dbd072486591cb7a5644dcd'),
+           URLs.AMAZON_REVIEWS:(643695014, '4a1196cf0adaea22f4bc3f592cddde90'),
+           URLs.AMAZON_POLARITY:(688339454, '676f7e5208ec343c8274b4bb085bc938'),
+           URLs.DBPEDIA:(68341743, '239c7837b9e79db34486f3de6a00e38e'),
+           URLs.SOGOU_NEWS:(384269937, '950f1366d33be52f5b944f8a8b680902'),
+           URLs.YAHOO_ANSWERS:(319476345, '0632a0d236ef3a529c0fa4429b339f68'),
+           URLs.YELP_REVIEWS:(196146755, '1efd84215ea3e30d90e4c33764b889db'),
+           URLs.YELP_POLARITY:(166373201, '48c8451c1ad30472334d856b5d294807'),
+
            URLs.CAMVID:(598913237, '648371e4f3a833682afb39b08a3ce2aa'),
            URLs.CAMVID_TINY:(2314212, '2cf6daf91b7a2083ecfa3e9968e9d915'),
            URLs.BIWI_HEAD_POSE:(452316199, '00f4ccf66e8cba184bc292fdc08fb237'),
