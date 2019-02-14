@@ -48,7 +48,7 @@ class URLs():
 
     # NLP fastai datasets
     AG_NEWS = f'{S3_NLP}ag_news_csv'
-    AMAZON_POLARITY = f'{S3_NLP}amazon_review_polarity_csv'
+    AMAZON_REVIEWS_POLARITY = f'{S3_NLP}amazon_review_polarity_csv'
     AMAZON_REVIEWS = f'{S3_NLP}amazon_review_full_csv'
     DBPEDIA = f'{S3_NLP}dbpedia_csv'
     MT_ENG_FRA = f'{S3_NLP}giga-fren'
@@ -56,7 +56,7 @@ class URLs():
     WIKITEXT = f'{S3_NLP}wikitext-103'
     WIKITEXT_TINY = f'{S3_NLP}wikitext-2'
     YAHOO_ANSWERS = f'{S3_NLP}yahoo_answers_csv'
-    YELP_POLARITY = f'{S3_NLP}yelp_review_polarity_csv'
+    YELP_REVIEWS_POLARITY = f'{S3_NLP}yelp_review_polarity_csv'
     YELP_REVIEWS = f'{S3_NLP}yelp_review_full_csv'
 
     # Image localization fastai datasets
@@ -71,7 +71,7 @@ class URLs():
 _checks = {
     URLs.ADULT_SAMPLE:(968212, '64eb9d7e23732de0b138f7372d15492f'),
     URLs.AG_NEWS:(11784419, 'b86f328f4dbd072486591cb7a5644dcd'),
-    URLs.AMAZON_POLARITY:(688339454, '676f7e5208ec343c8274b4bb085bc938'),
+    URLs.AMAZON_REVIEWS_POLARITY:(688339454, '676f7e5208ec343c8274b4bb085bc938'),
     URLs.AMAZON_REVIEWS:(643695014, '4a1196cf0adaea22f4bc3f592cddde90'),
     URLs.BIWI_HEAD_POSE:(452316199, '00f4ccf66e8cba184bc292fdc08fb237'),
     URLs.BIWI_SAMPLE:(593774, '9179f4c1435f4b291f0d5b072d60c2c9'),
@@ -108,7 +108,7 @@ _checks = {
     URLs.WT103:(206789489, '76fd08236c78bf91b7fb76698d53afa3'),
     URLs.WT103_1:(165175630, '9cbe02e9e23b969fee10dc9b8dec6566'),
     URLs.YAHOO_ANSWERS:(319476345, '0632a0d236ef3a529c0fa4429b339f68'),
-    URLs.YELP_POLARITY:(166373201, '48c8451c1ad30472334d856b5d294807'),
+    URLs.YELP_REVIEWS_POLARITY:(166373201, '48c8451c1ad30472334d856b5d294807'),
     URLs.YELP_REVIEWS:(196146755, '1efd84215ea3e30d90e4c33764b889db'),
 }
 
