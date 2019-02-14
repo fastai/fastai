@@ -59,14 +59,28 @@ You can skip this step if you have done it once already on the system you're mak
    ```
 
 
-## Quick Release Process
 
-**Note**: This document assumes that you have already successfully run the heavy slow notebook tests, which may take 0.5-1h to complete.
+## Pre-Release Process
+
+Normally, while testing the code, we only run `make test`, which completes within a few minutes. But we also have several sets of much heavier and slower, but more complete tests. These should be run and verified to be successful before starting a new release.
+
+1. Run the test suite, including the slower tests (not much longer than the `make test`:
+
+```
+make test-full
+```
+
+2. Run the notebook tests (0.5-1h):
 
 ```
 cd docs_src
 ./run_tests.sh
 ```
+
+
+
+## Quick Release Process
+
 
 No matter which release process you follow, always remember to start with:
 
