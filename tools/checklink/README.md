@@ -9,15 +9,15 @@ This is https://github.com/w3c/link-checker with some custom tweaks.
    ```
    sudo apt install w3c-linkchecker
    ```
-
-   See "More on Prerequisites" below for other ways to install this prerequisite if the above doesn't work.
-
+   
 * Mac OS:
 
    ```bash
    brew install perl # Make sure that we have the most updated perl version installed
    perl -MCPAN -e 'install W3C::LinkChecker' # Install the link checker
    ```
+
+See "More on Prerequisites" below for other ways to install this prerequisite if the above doesn't work.
 
 To run this link checker again a local checkout, you also need to install `jekyll`:
 
