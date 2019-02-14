@@ -121,10 +121,11 @@ class ItemList():
         return res
 
     @classmethod
-    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, header:str='infer', 
-                 processor:PreProcessors=None, **kwargs)->'ItemList':
-        "Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`."
-        df = pd.read_csv(Path(path)/csv_name, header=header)
+    def from_csv(cls, path:PathOrStr, csv_name:str, cols:IntsOrStrs=0, delimiter:str=None, header:str='infer', 
+                 col_names:Optional[Collection[str]]=None, processor:PreProcessors=None, **kwargs)->'ItemList':
+        """Create an `ItemList` in `path` from the inputs in the `cols` of `path/csv_name` opened with `header`. 
+        Non-default `delimiter` may be specified and if it has no header, `col_names` may be specified."""
+        df = pd.read_csv(Path(path)/csv_name, delimiter=delimiter, header=header, names=col_names)
         return cls.from_df(df, path=path, cols=cols, processor=processor, **kwargs)
 
     def _relative_item_path(self, i): return self.items[i].relative_to(self.path)
