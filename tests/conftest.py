@@ -4,7 +4,7 @@
 import pytest, sys, re, json
 from os.path import abspath, dirname, join
 from utils.mem import use_gpu
-from fastai.gen_doc.doctest import RegisterTestsperAPI
+from fastai.gen_doc.doctest import RegisterTestsPerAPI
 
 # make sure we test against the checked out git version of fastai and
 # not the pre-installed version. With 'pip install -e .[dev]' it's not
@@ -37,19 +37,13 @@ def pytest_collection_modifyitems(config, items):
 @pytest.fixture(scope="session", autouse=True)
 def start_doctest_collector(request):
     matching = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    if not matching:
-        request.addfinalizer(stop_doctest_collector)
-   
+    if not matching: request.addfinalizer(stop_doctest_collector)
+
 def set_default(obj):
-     if isinstance(obj, set):
-          return list(obj)
-     raise TypeError 
+     if isinstance(obj, set): return list(obj)
+     raise TypeError
 
 def stop_doctest_collector():
     fastai_dir = abspath(join(dirname( __file__ ), '..', 'fastai'))
     with open(fastai_dir + '/test_api_db.json', 'w') as f:
-        json.dump(obj=RegisterTestsperAPI.apiTestsMap,fp=f, indent = 4, sort_keys= True, default=set_default )   
-
-@pytest.fixture
-def helpers():
-    return helpers    
+        json.dump(obj=RegisterTestsPerAPI.apiTestsMap, fp=f, indent=4, sort_keys=True, default=set_default)
