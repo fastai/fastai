@@ -161,6 +161,7 @@ def untar_data(url:str, fname:PathOrStr=None, dest:PathOrStr=None, data=True, fo
     if not dest.exists():
         fname = download_data(url, fname=fname, data=data)
         data_dir = Config().data_path()
-        assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_dir} and try your code again."
+        if url in _checks:
+            assert _check_file(fname) == _checks[url], f"Downloaded file {fname} does not match checksum expected! Remove that file from {data_dir} and try your code again."
         tarfile.open(fname, 'r:gz').extractall(dest.parent)
     return dest
