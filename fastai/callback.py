@@ -27,7 +27,7 @@ class OptimWrapper():
     def new(self, layer_groups:ModuleList):
         "Create a new `OptimWrapper` from `self` with another `layer_groups` but the same hyper-parameters."
         opt_func = getattr(self, 'opt_func', self.opt.__class__)
-        split_groups = split_bn_bias(layer_groups)
+        split_groups = split_no_wd_params(layer_groups)
         opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
         return self.create(opt_func, self.lr, layer_groups, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
 
