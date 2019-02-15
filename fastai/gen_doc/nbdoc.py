@@ -165,23 +165,13 @@ def link_docstring(modules, docstring:str, overwrite:bool=False)->str:
     for mod in mods: _modvars.update(mod.__dict__) # concat all module definitions
     return re.sub(BT_REGEX, replace_link, docstring)
 
-def find_mod(keyword):
-    mod = import_mod(keyword, ignore_errors=True)
-    if mod: return mod
-    if not keyword.startswith('fastai'):
-        return import_mod(f'fastai.{keyword}', ignore_errors=True)
-    return None
-
 def find_elt(modvars, keyword, match_last=False):
     "Attempt to resolve keywords such as Learner.lr_find. `match_last` starts matching from last component."
-    #mod = find_mod(keyword)
-    #if mod: return mod
     keyword = strip_fastai(keyword)
     if keyword in modvars: return modvars[keyword]
     comps = keyword.split('.')
     comp_elt = modvars.get(comps[0])
     if hasattr(comp_elt, '__dict__'): return find_elt(comp_elt.__dict__, '.'.join(comps[1:]), match_last=match_last)
-    # else: return modvars.get(comps[-1])
 
 def import_mod(mod_name:str, ignore_errors=False):
     "Return module from `mod_name`."
@@ -254,22 +244,6 @@ def get_module_toc(mod_name):
             in_ft_names = get_inner_fts(elt)
             for name in in_ft_names:
                 tabmat += f'  - [{name}](#{name})\n'
-    display(Markdown(tabmat))
-
-def get_class_toc(mod_name:str, cls_name:str):
-    "Display table of contents for `cls_name`."
-    mod = import_mod(mod_name)
-    if mod is None: return
-    splits = str.split(cls_name, '.')
-    assert hasattr(mod, splits[0]), print(f"Module {mod_name} doesn't have a function named {splits[0]}.")
-    elt = getattr(mod, splits[0])
-    for i,split in enumerate(splits[1:]):
-        assert hasattr(elt, split), print(f"Class {'.'.join(splits[:i+1])} doesn't have a subclass named {split}.")
-        elt = getattr(elt, split)
-    assert inspect.isclass(elt) and not is_enum(elt.__class__), "This is not a valid class."
-    in_ft_names = get_inner_fts(elt)
-    tabmat = ''
-    for name in in_ft_names: tabmat += f'- [{name}](#{name})\n'
     display(Markdown(tabmat))
 
 def show_video(url):

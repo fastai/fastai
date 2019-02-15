@@ -219,6 +219,9 @@ entries:
       title: gen_doc.nbdoc
       url: /gen_doc.nbdoc.html
     - output: web,pdf
+      title: gen_doc.nbtest
+      url: /gen_doc.nbtest.html
+    - output: web,pdf
       title: gen_doc.convert2html
       url: /gen_doc.convert2html.html
     output: web
