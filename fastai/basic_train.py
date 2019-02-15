@@ -251,12 +251,11 @@ class Learner():
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
         path = self.path
-        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns', 'layer_groups']
+        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns', 'layer_groups', 'opt']
         state = {a:getattr(self,a) for a in args}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
         state['model'] = self.model
         torch.save(state, open(self.path/'tmp.pkl', 'wb'))
-        if clear_opt: delattr(self, 'opt')
         for a in args + ['model', 'callbacks']: delattr(self, a)
         gc.collect()
         torch.cuda.empty_cache()
@@ -264,6 +263,7 @@ class Learner():
         for a in args + ['model']: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
+        if clear_opt: self.opt.clear()
         del state
         gc.collect()
         torch.cuda.empty_cache() 
