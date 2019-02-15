@@ -102,6 +102,7 @@ class GPUMemTrace():
     def __init__(self, silent=False):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
         self.silent = silent # quickly turn off printouts from the constructor
+        self.reset()
 
     def __enter__(self):
         self.start()
