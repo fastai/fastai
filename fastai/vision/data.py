@@ -120,11 +120,11 @@ class ImageDataBunch(DataBunch):
 
     @classmethod
     def from_csv(cls, path:PathOrStr, folder:PathOrStr=None, label_delim:str=None, csv_labels:PathOrStr='labels.csv',
-                 valid_pct:float=0.2, fn_col:int=0, label_col:int=1, suffix:str='', header:Optional[Union[int,str]]='infer',
-                 **kwargs:Any)->'ImageDataBunch':
+                 valid_pct:float=0.2, fn_col:int=0, label_col:int=1, suffix:str='', delimiter:str=None, 
+                 header:Optional[Union[int,str]]='infer', **kwargs:Any)->'ImageDataBunch':
         "Create from a csv file in `path/csv_labels`."
         path = Path(path)
-        df = pd.read_csv(path/csv_labels, header=header)
+        df = pd.read_csv(path/csv_labels, header=header, delimiter=delimiter)
         return cls.from_df(path, df, folder=folder, label_delim=label_delim, valid_pct=valid_pct,
                 fn_col=fn_col, label_col=label_col, suffix=suffix, **kwargs)
 

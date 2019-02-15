@@ -204,18 +204,18 @@ class TextDataBunch(DataBunch):
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
-                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1,
-                 label_cols:IntsOrStrs=0, label_delim:str=None, chunksize:int=10000, max_vocab:int=60000,
-                min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
+                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, delimiter:str=None, header='infer',
+                 text_cols:IntsOrStrs=1, label_cols:IntsOrStrs=0, label_delim:str=None,
+                 chunksize:int=10000, max_vocab:int=60000, min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files. `kwargs` are passed to the dataloader creation."
-        df = pd.read_csv(Path(path)/csv_name, header=header)
+        df = pd.read_csv(Path(path)/csv_name, header=header, delimiter=delimiter)
         df = df.iloc[np.random.permutation(len(df))]
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
-        test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
+        test_df = None if test is None else pd.read_csv(Path(path)/test, header=header, delimiter=delimiter)
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer=tokenizer, vocab=vocab, classes=classes, text_cols=text_cols,
                            label_cols=label_cols, label_delim=label_delim, chunksize=chunksize, max_vocab=max_vocab,
-                          min_freq=min_freq, mark_fields=mark_fields, **kwargs)
+                           min_freq=min_freq, mark_fields=mark_fields, **kwargs)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
