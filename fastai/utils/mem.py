@@ -98,43 +98,60 @@ class gpu_mem_restore_ctx():
         raise exc_type(exc_val).with_traceback(exc_tb) from None
 
 class GPUMemTrace():
-    "Trace GPU allocated and peak memory usage"
+    "Trace GPU allocated and peaked memory usage"
     def __init__(self, silent=False):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
         self.silent = silent # quickly turn off printouts from the constructor
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *exc):
+        self.stop()
+
+    def __repr__(self):
+        delta_used, delta_peaked = self.data()
+        return f"△used: {delta_used}MB, △peaked: {delta_peaked}MB"
 
     def silent(self, silent=False):
         self.silent = silent
 
     def reset(self):
-        self.used_start = gpu_mem_get_used_no_cache()
-        self.used_peak  = self.used_start
+        self.used_start  = gpu_mem_get_used_no_cache()
+        self.used_peak   = self.used_start
+        self.data_is_set = False
 
     def start(self):
         self.reset()
         self.peak_monitor_start()
 
     def stop(self):
+        self.data_set()
         self.peak_monitor_stop()
 
     def __del__(self):
         self.stop()
 
+    def data_set(self):
+        self.delta_used   = gpu_mem_get_used_no_cache() - self.used_start
+        self.delta_peaked = self.used_peak              - self.used_start - self.delta_used
+        self.data_is_set = True
+
     def data(self):
-        self.delta_used = gpu_mem_get_used_no_cache() - self.used_start
-        self.delta_peak = self.used_peak              - self.used_start
-        return (self.delta_used, self.delta_peak)
+        if not self.data_is_set: self.data_set()
+        return (self.delta_used, self.delta_peaked)
 
     def report_n_reset(self, note=''):
         self.report(note)
         self.reset()
 
     def report(self, note=''):
-        "printout used+delta peak, and an optional context note"
+        "printout used+peaked, and an optional context note"
         if self.silent: return
-        delta_used, delta_peak = self.data()
+        delta_used, delta_peaked = self.data()
         if note: note = f": {note}"
-        print(f"△used {delta_used}, △peak {delta_peak}{note}")
+        print(f"{self}{note}")
 
     def peak_monitor_start(self):
         self.peak_monitoring = True

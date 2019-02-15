@@ -320,29 +320,38 @@ sidebar: home_sidebar
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Usage examples:</p>
 
-<pre><code>memtrace = GPUMemTrace()
-memtrace.start() start tracing
+<pre><code>from fastai.utils.mem import GPUMemTrace
+memtrace = GPUMemTrace()
+memtrace.start() # start tracing
+
+def some_code(): pass
 
 some_code()
 memtrace.report() print intermediary cumulative report
-used, peak =  memtrace.data() same but as data
+delta_used, delta_peaked = memtrace.data() # same but as data
 
 some_code()
-memtrace.report('2nd run') print intermediary cumulative report
-used, peak =  memtrace.data()
+memtrace.report('2nd run') # print intermediary cumulative report
+delta_used, delta_peaked = memtrace.data()
 
 for i in range(10):
     memtrace.reset()
-    code()
-    memtrace.report(f'i={i}') report for just the last code run since reset
+    some_code()
+    memtrace.report(f'i={i}') # report for just the last code run since reset
 
 # combine report+reset
 memtrace.reset()
 for i in range(10):
-    code()
-    memtrace.report_n_reset(f'i={i}') report for just the last code run since reset
+    some_code()
+    memtrace.report_n_reset(f'i={i}') # report for just the last code run since reset
 
 memtrace.stop() # stop the monitor thread</code></pre>
+<p>It can also be used as a context manager:</p>
+
+<pre><code>with GPUMemTrace() as memtrace:
+    some_code()
+delta_used, delta_peaked = memtrace.data()
+mem_trace.report("whoah!")</code></pre>
 
 </div>
 </div>
