@@ -64,7 +64,7 @@ wasn't released.
 ### New:
 
 - More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
-- Backward option in `text_classifier_learner` (thanks to tpietruszka)
+- Backward option in `TextClassifierDataBunch` (thanks to tpietruszka)
 - Automate custom dependency groups installation via extending `distutils`
 - Transformer and TransformerXL architectures
 - Add `val_bs` parameter to all `DataBunch` creation methods
