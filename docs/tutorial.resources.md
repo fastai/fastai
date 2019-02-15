@@ -92,6 +92,42 @@ learn.fit_one_cycle(epochs=10)
 The subsequent invocations of the training function do not consume more GPU RAM. Remember, when you train you just change the numbers in the nodes, but all the memory that is required for those numbers has already been allocated.
 
 
+
+#### Optimizer nuances
+
+The `learn` object can be reset between fit cycles to save memory. To demonstrate:
+
+```
+learn.fit_one_cycle(epochs=10)
+# reset learn or not here? reset with clearing learn.opt or not?
+learn.fit_one_cycle(epochs=10)
+```
+
+In the exact example above resetting will make no difference to GPU RAM consumption, but if you had other things happening in between you might save quite a lot of GPU RAM.
+
+By `learn.load()` internally calls `learn.purge()`, but it doesn't clear `learn.opt` (the optimizer state). It's a safe default, because, some models like GANs break if `learn.opt` gets cleared between fit cycles.
+
+However, `learn.purge()` does clear `learn.opt` by default.
+
+Therefore, if your model is sensitive to clearing `learn.opt`, you should be using one of these 2 ways:
+
+```
+learn.load(name) # which calls learn.load(name, with_opt=True)
+learn.purge(clear_opt=False)
+```
+either of which will reset everything in `learn`, except `learn.opt`.
+
+If your model is not sensitive to `learn.opt` resetting between fit cycles, and you
+want to reclaim more GPU RAM, you can clear `learn.opt` via one of the following 3 ways:
+
+```
+learn.load('...', with_opt=False)
+learn.purge()  # which calls learn.purge(clear_opt=True)
+learn.opt.clear()
+```
+
+
+
 ### Inference
 
 For inference we only need the saved model and the data to predict on, and nothing else that was used during the training. So to use even less memory (general RAM this time), the lean approach is to `learn.export()` and `learn.purge()` at the end of the training, and then to `load_learner()` before the prediction stage is started.
