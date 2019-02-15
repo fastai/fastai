@@ -31,8 +31,6 @@ class URLs():
     MNIST_VAR_SIZE_TINY = f'{S3_IMAGE}mnist_var_size_tiny'
     PLANET_SAMPLE       = f'{URL}planet_sample'
     PLANET_TINY         = f'{URL}planet_tiny'
-    WT103               = f'{S3_MODEL}wt103'
-    WT103_1             = f'{S3_MODEL}wt103-1'
 
     # kaggle competitions download dogs-vs-cats -p {DOGS.absolute()}
     DOGS = f'{URL}dogscats'
@@ -65,7 +63,11 @@ class URLs():
     CAMVID             = f'{S3_IMAGELOC}camvid'
     CAMVID_TINY        = f'{URL}camvid_tiny'
     LSUN_BEDROOMS      = f'{S3_IMAGE}bedroom'
+    
+    #Pretrained models
     OPENAI_TRANSFORMER = f'{S3_MODEL}transformer'
+    WT103               = f'{S3_MODEL}wt103'
+    WT103_1             = f'{S3_MODEL}wt103-1'
 
 # to create/update a checksum for ./mnist_var_size_tiny.tgz, run:
 # python -c 'import fastai.datasets; print(fastai.datasets._check_file("mnist_var_size_tiny.tgz"))'
