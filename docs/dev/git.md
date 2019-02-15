@@ -32,7 +32,7 @@ https://github.com/fastai/fastai/tree/master/fastai
                  username reponame        modulename
 ```
 
-Below you will find detailed 5 steps towards creating a PR.
+Below you will find detailed steps towards creating a PR.
 
 ### Helper Program
 
@@ -285,6 +285,15 @@ Test that your changes don't break things. Choose one according to which project
    If for any reason it's not working, go to https://github.com/USERNAME/fastai/tree/new-feature-branch (replace `new-feature-branch` with the real branch name, and click `[Pull Request]` in the right upper corner.
 
 If you work on several unrelated PRs, make different directories for each one, ideally using the same directory name as the branch name, to simplify things.
+
+### Step 8. Passing CI Tests
+
+One your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR. The tests run on various platforms and on both pip and conda virtual environments, so we have all bases covered.
+
+Do note that since our test suite contains many non-deterministic tests, at times you will notice that one of the checks on a single platform will fail. Most of the time it's normal, and there is nothing to worry about. We are constantly trying to make those less error-prone, but we can't make them too loose either, otherwise the test would be ineffective. Hence the occasional failures.
+
+You can go to Azure CI following the failing link and check what has failed. Unless you see the failure is related to your PR, please ignore it and consider that all tests have succeeded. The maintainer can always initiate a re-run of a CI job on the failed platform if need be.
+
 
 
 ### How to Keep Your Feature Branch Up-to-date
@@ -1312,7 +1321,7 @@ git check-attr -a repo-relative/path/to/file
 
 #### useful git filters
 
-git keyword expansion.  
+git keyword expansion.
 [https://github.com/gistya/expandr](https://github.com/gistya/expandr)
 
 
