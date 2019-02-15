@@ -136,30 +136,36 @@ class TabularList(ItemList):
     def show_xys(self, xs, ys)->None:
         "Show the `xs` (inputs) and `ys` (targets)."
         from IPython.display import display, HTML
-        items = [xs[0].names + ['target']]
+        items,names = [], xs[0].names + ['target']
         for i, (x,y) in enumerate(zip(xs,ys)):
             res = []
             cats = x.cats if len(x.cats.size()) > 0 else []
             conts = x.conts if len(x.conts.size()) > 0 else []
             for c, n in zip(cats, x.names[:len(cats)]):
-                res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in conts] + [str(y)]
+                res.append(x.classes[n][c])
+            res += [f'{c:.4f}' for c in conts] + [y]
             items.append(res)
-        display(HTML(text2html_table(items, [10] * len(items[0]))))
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
     def show_xyzs(self, xs, ys, zs):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions)."
         from IPython.display import display, HTML
-        items = [xs[0].names + ['target', 'prediction']]
+        items,names = [], xs[0].names + ['target', 'prediction']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             res = []
             cats = x.cats if len(x.cats.size()) > 0 else []
             conts = x.conts if len(x.conts.size()) > 0 else []
             for c, n in zip(cats, x.names[:len(cats)]):
                 res.append(str(x.classes[n][c]))
-            res += [f'{c:.4f}' for c in conts] + [str(y),str(z)]
+            res += [f'{c:.4f}' for c in conts] + [y, z]
             items.append(res)
-        display(HTML(text2html_table(items, [10] * len(items[0]))))
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
 def tabular_learner(data:DataBunch, layers:Collection[int], emb_szs:Dict[str,int]=None, metrics=None,
         ps:Collection[float]=None, emb_drop:float=0., y_range:OptRange=None, use_bn:bool=True, **learn_kwargs):

@@ -339,20 +339,27 @@ class TextList(ItemList):
     def show_xys(self, xs, ys, max_len:int=70)->None:
         "Show the `xs` (inputs) and `ys` (targets). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        items = [['idx','text']] if self._is_lm else [['text','target']]
+        names = ['idx','text'] if self._is_lm else ['text','target']
+        items = []
         for i, (x,y) in enumerate(zip(xs,ys)):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
-            items.append([str(i), str(txt_x)] if self._is_lm else [str(txt_x), str(y)])
-        display(HTML(text2html_table(items, ([5,95] if self._is_lm else [90,10]))))
+            items.append([i, txt_x] if self._is_lm else [txt_x, y])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
     def show_xyzs(self, xs, ys, zs, max_len:int=70):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        items = [['text','target','prediction']]
+        items,names = [],['text','target','prediction']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
-            items.append([str(txt_x), str(y), str(z)])
-        display(HTML(text2html_table(items,  [85,7.5,7.5])))
+            items.append([txt_x, y, z])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
 class LMLabelList(EmptyLabelList):
     "Basic `ItemList` for dummy labels."

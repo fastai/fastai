@@ -165,14 +165,16 @@ class LanguageLearner(RNNLearner):
         xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
         ys = [ds.x.reconstruct(grab_idx(y, i)) for i in range(rows)]
         zs = [ds.x.reconstruct(grab_idx(z, i)) for i in range(rows)]
-
-        items = [['text', 'target', 'pred']]
+        items,names = [],['text', 'target', 'pred']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len])
             txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
             txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
-            items.append([str(txt_x), str(txt_y), str(txt_z)])
-        display(HTML(text2html_table(items, ([34,33,33]))))
+            items.append([txt_x, txt_y, txt_z])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
 def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:float=1.):
     "Create a language model from `arch` and its `config`, maybe `pretrained`."
