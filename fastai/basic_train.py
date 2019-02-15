@@ -238,7 +238,7 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
@@ -252,7 +252,8 @@ class Learner():
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             get_model(self.model).load_state_dict(state, strict=strict)
-
+        del state
+        gc.collect()
         return self
 
     def destroy(self):
@@ -275,7 +276,7 @@ class Learner():
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
         # +callbacks: get pickled too, but not directly
-        attrs_keep = ['data']
+        attrs_keep = ['data', 'recorder']
         attrs_del = list(set(attrs_all) - set(attrs_keep))
         state = {a:getattr(self, a) for a in attrs_pkl}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
@@ -288,9 +289,8 @@ class Learner():
         for a in attrs_pkl: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
-        if not clear_opt and 'opt' in state: 
+        if not clear_opt and 'opt' in state:
             self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
-        
         del state
         gc.collect()
         return self
