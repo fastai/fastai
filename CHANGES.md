@@ -23,7 +23,13 @@ of that change.
 
 ### New:
 
+- `Learner.destroy()`: completely free up `learn`, leaving an empty shell (to replace gc.collect() eye-sore)
+- `Learner.hibernate()`: `learn.export()` + `learn.destroy()` shortcut method
+
+
 ### Changed:
+
+- revamped `Learner.purge` to reclaim more RAM
 
 ### Fixed:
 
@@ -31,19 +37,14 @@ of that change.
 
 ## 1.0.45 (2019-02-13)
 
-### New:
-
-### Changed:
-
-### Fixed:
-
+wasn't released.
 
 
 ## 1.0.44 (2019-02-13)
 
 ### New:
 
-- `DataBunch.save()` now works on every application, load the data back with `load_data`. 
+- `DataBunch.save()` now works on every application, load the data back with `load_data`.
 - `TextDataBunch.load` is kept for now to let people use it for loading old serialized text data, but is deprecated.
 
 ### Changed:

@@ -220,6 +220,11 @@ class Learner():
         torch.save(state, open(self.path/fname, 'wb'))
         self.model.to(device)
 
+    def hibernate(self, fname:str='export.pkl'):
+        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use load_learner() to restore."
+        self.export(self, fname)
+        self.destroy()
+
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
@@ -234,40 +239,57 @@ class Learner():
 
     def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
-        if purge: self.purge(clear_opt = ifnone(with_opt, False))
+
+        if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
-                if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
+                if not hasattr(self, 'opt'): self.create_opt(defaults.lr, self.wd)
                 try:    self.opt.load_state_dict(state['opt'])
                 except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             get_model(self.model).load_state_dict(state, strict=strict)
+
         return self
-    
+
+    def destroy(self):
+        "Free the Learner internals, leaving just an empty shell that consumes no memory"
+        attrs = [k for k in self.__dict__.keys() if not k.startswith("__")]
+        for a in attrs: delattr(self, a)
+        gc.collect()
+        print("this Learner object self-destroyed - it still exists, but no longer usable")
+        # in case someone tries to call methods on this destroyed object
+        def _catch_all_destroyed(self, name):
+            def method(*args, **kwargs): print("this object has been destroyed")
+            return method
+        self.__getattr__ = _catch_all_destroyed
+
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
-        path = self.path
-        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns', 'layer_groups', 'opt']
-        state = {a:getattr(self,a) for a in args}
+
+        tmp_file = self.path/'purge-tmp.pkl'
+        attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
+        attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
+                     'model_dir', 'opt_func', 'opt', 'path', 'train_bn', 'true_wd', 'wd']
+        # +callbacks: get pickled too, but not directly
+        attrs_keep = ['data']
+        attrs_del = list(set(attrs_all) - set(attrs_keep))
+        state = {a:getattr(self, a) for a in attrs_pkl}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
-        state['model'] = self.model
-        torch.save(state, open(self.path/'tmp.pkl', 'wb'))
-        for a in args + ['model', 'callbacks']: delattr(self, a)
+        torch.save(state, open(tmp_file, 'wb'))
+        for a in attrs_del: delattr(self, a)
         gc.collect()
-        torch.cuda.empty_cache()
-        state = torch.load(Path(path)/'tmp.pkl')
-        for a in args + ['model']: setattr(self, a, state[a])
+        state = torch.load(tmp_file)
+        os.remove(tmp_file)
+        for a in attrs_pkl: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
         if clear_opt: self.opt.clear()
         del state
         gc.collect()
-        torch.cuda.empty_cache() 
-        os.remove(path/'tmp.pkl')
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
@@ -383,7 +405,7 @@ class Recorder(LearnerCallback):
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
         self.no_val,self.silent = False,False
-    
+
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
@@ -459,7 +481,7 @@ class Recorder(LearnerCallback):
         print(f"Min numerical gradient: {lrs[mg]:.2E}")
         ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
         self.min_grad_lr = lrs[mg]
-        
+
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
         last = ifnone(last,len(self.nb_batches))
