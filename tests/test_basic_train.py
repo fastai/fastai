@@ -1,4 +1,4 @@
-@pytest.mark.skip(reason="need to update")"""
+"""
 module: basic_train.py - Model fitting methods
 docs  : https://docs.fast.ai/train.html
 """
