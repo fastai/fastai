@@ -327,7 +327,7 @@ memtrace.start() # start tracing
 def some_code(): pass
 
 some_code()
-memtrace.report() print intermediary cumulative report
+memtrace.report() # print intermediary cumulative report
 delta_used, delta_peaked = memtrace.data() # same but as data
 
 some_code()
@@ -351,7 +351,7 @@ memtrace.stop() # stop the monitor thread</code></pre>
 <pre><code>with GPUMemTrace() as memtrace:
     some_code()
 delta_used, delta_peaked = memtrace.data()
-mem_trace.report("whoah!")</code></pre>
+mem_trace.report("measured in ctx")</code></pre>
 
 </div>
 </div>
