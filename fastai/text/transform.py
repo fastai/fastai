@@ -140,6 +140,11 @@ class Vocab():
         self.itos = state['itos']
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
 
+    def save(self, path):
+        "Save the itos in path"
+        with open(path, 'wb') as f:
+            pickle.dump(self.itos, f)
+
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of `tokens`."
@@ -148,4 +153,11 @@ class Vocab():
         for o in reversed(defaults.text_spec_tok):
             if o in itos: itos.remove(o)
             itos.insert(0, o)
+        return cls(itos)
+    
+    @classmethod
+    def load(cls, path):
+        "Load the Vocab contained in path"
+        with open(path, 'rb') as f:
+            itos = pickle.load(f)
         return cls(itos)
