@@ -46,7 +46,7 @@ If you need to skip a certain test module temporarily you can either tell `pytes
    pytest `ls -1 tests/*py | grep -v link`
    ```
 
-To run an individual test file:
+To run an individual test module:
 
    ```
    pytest tests/test_core.py
@@ -67,6 +67,13 @@ For example, if we have the following tests:
    ```
 
 it will first select `test_listify` and `test_listy`, and then deselect `test_listify`, resulting in only the sub-test `test_listy` being run.
+
+A more superior way, which avoids unintentional multiple matches is to use the test node approach:
+
+   ```
+   pytest tests/test_basic_train.py::test_save_load tests/test_basic_data.py::test_DataBunch_oneitem
+   ```
+It's really just the test module followed by the specific test name, joined by `::`.
 
 More ways: https://docs.pytest.org/en/latest/usage.html
 
