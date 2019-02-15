@@ -146,9 +146,9 @@ summary: "Helper functions to search for api tests"
 <p>Direct tests:</p>
 <ul>
 <li><code>pytest -sv -k test_DataBunch_onebatch tests/test_basic_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L30">[source]</a></li>
-<li><code>pytest -sv -k test_DataBunch_Create tests/test_basic_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L17">[source]</a></li>
 <li><code>pytest -sv -k test_DataBunch_show_batch tests/test_basic_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L45">[source]</a></li>
 <li><code>pytest -sv -k test_DataBunch_oneitem tests/test_basic_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L38">[source]</a></li>
+<li><code>pytest -sv -k test_DataBunch_Create tests/test_basic_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_basic_data.py#L17">[source]</a></li>
 </ul>
 
 </div>
@@ -183,8 +183,8 @@ summary: "Helper functions to search for api tests"
 <p>Related tests:</p>
 <ul>
 <li><code>pytest -sv -k test_from_folder tests/test_text_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L28">[source]</a></li>
-<li><code>pytest -sv -k test_filter_classes tests/test_text_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L39">[source]</a></li>
 <li><code>pytest -sv -k test_regression tests/test_text_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L161">[source]</a></li>
+<li><code>pytest -sv -k test_filter_classes tests/test_text_data.py</code> <a href="https://github.com/fastai/fastai/blob/master/tests/test_text_data.py#L39">[source]</a></li>
 </ul>
 
 </div>
@@ -228,7 +228,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="doctest"><code>doctest</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>doctest</code>(<strong><code>elt</code></strong>)</p>
+<h4 id="doctest"><code>doctest</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L53" class="source_link">[source]</a></h4><blockquote><p><code>doctest</code>(<strong><code>elt</code></strong>)</p>
 </blockquote>
 <p>Inline notebook popup for <a href="/gen_doc.nbtest.html#show_test"><code>show_test</code></a></p>
 
@@ -255,7 +255,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_tests"><code>find_tests</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>find_tests</code>(<strong><code>elt</code></strong>) → <code>Tuple</code>[<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]]</p>
+<h4 id="find_tests"><code>find_tests</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L71" class="source_link">[source]</a></h4><blockquote><p><code>find_tests</code>(<strong><code>elt</code></strong>) → <code>Tuple</code>[<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]]</p>
 </blockquote>
 <p>Searches <code>fastai/tests</code> folder for any test functions related to <code>elt</code></p>
 
@@ -283,7 +283,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="lookup_db"><code>lookup_db</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L59" class="source_link">[source]</a></h4><blockquote><p><code>lookup_db</code>(<strong><code>elt</code></strong>) → <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]</p>
+<h4 id="lookup_db"><code>lookup_db</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L60" class="source_link">[source]</a></h4><blockquote><p><code>lookup_db</code>(<strong><code>elt</code></strong>) → <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]</p>
 </blockquote>
 <p>Finds <code>this_test</code> entries from test_api_db.json</p>
 
@@ -311,7 +311,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_test_matches"><code>find_test_matches</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L109" class="source_link">[source]</a></h4><blockquote><p><code>find_test_matches</code>(<strong><code>elt</code></strong>, <strong><code>test_file</code></strong>:<code>Path</code>) → <code>Tuple</code>[<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]]</p>
+<h4 id="find_test_matches"><code>find_test_matches</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L112" class="source_link">[source]</a></h4><blockquote><p><code>find_test_matches</code>(<strong><code>elt</code></strong>, <strong><code>test_file</code></strong>:<code>Path</code>) → <code>Tuple</code>[<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]]]</p>
 </blockquote>
 <p>Find all functions in <code>test_file</code> related to <code>elt</code></p>
 
@@ -339,7 +339,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_test_files"><code>find_test_files</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L88" class="source_link">[source]</a></h4><blockquote><p><code>find_test_files</code>(<strong><code>elt</code></strong>, <strong><code>exact_match</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>List</code>[<code>Path</code>]</p>
+<h4 id="find_test_files"><code>find_test_files</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L91" class="source_link">[source]</a></h4><blockquote><p><code>find_test_files</code>(<strong><code>elt</code></strong>, <strong><code>exact_match</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>List</code>[<code>Path</code>]</p>
 </blockquote>
 <p>Searches in <code>fastai/tests</code> directory for module tests</p>
 
@@ -367,7 +367,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="direct_test_match"><code>direct_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L117" class="source_link">[source]</a></h4><blockquote><p><code>direct_test_match</code>(<strong><code>elt</code></strong>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
+<h4 id="direct_test_match"><code>direct_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L120" class="source_link">[source]</a></h4><blockquote><p><code>direct_test_match</code>(<strong><code>elt</code></strong>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
 </blockquote>
 <p>Any <code>def test_function_name():</code> where test name contains function/class name</p>
 
@@ -395,7 +395,7 @@ summary: "Helper functions to search for api tests"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fuzzy_test_match"><code>fuzzy_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L126" class="source_link">[source]</a></h4><blockquote><p><code>fuzzy_test_match</code>(<strong><code>elt</code></strong>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
+<h4 id="fuzzy_test_match"><code>fuzzy_test_match</code><a href="https://github.com/fastai/fastai/blob/master/fastai/gen_doc/nbtest.py#L129" class="source_link">[source]</a></h4><blockquote><p><code>fuzzy_test_match</code>(<strong><code>elt</code></strong>, <strong><code>lines</code></strong>:<code>List</code>[<code>Dict</code>[<code>KT</code>, <code>VT</code>]], <strong><code>rel_path</code></strong>:<code>str</code>) → <code>List</code>[<a href="/gen_doc.nbtest.html#TestFunctionMatch"><code>TestFunctionMatch</code></a>]</p>
 </blockquote>
 <p>Find any lines where <code>elt</code> is called and return the parent test function</p>
 

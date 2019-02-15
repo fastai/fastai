@@ -228,6 +228,7 @@ class Learner():
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
+        if not hasattr(self, opt): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()
         else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
         torch.save(state, path)
@@ -239,7 +240,6 @@ class Learner():
 
     def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
-
         if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
@@ -273,12 +273,13 @@ class Learner():
         tmp_file = self.path/'purge-tmp.pkl'
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
-                     'model_dir', 'opt_func', 'opt', 'path', 'train_bn', 'true_wd', 'wd']
+                     'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
         # +callbacks: get pickled too, but not directly
         attrs_keep = ['data']
         attrs_del = list(set(attrs_all) - set(attrs_keep))
         state = {a:getattr(self, a) for a in attrs_pkl}
         state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
+        if hasattr(self, 'opt'): state['opt'] = self.opt.get_state()
         torch.save(state, open(tmp_file, 'wb'))
         for a in attrs_del: delattr(self, a)
         gc.collect()
@@ -287,7 +288,9 @@ class Learner():
         for a in attrs_pkl: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
-        if clear_opt: self.opt.clear()
+        if not clear_opt and 'opt' in state: 
+            self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
+        
         del state
         gc.collect()
         return self

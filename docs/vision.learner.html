@@ -199,7 +199,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Learner.predict"><code>predict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L303" class="source_link">[source]</a></h4><blockquote><p><code>predict</code>(<strong><code>item</code></strong>:<a href="/core.html#ItemBase"><code>ItemBase</code></a>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="Learner.predict"><code>predict</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L325" class="source_link">[source]</a></h4><blockquote><p><code>predict</code>(<strong><code>item</code></strong>:<a href="/core.html#ItemBase"><code>ItemBase</code></a>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Return predicted class, label and probabilities for <code>item</code>.</p>
 
@@ -475,8 +475,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <code>k</code> items are arranged as a square, so it will look best if <code>k</code> is a square number (4, 9, 16, etc). The title of each image shows: prediction, actual, loss, probability of actual class.
-<code>plot_top_losses()</code> should be used with single-labeled datasets. See <code>plot_multi_top_losses()</code> below for a version capable of handling multi-labeled datasets.</p>
+<p>The <code>k</code> items are arranged as a square, so it will look best if <code>k</code> is a square number (4, 9, 16, etc). The title of each image shows: prediction, actual, loss, probability of actual class. When <code>heatmap</code> is True (by default it's True) , Grad-CAM heatmaps (<a href="http://openaccess.thecvf.com/content_ICCV_2017/papers/Selvaraju_Grad-CAM_Visual_Explanations_ICCV_2017_paper.pdf">http://openaccess.thecvf.com/content_ICCV_2017/papers/Selvaraju_Grad-CAM_Visual_Explanations_ICCV_2017_paper.pdf</a>) are overlaid on each image. <code>plot_top_losses</code> should be used with single-labeled datasets. See <code>plot_multi_top_losses</code> below for a version capable of handling multi-labeled datasets.</p>
 
 </div>
 </div>
@@ -521,7 +520,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.top_losses"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L155" class="source_link">[source]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
+<h4 id="ClassificationInterpretation.top_losses"><code>top_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L156" class="source_link">[source]</a></h4><blockquote><p><code>top_losses</code>(<strong><code>k</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>largest</code></strong>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
 <p><code>k</code> largest(/smallest) losses and indexes, defaulting to all losses (sorted by <code>largest</code>).</p>
 
@@ -599,7 +598,7 @@ Note that you can pass <code>save_misclassified=True</code> (by default it's <co
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.plot_confusion_matrix"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L125" class="source_link">[source]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="ClassificationInterpretation.plot_confusion_matrix"><code>plot_confusion_matrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L125" class="source_link">[source]</a></h4><blockquote><p><code>plot_confusion_matrix</code>(<strong><code>normalize</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>title</code></strong>:<code>str</code>=<strong><em><code>'Confusion matrix'</code></em></strong>, <strong><code>cmap</code></strong>:<code>Any</code>=<strong><em><code>'Blues'</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>norm_dec</code></strong>:<code>int</code>=<strong><em><code>2</code></em></strong>, <strong><code>plot_txt</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Plot the confusion matrix, with <code>title</code> and using <code>cmap</code>.</p>
 
@@ -709,7 +708,7 @@ Note that you can pass <code>save_misclassified=True</code> (by default it's <co
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="ClassificationInterpretation.most_confused"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
+<h4 id="ClassificationInterpretation.most_confused"><code>most_confused</code><a href="https://github.com/fastai/fastai/blob/master/fastai/train.py#L148" class="source_link">[source]</a></h4><blockquote><p><code>most_confused</code>(<strong><code>min_val</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>, <strong><code>slice_size</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>) → <code>Collection</code>[<code>Tuple</code>[<code>str</code>, <code>str</code>, <code>int</code>]]</p>
 </blockquote>
 <p>Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences.</p>
 
