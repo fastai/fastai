@@ -318,8 +318,6 @@ Implementation:
    def test_feature_x():
    ```
 
-
-
 * Based on some internal check inside the test:
 
    ```
@@ -412,7 +410,7 @@ The following markers override normal marker functionality, so they won't work w
 pytest -m marker
 ```
 
-and have their own command line option to be used instead, which are defined in `tests/conftest.py`, and can also be seen in the output of `pytest -h` in the "custom options" section:
+and may have their own command line option to be used instead, which are defined in `tests/conftest.py`, and can also be seen in the output of `pytest -h` in the "custom options" section:
 
 ```
 custom options:
@@ -432,7 +430,7 @@ custom options:
    pytest --runslow
    ```
 
-* `integration` - used for tests that are relatively slow but OK to be run on CPU and useful when one needs to finish the tests suite asap (also remember to use parallel testing if that's the case [xdist](#running-tests-in-parallel)). These are usually declared on the module level with:
+* `integration` - used for tests that are relatively slow but OK to be run on CPU and useful when one needs to finish the tests suite asap (also remember to use parallel testing if that's the case [xdist](#running-tests-in-parallel)). These are usually declared on the test module level, by adding at the top of the file:
 
    ```
    pytestmark = pytest.mark.integration
@@ -443,7 +441,12 @@ custom options:
    pytest --skipint
    ```
 
-* `cuda` - mark tests as requiring a CUDA device to run (skipped if no such device is present). These tests check CUDA-specific code, e.g., compiling and running kernels or GPU version of function's `forward`/`backward` methods.
+* `cuda` - mark tests as requiring a CUDA device to run (skipped if no such device is present). These tests check CUDA-specific code, e.g., compiling and running kernels or GPU version of function's `forward`/`backward` methods. Example:
+
+   ```
+   @pytest.mark.cuda
+   def test_cuda_something(): pass
+   ```
 
 
 ### After test cleanup
