@@ -25,16 +25,18 @@ def this_tests(testedapi):
      RegisterTestsPerAPI.this_tests(testedapi)
 
 def full_name_with_qualname(testedapi):
-     return f'{testedapi.__module__}.{testedapi.__qualname__}'
+    if inspect.ismodule(testedapi): return testedapi.__name__
+    name = testedapi.__qualname__ if hasattr(testedapi, '__qualname__') else testedapi.__name__
+    return f'{testedapi.__module__}.{name}'
 
 def set_default(obj):
-     if isinstance(obj, set): return list(obj)
-     raise TypeError
+    if isinstance(obj, set): return list(obj)
+    raise TypeError
 
 def get_parent_func(lineno, lines, ignore_missing=False):
     "Find any lines where `elt` is called and return the parent test function"
     for idx,l in enumerate(reversed(lines[:lineno])):
-        if re.match(f'^def test', l):  return (lineno - (idx+1)), l
+        if re.match(f'\s*def test', l):  return (lineno - (idx+1)), l
         if re.match(f'^\w+', l):  break # Top level indent - break because we are out of function scope
     if ignore_missing: return None
     raise LookupError('Could not find parent function for line:', lineno, lines[:lineno])
