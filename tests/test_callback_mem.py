@@ -3,10 +3,7 @@ from fastai.callbacks.mem import *
 from utils.fakes import *
 from utils.text import CaptureStdout
 
-cuda_required = pytest.mark.skipif(not torch.cuda.is_available(),
-                                reason="cuda enabled gpu is not available")
-
-@cuda_required
+@pytest.mark.cuda
 def test_peak_mem_metric():
     learn = fake_learner()
     learn.callbacks.append(PeakMemMetric(learn))

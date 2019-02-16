@@ -1,8 +1,6 @@
 import pytest
 from utils.fakes import *
-cuda_required = pytest.mark.skipif(not torch.cuda.is_available(),
-                                reason="cuda enabled gpu is not available")
-a3b3b3 =torch.ones([1,3,3,3])
+a3b3b3 = torch.ones([1,3,3,3])
 
 def test_model2half():
     m = simple_cnn([3,6,6],bn=True)
@@ -12,7 +10,7 @@ def test_model2half():
     assert isinstance(conv1.weight, torch.HalfTensor)
     assert isinstance(bn.weight, torch.FloatTensor)
 
-@cuda_required
+@pytest.mark.cuda
 def test_model2half_forward():
     learn = fake_learner()
     x,y = next(iter(learn.data.train_dl))
@@ -26,9 +24,9 @@ def test_to_half():
     half = to_half([t1,t2])
     assert isinstance(half[0],torch.LongTensor)
     assert isinstance(half[1],torch.HalfTensor)
-    
+
 def test_batch_to_half():
     t1,t2 = torch.ones([1]),torch.ones([1])
     half = batch_to_half([t1,t2])
     assert isinstance(half[0],torch.HalfTensor)
-    assert isinstance(half[1],torch.FloatTensor)    
+    assert isinstance(half[1],torch.FloatTensor)

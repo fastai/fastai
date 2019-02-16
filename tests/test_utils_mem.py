@@ -48,7 +48,7 @@ def test_gpu_with_max_free_mem():
         assert id == None, "have no gpu id"
         assert free == 0,  "have no gpu free ram"
 
-@pytest.mark.skipif(not use_gpu, reason="requires cuda")
+@pytest.mark.cuda
 def test_gpu_mem_measure_consumed_reclaimed():
     gpu_mem_reclaim()
     used_before = gpu_mem_get_used()
@@ -67,7 +67,7 @@ def test_gpu_mem_measure_consumed_reclaimed():
     # allow 2mb tolerance for rounding of 1 mb on each side
     assert isclose(used_before, used_after_reclaimed, abs_tol=2), f"reclaim all consumed memory, started with {used_before}, now {used_after_reclaimed} used"
 
-@pytest.mark.skipif(not use_gpu, reason="requires cuda")
+@pytest.mark.cuda
 def test_gpu_mem_trace():
     mem_trace = GPUMemTrace()
     mem_trace.start()
@@ -86,7 +86,7 @@ def test_gpu_mem_trace():
     match = re.findall(r'△used: \d+MB, △peaked: \d+MB: whoah!', cs.out)
     assert match
 
-@pytest.mark.skipif(not use_gpu, reason="requires cuda")
+@pytest.mark.cuda
 def test_gpu_mem_trace_ctx():
     # expecting used=20, peaked=0
     with GPUMemTrace() as mem_trace:
