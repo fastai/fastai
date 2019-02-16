@@ -99,7 +99,7 @@ dep_groups = {
         beautifulsoup4
         matplotlib
         numexpr              # performance-improvement for numpy
-        numpy>=1.12
+        numpy>=1.15
         nvidia-ml-py3
         pandas
         packaging
