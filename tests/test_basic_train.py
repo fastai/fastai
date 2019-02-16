@@ -26,7 +26,8 @@ def learn(): return learn_large_unfit()
 
 def test_get_preds():
     learn = fake_learner()
-    a = learn.get_preds()
+    with CaptureStdout() as cs:
+        a = learn.get_preds()
     assert learn.data.batch_size == len(a[1])
 
 def test_save_load(learn):
@@ -54,7 +55,6 @@ def check_mem_expected(used_expected, peaked_expected, mtrace, abs_tol=2):
     used_received, peaked_received = mtrace.data()
     assert isclose(used_expected,   used_received,   abs_tol=abs_tol), f"used mem: expected={used_expected} received={used_received}"
     assert isclose(peaked_expected, peaked_received, abs_tol=abs_tol), f"peaked mem: expected={peaked_expected} received={peaked_received}"
-    gc.collect()
 
 #@pytest.mark.skip(reason="WIP")
 @pytest.mark.cuda
