@@ -10,19 +10,20 @@ class RegisterTestsPerAPI:
     apiTestsMap = dict()
 
     @staticmethod
-    def this_tests(testedapi):
+    def this_tests(*testedapi):
         prev_frame = inspect.currentframe().f_back.f_back
         pathfilename, line_number, test_function_name, lines, index = inspect.getframeinfo(prev_frame)
         lineno_parentfunc, parent_func = get_parent_func(line_number, get_lines(pathfilename))
         list_test = [{'file': relative_test_path(pathfilename), 'test': test_function_name , 'line': lineno_parentfunc}]
-        fq_apiname = full_name_with_qualname(testedapi)
-        if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
-            RegisterTestsPerAPI.apiTestsMap[fq_apiname] = RegisterTestsPerAPI.apiTestsMap[fq_apiname]  + list_test
-        else:
-            RegisterTestsPerAPI.apiTestsMap[fq_apiname] =  list_test
+        for api in testedapi:
+             fq_apiname = full_name_with_qualname(api)
+             if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
+                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] = RegisterTestsPerAPI.apiTestsMap[fq_apiname]  + list_test
+             else:
+                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] =  list_test
 
-def this_tests(testedapi):
-     RegisterTestsPerAPI.this_tests(testedapi)
+def this_tests(*testedapi):
+     RegisterTestsPerAPI.this_tests(*testedapi)
 
 def full_name_with_qualname(testedapi):
     if inspect.ismodule(testedapi): return testedapi.__name__
@@ -46,6 +47,6 @@ def relative_test_path(test_file:Path)->str:
     test_file = Path(test_file)
     testdir_idx = list(reversed(test_file.parts)).index('tests')
     return '/'.join(test_file.parts[-(testdir_idx+1):])
-    
+
 def get_lines(file):
     with open(file, 'r') as f: return f.readlines()
