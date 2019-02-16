@@ -163,7 +163,11 @@ And also you need to know about the current bug in ipython that may prevent you 
 
 ## GPU Memory Usage Anatomy
 
-1. About 0.5GB per process is used by CUDA context, see [Unusable GPU RAM per process](https://docs.fast.ai/dev/gpu.html#unusable-gpu-ram-per-process). This memory is consumed during the first call to `.cuda()`, when the first tensor is moved to GPU.
+1. About 0.5GB per process is used by CUDA context, see [Unusable GPU RAM per process](https://docs.fast.ai/dev/gpu.html#unusable-gpu-ram-per-process). This memory is consumed during the first call to `.cuda()`, when the first tensor is moved to GPU. You can test your card with:
+
+   ```
+   python -c 'from fastai.utils.mem import *; b=gpu_mem_get_used_no_cache(); preload_pytorch(); print(gpu_mem_get_used_no_cache()-b);'
+   ```
 
 2. A pre-trained model consumes a little bit of GPU RAM. While there are many different models out there, which may vary wildly in size, a freshly loaded pre-trained model like resnet typically consumes a few hundred MBs of GPU RAM.
 
