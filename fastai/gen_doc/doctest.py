@@ -18,9 +18,9 @@ class RegisterTestsPerAPI:
         for api in testedapi:
              fq_apiname = full_name_with_qualname(api)
              if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
-                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] = RegisterTestsPerAPI.apiTestsMap[fq_apiname]  + list_test
+                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] += list_test
              else:
-                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] =  list_test
+                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] = list_test
 
 def this_tests(*testedapi):
      RegisterTestsPerAPI.this_tests(*testedapi)
