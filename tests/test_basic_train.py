@@ -60,7 +60,7 @@ def check_mem_expected(used_expected, peaked_expected, mtrace, abs_tol=2):
     assert isclose(used_expected,   used_received,   abs_tol=abs_tol), f"used mem: expected={used_expected} received={used_received}"
     assert isclose(peaked_expected, peaked_received, abs_tol=abs_tol), f"peaked mem: expected={peaked_expected} received={peaked_received}"
 
-#@pytest.mark.skip(reason="WIP")
+@pytest.mark.skip(reason="WIP")
 @pytest.mark.cuda
 def test_save_load_mem_leak(data):
     learn = learn_large_unfit(data)
@@ -97,8 +97,3 @@ def test_save_load_mem_leak(data):
     check_mem_expected(used_expected=0, peaked_expected=20, mtrace=mtrace, abs_tol=10)
 
     if os.path.exists(model_path): os.remove(model_path)
-
-
-# hibernate
-# destroy
-# purge
