@@ -10,20 +10,19 @@ class RegisterTestsPerAPI:
     apiTestsMap = dict()
 
     @staticmethod
-    def this_tests(*testedapi):
+    def this_tests(*testedapis):
         prev_frame = inspect.currentframe().f_back.f_back
         pathfilename, line_number, test_function_name, lines, index = inspect.getframeinfo(prev_frame)
         lineno_parentfunc, parent_func = get_parent_func(line_number, get_lines(pathfilename))
         list_test = [{'file': relative_test_path(pathfilename), 'test': test_function_name , 'line': lineno_parentfunc}]
-        for api in testedapi:
+        for api in testedapis:
              fq_apiname = full_name_with_qualname(api)
              if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
                  RegisterTestsPerAPI.apiTestsMap[fq_apiname] += list_test
              else:
                  RegisterTestsPerAPI.apiTestsMap[fq_apiname] = list_test
 
-def this_tests(*testedapi):
-     RegisterTestsPerAPI.this_tests(*testedapi)
+def this_tests(*testedapis): RegisterTestsPerAPI.this_tests(*testedapis)
 
 def full_name_with_qualname(testedapi):
     if inspect.ismodule(testedapi): return testedapi.__name__
