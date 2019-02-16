@@ -2,6 +2,59 @@
 title: Testing fastai
 ---
 
+
+## Quick Guide
+
+Most of this document is various notes explaining how to do all kinds of things with the test suite. But if you're new to the `fastai` test suite, here is what you need to know to get started.
+
+* Step 1. Setup and check you can run the test suite:
+
+   ```
+   git clone https://github.com/fastai/fastai
+   cd fastai
+   tools/run-after-git-clone # python tools\run-after-git-clone on windows
+   pip install -e ".[dev]"
+   make test # or pytest
+   ```
+
+* Step 2. Run a specific test module and a specific test of that module
+
+   The following will run all tests inside `tests/test_vision_transform.py`:
+   ```
+   pytest -sv tests/test_vision_transform.py
+   ```
+
+   If you want to run just this `test_points_data_aug` of that test module:
+   ```
+   pytest -sv tests/test_vision_transform.py::test_points_data_aug
+   ```
+
+* Step 3. Write a new test, or improve an existing one.
+
+   `fastai` test modules are named mostly to be the same as the python modules they test, so for example `test_vision_transform.py` tests `fastai/vision/transform.py` (but not always).
+
+   Locate an existing test that is similar to what you need, copy it, rename and modify it to test what you feel needs to be tested.
+
+   Let's assume you took `test_points_data_aug` and converted it into `test_quality` in the same module. Test that it works:
+      ```
+   pytest -sv tests/test_vision_transform.py::test_quality
+   ```
+
+   If it reproduces a problem, i.e. assert fails, then add:
+   ```
+   @pytest.mark.skip(reason="fix me: brief note describing the problem")
+   def test_quality(): ...
+   ```
+
+   The best way to figure out how to test, is by looking at existing tests. And the rest of this document explains how to do all kinds of things that you might want to do in your tests.
+
+* Step 4. Submit a PR with your new test(s)
+
+   You won't be able to PR from this plain checkout, so you need to switch to a forked version of fastai and create a new branch there. Follow the easy instructions [here](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr) to accomplish that.
+
+   Note that this guide helps you to write tests with a plain git checkout, without needing to fork and branch, so that you can get results faster and easier. But once you're ready, then switch to your own fork and branch as explained in the guide above. You can just copy the files over to the new branch. Of course, feel free, to start with making a PR branch first - whatever is the easiest for you.
+
+
 ## Automated tests
 
 At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests.
