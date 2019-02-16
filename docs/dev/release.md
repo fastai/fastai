@@ -1603,16 +1603,16 @@ Here is how to get segfault backtrace directly or via the core dump in a non-int
 
 #### Support
 
-- General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
-- Task-specific issues: https://github.com/Microsoft/azure-pipelines-tasks/issues/
-- Agent-specific issues: https://github.com/Microsoft/azure-pipelines-agent
+- [General Azure DevOps issues](https://developercommunity.visualstudio.com/spaces/21/index.html)
+- [Task-specific issues](https://github.com/Microsoft/azure-pipelines-tasks/issues/)
+- [Agent-specific issues](https://github.com/Microsoft/azure-pipelines-agent)
 
 
 ## Package Download Statistics
 
 How many times `fastai` was downloaded?
 
-  * from PyPI https://pepy.tech/project/fastai
-  * from Conda https://anaconda.org/fastai/fastai/files
+  * from [PyPI](https://pepy.tech/project/fastai)
+  * from [Conda](https://anaconda.org/fastai/fastai/files)
 
 The numbers are probably higher due to caches, CDNs, etc.
