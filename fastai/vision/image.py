@@ -1,6 +1,7 @@
 "`Image` provides support to convert, transform and show images"
 from ..torch_core import *
 from ..basic_data import *
+from ..layers import MSELossFlat
 from io import BytesIO
 import PIL
 
@@ -250,6 +251,7 @@ class ImagePoints(Image):
         self.flow_func = []
         self.sample_kwargs = {}
         self.transformed = False
+        self.loss_func = MSELossFlat()
 
     def clone(self):
         "Mimic the behavior of torch.clone for `ImagePoints` objects."
@@ -325,8 +327,6 @@ class ImagePoints(Image):
         ax.scatter(pnt[:, 0], pnt[:, 1], **params)
         if hide_axis: ax.axis('off')
         if title: ax.set_title(title)
-     
-    def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
 
 class ImageBBox(ImagePoints):
     "Support applying transforms to a `flow` of bounding boxes."

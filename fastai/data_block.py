@@ -220,9 +220,9 @@ class ItemList():
     def get_label_cls(self, labels, label_cls:Callable=None, label_delim:str=None, **kwargs):
         "Return `label_cls` or guess one from the first element of `labels`."
         if label_cls is not None:               return label_cls
-        if self.label_cls is not None:          return self.label_cls
-        it = index_row(labels,0)
+        if self.label_cls is not None:          return self.label_cls 
         if label_delim is not None:             return MultiCategoryList
+        it = index_row(labels,0)
         if isinstance(it, (float, np.float32)): return FloatList
         if isinstance(try_int(it), (str, Integral)):  return CategoryList
         if isinstance(it, Collection):          return MultiCategoryList

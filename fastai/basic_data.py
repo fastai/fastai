@@ -205,7 +205,7 @@ class DataBunch():
     @property
     def single_ds(self)->Dataset: return self._grab_dataset(self.single_dl)
     @property
-    def loss_func(self)->Dataset: return getattr(self.train_ds, 'loss_func', F.nll_loss)
+    def loss_func(self)->Dataset: return getattr(self.train_ds.y, 'loss_func', F.nll_loss)
 
     @property
     def test_ds(self)->Dataset:
@@ -226,6 +226,9 @@ class DataBunch():
 
     @property
     def classes(self): return self.train_ds.y.classes
+    @property
+    def c(self): return self.train_ds.y.c
+        #return len(self.train_ds.y[0].data)
 
     def sanity_check(self):
         "Check the underlying data in the training set can be properly loaded."

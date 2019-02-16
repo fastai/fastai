@@ -91,9 +91,10 @@ class ImageDataBunch(DataBunch):
                 num_workers:int=defaults.cpus, dl_tfms:Optional[Collection[Callable]]=None, device:torch.device=None,
                 test:Optional[PathOrStr]=None, collate_fn:Callable=data_collate, size:int=None, no_check:bool=False,
                 resize_method:ResizeMethod=None, mult:int=None, padding_mode:str='reflection', 
-                mode:str='bilinear')->'ImageDataBunch':
+                mode:str='bilinear', tfm_y:bool=False)->'ImageDataBunch':
         "Create an `ImageDataBunch` from `LabelLists` `lls` with potential `ds_tfms`."
-        lls = lls.transform(tfms=ds_tfms, size=size, resize_method=resize_method, mult=mult, padding_mode=padding_mode, mode=mode)
+        lls = lls.transform(tfms=ds_tfms, size=size, resize_method=resize_method, mult=mult, padding_mode=padding_mode, 
+                            mode=mode, tfm_y=tfm_y)
         if test is not None: lls.add_test_folder(test)
         return lls.databunch(bs=bs, val_bs=val_bs, dl_tfms=dl_tfms, num_workers=num_workers, collate_fn=collate_fn, 
                              device=device, no_check=no_check)
@@ -129,10 +130,13 @@ class ImageDataBunch(DataBunch):
                 fn_col=fn_col, label_col=label_col, suffix=suffix, **kwargs)
 
     @classmethod
-    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, **kwargs):
+    def from_lists(cls, path:PathOrStr, fnames:FilePathList, labels:Collection[str], valid_pct:float=0.2, 
+                   item_cls:Callable=None, **kwargs):
         "Create from list of `fnames` in `path`."
+        item_cls = ifnone(item_cls, ImageItemList)
         fname2label = {f:l for (f,l) in zip(fnames, labels)}
-        src = ImageItemList(fnames, path=path).random_split_by_pct(valid_pct).label_from_func(lambda x:fname2label[x])
+        src = (item_cls(fnames, path=path).random_split_by_pct(valid_pct)
+                                .label_from_func(lambda x:fname2label[x]))
         return cls.create_from_ll(src, **kwargs)
 
     @classmethod
@@ -399,7 +403,7 @@ class PointsLabelList(ItemList):
 
     def analyze_pred(self, pred, thresh:float=0.5): return pred.view(-1,2)
     def reconstruct(self, t, x): return ImagePoints(FlowField(x.size, t), scale=False)
-
+    
 class PointsItemList(ImageItemList):
     "`ItemList` for `Image` to `ImagePoints` tasks."
     _label_cls,_square_show_res = PointsLabelList,False
