@@ -62,6 +62,7 @@ def test_fuzzy_line_match():
     result = nbtest._fuzzy_line_match('TextList', ['tl = (TextList.from_df()', '', 'LMTextList()'])
     assert len(result) == 1, 'matches classes'
 
+@pytest.mark.skip(reason="local dev only")
 def test_get_tests_dir():
     result:Path = nbtest.get_tests_dir(nbtest)
     assert result.parts[-1] == 'tests', f"Failed: get_tests_dir return unexpected result: {result}"
