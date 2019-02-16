@@ -13,16 +13,20 @@ from math import isclose
 
 torch_preload_mem()
 
-# this is not a fixture on purpose - the memory measurement tests are very
-# fickle, so they need a fresh object and not one modified by other tests
-def learn_large_unfit():
+@pytest.fixture(scope="module")
+def data():
     path = untar_data(URLs.MNIST_TINY)
     data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
+    return data
+
+# this is not a fixture on purpose - the memory measurement tests are very sensitive, so
+# they need to be able to get a fresh learn object and not one modified by other tests.
+def learn_large_unfit(data):
     learn = create_cnn(data, models.resnet18, metrics=accuracy)
     return learn
 
 @pytest.fixture(scope="module")
-def learn(): return learn_large_unfit()
+def learn(data): return learn_large_unfit(data)
 
 def test_get_preds():
     learn = fake_learner()
@@ -35,14 +39,14 @@ def test_save_load(learn):
 
     # testing that all these various sequences don't break each other
     model_path = learn.save(name, return_path=True)
-    _ = learn.load(name, purge=True)
+    learn.load(name, purge=True)
     learn.data.sanity_check()
     assert 709 == len(learn.data.train_ds)
-    _ = learn.purge()
-    _ = learn.load(name)
-    _ = learn.load(name)
+    learn.purge()
+    learn.load(name)
+    learn.load(name)
     model_path = learn.save(name, return_path=True)
-    _ = learn.load(name, purge=True)
+    learn.load(name, purge=True)
     # basic checks
     #assert learn.recorder
     assert learn.opt
@@ -58,8 +62,8 @@ def check_mem_expected(used_expected, peaked_expected, mtrace, abs_tol=2):
 
 #@pytest.mark.skip(reason="WIP")
 @pytest.mark.cuda
-def test_save_load_mem_leak():
-    learn = learn_large_unfit()
+def test_save_load_mem_leak(data):
+    learn = learn_large_unfit(data)
     name = 'mnist-tiny-test-save-load'
     #learn.fit_one_cycle(1)
 
