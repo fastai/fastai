@@ -177,7 +177,7 @@ def get_links(metadata)->Tuple[str,str]:
 
 def pytest_command(file:str, test:str, **kwargs)->str:
     "Returns CLI command to run specific test function"
-    return f'pytest {file}::{test}'
+    return f'pytest -sv {file}::{test}'
 
 def source_link(line:int, file:Path, **kwargs)->str:
     "Github link to test function"
