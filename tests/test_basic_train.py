@@ -34,6 +34,29 @@ def test_get_preds():
         a = learn.get_preds()
     assert learn.data.batch_size == len(a[1])
 
+def test_freeze_to():
+    learn = fake_learner(layer_group_count=3)
+    learn.freeze_to(1)
+    for i, param in enumerate(learn.model.parameters()):
+        # param 0 is weights in layer_group 0 and param 1 is bias in layer_group 0
+        # all params other than those should be frozen
+        if(i >= 2): assert param.requires_grad == True
+        else: assert param.requires_grad == False
+
+def test_freeze():
+    learn = fake_learner(layer_group_count=3)
+    learn.freeze()
+    for i, param in enumerate(learn.model.parameters()):
+        # 2 layer groups with 1 param in each should be frozen
+        if(i >= 4): assert param.requires_grad == True
+        else: assert param.requires_grad == False
+
+def test_unfreeze():
+    learn = fake_learner(layer_group_count=4)
+    for param in learn.model.parameters(): param.requires_grad=False
+    learn.unfreeze()
+    for param in learn.model.parameters(): assert param.requires_grad == True
+
 def test_save_load(learn):
     name = 'mnist-tiny-test-save-load'
 
