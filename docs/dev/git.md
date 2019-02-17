@@ -288,7 +288,7 @@ If you work on several unrelated PRs, make different directories for each one, i
 
 ### Step 8. Passing CI Tests
 
-One your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR. The tests run on various platforms and on both pip and conda virtual environments, so we have all bases covered.
+Once your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR. The tests run on various platforms and on both pip and conda virtual environments, so we have all bases covered.
 
 Do note that since our test suite contains many non-deterministic tests, at times you will notice that one of the checks on a single platform will fail. Most of the time it's normal, and there is nothing to worry about. We are constantly trying to make those less error-prone, but we can't make them too loose either, otherwise the test would be ineffective. Hence the occasional failures.
 
