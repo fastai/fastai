@@ -3,9 +3,9 @@ from ..torch_core import *
 from pandas.api.types import is_numeric_dtype
 
 __all__ = ['add_datepart', 'cont_cat_split', 'Categorify', 'FillMissing', 'FillStrategy', 'Normalize', 'TabularProc',
-           'add_elapsed_times']
+           'add_elapsed_times', 'make_date']
 
-def _make_date(df:DataFrame, date_field:str):
+def make_date(df:DataFrame, date_field:str):
     "Make sure `df[field_name]` is of the right date type."
     field_dtype = df[date_field].dtype
     if isinstance(field_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype):
@@ -15,7 +15,7 @@ def _make_date(df:DataFrame, date_field:str):
 
 def add_datepart(df:DataFrame, field_name:str, prefix:str=None, drop:bool=True, time:bool=False):
     "Helper function that adds columns relevant to a date in the column `fldname` of `df`."
-    _make_date(df, field_name)
+    make_date(df, field_name)
     field = df[field_name]
     prefix = ifnone(prefix, re.sub('[Dd]ate$', '', field_name))
     attr = ['Year', 'Month', 'Week', 'Day', 'Dayofweek', 'Dayofyear', 'Is_month_end', 'Is_month_start', 
@@ -42,10 +42,7 @@ def add_elapsed_times(df:DataFrame, field_names:Collection[str], date_field:str,
     field_names = listify(field_names)
     #Make sure date_field is a date and base_field a bool
     df[field_names] = df[field_names].astype('bool')
-    field_dtype = df[date_field].dtype
-    if isinstance(field_dtype, pd.core.dtypes.dtypes.DatetimeTZDtype): field_dtype = np.datetime64
-    if not np.issubdtype(field_dtype, np.datetime64):
-        df[date_field] = pd.to_datetime(df[date_field], infer_datetime_format=True)
+    make_date(df, date_field)
     
     work_df = df[field_names + [date_field, base_field]]
     work_df = work_df.sort_values([base_field, date_field])
