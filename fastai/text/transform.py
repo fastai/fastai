@@ -141,9 +141,8 @@ class Vocab():
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
 
     def save(self, path):
-        "Save the itos in path"
-        with open(path, 'wb') as f:
-            pickle.dump(self.itos, f)
+        "Save `self.itos` in `path`"
+        pickle.dump(self.itos, open(path, 'wb'))
 
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
@@ -157,7 +156,6 @@ class Vocab():
     
     @classmethod
     def load(cls, path):
-        "Load the Vocab contained in path"
-        with open(path, 'rb') as f:
-            itos = pickle.load(f)
+        "Load the `Vocab` contained in `path`"
+        itos = pickle.load(open(path, 'rb'))
         return cls(itos)
