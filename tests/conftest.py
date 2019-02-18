@@ -44,7 +44,6 @@ def set_default(obj):
      raise TypeError
 
 def stop_doctest_collector():
-    print('\n*** in stop_doctest_collector ')    
     fastai_dir = abspath(join(dirname( __file__ ), '..', 'fastai'))
     if RegisterTestsPerAPI.apiTestsMap:
         with open(fastai_dir + f'/{DB_NAME}', 'w') as f:
