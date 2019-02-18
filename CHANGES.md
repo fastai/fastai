@@ -30,6 +30,8 @@ of that change.
 ### Changed:
 
 - revamped `Learner.purge` to reclaim more RAM
+- clearer error messages when using the data block API in the wrong order
+- `ItemList.label_from_list` becomes private to avoid confusion
 
 ### Fixed:
 

@@ -228,8 +228,10 @@ class ItemList():
         if isinstance(it, Collection):          return MultiCategoryList
         return ItemList #self.__class__
 
-    def label_from_list(self, labels:Iterator, label_cls:Callable=None, **kwargs)->'LabelList':
+    def _label_from_list(self, labels:Iterator, label_cls:Callable=None, from_item_lists:bool=False, **kwargs)->'LabelList':
         "Label `self.items` with `labels`."
+        if not from_item_lists: 
+            raise Exception("Your data isn't split, if you don't want a validation set, please use `no_split`.")
         labels = array(labels, dtype=object)
         label_cls = self.get_label_cls(labels, label_cls=label_cls, **kwargs)
         y = label_cls(labels, path=self.path, **kwargs)
@@ -243,7 +245,7 @@ class ItemList():
         if is_listy(cols) and len(cols) > 1 and (label_cls is None or label_cls == MultiCategoryList): 
             new_kwargs,label_cls = dict(one_hot=True, classes= cols),MultiCategoryList
             kwargs = {**new_kwargs, **kwargs}
-        return self.label_from_list(_maybe_squeeze(labels), label_cls=label_cls, **kwargs)
+        return self._label_from_list(_maybe_squeeze(labels), label_cls=label_cls, **kwargs)
 
     def label_const(self, const:Any=0, label_cls:Callable=None, **kwargs)->'LabelList':
         "Label every item with `const`."
@@ -255,7 +257,7 @@ class ItemList():
 
     def label_from_func(self, func:Callable, label_cls:Callable=None, **kwargs)->'LabelList':
         "Apply `func` to every input to get its label."
-        return self.label_from_list([func(o) for o in self.items], label_cls=label_cls, **kwargs)
+        return self._label_from_list([func(o) for o in self.items], label_cls=label_cls, **kwargs)
 
     def label_from_folder(self, label_cls:Callable=None, **kwargs)->'LabelList':
         "Give a label to each filename depending on its folder."
@@ -430,10 +432,10 @@ class ItemLists():
         fv = getattr(self.valid, k)
         assert isinstance(fv, Callable)
         def _inner(*args, **kwargs):
-            self.train = ft(*args, **kwargs)
+            self.train = ft(*args, from_item_lists=True, **kwargs)
             assert isinstance(self.train, LabelList)
             kwargs['label_cls'] = self.train.y.__class__
-            self.valid = fv(*args, **kwargs)
+            self.valid = fv(*args, from_item_lists=True, **kwargs)
             self.__class__ = LabelLists
             self.process()
             return self
@@ -587,8 +589,6 @@ class LabelList(Dataset):
     def __getattr__(self,k:str)->Any:
         x = super().__getattribute__('x')
         res = getattr(x, k, None)
-        if isinstance(res, Callable):
-            assert 'split' not in res.__name__, "You should split your data before labelling it."
         if res is not None: return res
         y = super().__getattribute__('y')
         res = getattr(y, k, None)

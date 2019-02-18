@@ -323,7 +323,8 @@ class TextList(ItemList):
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
         self.__class__ = LMTextList
-        return self.label_const(0, label_cls=LMLabelList)
+        kwargs['label_cls'] = LMLabelList
+        return self.label_const(0, **kwargs)
 
     def reconstruct(self, t:Tensor):
         idx = (t != self.pad_idx).nonzero().min()
