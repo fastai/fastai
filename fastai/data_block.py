@@ -46,13 +46,13 @@ class ItemList():
     "A collection of items with `__len__` and `__getitem__` with `ndarray` indexing semantics."
     _bunch,_processor,_label_cls,_square_show,_square_show_res = DataBunch,None,None,False,False
 
-    def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, xtra:Any=None, 
+    def __init__(self, items:Iterator, path:PathOrStr='.', label_cls:Callable=None, inner_df:Any=None, 
                  processor:PreProcessors=None, x:'ItemList'=None, ignore_empty:bool=False):
         self.path = Path(path)
         self.num_parts = len(self.path.parts)
         self.items,self.x,self.ignore_empty = items,x,ignore_empty
         if not isinstance(self.items,np.ndarray): self.items = array(self.items, dtype=object)
-        self.label_cls,self.xtra,self.processor = ifnone(label_cls,self._label_cls),xtra,processor
+        self.label_cls,self.inner_df,self.processor = ifnone(label_cls,self._label_cls),inner_df,processor
         self._label_list,self._split = LabelList,ItemLists
         self.copy_new = ['x', 'label_cls', 'path']
         self.__post_init__()
@@ -102,7 +102,7 @@ class ItemList():
     def __getitem__(self,idxs:int)->Any:
         idxs = try_int(idxs)
         if isinstance(idxs, Integral): return self.get(idxs)
-        else: return self.new(self.items[idxs], xtra=index_row(self.xtra, idxs))
+        else: return self.new(self.items[idxs], inner_df=index_row(self.inner_df, idxs))
 
     @classmethod
     def from_folder(cls, path:PathOrStr, extensions:Collection[str]=None, recurse:bool=True,
@@ -117,7 +117,7 @@ class ItemList():
         "Create an `ItemList` in `path` from the inputs in the `cols` of `df`."
         inputs = df.iloc[:,df_names_to_idx(cols, df)]
         assert inputs.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
-        res = cls(items=_maybe_squeeze(inputs.values), path=path, xtra = df, processor=processor, **kwargs)
+        res = cls(items=_maybe_squeeze(inputs.values), path=path, inner_df=df, processor=processor, **kwargs)
         return res
 
     @classmethod
@@ -213,8 +213,8 @@ class ItemList():
         return self.split_by_files(valid_names)
 
     def split_from_df(self, col:IntsOrStrs=2):
-        "Split the data from the `col` in the dataframe in `self.xtra`."
-        valid_idx = np.where(self.xtra.iloc[:,df_names_to_idx(col, self.xtra)])[0]
+        "Split the data from the `col` in the dataframe in `self.inner_df`."
+        valid_idx = np.where(self.inner_df.iloc[:,df_names_to_idx(col, self.inner_df)])[0]
         return self.split_by_idx(valid_idx)
 
     def get_label_cls(self, labels, label_cls:Callable=None, label_delim:str=None, **kwargs):
@@ -239,8 +239,8 @@ class ItemList():
         return res
 
     def label_from_df(self, cols:IntsOrStrs=1, label_cls:Callable=None, **kwargs):
-        "Label `self.items` from the values in `cols` in `self.xtra`."
-        labels = self.xtra.iloc[:,df_names_to_idx(cols, self.xtra)]
+        "Label `self.items` from the values in `cols` in `self.inner_df`."
+        labels = self.inner_df.iloc[:,df_names_to_idx(cols, self.inner_df)]
         assert labels.isna().sum().sum() == 0, f"You have NaN values in column(s) {cols} of your dataframe, please fix it." 
         if is_listy(cols) and len(cols) > 1 and (label_cls is None or label_cls == MultiCategoryList): 
             new_kwargs,label_cls = dict(one_hot=True, classes= cols),MultiCategoryList
@@ -515,7 +515,7 @@ class LabelLists(ItemLists):
         # if no label passed, use label of first training item
         if label is None: labels = EmptyLabelList([0] * len(items))
         else: labels = self.valid.y.new([label] * len(items)).process()
-        if isinstance(items, ItemList): items = self.valid.x.new(items.items, xtra=items.xtra).process()
+        if isinstance(items, ItemList): items = self.valid.x.new(items.items, inner_df=items.inner_df).process()
         else: items = self.valid.x.new(items).process()          
         self.test = self.valid.new(items, labels)
         return self
