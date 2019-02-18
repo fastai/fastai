@@ -129,7 +129,9 @@ def doc(elt):
     output = HTMLExporter().markdown2html(md)
     use_relative_links = True
     try:    page.page({'text/html': output})
-    except: display(Markdown(md))
+    except: 
+        try:    get_ipython().run_cell_magic(u'HTML', u'', output)
+        except: display(Markdown(md))
 
 def format_docstring(elt, arg_comments:dict={}, alt_doc_string:str='', ignore_warn:bool=False)->str:
     "Merge and format the docstring definition with `arg_comments` and `alt_doc_string`."
