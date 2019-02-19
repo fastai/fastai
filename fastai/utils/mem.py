@@ -10,12 +10,14 @@ import platform
 
 IS_IN_IPYTHON = is_in_ipython()
 
+use_gpu = torch.cuda.is_available()
+
 GPUMemory = namedtuple('GPUMemory', ['total', 'free', 'used'])
 
 is_osx = platform.system() == "Darwin"
 
 # transparently monkey patch pynvx as pynvml API on OSX (for the few funcs we use)
-if is_osx:
+if use_gpu and is_osx:
     try:
         import pynvx
     except:
@@ -37,10 +39,8 @@ if is_osx:
         setattr(pynvx, f'nvml{m}', getattr(pynvx, f'cuda{m}'))
     pynvml = pynvx
 
-have_cuda = 0
-if torch.cuda.is_available():
+if use_gpu:
     pynvml.nvmlInit()
-    have_cuda = 1
 
 def preload_pytorch():
     torch.ones((1, 1)).cuda()
@@ -51,7 +51,7 @@ def b2mb(num):
 
 def gpu_mem_get(id=None):
     "get total, used and free memory (in MBs) for gpu `id`. if `id` is not passed, currently selected torch device is used"
-    if not have_cuda: return GPUMemory(0, 0, 0)
+    if not use_gpu: return GPUMemory(0, 0, 0)
     if id is None: id = torch.cuda.current_device()
     try:
         handle = pynvml.nvmlDeviceGetHandleByIndex(id)
@@ -62,7 +62,7 @@ def gpu_mem_get(id=None):
 
 def gpu_mem_get_all():
     "get total, used and free memory (in MBs) for each available gpu"
-    if not have_cuda: return []
+    if not use_gpu: return []
     return list(map(gpu_mem_get, range(pynvml.nvmlDeviceGetCount())))
 
 def gpu_mem_get_free_no_cache():
