@@ -27,10 +27,8 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
     if opt is not None:
         loss = cb_handler.on_backward_begin(loss)
         loss.backward()
-        cb_handler.on_backward_end()
-        opt.step()
-        cb_handler.on_step_end()
-        opt.zero_grad()
+        if not cb_handler.on_backward_end(): opt.step()
+        if not cb_handler.on_step_end():     opt.zero_grad()
 
     return loss.detach().cpu()
 
