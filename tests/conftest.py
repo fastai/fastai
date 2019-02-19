@@ -54,4 +54,4 @@ def stop_doctest_collector():
     fastai_dir = abspath(join(dirname( __file__ ), '..', 'fastai'))
     if RegisterTestsPerAPI.api_tests_map and RegisterTestsPerAPI.some_tests_failed == False:
         with open(fastai_dir + f'/{DB_NAME}', 'w') as f:
-                json.dump(obj=RegisterTestsPerAPI.api_tests_map, fp=f, indent=4, sort_keys=True, default=set_default)
+            json.dump(obj=RegisterTestsPerAPI.api_tests_map, fp=f, indent=4, sort_keys=True, default=set_default)
