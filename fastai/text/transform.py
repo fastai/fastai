@@ -68,7 +68,7 @@ def replace_all_caps(x:Collection[str]) -> Collection[str]:
     "Add `TK_UP` for words in all caps in `x`."
     res = []
     for t in x:
-        if t.isupper(): res.append(TK_UP)
+        if t.isupper() and len(t) > 1: res.append(TK_UP)
         res.append(t)
     return res
 
