@@ -77,9 +77,8 @@ So instead of needing to do:
 learn.fit_one_cycle(epochs)
 
 learn.save('saved')
-
-learn.purge()
 learn.load('saved')
+learn.purge()
 ```
 
 the call to `learn.purge()` is not needed.
@@ -126,20 +125,36 @@ learn.purge()  # which calls learn.purge(clear_opt=True)
 learn.opt.clear()
 ```
 
+### Learner release
+
+If you no longer need the `learn` object, you can release the memory it is consuming by calling:
+
+```
+del learn
+gc.collect()
+```
+`learn` is a very complex object with multiple sub-objects, with unavoidable circular references, so `del learn` won't free the memory until `gc.collect` arrives some time in the future, so since we need the memory now, we call it directly.
+
+If the above code looks a bit of an eye-sore, do the following instead:
+
+```
+learn.destroy()
+```
+`destroy` will release all the memory consuming parts of it, while leaving an empty shell - the object will still be there, but you won't be able to do anything with it.
 
 
 ### Inference
 
-For inference we only need the saved model and the data to predict on, and nothing else that was used during the training. So to use even less memory (general RAM this time), the lean approach is to `learn.export()` and `learn.purge()` at the end of the training, and then to `load_learner()` before the prediction stage is started.
+For inference we only need the saved model and the data to predict on, and nothing else that was used during the training. So to use even less memory (general RAM this time), the lean approach is to `learn.export()` and `learn.destroy()` at the end of the training, and then to `load_learner()` before the prediction stage is started.
 
 ```
-# end of training
+# end of a potential training scenario
+learn.unfreeze()
 learn.fit_one_cycle(epochs)
 learn.freeze()
-learn.export()
-learn.purge()
+learn.export(destroy=True) # or learn.export() + learn.destroy()
 
-# beginning of inferences
+# beginning of inference
 learn = load_learner(path, test=ImageItemList.from_folder(path/'test'))
 preds = learn.get_preds(ds_type=DatasetType.Test)
 ```
@@ -149,7 +164,7 @@ preds = learn.get_preds(ds_type=DatasetType.Test)
 
 So, to conclude, when you finished your `learn.fit()` cycles and you are changing to a different image size, or you unfreeze, or you do anything else that no longer requires previous structures on GPU, you either call `learn.purge()` or `learn.load('saved_name')` and you should have most of your GPU RAM back as it was where you have just started, plus the allocated memory for the model. That's of course, if you haven't created some other variables that hold some GPU RAM tied up.
 
-And for inferences the  `learn.export()`, `learn.purge()` and `load_learner()` sequence will require even less RAM.
+And for inferences the  `learn.export()`, `learn.destroy()` and `load_learner()` sequence will require even less RAM.
 
 Therefore now you should be able to do a ton of things without needing to restart your notebook.
 
