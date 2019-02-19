@@ -214,7 +214,7 @@ class Learner():
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
         device = one_param(self.model).device
-        state['model'] = self.model.cpu() #This is done inplace so we need to put the model back where it was after the save.
+        state['model'] = self.model.cpu() # This is done inplace so we need to put the model back where it was after the save.
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
@@ -223,7 +223,7 @@ class Learner():
 
     def hibernate(self, fname:str='export.pkl'):
         "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use load_learner() to restore."
-        self.export(self, fname)
+        self.export(fname)
         self.destroy()
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
