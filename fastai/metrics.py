@@ -95,7 +95,7 @@ def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
 
 class RegMetrics(Callback):
     "Stores predictions and targets to perform calculations on epoch end."
-    def on_epoch_begin(self):
+    def on_epoch_begin(self, **kwargs):
         self.targs, self.preds = Tensor([]), Tensor([])
 
     def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
@@ -105,22 +105,22 @@ class RegMetrics(Callback):
 
 class R2Score(RegMetrics):
     "Compute the R2 score (coefficient of determination)."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = r2_score(self.preds, self.targs)
 
 class ExplainedVariance(RegMetrics):
     "Compute the explained variance."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = explained_variance(self.preds, self.targs)
 
 class RMSE(RegMetrics):
     "Compute the root mean squared error."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = root_mean_squared_error(self.preds, self.targs)
 
 class ExpRMSPE(RegMetrics):
     "Compute the exponential of the root mean square error."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = exp_rmspe(self.preds, self.targs)
 
 # Aliases
@@ -204,14 +204,12 @@ class CMScores(ConfusionMatrix):
 class Recall(CMScores):
     "Compute the Recall."
     def on_epoch_end(self, **kwargs):
-        self.metric = self._recall()
-            
+        self.metric = self._recall()           
 
 class Precision(CMScores):
     "Compute the Precision."
     def on_epoch_end(self, **kwargs):
-        self.metric = self._precision()
-            
+        self.metric = self._precision()         
             
 @dataclass
 class FBeta(CMScores):
