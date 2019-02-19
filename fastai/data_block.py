@@ -589,7 +589,7 @@ class LabelList(Dataset):
     def __getattr__(self,k:str)->Any:
         x = super().__getattribute__('x')
         res = getattr(x, k, None)
-        if res is not None: return res
+        if res is not None and k not in ['classes', 'c']: return res
         y = super().__getattribute__('y')
         res = getattr(y, k, None)
         if res is not None: return res

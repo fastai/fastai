@@ -259,7 +259,7 @@ class ImageItemList(ItemList):
         super().__init__(*args, **kwargs)
         self.convert_mode = convert_mode
         self.copy_new.append('convert_mode')
-        self.sizes={}
+        self.c,self.sizes = 3,{}
 
     def open(self, fn):
         "Open image in `fn`, subclass and overwrite for custom behavior."
