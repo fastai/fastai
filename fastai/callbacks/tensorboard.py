@@ -11,8 +11,10 @@ from time import sleep
 from queue import Queue
 import statistics
 import torchvision.utils as vutils
-from abc import ABC, abstractmethod
-from tensorboardX import SummaryWriter
+from abc import ABC
+#This is an optional dependency in fastai.  Must install separately.
+try: from tensorboardX import SummaryWriter
+except: pass
 
 __all__=['LearnerTensorboardWriter', 'GANTensorboardWriter', 'ImageGenTensorboardWriter']
 
@@ -25,13 +27,9 @@ class LearnerTensorboardWriter(LearnerCallback):
     "Broadly useful callback for Learners that writes to Tensorboard.  Writes model histograms, losses/metrics, and gradient stats."
     def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=500, stats_iters:int=100):
         super().__init__(learn=learn)
-        self.base_dir = base_dir
-        self.name = name
+        self.base_dir, self.name, self.loss_iters, self.hist_iters, self.stats_iters  = base_dir, name, loss_iters, hist_iters, stats_iters
         log_dir = base_dir/name
         self.tbwriter = SummaryWriter(log_dir=str(log_dir))
-        self.loss_iters = loss_iters
-        self.hist_iters = hist_iters
-        self.stats_iters = stats_iters
         self.hist_writer = HistogramTBWriter()
         self.stats_writer = ModelStatsTBWriter()
         self.data = None
@@ -99,7 +97,8 @@ class LearnerTensorboardWriter(LearnerCallback):
 # TODO:  We're overriding almost everything here.  Seems like a good idea to question that ("is a" vs "has a")
 class GANTensorboardWriter(LearnerTensorboardWriter):
     "Callback for GANLearners that writes to Tensorboard.  Extends LearnerTensorboardWriter and adds output image writes."
-    def __init__(self, learn:GANLearner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=500, stats_iters:int=100, visual_iters:int=100):
+    def __init__(self, learn:GANLearner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=500, 
+                stats_iters:int=100, visual_iters:int=100):
         super().__init__(learn=learn, base_dir=base_dir, name=name, loss_iters=loss_iters, hist_iters=hist_iters, stats_iters=stats_iters)
         self.visual_iters = visual_iters
         self.img_gen_vis = ImageTBWriter()
@@ -110,7 +109,7 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
         "Writes model weight histograms to Tensorboard."
         generator, critic = self.learn.gan_trainer.generator, self.learn.gan_trainer.critic
         self.hist_writer.write(model=generator, iteration=iteration, tbwriter=self.tbwriter, name='generator')
-        self.hist_writer.write(model=critic, iteration=iteration, tbwriter=self.tbwriter, name='critic')
+        self.hist_writer.write(model=critic,    iteration=iteration, tbwriter=self.tbwriter, name='critic')
 
     def _write_gen_model_stats(self, iteration:int)->None:
         "Writes gradient statistics for generator to Tensorboard."
@@ -146,7 +145,8 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
         gen_mode = trainer.gen_mode
         try:
             trainer.switch(gen_mode=True)
-            self.img_gen_vis.write(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, iteration=iteration, tbwriter=self.tbwriter)
+            self.img_gen_vis.write(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, 
+                                    iteration=iteration, tbwriter=self.tbwriter)
         finally:                                      
             trainer.switch(gen_mode=gen_mode)
 
@@ -380,7 +380,7 @@ class ImageTBRequest(TBWriteRequest):
         "Writes original, generated and real(target) images to Tensorboard."
         orig_images, gen_images, real_images = self._get_image_tensors()
         self._write_images(name='orig images', images=orig_images)
-        self._write_images(name='gen images', images=gen_images)
+        self._write_images(name='gen images',  images=gen_images)
         self._write_images(name='real images', images=real_images)
 
 #If this isn't done async then this is noticeably slower
