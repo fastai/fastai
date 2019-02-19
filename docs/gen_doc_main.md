@@ -8,7 +8,7 @@ Here is how you can contribute to the `fastai` documentation:
 
 ### Step 1. Create a `fastai` git branch
 
-The process of creating a branch (with fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
+The process of creating a branch (with a fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
 
 ### Step 2. Setup
 

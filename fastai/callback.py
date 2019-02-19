@@ -261,10 +261,11 @@ class CallbackHandler():
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
-        self('backward_end', False)
+        return np.any(self('backward_end', False))
+        
     def on_step_end(self)->None:
         "Handle end of optimization step."
-        self('step_end', False)
+        return np.any(self('step_end', False))
 
     def on_batch_end(self, loss:Tensor)->None:
         "Handle end of processing one batch with `loss`."

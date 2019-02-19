@@ -6,15 +6,41 @@ from ..script import *
 from ..utils.env import *
 import pynvml, functools, traceback, threading, time
 from collections import namedtuple
+import platform
 
 IS_IN_IPYTHON = is_in_ipython()
 
-GPUMemory = namedtuple('GPUMemory', ['total', 'used', 'free'])
+use_gpu = torch.cuda.is_available()
 
-have_cuda = 0
-if torch.cuda.is_available():
+GPUMemory = namedtuple('GPUMemory', ['total', 'free', 'used'])
+
+is_osx = platform.system() == "Darwin"
+
+# transparently monkey patch pynvx as pynvml API on OSX (for the few funcs we use)
+if use_gpu and is_osx:
+    try:
+        import pynvx
+    except:
+        print("please install pynvx on OSX: pip install pynvx")
+        sys.exit(1)
+
+    # missing function
+    def cudaDeviceGetHandleByIndex(id): return pynvx.cudaDeviceGetHandles()[id]
+    setattr(pynvx, 'cudaDeviceGetHandleByIndex', cudaDeviceGetHandleByIndex)
+
+    # different named and return value needs be a named tuple
+    def cudaDeviceGetMemoryInfo(handle):
+        info = pynvx.cudaGetMemInfo(handle)
+        return GPUMemory(*info)
+    setattr(pynvx, 'cudaDeviceGetMemoryInfo', cudaDeviceGetMemoryInfo)
+
+    # remap the other functions
+    for m in ['Init', 'DeviceGetCount', 'DeviceGetHandleByIndex', 'DeviceGetMemoryInfo']:
+        setattr(pynvx, f'nvml{m}', getattr(pynvx, f'cuda{m}'))
+    pynvml = pynvx
+
+if use_gpu:
     pynvml.nvmlInit()
-    have_cuda = 1
 
 def preload_pytorch():
     torch.ones((1, 1)).cuda()
@@ -25,18 +51,18 @@ def b2mb(num):
 
 def gpu_mem_get(id=None):
     "get total, used and free memory (in MBs) for gpu `id`. if `id` is not passed, currently selected torch device is used"
-    if not have_cuda: return GPUMemory(0, 0, 0)
+    if not use_gpu: return GPUMemory(0, 0, 0)
     if id is None: id = torch.cuda.current_device()
     try:
         handle = pynvml.nvmlDeviceGetHandleByIndex(id)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
-        return GPUMemory(*(map(b2mb, [info.total, info.used, info.free])))
+        return GPUMemory(*(map(b2mb, [info.total, info.free, info.used])))
     except:
         return GPUMemory(0, 0, 0)
 
 def gpu_mem_get_all():
     "get total, used and free memory (in MBs) for each available gpu"
-    if not have_cuda: return []
+    if not use_gpu: return []
     return list(map(gpu_mem_get, range(pynvml.nvmlDeviceGetCount())))
 
 def gpu_mem_get_free_no_cache():

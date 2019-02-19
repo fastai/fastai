@@ -4,6 +4,7 @@ from .basic_data import *
 from .callback import *
 from .data_block import *
 from .utils.mem import gpu_mem_restore
+import inspect
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
@@ -26,10 +27,8 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
     if opt is not None:
         loss = cb_handler.on_backward_begin(loss)
         loss.backward()
-        cb_handler.on_backward_end()
-        opt.step()
-        cb_handler.on_step_end()
-        opt.zero_grad()
+        if not cb_handler.on_backward_end(): opt.step()
+        if not cb_handler.on_step_end():     opt.zero_grad()
 
     return loss.detach().cpu()
 
@@ -205,7 +204,7 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:str='export.pkl'):
+    def export(self, fname:str='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -213,17 +212,13 @@ class Learner():
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
         device = one_param(self.model).device
-        state['model'] = self.model.cpu() #This is done inplace so we need to put the model back where it was after the save.
+        state['model'] = self.model.cpu() # This is done inplace so we need to put the model back where it was after the save.
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
         torch.save(state, open(self.path/fname, 'wb'))
         self.model.to(device)
-
-    def hibernate(self, fname:str='export.pkl'):
-        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use load_learner() to restore."
-        self.export(self, fname)
-        self.destroy()
+        if destroy: self.destroy()
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
@@ -258,15 +253,20 @@ class Learner():
 
     def destroy(self):
         "Free the Learner internals, leaving just an empty shell that consumes no memory"
+
+        class ZombieLearner(Learner):
+            msg = "this object has been destroyed"
+            def __getattr__(self, item):    print(ZombieLearner.msg); return None
+            def destroyed(*args, **kwargs): print(ZombieLearner.msg)
+
         attrs = [k for k in self.__dict__.keys() if not k.startswith("__")]
         for a in attrs: delattr(self, a)
+        # the instance methods can still be called, but will just give a message
+        methods = [k for k in dir(self) if not k.startswith("__") and inspect.isroutine(getattr(self, k))]
+        for m in methods: setattr(self, m, ZombieLearner.destroyed)
+        self.__class__ = ZombieLearner
         gc.collect()
         print("this Learner object self-destroyed - it still exists, but no longer usable")
-        # in case someone tries to call methods on this destroyed object
-        def _catch_all_destroyed(self, name):
-            def method(*args, **kwargs): print("this object has been destroyed")
-            return method
-        self.__getattr__ = _catch_all_destroyed
 
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."

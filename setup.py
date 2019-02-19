@@ -105,6 +105,7 @@ dep_groups = {
         packaging
         Pillow
         pyyaml
+        pynvx ; platform_system=="Darwin"  # only pypi at the moment
         requests
         scipy
         torch>=1.0.0
