@@ -36,8 +36,8 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(scope="session", autouse=True)
 def start_doctest_collector(request):
-    individualtest = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    if not individualtest and '-regtestapidb' in sys.argv: request.addfinalizer(stop_doctest_collector)
+    individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
+    if not individualtests and '-regtestapidb' in sys.argv: request.addfinalizer(stop_doctest_collector)
 
 def set_default(obj):
      if isinstance(obj, set): return list(obj)
