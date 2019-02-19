@@ -25,7 +25,7 @@ of that change.
 
 - `Learner.destroy`: completely free up `learn`, leaving an empty shell (to replace `gc.collect` eye-sore)
 - `Learner.hibernate`: `learn.export` + `learn.destroy` shortcut method
-
+- support `pynvx` instead of `pynvml` on OSX
 
 ### Changed:
 
