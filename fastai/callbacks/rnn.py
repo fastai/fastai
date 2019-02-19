@@ -7,7 +7,7 @@ __all__ = ['RNNTrainer']
 
 class RNNTrainer(LearnerCallback):
     "`Callback` that regroups lr adjustment to seq_len, AR and TAR."
-    def __init__(self, learn, alpha:float=0., beta:float=0.):
+    def __init__(self, learn:Learner, alpha:float=0., beta:float=0.):
         super().__init__(learn)
         self.not_min += ['raw_out', 'out']
         self.alpha,self.beta = alpha,beta
