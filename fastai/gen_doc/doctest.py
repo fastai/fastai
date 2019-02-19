@@ -18,10 +18,12 @@ class RegisterTestsPerAPI:
         list_test = [{'file': relative_test_path(pathfilename), 'test': test_function_name , 'line': lineno_parentfunc}]
         for api in testedapis:
              fq_apiname = full_name_with_qualname(api)
-             if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
-                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] += list_test
-             else:
-                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] = list_test
+             match = re.match(r'^fastai\..*',fq_apiname)
+             if match:
+                if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
+                    RegisterTestsPerAPI.apiTestsMap[fq_apiname] += list_test
+                else:
+                    RegisterTestsPerAPI.apiTestsMap[fq_apiname] = list_test
 
 def this_tests(*testedapis): RegisterTestsPerAPI.this_tests(*testedapis)
 
