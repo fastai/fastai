@@ -57,28 +57,28 @@ def test_unfreeze():
     learn.unfreeze()
     for param in learn.model.parameters(): assert param.requires_grad == True
 
-def check_learner(learn, train_ds_size):
+def check_learner(learn, train_items):
     # basic checks
     #assert learn.recorder
     assert learn.model
-    assert train_ds_size == len(learn.data.train_ds)
+    assert train_items == len(learn.data.train_ds.items)
     # XXX: could use more sanity checks
 
 def test_save_load(learn):
     name = 'mnist-tiny-test-save-load'
-    train_ds_size = len(learn.data.train_ds)
+    train_items = len(learn.data.train_ds)
     # testing that all these various sequences don't break each other
     model_path = learn.save(name, return_path=True)
     learn.load(name, purge=True)
     learn.data.sanity_check()
-    check_learner(learn, train_ds_size)
+    check_learner(learn, train_items)
 
     learn.purge()
     learn.load(name)
     learn.load(name)
     model_path = learn.save(name, return_path=True)
     learn.load(name, purge=True)
-    check_learner(learn, train_ds_size)
+    check_learner(learn, train_items)
     if os.path.exists(model_path): os.remove(model_path)
 
 def check_mem_expected(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
@@ -185,14 +185,14 @@ def test_memory(data):
     subtest_save_load_mem(data)
     subtest_destroy_mem(data)
 
-def test_export_load_learner_hibernate():
+def test_export_load_learner():
     export_file = 'export.pkl'
-    for m in ['export', 'hibernate']:
+    for should_destroy in [False, True]:
         learn = fake_learner()
         path = learn.path
-        with CaptureStdout() as cs: getattr(learn, m)()
+        with CaptureStdout() as cs: learn.export(destroy=should_destroy)
         learn = load_learner(path)
         # export removes data
-        train_ds_size = 1 # XXX: not 0?
-        check_learner(learn, train_ds_size)
+        train_items = 0
+        check_learner(learn, train_items)
         if os.path.exists(export_file): os.remove(export_file)
