@@ -44,9 +44,9 @@ But, of course, this was a very basic example. A more advanced approach will, fo
 
 The key is to be able to reclaim GPU and general RAM between all those stages so that a given notebook could do many many things without needing to be restarted.
 
-In a normal function, once its finished, all of its local variables will get destroyed, which should reclaim any memory used by those. If a variable is an object that has circular references, it won't release its memory until a scheduled call of `gc.collect()` will arrive and do the release.
+In a normal function, once its finished, all of its local variables will get destroyed, which should reclaim any memory used by those. If a variable is an object that has circular references, it won't release its memory until a scheduled call of `gc.collect` will arrive and do the release.
 
-In the case of the notebooks there is no automatic variable destruction, since the whole notebook is just one single scope and only shutting down the notebook kernel will free the memory automatically. And then the `Learner` object is a very complex beast that can't avoid circular references and therefore even if you do `del learn` it won't free its resources automatically. We can't afford waiting for `gc.collect()` to arrive some time in the future, as we need the RAM now, or we won't be able to continue. Therefore we have to manually call `gc.collect`.
+In the case of the notebooks there is no automatic variable destruction, since the whole notebook is just one single scope and only shutting down the notebook kernel will free the memory automatically. And then the `Learner` object is a very complex beast that can't avoid circular references and therefore even if you do `del learn` it won't free its resources automatically. We can't afford waiting for `gc.collect` to arrive some time in the future, as we need the RAM now, or we won't be able to continue. Therefore we have to manually call `gc.collect`.
 
 Therefore if we want to free memory half-way through the notebook, the awkward way to do so is:
 
@@ -58,18 +58,18 @@ learn = ... # reconstruct learn
 
 There is also [ipyexperiments](https://github.com/stas00/ipyexperiments/) that was initially created to solve this exact problem - to automate this process of auto-deleting variables by creating artificial scopes (the module itself since evolved to do much more).
 
-footnote: you may also want to call `torch.cuda.empty_cache()` if you actually want to see the memory freed with `nvidia-smi` - this is due to pytorch caching. The memory is freed, but you can't tell that from `nvidia-smi`. You can if you use [pytorch memory allocation functions](https://pytorch.org/docs/stable/notes/cuda.html#memory-management), and it's another function to call) - `ipyexperiments` will do it automatically for you.
+footnote: you may also want to call `torch.cuda.empty_cache` if you actually want to see the memory freed with `nvidia-smi` - this is due to pytorch caching. The memory is freed, but you can't tell that from `nvidia-smi`. You can if you use [pytorch memory allocation functions](https://pytorch.org/docs/stable/notes/cuda.html#memory-management), and it's another function to call) - `ipyexperiments` will do it automatically for you.
 
 But the annoying and error-prone part is that either way you have to reconstruct the `Learner` object and potentially other intermediary objects.
 
-Let's welcome a new function: `learn.purge()` that solves this problem transparently. The last snippet of code is thus gets replaced with just:
+Let's welcome a new function: `learn.purge` that solves this problem transparently. The last snippet of code is thus gets replaced with just:
 
 ```
 learn.purge()
 ```
 which removes any of the `Learner` guts that are no longer needed and reloads the model on GPU, which also helps to reduce [memory fragmentation](https://docs.fast.ai/dev/gpu.html#gpu-ram-fragmentation). Therefore, whenever you need the no longer memory purges, this is the way to do it.
 
-Furthermore, the purging functionality is included in `learn.load()` and is performed by default. You can override the default behavior of it not to purge with `purge=False` argument).
+Furthermore, the purging functionality is included in `learn.load` and is performed by default. You can override the default behavior of it not to purge with `purge=False` argument).
 
 So instead of needing to do:
 
@@ -81,9 +81,9 @@ learn.load('saved')
 learn.purge()
 ```
 
-the call to `learn.purge()` is not needed.
+the call to `learn.purge` is not needed.
 
-You don't need to inject `learn.purge()` between training cycles of the same setup:
+You don't need to inject `learn.purge` between training cycles of the same setup:
 ```
 learn.fit_one_cycle(epochs=10)
 learn.fit_one_cycle(epochs=10)
@@ -92,38 +92,49 @@ The subsequent invocations of the training function do not consume more GPU RAM.
 
 
 
-#### Optimizer nuances
+### Optimizer nuances
 
-The `learn` object can be reset between fit cycles to save memory. To demonstrate:
+The `learn` object can be reset between fit cycles to save memory. But you need to know when it's the right and practical thing to do. For example in a situation like this:
 
 ```
 learn.fit_one_cycle(epochs=10)
-# reset learn or not here? reset with clearing learn.opt or not?
 learn.fit_one_cycle(epochs=10)
 ```
 
-In the exact example above resetting will make no difference to GPU RAM consumption, but if you had other things happening in between you might save quite a lot of GPU RAM.
+purging the `learn` object between two `fit` calls will make no difference to GPU RAM consumption. But if you had other things happening in between, such as freeze/unfreeze or image size change, you should be able to recover quite a lot of GPU RAM.
 
-By `learn.load()` internally calls `learn.purge()`, but it doesn't clear `learn.opt` (the optimizer state). It's a safe default, because, some models like GANs break if `learn.opt` gets cleared between fit cycles.
+As explained in the previous section `learn.load` internally calls `learn.purge`, but by default it doesn't clear `learn.opt` (the optimizer state). It's a safe default, because, some models like GANs break if `learn.opt` gets cleared between `fit` cycles.
 
-However, `learn.purge()` does clear `learn.opt` by default.
+However, `learn.purge` does clear `learn.opt` by default.
 
 Therefore, if your model is sensitive to clearing `learn.opt`, you should be using one of these 2 ways:
 
-```
-learn.load(name) # which calls learn.load(name, with_opt=True)
-learn.purge(clear_opt=False)
-```
+1.
+   ```
+   learn.load(name) # which calls learn.load(name, with_opt=True)
+   ```
+2.
+   ```
+   learn.purge(clear_opt=False)
+   ```
+
 either of which will reset everything in `learn`, except `learn.opt`.
 
 If your model is not sensitive to `learn.opt` resetting between fit cycles, and you
 want to reclaim more GPU RAM, you can clear `learn.opt` via one of the following 3 ways:
 
-```
-learn.load('...', with_opt=False)
-learn.purge()  # which calls learn.purge(clear_opt=True)
-learn.opt.clear()
-```
+1.
+   ```
+   learn.load('...', with_opt=False)
+   ```
+2.
+   ```
+   learn.purge()  # which calls learn.purge(clear_opt=True)
+   ```
+3.
+   ```
+   learn.opt.clear()
+   ```
 
 ### Learner release
 
@@ -145,7 +156,7 @@ learn.destroy()
 
 ### Inference
 
-For inference we only need the saved model and the data to predict on, and nothing else that was used during the training. So to use even less memory (general RAM this time), the lean approach is to `learn.export()` and `learn.destroy()` at the end of the training, and then to `load_learner()` before the prediction stage is started.
+For inference we only need the saved model and the data to predict on, and nothing else that was used during the training. So to use even less memory (general RAM this time), the lean approach is to `learn.export` and `learn.destroy` at the end of the training, and then to `load_learner` before the prediction stage is started.
 
 ```
 # end of a potential training scenario
@@ -162,9 +173,9 @@ preds = learn.get_preds(ds_type=DatasetType.Test)
 
 ### Conclusion
 
-So, to conclude, when you finished your `learn.fit()` cycles and you are changing to a different image size, or you unfreeze, or you do anything else that no longer requires previous structures on GPU, you either call `learn.purge()` or `learn.load('saved_name')` and you should have most of your GPU RAM back as it was where you have just started, plus the allocated memory for the model. That's of course, if you haven't created some other variables that hold some GPU RAM tied up.
+So, to conclude, when you finished your `learn.fit` cycles and you are changing to a different image size, or you unfreeze, or you do anything else that no longer requires previous structures on GPU, you either call `learn.purge` or `learn.load('saved_name')` and you should have most of your GPU RAM back as it was where you have just started, plus the allocated memory for the model. That's of course, if you haven't created some other variables that hold some GPU RAM tied up.
 
-And for inferences the  `learn.export()`, `learn.destroy()` and `load_learner()` sequence will require even less RAM.
+And for inferences the  `learn.export`, `learn.destroy` and `load_learner` sequence will require even less RAM.
 
 Therefore now you should be able to do a ton of things without needing to restart your notebook.
 
@@ -178,7 +189,7 @@ And also you need to know about the current bug in ipython that may prevent you 
 
 ## GPU Memory Usage Anatomy
 
-1. About 0.5GB per process is used by CUDA context, see [Unusable GPU RAM per process](https://docs.fast.ai/dev/gpu.html#unusable-gpu-ram-per-process). This memory is consumed during the first call to `.cuda()`, when the first tensor is moved to GPU. You can test your card with:
+1. About 0.5GB per process is used by CUDA context, see [Unusable GPU RAM per process](https://docs.fast.ai/dev/gpu.html#unusable-gpu-ram-per-process). This memory is consumed during the first call to `.cuda`, when the first tensor is moved to GPU. You can test your card with:
 
    ```
    python -c 'from fastai.utils.mem import *; b=gpu_mem_get_used_no_cache(); preload_pytorch(); print(gpu_mem_get_used_no_cache()-b);'
