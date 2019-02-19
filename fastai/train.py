@@ -5,7 +5,7 @@ from .basic_data import *
 from .basic_train import *
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'ClassificationInterpretation', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32',
-           'mixup']
+           'mixup', 'AccumulateStepper', 'turn_on_accumulation', 'turn_off_accumulation']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -94,8 +94,62 @@ def clip_grad(learn:Learner, clip:float=0.1)->Learner:
     "Add gradient clipping of `clip` during training."
     learn.callback_fns.append(partial(GradientClipping, clip=clip))
     return learn
-
 Learner.clip_grad = clip_grad
+     
+class AccumulateStepper(LearnerCallback):
+    """
+    Does accumlated step every nth step by accumulating gradients
+    """
+    def __init__(self, learn:Learner, n_step:int = 1):
+        super().__init__(learn)
+        self.n_step = n_step
+ 
+    def on_train_begin(self, **kwargs):
+        "check if loss is reduction"
+        if self.loss_func.reduction == "mean":
+             print("For better gradients consider 'reduction=sum'")
+        
+    def on_epoch_begin(self, **kwargs):
+        "init samples and batches, change optimizer"
+        self.acc_samples = 0
+        self.acc_batches = 0
+        
+    def on_batch_begin(self, last_input, last_target, **kwargs):
+        "accumulate samples and batches"
+        self.acc_samples += last_input.shape[0]
+        self.acc_batches += 1
+#         print(f"At batch {self.acc_batches}")
+        
+    def on_backward_end(self, **kwargs):
+        "step if number of desired batches accumulated, reset samples"
+        if (self.acc_batches % self.n_step) == 0:
+            for p in (self.learn.model.parameters()):
+                if p.requires_grad: p.grad.div_(self.acc_samples)
+    
+#             print(f"Stepping at batch: {self.acc_batches}")
+            self.learn.opt.real_step()
+            self.learn.opt.real_zero_grad()
+            self.acc_samples = 0
+    
+    def on_epoch_end(self, **kwargs):
+        "step the rest of the accumulated grads"
+        self.learn.opt.real_step()
+        self.learn.opt.real_zero_grad()
+
+class AccumulateOptimWrapper(OptimWrapper):
+    def step(self):          pass
+    def zero_grad(self):      pass
+    def real_step(self):      super().step()
+    def real_zero_grad(self): super().zero_grad()
+        
+def acc_create_opt(self, lr:Floats, wd:Floats=0.):
+        "Create optimizer with `lr` learning rate and `wd` weight decay."
+        self.opt = AccumulateOptimWrapper.create(self.opt_func, lr, self.layer_groups,
+                                         wd=wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+
+original_create_opt = Learner.create_opt
+def turn_off_accumulation(): Learner.create_opt = original_create_opt
+def turn_on_accumulation(): Learner.create_opt = acc_create_opt
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
