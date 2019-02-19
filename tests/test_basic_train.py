@@ -89,23 +89,10 @@ def report_mem_real(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
     print(f"{mtrace}{ctx}")
 #check_mem_expected = report_mem_real
 
-#@pytest.mark.skip(reason="WIP")
-@pytest.mark.cuda
-def test_save_load_mem_leak(data):
+def subtest_save_load_mem(data):
     learn = learn_large_unfit(data)
     name = 'mnist-tiny-test-save-load'
     #learn.fit_one_cycle(1)
-
-    # A big difficulty with measuring memory consumption is that it varies quite
-    # wildly from one GPU model to another.
-    #
-    # Perhaps we need sets of different expected numbers per developer's GPUs?
-    # override check_mem_expected above with report_mem_real to acquire a new set
-    #
-    # So for now just testing the specific card I have until a better way is found.
-    dev_name = torch.cuda.get_device_name(None)
-    if dev_name != 'GeForce GTX 1070 Ti':
-        pytest.skip(f"currently only matched for mem usage on specific GPU models, {dev_name} is not one of them")
 
     # save should consume no extra used or peaked memory
     with GPUMemTrace() as mtrace:
@@ -153,12 +140,44 @@ def test_destroy():
     assert msg in cs.out
 
     # should be able to call attributes, except they are gone and say so
+    # unless they are __getattr__' loaded from Learner, in which case they are still normal
     for attr in ['data', 'model', 'callbacks']:
         with CaptureStdout() as cs: val = getattr(learn, attr, None)
         assert msg in cs.out, attr
         assert val is None, attr
 
-    # check that destroy, didn't break the Learner class
+    # check that `destroy` didn't break the Learner class
     learn = fake_learner()
     with CaptureStdout() as cs: learn.fit(1)
     assert "Total time" in cs.out
+
+
+def subtest_destroy_mem(data):
+    with GPUMemTrace() as mtrace:
+        learn = learn_large_unfit(data)
+    check_mem_expected(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="load")
+
+    # destroy should free most of the memory that was allocated during load (training, etc.)
+    with GPUMemTrace() as mtrace:
+        with CaptureStdout() as cs: learn.destroy()
+    check_mem_expected(used_exp=-20, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="destroy")
+
+# memory tests behave differently when run individually and in a row, since
+# memory utilization patterns are very inconsistent - would require a full gpu
+# card reset before each test to be able to test consistently, so will run them all in a precise sequence
+@pytest.mark.cuda
+def test_memory(data):
+    # A big difficulty with measuring memory consumption is that it varies quite
+    # wildly from one GPU model to another.
+    #
+    # Perhaps we need sets of different expected numbers per developer's GPUs?
+    # override check_mem_expected above with report_mem_real to acquire a new set
+    #
+    # So for now just testing the specific card I have until a better way is found.
+
+    dev_name = torch.cuda.get_device_name(None)
+    if dev_name != 'GeForce GTX 1070 Ti':
+        pytest.skip(f"currently only matched for mem usage on specific GPU models, {dev_name} is not one of them")
+
+    subtest_save_load_mem(data)
+    subtest_destroy_mem(data)
