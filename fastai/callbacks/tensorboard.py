@@ -27,7 +27,7 @@ class LearnerTensorboardWriter(LearnerCallback):
     "Broadly useful callback for Learners that writes to Tensorboard.  Writes model histograms, losses/metrics, and gradient stats."
     def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=500, stats_iters:int=100):
         super().__init__(learn=learn)
-        self.base_dir, self.name, self.loss_iters, self.hist_iters, self.stats_iters  = base_dir, name, loss_iters, hist_iters, stats_iters
+        self.base_dir,self.name,self.loss_iters,self.hist_iters,self.stats_iters  = base_dir,name,loss_iters,hist_iters,stats_iters
         log_dir = base_dir/name
         self.tbwriter = SummaryWriter(log_dir=str(log_dir))
         self.hist_writer = HistogramTBWriter()
@@ -147,8 +147,7 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
             trainer.switch(gen_mode=True)
             self.img_gen_vis.write(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, 
                                     iteration=iteration, tbwriter=self.tbwriter)
-        finally:                                      
-            trainer.switch(gen_mode=gen_mode)
+        finally: trainer.switch(gen_mode=gen_mode)
 
     def on_batch_end(self, iteration:int, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
@@ -167,14 +166,17 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
 
 class ImageGenTensorboardWriter(LearnerTensorboardWriter):
     "Callback for non-GAN image generating Learners that writes to Tensorboard.  Extends LearnerTensorboardWriter and adds output image writes."
-    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=500, stats_iters:int=100, visual_iters:int=100):
-        super().__init__(learn=learn, base_dir=base_dir, name=name, loss_iters=loss_iters, hist_iters=hist_iters, stats_iters=stats_iters)
+    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=500, stats_iters:int=100, 
+                 visual_iters:int=100):
+        super().__init__(learn=learn, base_dir=base_dir, name=name, loss_iters=loss_iters, hist_iters=hist_iters, 
+                         stats_iters=stats_iters)
         self.visual_iters = visual_iters
         self.img_gen_vis = ImageTBWriter()
 
     def _write_images(self, iteration:int)->None:
         "Writes model generated, original and real images to Tensorboard"
-        self.img_gen_vis.write(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, iteration=iteration, tbwriter=self.tbwriter)
+        self.img_gen_vis.write(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, iteration=iteration, 
+                               tbwriter=self.tbwriter)
 
     def on_batch_end(self, iteration:int, **kwargs)->None:
         "Callback function that writes batch end appropriate data to Tensorboard."
