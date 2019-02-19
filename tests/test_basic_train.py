@@ -185,12 +185,12 @@ def test_memory(data):
     subtest_save_load_mem(data)
     subtest_destroy_mem(data)
 
-def test_export_load_learner_hibernate():
+def test_export_load_learner():
     export_file = 'export.pkl'
-    for m in ['export', 'hibernate']:
+    for should_destroy in [False, True]:
         learn = fake_learner()
         path = learn.path
-        with CaptureStdout() as cs: getattr(learn, m)()
+        with CaptureStdout() as cs: learn.export(destroy=should_destroy)
         learn = load_learner(path)
         # export removes data
         train_ds_size = 1 # XXX: not 0?

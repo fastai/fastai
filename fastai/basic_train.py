@@ -204,7 +204,7 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:str='export.pkl'):
+    def export(self, fname:str='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -218,11 +218,7 @@ class Learner():
         state['cls'] = self.__class__
         torch.save(state, open(self.path/fname, 'wb'))
         self.model.to(device)
-
-    def hibernate(self, fname:str='export.pkl'):
-        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use `load_learner` to restore."
-        self.export(fname)
-        self.destroy()
+        if destroy: self.destroy()
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
