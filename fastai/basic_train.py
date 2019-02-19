@@ -222,7 +222,7 @@ class Learner():
         self.model.to(device)
 
     def hibernate(self, fname:str='export.pkl'):
-        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use load_learner() to restore."
+        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use `load_learner` to restore."
         self.export(fname)
         self.destroy()
 
