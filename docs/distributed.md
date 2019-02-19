@@ -2,7 +2,7 @@
 title: How to launch a distributed training
 ---
 
-If you have multiple GPUs, the most reliable way to use all of them for a training is to use the distributed package from pytorch. To help you, there is a distributed module in fastai that has helper functions to make it really easy.
+If you have multiple GPUs, the most reliable way to use all of them for training is to use the distributed package from pytorch. To help you, there is a distributed module in fastai that has helper functions to make it really easy.
 
 ## Prepare your script
 
@@ -21,7 +21,7 @@ learn.fit_one_cycle(10, 3e-3, wd=0.4, div_factor=10, pct_start=0.5)
 
 ## Add the distributed initialization
 
-Your script is going to be executed in different process that will each happen on a different GPU. To make this work properly, add the following introduction between your imports and the rest of your code.
+Your script is going to be executed in a different process that will each happen on a different GPU. To make this work properly, add the following introduction between your imports and the rest of your code.
 
 ``` python
 from fastai.distributed import *
@@ -41,7 +41,7 @@ You then have to add one thing to your learner before fitting it to tell it it's
 ``` python
 learn = learn.distributed(arg.local_rank)
 ```
-This will add the additional callbacks that will make sure your model and your data loaders are properly setup.
+This will add the additional callbacks that will make sure your model and your data loaders are properly setups.
 
 Now you can save your scriptn here is what the full example looks like:
 

@@ -34,7 +34,7 @@ If you have `nvidia-smi` working and `pytorch` still can't recognize your NVIDIA
 
    Note, not remove, but purge! purge in addition to removing the package, also removes package-specific configuration and any other files that were created by it.
 
-2. Once you uninstalled the old drivers, make sure you don't have any orphaned NVIDIA drivers on your system remaining from manual installs. Usually it's enough to run:
+2. Once you uninstalled the old drivers, make sure you don't have any orphaned NVIDIA drivers on your system remaining from manual installs. Usually, it's enough to run:
 
    ```
    find /usr/ | grep libcuda.so
