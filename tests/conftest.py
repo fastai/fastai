@@ -43,8 +43,15 @@ def set_default(obj):
      if isinstance(obj, set): return list(obj)
      raise TypeError
 
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    res = outcome.get_result()
+    if res.when == "call" and res.failed:
+        RegisterTestsPerAPI.oneOrMoreTestsfailed = True              
+
 def stop_doctest_collector():
     fastai_dir = abspath(join(dirname( __file__ ), '..', 'fastai'))
-    if RegisterTestsPerAPI.apiTestsMap:
+    if RegisterTestsPerAPI.apiTestsMap and RegisterTestsPerAPI.oneOrMoreTestsfailed == False:
         with open(fastai_dir + f'/{DB_NAME}', 'w') as f:
                 json.dump(obj=RegisterTestsPerAPI.apiTestsMap, fp=f, indent=4, sort_keys=True, default=set_default)

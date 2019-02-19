@@ -8,6 +8,7 @@ DB_NAME = 'test_api_db.json'
 
 class RegisterTestsPerAPI:
     apiTestsMap = dict()
+    oneOrMoreTestsfailed = False
 
     @staticmethod
     def this_tests(*testedapis):
