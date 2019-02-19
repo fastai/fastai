@@ -137,3 +137,28 @@ def test_save_load_mem_leak(data):
     check_mem_expected(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="purge+load")
 
     if os.path.exists(model_path): os.remove(model_path)
+
+def test_destroy():
+    msg = "this object has been destroyed"
+    learn = fake_learner()
+    with CaptureStdout() as cs: learn.destroy()
+    assert "this Learner object self-destroyed" in cs.out
+
+    # should be able to re-run learn.destroy multiple times for nb convenience
+    with CaptureStdout() as cs: learn.destroy()
+    assert msg in cs.out
+
+    # should be able to run normal methods, except they are no-ops and say that they are
+    with CaptureStdout() as cs: learn.fit(1)
+    assert msg in cs.out
+
+    # should be able to call attributes, except they are gone and say so
+    for attr in ['data', 'model', 'callbacks']:
+        with CaptureStdout() as cs: val = getattr(learn, attr, None)
+        assert msg in cs.out, attr
+        assert val is None, attr
+
+    # check that destroy, didn't break the Learner class
+    learn = fake_learner()
+    with CaptureStdout() as cs: learn.fit(1)
+    assert "Total time" in cs.out
