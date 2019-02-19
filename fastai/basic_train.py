@@ -4,6 +4,7 @@ from .basic_data import *
 from .callback import *
 from .data_block import *
 from .utils.mem import gpu_mem_restore
+import inspect
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
@@ -213,7 +214,7 @@ class Learner():
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
         device = one_param(self.model).device
-        state['model'] = self.model.cpu() #This is done inplace so we need to put the model back where it was after the save.
+        state['model'] = self.model.cpu() # This is done inplace so we need to put the model back where it was after the save.
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
@@ -221,8 +222,8 @@ class Learner():
         self.model.to(device)
 
     def hibernate(self, fname:str='export.pkl'):
-        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use load_learner() to restore."
-        self.export(self, fname)
+        "Export the state of the `Learner` in `self.path/fname` and remove the object from memory. Use `load_learner` to restore."
+        self.export(fname)
         self.destroy()
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
@@ -258,15 +259,20 @@ class Learner():
 
     def destroy(self):
         "Free the Learner internals, leaving just an empty shell that consumes no memory"
+
+        class ZombieLearner(Learner):
+            msg = "this object has been destroyed"
+            def __getattr__(self, item):    print(ZombieLearner.msg); return None
+            def destroyed(*args, **kwargs): print(ZombieLearner.msg)
+
         attrs = [k for k in self.__dict__.keys() if not k.startswith("__")]
         for a in attrs: delattr(self, a)
+        # the instance methods can still be called, but will just give a message
+        methods = [k for k in dir(self) if not k.startswith("__") and inspect.isroutine(getattr(self, k))]
+        for m in methods: setattr(self, m, ZombieLearner.destroyed)
+        self.__class__ = ZombieLearner
         gc.collect()
         print("this Learner object self-destroyed - it still exists, but no longer usable")
-        # in case someone tries to call methods on this destroyed object
-        def _catch_all_destroyed(self, name):
-            def method(*args, **kwargs): print("this object has been destroyed")
-            return method
-        self.__getattr__ = _catch_all_destroyed
 
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."

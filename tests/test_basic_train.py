@@ -34,25 +34,51 @@ def test_get_preds():
         a = learn.get_preds()
     assert learn.data.batch_size == len(a[1])
 
+def test_freeze_to():
+    learn = fake_learner(layer_group_count=3)
+    learn.freeze_to(1)
+    for i, param in enumerate(learn.model.parameters()):
+        # param 0 is weights in layer_group 0 and param 1 is bias in layer_group 0
+        # all params other than those should be frozen
+        if i >= 2: assert param.requires_grad == True
+        else:      assert param.requires_grad == False
+
+def test_freeze():
+    learn = fake_learner(layer_group_count=3)
+    learn.freeze()
+    for i, param in enumerate(learn.model.parameters()):
+        # 2 layer groups with 1 param in each should be frozen
+        if i >= 4: assert param.requires_grad == True
+        else:      assert param.requires_grad == False
+
+def test_unfreeze():
+    learn = fake_learner(layer_group_count=4)
+    for param in learn.model.parameters(): param.requires_grad=False
+    learn.unfreeze()
+    for param in learn.model.parameters(): assert param.requires_grad == True
+
+def check_learner(learn, train_ds_size):
+    # basic checks
+    #assert learn.recorder
+    assert learn.model
+    assert train_ds_size == len(learn.data.train_ds)
+    # XXX: could use more sanity checks
+
 def test_save_load(learn):
     name = 'mnist-tiny-test-save-load'
-
+    train_ds_size = len(learn.data.train_ds)
     # testing that all these various sequences don't break each other
     model_path = learn.save(name, return_path=True)
     learn.load(name, purge=True)
     learn.data.sanity_check()
-    assert 709 == len(learn.data.train_ds)
+    check_learner(learn, train_ds_size)
+
     learn.purge()
     learn.load(name)
     learn.load(name)
     model_path = learn.save(name, return_path=True)
     learn.load(name, purge=True)
-    # basic checks
-    #assert learn.recorder
-    assert learn.opt
-    assert 709 == len(learn.data.train_ds)
-    # XXX: could use more sanity checks
-
+    check_learner(learn, train_ds_size)
     if os.path.exists(model_path): os.remove(model_path)
 
 def check_mem_expected(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
@@ -66,23 +92,10 @@ def report_mem_real(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
     print(f"{mtrace}{ctx}")
 #check_mem_expected = report_mem_real
 
-#@pytest.mark.skip(reason="WIP")
-@pytest.mark.cuda
-def test_save_load_mem_leak(data):
+def subtest_save_load_mem(data):
     learn = learn_large_unfit(data)
     name = 'mnist-tiny-test-save-load'
     #learn.fit_one_cycle(1)
-
-    # A big difficulty with measuring memory consumption is that it varies quite
-    # wildly from one GPU model to another.
-    #
-    # Perhaps we need sets of different expected numbers per developer's GPUs?
-    # override check_mem_expected above with report_mem_real to acquire a new set
-    #
-    # So for now just testing the specific card I have until a better way is found.
-    dev_name = torch.cuda.get_device_name(None)
-    if dev_name != 'GeForce GTX 1070 Ti':
-        pytest.skip(f"currently only matched for mem usage on specific GPU models, {dev_name} is not one of them")
 
     # save should consume no extra used or peaked memory
     with GPUMemTrace() as mtrace:
@@ -114,3 +127,72 @@ def test_save_load_mem_leak(data):
     check_mem_expected(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="purge+load")
 
     if os.path.exists(model_path): os.remove(model_path)
+
+def test_destroy():
+    msg = "this object has been destroyed"
+    learn = fake_learner()
+    with CaptureStdout() as cs: learn.destroy()
+    assert "this Learner object self-destroyed" in cs.out
+
+    # should be able to re-run learn.destroy multiple times for nb convenience
+    with CaptureStdout() as cs: learn.destroy()
+    assert msg in cs.out
+
+    # should be able to run normal methods, except they are no-ops and say that they are
+    with CaptureStdout() as cs: learn.fit(1)
+    assert msg in cs.out
+
+    # should be able to call attributes, except they are gone and say so
+    # unless they are __getattr__' loaded from Learner, in which case they are still normal
+    for attr in ['data', 'model', 'callbacks']:
+        with CaptureStdout() as cs: val = getattr(learn, attr, None)
+        assert msg in cs.out, attr
+        assert val is None, attr
+
+    # check that `destroy` didn't break the Learner class
+    learn = fake_learner()
+    with CaptureStdout() as cs: learn.fit(1)
+    assert "Total time" in cs.out
+
+
+def subtest_destroy_mem(data):
+    with GPUMemTrace() as mtrace:
+        learn = learn_large_unfit(data)
+    check_mem_expected(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="load")
+
+    # destroy should free most of the memory that was allocated during load (training, etc.)
+    with GPUMemTrace() as mtrace:
+        with CaptureStdout() as cs: learn.destroy()
+    check_mem_expected(used_exp=-20, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="destroy")
+
+# memory tests behave differently when run individually and in a row, since
+# memory utilization patterns are very inconsistent - would require a full gpu
+# card reset before each test to be able to test consistently, so will run them all in a precise sequence
+@pytest.mark.cuda
+def test_memory(data):
+    # A big difficulty with measuring memory consumption is that it varies quite
+    # wildly from one GPU model to another.
+    #
+    # Perhaps we need sets of different expected numbers per developer's GPUs?
+    # override check_mem_expected above with report_mem_real to acquire a new set
+    #
+    # So for now just testing the specific card I have until a better way is found.
+
+    dev_name = torch.cuda.get_device_name(None)
+    if dev_name != 'GeForce GTX 1070 Ti':
+        pytest.skip(f"currently only matched for mem usage on specific GPU models, {dev_name} is not one of them")
+
+    subtest_save_load_mem(data)
+    subtest_destroy_mem(data)
+
+def test_export_load_learner_hibernate():
+    export_file = 'export.pkl'
+    for m in ['export', 'hibernate']:
+        learn = fake_learner()
+        path = learn.path
+        with CaptureStdout() as cs: getattr(learn, m)()
+        learn = load_learner(path)
+        # export removes data
+        train_ds_size = 1 # XXX: not 0?
+        check_learner(learn, train_ds_size)
+        if os.path.exists(export_file): os.remove(export_file)
