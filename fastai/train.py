@@ -106,7 +106,7 @@ class AccumulateStepper(LearnerCallback):
  
     def on_train_begin(self, **kwargs):
         "check if loss is reduction"
-        if hasattr(self.loss_func, "reduction") and (self.loss_func.reduction == "mean"):
+        if hasattr(self.loss_func, "reduction") and (self.loss_func.reduction != "sum"):
              warn("For better gradients consider 'reduction=sum'")
         
     def on_epoch_begin(self, **kwargs):
