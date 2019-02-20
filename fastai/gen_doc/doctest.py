@@ -1,51 +1,58 @@
-import sys, inspect, re
+import sys, inspect, re, json
 from os.path import basename, split
 from pathlib import Path
+from collections import defaultdict
 
 __all__ = ['this_tests']
 
 DB_NAME = 'test_api_db.json'
 
-class RegisterTestsPerAPI:
-    api_tests_map = dict()
+def _json_set_default(obj):
+    if isinstance(obj, set): return list(obj)
+    raise TypeError
+
+class TestAPIRegistry:
+    "Tests register which API they validate using this class."
+    api_tests_map     = defaultdict(list)
     some_tests_failed = False
 
     @staticmethod
-    def this_tests(*testedapis):
+    def this_tests(*funcs):
         prev_frame = inspect.currentframe().f_back.f_back
-        pathfilename, line_number, test_function_name, lines, index = inspect.getframeinfo(prev_frame)
-        lineno_parentfunc, parent_func = get_parent_func(line_number, get_lines(pathfilename))
-        list_test = [{'file': relative_test_path(pathfilename), 'test': test_function_name , 'line': lineno_parentfunc}]
-        for api in testedapis:
-             fq_apiname = full_name_with_qualname(api)
-             fastaimodule = re.match(r'^fastai\..*',fq_apiname)
-             if fastaimodule:
-                if fq_apiname in RegisterTestsPerAPI.api_tests_map:
-                    RegisterTestsPerAPI.api_tests_map[fq_apiname] += list_test
-                else:
-                    RegisterTestsPerAPI.api_tests_map[fq_apiname] = list_test
+        filename, lineno, test_name, _, _ = inspect.getframeinfo(prev_frame)
+        parent_func_lineno, _ = get_parent_func(lineno, get_lines(filename))
+        entry = [{'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}]
+        for func in funcs:
+            func_fq = get_func_fq_name(func)
+            if re.match(r'fastai\.', func_fq): TestAPIRegistry.api_tests_map[func_fq].append(entry)
 
-def this_tests(*testedapis): RegisterTestsPerAPI.this_tests(*testedapis)
+    def tests_failed(status=True):
+        TestAPIRegistry.some_tests_failed = status
 
-def full_name_with_qualname(testedapi):
-    if inspect.ismodule(testedapi): return testedapi.__name__
-    name = testedapi.__qualname__ if hasattr(testedapi, '__qualname__') else testedapi.__name__
-    return f'{testedapi.__module__}.{name}'
+    def registry_save():
+        if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:
+            path = Path(__file__).parent.parent.resolve()/DB_NAME
+            print(f"\n*** Saving test api registry @ {path}")
+            with open(path, 'w') as f:
+                json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
 
-def set_default(obj):
-    if isinstance(obj, set): return list(obj)
-    raise TypeError
+def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
+
+def get_func_fq_name(func):
+    if inspect.ismodule(func): return func.__name__
+    name = func.__qualname__ if hasattr(func, '__qualname__') else func.__name__
+    return f'{func.__module__}.{name}'
 
 def get_parent_func(lineno, lines, ignore_missing=False):
     "Find any lines where `elt` is called and return the parent test function"
     for idx,l in enumerate(reversed(lines[:lineno])):
         if re.match(f'\s*def test', l):  return (lineno - (idx+1)), l
-        if re.match(f'^\w+', l):  break # Top level indent - break because we are out of function scope
+        if re.match(f'\w+', l):  break # top level indent - out of function scope
     if ignore_missing: return None
     raise LookupError('Could not find parent function for line:', lineno, lines[:lineno])
 
 def relative_test_path(test_file:Path)->str:
-    "Path relative to 'fastai' parent directory"
+    "Path relative to the `fastai` parent directory"
     test_file = Path(test_file)
     testdir_idx = list(reversed(test_file.parts)).index('tests')
     return '/'.join(test_file.parts[-(testdir_idx+1):])

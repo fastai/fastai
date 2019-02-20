@@ -172,7 +172,7 @@ test-fast: ## run tests in parallel (requires pip install pytest-xdist)
 	pytest -n 3
 
 test-full: ## run all tests, including slow ones, print summary
-	pytest --runslow -ra -regtestapidb
+	pytest --runslow -ra --testapireg
 
 test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
 	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
