@@ -15,6 +15,7 @@ class TestAPIRegistry:
     "Tests register which API they validate using this class."
     api_tests_map     = defaultdict(list)
     some_tests_failed = False
+    failed_test = None
 
     @staticmethod
     def this_tests(*funcs):
@@ -30,11 +31,20 @@ class TestAPIRegistry:
             if re.match(r'fastai\.', func_fq):
                 if entry not in TestAPIRegistry.api_tests_map[func_fq]: 
                     TestAPIRegistry.api_tests_map[func_fq].append(entry)
+                    TestAPIRegistry.failed_test = None
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
-
+    
+    def this_tests_flag_on(item):
+        TestAPIRegistry.failed_test = item.name
+       
     def tests_failed(status=True):
         TestAPIRegistry.some_tests_failed = status
+    
+    def this_tests_flag_check(item):
+        if TestAPIRegistry.failed_test == item.name:
+            print('\n*** Warning: Pls register ' + item.name + ' with TestAPIRegistry.this_tests')
+            TestAPIRegistry.failed_test = None
 
     def registry_save():
         if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:

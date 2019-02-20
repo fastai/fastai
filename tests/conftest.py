@@ -47,4 +47,6 @@ def doctest_collector_start(request):
 def pytest_runtest_makereport(item, call):
     outcome = yield
     res = outcome.get_result()
-    if res.when == "call" and res.failed: TestAPIRegistry.tests_failed()
+    if res.when == "setup": TestAPIRegistry.this_tests_flag_on(item)
+    if res.when == "call" and res.failed:  TestAPIRegistry.tests_failed()
+    if res.when == "teardown":  TestAPIRegistry.this_tests_flag_check(item)        
