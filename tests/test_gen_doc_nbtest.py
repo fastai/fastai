@@ -1,12 +1,13 @@
 import pytest
 from fastai.gen_doc.nbtest import *
 from fastai.gen_doc import nbtest
+from fastai.gen_doc.doctest import this_tests
 import inspect
 
 def test_submodule_name():
     result:str = nbtest._submodule_name(nbtest.doctest)
     assert result == 'gen_doc', 'should return submodule'
-    
+
     from fastai.core import ifnone
     result:str = nbtest._submodule_name(ifnone)
     assert result == None, f'fastai/module should not have a submodule: {result}'
@@ -15,7 +16,7 @@ def test_is_file_match():
     import fastai.text.data
     result = nbtest._is_file_match(fastai.text.data, 'test_text_data.py')
     assert result is not None, f"matches test files with submodule"
-    
+
     import fastai.core
     result = nbtest._is_file_match(fastai.core.ifnone, 'test_core_subset_category.py')
     assert result is not None, f"matches module subsets"
@@ -44,12 +45,12 @@ def test_fuzzy_test_match():
     assert result[0]['test'] == 'test_mock_function', 'matches simple function calls'
     assert result[1]['test'] == 'test_related', 'matches related calls'
     assert len(result) == 2, 'should not include test_substring'
-    
+
     lines = ['def test_without_fcall():',
-             '    return None', 
+             '    return None',
              'def helper_func():',
-             '    x = func(testedapi)', 
-             '    x = test_function(testedapi)', 
+             '    x = func(testedapi)',
+             '    x = test_function(testedapi)',
              'x = func()']
     result = fuzzy_test_match('func', lines, None)
     assert len(result) == 0, 'should only find parent test functions with `def test_` prefix'
@@ -58,7 +59,7 @@ def test_fuzzy_line_match():
     # Testing _fuzzy_test_match private methods
     result = nbtest._fuzzy_line_match('Databunch.get', ['d = DataBunch()', 'item = d.get(5)'])
     assert len(result) == 1, 'finds class methods'
-    
+
     result = nbtest._fuzzy_line_match('TextList', ['tl = (TextList.from_df()', '', 'LMTextList()'])
     assert len(result) == 1, 'matches classes'
 
@@ -66,3 +67,21 @@ def test_fuzzy_line_match():
 def test_get_tests_dir():
     result:Path = nbtest.get_tests_dir(nbtest)
     assert result.parts[-1] == 'tests', f"Failed: get_tests_dir return unexpected result: {result}"
+
+def test_this_tests():
+
+    # self test
+    this_tests(this_tests)
+
+    # not a function
+    func = 'foo bar'
+    try: this_tests(func)
+    except Exception as e: assert f"'{func}' is not a function" in str(e)
+    else: assert False, f'this_tests({func}) should have failed'
+
+    # not a fastai function
+    import numpy as np
+    func = np.any
+    try: this_tests(func)
+    except Exception as e: assert f"'{func}' is not in the fastai API" in str(e)
+    else: assert False, f'this_tests({func}) should have failed'
