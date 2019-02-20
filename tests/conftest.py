@@ -36,14 +36,22 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(scope="session", autouse=True)
 def start_doctest_collector(request):
-    matching = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    if not matching: request.addfinalizer(stop_doctest_collector)
+    individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
+    if not individualtests and '-regtestapidb' in sys.argv: request.addfinalizer(stop_doctest_collector)
 
 def set_default(obj):
      if isinstance(obj, set): return list(obj)
      raise TypeError
 
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    res = outcome.get_result()
+    if res.when == "call" and res.failed:
+        RegisterTestsPerAPI.some_tests_failed = True     
+
 def stop_doctest_collector():
     fastai_dir = abspath(join(dirname( __file__ ), '..', 'fastai'))
-    with open(fastai_dir + f'/{DB_NAME}', 'w') as f:
-        json.dump(obj=RegisterTestsPerAPI.apiTestsMap, fp=f, indent=4, sort_keys=True, default=set_default)
+    if RegisterTestsPerAPI.api_tests_map and RegisterTestsPerAPI.some_tests_failed == False:
+        with open(fastai_dir + f'/{DB_NAME}', 'w') as f:
+            json.dump(obj=RegisterTestsPerAPI.api_tests_map, fp=f, indent=4, sort_keys=True, default=set_default)

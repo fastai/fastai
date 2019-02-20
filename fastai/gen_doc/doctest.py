@@ -7,7 +7,8 @@ __all__ = ['this_tests']
 DB_NAME = 'test_api_db.json'
 
 class RegisterTestsPerAPI:
-    apiTestsMap = dict()
+    api_tests_map = dict()
+    some_tests_failed = False
 
     @staticmethod
     def this_tests(*testedapis):
@@ -17,10 +18,12 @@ class RegisterTestsPerAPI:
         list_test = [{'file': relative_test_path(pathfilename), 'test': test_function_name , 'line': lineno_parentfunc}]
         for api in testedapis:
              fq_apiname = full_name_with_qualname(api)
-             if fq_apiname in RegisterTestsPerAPI.apiTestsMap:
-                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] += list_test
-             else:
-                 RegisterTestsPerAPI.apiTestsMap[fq_apiname] = list_test
+             fastaimodule = re.match(r'^fastai\..*',fq_apiname)
+             if fastaimodule:
+                if fq_apiname in RegisterTestsPerAPI.api_tests_map:
+                    RegisterTestsPerAPI.api_tests_map[fq_apiname] += list_test
+                else:
+                    RegisterTestsPerAPI.api_tests_map[fq_apiname] = list_test
 
 def this_tests(*testedapis): RegisterTestsPerAPI.this_tests(*testedapis)
 
