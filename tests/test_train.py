@@ -39,7 +39,7 @@ def test_fit_one_cycle(learn):
     # https://github.com/sgugger/Deep-Learning/blob/master/Cyclical%20LR%20and%20momentums.ipynb
     lr, cycle_length = 3e-3,  4
     with CaptureStdout() as cs: learn.fit_one_cycle(cycle_length, lr)
-    this_tests(learn.fit_one_cycle, learn.recorder.__class__)
+    this_tests(learn.fit_one_cycle)
     listlrs = list(learn.recorder.lrs)
     listmoms = list(learn.recorder.moms)
     # we confirm learning rate is at its max when momentum is at its min
