@@ -101,7 +101,7 @@ class AccumulateStepper(LearnerCallback):
 
     def __init__(self, learn:Learner, n_step:int = 1, drop_last:bool = False):
         super().__init__(learn)
-        self.n_step, self.drop_last = n_step, drop_last
+        self.n_step,self.drop_last = n_step,drop_last
  
     def on_train_begin(self, **kwargs):
         "check if loss is reduction"
