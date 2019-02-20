@@ -3,12 +3,13 @@ module: basic_train.py - Model fitting methods
 docs  : https://docs.fast.ai/train.html
 """
 
-import pytest, fastai
+import pytest
 from fastai.vision import *
+from fastai.utils.mem import *
+from fastai.gen_doc.doctest import this_tests
 from utils.fakes import *
 from utils.text import *
 from utils.mem import *
-from fastai.utils.mem import *
 from math import isclose
 
 torch_preload_mem()
@@ -30,12 +31,14 @@ def learn(data): return learn_large_unfit(data)
 
 def test_get_preds():
     learn = fake_learner()
+    this_tests(learn.get_preds)
     with CaptureStdout() as cs:
         a = learn.get_preds()
     assert learn.data.batch_size == len(a[1])
 
 def test_freeze_to():
     learn = fake_learner(layer_group_count=3)
+    this_tests(learn.freeze_to)
     learn.freeze_to(1)
     for i, param in enumerate(learn.model.parameters()):
         # param 0 is weights in layer_group 0 and param 1 is bias in layer_group 0
@@ -45,6 +48,7 @@ def test_freeze_to():
 
 def test_freeze():
     learn = fake_learner(layer_group_count=3)
+    this_tests(learn.freeze)
     learn.freeze()
     for i, param in enumerate(learn.model.parameters()):
         # 2 layer groups with 1 param in each should be frozen
@@ -53,6 +57,7 @@ def test_freeze():
 
 def test_unfreeze():
     learn = fake_learner(layer_group_count=4)
+    this_tests(learn.unfreeze)
     for param in learn.model.parameters(): param.requires_grad=False
     learn.unfreeze()
     for param in learn.model.parameters(): assert param.requires_grad == True
@@ -65,6 +70,7 @@ def check_learner(learn, train_items):
     # XXX: could use more sanity checks
 
 def test_save_load(learn):
+    this_tests(learn.save, learn.load)
     name = 'mnist-tiny-test-save-load'
     train_items = len(learn.data.train_ds)
     # testing that all these various sequences don't break each other
@@ -131,6 +137,7 @@ def subtest_save_load_mem(data):
 def test_destroy():
     msg = "this object has been destroyed"
     learn = fake_learner()
+    this_tests(learn.destroy)
     with CaptureStdout() as cs: learn.destroy()
     assert "this Learner object self-destroyed" in cs.out
 
@@ -189,6 +196,7 @@ def test_export_load_learner():
     export_file = 'export.pkl'
     for should_destroy in [False, True]:
         learn = fake_learner()
+        this_tests(learn.export, load_learner)
         path = learn.path
         with CaptureStdout() as cs: learn.export(destroy=should_destroy)
         learn = load_learner(path)
