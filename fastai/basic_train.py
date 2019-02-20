@@ -469,18 +469,27 @@ class Recorder(LearnerCallback):
             axs[1].set_xlabel('Iterations')
             axs[1].set_ylabel('Momentum')
         else: plt.plot(iterations, self.lrs)
+    
+    @staticmethod
+    def smoothen_by_spline(xs, ys, **kwargs):
+        xs = np.arange(len(ys))
+        spl = scipy.interpolate.UnivariateSpline(xs, ys, **kwargs)
+        ys = spl(xs)
+        return ys
 
-    def plot(self, skip_start:int=10, skip_end:int=5)->None:
+    def plot(self, skip_start:int=10, skip_end:int=5, **kwargs)->None:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
+        losses = [x.item() for x in losses]
+        if 'k' in kwargs: losses = self.smoothen_by_spline(lrs, losses, **kwargs)
         _, ax = plt.subplots(1,1)
         ax.plot(lrs, losses)
         ax.set_ylabel("Loss")
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
-        mg = (np.gradient(np.array([x.item() for x in losses]))).argmin()
+        mg = (np.gradient(np.array(losses))).argmin()
         print(f"Min numerical gradient: {lrs[mg]:.2E}")
         ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
         self.min_grad_lr = lrs[mg]

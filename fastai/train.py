@@ -5,7 +5,7 @@ from .basic_data import *
 from .basic_train import *
 
 __all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'ClassificationInterpretation', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32',
-           'mixup']
+           'mixup', 'AccumulateStepper']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -94,8 +94,48 @@ def clip_grad(learn:Learner, clip:float=0.1)->Learner:
     "Add gradient clipping of `clip` during training."
     learn.callback_fns.append(partial(GradientClipping, clip=clip))
     return learn
-
 Learner.clip_grad = clip_grad
+     
+class AccumulateStepper(LearnerCallback):
+    "Does accumlated step every nth step by accumulating gradients"
+
+    def __init__(self, learn:Learner, n_step:int = 1, drop_last:bool = False):
+        super().__init__(learn)
+        self.n_step,self.drop_last = n_step,drop_last
+ 
+    def on_train_begin(self, **kwargs):
+        "check if loss is reduction"
+        if hasattr(self.loss_func, "reduction") and (self.loss_func.reduction != "sum"):
+             warn("For better gradients consider 'reduction=sum'")
+        
+    def on_epoch_begin(self, **kwargs):
+        "init samples and batches, change optimizer"
+        self.acc_samples, self.acc_batches = 0., 0. 
+        
+    def on_batch_begin(self, last_input, last_target, **kwargs):
+        "accumulate samples and batches"
+        self.acc_samples += last_input.shape[0]
+        self.acc_batches += 1
+        
+    def on_backward_end(self, **kwargs):
+        "accumulated step and reset samples, True will result in no stepping"
+        if (self.acc_batches % self.n_step) == 0:
+            for p in (self.learn.model.parameters()):
+                if p.requires_grad: p.grad.div_(self.acc_samples)
+            self.acc_samples = 0
+        else: return True
+    
+    def on_step_end(self, **kwargs):
+        "zero gradients after stepping, True will result in no zeroing"
+        return (self.acc_batches % self.n_step) != 0
+    
+    def on_epoch_end(self, **kwargs):
+        "step the rest of the accumulated grads if not perfectly divisible"
+        for p in (self.learn.model.parameters()):
+                if p.requires_grad: p.grad.div_(self.acc_samples)
+        if not self.drop_last: self.learn.opt.step()
+        self.learn.opt.zero_grad()
+
 
 class ClassificationInterpretation():
     "Interpretation methods for classification models."
