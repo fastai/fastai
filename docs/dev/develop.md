@@ -151,7 +151,7 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
    ```
    tools/trust-origin-git-config -d
    tools/fastai-nbstripout -d nbs/*/*ipynb
-   git commit docs_src courses examples
+   git commit nbs
    git push
    tools/trust-origin-git-config -e
    ```
@@ -172,7 +172,7 @@ Here are the quick copy-n-paste recipes (that assume you don't have anything els
    ```
    python tools\trust-origin-git-config -d
    python tools\fastai-nbstripout -d nbs\*\*ipynb
-   git commit docs_src courses examples
+   git commit nbs
    git push
    python tools\trust-origin-git-config -e
    ```
