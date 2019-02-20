@@ -835,22 +835,20 @@ This section is currently focused on GPU RAM since it's the scarce resource, but
 
 In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
 
-* torch RNG
+```
+seed = 42
 
-   ```
-   import torch
-   torch.manual_seed(42)
-   torch.backends.cudnn.deterministic = True
-   ```
+# python RNG
+random.seed(seed)
 
-* python RNG
+# torch RNG
+import torch
+torch.manual_seed(seed)
+torch.backends.cudnn.deterministic = True
 
-   ```
-   random.seed(42)
-   ```
-
-
-
+# numpy NRG
+np.random.seed(seed)
+```
 
 ### Debugging tests
 
