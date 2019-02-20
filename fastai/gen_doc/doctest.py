@@ -28,7 +28,8 @@ class TestAPIRegistry:
             except:
                 raise Exception(f"'{func}' is not a function")
             if re.match(r'fastai\.', func_fq):
-                TestAPIRegistry.api_tests_map[func_fq].append(entry)
+                if entry not in TestAPIRegistry.api_tests_map[func_fq]: 
+                    TestAPIRegistry.api_tests_map[func_fq].append(entry)
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
 
