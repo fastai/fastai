@@ -43,8 +43,23 @@ class TestAPIRegistry:
 
 def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
 
+def str2func(name):
+    "Converts 'fastai.foo.bar' into an function 'object' if such exists"
+    if isinstance(name, str): subpaths = name.split('.')
+    else:                     return None
+
+    module = subpaths.pop(0)
+    if module in sys.modules: obj = sys.modules[module]
+    else:                     return None
+
+    for subpath in subpaths:
+        obj = getattr(obj, subpath, None)
+        if obj == None: return None
+    return obj
+
 def get_func_fq_name(func):
     if inspect.ismodule(func): return func.__name__
+    if isinstance(func, str): func = str2func(func)
     name = func.__qualname__ if hasattr(func, '__qualname__') else func.__name__
     return f'{func.__module__}.{name}'
 
