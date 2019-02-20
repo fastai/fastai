@@ -164,6 +164,7 @@ crop = TfmPixel(_crop)
 def _crop_pad_default(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct:uniform = 0.5):
     "Crop and pad tfm - `row_pct`,`col_pct` sets focal point."
     padding_mode = _pad_mode_convert[padding_mode]
+    print(padding_mode)
     size = tis2hw(size)
     if x.shape[1:] == torch.Size(size): return x
     rows,cols = size
