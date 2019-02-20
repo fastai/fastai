@@ -1,6 +1,7 @@
-import sys, inspect, re, json
+import sys, re, json
 from pathlib import Path
 from collections import defaultdict
+from inspect import currentframe, getframeinfo, ismodule
 
 __all__ = ['this_tests']
 
@@ -17,8 +18,8 @@ class TestAPIRegistry:
 
     @staticmethod
     def this_tests(*funcs):
-        prev_frame = inspect.currentframe().f_back.f_back
-        filename, lineno, test_name, _, _ = inspect.getframeinfo(prev_frame)
+        prev_frame = currentframe().f_back.f_back
+        filename, lineno, test_name, _, _ = getframeinfo(prev_frame)
         parent_func_lineno, _ = get_parent_func(lineno, get_lines(filename))
         entry = [{'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}]
         for func in funcs:
@@ -58,7 +59,7 @@ def str2func(name):
     return obj
 
 def get_func_fq_name(func):
-    if inspect.ismodule(func): return func.__name__
+    if ismodule(func): return func.__name__
     if isinstance(func, str): func = str2func(func)
     name = func.__qualname__ if hasattr(func, '__qualname__') else func.__name__
     return f'{func.__module__}.{name}'
