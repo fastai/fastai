@@ -1,9 +1,10 @@
 from ...torch_core import *
 from ...layers import *
+from ..data import TextClasDataBunch
 
 __all__ = ['EmbeddingDropout', 'LinearDecoder', 'PoolingLinearClassifier', 'AWD_LSTM', 'RNNDropout', 
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'awd_lstm_lm_split', 'awd_lstm_clas_split',
-           'awd_lstm_lm_config', 'awd_lstm_clas_config']
+           'awd_lstm_lm_config', 'awd_lstm_clas_config', 'TextClassificationInterpretation']
 
 def dropout_mask(x:Tensor, sz:Collection[int], p:float):
     "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
@@ -198,3 +199,71 @@ awd_lstm_lm_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=
 
 awd_lstm_clas_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.4, 
                        hidden_p=0.2, input_p=0.6, embed_p=0.1, weight_p=0.5)
+
+# Interpretability
+
+import matplotlib.cm as cm
+
+def value2rgba(x:float, cmap:Callable=cm.RdYlGn, alpha_mult:float=1.0)->Tuple:
+    "Convert a value `x` from 0 to 1 (inclusive) to an RGBA tuple according to `cmap` times trasparency `alpha_mult`."
+    c = cmap(x)
+    rgb = (np.array(c[:-1]) * 255).astype(int)
+    a = c[-1] * alpha_mult
+    return tuple(rgb.tolist() + [a])
+
+def piece_attn_html(pieces:List[str], attns:List[float], sep:str=' ', **kwargs)->str:
+    from html import escape
+    html = []
+    html.append('<span style="font-family: monospace;">')
+    spans = []
+    for p, a in zip(pieces, attns):
+        p = escape(p)
+        c = str(value2rgba(a, alpha_mult=0.5, **kwargs))
+        spans.append(f'<span title="{a:.3f}" style="background-color: rgba{c};">{p}</span>')
+    html.append(sep.join(spans))
+    html.append('</span>')
+    return ''.join(html)
+
+def show_piece_attn(*args, **kwargs):
+    from IPython.display import display, HTML
+    display(HTML(piece_attn_html(*args, **kwargs)))
+
+@dataclass
+class TextClassificationInterpretation():
+    """Provides an interpretation of classification based on input sensitivity.
+    This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.
+    """
+    data: TextClasDataBunch
+    model: AWD_LSTM
+
+    @classmethod
+    def from_learner(cls, learn):
+        return cls(learn.data, learn.model)
+
+    def intrinsic_attention(self, text:str, class_id:int=None):
+        """Calculate the intrinsic attention
+        (Sequential Jacobian from https://www.cs.toronto.edu/~graves/preprint.pdf)
+        of the input w.r.t to an output `class_id` (or the classification given by the model if `None`).
+        """
+        ids = self.data.one_item(text)[0]
+        emb = self.model[0].module.encoder(ids).detach()
+        emb.requires_grad = True
+        self.model.eval()
+        self.model.zero_grad()
+        self.model[0].reset()
+        cl = self.model[1](self.model[0].module(emb, from_embeddings=True))[0].softmax(dim=-1)
+        if class_id is None:
+            class_id = cl.argmax()
+        cl[0][class_id].backward()
+        attn = emb.grad.squeeze().abs().sum(dim=-1)
+        attn /= attn.max()
+        tokens = self.data.single_ds.reconstruct(ids[0])
+        return tokens, attn
+
+    def html_intrinsic_attention(self, text:str, class_id:int=None, **kwargs)->str:
+        text, attn = self.intrinsic_attention(text, class_id)
+        return piece_attn_html(text.text.split(), to_np(attn), **kwargs)
+
+    def show_intrinsic_attention(self, text:str, class_id:int=None, **kwargs)->None:
+        text, attn = self.intrinsic_attention(text, class_id)
+        show_piece_attn(text.text.split(), to_np(attn), **kwargs)
