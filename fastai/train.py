@@ -101,8 +101,7 @@ class AccumulateStepper(LearnerCallback):
 
     def __init__(self, learn:Learner, n_step:int = 1, drop_last:bool = False):
         super().__init__(learn)
-        self.n_step = n_step
-        self.drop_last = drop_last
+        self.n_step, self.drop_last = n_step, drop_last
  
     def on_train_begin(self, **kwargs):
         "check if loss is reduction"
@@ -128,7 +127,7 @@ class AccumulateStepper(LearnerCallback):
     
     def on_step_end(self, **kwargs):
         "zero gradients after stepping, True will result in no zeroing"
-        if not (self.acc_batches % self.n_step) == 0: return True
+        return (self.acc_batches % self.n_step) != 0
     
     def on_epoch_end(self, **kwargs):
         "step the rest of the accumulated grads if not perfectly divisible"
