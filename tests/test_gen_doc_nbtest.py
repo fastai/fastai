@@ -70,11 +70,24 @@ def test_get_tests_dir():
 
 def test_this_tests():
 
-    # self test
+    # function by reference (and self test)
     this_tests(this_tests)
 
-    # not a function
+    import fastai
+    # explicit fully qualified function (requires all the sub-modules to be loaded)
+    this_tests(fastai.gen_doc.doctest.this_tests)
+
+    # explicit fully qualified function as a string
+    this_tests('fastai.gen_doc.doctest.this_tests')
+
+    # not a real function
     func = 'foo bar'
+    try: this_tests(func)
+    except Exception as e: assert f"'{func}' is not a function" in str(e)
+    else: assert False, f'this_tests({func}) should have failed'
+
+    # not a function as a string that looks like fastai function, but it is not
+    func = 'fastai.gen_doc.doctest.doesntexistreally'
     try: this_tests(func)
     except Exception as e: assert f"'{func}' is not a function" in str(e)
     else: assert False, f'this_tests({func}) should have failed'
