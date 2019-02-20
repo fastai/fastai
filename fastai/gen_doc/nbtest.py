@@ -1,6 +1,5 @@
 "`gen_doc.nbtest` shows pytest documentation for module functions"
 
-
 import inspect, os, re
 from os.path import abspath, dirname, join
 from collections import namedtuple
@@ -8,13 +7,11 @@ from collections import namedtuple
 from fastai.gen_doc import nbdoc
 from ..imports.core import *
 from .core import ifnone
-from .doctest import get_parent_func, relative_test_path, full_name_with_qualname, DB_NAME
+from .doctest import get_parent_func, relative_test_path, get_func_fq_name, DB_NAME
 
 from nbconvert import HTMLExporter
 from IPython.core import page
 from IPython.core.display import display, Markdown, HTML
-
-
 
 __all__ = ['show_test', 'doctest', 'find_tests', 'lookup_db', 'find_test_matches', 'find_test_files', 'direct_test_match', 'fuzzy_test_match']
 
@@ -37,7 +34,7 @@ def show_test(elt, search=True, markdown:bool=True)->str:
             related = list(set(related) - set(db_matches) - set(direct))
             md += tests2markdown(direct, 'Direct tests')
             md += tests2markdown(related, 'Related tests')
-        except OSError as e: 
+        except OSError as e:
             print('Could not find fastai/tests folder. If you installed from conda, please install developer build instead.')
 
     if len(md)==0: md = f'No tests found for `{fn_name}`'
@@ -52,7 +49,7 @@ def tests2markdown(tests, type_label):
     for link,cmd in tests:
         md += f'\n * `{cmd}` [\[source\]]({link})'
     return f'\n\n{type_label}:' + md
-    
+
 def doctest(elt):
     "Inline notebook popup for `show_test`"
     md = show_test(elt, markdown=False)
@@ -63,14 +60,14 @@ def doctest(elt):
 def lookup_db(elt)->List[Dict]:
     "Finds `this_test` entries from test_api_db.json"
     db_file = Path(abspath(join(dirname( __file__ ), '..')))/DB_NAME
-    if not db_file.exists(): 
+    if not db_file.exists():
         print(f'Could not find {db_file}. Please make sure it exists at this location or run `make test`')
         return []
     with open(db_file, 'r') as f:
         db = json.load(f)
-    key = full_name_with_qualname(elt)
+    key = get_func_fq_name(elt)
     return db.get(key, {})
-    
+
 def find_tests(elt)->Tuple[List[Dict],List[Dict]]:
     "Searches `fastai/tests` folder for any test functions related to `elt`"
     test_dir = get_tests_dir(elt)
@@ -95,7 +92,7 @@ def find_test_files(elt, exact_match:bool=False)->List[Path]:
     "Searches in `fastai/tests` directory for module tests"
     test_dir = get_tests_dir(elt)
     matches = [test_dir/o.name for o in os.scandir(test_dir) if _is_file_match(elt, o.name)]
-    if len(matches) != 1: 
+    if len(matches) != 1:
         print('Could not find exact file match:', matches)
     return matches
 
