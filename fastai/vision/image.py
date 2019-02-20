@@ -98,11 +98,12 @@ class Image(ItemBase):
                    mult:int=None, padding_mode:str='reflection', mode:str='bilinear', remove_out:bool=True)->TensorImage:
         "Apply all `tfms` to the `Image`, if `do_resolve` picks value for random args."
         if not (tfms or xtra or size): return self
+        tfms = listify(tfms)
         xtra = ifnone(xtra, {})
-        tfms = sorted(listify(tfms), key=lambda o: o.tfm.order)
         default_rsz = ResizeMethod.SQUISH if (size is not None and is_listy(size)) else ResizeMethod.CROP
         resize_method = ifnone(resize_method, default_rsz)
-        if resize_method <= 2: tfms = self._maybe_add_crop_pad(tfms)
+        if resize_method <= 2 and size is not None: tfms = self._maybe_add_crop_pad(tfms)
+        tfms = sorted(tfms, key=lambda o: o.tfm.order)
         if do_resolve: _resolve_tfms(tfms)
         x = self.clone()
         x.set_sample(padding_mode=padding_mode, mode=mode, remove_out=remove_out)
