@@ -77,7 +77,7 @@ def deal_caps(x:Collection[str]) -> Collection[str]:
     res = []
     for t in x:
         if t == '': continue
-        if t[0].isupper() and t[1:].islower(): res.append(TK_MAJ)
+        if t[0].isupper() and len(t) > 1 and t[1:].islower(): res.append(TK_MAJ)
         res.append(t.lower())
     return res
 
