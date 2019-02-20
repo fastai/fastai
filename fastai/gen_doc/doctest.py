@@ -1,5 +1,4 @@
 import sys, inspect, re, json
-from os.path import basename, split
 from pathlib import Path
 from collections import defaultdict
 
@@ -23,8 +22,14 @@ class TestAPIRegistry:
         parent_func_lineno, _ = get_parent_func(lineno, get_lines(filename))
         entry = [{'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}]
         for func in funcs:
-            func_fq = get_func_fq_name(func)
-            if re.match(r'fastai\.', func_fq): TestAPIRegistry.api_tests_map[func_fq].append(entry)
+            try:
+                func_fq = get_func_fq_name(func)
+            except:
+                raise Exception(f"'{func}' is not a function")
+            if re.match(r'fastai\.', func_fq):
+                TestAPIRegistry.api_tests_map[func_fq].append(entry)
+            else:
+                raise Exception(f"'{func}' is not in the fastai API")
 
     def tests_failed(status=True):
         TestAPIRegistry.some_tests_failed = status
