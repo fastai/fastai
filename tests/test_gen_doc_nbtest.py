@@ -73,6 +73,10 @@ def test_this_tests():
     # function by reference (and self test)
     this_tests(this_tests)
 
+    # multiple entries: same function twice on purpose, should result in just one entry,
+    # but also testing multiple entries - and this test tests only a single function.
+    this_tests(this_tests, this_tests)
+
     import fastai
     # explicit fully qualified function (requires all the sub-modules to be loaded)
     this_tests(fastai.gen_doc.doctest.this_tests)
