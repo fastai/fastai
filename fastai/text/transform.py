@@ -88,7 +88,8 @@ class Tokenizer():
     "Put together rules and a tokenizer function to tokenize text with multiprocessing."
     def __init__(self, tok_func:Callable=SpacyTokenizer, lang:str='en', pre_rules:ListRules=None,
                  post_rules:ListRules=None, special_cases:Collection[str]=None, n_cpus:int=None):
-        self.tok_func,self.lang,self.special_cases = tok_func,lang,special_cases
+        self.lang,self.special_cases = lang,special_cases
+        self.tok_func = tok_func(self.lang)
         self.pre_rules  = ifnone(pre_rules,  defaults.text_pre_rules )
         self.post_rules = ifnone(post_rules, defaults.text_post_rules)
         self.special_cases = special_cases if special_cases else defaults.text_spec_tok
@@ -109,7 +110,7 @@ class Tokenizer():
 
     def _process_all_1(self, texts:Collection[str]) -> List[List[str]]:
         "Process a list of `texts` in one process."
-        tok = self.tok_func(self.lang)
+        tok = self.tok_func
         if self.special_cases: tok.add_special_cases(self.special_cases)
         return [self.process_text(str(t), tok) for t in texts]
 
