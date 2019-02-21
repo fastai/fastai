@@ -31,6 +31,8 @@ of that change.
 
 ### Fixed:
 
+- various memory usage improvements
+
 
 
 ## 1.0.45 (2019-02-13)
