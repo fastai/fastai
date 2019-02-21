@@ -20,8 +20,7 @@ of that change.
 ### New:
 
 - `Learner.destroy`: completely free up `learn`, leaving an empty shell (to replace `gc.collect` eye-sore)
-- support `pynvx` instead of `pynvml` on OSX
-- added NVML query support on OSX via pynvx
+- added NVML query support on OSX via `pynvx` in addition to `pynvml`
 
 ### Changed:
 
