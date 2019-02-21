@@ -4,8 +4,8 @@ from .callbacks import *
 from .basic_data import *
 from .basic_train import *
 
-__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'ClassificationInterpretation', 'fit_one_cycle', 'lr_find', 'one_cycle_scheduler', 'to_fp16', 'to_fp32',
-           'mixup', 'AccumulateStepper']
+__all__ = ['BnFreeze', 'GradientClipping', 'ShowGraph', 'ClassificationInterpretation', 'fit_one_cycle', 'lr_find', 
+           'one_cycle_scheduler', 'to_fp16', 'to_fp32', 'mixup', 'AccumulateStepper']
 
 def one_cycle_scheduler(lr_max:float, **kwargs:Any)->OneCycleScheduler:
     "Instantiate a `OneCycleScheduler` with `lr_max`."
@@ -184,6 +184,7 @@ class ClassificationInterpretation():
         plt.tight_layout()
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
+        plt.grid(False)
 
     def most_confused(self, min_val:int=1, slice_size:int=1)->Collection[Tuple[str,str,int]]:
         "Sorted descending list of largest non-diagonal entries of confusion matrix, presented as actual, predicted, number of occurrences."
