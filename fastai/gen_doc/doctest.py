@@ -1,4 +1,4 @@
-import sys, re, json
+import sys, re, json, pprint
 from pathlib import Path
 from collections import defaultdict
 from inspect import currentframe, getframeinfo, ismodule
@@ -15,6 +15,8 @@ class TestAPIRegistry:
     "Tests register which API they validate using this class."
     api_tests_map     = defaultdict(list)
     some_tests_failed = False
+    has_this_tests = None
+    failed_tests = set()
 
     @staticmethod
     def this_tests(*funcs):
@@ -32,9 +34,23 @@ class TestAPIRegistry:
                     TestAPIRegistry.api_tests_map[func_fq].append(entry)
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
+        try: 
+            TestAPIRegistry.failed_tests.remove(TestAPIRegistry.has_this_tests) 
+        except:
+            None
+        TestAPIRegistry.has_this_tests = None
 
+    def this_tests_flag_on(item):
+        TestAPIRegistry.has_this_tests = item.name
+        ## to do: get fully qualifed name from item.name & then find filename. place in dictionary
+        TestAPIRegistry.failed_tests.add(TestAPIRegistry.has_this_tests)
+       
     def tests_failed(status=True):
         TestAPIRegistry.some_tests_failed = status
+    
+    def this_tests_flag_check(item):
+        if TestAPIRegistry.has_this_tests == item.name:
+            TestAPIRegistry.has_this_tests = None
 
     def registry_save():
         if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:
@@ -42,6 +58,10 @@ class TestAPIRegistry:
             print(f"\n*** Saving test api registry @ {path}")
             with open(path, 'w') as f:
                 json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
+        # to do: this should probably go to a test report object
+        #print('\n*** Warning: Pls register the following tests with TestAPIRegistry.this_tests')
+        #pp = pprint.PrettyPrinter(indent=4)
+        #pp.pprint(TestAPIRegistry.failed_tests)   
 
 def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
 
