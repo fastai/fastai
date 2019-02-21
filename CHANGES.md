@@ -21,6 +21,10 @@ of that change.
 
 ## 1.0.46.dev0 (Work In Progress)
 
+### Breaking change:
+
+- In `CollabDataBunch`, `pct_val` is renamed `valid_pct` for consistency
+
 ### New:
 
 - `Learner.destroy`: completely free up `learn`, leaving an empty shell (to replace `gc.collect` eye-sore)
