@@ -143,8 +143,8 @@ def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[S
     with hook_outputs(flatten_model(m)) as hook_o:
         with hook_params(flatten_model(m))as hook_p:
             x = m.eval()(*x) if is_listy(x) else m.eval()(x)
-            output_size = [(o.stored.shape) for o in hooks_o]
-            params = [o.stored for o in hooks_p]
+            output_size = [(o.stored.shape) for o in hook_o]
+            params = [o.stored for o in hook_p]
     params, trainables = map(list,zip(*params))
     return output_size, params, trainables
 
