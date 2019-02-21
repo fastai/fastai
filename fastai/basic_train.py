@@ -477,7 +477,7 @@ class Recorder(LearnerCallback):
         ys = spl(xs)
         return ys
 
-    def plot(self, skip_start:int=10, skip_end:int=5, **kwargs)->None:
+    def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, **kwargs)->None:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
@@ -489,10 +489,14 @@ class Recorder(LearnerCallback):
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
-        mg = (np.gradient(np.array(losses))).argmin()
-        print(f"Min numerical gradient: {lrs[mg]:.2E}")
-        ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
-        self.min_grad_lr = lrs[mg]
+        if suggestion:
+            try: mg = (np.gradient(np.array(losses))).argmin()
+            except:
+                print("Failed to compute the gradients, there might not be enough points.")
+                return
+            print(f"Min numerical gradient: {lrs[mg]:.2E}")
+            ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
+            self.min_grad_lr = lrs[mg]
 
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
