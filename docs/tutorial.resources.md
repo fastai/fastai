@@ -179,6 +179,28 @@ And for inferences the  `learn.export`, `learn.destroy` and `load_learner` seque
 
 Therefore now you should be able to do a ton of things without needing to restart your notebook.
 
+### Local variables
+
+python releases memory when variable's reference count goes to 0 (and in special cases where circular references are referring to each other but have no "real" variables that refer to them). Sometimes you could be trying hard to free some memory, including calling `learn.destroy` and some memory refuses to go. That usually means that you have some local variables that hold memory. Here is an example:
+
+```
+class FeatureLoss(nn.Module): [...]
+feat_loss = FeatureLoss(vgg_m, blocks[2:5], [5,15,2])
+learn = unet_learner(data, arch, loss_func=feat_loss, ...)
+[...]
+learn.destroy()
+```
+In this example, `learn.destroy` won't be able to release a very large chunk of GPU RAM, because the local variable `feat_loss` happens to hold a reference to the loss function which, while originally takes up almost no memory, tends to grow pretty large during `unet` training. Once you delete it, python will be able to release that memory. So it's always best to get rid of intermediate variables of this kind (not simple values like `bs=64`) as soon as you don't need them anymore. Therefore, in this case the more efficient code would be:
+
+```
+class FeatureLoss(nn.Module): [...]
+feat_loss = FeatureLoss(vgg_m, blocks[2:5], [5,15,2])
+learn = unet_learner(data, arch, loss_func=feat_loss, ...)
+del feat_loss
+[...]
+learn.destroy()
+```
+
 
 ## CUDA out of memory
 
