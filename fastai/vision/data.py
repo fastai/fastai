@@ -58,7 +58,7 @@ def normalize(x:TensorImage, mean:FloatTensor,std:FloatTensor)->TensorImage:
 
 def denormalize(x:TensorImage, mean:FloatTensor,std:FloatTensor, do_x:bool=True)->TensorImage:
     "Denormalize `x` with `mean` and `std`."
-    return x.cpu()*std[...,None,None] + mean[...,None,None] if do_x else x.cpu()
+    return x.cpu().float()*std[...,None,None] + mean[...,None,None] if do_x else x.cpu()
 
 def _normalize_batch(b:Tuple[Tensor,Tensor], mean:FloatTensor, std:FloatTensor, do_x:bool=True, do_y:bool=False)->Tuple[Tensor,Tensor]:
     "`b` = `x`,`y` - normalize `x` array of imgs and `do_y` optionally `y`."
