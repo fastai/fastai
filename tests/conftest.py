@@ -45,11 +45,11 @@ def doctest_collector_start(request):
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
+    outcome = yield
+    res = outcome.get_result()
     #individualtests = 0
     individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]    
     if pytest.config.getoption("--testapireg") and not individualtests:
-        outcome = yield
-        res = outcome.get_result()
         filenameandmethod = str(res).split('\'', 1)[1].split('\'', 1)[0]  
         filename =  filenameandmethod.split('::::', 1)[0]   
         test_name =  filenameandmethod.split('::::', 1)[1]       
