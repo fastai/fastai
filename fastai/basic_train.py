@@ -11,7 +11,7 @@ __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
-defaults.callbacks = None
+defaults.extra_callbacks = None
 
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
@@ -99,7 +99,7 @@ def fit(epochs:int, model:nn.Module, loss_func:LossFunction, opt:optim.Optimizer
         exception = e
         raise
     finally: cb_handler.on_train_end(exception)
-        
+
 loss_func_name2activ = {'cross_entropy_loss': F.softmax, 'nll_loss': torch.exp, 'poisson_nll_loss': torch.exp,
     'kl_div_loss': torch.exp, 'bce_with_logits_loss': torch.sigmoid, 'cross_entropy': F.softmax,
     'kl_div': torch.exp, 'binary_cross_entropy_with_logits': torch.sigmoid,
@@ -174,7 +174,7 @@ class Learner():
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
-        if defaults.callbacks is not None: callbacks += defaults.callbacks
+        if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
         fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
             callbacks=self.callbacks+callbacks)
 
@@ -471,7 +471,7 @@ class Recorder(LearnerCallback):
             axs[1].set_xlabel('Iterations')
             axs[1].set_ylabel('Momentum')
         else: plt.plot(iterations, self.lrs)
-    
+
     @staticmethod
     def smoothen_by_spline(xs, ys, **kwargs):
         xs = np.arange(len(ys))
