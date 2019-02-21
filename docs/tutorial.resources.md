@@ -219,7 +219,9 @@ And also you need to know about the current bug in ipython that may prevent you 
 
 2. A pre-trained model consumes a little bit of GPU RAM. While there are many different models out there, which may vary wildly in size, a freshly loaded pre-trained model like resnet typically consumes a few hundred MBs of GPU RAM.
 
-3. Model training is where the bulk of GPU RAM is being consumed. When the very first batch of the very first epoch goes through the model, the GPU RAM usage spikes because it needs to set things up and a lot more temporary memory is used. However the pytorch allocator is very efficient and if there is little GPU RAM available, the spike will be minimal. From batch 2 onwards and for all the following epoch of the same training the memory consumption would be constant. Thus if the first few seconds of training were successful, the rest of the training should complete too.
+3. Model training is where the bulk of GPU RAM is being consumed. When the very first batch of the very first epoch goes through the model, the GPU RAM usage spikes because it needs to set things up and a lot more temporary memory is used than on subsequent batches. However the pytorch allocator is very efficient and if there is little GPU RAM available, the spike will be minimal. From batch 2 and onwards and for all the following epochs of the same `fit` call the memory consumption is constant. Thus if the first few seconds of `fit` were successful, it will run to its completion.
+
+   Tip: if you're tuning hyperparameters to fit into your card's GPU RAM, it's enough to run just one epoch of each `fit` call, so that you can quickly choose `bs` and other parameters to fit the available RAM. After this is done, increase the number of epochs in `fit` calls to get the real training going.
 
 If you'd like to get a sense of how much memory each stage uses (bypassing pytorch caching, which you can't with `nvidia-smi`), here are the tools to use:
 
