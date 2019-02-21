@@ -24,12 +24,12 @@ class OptimWrapper():
         opt.lr,opt.opt_func = listify(lr, layer_groups),opt_func
         return opt
     
-    def new(self, layer_groups:ModuleList):
+    def new(self, layer_groups:Collection[nn.Module]):
         "Create a new `OptimWrapper` from `self` with another `layer_groups` but the same hyper-parameters."
         opt_func = getattr(self, 'opt_func', self.opt.__class__)
-        split_groups = split_bn_bias(layer_groups)
-        opt = opt_func([{'params': trainable_params(l), 'lr':0} for l in split_groups])
-        return self.create(opt_func, self.lr, layer_groups, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+        res = self.create(opt_func, self.lr, layer_groups, wd=self.wd, true_wd=self.true_wd, bn_wd=self.bn_wd)
+        res.mom,res.beta = self.mom,self.beta
+        return res
 
     def __repr__(self)->str:
         return f'OptimWrapper over {repr(self.opt)}.\nTrue weight decay: {self.true_wd}'
@@ -116,6 +116,19 @@ class OptimWrapper():
         val = [pg[key] for pg in self.opt.param_groups[::2]]
         if is_tuple(val[0]): val = [o[0] for o in val], [o[1] for o in val]
         return val
+    
+    def get_state(self):
+        "Return the inner state minus the layer groups."
+        return {'opt_state':self.opt.state_dict(), 'lr':self._lr, 'wd':self._wd, 'beta':self._beta, 'mom':self._mom,
+                'opt_func':self.opt_func, 'true_wd':self.true_wd, 'bn_wd':self.bn_wd}
+
+    @classmethod
+    def load_with_state_and_layer_group(cls, state:dict, layer_groups:Collection[nn.Module]):
+        res = cls.create(state['opt_func'], state['lr'], layer_groups, wd=state['wd'], true_wd=state['true_wd'], 
+                     bn_wd=state['bn_wd'])
+        res._mom,res._beta = state['mom'],state['beta']
+        res.load_state_dict(state['opt_state'])
+        return res
 
 class Callback():
     "Base class for callbacks that want to record values, dynamically change learner params, etc."
@@ -248,10 +261,11 @@ class CallbackHandler():
 
     def on_backward_end(self)->None:
         "Handle end of gradient calculation."
-        self('backward_end', False)
+        return np.any(self('backward_end', False))
+        
     def on_step_end(self)->None:
         "Handle end of optimization step."
-        self('step_end', False)
+        return np.any(self('step_end', False))
 
     def on_batch_end(self, loss:Tensor)->None:
         "Handle end of processing one batch with `loss`."

@@ -53,7 +53,7 @@ requirements:
     - beautifulsoup4
     - fastprogress >=0.1.19
     - matplotlib
-    - numpy >=1.12
+    - numpy >=1.15
     - pandas
     - bottleneck
     - numexpr

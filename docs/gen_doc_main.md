@@ -8,7 +8,7 @@ Here is how you can contribute to the `fastai` documentation:
 
 ### Step 1. Create a `fastai` git branch
 
-The process of creating a branch (with fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
+The process of creating a branch (with a fork), including a program that will do it for you in one step, and submitting the PR is explained in details in [How to Make a Pull Request (PR)](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr)
 
 ### Step 2. Setup
 
@@ -46,6 +46,8 @@ There are two types of source files: `*ipynb` and `*md` files.
    When you finish editing a notebook, remember to save it before doing `git commit`!
 
    You don't need to convert your work to HTML, we will do it after your PR is accepted and merged.
+
+   **Note**: jupyter lab is currently not supported. If you missed this warning and have already edited `.ipynb` files in jupyter lab, you can [fix them](https://docs.fast.ai/dev/develop.html#unstripped-notebook-repair).
 
 2. `*md` text files, located at `docs/*.md` and `docs/*/*.md` require no jupyter environment - i.e. they contain plain text formatted using the `markdown` format. Note, that unlike `*ipynb`, these are located in the `docs` directory. For example,  [https://docs.fast.ai/troubleshoot.html](https://docs.fast.ai/troubleshoot.html)'s source is [docs/troubleshoot.md](https://github.com/fastai/fastai/blob/master/docs/troubleshoot.md).
 

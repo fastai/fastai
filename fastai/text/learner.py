@@ -17,7 +17,7 @@ __all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'decode_spec_toke
 _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_1,
                           'config_lm':awd_lstm_lm_config, 'split_lm': awd_lstm_lm_split,
                           'config_clas':awd_lstm_clas_config, 'split_clas': awd_lstm_clas_split},
-               Transformer: {'hid_name':'d_model', 
+               Transformer: {'hid_name':'d_model', 'url':URLs.OPENAI_TRANSFORMER,
                              'config_lm':tfmer_lm_config, 'split_lm': tfmer_lm_split,
                              'config_clas':tfmer_clas_config, 'split_clas': tfmer_clas_split},
                TransformerXL: {'hid_name':'d_model', 
@@ -26,18 +26,19 @@ _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_1,
 
 def convert_weights(wgts:Weights, stoi_wgts:Dict[str,int], itos_new:Collection[str]) -> Weights:
     "Convert the model `wgts` to go with a new vocabulary."
-    dec_bias, enc_wgts = wgts['1.decoder.bias'], wgts['0.encoder.weight']
-    bias_m, wgts_m = dec_bias.mean(0), enc_wgts.mean(0)
+    dec_bias, enc_wgts = wgts.get('1.decoder.bias', None), wgts['0.encoder.weight']
+    wgts_m = enc_wgts.mean(0)
+    if dec_bias is not None: bias_m = dec_bias.mean(0)
     new_w = enc_wgts.new_zeros((len(itos_new),enc_wgts.size(1))).zero_()
-    new_b = dec_bias.new_zeros((len(itos_new),)).zero_()
+    if dec_bias is not None: new_b = dec_bias.new_zeros((len(itos_new),)).zero_()
     for i,w in enumerate(itos_new):
         r = stoi_wgts[w] if w in stoi_wgts else -1
         new_w[i] = enc_wgts[r] if r>=0 else wgts_m
-        new_b[i] = dec_bias[r] if r>=0 else bias_m
+        if dec_bias is not None: new_b[i] = dec_bias[r] if r>=0 else bias_m
     wgts['0.encoder.weight'] = new_w
-    wgts['0.encoder_dp.emb.weight'] = new_w.clone()
+    if '0.encoder_dp.emb.weight' in wgts: wgts['0.encoder_dp.emb.weight'] = new_w.clone()
     wgts['1.decoder.weight'] = new_w.clone()
-    wgts['1.decoder.bias'] = new_b
+    if dec_bias is not None: wgts['1.decoder.bias'] = new_b
     return wgts
 
 class RNNLearner(Learner):
@@ -82,7 +83,7 @@ class RNNLearner(Learner):
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
-            preds[0],preds[1] = preds[0][reverse_sampler],preds[1][reverse_sampler]
+            preds = [p[reverse_sampler] for p in preds] 
         return(preds)
 
 def decode_spec_tokens(tokens):
@@ -150,7 +151,7 @@ class LanguageLearner(RNNLearner):
                 self.model[0].select_hidden(indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
-        node_idx = torch.multinomial(1-torch.exp(-scores), 1).item()
+        node_idx = torch.multinomial(torch.exp(-scores), 1).item()
         return sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx][1:] ], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
@@ -164,14 +165,16 @@ class LanguageLearner(RNNLearner):
         xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
         ys = [ds.x.reconstruct(grab_idx(y, i)) for i in range(rows)]
         zs = [ds.x.reconstruct(grab_idx(z, i)) for i in range(rows)]
-
-        items = [['text', 'target', 'pred']]
+        items,names = [],['text', 'target', 'pred']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len])
             txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
             txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
-            items.append([str(txt_x), str(txt_y), str(txt_z)])
-        display(HTML(text2html_table(items, ([34,33,33]))))
+            items.append([txt_x, txt_y, txt_z])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
 def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:float=1.):
     "Create a language model from `arch` and its `config`, maybe `pretrained`."

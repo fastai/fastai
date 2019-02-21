@@ -95,6 +95,7 @@ sidebar_d = {
         'gen_doc': '/gen_doc',
         'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',
         'gen_doc.nbdoc': '/gen_doc.nbdoc',
+        'gen_doc.nbtest': '/gen_doc.nbtest',
         'gen_doc.convert2html': '/gen_doc.convert2html',
     },
     'Library development': {

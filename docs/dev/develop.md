@@ -133,6 +133,50 @@ In the `fastai_docs` repo, we have two different types of notebooks: "code" and 
    tools/fastai-nbstripout -d docs/*ipynb docs/*/*ipynb
    ```
 
+Here are the quick copy-n-paste recipes (that assume you don't have anything else modified):
+
+* Unix:
+
+   The `fastai` repo:
+   ```
+   tools/trust-origin-git-config -d
+   tools/fastai-nbstripout -d docs_src/*ipynb courses/*/*ipynb examples/*ipynb
+   git commit docs_src courses examples
+   git push
+   tools/trust-origin-git-config -e
+   ```
+
+   The `course-v3` repo:
+
+   ```
+   tools/trust-origin-git-config -d
+   tools/fastai-nbstripout -d nbs/*/*ipynb
+   git commit nbs
+   git push
+   tools/trust-origin-git-config -e
+   ```
+
+* Windows:
+
+   The `fastai` repo:
+   ```
+   python tools\trust-origin-git-config -d
+   python tools\fastai-nbstripout -d docs_src\*ipynb courses\*\*ipynb examples\*ipynb
+   git commit docs_src courses examples
+   git push
+   python tools\trust-origin-git-config -e
+   ```
+
+   The `course-v3` repo:
+
+   ```
+   python tools\trust-origin-git-config -d
+   python tools\fastai-nbstripout -d nbs\*\*ipynb
+   git commit nbs
+   git push
+   python tools\trust-origin-git-config -e
+   ```
+
 
 ## Development Editable Install
 

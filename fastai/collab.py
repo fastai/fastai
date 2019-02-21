@@ -100,7 +100,7 @@ def collab_learner(data, n_factors:int=None, use_nn:bool=False, emb_szs:Dict[str
                    bn_final:bool=False, **learn_kwargs)->Learner:
     "Create a Learner for collaborative filtering on `data`."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
-    u,m = data.classes.values()
+    u,m = data.train_ds.x.classes.values()
     if use_nn: model = EmbeddingNN(emb_szs=emb_szs, layers=layers, ps=ps, emb_drop=emb_drop, y_range=y_range, 
                                    use_bn=use_bn, bn_final=bn_final, **learn_kwargs)
     else:      model = EmbeddingDotBias(n_factors, len(u), len(m), y_range=y_range)

@@ -6,15 +6,41 @@ from ..script import *
 from ..utils.env import *
 import pynvml, functools, traceback, threading, time
 from collections import namedtuple
+import platform
 
 IS_IN_IPYTHON = is_in_ipython()
 
-GPUMemory = namedtuple('GPUMemory', ['total', 'used', 'free'])
+use_gpu = torch.cuda.is_available()
 
-have_cuda = 0
-if torch.cuda.is_available():
+GPUMemory = namedtuple('GPUMemory', ['total', 'free', 'used'])
+
+is_osx = platform.system() == "Darwin"
+
+# transparently monkey patch pynvx as pynvml API on OSX (for the few funcs we use)
+if use_gpu and is_osx:
+    try:
+        import pynvx
+    except:
+        print("please install pynvx on OSX: pip install pynvx")
+        sys.exit(1)
+
+    # missing function
+    def cudaDeviceGetHandleByIndex(id): return pynvx.cudaDeviceGetHandles()[id]
+    setattr(pynvx, 'cudaDeviceGetHandleByIndex', cudaDeviceGetHandleByIndex)
+
+    # different named and return value needs be a named tuple
+    def cudaDeviceGetMemoryInfo(handle):
+        info = pynvx.cudaGetMemInfo(handle)
+        return GPUMemory(*info)
+    setattr(pynvx, 'cudaDeviceGetMemoryInfo', cudaDeviceGetMemoryInfo)
+
+    # remap the other functions
+    for m in ['Init', 'DeviceGetCount', 'DeviceGetHandleByIndex', 'DeviceGetMemoryInfo']:
+        setattr(pynvx, f'nvml{m}', getattr(pynvx, f'cuda{m}'))
+    pynvml = pynvx
+
+if use_gpu:
     pynvml.nvmlInit()
-    have_cuda = 1
 
 def preload_pytorch():
     torch.ones((1, 1)).cuda()
@@ -25,18 +51,18 @@ def b2mb(num):
 
 def gpu_mem_get(id=None):
     "get total, used and free memory (in MBs) for gpu `id`. if `id` is not passed, currently selected torch device is used"
-    if not have_cuda: return GPUMemory(0, 0, 0)
+    if not use_gpu: return GPUMemory(0, 0, 0)
     if id is None: id = torch.cuda.current_device()
     try:
         handle = pynvml.nvmlDeviceGetHandleByIndex(id)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
-        return GPUMemory(*(map(b2mb, [info.total, info.used, info.free])))
+        return GPUMemory(*(map(b2mb, [info.total, info.free, info.used])))
     except:
         return GPUMemory(0, 0, 0)
 
 def gpu_mem_get_all():
     "get total, used and free memory (in MBs) for each available gpu"
-    if not have_cuda: return []
+    if not use_gpu: return []
     return list(map(gpu_mem_get, range(pynvml.nvmlDeviceGetCount())))
 
 def gpu_mem_get_free_no_cache():
@@ -98,43 +124,61 @@ class gpu_mem_restore_ctx():
         raise exc_type(exc_val).with_traceback(exc_tb) from None
 
 class GPUMemTrace():
-    "Trace GPU allocated and peak memory usage"
+    "Trace GPU allocated and peaked memory usage"
     def __init__(self, silent=False):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
         self.silent = silent # quickly turn off printouts from the constructor
+        self.reset()
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *exc):
+        self.stop()
+
+    def __repr__(self):
+        delta_used, delta_peaked = self.data()
+        return f"△used: {delta_used}MB, △peaked: {delta_peaked}MB"
 
     def silent(self, silent=False):
         self.silent = silent
 
     def reset(self):
-        self.used_start = gpu_mem_get_used_no_cache()
-        self.used_peak  = self.used_start
+        self.used_start  = gpu_mem_get_used_no_cache()
+        self.used_peak   = self.used_start
+        self.data_is_set = False
 
     def start(self):
         self.reset()
         self.peak_monitor_start()
 
     def stop(self):
+        self.data_set()
         self.peak_monitor_stop()
 
     def __del__(self):
         self.stop()
 
+    def data_set(self):
+        self.delta_used   = gpu_mem_get_used_no_cache() - self.used_start
+        self.delta_peaked = self.used_peak              - self.used_start - self.delta_used
+        self.data_is_set = True
+
     def data(self):
-        self.delta_used = gpu_mem_get_used_no_cache() - self.used_start
-        self.delta_peak = self.used_peak              - self.used_start
-        return (self.delta_used, self.delta_peak)
+        if not self.data_is_set: self.data_set()
+        return (self.delta_used, self.delta_peaked)
 
     def report_n_reset(self, note=''):
         self.report(note)
         self.reset()
 
     def report(self, note=''):
-        "printout used+delta peak, and an optional context note"
+        "printout used+peaked, and an optional context note"
         if self.silent: return
-        delta_used, delta_peak = self.data()
+        delta_used, delta_peaked = self.data()
         if note: note = f": {note}"
-        print(f"△used {delta_used}, △peak {delta_peak}{note}")
+        print(f"{self}{note}")
 
     def peak_monitor_start(self):
         self.peak_monitoring = True

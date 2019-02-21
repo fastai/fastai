@@ -59,7 +59,28 @@ You can skip this step if you have done it once already on the system you're mak
    ```
 
 
+
+## Pre-Release Process
+
+Normally, while testing the code, we only run `make test`, which completes within a few minutes. But we also have several sets of much heavier and slower, but more complete tests. These should be run and verified to be successful before starting a new release.
+
+1. Run the test suite, including the slower tests (not much longer than the `make test`:
+
+```
+make test-full
+```
+
+2. Run the notebook tests (0.5-1h):
+
+```
+cd docs_src
+./run_tests.sh
+```
+
+
+
 ## Quick Release Process
+
 
 No matter which release process you follow, always remember to start with:
 
@@ -1582,16 +1603,16 @@ Here is how to get segfault backtrace directly or via the core dump in a non-int
 
 #### Support
 
-- General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
-- Task-specific issues: https://github.com/Microsoft/azure-pipelines-tasks/issues/
-- Agent-specific issues: https://github.com/Microsoft/azure-pipelines-agent
+- [General Azure DevOps issues](https://developercommunity.visualstudio.com/spaces/21/index.html)
+- [Task-specific issues](https://github.com/Microsoft/azure-pipelines-tasks/issues/)
+- [Agent-specific issues](https://github.com/Microsoft/azure-pipelines-agent)
 
 
 ## Package Download Statistics
 
 How many times `fastai` was downloaded?
 
-  * from PyPI https://pepy.tech/project/fastai
-  * from Conda https://anaconda.org/fastai/fastai/files
+  * from [PyPI](https://pepy.tech/project/fastai)
+  * from [Conda](https://anaconda.org/fastai/fastai/files)
 
 The numbers are probably higher due to caches, CDNs, etc.

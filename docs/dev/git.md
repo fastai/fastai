@@ -11,9 +11,9 @@ Chances are that you may need to know some git when using fastai - for example i
 
 While this guide is mostly suitable for creating PRs for any github project, it includes several steps specific to the `fastai` project repositories, which currently are:
 
-* https://github.com/fastai/fastai
-* https://github.com/fastai/course-v3
-* https://github.com/fastai/fastprogress
+* [https://github.com/fastai/fastai](https://github.com/fastai/fastai)
+* [https://github.com/fastai/course-v3](https://github.com/fastai/course-v3)
+* [https://github.com/fastai/fastprogress](https://github.com/fastai/fastprogress)
 
 If you already know how to make PRs, you only need to read: the "Step 3" and "Step 5" sections, since they are unique requirements for the fastai project.
 
@@ -32,7 +32,7 @@ https://github.com/fastai/fastai/tree/master/fastai
                  username reponame        modulename
 ```
 
-Below you will find detailed 5 steps towards creating a PR.
+Below you will find detailed steps towards creating a PR.
 
 ### Helper Program
 
@@ -66,7 +66,7 @@ If you made the fork of the desired repository already, proceed to section 1b.
 
 If it's your first time, you just need to make a fork of the original repository:
 
-1. Go to https://github.com/fastai/fastai and in the right upper corner click on `[Fork]`. This will generate a fork of this repository, and you will be redirected to
+1. Go to [https://github.com/fastai/fastai](https://github.com/fastai/fastai) and in the right upper corner click on `[Fork]`. This will generate a fork of this repository, and you will be redirected to
  github.com/USERNAME/fastai.
 
 2. Clone the main repository fork. Click on `[Clone or download]` button to get the clone url and then clone your repository.
@@ -286,6 +286,15 @@ Test that your changes don't break things. Choose one according to which project
 
 If you work on several unrelated PRs, make different directories for each one, ideally using the same directory name as the branch name, to simplify things.
 
+### Step 8. Passing CI Tests
+
+Once your PR was submitted, you will see on github that we have various tests running on CI servers that will validate your PR. The tests run on various platforms and on both pip and conda virtual environments, so we have all bases covered.
+
+Do note that since our test suite contains many non-deterministic tests, at times you will notice that one of the checks on a single platform will fail. Most of the time it's normal, and there is nothing to worry about. We are constantly trying to make those less error-prone, but we can't make them too loose either, otherwise the test would be ineffective. Hence the occasional failures.
+
+You can go to Azure CI following the failing link and check what has failed. Unless you see the failure is related to your PR, please ignore it and consider that all tests have succeeded. The maintainer can always initiate a re-run of a CI job on the failed platform if need be.
+
+
 
 ### How to Keep Your Feature Branch Up-to-date
 
@@ -377,7 +386,7 @@ hub == hub helps you win at git
 
 Installation:
 
-There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at https://github.com/github/hub/releases/latest, un-archiving the package and running `./install`, for example for the `linux-64` build:
+There is a variety of [ways to install](https://github.com/github/hub#installation) this application (written in go), but the easiest is to download the latest binary for your platform at [https://github.com/github/hub/releases/latest](https://github.com/github/hub/releases/latest), un-archiving the package and running `./install`, for example for the `linux-64` build:
 
 ```
 wget https://github.com/github/hub/releases/download/v2.5.1/hub-linux-amd64-2.5.1.tgz
@@ -419,19 +428,19 @@ identifying user's platform, retrieving the corresponding to that platform packa
 
    You can filter commits by author in the commit view by appending param `?author=github_username`.
 
-   For example, the link https://github.com/fastai/fastai/commits/master?author=jph00 shows a list of commits `jph00` commits to the fastai repository.
+   For example, the link [https://github.com/fastai/fastai/commits/master?author=jph00](https://github.com/fastai/fastai/commits/master?author=jph00) shows a list of commits `jph00` commits to the fastai repository.
 
 * show commits by range: `master@{time}..master`
 
    You can create a compare view in GitHub by using the URL `github.com/user/repo/compare/{range}`. Range can be two SHAs like sha1…sha2 or two branch names like `master…my-branch`. Range is also smart enough to take time into consideration.
 
-   For example, you can filter a list of commits since yesterday by using format like `master@{1.day.ago}…master`. The link https://github.com/fastai/fastai/compare/master@{1.day.ago}…master, for example, gets all commits since yesterday for the `fastai` repository:
+   For example, you can filter a list of commits since yesterday by using format like `master@{1.day.ago}…master`. The link [https://github.com/fastai/fastai/compare/master@{1.day.ago}…master](https://github.com/fastai/fastai/compare/master@{1.day.ago}…master), for example, gets all commits since yesterday for the `fastai` repository:
 
 * show `.diff` & `.patch`
 
    Add `.diff` or `.patch` to the URLs of compare view, pull request or commit page to get the diff or patch in text format.
 
-   For example, the link https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch gets the patch for all the commits since yesterday in the `fastai` repository.
+   For example, the link [https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch](https://github.com/fastai/fastai/compare/master@{1.day.ago}…master.patch) gets the patch for all the commits since yesterday in the `fastai` repository.
 
 * line linking
 
@@ -829,7 +838,7 @@ git diff stash@{0}..stash@{1}
 ```
 
 check out nbdime - diffing and merging of Jupyter Notebooks
-https://nbdime.readthedocs.io/en/stable/
+[https://nbdime.readthedocs.io/en/stable/](https://nbdime.readthedocs.io/en/stable/)
 
 
 
@@ -957,24 +966,20 @@ git branch --contains <commit>
 
 find when a commit was merged into one or more branches.
 
-https://github.com/mhagger/git-when-merged
+[https://github.com/mhagger/git-when-merged](https://github.com/mhagger/git-when-merged)
 ```
 git when-merged [OPTIONS] COMMIT [BRANCH...]
 ```
 
 
 some good docs on branching strategies:
-```
-https://nvie.com/posts/a-successful-git-branching-model/
-```
+[https://nvie.com/posts/a-successful-git-branching-model/](https://nvie.com/posts/a-successful-git-branching-model/)
 
 
 ### reverting/resetting/undoing
 
 lots of scenarios here:
-```
-https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/
-```
+[https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/](https://blog.github.com/2015-06-08-how-to-undo-almost-anything-with-git/)
 
 
 revert the last commit
@@ -996,7 +1001,7 @@ this is a safe and easy way to rollback to a previous state. No history is destr
 
 if merge happened earlier, revert could fail and ask for a specific parent branch via -m flag to specify which mainline to use
 
-for details: http://schacon.github.io/git/howto/revert-a-faulty-merge.txt and https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option
+for details: [http://schacon.github.io/git/howto/revert-a-faulty-merge.txt](http://schacon.github.io/git/howto/revert-a-faulty-merge.txt) and [https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option](https://stackoverflow.com/questions/5970889/why-does-git-revert-complain-about-a-missing-m-option)
 
 
 revert your repository to a specific revision
@@ -1014,7 +1019,7 @@ git checkout <rev> -- dir1 dir2 file1 file2
 
 If somehow the HEAD of the branch got messed up and it got moved to some place in master, when someone by mistake merges it into master, here is how to reset it back. In this example we will use a release branch-1.0.36 with a postfix changes applied at a later time, resulting in tag `1.0.36.post`.
 
-1. find the last commit that was supposed to be the HEAD, e.g.: https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983
+1. find the last commit that was supposed to be the HEAD, e.g.: [https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983](https://github.com/fastai/fastai/commit/1c63e868d3d11e73d9f51f58cbd271e67a0fe983)
 
    Either use this to help find the right commit:
    ```
@@ -1064,7 +1069,7 @@ git check-attr -a dev_nb/001b_fit.ipynb
 ```
 
 
-more here: https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git
+more here: [https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git)
 
 
 
@@ -1138,10 +1143,7 @@ no such option exists for merge drivers.
 
 
 
-to fix a bad merge
-```
-https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge
-```
+to fix a bad merge: [https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge](https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge)
 
 
 "fatal: Unknown index entry format 61740000".
@@ -1165,7 +1167,7 @@ or you clone the repo again.
 
 tell git not to merge certain files (i.e. keep the local version) by defining merge filter 'ours'.
 
-https://stackoverflow.com/a/5895890/9201239
+[https://stackoverflow.com/a/5895890/9201239](https://stackoverflow.com/a/5895890/9201239)
 
 
 
@@ -1186,7 +1188,7 @@ git config merge.ours.driver true
 ## workflows
 
 
-working and updating the local checkout with upstream changes https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1
+working and updating the local checkout with upstream changes [https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1](https://stackoverflow.com/questions/457927/git-workflow-and-rebase-vs-merge-questions?rq=1)
 ```
 clone the remote repository
 git checkout -b my_new_feature
@@ -1320,15 +1322,13 @@ git check-attr -a repo-relative/path/to/file
 #### useful git filters
 
 git keyword expansion.
-```
-https://github.com/gistya/expandr
-```
+[https://github.com/gistya/expandr](https://github.com/gistya/expandr)
 
 
 
 ## Miscellaneous Recipes
 
-* download a sub-directory from a git tree, e.g. https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python
+* download a sub-directory from a git tree, e.g. [https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python](https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Python)
 
    1. replace tree/master => trunk
    2. svn co the new url
@@ -1339,4 +1339,4 @@ https://github.com/gistya/expandr
 
 ## Useful Resources
 
-* https://learngitbranching.js.org/ - visual teaching with exercises
+* [https://learngitbranching.js.org/](https://learngitbranching.js.org/) - visual teaching with exercises

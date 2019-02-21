@@ -535,9 +535,9 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MatthewsCorreff"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L253" class="source_link">[source]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+<h3 id="MatthewsCorreff"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L259" class="source_link">[source]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<p>Compute the Matthews correlation coefficient. Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+<p>Compute the Matthews correlation coefficient.</p>
 
 </div>
 
@@ -546,6 +546,13 @@ summary: "Useful metrics for training"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -558,7 +565,7 @@ summary: "Useful metrics for training"
 <div class="output_markdown rendered_html output_subarea ">
 <h3 id="KappaScore"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L237" class="source_link">[source]</a></h3><blockquote><p><code>KappaScore</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<p>Compute the rate of agreement (Cohens Kappa). Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+<p>Compute the rate of agreement (Cohens Kappa).</p>
 
 </div>
 
@@ -567,6 +574,19 @@ summary: "Useful metrics for training"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+<p><a href="/metrics.html#KappaScore"><code>KappaScore</code></a> supports linear and quadratic weights on the off-diagonal cells in the <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a>, in addition to the default unweighted calculation treating all misclassifications as equally weighted. Leaving <a href="/metrics.html#KappaScore"><code>KappaScore</code></a>'s <code>weights</code> attribute as <code>None</code> returns the unweighted Kappa score. Updating <code>weights</code> to "linear" means off-diagonal ConfusionMatrix elements are weighted in linear proportion to their distance from the diagonal; "quadratic" means weights are squared proportional to their distance from the diagonal.
+Specify linear or quadratic weights, if using, by first creating an instance of the metric and then updating the <code>weights</code> attribute, similar to as follows:</p>
+
+<pre><code>kappa = KappaScore()
+kappa.weights = "quadratic"
+learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 

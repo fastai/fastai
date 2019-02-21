@@ -2,8 +2,9 @@
 # by pytest before any tests are run
 
 import pytest, sys, re
-from os.path import abspath, dirname
+from os.path import abspath, dirname, join
 from utils.mem import use_gpu
+from fastai.gen_doc.doctest import TestAPIRegistry
 
 # make sure we test against the checked out git version of fastai and
 # not the pre-installed version. With 'pip install -e .[dev]' it's not
@@ -13,8 +14,9 @@ git_repo_path = abspath(dirname(dirname(__file__)))
 sys.path.insert(1, git_repo_path)
 
 def pytest_addoption(parser):
-    parser.addoption( "--runslow", action="store_true", default=False, help="run slow tests")
-    parser.addoption( "--skipint", action="store_true", default=False, help="skip integration tests")
+    parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")
+    parser.addoption("--skipint", action="store_true", default=False, help="skip integration tests")
+    parser.addoption("--testapireg", action="store_true", default=False, help="test api registry")
 
 def mark_items_with_keyword(items, marker, keyword):
     for item in items:
@@ -32,3 +34,22 @@ def pytest_collection_modifyitems(config, items):
     if not use_gpu:
         skip_cuda = pytest.mark.skip(reason="CUDA is not available")
         mark_items_with_keyword(items, skip_cuda, "cuda")
+
+# test_this functionality integration
+@pytest.fixture(scope="session", autouse=True)
+def doctest_collector_start(request):
+    individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
+    #individualtests = 0
+    if pytest.config.getoption("--testapireg") and not individualtests:
+        request.addfinalizer(TestAPIRegistry.registry_save)
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    res = outcome.get_result()
+    individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
+    #individualtests = 0
+    if pytest.config.getoption("--testapireg") and not individualtests:
+        if res.when == "setup": TestAPIRegistry.this_tests_flag_on(item)
+        if res.when == "call" and res.failed:  TestAPIRegistry.tests_failed()
+        if res.when == "teardown":  TestAPIRegistry.this_tests_flag_check(item)        

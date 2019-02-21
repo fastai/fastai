@@ -77,7 +77,7 @@ def deal_caps(x:Collection[str]) -> Collection[str]:
     res = []
     for t in x:
         if t == '': continue
-        if t[0].isupper() and t[1:].islower(): res.append(TK_MAJ)
+        if t[0].isupper() and len(t) > 1 and t[1:].islower(): res.append(TK_MAJ)
         res.append(t.lower())
     return res
 
@@ -140,6 +140,10 @@ class Vocab():
         self.itos = state['itos']
         self.stoi = collections.defaultdict(int,{v:k for k,v in enumerate(self.itos)})
 
+    def save(self, path):
+        "Save `self.itos` in `path`"
+        pickle.dump(self.itos, open(path, 'wb'))
+
     @classmethod
     def create(cls, tokens:Tokens, max_vocab:int, min_freq:int) -> 'Vocab':
         "Create a vocabulary from a set of `tokens`."
@@ -148,4 +152,10 @@ class Vocab():
         for o in reversed(defaults.text_spec_tok):
             if o in itos: itos.remove(o)
             itos.insert(0, o)
+        return cls(itos)
+    
+    @classmethod
+    def load(cls, path):
+        "Load the `Vocab` contained in `path`"
+        itos = pickle.load(open(path, 'rb'))
         return cls(itos)

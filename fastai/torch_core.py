@@ -192,10 +192,12 @@ def split_no_wd_params(layer_groups:Collection[nn.Module])->List[List[nn.Paramet
             if isinstance(c, bn_types): l2 += list(trainable_params(c))
             elif isinstance(c, bias_types):
                 bias = c.bias if hasattr(c, 'bias') else None
-                l1 += [p for p in list(trainable_params(c)) if not (p is bias)]
+                l1 += [p for p in trainable_params(c) if not (p is bias)]
                 if bias is not None: l2.append(bias)
             else: l1 += list(trainable_params(c))
-        l1,l2 = list(set(l1)), list(set(l2))
+        #Since we scan the children separately, we might get duplicates (tied weights). We need to preserve the order
+        #for the optimizer load of state_dict
+        l1,l2 = uniqueify(l1),uniqueify(l2)
         split_params += [l1, l2]      
     return split_params
 

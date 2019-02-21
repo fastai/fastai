@@ -99,12 +99,13 @@ dep_groups = {
         beautifulsoup4
         matplotlib
         numexpr              # performance-improvement for numpy
-        numpy>=1.12
+        numpy>=1.15
         nvidia-ml-py3
         pandas
         packaging
         Pillow
         pyyaml
+        pynvx ; platform_system=="Darwin"  # only pypi at the moment
         requests
         scipy
         torch>=1.0.0

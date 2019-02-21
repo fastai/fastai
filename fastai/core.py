@@ -70,10 +70,10 @@ def is1d(a:Collection)->bool:
     "Return `True` if `a` is one-dimensional"
     return len(a.shape) == 1 if hasattr(a, 'shape') else True
 
-def uniqueify(x:Series)->List:
+def uniqueify(x:Series, sort:bool=False)->List:
     "Return sorted unique values of `x`."
     res = list(OrderedDict.fromkeys(x).keys())
-    res.sort()
+    if sort: res.sort()
     return res
 
 def idx_dict(a): 
@@ -284,17 +284,24 @@ class FloatItem(ItemBase):
     def __str__(self): return str(self.obj)
 
 def _treat_html(o:str)->str:
-    return o.replace('\n','\\n')
+    o = str(o)
+    to_replace = {'\n':'\\n', '<':'&lt;', '>':'&gt;', '&':'&amp;'}
+    for k,v in to_replace.items(): o = o.replace(k, v)
+    return o
 
-def text2html_table(items:Collection[Collection[str]], widths:Collection[int])->str:
+def text2html_table(items:Collection[Collection[str]])->str:
     "Put the texts in `items` in an HTML table, `widths` are the widths of the columns in %."
-    html_code = f"<table>"
-    for w in widths: html_code += f"  <col width='{w}%'>"
-    for line in items:
-        html_code += "  <tr>\n"
-        html_code += "\n".join([f"    <th>{_treat_html(o)}</th>" for o in line if len(o) >= 1])
-        html_code += "\n  </tr>\n"
-    return html_code + "</table>\n"
+    html_code = f"""<table border="1" class="dataframe">"""
+    html_code += f"""  <thead>\n    <tr style="text-align: right;">\n"""
+    for i in items[0]: html_code += f"      <th>{_treat_html(i)}</th>"
+    html_code += f"    </tr>\n  </thead>\n  <tbody>"
+    html_code += "  <tbody>"
+    for line in items[1:]:
+        html_code += "    <tr>"
+        for i in line: html_code += f"      <td>{_treat_html(i)}</td>"
+        html_code += "    </tr>"
+    html_code += "  </tbody>\n</table>"
+    return html_code
 
 def parallel(func, arr:Collection, max_workers:int=None):
     "Call `func` on every element of `arr` in parallel using `max_workers`."
