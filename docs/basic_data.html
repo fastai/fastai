@@ -69,9 +69,9 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>train_ds</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>valid_ds</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>test_ds</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>bs</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>val_bs</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>num_workers</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>DataBunch</code></p>
+<h4 id="DataBunch.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L111" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>train_ds</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>valid_ds</code></strong>:<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>, <strong><code>test_ds</code></strong>:<code>Optional</code>[<a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset"><code>Dataset</code></a>]=<strong><em><code>None</code></em></strong>, <strong><code>path</code></strong>:<code>PathOrStr</code>=<strong><em><code>'.'</code></em></strong>, <strong><code>bs</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>val_bs</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>num_workers</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>dl_kwargs</code></strong>) → <code>DataBunch</code></p>
 </blockquote>
-<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>train_ds</code>, <code>valid_ds</code> and maybe <code>test_ds</code> with a batch size of <code>bs</code>.</p>
+<p>Create a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from <code>train_ds</code>, <code>valid_ds</code> and maybe <code>test_ds</code> with a batch size of <code>bs</code>. Passes <code>**dl_kwargs</code> to <code>DataLoader()</code></p>
 
 </div>
 
@@ -211,7 +211,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.sanity_check"><code>sanity_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L230" class="source_link">[source]</a></h4><blockquote><p><code>sanity_check</code>()</p>
+<h4 id="DataBunch.sanity_check"><code>sanity_check</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L227" class="source_link">[source]</a></h4><blockquote><p><code>sanity_check</code>()</p>
 </blockquote>
 <p>Check the underlying data in the training set can be properly loaded.</p>
 
@@ -255,7 +255,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="DataBunch.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L145" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<strong><code>fname</code></strong>=<strong><em><code>'data_save.pkl'</code></em></strong>)</p>
+<h4 id="DataBunch.save"><code>save</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L145" class="source_link">[source]</a></h4><blockquote><p><code>save</code>(<strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>'data_save.pkl'</code></em></strong>)</p>
 </blockquote>
 <p>Save the <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> in <code>self.path/fname</code>.</p>
 
@@ -286,7 +286,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_data"><code>load_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L263" class="source_link">[source]</a></h4><blockquote><p><code>load_data</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'data_save.pkl'</code></em></strong>, <strong><code>bs</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>val_bs</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>num_workers</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
+<h4 id="load_data"><code>load_data</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_data.py#L260" class="source_link">[source]</a></h4><blockquote><p><code>load_data</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'data_save.pkl'</code></em></strong>, <strong><code>bs</code></strong>:<code>int</code>=<strong><em><code>64</code></em></strong>, <strong><code>val_bs</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>, <strong><code>num_workers</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>dl_tfms</code></strong>:<code>Optional</code>[<code>Collection</code>[<code>Callable</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>device</code></strong>:<a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch-device"><code>device</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>collate_fn</code></strong>:<code>Callable</code>=<strong><em><code>'data_collate'</code></em></strong>, <strong><code>no_check</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>) → <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a></p>
 </blockquote>
 <p>Load from <code>path/fname</code> a saved <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a>.</p>
 
@@ -359,7 +359,7 @@ summary: "Basic classes to contain the data for model training."
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L682" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
+<h4 id="load_empty"><code>load_empty</code><a href="https://github.com/fastai/fastai/blob/master/fastai/data_block.py#L690" class="source_link">[source]</a></h4><blockquote><p><code>load_empty</code>(<strong><code>path</code></strong>, <strong><code>fname</code></strong>:<code>str</code>=<strong><em><code>'export.pkl'</code></em></strong>)</p>
 </blockquote>
 <p>Load an empty <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> from the exported file in <code>path/fname</code> with optional <code>tfms</code>.</p>
 

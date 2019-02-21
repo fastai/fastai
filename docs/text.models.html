@@ -50,7 +50,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_LSTM"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L74" class="source_link">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>hidden_p</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>input_p</code></strong>:<code>float</code>=<strong><em><code>0.6</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.1</code></em></strong>, <strong><code>weight_p</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>qrnn</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="AWD_LSTM"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L74" class="source_link">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>hidden_p</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>input_p</code></strong>:<code>float</code>=<strong><em><code>0.6</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.1</code></em></strong>, <strong><code>weight_p</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>qrnn</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>bidir</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>AWD-LSTM/QRNN inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a>.</p>
 
@@ -87,7 +87,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="AWD_LSTM.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L127" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
+<h4 id="AWD_LSTM.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
 </blockquote>
 <p>Reset the hidden states.</p>
 
@@ -234,7 +234,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="LinearDecoder"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L133" class="source_link">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>, <strong><code>tie_encoder</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="LinearDecoder"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L134" class="source_link">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>, <strong><code>tie_encoder</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>To go on top of a RNNCore module and create a Language Model.</p>
 
@@ -272,7 +272,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolingLinearClassifier"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L157" class="source_link">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>layers</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>drops</code></strong>:<code>Collection</code>[<code>float</code>]) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="PoolingLinearClassifier"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L158" class="source_link">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>layers</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>drops</code></strong>:<code>Collection</code>[<code>float</code>]) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
 <p>Create a linear classifier with pooling.</p>
 
@@ -310,7 +310,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="PoolingLinearClassifier.pool"><code>pool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L168" class="source_link">[source]</a></h4><blockquote><p><code>pool</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>bs</code></strong>:<code>int</code>, <strong><code>is_max</code></strong>:<code>bool</code>)</p>
+<h4 id="PoolingLinearClassifier.pool"><code>pool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L169" class="source_link">[source]</a></h4><blockquote><p><code>pool</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>bs</code></strong>:<code>int</code>, <strong><code>is_max</code></strong>:<code>bool</code>)</p>
 </blockquote>
 <p>Pool the tensor along the seq_len dimension.</p>
 
@@ -689,7 +689,7 @@ tensor([[-0.0702,  0.5725],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L151" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L152" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential module that passes the reset call to its children.</p>
 
@@ -710,7 +710,7 @@ tensor([[-0.0702,  0.5725],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SequentialRNN.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L153" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
+<h4 id="SequentialRNN.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
 </blockquote>
 
 </div>

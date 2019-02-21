@@ -1486,7 +1486,7 @@ Total time: 00:04 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="model_summary"><code>model_summary</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L165" class="source_link">[source]</a></h4><blockquote><p><code>model_summary</code>(<strong><code>m</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>n</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>)</p>
+<h4 id="model_summary"><code>model_summary</code><a href="https://github.com/fastai/fastai/blob/master/fastai/callbacks/hooks.py#L161" class="source_link">[source]</a></h4><blockquote><p><code>model_summary</code>(<strong><code>m</code></strong>:<a href="/basic_train.html#Learner"><code>Learner</code></a>, <strong><code>n</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>)</p>
 </blockquote>
 <p>Print a summary of <code>m</code> using a output text width of <code>n</code> chars</p>
 
@@ -2146,7 +2146,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_learner"><code>load_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L524" class="source_link">[source]</a></h4><blockquote><p><code>load_learner</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>, <strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>'export.pkl'</code></em></strong>, <strong><code>test</code></strong>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="load_learner"><code>load_learner</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L537" class="source_link">[source]</a></h4><blockquote><p><code>load_learner</code>(<strong><code>path</code></strong>:<code>PathOrStr</code>, <strong><code>fname</code></strong>:<code>PathOrStr</code>=<strong><em><code>'export.pkl'</code></em></strong>, <strong><code>test</code></strong>:<a href="/data_block.html#ItemList"><code>ItemList</code></a>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>Load a <a href="/basic_train.html#Learner"><code>Learner</code></a> object saved with <code>export_state</code> in <code>path/fn</code> with empty data, optionally add <code>test</code> and load on <code>cpu</code>.</p>
 
@@ -2489,7 +2489,7 @@ Total time: 00:06 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot"><code>plot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L473" class="source_link">[source]</a></h4><blockquote><p><code>plot</code>(<strong><code>skip_start</code></strong>:<code>int</code>=<strong><em><code>10</code></em></strong>, <strong><code>skip_end</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>)</p>
+<h4 id="Recorder.plot"><code>plot</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L480" class="source_link">[source]</a></h4><blockquote><p><code>plot</code>(<strong><code>skip_start</code></strong>:<code>int</code>=<strong><em><code>10</code></em></strong>, <strong><code>skip_end</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>suggestion</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Plot learning rate and losses, trimmed between <code>skip_start</code> and <code>skip_end</code>. Optionally plot and return min gradient</p>
 
@@ -2582,7 +2582,7 @@ Min numerical gradient: 7.59E-03
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_losses"><code>plot_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L488" class="source_link">[source]</a></h4><blockquote><p><code>plot_losses</code>(<strong><code>last</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="Recorder.plot_losses"><code>plot_losses</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L501" class="source_link">[source]</a></h4><blockquote><p><code>plot_losses</code>(<strong><code>last</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>Plot training and validation losses.</p>
 
@@ -2772,7 +2772,7 @@ Total time: 00:22 <p><table style='width:300px; margin-bottom:10px'>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Recorder.plot_metrics"><code>plot_metrics</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L503" class="source_link">[source]</a></h4><blockquote><p><code>plot_metrics</code>()</p>
+<h4 id="Recorder.plot_metrics"><code>plot_metrics</code><a href="https://github.com/fastai/fastai/blob/master/fastai/basic_train.py#L516" class="source_link">[source]</a></h4><blockquote><p><code>plot_metrics</code>()</p>
 </blockquote>
 <p>Plot metrics collected during training.</p>
 

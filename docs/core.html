@@ -2501,7 +2501,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L299" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<strong><code>func</code></strong>, <strong><code>arr</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>max_workers</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="parallel"><code>parallel</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L306" class="source_link">[source]</a></h4><blockquote><p><code>parallel</code>(<strong><code>func</code></strong>, <strong><code>arr</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>max_workers</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>Call <code>func</code> on every element of <code>arr</code> in parallel using <code>max_workers</code>.</p>
 
@@ -2891,7 +2891,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="show_some"><code>show_some</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L317" class="source_link">[source]</a></h4><blockquote><p><code>show_some</code>(<strong><code>items</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_max</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>sep</code></strong>:<code>str</code>=<strong><em><code>','</code></em></strong>)</p>
+<h4 id="show_some"><code>show_some</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L324" class="source_link">[source]</a></h4><blockquote><p><code>show_some</code>(<strong><code>items</code></strong>:<code>Collection</code>[<code>T_co</code>], <strong><code>n_max</code></strong>:<code>int</code>=<strong><em><code>5</code></em></strong>, <strong><code>sep</code></strong>:<code>str</code>=<strong><em><code>','</code></em></strong>)</p>
 </blockquote>
 <p>Return the representation of the first  <code>n_max</code> elements in <code>items</code>.</p>
 
@@ -2912,7 +2912,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L308" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
+<h4 id="subplots"><code>subplots</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L315" class="source_link">[source]</a></h4><blockquote><p><code>subplots</code>(<strong><code>rows</code></strong>:<code>int</code>, <strong><code>cols</code></strong>:<code>int</code>, <strong><code>imgsize</code></strong>:<code>int</code>=<strong><em><code>4</code></em></strong>, <strong><code>figsize</code></strong>:<code>Optional</code>[<code>Tuple</code>[<code>int</code>, <code>int</code>]]=<strong><em><code>None</code></em></strong>, <strong><code>title</code></strong>=<strong><em><code>None</code></em></strong>, <strong>**<code>kwargs</code></strong>)</p>
 </blockquote>
 <p>Like <code>plt.subplots</code> but with consistent axs shape, <code>kwargs</code> passed to <code>fig.suptitle</code> with <code>title</code></p>
 
@@ -2933,7 +2933,7 @@ Categories (2, int64): [1 &lt; 2]</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="text2html_table"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L289" class="source_link">[source]</a></h4><blockquote><p><code>text2html_table</code>(<strong><code>items</code></strong>:<code>Tokens</code>, <strong><code>widths</code></strong>:<code>Collection</code>[<code>int</code>]) → <code>str</code></p>
+<h4 id="text2html_table"><code>text2html_table</code><a href="https://github.com/fastai/fastai/blob/master/fastai/core.py#L292" class="source_link">[source]</a></h4><blockquote><p><code>text2html_table</code>(<strong><code>items</code></strong>:<code>Tokens</code>) → <code>str</code></p>
 </blockquote>
 <p>Put the texts in <code>items</code> in an HTML table, <code>widths</code> are the widths of the columns in %.</p>
 
