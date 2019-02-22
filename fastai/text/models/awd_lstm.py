@@ -234,8 +234,7 @@ class TextClassificationInterpretation():
     def from_learner(cls, learn): return cls(learn.data, learn.model)
 
     def intrinsic_attention(self, text:str, class_id:int=None):
-        """Calculate the intrinsic attention of the input w.r.t to an output `class_id`,
-        or the classification given by the model if `None`.
+        """Calculate the intrinsic attention of the input w.r.t to an output `class_id`, or the classification given by the model if `None`.
         For reference, see the Sequential Jacobian session at https://www.cs.toronto.edu/~graves/preprint.pdf
         """
         ids = self.data.one_item(text)[0]
