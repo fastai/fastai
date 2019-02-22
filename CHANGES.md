@@ -22,7 +22,10 @@ of that change.
 - added NVML query support on OSX via `pynvx` in addition to `pynvml`
 - Added `XResNet`, which is ResNet plus tricks from
   [Bag of Tricks for Image Classification](https://arxiv.org/abs/1812.01187).
-  Note pretrained models note available yet for this architecture.
+  Note pretrained models not available yet for this architecture.
+- `TextClassificationInterpretation`, which computes intrisic attention to give some interpretation of classification
+  results in text (thanks to herrmann)
+- `add_cyclical_datepart`, which add the dateparts as cosine embeddings in tabular data (thanks to herrmann)
 
 ### Changed:
 
