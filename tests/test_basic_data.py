@@ -1,6 +1,7 @@
 import pytest
 from utils.fakes import *
 import sys
+from fastai.gen_doc.doctest import this_tests
 
 ## run: pytest tests/test_basic_data.py -s
 
@@ -16,6 +17,7 @@ import sys
 ## Class DataBunch
 
 def test_DataBunch_Create():
+    this_tests(DataBunch.create)
     x_train,y_train =  fake_basedata(n_in=3, batch_size=6),fake_basedata(n_in=3, batch_size=6)
     x_valid,y_valid =  fake_basedata(n_in=3, batch_size=3),fake_basedata(n_in=3, batch_size=3)
     bs=5
@@ -29,6 +31,7 @@ def test_DataBunch_Create():
 
 ## TO DO (?)ideally, call one_batch with type dataloader
 def test_DataBunch_onebatch():
+    this_tests(DataBunch.one_batch)
     data = fake_data(n_in=4, n_out=5, batch_size=6)
     x,y = data.one_batch()
     assert 4 == x[0].shape[0]
@@ -37,6 +40,7 @@ def test_DataBunch_onebatch():
 
 
 def test_DataBunch_oneitem():
+    this_tests(DataBunch.one_item)
     data = fake_data()
     x,y = data.one_item(item=1)
     assert 1 == x.shape[0]
@@ -44,6 +48,7 @@ def test_DataBunch_oneitem():
 
 
 def test_DataBunch_show_batch(capsys):
+     this_tests(DataBunch.show_batch)
      data = fake_data()
      data.show_batch()
      captured = capsys.readouterr()
