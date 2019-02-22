@@ -68,7 +68,7 @@ def create_cnn(data:DataBunch, arch:Callable, cut:Union[int,Callable]=None, pret
                 lin_ftrs:Optional[Collection[int]]=None, ps:Floats=0.5,
                 custom_head:Optional[nn.Module]=None, split_on:Optional[SplitFuncOrIdxList]=None,
                 bn_final:bool=False, **learn_kwargs:Any)->Learner:
-    "Build convnet style learners."
+    "Build convnet style learner."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained, cut)
     nf = num_features_model(body) * 2
@@ -137,14 +137,14 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
     losses, idxs = self.top_losses(self.data.c)
     l_dim = len(losses.size())
     if l_dim == 1: losses, idxs = self.top_losses()
-    infolist, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]                                                      
-    truthlabels=np.asarray(self.y_true, dtype=int) 
+    infolist, ordlosses_idxs, mismatches_idxs, mismatches, losses_mismatches, mismatchescontainer = [],[],[],[],[],[]
+    truthlabels=np.asarray(self.y_true, dtype=int)
     classes_ids=[k for k in enumerate(self.data.classes)]
     predclass=np.asarray(self.pred_class)
     for i, pred in enumerate(predclass):
         where_truth=np.nonzero((truthlabels[i]>0))[0]
         mismatch=np.all(pred!=where_truth)
-        if mismatch: 
+        if mismatch:
             mismatches_idxs.append(i)
             if l_dim > 1 : losses_mismatches.append((losses[i][pred],i))
             else: losses_mismatches.append((losses[i],i))
@@ -158,7 +158,7 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8
     mismatches_ordered_byloss=ds[ordlosses_idxs]
     print(str(len(mismatches))+' misclassified samples over '+str(len(self.data.valid_ds))+' samples in the validation set.')
     for ima in range(len(mismatches_ordered_byloss)):
-        mismatchescontainer.append(mismatches_ordered_byloss[ima][0]) 
+        mismatchescontainer.append(mismatches_ordered_byloss[ima][0])
     for sampleN in range(samples):
         actualclasses=''
         for clas in infolist[ordlosses_idxs[sampleN]][2]:
