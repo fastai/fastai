@@ -43,8 +43,6 @@ class TestAPIRegistry:
 
     def this_tests_flag_on(filename, test_name):
         TestAPIRegistry.has_this_tests = test_name
-        missing_this_test = f"file: {filename} / test:  {test_name}"
-        TestAPIRegistry.missing_this_tests.add(missing_this_test)
        
     def tests_failed(status=True):
         TestAPIRegistry.some_tests_failed = status
@@ -52,11 +50,12 @@ class TestAPIRegistry:
     def this_tests_flag_check(filename, test_name):
         if TestAPIRegistry.has_this_tests == test_name:
             TestAPIRegistry.has_this_tests = None
+        else:
+            TestAPIRegistry.missing_this_tests.add(f"{filename}::{test_name}"
 
     def registry_save():
         if TestAPIRegistry.missing_this_tests:
-            print('\n*** Warning: Pls register the following tests with TestAPIRegistry.this_tests:')
-            print('\n'.join(str(missing_this_test) for missing_this_test in TestAPIRegistry.missing_this_tests))                
+            print(f"*** Warning: Please use `this_tests` in the following:", *TestAPIRegistry.missing_this_tests, sep="\n")         
         if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
             print(f"\n*** Saving test api registry @ {path}")
