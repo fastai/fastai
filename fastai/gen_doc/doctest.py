@@ -23,7 +23,7 @@ class TestAPIRegistry:
         prev_frame = currentframe().f_back.f_back
         filename, lineno, test_name, _, _ = getframeinfo(prev_frame)
         parent_func_lineno, _ = get_parent_func(lineno, get_lines(filename))
-        entry = [{'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}]
+        entry = {'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}
         for func in funcs:
             try:
                 func_fq = get_func_fq_name(func)
