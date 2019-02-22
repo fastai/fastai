@@ -6,7 +6,7 @@ from .callback import *
 __all__ = ['error_rate', 'accuracy', 'accuracy_thresh', 'dice', 'exp_rmspe', 'fbeta','FBeta', 'mse', 'mean_squared_error',
             'mae', 'mean_absolute_error', 'rmse', 'root_mean_squared_error', 'msle', 'mean_squared_logarithmic_error', 
             'explained_variance', 'r2_score', 'top_k_accuracy', 'KappaScore', 'ConfusionMatrix', 'MatthewsCorreff', 
-            'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE']
+            'Precision', 'Recall', 'R2Score', 'ExplainedVariance', 'ExpRMSPE', 'RMSE', 'Perplexity']
 
 
 def fbeta(y_pred:Tensor, y_true:Tensor, thresh:float=0.2, beta:float=2, eps:float=1e-9, sigmoid:bool=True)->Rank0Tensor:
@@ -155,7 +155,6 @@ class ConfusionMatrix(Callback):
 @dataclass
 class CMScores(ConfusionMatrix):
     "Base class for metrics which rely on the calculation of the precision and/or recall score."
-    
     average:Optional[str]="binary"      # `binary`, `micro`, `macro`, `weigthed` or None
     pos_label:int=1                     # 0 or 1
     eps:float=1e-9
@@ -233,9 +232,7 @@ class FBeta(CMScores):
     def on_train_end(self, **kwargs): self.average = self.avg
 
 class KappaScore(ConfusionMatrix):
-    """
-    Compute the rate of agreement (Cohens Kappa).
-    """
+    "Compute the rate of agreement (Cohens Kappa)."
     weights:Optional[str]=None      # None, `linear`, or `quadratic`
     
     def on_epoch_end(self, **kwargs):
@@ -255,10 +252,7 @@ class KappaScore(ConfusionMatrix):
         self.metric = 1 - k
 
 class MatthewsCorreff(ConfusionMatrix):
-    """    
-    Compute the Matthews correlation coefficient.
-    """
-
+    "Compute the Matthews correlation coefficient."
     def on_epoch_end(self, **kwargs):
         t_sum = self.cm.sum(dim=1)
         p_sum = self.cm.sum(dim=0)
@@ -268,3 +262,15 @@ class MatthewsCorreff(ConfusionMatrix):
         cov_ypyp = n_samples ** 2 - torch.dot(p_sum, p_sum)
         cov_ytyt = n_samples ** 2 - torch.dot(t_sum, t_sum)
         self.metric = cov_ytyp / torch.sqrt(cov_ytyt * cov_ypyp)
+        
+class Perplexity(Callback):
+    "Perplexity metric for language models."
+    def on_epoch_begin(self, **kwargs):
+        self.loss,self.len = 0.,0
+    
+    def on_batch_end(self, last_output, last_target, **kwargs):
+        self.loss += last_target.size(1) * CrossEntropyFlat()(last_output, last_target)
+        self.len += last_target.size(1)
+    
+    def on_epoch_end(self, **kwargs):
+        self.metric = torch.exp(self.loss / self.len)
