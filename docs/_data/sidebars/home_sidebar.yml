@@ -73,8 +73,11 @@ entries:
           title: CSV Logger
           url: /callbacks.csv_logger.html
         - output: web,pdf
-          title: Tracking callbacks
+          title: Tracking
           url: /callbacks.tracker.html
+        - output: web,pdf
+          title: Memory Profiling
+          url: /callbacks.mem.html
         title: callbacks
     output: web
     title: Training
@@ -179,9 +182,15 @@ entries:
     - output: web,pdf
       title: Helpers
       url: /utils.collect_env.html
+    - output: web,pdf
+      title: Memory Management
+      url: /utils.mem.html
     output: web
     title: Utils
   - folderitems:
+    - output: web,pdf
+      title: Overview
+      url: /tutorials.html
     - output: web,pdf
       title: Look at data
       url: /tutorial.data.html
@@ -191,6 +200,9 @@ entries:
     - output: web,pdf
       title: Custom ItemList
       url: /tutorial.itemlist.html
+    - output: web,pdf
+      title: DL on a Shoestring
+      url: /tutorial.resources.html
     output: web
     title: Tutorials
   - folderitems:
@@ -207,11 +219,17 @@ entries:
       title: gen_doc.nbdoc
       url: /gen_doc.nbdoc.html
     - output: web,pdf
+      title: gen_doc.nbtest
+      url: /gen_doc.nbtest.html
+    - output: web,pdf
       title: gen_doc.convert2html
       url: /gen_doc.convert2html.html
     output: web
     title: Doc authoring
   - folderitems:
+    - external_url: https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md
+      output: web,pdf
+      title: Contributing
     - output: web,pdf
       title: Dev Notes
       url: /dev/develop.html

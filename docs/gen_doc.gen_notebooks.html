@@ -11,7 +11,7 @@ summary: "Generation of documentation notebook skeletons from python module"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Notebook-generation">Notebook generation<a class="anchor-link" href="#Notebook-generation">&#182;</a></h1>
+<h2 id="Notebook-generation">Notebook generation<a class="anchor-link" href="#Notebook-generation">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -78,7 +78,8 @@ summary: "Generation of documentation notebook skeletons from python module"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The first (optional) step is to create a notebook "skeleton" - i.e. a notebook containing all the classes, methods, functions, and other symbols you wish to document. You can create this manually if you prefer, however using the automatic approach can save you some time and ensure you don't miss anything. For the initial skeleton, use <a href="/gen_doc.gen_notebooks.html#create_module_page"><code>create_module_page</code></a>, which creates a new module from scratch. To update it later with any newly-added symbols, use <a href="/gen_doc.gen_notebooks.html#update_module_page"><code>update_module_page</code></a>.</p>
+<p>The first (optional) step is to create a notebook "skeleton" - i.e. a notebook containing all the classes, methods, functions, and other symbols you wish to document. You can create this manually if you prefer, however using the automatic approach can save you some time and ensure you don't miss anything.</p>
+<p>For the initial skeleton, use <a href="/gen_doc.gen_notebooks.html#create_module_page"><code>create_module_page</code></a>, which creates a new module from scratch. To update it later with any newly-added symbols, use <a href="/gen_doc.gen_notebooks.html#update_module_page"><code>update_module_page</code></a>.</p>
 
 </div>
 </div>
@@ -108,6 +109,15 @@ summary: "Generation of documentation notebook skeletons from python module"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Equivalent <a href="/gen_doc_main.html#creating-a-new-documentation-notebook-from-existing-module">CLI</a>:</p>
+<div class="highlight"><pre><span></span>tools/build-docs fastai.subpackage.module
+</pre></div>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -160,6 +170,15 @@ summary: "Generation of documentation notebook skeletons from python module"
 
 <pre><code>update_module_page(gen_doc.gen_notebooks, '.')</code></pre>
 <p>You can also generate and update <em>all</em> modules in a package using <a href="/gen_doc.gen_notebooks.html#update_notebooks"><code>update_notebooks</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Equivalent <a href="/gen_doc_main.html#updating-an-existing-functionclass">CLI</a>:</p>
+<div class="highlight"><pre><span></span>tools/build-docs docs_src/gen_doc.gen_notebooks.ipynb
+</pre></div>
 
 </div>
 </div>

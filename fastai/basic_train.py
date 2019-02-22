@@ -4,12 +4,14 @@ from .basic_data import *
 from .callback import *
 from .data_block import *
 from .utils.mem import gpu_mem_restore
+import inspect
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
 
 defaults.lr = slice(3e-3)
 defaults.wd = 1e-2
+defaults.extra_callbacks = None
 
 def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None, opt:OptOptimizer=None,
                cb_handler:Optional[CallbackHandler]=None)->Tuple[Union[Tensor,int,float,str]]:
@@ -26,10 +28,8 @@ def loss_batch(model:nn.Module, xb:Tensor, yb:Tensor, loss_func:OptLossFunc=None
     if opt is not None:
         loss = cb_handler.on_backward_begin(loss)
         loss.backward()
-        cb_handler.on_backward_end()
-        opt.step()
-        cb_handler.on_step_end()
-        opt.zero_grad()
+        if not cb_handler.on_backward_end(): opt.step()
+        if not cb_handler.on_step_end():     opt.zero_grad()
 
     return loss.detach().cpu()
 
@@ -174,6 +174,7 @@ class Learner():
         if not getattr(self, 'opt', False): self.create_opt(lr, wd)
         else: self.opt.lr,self.opt.wd = lr,wd
         callbacks = [cb(self) for cb in self.callback_fns] + listify(callbacks)
+        if defaults.extra_callbacks is not None: callbacks += defaults.extra_callbacks
         fit(epochs, self.model, self.loss_func, opt=self.opt, data=self.data, metrics=self.metrics,
             callbacks=self.callbacks+callbacks)
 
@@ -205,7 +206,7 @@ class Learner():
         self.freeze_to(0)
         self.create_opt(defaults.lr)
 
-    def export(self, fname:str='export.pkl'):
+    def export(self, fname:str='export.pkl', destroy=False):
         "Export the state of the `Learner` in `self.path/fname`."
         args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
         state = {a:getattr(self,a) for a in args}
@@ -213,16 +214,18 @@ class Learner():
         #layer_groups -> need to find a way
         #TO SEE: do we save model structure and weights separately?
         device = one_param(self.model).device
-        state['model'] = self.model.cpu() #This is done inplace so we need to put the model back where it was after the save.
+        state['model'] = self.model.cpu() # This is done inplace so we need to put the model back where it was after the save.
         xtra = dict(normalize=self.data.norm.keywords) if getattr(self.data, 'norm', False) else {}
         state['data'] = self.data.valid_ds.get_state(**xtra)
         state['cls'] = self.__class__
         torch.save(state, open(self.path/fname, 'wb'))
         self.model.to(device)
+        if destroy: self.destroy()
 
     def save(self, name:PathOrStr, return_path:bool=False, with_opt:bool=True):
         "Save model and optimizer state (if `with_opt`) with `name` to `self.model_dir`."
         path = self.path/self.model_dir/f'{name}.pth'
+        if not hasattr(self, 'opt'): with_opt=False
         if not with_opt: state = get_model(self.model).state_dict()
         else: state = {'model': get_model(self.model).state_dict(), 'opt':self.opt.state_dict()}
         torch.save(state, path)
@@ -232,42 +235,66 @@ class Learner():
         "Return DataLoader for DatasetType `ds_type`."
         return self.data.dl(ds_type)
 
-    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=False):
+    def load(self, name:PathOrStr, device:torch.device=None, strict:bool=True, with_opt:bool=None, purge:bool=True):
         "Load model and optimizer state (if `with_opt`) `name` from `self.model_dir` using `device`."
-        if purge: self.purge(clear_opt = ifnone(with_opt, False))
+        if purge: self.purge(clear_opt=ifnone(with_opt, False))
         if device is None: device = self.data.device
         state = torch.load(self.path/self.model_dir/f'{name}.pth', map_location=device)
         if set(state.keys()) == {'model', 'opt'}:
             get_model(self.model).load_state_dict(state['model'], strict=strict)
             if ifnone(with_opt,True):
-                if not hasattr(self, 'opt'): opt = self.create_opt(defaults.lr, self.wd)
+                if not hasattr(self, 'opt'): self.create_opt(defaults.lr, self.wd)
                 try:    self.opt.load_state_dict(state['opt'])
                 except: pass
         else:
             if with_opt: warn("Saved filed doesn't contain an optimizer state.")
             get_model(self.model).load_state_dict(state, strict=strict)
-        return self
-    
-    def purge(self, clear_opt:bool=True):#TODO: opt
-        "Purge the `Learner` of all cached attributes to release some GPU memory."
-        path = self.path
-        args = ['opt_func', 'loss_func', 'metrics', 'true_wd', 'bn_wd', 'wd', 'train_bn', 'model_dir', 'callback_fns']
-        state = {a:getattr(self,a) for a in args}
-        state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
-        state['model'] = self.model
-        torch.save(state, open(self.path/'tmp.pkl', 'wb'))
-        del self.opt.opt
-        for a in args + ['model', 'callbacks']: delattr(self, a)
-        gc.collect()
-        torch.cuda.empty_cache()
-        state = torch.load(Path(path)/'tmp.pkl')
-        for a in args + ['model']: setattr(self, a, state[a])
-        cb_state = state.pop('cb_state')
-        self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
         del state
         gc.collect()
-        torch.cuda.empty_cache() 
-        os.remove(path/'tmp.pkl')
+        return self
+
+    def destroy(self):
+        "Free the Learner internals, leaving just an empty shell that consumes no memory"
+
+        class ZombieLearner(Learner):
+            msg = "this object has been destroyed"
+            def __getattr__(self, item):    print(ZombieLearner.msg); return None
+            def destroyed(*args, **kwargs): print(ZombieLearner.msg)
+
+        attrs = [k for k in self.__dict__.keys() if not k.startswith("__")]
+        for a in attrs: delattr(self, a)
+        # the instance methods can still be called, but will just give a message
+        methods = [k for k in dir(self) if not k.startswith("__") and inspect.isroutine(getattr(self, k))]
+        for m in methods: setattr(self, m, ZombieLearner.destroyed)
+        self.__class__ = ZombieLearner
+        gc.collect()
+        print("this Learner object self-destroyed - it still exists, but no longer usable")
+
+    def purge(self, clear_opt:bool=True):
+        "Purge the `Learner` of all cached attributes to release some GPU memory."
+
+        tmp_file = self.path/'purge-tmp.pkl'
+        attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
+        attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
+                     'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
+        # +callbacks: get pickled too, but not directly
+        attrs_keep = ['data', 'recorder']
+        attrs_del = list(set(attrs_all) - set(attrs_keep))
+        state = {a:getattr(self, a) for a in attrs_pkl}
+        state['cb_state'] = {cb.__class__:cb.get_state() for cb in self.callbacks}
+        if hasattr(self, 'opt'): state['opt'] = self.opt.get_state()
+        torch.save(state, open(tmp_file, 'wb'))
+        for a in attrs_del: delattr(self, a)
+        gc.collect()
+        state = torch.load(tmp_file)
+        os.remove(tmp_file)
+        for a in attrs_pkl: setattr(self, a, state[a])
+        cb_state = state.pop('cb_state')
+        self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
+        if not clear_opt and 'opt' in state:
+            self.opt = OptimWrapper.load_with_state_and_layer_group(state['opt'], self.layer_groups)
+        del state
+        gc.collect()
         return self
 
     def get_preds(self, ds_type:DatasetType=DatasetType.Valid, with_loss:bool=False, n_batch:Optional[int]=None,
@@ -383,7 +410,7 @@ class Recorder(LearnerCallback):
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
         self.no_val,self.silent = False,False
-    
+
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
@@ -445,21 +472,34 @@ class Recorder(LearnerCallback):
             axs[1].set_ylabel('Momentum')
         else: plt.plot(iterations, self.lrs)
 
-    def plot(self, skip_start:int=10, skip_end:int=5)->None:
+    @staticmethod
+    def smoothen_by_spline(xs, ys, **kwargs):
+        xs = np.arange(len(ys))
+        spl = scipy.interpolate.UnivariateSpline(xs, ys, **kwargs)
+        ys = spl(xs)
+        return ys
+
+    def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, **kwargs)->None:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
+        losses = [x.item() for x in losses]
+        if 'k' in kwargs: losses = self.smoothen_by_spline(lrs, losses, **kwargs)
         _, ax = plt.subplots(1,1)
         ax.plot(lrs, losses)
         ax.set_ylabel("Loss")
         ax.set_xlabel("Learning Rate")
         ax.set_xscale('log')
         ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.0e'))
-        mg = (np.gradient(np.array([x.item() for x in losses]))).argmin()
-        print(f"Min numerical gradient: {lrs[mg]:.2E}")
-        ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
-        self.min_grad_lr = lrs[mg]
-        
+        if suggestion:
+            try: mg = (np.gradient(np.array(losses))).argmin()
+            except:
+                print("Failed to compute the gradients, there might not be enough points.")
+                return
+            print(f"Min numerical gradient: {lrs[mg]:.2E}")
+            ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
+            self.min_grad_lr = lrs[mg]
+
     def plot_losses(self, last:int=None)->None:
         "Plot training and validation losses."
         last = ifnone(last,len(self.nb_batches))

@@ -28,7 +28,7 @@ def test_from_folder(path):
         mnist_tiny_sanity_test(data)
 
 def test_from_name_re(path):
-    fnames = get_files(path/'train', recurse=True)
+    fnames = get_image_files(path/'train', recurse=True)
     pat = r'/([^/]+)\/\d+.png$'
     data = ImageDataBunch.from_name_re(path, fnames, pat, ds_tfms=(rand_pad(2, 28), []))
     mnist_tiny_sanity_test(data)
@@ -54,23 +54,43 @@ def test_from_csv_and_from_df(path):
         else: data = ImageDataBunch.from_csv(path, size=28)
         mnist_tiny_sanity_test(data)
 
-def test_from_plus_resize(path, path_var_size):
-    # in this test the 2 datasets are of (1) 28x28, (2) var-size but larger than
-    # 28x28, so we don't need to check whether the original size of the image is
-    # different from the resized one, we always resize to < 28x28
-    for p in [path, path_var_size]: # identical + var sized inputs
-        fnames = get_files(p/'train', recurse=True)
-        pat = r'/([^/]+)\/\d+.png$'
-        # check 3 different size arg are (1) supported and (2) no warnings are issued
-        for size in [14, (14,14), (14,20)]:
-            with CaptureStderr() as cs:
-                data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size)
-            assert len(cs.err)==0, f"got collate_fn warning {cs.err}"
+rms = ['PAD', 'CROP', 'SQUISH']
 
-            x,_ = data.train_ds[0]
-            size_want = (size, size) if isinstance(size, int) else size
-            size_real = x.size
-            assert size_want == size_real, f"size mismatch after resize {size} expected {size_want}, got {size_real}"
+def check_resized(data, size, args):
+    x,_ = data.train_ds[0]
+    size_want = (size, size) if isinstance(size, int) else size
+    size_real = x.size
+    assert size_want == size_real, f"[{args}]: size mismatch after resize {size} expected {size_want}, got {size_real}"
+
+def test_image_resize(path, path_var_size):
+    # in this test the 2 datasets are:
+    # (1) 28x28,
+    # (2) var-size but larger than 28x28,
+    # and the resizes are always less than 28x28, so it always tests a real resize
+    for p in [path, path_var_size]: # identical + var sized inputs
+        fnames = get_image_files(p/'train', recurse=True)
+        pat = r'/([^/]+)\/\d+.png$'
+        for size in [14, (14,14), (14,20)]:
+            for rm_name in rms:
+                rm = getattr(ResizeMethod, rm_name)
+                args = f"path={p}, size={size}, resize_method={rm_name}"
+
+                # resize the factory method way
+                with CaptureStderr() as cs:
+                    data = ImageDataBunch.from_name_re(p, fnames, pat, ds_tfms=None, size=size, resize_method=rm)
+                assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
+                check_resized(data, size, args)
+
+                # resize the data block way
+                with CaptureStderr() as cs:
+                    data = (ImageItemList.from_folder(p)
+                            .no_split()
+                            .label_from_folder()
+                            .transform(size=size, resize_method=rm)
+                            .databunch(bs=2)
+                            )
+                assert len(cs.err)==0, f"[{args}]: got collate_fn warning {cs.err}"
+                check_resized(data, size, args)
 
 def test_multi_iter_broken(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))

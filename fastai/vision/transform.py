@@ -72,7 +72,7 @@ def _flip_affine() -> TfmAffine:
             [0,  0, 1.]]
 flip_affine = TfmAffine(_flip_affine)
 
-def _dihedral(x, k:partial(uniform_int,0,8)):
+def _dihedral(x, k:partial(uniform_int,0,7)):
     "Randomly flip `x` image based on `k`."
     flips=[]
     if k&1: flips.append(1)
@@ -82,7 +82,7 @@ def _dihedral(x, k:partial(uniform_int,0,8)):
     return x.contiguous()
 dihedral = TfmPixel(_dihedral)
 
-def _dihedral_affine(k:partial(uniform_int,0,8)):
+def _dihedral_affine(k:partial(uniform_int,0,7)):
     "Randomly flip `x` image based on `k`."
     x = -1 if k&1 else 1
     y = -1 if k&2 else 1
@@ -191,6 +191,11 @@ def _crop_pad(x, size, padding_mode='reflection', row_pct:uniform = 0.5, col_pct
     return f_crop_pad(x, size, padding_mode, row_pct, col_pct)
 
 crop_pad = TfmCrop(_crop_pad)
+
+def _image_maybe_add_crop_pad(img, tfms):
+    tfm_names = [tfm.__name__ for tfm in tfms]
+    return [crop_pad()] + tfms if 'crop_pad' not in tfm_names else tfms
+Image._maybe_add_crop_pad = _image_maybe_add_crop_pad
 
 rand_pos = {'row_pct':(0,1), 'col_pct':(0,1)}
 

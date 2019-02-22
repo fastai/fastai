@@ -11,7 +11,7 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Implementation-of-the-language-models">Implementation of the language models<a class="anchor-link" href="#Implementation-of-the-language-models">&#182;</a></h1>
+<h2 id="Implementation-of-the-language-models">Implementation of the language models<a class="anchor-link" href="#Implementation-of-the-language-models">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -20,22 +20,61 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a> from Stephen Merity et al. The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.awd_lstm.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
-<p>This being given, there are five different dropouts in the AWD-LSTM:</p>
+<p><a href="/text.models.html#text.models"><code>text.models</code></a> module fully implements the encoder for an <a href="https://arxiv.org/pdf/1708.02182.pdf">AWD-LSTM</a>, the <a href="https://arxiv.org/abs/1706.03762">transformer model</a> and the <a href="https://arxiv.org/abs/1901.02860">transformer XL model</a>. They can then plugged in with a decoder to make a language model, or some classifying layers to make a text classifier.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Language-model-modules">Language model modules<a class="anchor-link" href="#Language-model-modules">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">AWD_LSTM</span><span class="p">,</span> <span class="n">title_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="AWD_LSTM"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L74" class="source_link">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>hidden_p</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>input_p</code></strong>:<code>float</code>=<strong><em><code>0.6</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.1</code></em></strong>, <strong><code>weight_p</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>qrnn</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>bidir</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>AWD-LSTM/QRNN inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main idea of the article is to use a <a href="http://www.pnas.org/content/79/8/2554">RNN</a> with dropout everywhere, but in an intelligent way. There is a difference with the usual dropout, which is why you’ll see a <a href="/text.models.awd_lstm.html#RNNDropout"><code>RNNDropout</code></a> module: we zero things, as is usual in dropout, but we always zero the same thing according to the sequence dimension (which is the first dimension in pytorch). This ensures consistency when updating the hidden state through the whole sentences/articles.</p>
+<p>This being given, there are a total four different dropouts in the encoder of the AWD-LSTM:</p>
 <ul>
-<li>the first one, embedding dropout, is applied when we look the ids of our tokens inside the embedding matrix (to transform them from numbers to a vector of float). We zero some lines of it, so random ids are sent to a vector of zeros instead of being sent to their embedding vector.</li>
-<li>the second one, input dropout, is applied to the result of the embedding with dropout. We forget random pieces of the embedding matrix (but as stated in the last paragraph, the same ones in the sequence dimension).</li>
-<li>the third one is the weight dropout. It’s the trickiest to implement as we randomly replace by 0s some weights of the hidden-to-hidden matrix inside the RNN: this needs to be done in a way that ensure the gradients are still computed and the initial weights still updated.</li>
-<li>the fourth one is the hidden dropout. It’s applied to the output of one of the layers of the RNN before it’s used as input of the next layer (again same coordinates are zeroed in the sequence dimension). This one isn’t applied to the last output, but rather…</li>
-<li>the fifth one is the output dropout, it’s applied to the last output of the model (and like the others, it’s applied the same way through the first dimension).</li>
+<li>the first one, embedding dropout, is applied when we look the ids of our tokens inside the embedding matrix (to transform them from numbers to a vector of float). We zero some lines of it, so random ids are sent to a vector of zeros instead of being sent to their embedding vector. This is the <code>embed_p</code> parameter.</li>
+<li>the second one, input dropout, is applied to the result of the embedding with dropout. We forget random pieces of the embedding matrix (but as stated in the last paragraph, the same ones in the sequence dimension). This is the <code>input_p</code> parameter.</li>
+<li>the third one is the weight dropout. It’s the trickiest to implement as we randomly replace by 0s some weights of the hidden-to-hidden matrix inside the RNN: this needs to be done in a way that ensure the gradients are still computed and the initial weights still updated. This is the <code>weight_p</code> parameter.</li>
+<li>the fourth one is the hidden dropout. It’s applied to the output of one of the layers of the RNN before it’s used as input of the next layer (again same coordinates are zeroed in the sequence dimension). It isn’t applied to the last output (which will get its own dropout in the decoder).This is the <code>hidden_p</code> parameter.</li>
 </ul>
+<p>The other attributes are <code>vocab_sz</code> for the number of tokens in your vocabulary, <code>emb_sz</code> for the embedding size, <code>n_hid</code> for the hidden size of your inner LSTMs (or QRNNs), <code>n_layers</code> the number of layers and <code>pad_token</code> for the index of an eventual padding token (1 by default in fastai).</p>
+<p>The flag <code>qrnn=True</code> replace the inner LSTMs by <a href="https://arxiv.org/abs/1611.01576">QRNNs</a>.</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Basic-functions-to-get-a-model">Basic functions to get a model<a class="anchor-link" href="#Basic-functions-to-get-a-model">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -48,9 +87,9 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_language_model"><code>get_language_model</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L183" class="source_link">[source]</a></h4><blockquote><p><code>get_language_model</code>(<strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>config</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>drop_mult</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>)</p>
+<h4 id="AWD_LSTM.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
 </blockquote>
-<p>Create a language model from <code>arch</code> and its <code>config</code>, maybe <code>pretrained</code>.</p>
+<p>Reset the hidden states.</p>
 
 </div>
 
@@ -61,6 +100,16 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">Transformer</span><span class="p">,</span> <span class="n">title_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 <div class="output_wrapper">
 <div class="output">
@@ -69,9 +118,9 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_text_classifier"><code>get_text_classifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/learner.py#L237" class="source_link">[source]</a></h4><blockquote><p><code>get_text_classifier</code>(<strong><code>arch</code></strong>:<code>Callable</code>, <strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>n_class</code></strong>:<code>int</code>, <strong><code>bptt</code></strong>:<code>int</code>=<strong><em><code>70</code></em></strong>, <strong><code>max_len</code></strong>:<code>int</code>=<strong><em><code>1400</code></em></strong>, <strong><code>config</code></strong>:<code>dict</code>=<strong><em><code>None</code></em></strong>, <strong><code>drop_mult</code></strong>:<code>float</code>=<strong><em><code>1.0</code></em></strong>, <strong><code>lin_ftrs</code></strong>:<code>Collection</code>[<code>int</code>]=<strong><em><code>None</code></em></strong>, <strong><code>ps</code></strong>:<code>Collection</code>[<code>float</code>]=<strong><em><code>None</code></em></strong>) → <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h3 id="Transformer"><code>class</code> <code>Transformer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/transformer.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>Transformer</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>ctx_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_model</code></strong>:<code>int</code>, <strong><code>d_head</code></strong>:<code>int</code>, <strong><code>d_inner</code></strong>:<code>int</code>, <strong><code>resid_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>attn_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>ff_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>act</code></strong>:<a href="/text.models.transformer.html#Activation"><code>Activation</code></a>=<strong><em><code>&lt;Activation.ReLU: 1&gt;</code></em></strong>, <strong><code>double_drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>attn_cls</code></strong>:<code>Callable</code>=<strong><em><code>'MultiHeadAttention'</code></em></strong>, <strong><code>learned_pos_enc</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>mask</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
 </blockquote>
-<p>Create a text classifier from <code>arch</code> and its <code>config</code>, maybe <code>pretrained</code>.</p>
+<p>Transformer model: <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a>.</p>
 
 </div>
 
@@ -83,9 +132,199 @@ summary: "Implementation of the AWD-LSTM and the RNN models"
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This model uses an encoder taken from the <code>arch</code> on <code>config</code>. This encoder is fed the sequence by successive bits of size <code>bptt</code> and we only keep the last <code>max_seq</code> outputs for the pooling layers.</p>
-<p>The decoder use a concatenation of the last outputs, a <code>MaxPooling</code> of all the outputs and an <code>AveragePooling</code> of all the outputs. It then uses a list of <code>BatchNorm</code>, <code>Dropout</code>, <code>Linear</code>, <code>ReLU</code> blocks (with no <code>ReLU</code> in the last one), using a first layer size of <code>3*emb_sz</code> then following the numbers in <code>n_layers</code>. The dropouts probabilities are read in <code>drops</code>.</p>
-<p>Note that the model returns a list of three things, the actual output being the first, the two others being the intermediate hidden states before and after dropout (used by the <a href="/callbacks.rnn.html#RNNTrainer"><code>RNNTrainer</code></a>). Most loss functions expect one output, so you should use a Callback to remove the other two if you're not using <a href="/callbacks.rnn.html#RNNTrainer"><code>RNNTrainer</code></a>.</p>
+<p>The main idea of this article is to use regular neural net for NLP instead of an RNN, but with lots of attention layers. Intuitively, those attention layers tell the model to pay more interest to this or that world when trying to predict its output.</p>
+<p>It starts from embeddings from <code>vocab_sz</code> (number of tokens) to <code>d_model</code> (which is basically the hidden size throughout the model), and it will look at inputs of size batch_size by <code>ctx_len</code> (for context length). We add a positional encoding to the embeddings (since a regular neural net has no idea of the order of words), either learned or coming from <a href="/text.models.transformer.html#PositionalEncoding"><code>PositionalEncoding</code></a> depending on <code>learned_pos_enc</code>. We then have a dropout of <code>embed_p</code> followed by <code>n_layers</code> blocks of <a href="/text.models.transformer.html#MultiHeadAttention"><code>MultiHeadAttention</code></a> followed by <a href="/text.models.transformer.html#feed_forward"><code>feed_forward</code></a>.</p>
+<p>In the attention we use <code>n_heads</code> with each a hidden state of <code>d_head</code> (will default to <code>d_model//n_heads</code>). If <code>mask=True</code>, a mask will make sure no attention is paid to future tokens (which would be cheating when training a language model). If <code>scale=True</code>, the attention scores are scaled by a factor <code>1 / math.sqrt(d_head)</code>. A dropout of <code>attn_p</code> is applied to the attention scores, then the final result get applied a dropout of <code>resid_p</code> before being summed to the original input (residual connection before the layer norm).</p>
+<p>In feed forward, we have two linear layers from <code>d_model</code> to <code>d_inner</code> and then back. Those have <code>bias</code> if that flag is <code>True</code> and a dropout of <code>ff_p</code> is applied, after each if <code>double_drop=True</code>, or just at the end otherwise. <code>act</code> is used in the middle as a non-linearity.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">TransformerXL</span><span class="p">,</span> <span class="n">title_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="TransformerXL"><code>class</code> <code>TransformerXL</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/transformer.py#L180" class="source_link">[source]</a></h3><blockquote><p><code>TransformerXL</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>ctx_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_model</code></strong>:<code>int</code>, <strong><code>d_head</code></strong>:<code>int</code>, <strong><code>d_inner</code></strong>:<code>int</code>, <strong><code>resid_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>attn_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>ff_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>act</code></strong>:<a href="/text.models.transformer.html#Activation"><code>Activation</code></a>=<strong><em><code>&lt;Activation.ReLU: 1&gt;</code></em></strong>, <strong><code>double_drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>attn_cls</code></strong>:<code>Callable</code>=<strong><em><code>'MultiHeadRelativeAttention'</code></em></strong>, <strong><code>learned_pos_enc</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>mask</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>mem_len</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>TransformerXL model: <a href="https://arxiv.org/abs/1901.02860">https://arxiv.org/abs/1901.02860</a>.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>TransformerXL is a transformer architecture with a sort of hidden state formed by the results of the intermediate layers on previous tokens. Its size is determined by <code>mem_len</code>. By using this context, those models are capable of learning longer dependencies and can also be used for faster text generation at inference: a regular transformer model would have to reexamine the whole of sequence of indexes generated so far, whereas we can feed the new tokens one by one to a transformer XL (like we do with a regular RNN).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">TransformerXL</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="TransformerXL.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/transformer.py#L198" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
+</blockquote>
+<p>Reset the internal memory.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Decoders">Decoders<a class="anchor-link" href="#Decoders">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">LinearDecoder</span><span class="p">,</span> <span class="n">title_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="LinearDecoder"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L134" class="source_link">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>, <strong><code>tie_encoder</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>To go on top of a RNNCore module and create a Language Model.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Create a the decoder to go on top of an <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a> encoder and create a language model. <code>n_hid</code> is the dimension of the last hidden state of the encoder, <code>n_out</code> the size of the output. Dropout of <code>output_p</code> is applied. If a <code>tie_encoder</code> is passed, it will be used for the weights of the linear layer, that will have <code>bias</code> or not.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">PoolingLinearClassifier</span><span class="p">,</span> <span class="n">title_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h3 id="PoolingLinearClassifier"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L158" class="source_link">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>layers</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>drops</code></strong>:<code>Collection</code>[<code>float</code>]) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+</blockquote>
+<p>Create a linear classifier with pooling.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The last output, <code>MaxPooling</code> of all the outputs and <code>AvgPooling</code> of all the outputs are concatenated, then blocks of <a href="/layers.html#bn_drop_lin"><code>bn_drop_lin</code></a> are stacked, according to the values in <a href="/layers.html#layers"><code>layers</code></a> and <code>drops</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">show_doc</span><span class="p">(</span><span class="n">PoolingLinearClassifier</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="PoolingLinearClassifier.pool"><code>pool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L169" class="source_link">[source]</a></h4><blockquote><p><code>pool</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>bs</code></strong>:<code>int</code>, <strong><code>is_max</code></strong>:<code>bool</code>)</p>
+</blockquote>
+<p>Pool the tensor along the seq_len dimension.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The input tensor <code>x</code> (of batch size <code>bs</code>) is pooled along the batch dimension. <code>is_max</code> decides if we do an <code>AvgPooling</code> or a <code>MaxPooling</code>.</p>
 
 </div>
 </div>
@@ -450,7 +689,7 @@ tensor([[-0.0702,  0.5725],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L148" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
+<h3 id="SequentialRNN"><code>class</code> <code>SequentialRNN</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L152" class="source_link">[source]</a></h3><blockquote><p><code>SequentialRNN</code>(<strong>*<code>args</code></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Sequential"><code>Sequential</code></a></p>
 </blockquote>
 <p>A sequential module that passes the reset call to its children.</p>
 
@@ -471,7 +710,7 @@ tensor([[-0.0702,  0.5725],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="SequentialRNN.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L150" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
+<h4 id="SequentialRNN.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L154" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
 </blockquote>
 
 </div>
@@ -549,12 +788,6 @@ tensor([[-0.0702,  0.5725],
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Language-model-modules">Language model modules<a class="anchor-link" href="#Language-model-modules">&#182;</a></h2>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -564,9 +797,8 @@ tensor([[-0.0702,  0.5725],
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="AWD_LSTM"><code>class</code> <code>AWD_LSTM</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L74" class="source_link">[source]</a></h3><blockquote><p><code>AWD_LSTM</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>emb_sz</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>pad_token</code></strong>:<code>int</code>, <strong><code>bidir</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>hidden_p</code></strong>:<code>float</code>=<strong><em><code>0.2</code></em></strong>, <strong><code>input_p</code></strong>:<code>float</code>=<strong><em><code>0.6</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.1</code></em></strong>, <strong><code>weight_p</code></strong>:<code>float</code>=<strong><em><code>0.5</code></em></strong>, <strong><code>qrnn</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
+<h4 id="feed_forward"><code>feed_forward</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/transformer.py#L30" class="source_link">[source]</a></h4><blockquote><p><code>feed_forward</code>(<strong><code>d_model</code></strong>:<code>int</code>, <strong><code>d_ff</code></strong>:<code>int</code>, <strong><code>ff_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>act</code></strong>:<a href="/text.models.transformer.html#Activation"><code>Activation</code></a>=<strong><em><code>&lt;Activation.ReLU: 1&gt;</code></em></strong>, <strong><code>double_drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>)</p>
 </blockquote>
-<p>AWD-LSTM/QRNN inspired by <a href="https://arxiv.org/abs/1708.02182">https://arxiv.org/abs/1708.02182</a>.</p>
 
 </div>
 
@@ -575,166 +807,6 @@ tensor([[-0.0702,  0.5725],
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="Transformer"><code>class</code> <code>Transformer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/transformer.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>Transformer</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>ctx_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_model</code></strong>:<code>int</code>, <strong><code>d_head</code></strong>:<code>int</code>, <strong><code>d_inner</code></strong>:<code>int</code>, <strong><code>resid_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>attn_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>ff_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>act</code></strong>:<a href="/text.models.transformer.html#Activation"><code>Activation</code></a>=<strong><em><code>&lt;Activation.ReLU: 1&gt;</code></em></strong>, <strong><code>double_drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>attn_cls</code></strong>:<code>Callable</code>=<strong><em><code>'MultiHeadAttention'</code></em></strong>, <strong><code>learned_pos_enc</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
-</blockquote>
-<p>Transformer model: <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="TransformerXL"><code>class</code> <code>TransformerXL</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/transformer.py#L179" class="source_link">[source]</a></h3><blockquote><p><code>TransformerXL</code>(<strong><code>vocab_sz</code></strong>:<code>int</code>, <strong><code>ctx_len</code></strong>:<code>int</code>, <strong><code>n_layers</code></strong>:<code>int</code>, <strong><code>n_heads</code></strong>:<code>int</code>, <strong><code>d_model</code></strong>:<code>int</code>, <strong><code>d_head</code></strong>:<code>int</code>, <strong><code>d_inner</code></strong>:<code>int</code>, <strong><code>resid_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>attn_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>ff_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>embed_p</code></strong>:<code>float</code>=<strong><em><code>0.0</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>scale</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>act</code></strong>:<a href="/text.models.transformer.html#Activation"><code>Activation</code></a>=<strong><em><code>&lt;Activation.ReLU: 1&gt;</code></em></strong>, <strong><code>double_drop</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>, <strong><code>attn_cls</code></strong>:<code>Callable</code>=<strong><em><code>'MultiHeadRelativeAttention'</code></em></strong>, <strong><code>learned_pos_enc</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>, <strong><code>mem_len</code></strong>:<code>int</code>=<strong><em><code>0</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
-</blockquote>
-<p>TransformerXL model: <a href="https://arxiv.org/abs/1901.02860">https://arxiv.org/abs/1901.02860</a>.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This is the encoder of the model with an embedding layer of <code>vocab_sz</code> by <code>emb_sz</code>, a hidden size of <code>n_hid</code>, <code>n_layers</code> layers. <code>pad_token</code> is passed to the <code>Embedding</code>, if <code>bidir</code> is True, the model is bidirectional. If <code>qrnn</code> is True, we use QRNN cells instead of LSTMs. Dropouts are <code>embed_p</code>, <code>input_p</code>, <code>weight_p</code> and <code>hidden_p</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="AWD_LSTM.reset"><code>reset</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L124" class="source_link">[source]</a></h4><blockquote><p><code>reset</code>()</p>
-</blockquote>
-<p>Reset the hidden states.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="LinearDecoder"><code>class</code> <code>LinearDecoder</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L130" class="source_link">[source]</a></h3><blockquote><p><code>LinearDecoder</code>(<strong><code>n_out</code></strong>:<code>int</code>, <strong><code>n_hid</code></strong>:<code>int</code>, <strong><code>output_p</code></strong>:<code>float</code>, <strong><code>tie_encoder</code></strong>:<a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a>=<strong><em><code>None</code></em></strong>, <strong><code>bias</code></strong>:<code>bool</code>=<strong><em><code>True</code></em></strong>) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
-</blockquote>
-<p>To go on top of a RNNCore module and create a Language Model.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a the decoder to go on top of an <a href="/text.models.awd_lstm.html#RNNCore"><code>RNNCore</code></a> encoder and create a language model. <code>n_hid</code> is the dimension of the last hidden state of the encoder, <code>n_out</code> the size of the output. Dropout of <code>output_p</code> is applied. If a <code>tie_encoder</code> is passed, it will be used for the weights of the linear layer, that will have <code>bias</code> or not.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Classifier-modules">Classifier modules<a class="anchor-link" href="#Classifier-modules">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h3 id="PoolingLinearClassifier"><code>class</code> <code>PoolingLinearClassifier</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L154" class="source_link">[source]</a></h3><blockquote><p><code>PoolingLinearClassifier</code>(<strong><code>layers</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>drops</code></strong>:<code>Collection</code>[<code>float</code>]) :: <a href="https://pytorch.org/docs/stable/nn.html#torch.nn.Module"><code>Module</code></a></p>
-</blockquote>
-<p>Create a linear classifier with pooling.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The last output, <code>MaxPooling</code> of all the outputs and <code>AvgPooling</code> of all the outputs are concatenated, then blocks of <a href="/layers.html#bn_drop_lin"><code>bn_drop_lin</code></a> are stacked, according to the values in <a href="/layers.html#layers"><code>layers</code></a> and <code>drops</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="PoolingLinearClassifier.pool"><code>pool</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/models/awd_lstm.py#L165" class="source_link">[source]</a></h4><blockquote><p><code>pool</code>(<strong><code>x</code></strong>:<code>Tensor</code>, <strong><code>bs</code></strong>:<code>int</code>, <strong><code>is_max</code></strong>:<code>bool</code>)</p>
-</blockquote>
-<p>Pool the tensor along the seq_len dimension.</p>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The input tensor <code>x</code> (of batch size <code>bs</code>) is pooled along the batch dimension. <code>is_max</code> decides if we do an <code>AvgPooling</code> or a <code>MaxPooling</code>.</p>
-
-</div>
-</div>
 </div>
 </div>
  

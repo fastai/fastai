@@ -35,10 +35,9 @@ def accuracy_thresh(y_pred:Tensor, y_true:Tensor, thresh:float=0.5, sigmoid:bool
 
 def top_k_accuracy(input:Tensor, targs:Tensor, k:int=5)->Rank0Tensor:
     "Computes the Top-k accuracy (target is in the top k predictions)."
-    n = targs.shape[0]
-    input = input.topk(k=k, dim=-1)[1].view(n, -1)
-    targs = targs.view(n,-1)
-    return (input == targs).sum(dim=1, dtype=torch.float32).mean()
+    input = input.topk(k=k, dim=-1)[1]
+    targs = targs.unsqueeze(dim=-1).expand_as(input)
+    return (input == targs).max(dim=-1)[0].float().mean()
 
 def error_rate(input:Tensor, targs:Tensor)->Rank0Tensor:
     "1 - `accuracy`"
@@ -96,7 +95,7 @@ def r2_score(pred:Tensor, targ:Tensor)->Rank0Tensor:
 
 class RegMetrics(Callback):
     "Stores predictions and targets to perform calculations on epoch end."
-    def on_epoch_begin(self):
+    def on_epoch_begin(self, **kwargs):
         self.targs, self.preds = Tensor([]), Tensor([])
 
     def on_batch_end(self, last_output:Tensor, last_target:Tensor, **kwargs):
@@ -106,22 +105,22 @@ class RegMetrics(Callback):
 
 class R2Score(RegMetrics):
     "Compute the R2 score (coefficient of determination)."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = r2_score(self.preds, self.targs)
 
 class ExplainedVariance(RegMetrics):
     "Compute the explained variance."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = explained_variance(self.preds, self.targs)
 
 class RMSE(RegMetrics):
     "Compute the root mean squared error."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = root_mean_squared_error(self.preds, self.targs)
 
 class ExpRMSPE(RegMetrics):
     "Compute the exponential of the root mean square error."
-    def on_epoch_end(self):
+    def on_epoch_end(self, **kwargs):
         self.metric = exp_rmspe(self.preds, self.targs)
 
 # Aliases
@@ -205,14 +204,12 @@ class CMScores(ConfusionMatrix):
 class Recall(CMScores):
     "Compute the Recall."
     def on_epoch_end(self, **kwargs):
-        self.metric = self._recall()
-            
+        self.metric = self._recall()           
 
 class Precision(CMScores):
     "Compute the Precision."
     def on_epoch_end(self, **kwargs):
-        self.metric = self._precision()
-            
+        self.metric = self._precision()         
             
 @dataclass
 class FBeta(CMScores):
@@ -238,23 +235,28 @@ class FBeta(CMScores):
 class KappaScore(ConfusionMatrix):
     """
     Compute the rate of agreement (Cohens Kappa).
-    Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
     """
+    weights:Optional[str]=None      # None, `linear`, or `quadratic`
     
     def on_epoch_end(self, **kwargs):
-        w = torch.ones((self.n_classes, self.n_classes))
-        w[self.x, self.x] = 0
         sum0 = self.cm.sum(dim=0)
         sum1 = self.cm.sum(dim=1)
         expected = torch.einsum('i,j->ij', (sum0, sum1)) / sum0.sum()
+        if self.weights is None:
+            w = torch.ones((self.n_classes, self.n_classes))
+            w[self.x, self.x] = 0
+        elif self.weights == "linear" or self.weights == "quadratic":
+            w = torch.zeros((self.n_classes, self.n_classes))
+            w += torch.arange(self.n_classes, dtype=torch.float)
+            w = torch.abs(w - torch.t(w)) if self.weights == "linear" else (w - torch.t(w)) ** 2
+        else:
+            raise ValueError('Unknown weights attribute given. Expected None, "linear", or "quadratic".')
         k = torch.sum(w * self.cm) / torch.sum(w * expected)
         self.metric = 1 - k
-        
 
 class MatthewsCorreff(ConfusionMatrix):
     """    
     Compute the Matthews correlation coefficient.
-    Ref.: https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py
     """
 
     def on_epoch_end(self, **kwargs):

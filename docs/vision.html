@@ -11,7 +11,7 @@ summary: "Application to Computer Vision"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Computer-vision">Computer vision<a class="anchor-link" href="#Computer-vision">&#182;</a></h1>
+<h2 id="Computer-vision">Computer vision<a class="anchor-link" href="#Computer-vision">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -24,7 +24,7 @@ summary: "Application to Computer Vision"
 <ul>
 <li><a href="/vision.image.html#vision.image"><code>vision.image</code></a> contains the basic definition of an <a href="/vision.image.html#Image"><code>Image</code></a> object and all the functions that are used behind the scenes to apply transformations to such an object.</li>
 <li><a href="/vision.transform.html#vision.transform"><code>vision.transform</code></a> contains all the transforms we can use for data augmentation.</li>
-<li><a href="/vision.data.html#vision.data"><code>vision.data</code></a> contains the definition of <a href="/vision.data.html#ImageClassificationDataset"><code>ImageClassificationDataset</code></a> as well as the utility function to easily build a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for Computer Vision problems.</li>
+<li><a href="/vision.data.html#vision.data"><code>vision.data</code></a> contains the definition of <a href="/vision.data.html#ImageDataBunch"><code>ImageDataBunch</code></a> as well as the utility function to easily build a <a href="/basic_data.html#DataBunch"><code>DataBunch</code></a> for Computer Vision problems.</li>
 <li><a href="/vision.learner.html#vision.learner"><code>vision.learner</code></a> lets you build and fine-tune models with a pretrained CNN backbone or train a randomly initialized model from scratch.</li>
 </ul>
 <p>Each of the four module links above includes a quick overview and examples of the functionality of that module, as well as complete API documentation. Below, we'll provide a walk-thru of end to end computer vision model training with the most commonly used functionality.</p>
@@ -219,7 +219,7 @@ Total time: 00:09 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It will grab the data in a train and validation sets from subfolders of classes. You can then access that training and validation set by grabbing the corresponding attribute in <code>data&lt;\code&gt;.</p>
+<p>It will grab the data in a train and validation sets from subfolders of classes. You can then access that training and validation set by grabbing the corresponding attribute in <a href="/vision.data.html#vision.data"><code>data</code></a>.</p>
 
 </div>
 </div>

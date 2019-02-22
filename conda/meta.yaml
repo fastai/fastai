@@ -51,9 +51,9 @@ requirements:
   run:
     - dataclasses
     - beautifulsoup4
-    - fastprogress >=0.1.18
+    - fastprogress >=0.1.19
     - matplotlib
-    - numpy >=1.12
+    - numpy >=1.15
     - pandas
     - bottleneck
     - numexpr
@@ -83,6 +83,7 @@ test:
   requires:
     - python
     - pytest
+    - responses
 
 about:
   home: {{ data.get('url') }}

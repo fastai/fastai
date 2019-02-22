@@ -171,6 +171,9 @@ test: ## run tests with the default python
 test-fast: ## run tests in parallel (requires pip install pytest-xdist)
 	pytest -n 3
 
+test-full: ## run all tests, including slow ones, print summary
+	pytest --runslow -ra --testapireg
+
 test-cpu: ## run tests with the default python and CUDA_VISIBLE_DEVICES=""
 	CUDA_VISIBLE_DEVICES="" python setup.py --quiet test
 
@@ -246,7 +249,14 @@ commit-version: ## commit and tag the release
 	git commit -m "starting release branch: $(version)" $(version_file)
 	$(call echo_cur_branch)
 
+# in case someone managed to push something into master since this process
+# started, it's now safe to git pull (which would avoid the merge error and
+# break 'make release'), as we are no longer on the release branch and new
+# pulled changes won't affect the release branch
 commit-dev-cycle-push: ## commit version and CHANGES and push
+	@echo "\n\n*** [$(cur_branch)] pull before commit to avoid interactive merges"
+	git pull
+
 	@echo "\n\n*** [$(cur_branch)] Start new dev cycle: $(version)"
 	git commit -m "new dev cycle: $(version)" $(version_file) CHANGES.md
 
@@ -336,7 +346,7 @@ changes-finalize: ## fix the version and stamp the date
 
 changes-dev-cycle: ## insert new template + version
 	@echo "\n\n*** [$(cur_branch)] Install new template + version in CHANGES.md"
-	perl -0777 -pi -e 's|^(##)|\n\n## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
+	perl -0777 -pi -e 's|^(##)|## $(version) (Work In Progress)\n\n### New:\n\n### Changed:\n\n### Fixed:\n\n\n\n$$1|ms' CHANGES.md
 
 
 ##@ Version bumping

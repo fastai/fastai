@@ -59,7 +59,28 @@ You can skip this step if you have done it once already on the system you're mak
    ```
 
 
+
+## Pre-Release Process
+
+Normally, while testing the code, we only run `make test`, which completes within a few minutes. But we also have several sets of much heavier and slower, but more complete tests. These should be run and verified to be successful before starting a new release.
+
+1. Run the test suite, including the slower tests (not much longer than the `make test`:
+
+```
+make test-full
+```
+
+2. Run the notebook tests (0.5-1h):
+
+```
+cd docs_src
+./run_tests.sh
+```
+
+
+
 ## Quick Release Process
+
 
 No matter which release process you follow, always remember to start with:
 
@@ -964,34 +985,56 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    git checkout release-1.0.36
    ```
 
-2. Apply desired fixes, document them in `CHANGES.md` and commit/push all changes to the branch.
+2. Apply the fix.
 
-3. Test.
+   a. Apply the desired fixes, e.g. applying some specific fix commit:
+
+   ```
+   git cherry-pick 34499e1b8
+   git push
+   ```
+
+   b. Document the fixes in `CHANGES.md` (the reason for this hotfix)
+
+   c. commit/push all changes to the branch.
+
+   ```
+   git commit CHANGES.md whatever-files-were-fixed
+   git push
+   ```
+
+3. Check that everything is committed and good to go.
+
+   ```
+   make sanity-check
+   ```
+
+4. Test.
 
    ```
    make test
    ```
 
-4. Adjust version.
+5. Adjust version.
 
    According to [PEP-0440](https://www.python.org/dev/peps/pep-0440/#post-releases) add `.post1` to the version, or if it already was a `.postX`, increment its version:
    ```
    make bump-post-release
    ```
 
-5. Commit and push all the changes to the branch.
+6. Commit and push all the changes to the branch.
 
    ```
    make commit-hotfix-push
    ```
 
-6. Make a new tag with the new version.
+7. Make a new tag with the new version.
 
    ```
    make tag-version-push
    ```
 
-7. Make updated release.
+8. Make updated release.
 
    ```
    make dist
@@ -1011,7 +1054,7 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make upload-pypi
    ```
 
-8. Test release.
+9. Test release.
 
    If you made a release on both platforms:
    ```
@@ -1026,12 +1069,14 @@ If something found to be wrong in the last release, yet the HEAD is unstable to 
    make test-install-conda
    ```
 
-
-9. Don't forget to switch back to the master branch for continued development.
+10. Don't forget to switch back to the master branch for continued development.
 
    ```
    make master-branch-switch
    ```
+
+When finished, make sure that the fix is in the `master` branch too, in case it was fixed in the release branch first.
+
 
 
 
@@ -1457,6 +1502,18 @@ Now repeat the same for "Pull request validation".
 Choose 'Save', under "Save & Queue".
 
 
+#### Skipping Jobs
+
+To skip a specific job from running, edit the spec to include:
+
+```
+- job: Foo
+  condition: False
+```
+
+Other conditions are documented [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml).
+
+
 #### Manual Jobs
 
 To trigger a manual build of go to [Builds](https://dev.azure.com/fastdotai/fastai/_build), choose Queue, choose the branch (`master`) and in the Commit field either nothing or enter the desired commit hash. This is the way to get occasional CI builds against non-master branches, which is useful when testing a new pipeline.
@@ -1546,16 +1603,16 @@ Here is how to get segfault backtrace directly or via the core dump in a non-int
 
 #### Support
 
-- General Azure DevOps issues: https://developercommunity.visualstudio.com/spaces/21/index.html
-- Task-specific issues: https://github.com/Microsoft/azure-pipelines-tasks/issues/
-- Agent-specific issues: https://github.com/Microsoft/azure-pipelines-agent
+- [General Azure DevOps issues](https://developercommunity.visualstudio.com/spaces/21/index.html)
+- [Task-specific issues](https://github.com/Microsoft/azure-pipelines-tasks/issues/)
+- [Agent-specific issues](https://github.com/Microsoft/azure-pipelines-agent)
 
 
 ## Package Download Statistics
 
 How many times `fastai` was downloaded?
 
-  * from PyPI https://pepy.tech/project/fastai
-  * from Conda https://anaconda.org/fastai/fastai/files
+  * from [PyPI](https://pepy.tech/project/fastai)
+  * from [Conda](https://anaconda.org/fastai/fastai/files)
 
 The numbers are probably higher due to caches, CDNs, etc.

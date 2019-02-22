@@ -11,7 +11,7 @@ summary: "Useful metrics for training"
     
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Training-metrics">Training metrics<a class="anchor-link" href="#Training-metrics">&#182;</a></h1>
+<h2 id="Training-metrics">Training metrics<a class="anchor-link" href="#Training-metrics">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -146,7 +146,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L47" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>iou</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>Rank0Tensor</code></p>
+<h4 id="dice"><code>dice</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L46" class="source_link">[source]</a></h4><blockquote><p><code>dice</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>, <strong><code>iou</code></strong>:<code>bool</code>=<strong><em><code>False</code></em></strong>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Dice coefficient metric for binary target. If iou=True, returns iou metric, classic for segmentation problems.</p>
 
@@ -167,7 +167,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="error_rate"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L43" class="source_link">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="error_rate"><code>error_rate</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>error_rate</code>(<strong><code>input</code></strong>:<code>Tensor</code>, <strong><code>targs</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>1 - <a href="/metrics.html#accuracy"><code>accuracy</code></a></p>
 
@@ -188,7 +188,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_squared_error"><code>mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L69" class="source_link">[source]</a></h4><blockquote><p><code>mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="mean_squared_error"><code>mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Mean squared error between <code>pred</code> and <code>targ</code>.</p>
 
@@ -209,7 +209,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_absolute_error"><code>mean_absolute_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L64" class="source_link">[source]</a></h4><blockquote><p><code>mean_absolute_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="mean_absolute_error"><code>mean_absolute_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>mean_absolute_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Mean absolute error between <code>pred</code> and <code>targ</code>.</p>
 
@@ -230,7 +230,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_squared_logarithmic_error"><code>mean_squared_logarithmic_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L79" class="source_link">[source]</a></h4><blockquote><p><code>mean_squared_logarithmic_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="mean_squared_logarithmic_error"><code>mean_squared_logarithmic_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>mean_squared_logarithmic_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Mean squared logarithmic error between <code>pred</code> and <code>targ</code>.</p>
 
@@ -251,7 +251,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L57" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="exp_rmspe"><code>exp_rmspe</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L56" class="source_link">[source]</a></h4><blockquote><p><code>exp_rmspe</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Exp RMSE between <code>pred</code> and <code>targ</code>.</p>
 
@@ -272,7 +272,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="root_mean_squared_error"><code>root_mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L74" class="source_link">[source]</a></h4><blockquote><p><code>root_mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="root_mean_squared_error"><code>root_mean_squared_error</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L73" class="source_link">[source]</a></h4><blockquote><p><code>root_mean_squared_error</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Root mean squared error between <code>pred</code> and <code>targ</code>.</p>
 
@@ -339,7 +339,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="explained_variance"><code>explained_variance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L84" class="source_link">[source]</a></h4><blockquote><p><code>explained_variance</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="explained_variance"><code>explained_variance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>explained_variance</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>Explained variance between <code>pred</code> and <code>targ</code>.</p>
 
@@ -360,7 +360,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="r2_score"><code>r2_score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L90" class="source_link">[source]</a></h4><blockquote><p><code>r2_score</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
+<h4 id="r2_score"><code>r2_score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L89" class="source_link">[source]</a></h4><blockquote><p><code>r2_score</code>(<strong><code>pred</code></strong>:<code>Tensor</code>, <strong><code>targ</code></strong>:<code>Tensor</code>) → <code>Rank0Tensor</code></p>
 </blockquote>
 <p>R2 score (coefficient of determination) between <code>pred</code> and <code>targ</code>.</p>
 
@@ -388,7 +388,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="RMSE"><code>class</code> <code>RMSE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L117" class="source_link">[source]</a></h3><blockquote><p><code>RMSE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="RMSE"><code>class</code> <code>RMSE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L116" class="source_link">[source]</a></h3><blockquote><p><code>RMSE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
 <p>Compute the root mean squared error.</p>
 
@@ -409,7 +409,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ExpRMSPE"><code>class</code> <code>ExpRMSPE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L122" class="source_link">[source]</a></h3><blockquote><p><code>ExpRMSPE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="ExpRMSPE"><code>class</code> <code>ExpRMSPE</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L121" class="source_link">[source]</a></h3><blockquote><p><code>ExpRMSPE</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
 <p>Compute the exponential of the root mean square error.</p>
 
@@ -430,7 +430,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Precision"><code>class</code> <code>Precision</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L211" class="source_link">[source]</a></h3><blockquote><p><code>Precision</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+<h3 id="Precision"><code>class</code> <code>Precision</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L209" class="source_link">[source]</a></h3><blockquote><p><code>Precision</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
 <p>Compute the Precision.</p>
 
@@ -451,7 +451,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="Recall"><code>class</code> <code>Recall</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L205" class="source_link">[source]</a></h3><blockquote><p><code>Recall</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+<h3 id="Recall"><code>class</code> <code>Recall</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L204" class="source_link">[source]</a></h3><blockquote><p><code>Recall</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
 <p>Compute the Recall.</p>
 
@@ -472,7 +472,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="FBeta"><code>class</code> <code>FBeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L218" class="source_link">[source]</a></h3><blockquote><p><code>FBeta</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
+<h3 id="FBeta"><code>class</code> <code>FBeta</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L215" class="source_link">[source]</a></h3><blockquote><p><code>FBeta</code>(<strong><code>average</code></strong>:<code>Optional</code>[<code>str</code>]=<strong><em><code>'binary'</code></em></strong>, <strong><code>pos_label</code></strong>:<code>int</code>=<strong><em><code>1</code></em></strong>, <strong><code>eps</code></strong>:<code>float</code>=<strong><em><code>1e-09</code></em></strong>, <strong><code>beta</code></strong>:<code>float</code>=<strong><em><code>2</code></em></strong>) :: <a href="/metrics.html#CMScores"><code>CMScores</code></a></p>
 </blockquote>
 <p>Compute the F<code>beta</code> score.</p>
 
@@ -493,7 +493,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="R2Score"><code>class</code> <code>R2Score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L107" class="source_link">[source]</a></h3><blockquote><p><code>R2Score</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="R2Score"><code>class</code> <code>R2Score</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L106" class="source_link">[source]</a></h3><blockquote><p><code>R2Score</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
 <p>Compute the R2 score (coefficient of determination).</p>
 
@@ -514,7 +514,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ExplainedVariance"><code>class</code> <code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L112" class="source_link">[source]</a></h3><blockquote><p><code>ExplainedVariance</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
+<h3 id="ExplainedVariance"><code>class</code> <code>ExplainedVariance</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L111" class="source_link">[source]</a></h3><blockquote><p><code>ExplainedVariance</code>() :: <a href="/metrics.html#RegMetrics"><code>RegMetrics</code></a></p>
 </blockquote>
 <p>Compute the explained variance.</p>
 
@@ -535,9 +535,9 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="MatthewsCorreff"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L254" class="source_link">[source]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+<h3 id="MatthewsCorreff"><code>class</code> <code>MatthewsCorreff</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L257" class="source_link">[source]</a></h3><blockquote><p><code>MatthewsCorreff</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<p>Compute the Matthews correlation coefficient. Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+<p>Compute the Matthews correlation coefficient.</p>
 
 </div>
 
@@ -546,6 +546,13 @@ summary: "Useful metrics for training"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -556,9 +563,9 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="KappaScore"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L238" class="source_link">[source]</a></h3><blockquote><p><code>KappaScore</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
+<h3 id="KappaScore"><code>class</code> <code>KappaScore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L235" class="source_link">[source]</a></h3><blockquote><p><code>KappaScore</code>() :: <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a></p>
 </blockquote>
-<p>Compute the rate of agreement (Cohens Kappa). Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+<p>Compute the rate of agreement (Cohens Kappa).</p>
 
 </div>
 
@@ -567,6 +574,19 @@ summary: "Useful metrics for training"
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ref.: <a href="https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py">https://github.com/scikit-learn/scikit-learn/blob/bac89c2/sklearn/metrics/classification.py</a></p>
+<p><a href="/metrics.html#KappaScore"><code>KappaScore</code></a> supports linear and quadratic weights on the off-diagonal cells in the <a href="/metrics.html#ConfusionMatrix"><code>ConfusionMatrix</code></a>, in addition to the default unweighted calculation treating all misclassifications as equally weighted. Leaving <a href="/metrics.html#KappaScore"><code>KappaScore</code></a>'s <code>weights</code> attribute as <code>None</code> returns the unweighted Kappa score. Updating <code>weights</code> to "linear" means off-diagonal ConfusionMatrix elements are weighted in linear proportion to their distance from the diagonal; "quadratic" means weights are squared proportional to their distance from the diagonal.
+Specify linear or quadratic weights, if using, by first creating an instance of the metric and then updating the <code>weights</code> attribute, similar to as follows:</p>
+
+<pre><code>kappa = KappaScore()
+kappa.weights = "quadratic"
+learn = create_cnn(data, model, metrics=[error_rate, kappa])</code></pre>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -577,7 +597,7 @@ summary: "Useful metrics for training"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h3 id="ConfusionMatrix"><code>class</code> <code>ConfusionMatrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L133" class="source_link">[source]</a></h3><blockquote><p><code>ConfusionMatrix</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
+<h3 id="ConfusionMatrix"><code>class</code> <code>ConfusionMatrix</code><a href="https://github.com/fastai/fastai/blob/master/fastai/metrics.py#L132" class="source_link">[source]</a></h3><blockquote><p><code>ConfusionMatrix</code>() :: <a href="/callback.html#Callback"><code>Callback</code></a></p>
 </blockquote>
 <p>Computes the confusion matrix.</p>
 

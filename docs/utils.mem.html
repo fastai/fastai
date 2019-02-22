@@ -1,0 +1,441 @@
+---
+
+title: utils.mem
+keywords: 
+sidebar: home_sidebar
+
+
+---
+
+<div class="container" id="notebook-container">
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Memory-management-utils">Memory management utils<a class="anchor-link" href="#Memory-management-utils">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Utility functions for memory management. Currently primarily for GPU.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_get"><code>gpu_mem_get</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L52" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_get</code>(<strong><code>id</code></strong>=<strong><em><code>None</code></em></strong>)</p>
+</blockquote>
+<p>get total, used and free memory (in MBs) for gpu <code>id</code>. if <code>id</code> is not passed, currently selected torch device is used</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_mem_get"><code>gpu_mem_get</code></a></p>
+<ul>
+<li>for gpu returns <code>GPUMemory(total, free, used)</code></li>
+<li>for cpu returns <code>GPUMemory(0, 0, 0)</code></li>
+<li>for invalid gpu id returns <code>GPUMemory(0, 0, 0)</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_get_all"><code>gpu_mem_get_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L63" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_get_all</code>()</p>
+</blockquote>
+<p>get total, used and free memory (in MBs) for each available gpu</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_mem_get_all"><code>gpu_mem_get_all</code></a></p>
+<ul>
+<li>for gpu returns <code>[ GPUMemory(total_0, free_0, used_0), GPUMemory(total_1, free_1, used_1), .... ]</code></li>
+<li>for cpu returns <code>[]</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_get_free_no_cache"><code>gpu_mem_get_free_no_cache</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L68" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_get_free_no_cache</code>()</p>
+</blockquote>
+<p>get free memory (in MBs) for the currently selected gpu id, after emptying the cache</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_mem_get_free_no_cache"><code>gpu_mem_get_free_no_cache</code></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_get_used_no_cache"><code>gpu_mem_get_used_no_cache</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L73" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_get_used_no_cache</code>()</p>
+</blockquote>
+<p>get used memory (in MBs) for the currently selected gpu id, after emptying the cache</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_mem_get_used_no_cache"><code>gpu_mem_get_used_no_cache</code></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_get_used_fast"><code>gpu_mem_get_used_fast</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L78" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_get_used_fast</code>(<strong><code>gpu_handle</code></strong>)</p>
+</blockquote>
+<p>get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache, and needing the <code>gpu_handle</code> arg</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_mem_get_used_fast"><code>gpu_mem_get_used_fast</code></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_with_max_free_mem"><code>gpu_with_max_free_mem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L83" class="source_link">[source]</a></h4><blockquote><p><code>gpu_with_max_free_mem</code>()</p>
+</blockquote>
+<p>get [gpu_id, its_free_ram] for the first gpu with highest available RAM</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_with_max_free_mem"><code>gpu_with_max_free_mem</code></a>:</p>
+<ul>
+<li>for gpu returns: <code>gpu_with_max_free_ram_id, its_free_ram</code></li>
+<li>for cpu returns: <code>None, 0</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="preload_pytorch"><code>preload_pytorch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L45" class="source_link">[source]</a></h4><blockquote><p><code>preload_pytorch</code>()</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#preload_pytorch"><code>preload_pytorch</code></a> is helpful when GPU memory is being measured, since the first time any operation on <code>cuda</code> is performed by pytorch, usually about 0.5GB gets used by CUDA context.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GPUMemory"><code>class</code> <code>GPUMemory</code></h4><blockquote><p><code>GPUMemory</code>(<strong><code>total</code></strong>, <strong><code>free</code></strong>, <strong><code>used</code></strong>) :: <code>tuple</code></p>
+</blockquote>
+<p>GPUMemory(total, free, used)</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#GPUMemory"><code>GPUMemory</code></a> is a namedtuple that is returned by functions like <a href="/utils.mem.html#gpu_mem_get"><code>gpu_mem_get</code></a> and <a href="/utils.mem.html#gpu_mem_get_all"><code>gpu_mem_get_all</code></a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="b2mb"><code>b2mb</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L48" class="source_link">[source]</a></h4><blockquote><p><code>b2mb</code>(<strong><code>num</code></strong>)</p>
+</blockquote>
+<p>convert Bs to MBs and round down</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#b2mb"><code>b2mb</code></a> is a helper utility that just does <code>int(bytes/2**20)</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Memory-Tracing-Utils">Memory Tracing Utils<a class="anchor-link" href="#Memory-Tracing-Utils">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L126" class="source_link">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+</blockquote>
+<p>Trace GPU allocated and peaked memory usage</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Usage examples:</p>
+
+<pre><code>from fastai.utils.mem import GPUMemTrace
+memtrace = GPUMemTrace()
+memtrace.start() # start tracing
+
+def some_code(): pass
+
+some_code()
+memtrace.report() # print intermediary cumulative report
+delta_used, delta_peaked = memtrace.data() # same but as data
+
+some_code()
+memtrace.report('2nd run') # print intermediary cumulative report
+delta_used, delta_peaked = memtrace.data()
+
+for i in range(10):
+    memtrace.reset()
+    some_code()
+    memtrace.report(f'i={i}') # report for just the last code run since reset
+
+# combine report+reset
+memtrace.reset()
+for i in range(10):
+    some_code()
+    memtrace.report_n_reset(f'i={i}') # report for just the last code run since reset
+
+memtrace.stop() # stop the monitor thread</code></pre>
+<p>It can also be used as a context manager:</p>
+
+<pre><code>with GPUMemTrace() as memtrace:
+    some_code()
+delta_used, delta_peaked = memtrace.data()
+mem_trace.report("measured in ctx")</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Workarounds-to-the-leaky-ipython-traceback-on-exception">Workarounds to the leaky ipython traceback on exception<a class="anchor-link" href="#Workarounds-to-the-leaky-ipython-traceback-on-exception">&#182;</a></h2><p>ipython has a feature where it stores tb with all the <code>locals()</code> tied in, which
+prevents <code>gc.collect()</code> from freeing those variables and leading to a leakage.</p>
+<p>Therefore we cleanse the tb before handing it over to ipython. The 2 ways of doing it are by either using the <a href="/utils.mem.html#gpu_mem_restore"><code>gpu_mem_restore</code></a> decorator or the <a href="/utils.mem.html#gpu_mem_restore_ctx"><code>gpu_mem_restore_ctx</code></a> context manager which are described next:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_restore"><code>gpu_mem_restore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L97" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_restore</code>(<strong><code>func</code></strong>)</p>
+</blockquote>
+<p>Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="/utils.mem.html#gpu_mem_restore"><code>gpu_mem_restore</code></a> is a decorator to be used with any functions that interact with CUDA (top-level is fine)</p>
+<ul>
+<li>under non-ipython environment it doesn't do anything.</li>
+<li>under ipython currently it strips tb by default only for the "CUDA out of memory" exception.</li>
+</ul>
+<p>The env var <code>FASTAI_TB_CLEAR_FRAMES</code> changes this behavior when run under ipython,
+depending on its value:</p>
+<ul>
+<li>"0": never  strip tb (makes it possible to always use <code>%debug</code> magic, but with leaks)</li>
+<li>"1": always strip tb (never need to worry about leaks, but <code>%debug</code> won't work)</li>
+</ul>
+<p>e.g. <code>os.environ['FASTAI_TB_CLEAR_FRAMES']="0"</code> will set it to 0.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="gpu_mem_restore_ctx"><code>class</code> <code>gpu_mem_restore_ctx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L117" class="source_link">[source]</a></h4><blockquote><p><code>gpu_mem_restore_ctx</code>()</p>
+</blockquote>
+<p>context manager to reclaim RAM if an exception happened under ipython</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>if function decorator is not a good option, you can use a context manager instead. For example:</p>
+
+<pre><code>with gpu_mem_restore_ctx():
+   learn.fit_one_cycle(1,1e-2)</code></pre>
+<p>This particular one will clear tb on any exception.</p>
+
+</div>
+</div>
+</div>
+</div>
+ 
+

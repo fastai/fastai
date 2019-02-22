@@ -6,7 +6,7 @@ from .image import *
 from . import models
 from ..callback import *
 from ..layers import *
-from ..callbacks.hooks import num_features_model
+from ..callbacks.hooks import *
 from ..train import ClassificationInterpretation
 
 __all__ = ['create_cnn', 'create_body', 'create_head', 'unet_learner']
@@ -100,20 +100,34 @@ def unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final
 def _cl_int_from_learner(cls, learn:Learner, ds_type:DatasetType=DatasetType.Valid, tta=False):
     "Create an instance of `ClassificationInterpretation`. `tta` indicates if we want to use Test Time Augmentation."
     preds = learn.TTA(ds_type=ds_type,with_loss=True) if tta else learn.get_preds(ds_type=ds_type, with_loss=True)
-    return cls(learn.data, *preds, ds_type=ds_type)
+    return cls(learn, *preds, ds_type=ds_type)
 
-def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12)):
+def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12),heatmap:bool=True):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class."
     tl_val,tl_idx = self.top_losses(k,largest)
     classes = self.data.classes
-    rows = math.ceil(math.sqrt(k))
-    fig,axes = plt.subplots(rows,rows,figsize=figsize)
+    cols = math.ceil(math.sqrt(k))
+    rows = math.ceil(k/cols)
+    fig,axes = plt.subplots(rows,cols,figsize=figsize)
     fig.suptitle('prediction/actual/loss/probability', weight='bold', size=14)
     for i,idx in enumerate(tl_idx):
-        im,cl = self.data.valid_ds[idx]
+        im,cl = self.data.dl(self.ds_type).dataset[idx]
         cl = int(cl)
         im.show(ax=axes.flat[i], title=
             f'{classes[self.pred_class[idx]]}/{classes[cl]} / {self.losses[idx]:.2f} / {self.probs[idx][cl]:.2f}')
+        if heatmap:
+            xb,_ = self.data.one_item(im,detach=False, denorm=False)
+            m = self.learn.model.eval()
+            with hook_output(m[0]) as hook_a:
+                 with hook_output(m[0], grad= True) as hook_g:
+                     preds = m(xb)
+                     preds[0,cl].backward()
+            acts = hook_a.stored[0].cpu()
+            grad = hook_g.stored[0][0].cpu()
+            grad_chan = grad.mean(1).mean(1)
+            mult = F.relu(((acts*grad_chan[...,None,None])).sum(0))
+            sz = im.shape[-1]
+            axes.flat[i].imshow(mult, alpha =0.6, extent= (0,sz,sz,0), interpolation='bilinear', cmap='magma')
 
 def _cl_int_plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."

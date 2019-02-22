@@ -2,6 +2,59 @@
 title: Testing fastai
 ---
 
+
+## Quick Guide
+
+Most of this document is various notes explaining how to do all kinds of things with the test suite. But if you're new to the `fastai` test suite, here is what you need to know to get started.
+
+* Step 1. Setup and check you can run the test suite:
+
+   ```
+   git clone https://github.com/fastai/fastai
+   cd fastai
+   tools/run-after-git-clone # python tools\run-after-git-clone on windows
+   pip install -e ".[dev]"
+   make test # or pytest
+   ```
+
+* Step 2. Run a specific test module and a specific test of that module
+
+   The following will run all tests inside `tests/test_vision_transform.py`:
+   ```
+   pytest -sv tests/test_vision_transform.py
+   ```
+
+   If you want to run just this `test_points_data_aug` of that test module:
+   ```
+   pytest -sv tests/test_vision_transform.py::test_points_data_aug
+   ```
+
+* Step 3. Write a new test, or improve an existing one.
+
+   `fastai` test modules are named mostly to be the same as the python modules they test, so for example `test_vision_transform.py` tests `fastai/vision/transform.py` (but not always).
+
+   Locate an existing test that is similar to what you need, copy it, rename and modify it to test what you feel needs to be tested.
+
+   Let's assume you took `test_points_data_aug` and converted it into `test_quality` in the same module. Test that it works:
+      ```
+   pytest -sv tests/test_vision_transform.py::test_quality
+   ```
+
+   If it reproduces a problem, i.e. assert fails, then add:
+   ```
+   @pytest.mark.skip(reason="fix me: brief note describing the problem")
+   def test_quality(): ...
+   ```
+
+   The best way to figure out how to test, is by looking at existing tests. And the rest of this document explains how to do all kinds of things that you might want to do in your tests.
+
+* Step 4. Submit a PR with your new test(s)
+
+   You won't be able to PR from this plain checkout, so you need to switch to a forked version of fastai and create a new branch there. Follow the easy instructions [here](https://docs.fast.ai/dev/git.html#how-to-make-a-pull-request-pr) to accomplish that.
+
+   Note that this guide helps you to write tests with a plain git checkout, without needing to fork and branch, so that you can get results faster and easier. But once you're ready, then switch to your own fork and branch as explained in the guide above. You can just copy the files over to the new branch. Of course, feel free, to start with making a PR branch first - whatever is the easiest for you.
+
+
 ## Automated tests
 
 At the moment there are only a few automated tests, so we need to start expanding it! It's not easy to properly automatically test ML code, but there's lots of opportunities for unit tests.
@@ -46,7 +99,7 @@ If you need to skip a certain test module temporarily you can either tell `pytes
    pytest `ls -1 tests/*py | grep -v link`
    ```
 
-To run an individual test file:
+To run an individual test module:
 
    ```
    pytest tests/test_core.py
@@ -67,6 +120,13 @@ For example, if we have the following tests:
    ```
 
 it will first select `test_listify` and `test_listy`, and then deselect `test_listify`, resulting in only the sub-test `test_listy` being run.
+
+A more superior way, which avoids unintentional multiple matches is to use the test node approach:
+
+   ```
+   pytest tests/test_basic_train.py::test_save_load tests/test_basic_data.py::test_DataBunch_oneitem
+   ```
+It's really just the test module followed by the specific test name, joined by `::`.
 
 More ways: https://docs.pytest.org/en/latest/usage.html
 
@@ -273,15 +333,115 @@ Creating a URL for a whole test session log:
 
 
 
-## Writing Tests
+## Writing tests
 
 When writing tests:
 
 - Avoid mocks; instead, think about how to create a test of the real functionality that runs quickly
-- Use module scope fixtures to run init code that can be shared amongst tests
+- Use module scope fixtures to run init code that can be shared amongst tests. When using fixtures, make sure the test doesn't modify the global object it received, otherwise other tests will be impacted. If a given test modifies the global fixture object, it should either clone it or not use the fixture and create a fresh object instead.
 - Avoid pretrained models, since they have to be downloaded from the internet to run the test
 - Create some minimal data for your test, or use data already in repo's data/ directory
 
+
+### Expensive object reuse
+
+Reusing objects, especially those that take a lot of time to create, helps to keep the test suite fast. If the test suite is slow, it'll not be run and developers will tend to commit code without testing it first. Therefore, it's OK to prototype things in a non-efficient way. But once the test is working, please spend extra effort to optimize its speed. Having hundreds of tests, a few extra seconds of unnecessary slowness per test quickly adds up to minutes. And chances are, you won't want to wait for 20min before you can commit a shiny new code you have just written.
+
+Currently we mostly use `module` scoped fixtures (global variables scoped to the test module). For example:
+
+```
+@pytest.fixture(scope="module")
+def learn():
+    learn = ... create a learn object ...
+    return learn
+```
+
+Now we can use it, in multiple tests of that module, by passing the fixture's function name as an argument to the test function:
+```
+def test_opt_params(learn):
+    learn.freeze()
+    assert n_params(learn) == 2
+
+def test_val_loss(learn):
+    assert learn.validate()[1] > 0.3
+```
+
+You can have multiple fixtures and combine them too. For example, in the following code we create 2 fixtures: `path` and `learn`, and the `learn` fixture receives the `path` argument that is fixture itself, just like a test function will do. And then the example shows how you can pass one or more fixtures to a test function.
+```
+@pytest.fixture(scope="module")
+def path():
+    path = untar_data(URLs.MNIST_TINY)
+    return path
+
+@pytest.fixture(scope="module")
+def learn(path):
+    data = ImageDataBunch.from_folder(path, ds_tfms=([], []), bs=2)
+    learn = create_cnn(data, models.resnet18, metrics=accuracy)
+    return learn
+
+def test_val_loss(learn):
+    assert learn.validate()[1] > 0.3
+
+def test_path(path):
+    assert path
+
+def test_something(learn, path):
+    assert learn.validate()[1] > 0.3
+    assert path
+```
+
+If we want test-suite global objects, e.g. `learn_vision`, `learn_text`, we can pre-create them from `conftest.py`:
+
+```
+
+from fastai.vision import *
+@pytest.fixture(scope="session", autouse=True)
+def learn_vision():
+    path = untar_data(URLs.MNIST_TINY)
+    data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []), num_workers=2)
+    data.normalize()
+    learn = Learner(data, simple_cnn((3,16,16,16,2), bn=True), metrics=[accuracy, error_rate])
+    learn.fit_one_cycle(3)
+    return learn
+```
+
+Now, inside, for example, `tests/test_vision_train.py` we can access the global session-wide fixture in the same way the module-scoped one:
+
+```
+def test_accuracy(learn_vision):
+    assert accuracy(*learn_vision.get_preds()) > 0.9
+```
+
+If we use:
+```
+@pytest.fixture(scope="session", autouse=True)
+```
+all global objects will be pre-created no matter whether the running tests need them or not, so we probably don't want `autouse=True`. Without this setting these fixture objects will be created on demand.
+
+There is a cosmetic issue with having  `learn_vision`, `learn_text`, since now we either have to spell out:
+
+```
+def test_accuracy(learn_vision):
+    assert accuracy(*learn_vision.get_preds()) > 0.9
+```
+or rename:
+```
+def test_accuracy(learn_vision):
+    learn = learn_vision
+    assert accuracy(*learn.get_preds()) > 0.9
+```
+both aren't very great...
+
+We want to be able to copy-n-paste quickly and ideally it should always be `learn.foo`, especially since there are many calls usually.
+
+Another important nuance related to fixtures is that those global objects shouldn't get modified by tests. If they do this can impact other tests that rely on a freshly created object. If that's the case, let the test create its own object and do anything it wants with it. For example, our most commonly used `learn` object is almost guaranteed to be modified by any method that calls it. If, however, you're reusing global variables that don't get modified, as in this example:
+```
+@pytest.fixture(scope="module")
+def path():
+    path = untar_data(URLs.MNIST_TINY)
+    return path
+```
+then there is nothing to worry about.
 
 
 ### Skipping tests
@@ -310,8 +470,6 @@ Implementation:
    @pytest.mark.xfail
    def test_feature_x():
    ```
-
-
 
 * Based on some internal check inside the test:
 
@@ -405,7 +563,7 @@ The following markers override normal marker functionality, so they won't work w
 pytest -m marker
 ```
 
-and have their own command line option to be used instead, which are defined in `tests/conftest.py`, and can also be seen in the output of `pytest -h` in the "custom options" section:
+and may have their own command line option to be used instead, which are defined in `tests/conftest.py`, and can also be seen in the output of `pytest -h` in the "custom options" section:
 
 ```
 custom options:
@@ -425,7 +583,7 @@ custom options:
    pytest --runslow
    ```
 
-* `integration` - used for tests that are relatively slow but OK to be run on CPU and useful when one needs to finish the tests suite asap (also remember to use parallel testing if that's the case [xdist](#running-tests-in-parallel)). These are usually declared on the module level with:
+* `integration` - used for tests that are relatively slow but OK to be run on CPU and useful when one needs to finish the tests suite asap (also remember to use parallel testing if that's the case [xdist](#running-tests-in-parallel)). These are usually declared on the test module level, by adding at the top of the file:
 
    ```
    pytestmark = pytest.mark.integration
@@ -436,7 +594,12 @@ custom options:
    pytest --skipint
    ```
 
-* `cuda` - mark tests as requiring a CUDA device to run (skipped if no such device is present). These tests check CUDA-specific code, e.g., compiling and running kernels or GPU version of function's `forward`/`backward` methods.
+* `cuda` - mark tests as requiring a CUDA device to run (skipped if no such device is present). These tests check CUDA-specific code, e.g., compiling and running kernels or GPU version of function's `forward`/`backward` methods. Example:
+
+   ```
+   @pytest.mark.cuda
+   def test_cuda_something(): pass
+   ```
 
 
 ### After test cleanup
@@ -672,22 +835,22 @@ This section is currently focused on GPU RAM since it's the scarce resource, but
 
 In some situations you may want to remove randomness for your tests. To get identical reproducable results set, you'll need to set `num_workers=1` (or 0) in your DataLoader/DataBunch, and depending on whether you are using `torch`'s random functions, or python's (`numpy`) or both:
 
-* torch RNG
+```
+seed = 42
 
-   ```
-   import torch
-   torch.manual_seed(42)
-   torch.backends.cudnn.deterministic = True
-   ```
+# python RNG
+random.seed(seed)
 
-* python RNG
+# pytorch RNGs
+import torch
+torch.manual_seed(seed)
+torch.backends.cudnn.deterministic = True
+if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
 
-   ```
-   random.seed(42)
-   ```
-
-
-
+# numpy RNG
+import numpy as np
+np.random.seed(seed)
+```
 
 ### Debugging tests
 

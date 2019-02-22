@@ -17,7 +17,7 @@ __all__ = ['RNNLearner', 'LanguageLearner', 'convert_weights', 'decode_spec_toke
 _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_1,
                           'config_lm':awd_lstm_lm_config, 'split_lm': awd_lstm_lm_split,
                           'config_clas':awd_lstm_clas_config, 'split_clas': awd_lstm_clas_split},
-               Transformer: {'hid_name':'d_model', 
+               Transformer: {'hid_name':'d_model', 'url':URLs.OPENAI_TRANSFORMER,
                              'config_lm':tfmer_lm_config, 'split_lm': tfmer_lm_split,
                              'config_clas':tfmer_clas_config, 'split_clas': tfmer_clas_split},
                TransformerXL: {'hid_name':'d_model', 
@@ -26,18 +26,19 @@ _model_meta = {AWD_LSTM: {'hid_name':'emb_sz', 'url':URLs.WT103_1,
 
 def convert_weights(wgts:Weights, stoi_wgts:Dict[str,int], itos_new:Collection[str]) -> Weights:
     "Convert the model `wgts` to go with a new vocabulary."
-    dec_bias, enc_wgts = wgts['1.decoder.bias'], wgts['0.encoder.weight']
-    bias_m, wgts_m = dec_bias.mean(0), enc_wgts.mean(0)
+    dec_bias, enc_wgts = wgts.get('1.decoder.bias', None), wgts['0.encoder.weight']
+    wgts_m = enc_wgts.mean(0)
+    if dec_bias is not None: bias_m = dec_bias.mean(0)
     new_w = enc_wgts.new_zeros((len(itos_new),enc_wgts.size(1))).zero_()
-    new_b = dec_bias.new_zeros((len(itos_new),)).zero_()
+    if dec_bias is not None: new_b = dec_bias.new_zeros((len(itos_new),)).zero_()
     for i,w in enumerate(itos_new):
         r = stoi_wgts[w] if w in stoi_wgts else -1
         new_w[i] = enc_wgts[r] if r>=0 else wgts_m
-        new_b[i] = dec_bias[r] if r>=0 else bias_m
+        if dec_bias is not None: new_b[i] = dec_bias[r] if r>=0 else bias_m
     wgts['0.encoder.weight'] = new_w
-    wgts['0.encoder_dp.emb.weight'] = new_w.clone()
+    if '0.encoder_dp.emb.weight' in wgts: wgts['0.encoder_dp.emb.weight'] = new_w.clone()
     wgts['1.decoder.weight'] = new_w.clone()
-    wgts['1.decoder.bias'] = new_b
+    if dec_bias is not None: wgts['1.decoder.bias'] = new_b
     return wgts
 
 class RNNLearner(Learner):
@@ -82,8 +83,7 @@ class RNNLearner(Learner):
         if ordered and hasattr(self.dl(ds_type), 'sampler'):
             sampler = [i for i in self.dl(ds_type).sampler]
             reverse_sampler = np.argsort(sampler)
-            preds[0] = preds[0][reverse_sampler,:] if preds[0].dim() > 1 else preds[0][reverse_sampler]
-            preds[1] = preds[1][reverse_sampler,:] if preds[1].dim() > 1 else preds[1][reverse_sampler]
+            preds = [p[reverse_sampler] for p in preds] 
         return(preds)
 
 def decode_spec_tokens(tokens):
@@ -125,36 +125,34 @@ class LanguageLearner(RNNLearner):
             new_idx.append(idx)
             xb = xb.new_tensor([idx])[None]
         return text + sep + sep.join(decoder(self.data.vocab.textify(new_idx, sep=None)))
-    
-    def beam_search(self, text:str, n_words:int, top_k:int=10, beam_sz:int=1000, temperature:float=1., sep:str=' ',
-                    decoder=decode_spec_tokens):
+
+    def beam_search(self, text:str, n_words:int, no_unk:bool=True, top_k:int=10, beam_sz:int=1000, temperature:float=1.,
+                    sep:str=' ', decoder=decode_spec_tokens):
         "Return the `n_words` that come after `text` using beam search."
         ds = self.data.single_dl.dataset
         self.model.reset()
         xb, yb = self.data.one_item(text)
-        start_idx = xb.clone()
         nodes = None
-        scores = xb.new_ones(1).float()
+        xb = xb.repeat(top_k, 1)
+        nodes = xb.clone()
+        scores = xb.new_zeros(1).float()
         with torch.no_grad():
-            for k in range(n_words):
+            for k in progress_bar(range(n_words), leave=False):
                 out = F.log_softmax(self.model(xb)[0][:,-1], dim=-1)
+                if no_unk: out[:,self.data.vocab.stoi[UNK]] = -float('Inf')
                 values, indices = out.topk(top_k, dim=-1)
-                scores = (-values * scores[:,None]).view(-1)
-                if nodes is None: 
-                    nodes = indices[0][:,None]
-                    self.model[0].select_hidden([0] * nodes.size(0))
-                else:
-                    indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
-                    sort_idx = scores.argsort()[:beam_sz]
-                    scores = scores[sort_idx]
-                    nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
-                                       indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
-                    nodes = nodes.view(-1, nodes.size(2))[sort_idx]
-                    self.model[0].select_hidden(indices_idx[sort_idx])
+                scores = (-values + scores[:,None]).view(-1)
+                indices_idx = torch.arange(0,nodes.size(0))[:,None].expand(nodes.size(0), top_k).contiguous().view(-1)
+                sort_idx = scores.argsort()[:beam_sz]
+                scores = scores[sort_idx]
+                nodes = torch.cat([nodes[:,None].expand(nodes.size(0),top_k,nodes.size(1)),
+                                indices[:,:,None].expand(nodes.size(0),top_k,1),], dim=2)
+                nodes = nodes.view(-1, nodes.size(2))[sort_idx]
+                self.model[0].select_hidden(indices_idx[sort_idx])
                 xb = nodes[:,-1][:,None]
         if temperature != 1.: scores.div_(temperature)
-        node_idx = torch.multinomial(1-scores, 1).item()
-        return text + sep + sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx]], sep=None)))
+        node_idx = torch.multinomial(torch.exp(-scores), 1).item()
+        return sep.join(decoder(self.data.vocab.textify([i.item() for i in nodes[node_idx][1:] ], sep=None)))
 
     def show_results(self, ds_type=DatasetType.Valid, rows:int=5, max_len:int=20):
         from IPython.display import display, HTML
@@ -167,14 +165,16 @@ class LanguageLearner(RNNLearner):
         xs = [ds.x.reconstruct(grab_idx(x, i)) for i in range(rows)]
         ys = [ds.x.reconstruct(grab_idx(y, i)) for i in range(rows)]
         zs = [ds.x.reconstruct(grab_idx(z, i)) for i in range(rows)]
-
-        items = [['text', 'target', 'pred']]
+        items,names = [],['text', 'target', 'pred']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len])
             txt_y = ' '.join(y.text.split(' ')[max_len:2*max_len])
             txt_z = ' '.join(z.text.split(' ')[max_len:2*max_len])
-            items.append([str(txt_x), str(txt_y), str(txt_z)])
-        display(HTML(text2html_table(items, ([34,33,33]))))
+            items.append([txt_x, txt_y, txt_z])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
 def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:float=1.):
     "Create a language model from `arch` and its `config`, maybe `pretrained`."
@@ -191,7 +191,7 @@ def get_language_model(arch:Callable, vocab_sz:int, config:dict=None, drop_mult:
     return model if init is None else model.apply(init)
 
 def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:float=1., pretrained:bool=True,
-                           **learn_kwargs) -> 'LanguageLearner':
+                           pretrained_fnames:OptStrTuple=None, **learn_kwargs) -> 'LanguageLearner':
     "Create a `Learner` with a language model from `data` and `arch`."
     model = get_language_model(arch, len(data.vocab.itos), config=config, drop_mult=drop_mult)
     meta = _model_meta[arch]
@@ -202,6 +202,10 @@ def language_model_learner(data:DataBunch, arch, config:dict=None, drop_mult:flo
             return learn
         model_path = untar_data(meta['url'], data=False)
         fnames = [list(model_path.glob(f'*.{ext}'))[0] for ext in ['pth', 'pkl']]
+        learn.load_pretrained(*fnames)
+        learn.freeze()
+    if pretrained_fnames is not None:
+        fnames = [learn.path/learn.model_dir/f'{fn}.{ext}' for fn,ext in zip(pretrained_fnames, ['pth', 'pkl'])]
         learn.load_pretrained(*fnames)
         learn.freeze()
     return learn

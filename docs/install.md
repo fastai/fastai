@@ -8,7 +8,7 @@ Please refer to [README](https://github.com/fastai/fastai/blob/master/README.md#
 
 ## CPU build
 
-Generally pytorch GPU build should work fine on machines that don't have a CUDA-capable GPU, and will just use the CPU. However, you can install CPU-only versions of Pytorch if needed:
+Generally, pytorch GPU build should work fine on machines that don't have a CUDA-capable GPU, and will just use the CPU. However, you can install CPU-only versions of Pytorch if needed:
 
 * conda
 
@@ -33,7 +33,8 @@ The `fastai` library doesn't require the jupyter environment to work, therefore 
 * conda
 
    ```bash
-   conda install jupyter notebook jupyter_contrib_nbextensions
+   conda install jupyter notebook
+   conda install -c conda-forge jupyter_contrib_nbextensions
    ```
 
    Some users also [seem to need](https://stackoverflow.com/questions/39604271/conda-environments-not-showing-up-in-jupyter-notebook) this conda package to be able to choose the right kernel environment, however, most likely you won't need this package.
@@ -51,7 +52,7 @@ The `fastai` library doesn't require the jupyter environment to work, therefore 
 
 ## Custom dependencies
 
-If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have a limited disk space on your remote instance, here is how you can install only the dependencies that you need.
+If for any reason you don't want to install all of `fastai`'s dependencies, since, perhaps, you have limited disk space on your remote instance, here is how you can install only the dependencies that you need.
 
 1. First, install `fastai` without its dependencies using either `pip` or `conda`:
 

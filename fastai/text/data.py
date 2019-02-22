@@ -15,21 +15,21 @@ text_extensions = {'.txt'}
 
 class LanguageModelPreLoader(Callback):
     "Transforms the tokens in `dataset` to a stream of contiguous batches for language modelling."
-    
+
     class CircularIndex():
         "Handles shuffle, direction of indexing, wraps around to head tail in the ragged array as needed"
         def __init__(self, length:int, forward:bool): self.idx, self.forward = np.arange(length), forward
-        def __getitem__(self, i): 
+        def __getitem__(self, i):
             return self.idx[ i%len(self.idx) if self.forward else len(self.idx)-1-i%len(self.idx)]
         def __len__(self) -> int: return len(self.idx)
         def shuffle(self): np.random.shuffle(self.idx)
 
-    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False, 
+    def __init__(self, dataset:LabelList, lengths:Collection[int]=None, bs:int=32, bptt:int=70, backwards:bool=False,
                  shuffle:bool=False):
         self.dataset,self.bs,self.bptt,self.shuffle,self.backwards,self.lengths = dataset,bs,bptt,shuffle,backwards,lengths
         self.totalToks,self.ite_len,self.idx = int(0),None,None
 
-    def __len__(self): 
+    def __len__(self):
         if self.ite_len is None:
             if self.lengths is None: self.lengths = np.array([len(item) for item in self.dataset.x.items])
             self.totalToks = self.lengths.sum()
@@ -37,13 +37,13 @@ class LanguageModelPreLoader(Callback):
         return self.ite_len
 
     def __getattr__(self,k:str)->Any: return getattr(self.dataset, k)
-   
+
     def allocate_buffers(self):
         "Create the ragged array that will be filled when we ask for items."
         if self.ite_len is None: len(self)
         self.idx   = LanguageModelPreLoader.CircularIndex(len(self.dataset.x.items), not self.backwards)
         self.batch = np.zeros((self.bs, self.bptt+1), dtype=np.int64)
-        self.batch_x, self.batch_y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1] 
+        self.batch_x, self.batch_y = self.batch[:,0:self.bptt], self.batch[:,1:self.bptt+1]
         #ro: index of the text we're at inside our datasets for the various batches
         self.ro    = np.zeros(self.bs, dtype=np.int64)
         #ri: index of the token we're at inside our current text for the various batches
@@ -52,19 +52,19 @@ class LanguageModelPreLoader(Callback):
     def on_epoch_begin(self, **kwargs):
         if self.idx is None: self.allocate_buffers()
         elif self.shuffle:   self.idx.shuffle()
-        self.idx.forward = not self.backwards 
+        self.idx.forward = not self.backwards
 
         step = self.totalToks / self.bs
         ln_rag, countTokens, i_rag = 0, 0, -1
         for i in range(0,self.bs):
-            #Compute the initial values for ro and ri 
+            #Compute the initial values for ro and ri
             while ln_rag + countTokens <= int(step * i):
                 countTokens += ln_rag
                 i_rag       += 1
                 ln_rag       = self.lengths[self.idx[i_rag]]
             self.ro[i] = i_rag
             self.ri[i] = ( ln_rag - int(step * i - countTokens) ) if self.backwards else int(step * i - countTokens)
-        
+
     #Training dl gets on_epoch_begin called, val_dl, on_epoch_end
     def on_epoch_end(self, **kwargs): self.on_epoch_begin()
 
@@ -73,25 +73,25 @@ class LanguageModelPreLoader(Callback):
         if j==0:
             if self.item is not None: return self.dataset[0]
             if self.idx is None: self.on_epoch_begin()
-        self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j], 
+        self.ro[j],self.ri[j] = self.fill_row(not self.backwards, self.dataset.x.items, self.idx, self.batch[j],
                                               self.ro[j], self.ri[j], overlap=1, lengths=self.lengths)
         return self.batch_x[j], self.batch_y[j]
 
     def fill_row(self, forward, items, idx, row, ro, ri, overlap,lengths):
         "Fill the row with tokens from the ragged array. --OBS-- overlap != 1 has not been implemented"
-        ibuf = n = 0 
+        ibuf = n = 0
         ro  -= 1
-        while ibuf < row.size:  
-            ro   += 1 
+        while ibuf < row.size:
+            ro   += 1
             ix    = idx[ro]
             rag   = items[ix]
             if forward:
                 ri = 0 if ibuf else ri
                 n  = min(lengths[ix] - ri, row.size - ibuf)
                 row[ibuf:ibuf+n] = rag[ri:ri+n]
-            else:    
+            else:
                 ri = lengths[ix] if ibuf else ri
-                n  = min(ri, row.size - ibuf) 
+                n  = min(ri, row.size - ibuf)
                 row[ibuf:ibuf+n] = rag[ri-n:ri][::-1]
             ibuf += n
         return ro, ri + ((n-overlap) if forward else -(n-overlap))
@@ -146,18 +146,6 @@ def _get_processor(tokenizer:Tokenizer=None, vocab:Vocab=None, chunksize:int=100
 class TextDataBunch(DataBunch):
     "General class to get a `DataBunch` for NLP. Subclassed by `TextLMDataBunch` and `TextClasDataBunch`."
 
-    def save(self, cache_name:PathOrStr='tmp'):
-        "Save the `DataBunch` in `self.path/cache_name` folder."
-        os.makedirs(self.path/cache_name, exist_ok=True)
-        cache_path = self.path/cache_name
-        pickle.dump(self.train_ds.vocab.itos, open(cache_path/'itos.pkl','wb'))
-        np.save(cache_path/f'train_ids.npy', self.train_ds.x.items)
-        np.save(cache_path/f'train_lbl.npy', self.train_ds.y.items)
-        np.save(cache_path/f'valid_ids.npy', self.valid_ds.x.items)
-        np.save(cache_path/f'valid_lbl.npy', self.valid_ds.y.items)
-        if self.test_dl is not None: np.save(cache_path/f'test_ids.npy', self.test_ds.x.items)
-        if hasattr(self.train_ds, 'classes'): save_texts(cache_path/'classes.txt', self.train_ds.classes)
-
     @classmethod
     def from_ids(cls, path:PathOrStr, vocab:Vocab, train_ids:Collection[Collection[int]], valid_ids:Collection[Collection[int]],
                  test_ids:Collection[Collection[int]]=None, train_lbls:Collection[Union[int,float]]=None,
@@ -175,6 +163,8 @@ class TextDataBunch(DataBunch):
     @classmethod
     def load(cls, path:PathOrStr, cache_name:PathOrStr='tmp', processor:PreProcessor=None, **kwargs):
         "Load a `TextDataBunch` from `path/cache_name`. `kwargs` are passed to the dataloader creation."
+        warn("""This method is deprecated and only kept to load data serialized in v1.0.43 or earlier.
+                Use `load_data` for data saved with v1.0.44 or later.""", DeprecationWarning)
         cache_path = Path(path)/cache_name
         vocab = Vocab(pickle.load(open(cache_path/'itos.pkl','rb')))
         train_ids,train_lbls = np.load(cache_path/f'train_ids.npy'), np.load(cache_path/f'train_lbl.npy')
@@ -207,25 +197,25 @@ class TextDataBunch(DataBunch):
         if classes is None and is_listy(label_cols) and len(label_cols) > 1: classes = label_cols
         src = ItemLists(path, TextList.from_df(train_df, path, cols=text_cols, processor=processor),
                         TextList.from_df(valid_df, path, cols=text_cols, processor=processor))
-        if cls==TextLMDataBunch: src = src.label_for_lm() 
+        if cls==TextLMDataBunch: src = src.label_for_lm()
         else: src = src.label_from_df(cols=label_cols, classes=classes, label_delim=label_delim)
         if test_df is not None: src.add_test(TextList.from_df(test_df, path, cols=text_cols))
         return src.databunch(**kwargs)
 
     @classmethod
     def from_csv(cls, path:PathOrStr, csv_name, valid_pct:float=0.2, test:Optional[str]=None,
-                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, header = 'infer', text_cols:IntsOrStrs=1,
-                 label_cols:IntsOrStrs=0, label_delim:str=None, chunksize:int=10000, max_vocab:int=60000,
-                min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
+                 tokenizer:Tokenizer=None, vocab:Vocab=None, classes:Collection[str]=None, delimiter:str=None, header='infer',
+                 text_cols:IntsOrStrs=1, label_cols:IntsOrStrs=0, label_delim:str=None,
+                 chunksize:int=10000, max_vocab:int=60000, min_freq:int=2, mark_fields:bool=False, **kwargs) -> DataBunch:
         "Create a `TextDataBunch` from texts in csv files. `kwargs` are passed to the dataloader creation."
-        df = pd.read_csv(Path(path)/csv_name, header=header)
+        df = pd.read_csv(Path(path)/csv_name, header=header, delimiter=delimiter)
         df = df.iloc[np.random.permutation(len(df))]
         cut = int(valid_pct * len(df)) + 1
         train_df, valid_df = df[cut:], df[:cut]
-        test_df = None if test is None else pd.read_csv(Path(path)/test, header=header)
+        test_df = None if test is None else pd.read_csv(Path(path)/test, header=header, delimiter=delimiter)
         return cls.from_df(path, train_df, valid_df, test_df, tokenizer=tokenizer, vocab=vocab, classes=classes, text_cols=text_cols,
                            label_cols=label_cols, label_delim=label_delim, chunksize=chunksize, max_vocab=max_vocab,
-                          min_freq=min_freq, mark_fields=mark_fields, **kwargs)
+                           min_freq=min_freq, mark_fields=mark_fields, **kwargs)
 
     @classmethod
     def from_folder(cls, path:PathOrStr, train:str='train', valid:str='valid', test:Optional[str]=None,
@@ -244,34 +234,34 @@ class TextDataBunch(DataBunch):
 class TextLMDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training a language model."
     @classmethod
-    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, val_bs:int=None, 
-               num_workers:int=0, device:torch.device=None, collate_fn:Callable=data_collate, 
-               dl_tfms:Optional[Collection[Callable]]=None, bptt:int=70, backwards:bool=False) -> DataBunch:
-        "Create a `TextDataBunch` in `path` from the `datasets` for language modelling."
+    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', no_check:bool=False, bs=64, val_bs:int=None,
+               num_workers:int=0, device:torch.device=None, collate_fn:Callable=data_collate,
+               dl_tfms:Optional[Collection[Callable]]=None, bptt:int=70, backwards:bool=False, **dl_kwargs) -> DataBunch:
+        "Create a `TextDataBunch` in `path` from the `datasets` for language modelling. Passes `**dl_kwargs` on to `DataLoader()`"
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = ifnone(val_bs, bs)
-        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=(bs if i==0 else val_bs), bptt=bptt, backwards=backwards) 
+        datasets = [LanguageModelPreLoader(ds, shuffle=(i==0), bs=(bs if i==0 else val_bs), bptt=bptt, backwards=backwards)
                     for i,ds in enumerate(datasets)]
         val_bs = bs
-        dls = [DataLoader(d, b, shuffle=False) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
+        dls = [DataLoader(d, b, shuffle=False, **dl_kwargs) for d,b in zip(datasets, (bs,val_bs,val_bs,val_bs)) if d is not None]
         return cls(*dls, path=path, device=device, dl_tfms=dl_tfms, collate_fn=collate_fn, no_check=no_check)
-    
+
 class TextClasDataBunch(TextDataBunch):
     "Create a `TextDataBunch` suitable for training an RNN classifier."
     @classmethod
-    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=32, val_bs:int=None, pad_idx=1, 
-               pad_first=True, device:torch.device=None, no_check:bool=False, backwards:bool=False, **kwargs) -> DataBunch:
-        "Function that transform the `datasets` in a `DataBunch` for classification."
+    def create(cls, train_ds, valid_ds, test_ds=None, path:PathOrStr='.', bs:int=32, val_bs:int=None, pad_idx=1,
+               pad_first=True, device:torch.device=None, no_check:bool=False, backwards:bool=False, **dl_kwargs) -> DataBunch:
+        "Function that transform the `datasets` in a `DataBunch` for classification. Passes `**dl_kwargs` on to `DataLoader()`"
         datasets = cls._init_ds(train_ds, valid_ds, test_ds)
         val_bs = ifnone(val_bs, bs)
         collate_fn = partial(pad_collate, pad_idx=pad_idx, pad_first=pad_first, backwards=backwards)
         train_sampler = SortishSampler(datasets[0].x, key=lambda t: len(datasets[0][t][0].data), bs=bs//2)
-        train_dl = DataLoader(datasets[0], batch_size=bs, sampler=train_sampler, drop_last=True, **kwargs)
+        train_dl = DataLoader(datasets[0], batch_size=bs, sampler=train_sampler, drop_last=True, **dl_kwargs)
         dataloaders = [train_dl]
         for ds in datasets[1:]:
             lengths = [len(t) for t in ds.x.items]
             sampler = SortSampler(ds.x, key=lengths.__getitem__)
-            dataloaders.append(DataLoader(ds, batch_size=val_bs, sampler=sampler, **kwargs))
+            dataloaders.append(DataLoader(ds, batch_size=val_bs, sampler=sampler, **dl_kwargs))
         return cls(*dataloaders, path=path, device=device, collate_fn=collate_fn, no_check=no_check)
 
 def open_text(fn:PathOrStr, enc='utf-8'):
@@ -288,7 +278,9 @@ class TokenizeProcessor(PreProcessor):
     def __init__(self, ds:ItemList=None, tokenizer:Tokenizer=None, chunksize:int=10000, mark_fields:bool=False):
         self.tokenizer,self.chunksize,self.mark_fields = ifnone(tokenizer, Tokenizer()),chunksize,mark_fields
 
-    def process_one(self, item):  return self.tokenizer._process_all_1([item])[0]
+    def process_one(self, item):
+        return self.tokenizer._process_all_1(_join_texts([item], self.mark_fields))[0]
+
     def process(self, ds):
         ds.items = _join_texts(ds.items, self.mark_fields)
         tokens = []
@@ -331,7 +323,8 @@ class TextList(ItemList):
     def label_for_lm(self, **kwargs):
         "A special labelling method for language models."
         self.__class__ = LMTextList
-        return self.label_const(0, label_cls=LMLabelList)
+        kwargs['label_cls'] = LMLabelList
+        return self.label_const(0, **kwargs)
 
     def reconstruct(self, t:Tensor):
         idx = (t != self.pad_idx).nonzero().min()
@@ -347,20 +340,27 @@ class TextList(ItemList):
     def show_xys(self, xs, ys, max_len:int=70)->None:
         "Show the `xs` (inputs) and `ys` (targets). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        items = [['idx','text']] if self._is_lm else [['text','target']]
+        names = ['idx','text'] if self._is_lm else ['text','target']
+        items = []
         for i, (x,y) in enumerate(zip(xs,ys)):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
-            items.append([str(i), str(txt_x)] if self._is_lm else [str(txt_x), str(y)])
-        display(HTML(text2html_table(items, ([5,95] if self._is_lm else [90,10]))))
+            items.append([i, txt_x] if self._is_lm else [txt_x, y])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
     def show_xyzs(self, xs, ys, zs, max_len:int=70):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions). `max_len` is the maximum number of tokens displayed."
         from IPython.display import display, HTML
-        items = [['text','target','prediction']]
+        items,names = [],['text','target','prediction']
         for i, (x,y,z) in enumerate(zip(xs,ys,zs)):
             txt_x = ' '.join(x.text.split(' ')[:max_len]) if max_len is not None else x.text
-            items.append([str(txt_x), str(y), str(z)])
-        display(HTML(text2html_table(items,  [85,7.5,7.5])))
+            items.append([txt_x, y, z])
+        items = np.array(items)
+        df = pd.DataFrame({n:items[:,i] for i,n in enumerate(names)}, columns=names)
+        with pd.option_context('display.max_colwidth', -1):
+            display(HTML(df.to_html(index=False)))
 
 class LMLabelList(EmptyLabelList):
     "Basic `ItemList` for dummy labels."
@@ -379,5 +379,5 @@ def _join_texts(texts:Collection[str], mark_fields:bool=False):
     df = pd.DataFrame({i:texts[:,i] for i in range(texts.shape[1])})
     text_col = f'{BOS} {FLD} {1} ' + df[0].astype(str) if mark_fields else  f'{BOS} ' + df[0].astype(str)
     for i in range(1,len(df.columns)):
-        text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i].astype(str)   
+        text_col += (f' {FLD} {i+1} ' if mark_fields else ' ') + df[i].astype(str)
     return text_col.values

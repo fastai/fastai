@@ -76,24 +76,23 @@ class AWD_LSTM(nn.Module):
 
     initrange=0.1
 
-    def __init__(self, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int, bidir:bool=False,
-                 hidden_p:float=0.2, input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5, qrnn:bool=False):
-
+    def __init__(self, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int=1, hidden_p:float=0.2, 
+                 input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5, qrnn:bool=False, bidir:bool=False):
         super().__init__()
-        self.bs,self.qrnn,self.ndir = 1, qrnn,(2 if bidir else 1)
-        self.emb_sz,self.n_hid,self.n_layers = emb_sz,n_hid,n_layers
+        self.bs,self.qrnn,self.emb_sz,self.n_hid,self.n_layers = 1,qrnn,emb_sz,n_hid,n_layers
+        self.n_dir = 2 if bidir else 1
         self.encoder = nn.Embedding(vocab_sz, emb_sz, padding_idx=pad_token)
         self.encoder_dp = EmbeddingDropout(self.encoder, embed_p)
         if self.qrnn:
             #Using QRNN requires an installation of cuda
             from .qrnn import QRNNLayer
-            self.rnns = [QRNNLayer(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
+            self.rnns = [QRNNLayer(emb_sz if l == 0 else n_hid, n_hid if l != n_layers - 1 else emb_sz,
                                    save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True,
                                    use_cuda=torch.cuda.is_available()) for l in range(n_layers)]
             for rnn in self.rnns: rnn.linear = WeightDropout(rnn.linear, weight_p, layer_names=['weight'])
         else:
-            self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.ndir,
-                1, bidirectional=bidir, batch_first=True) for l in range(n_layers)]
+            self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir, 1, 
+                                 batch_first=True, bidirectional=bidir) for l in range(n_layers)]
             self.rnns = [WeightDropout(rnn, weight_p) for rnn in self.rnns]
         self.rnns = nn.ModuleList(self.rnns)
         self.encoder.weight.data.uniform_(-self.initrange, self.initrange)
@@ -118,8 +117,8 @@ class AWD_LSTM(nn.Module):
 
     def _one_hidden(self, l:int)->Tensor:
         "Return one hidden state."
-        nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz)//self.ndir
-        return one_param(self).new(self.ndir, self.bs, nh).zero_()
+        nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
+        return one_param(self).new(1, self.bs, nh).zero_()
     
     def select_hidden(self, idxs):
         if self.qrnn: self.hidden = [h[:,idxs,:] for h in self.hidden]

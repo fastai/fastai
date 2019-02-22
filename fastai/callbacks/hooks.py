@@ -140,14 +140,13 @@ def params_size(m: Union[nn.Module,Learner], size: tuple = (3, 64, 64))->Tuple[S
         m = m.model
     elif isinstance(m, nn.Module): x = next(m.parameters()).new(1, *size)
     else: raise TypeError('You should either pass in a Learner or nn.Module')
-    hooks_outputs = hook_outputs(flatten_model(m))
-    hooks_params = hook_params(flatten_model(m))
-    hooks = zip(hooks_outputs, hooks_params)
-    x = m.eval()(*x) if is_listy(x) else m.eval()(x)
-    output_size = [(o.stored.shape) for o in hooks_outputs]
-    params = [o.stored for o in hooks_params]
+    with hook_outputs(flatten_model(m)) as hook_o:
+        with hook_params(flatten_model(m))as hook_p:
+            x = m.eval()(*x) if is_listy(x) else m.eval()(x)
+            output_size = [(o.stored.shape) for o in hook_o]
+            params = [o.stored for o in hook_p]
     params, trainables = map(list,zip(*params))
-    return (output_size, params, trainables, hooks)
+    return output_size, params, trainables
 
 def get_layer_name(layer:nn.Module)->str:
     return str(layer.__class__).split(".")[-1].split("'")[0]
@@ -155,10 +154,7 @@ def get_layer_name(layer:nn.Module)->str:
 def layers_info(m:Collection[nn.Module]) -> Collection[namedtuple]:
     func = lambda m:list(map(get_layer_name, flatten_model(m)))
     layers_names = func(m.model) if isinstance(m, Learner) else func(m)
-    layers_sizes, layers_params, layers_trainable, hooks = params_size(m)
-    for h1,h2 in hooks:
-        h1.remove()
-        h2.remove()
+    layers_sizes, layers_params, layers_trainable = params_size(m)
     layer_info = namedtuple('Layer_Information', ['Layer', 'OutputSize', 'Params', 'Trainable'])
     return list(map(layer_info, layers_names, layers_sizes, layers_params, layers_trainable))
 

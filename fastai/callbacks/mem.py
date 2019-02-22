@@ -4,18 +4,6 @@ import tracemalloc, threading, torch, time, pynvml
 from ..utils.mem import *
 from ..basic_train import *
 
-# XXX: to be migrated to docs:
-# usage:
-# learn = create_cnn(data, model, metrics=[accuracy], callback_fns=PeakMemMetric)
-# learn.fit_one_cycle(3, max_lr=1e-2)
-#
-# output:
-# Total time: 00:59
-# epoch	train_loss valid_loss accuracy cpu used peak gpu used peak
-#     1	0.325806   0.070334   0.978800	      0   2       80  6220
-#     2	0.093147   0.038905   0.987700	      0   2        2   914
-#     3	0.047818   0.027617   0.990600	      0   2        0   912
-
 class PeakMemMetric(LearnerCallback):
     "Callback that measures used and peaked general and GPU memory."
 
@@ -48,7 +36,7 @@ class PeakMemMetric(LearnerCallback):
         gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_id)
 
         while True:
-            gpu_mem_used = gpu_mem_get_fast_used(gpu_handle)
+            gpu_mem_used = gpu_mem_get_used_fast(gpu_handle)
             self.gpu_mem_used_peak = max(gpu_mem_used, self.gpu_mem_used_peak)
             if not self.peak_monitoring: break
             time.sleep(0.001) # 1msec

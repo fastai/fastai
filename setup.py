@@ -95,16 +95,17 @@ dep_groups = {
     'core':   to_list("""
         bottleneck           # performance-improvement for numpy
         dataclasses ; python_version<'3.7'
-        fastprogress>=0.1.18
+        fastprogress>=0.1.19
         beautifulsoup4
         matplotlib
         numexpr              # performance-improvement for numpy
-        numpy>=1.12
+        numpy>=1.15
         nvidia-ml-py3
         pandas
         packaging
         Pillow
         pyyaml
+        pynvx ; platform_system=="Darwin"  # only pypi at the moment
         requests
         scipy
         torch>=1.0.0

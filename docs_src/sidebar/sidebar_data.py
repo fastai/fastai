@@ -31,7 +31,8 @@ sidebar_d = {
                 'RNNTrainer': '/callbacks.rnn',
                 'GeneralScheduler': '/callbacks.general_sched',
                 'CSV Logger': '/callbacks.csv_logger',
-                'Tracking callbacks': '/callbacks.tracker'
+                'Tracking': '/callbacks.tracker',
+                'Memory Profiling': '/callbacks.mem',
             }
         },
     },
@@ -79,21 +80,26 @@ sidebar_d = {
         'torch_core': '/torch_core',
     },
     'Utils': {
-        'Helpers': '/utils.collect_env'
+        'Helpers': '/utils.collect_env',
+        'Memory Management': '/utils.mem',
     },
     'Tutorials': {
+        'Overview': '/tutorials',
         'Look at data': '/tutorial.data',
         'Inference Learner': '/tutorial.inference',
         'Custom ItemList': '/tutorial.itemlist',
+        'DL on a Shoestring': '/tutorial.resources'
     },
     'Doc authoring': {
         'Instructions': '/gen_doc_main',
         'gen_doc': '/gen_doc',
         'gen_doc.gen_notebooks': '/gen_doc.gen_notebooks',
         'gen_doc.nbdoc': '/gen_doc.nbdoc',
+        'gen_doc.nbtest': '/gen_doc.nbtest',
         'gen_doc.convert2html': '/gen_doc.convert2html',
     },
     'Library development': {
+        'Contributing': 'https://github.com/fastai/fastai/blob/master/CONTRIBUTING.md',
         'Dev Notes': '/dev/develop',
         'GPU Notes': '/dev/gpu',
         'git notes': '/dev/git',
