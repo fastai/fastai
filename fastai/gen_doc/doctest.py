@@ -55,9 +55,8 @@ class TestAPIRegistry:
 
     def registry_save():
         if TestAPIRegistry.missing_this_tests:
-            print('\n*** Warning: Pls register the following tests with TestAPIRegistry.this_tests:\n')
-            for missing_this_test in TestAPIRegistry.missing_this_tests:
-                print(str(missing_this_test) + '\t')
+            print('\n*** Warning: Pls register the following tests with TestAPIRegistry.this_tests:')
+            print('\n'.join(str(missing_this_test) for missing_this_test in TestAPIRegistry.missing_this_tests))                
         if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
             print(f"\n*** Saving test api registry @ {path}")
