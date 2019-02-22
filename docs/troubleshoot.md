@@ -447,6 +447,8 @@ There is a particular issue with this error is that under ipython/jupyter notebo
 
 CUDA's default environment allows sending commands to GPU in asynchronous mode - i.e. without waiting to check whether they were successful, thus tremendously speeding up the execution. The side effect is that if anything goes wrong, the context is gone and it's impossible to tell what the error was. That's when you get this generic error, which means that something went wrong on the GPU, but the program can't tell what.
 
+Moreover, the only way to recover from it is to restart the kernel. Other kernels should still be able to use the card, so it only affects the kernel the error happened in.
+
 To debug this issue, the non-blocking CUDA mode needs to be turned off, which will slow everything down, but you will get the proper error message. You can accomplish that using several approaches:
 
 * create a cell at the very top of the notebook.
