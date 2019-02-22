@@ -40,13 +40,13 @@ def cyclic_dt_features(d:Union[date,datetime], time:bool=True, add_linear:bool=F
             feats.append(d.year + ((d - datetime(d.year, 1, 1)).total_seconds() / secs_in_year))
     return feats
 
-def add_cyclic_datepart(df:DataFrame, field_name:str, prefix:str=None, drop:bool=True, time:bool=False, **kwargs):
+def add_cyclic_datepart(df:DataFrame, field_name:str, prefix:str=None, drop:bool=True, time:bool=False, add_linear:bool=False):
     "Helper function that adds trigonometric date/time features to a date in the column `field_name` of `df`."
     make_date(df, field_name)
     field = df[field_name]
     prefix = ifnone(prefix, re.sub('[Dd]ate$', '', field_name))
-    series = field.apply(partial(cyclic_dt_features, time=time, **kwargs))
-    columns = [prefix + c for c in cyclic_dt_feat_names(time, **kwargs)]
+    series = field.apply(partial(cyclic_dt_features, time=time, add_linear=add_linear))
+    columns = [prefix + c for c in cyclic_dt_feat_names(time, add_linear)]
     df_feats = pd.DataFrame([item for item in series], columns=columns)
     df = pd.concat([df, df_feats], axis=1)
     if drop: df.drop(field_name, axis=1, inplace=True)
