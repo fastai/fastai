@@ -47,9 +47,7 @@ def doctest_collector_start(request):
 def pytest_runtest_makereport(item, call):
     outcome = yield
     res = outcome.get_result()
-    individualtests = [s for s in set(sys.argv) if re.match(r'.*test_\w+\.py',s)]
-    #individualtests = 0
-    if pytest.config.getoption("--testapireg") and not individualtests:
-        if res.when == "setup": TestAPIRegistry.this_tests_flag_on(item)
-        if res.when == "call" and res.failed:  TestAPIRegistry.tests_failed()
-        if res.when == "teardown":  TestAPIRegistry.this_tests_flag_check(item)        
+    filename, lineno, testname = res.location
+    if   res.when == "setup":    TestAPIRegistry.this_tests_flag_on(filename, testname)
+    elif res.when == "call":     TestAPIRegistry.tests_failed(res.failed)
+    elif res.when == "teardown": TestAPIRegistry.this_tests_flag_check(filename, testname)

@@ -16,52 +16,51 @@ class TestAPIRegistry:
     api_tests_map     = defaultdict(list)
     some_tests_failed = False
     has_this_tests = None
-    failed_tests = set()
+    missing_this_tests = set()
 
     @staticmethod
     def this_tests(*funcs):
         prev_frame = currentframe().f_back.f_back
-        filename, lineno, test_name, _, _ = getframeinfo(prev_frame)
-        parent_func_lineno, _ = get_parent_func(lineno, get_lines(filename))
-        entry = {'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}
+        file_name, lineno, test_name, _, _ = getframeinfo(prev_frame)
+        parent_func_lineno, _ = get_parent_func(lineno, get_lines(file_name))
+        entry = {'file': relative_test_path(file_name), 'test': test_name , 'line': parent_func_lineno}
         for func in funcs:
             try:
                 func_fq = get_func_fq_name(func)
             except:
                 raise Exception(f"'{func}' is not a function")
             if re.match(r'fastai\.', func_fq):
-                if entry not in TestAPIRegistry.api_tests_map[func_fq]: 
+                if entry not in TestAPIRegistry.api_tests_map[func_fq]:
                     TestAPIRegistry.api_tests_map[func_fq].append(entry)
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
-        try: 
-            TestAPIRegistry.failed_tests.remove(TestAPIRegistry.has_this_tests) 
+        try:
+            missing_this_test = f"file: {relative_test_path(file_name)} / test:  {test_name}"
+            TestAPIRegistry.missing_this_tests.remove(missing_this_test)
         except:
             None
         TestAPIRegistry.has_this_tests = None
 
-    def this_tests_flag_on(item):
-        TestAPIRegistry.has_this_tests = item.name
-        ## to do: get fully qualifed name from item.name & then find filename. place in dictionary
-        TestAPIRegistry.failed_tests.add(TestAPIRegistry.has_this_tests)
-       
+    def this_tests_flag_on(file_name, test_name):
+        TestAPIRegistry.has_this_tests = test_name
+
     def tests_failed(status=True):
         TestAPIRegistry.some_tests_failed = status
-    
-    def this_tests_flag_check(item):
-        if TestAPIRegistry.has_this_tests == item.name:
+
+    def this_tests_flag_check(file_name, test_name):
+        if TestAPIRegistry.has_this_tests == test_name:
             TestAPIRegistry.has_this_tests = None
+        else:
+            TestAPIRegistry.missing_this_tests.add(f"{file_name}::{test_name}")
 
     def registry_save():
+        if TestAPIRegistry.missing_this_tests:
+            print(f"*** Warning: Please use `this_tests` in the following:", *TestAPIRegistry.missing_this_tests, sep="\n")
         if TestAPIRegistry.api_tests_map and not TestAPIRegistry.some_tests_failed:
             path = Path(__file__).parent.parent.resolve()/DB_NAME
             print(f"\n*** Saving test api registry @ {path}")
             with open(path, 'w') as f:
                 json.dump(obj=TestAPIRegistry.api_tests_map, fp=f, indent=4, sort_keys=True, default=_json_set_default)
-        # to do: this should probably go to a test report object
-        #print('\n*** Warning: Pls register the following tests with TestAPIRegistry.this_tests')
-        #pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(TestAPIRegistry.failed_tests)   
 
 def this_tests(*funcs): TestAPIRegistry.this_tests(*funcs)
 
