@@ -21,9 +21,9 @@ class TestAPIRegistry:
     @staticmethod
     def this_tests(*funcs):
         prev_frame = currentframe().f_back.f_back
-        filename, lineno, test_name, _, _ = getframeinfo(prev_frame)
-        parent_func_lineno, _ = get_parent_func(lineno, get_lines(filename))
-        entry = {'file': relative_test_path(filename), 'test': test_name , 'line': parent_func_lineno}
+        file_name, lineno, test_name, _, _ = getframeinfo(prev_frame)
+        parent_func_lineno, _ = get_parent_func(lineno, get_lines(file_name))
+        entry = {'file': relative_test_path(file_name), 'test': test_name , 'line': parent_func_lineno}
         for func in funcs:
             try:
                 func_fq = get_func_fq_name(func)
@@ -35,23 +35,23 @@ class TestAPIRegistry:
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
         try:
-            missing_this_test = f"file: {relative_test_path(filename)} / test:  {test_name}"
+            missing_this_test = f"file: {relative_test_path(file_name)} / test:  {test_name}"
             TestAPIRegistry.missing_this_tests.remove(missing_this_test)
         except:
             None
         TestAPIRegistry.has_this_tests = None
 
-    def this_tests_flag_on(filename, test_name):
+    def this_tests_flag_on(file_name, test_name):
         TestAPIRegistry.has_this_tests = test_name
 
     def tests_failed(status=True):
         TestAPIRegistry.some_tests_failed = status
 
-    def this_tests_flag_check(filename, test_name):
+    def this_tests_flag_check(file_name, test_name):
         if TestAPIRegistry.has_this_tests == test_name:
             TestAPIRegistry.has_this_tests = None
         else:
-            TestAPIRegistry.missing_this_tests.add(f"{filename}::{test_name}")
+            TestAPIRegistry.missing_this_tests.add(f"{file_name}::{test_name}")
 
     def registry_save():
         if TestAPIRegistry.missing_this_tests:
