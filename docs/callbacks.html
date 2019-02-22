@@ -579,6 +579,88 @@ Total time: 00:08 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">SaveModelCallback</span><span class="p">(</span><span class="n">learn</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:13 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.652836</th>
+    <th>0.629737</th>
+    <th>0.613346</th>
+  </tr>
+  <tr>
+    <th>2</th>
+    <th>0.546113</th>
+    <th>0.517567</th>
+    <th>0.902355</th>
+  </tr>
+  <tr>
+    <th>3</th>
+    <th>0.495621</th>
+    <th>0.489153</th>
+    <th>0.916585</th>
+  </tr>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls ~/.fastai/data/mnist_sample/models
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>bestmodel_1.pth  bestmodel_2.pth  bestmodel_3.pth
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="ReduceLROnPlateauCallback"><a href="/callbacks.tracker.html#ReduceLROnPlateauCallback"><code>ReduceLROnPlateauCallback</code></a><a class="anchor-link" href="#ReduceLROnPlateauCallback">&#182;</a></h3><p>Reduce the learning rate each time a given metric/validation loss doesn't improve by a certain factor.</p>

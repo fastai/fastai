@@ -473,6 +473,218 @@ Total time: 00:02 <p><table style='width:300px; margin-bottom:10px'>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">simple_cnn</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">SaveModelCallback</span><span class="p">(</span><span class="n">learn</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:21 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.688521</th>
+    <th>0.667903</th>
+    <th>0.834151</th>
+  </tr>
+  <tr>
+    <th>2</th>
+    <th>0.538766</th>
+    <th>0.486864</th>
+    <th>0.920510</th>
+  </tr>
+  <tr>
+    <th>3</th>
+    <th>0.348265</th>
+    <th>0.316294</th>
+    <th>0.934740</th>
+  </tr>
+  <tr>
+    <th>4</th>
+    <th>0.263525</th>
+    <th>0.258484</th>
+    <th>0.933268</th>
+  </tr>
+  <tr>
+    <th>5</th>
+    <th>0.247160</th>
+    <th>0.250660</th>
+    <th>0.932777</th>
+  </tr>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Choosing <code>every='epoch'</code> saves an individual model at the end of each epoch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls ~/.fastai/data/mnist_sample/models
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>model_1.pth  model_2.pth  model_3.pth  model_4.pth  model_5.pth
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">SaveModelCallback</span><span class="p">(</span><span class="n">learn</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="s1">&#39;improvement&#39;</span><span class="p">,</span> <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+Total time: 00:21 <p><table style='width:300px; margin-bottom:10px'>
+  <tr>
+    <th>epoch</th>
+    <th>train_loss</th>
+    <th>valid_loss</th>
+    <th>accuracy</th>
+  </tr>
+  <tr>
+    <th>1</th>
+    <th>0.225827</th>
+    <th>0.218552</th>
+    <th>0.933759</th>
+  </tr>
+  <tr>
+    <th>2</th>
+    <th>0.181150</th>
+    <th>0.175551</th>
+    <th>0.938175</th>
+  </tr>
+  <tr>
+    <th>3</th>
+    <th>0.166091</th>
+    <th>0.164049</th>
+    <th>0.936703</th>
+  </tr>
+  <tr>
+    <th>4</th>
+    <th>0.164511</th>
+    <th>0.160625</th>
+    <th>0.939647</th>
+  </tr>
+  <tr>
+    <th>5</th>
+    <th>0.159156</th>
+    <th>0.160258</th>
+    <th>0.938665</th>
+  </tr>
+</table>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Better model found at epoch 1 with accuracy value: 0.9337586164474487.
+Better model found at epoch 2 with accuracy value: 0.9381746649742126.
+Better model found at epoch 4 with accuracy value: 0.9396467208862305.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Choosing <code>every='improvement'</code> saves the single best model out of all epochs during training.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls ~/.fastai/data/mnist_sample/models
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>best.pth  model_1.pth  model_2.pth  model_3.pth  model_4.pth  model_5.pth
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Callback-methods">Callback methods<a class="anchor-link" href="#Callback-methods">&#182;</a></h3>
