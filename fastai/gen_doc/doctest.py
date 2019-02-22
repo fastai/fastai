@@ -35,7 +35,7 @@ class TestAPIRegistry:
             else:
                 raise Exception(f"'{func}' is not in the fastai API")
         try: 
-            missing_this_test = 'file: '+ relative_test_path(filename) + ' / test: ' + test_name
+            missing_this_test = f"file: {relative_test_path(filename)} / test:  {test_name}"
             TestAPIRegistry.missing_this_tests.remove(missing_this_test) 
         except:
             None
@@ -43,7 +43,7 @@ class TestAPIRegistry:
 
     def this_tests_flag_on(filename, test_name):
         TestAPIRegistry.has_this_tests = test_name
-        missing_this_test = 'file: '+ filename + ' / test: ' + test_name
+        missing_this_test = f"file: {filename} / test:  {test_name}"
         TestAPIRegistry.missing_this_tests.add(missing_this_test)
        
     def tests_failed(status=True):
