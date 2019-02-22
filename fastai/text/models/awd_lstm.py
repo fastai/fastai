@@ -1,9 +1,11 @@
 from ...torch_core import *
 from ...layers import *
+from ..data import TextClasDataBunch
+import matplotlib.cm as cm
 
-__all__ = ['EmbeddingDropout', 'LinearDecoder', 'PoolingLinearClassifier', 'AWD_LSTM', 'RNNDropout', 
+__all__ = ['EmbeddingDropout', 'LinearDecoder', 'PoolingLinearClassifier', 'AWD_LSTM', 'RNNDropout',
            'SequentialRNN', 'WeightDropout', 'dropout_mask', 'awd_lstm_lm_split', 'awd_lstm_clas_split',
-           'awd_lstm_lm_config', 'awd_lstm_clas_config']
+           'awd_lstm_lm_config', 'awd_lstm_clas_config', 'TextClassificationInterpretation']
 
 def dropout_mask(x:Tensor, sz:Collection[int], p:float):
     "Return a dropout mask of the same type as `x`, size `sz`, with probability `p` to cancel an element."
@@ -76,7 +78,7 @@ class AWD_LSTM(nn.Module):
 
     initrange=0.1
 
-    def __init__(self, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int=1, hidden_p:float=0.2, 
+    def __init__(self, vocab_sz:int, emb_sz:int, n_hid:int, n_layers:int, pad_token:int=1, hidden_p:float=0.2,
                  input_p:float=0.6, embed_p:float=0.1, weight_p:float=0.5, qrnn:bool=False, bidir:bool=False):
         super().__init__()
         self.bs,self.qrnn,self.emb_sz,self.n_hid,self.n_layers = 1,qrnn,emb_sz,n_hid,n_layers
@@ -91,7 +93,7 @@ class AWD_LSTM(nn.Module):
                                    use_cuda=torch.cuda.is_available()) for l in range(n_layers)]
             for rnn in self.rnns: rnn.linear = WeightDropout(rnn.linear, weight_p, layer_names=['weight'])
         else:
-            self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir, 1, 
+            self.rnns = [nn.LSTM(emb_sz if l == 0 else n_hid, (n_hid if l != n_layers - 1 else emb_sz)//self.n_dir, 1,
                                  batch_first=True, bidirectional=bidir) for l in range(n_layers)]
             self.rnns = [WeightDropout(rnn, weight_p) for rnn in self.rnns]
         self.rnns = nn.ModuleList(self.rnns)
@@ -99,12 +101,13 @@ class AWD_LSTM(nn.Module):
         self.input_dp = RNNDropout(input_p)
         self.hidden_dps = nn.ModuleList([RNNDropout(hidden_p) for l in range(n_layers)])
 
-    def forward(self, input:LongTensor)->Tuple[Tensor,Tensor]:
-        bs,sl = input.size()
+    def forward(self, input:Tensor, from_embeddings:bool=False)->Tuple[Tensor,Tensor]:
+        if from_embeddings: bs,sl,es = input.size()
+        else: bs,sl = input.size()
         if bs!=self.bs:
             self.bs=bs
             self.reset()
-        raw_output = self.input_dp(self.encoder_dp(input))
+        raw_output = self.input_dp(input if from_embeddings else self.encoder_dp(input))
         new_hidden,raw_outputs,outputs = [],[],[]
         for l, (rnn,hid_dp) in enumerate(zip(self.rnns, self.hidden_dps)):
             raw_output, new_h = rnn(raw_output, self.hidden[l])
@@ -119,7 +122,7 @@ class AWD_LSTM(nn.Module):
         "Return one hidden state."
         nh = (self.n_hid if l != self.n_layers - 1 else self.emb_sz) // self.n_dir
         return one_param(self).new(1, self.bs, nh).zero_()
-    
+
     def select_hidden(self, idxs):
         if self.qrnn: self.hidden = [h[:,idxs,:] for h in self.hidden]
         else: self.hidden = [(h[0][:,idxs,:],h[1][:,idxs,:]) for h in self.hidden]
@@ -185,15 +188,72 @@ def awd_lstm_lm_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[rnn, dp] for rnn, dp in zip(model[0].rnns, model[0].hidden_dps)]
     return groups + [[model[0].encoder, model[0].encoder_dp, model[1]]]
-    
+
 def awd_lstm_clas_split(model:nn.Module) -> List[nn.Module]:
     "Split a RNN `model` in groups for differential learning rates."
     groups = [[model[0].module.encoder, model[0].module.encoder_dp]]
     groups += [[rnn, dp] for rnn, dp in zip(model[0].module.rnns, model[0].module.hidden_dps)]
     return groups + [[model[1]]]
 
-awd_lstm_lm_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.25, 
+awd_lstm_lm_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.25,
                           hidden_p=0.1, input_p=0.2, embed_p=0.02, weight_p=0.15, tie_weights=True, out_bias=True)
 
-awd_lstm_clas_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.4, 
+awd_lstm_clas_config = dict(emb_sz=400, n_hid=1150, n_layers=3, pad_token=1, qrnn=False, bidir=False, output_p=0.4,
                        hidden_p=0.2, input_p=0.6, embed_p=0.1, weight_p=0.5)
+
+def value2rgba(x:float, cmap:Callable=cm.RdYlGn, alpha_mult:float=1.0)->Tuple:
+    "Convert a value `x` from 0 to 1 (inclusive) to an RGBA tuple according to `cmap` times transparency `alpha_mult`."
+    c = cmap(x)
+    rgb = (np.array(c[:-1]) * 255).astype(int)
+    a = c[-1] * alpha_mult
+    return tuple(rgb.tolist() + [a])
+
+def piece_attn_html(pieces:List[str], attns:List[float], sep:str=' ', **kwargs)->str:
+    html_code,spans = ['<span style="font-family: monospace;">'], []
+    for p, a in zip(pieces, attns):
+        p = html.escape(p)
+        c = str(value2rgba(a, alpha_mult=0.5, **kwargs))
+        spans.append(f'<span title="{a:.3f}" style="background-color: rgba{c};">{p}</span>')
+    html_code.append(sep.join(spans))
+    html_code.append('</span>')
+    return ''.join(html_code)
+
+def show_piece_attn(*args, **kwargs):
+    from IPython.display import display, HTML
+    display(HTML(piece_attn_html(*args, **kwargs)))
+
+@dataclass
+class TextClassificationInterpretation():
+    """Provides an interpretation of classification based on input sensitivity.
+    This was designed for AWD-LSTM only for the moment, because Transformer already has its own attentional model.
+    """
+    data: TextClasDataBunch
+    model: AWD_LSTM
+
+    @classmethod
+    def from_learner(cls, learn): return cls(learn.data, learn.model)
+
+    def intrinsic_attention(self, text:str, class_id:int=None):
+        """Calculate the intrinsic attention of the input w.r.t to an output `class_id`, or the classification given by the model if `None`.
+        For reference, see the Sequential Jacobian session at https://www.cs.toronto.edu/~graves/preprint.pdf
+        """
+        ids = self.data.one_item(text)[0]
+        emb = self.model[0].module.encoder(ids).detach().requires_grad_(True)
+        self.model.eval()
+        self.model.zero_grad()
+        self.model.reset()
+        cl = self.model[1](self.model[0].module(emb, from_embeddings=True))[0].softmax(dim=-1)
+        if class_id is None: class_id = cl.argmax()
+        cl[0][class_id].backward()
+        attn = emb.grad.squeeze().abs().sum(dim=-1)
+        attn /= attn.max()
+        tokens = self.data.single_ds.reconstruct(ids[0])
+        return tokens, attn
+
+    def html_intrinsic_attention(self, text:str, class_id:int=None, **kwargs)->str:
+        text, attn = self.intrinsic_attention(text, class_id)
+        return piece_attn_html(text.text.split(), to_np(attn), **kwargs)
+
+    def show_intrinsic_attention(self, text:str, class_id:int=None, **kwargs)->None:
+        text, attn = self.intrinsic_attention(text, class_id)
+        show_piece_attn(text.text.split(), to_np(attn), **kwargs)
