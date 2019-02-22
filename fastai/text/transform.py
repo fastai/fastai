@@ -61,7 +61,7 @@ def fix_html(x:str) -> str:
     x = x.replace('#39;', "'").replace('amp;', '&').replace('#146;', "'").replace(
         'nbsp;', ' ').replace('#36;', '$').replace('\\n', "\n").replace('quot;', "'").replace(
         '<br />', "\n").replace('\\"', '"').replace('<unk>',UNK).replace(' @.@ ','.').replace(
-        ' @-@ ','-').replace('\\', ' \\ ')
+        ' @-@ ','-').replace(' @,@ ',',').replace('\\', ' \\ ')
     return re1.sub(' ', html.unescape(x))
 
 def replace_all_caps(x:Collection[str]) -> Collection[str]:
