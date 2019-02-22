@@ -342,6 +342,70 @@ When writing tests:
 - Avoid pretrained models, since they have to be downloaded from the internet to run the test
 - Create some minimal data for your test, or use data already in repo's data/ directory
 
+### Test Registry
+
+`fastai` has a neat feature where users while reading the API documentation can also discover which tests exercise the function they are interested to use. This provides extra insights at how the API can be used, and also provides an incentive to users to write tests which are missing or improving the existing ones. Therefore, every new test should include a single call of `this_tests`.
+
+The following is an actual test, that tests `this_tests`, so you can quickly see how it should be used:
+
+```
+from fastai.gen_doc.doctest import this_tests
+def test_this_tests():
+
+    # function by reference (and self test)
+    this_tests(this_tests)
+
+    # multiple entries: same function twice on purpose, should result in just one entry,
+    # but also testing multiple entries - and this test tests only a single function.
+    this_tests(this_tests, this_tests)
+
+    import fastai
+    # explicit fully qualified function (requires all the sub-modules to be loaded)
+    this_tests(fastai.gen_doc.doctest.this_tests)
+
+    # explicit fully qualified function as a string
+    this_tests('fastai.gen_doc.doctest.this_tests')
+
+    # not a real function
+    func = 'foo bar'
+    try: this_tests(func)
+    except Exception as e: assert f"'{func}' is not a function" in str(e)
+    else: assert False, f'this_tests({func}) should have failed'
+
+    # not a function as a string that looks like fastai function, but it is not
+    func = 'fastai.gen_doc.doctest.doesntexistreally'
+    try: this_tests(func)
+    except Exception as e: assert f"'{func}' is not a function" in str(e)
+    else: assert False, f'this_tests({func}) should have failed'
+
+    # not a fastai function
+    import numpy as np
+    func = np.any
+    try: this_tests(func)
+    except Exception as e: assert f"'{func}' is not in the fastai API" in str(e)
+    else: assert False, f'this_tests({func}) should have failed'
+```
+
+When you use this function ideally try to use live objects `obj.method` and not `class.method` approach, because if the API changes and classes get renamed behind the scenes the test will still work without requiring any modification. Therefore, instead of doing this:
+
+```
+def test_get_preds():
+    learn = fake_learner()
+    this_tests(Learner.get_preds)
+```
+
+it's better to write it as:
+
+```
+def test_get_preds():
+    learn = fake_learner()
+    this_tests(learn.get_preds)
+```
+
+You can make the call `this_tests` anywhere in the test, so if the object becomes available at line 10 of the test, add `this_tests` after it.
+
+The test registry is located at `fastai/test_api_db.json` and it gets auto-generated when `pytest` gets a `--testapireg` flag, which is currently done when `make test-full` is run.
+
 
 ### Expensive object reuse
 
