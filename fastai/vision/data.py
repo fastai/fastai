@@ -230,23 +230,23 @@ def verify_image(file:Path, idx:int, delete:bool, max_size:Union[int,Tuple[int,i
                 else: warnings.warn(w)
 
         img = PIL.Image.open(file)
-        if max_size is not None and (img.height > max_size or img.width > max_size):
+        imgarr = np.array(img)
+        img_channels = 1 if len(imgarr.shape) == 2 else imgarr.shape[2]
+        if (max_size is not None and (img.height > max_size or img.width > max_size)) or img_channels != n_channels:
             assert isinstance(dest, Path), "You should provide `dest` Path to save resized image"
             dest_fname = dest/file.name
             if ext is not None: dest_fname=dest_fname.with_suffix(ext)
             if resume and os.path.isfile(dest_fname): return
-            new_sz = resize_to(img, max_size)
+            if max_size is not None:
+                new_sz = resize_to(img, max_size)
+                img = img.resize(new_sz, resample=interp)
             if n_channels == 3: img = img.convert("RGB")
-            img = img.resize(new_sz, resample=interp)
             img.save(dest_fname, img_format, **kwargs)
-        img = np.array(img)
-        img_channels = 1 if len(img.shape) == 2 else img.shape[2]
-        assert img_channels == n_channels, f"Image {file} has {img_channels} instead of {n_channels} channels"
     except Exception as e:
         print(f'{e}')
         if delete: file.unlink()
 
-def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int]=None,
+def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:Union[int]=None, recurse:bool=False,
                   dest:PathOrStr='.', n_channels:int=3, interp=PIL.Image.BILINEAR, ext:str=None, img_format:str=None,
                   resume:bool=None, **kwargs):
     "Check if the images in `path` aren't broken, maybe resize them and copy it in `dest`."
@@ -254,7 +254,7 @@ def verify_images(path:PathOrStr, delete:bool=True, max_workers:int=4, max_size:
     if resume is None and dest == '.': resume=False
     dest = path/Path(dest)
     os.makedirs(dest, exist_ok=True)
-    files = get_image_files(path)
+    files = get_image_files(path, recurse=recurse)
     func = partial(verify_image, delete=delete, max_size=max_size, dest=dest, n_channels=n_channels, interp=interp,
                    ext=ext, img_format=img_format, resume=resume, **kwargs)
     parallel(func, files, max_workers=max_workers)

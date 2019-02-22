@@ -11,8 +11,6 @@ Github. Parentheses after an item show the name or github id of the contributor
 of that change.
 
 
-
-
 ## 1.0.43.dev0 (Work In Progress)
 
 ### Breaking change:
@@ -21,17 +19,22 @@ of that change.
 
 ### New:
 
-- More models supported by `create_cnn` (densenet121, densenet169, densenet201, densenet161, vgg16_bn, vgg19_bn, alexnet) thanks to PPPW
+- More models supported by `create_cnn` (`densenet121`, `densenet169`,
+  `densenet201`, `densenet161`, `vgg16_bn`, `vgg19_bn`, `alexnet`) thanks to PPPW
 - Backward option in `text_classifier_learner` (thanks to tpietruszka)
 - Automate custom dependency groups installation via extending `distutils`
 - Transformer and TransformerXL architectures
 - Add `val_bs` parameter to all `DataBunch` creation methods
 - `LanguageLearner.beam_search` to make text generation using beam search
+- Added `XResNet`, which is ResNet plus tricks from
+  [Bag of Tricks for Image Classification](https://arxiv.org/abs/1812.01187).
+  Note pretrained models note available yet for this architecture.
 
 ### Changed:
 
 - `ClassificationInterpration.plot_multi_top_losses` supports one-hot encoded labels (thanks to terriblissimo)
 - `model_summary` only supports `Learner` now
+- `recurse` parameter for `verify_images`
 
 ### Fixed:
 
@@ -41,6 +44,7 @@ of that change.
 - Bugs in `ForgetMult` and check cuda version are consistent (thanks to mkardas)
 - Bug `label_empty()` got an unexpected keyword argument 'label_cls'
 - For a language model `predict` is now way faster and more accurate
+- `verify_images` fixes channels even if no new size is passed
 
 ## 1.0.42 (2019-01-24)
 
