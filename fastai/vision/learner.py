@@ -129,7 +129,7 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12),heatmap:bool=
             sz = im.shape[-1]
             axes.flat[i].imshow(mult, alpha =0.6, extent= (0,sz,sz,0), interpolation='bilinear', cmap='magma')
 
-def _cl_int_plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8), save_misclassified:bool=False):
+def _cl_int_plot_multi_top_losses(self, samples:int=3, figsize:Tuple[int,int]=(8,8), save_misclassified:bool=False):
     "Show images in `top_losses` along with their prediction, actual, loss, and probability of predicted class in a multilabeled dataset."
     if samples >20:
         print("Max 20 samples")
@@ -164,7 +164,7 @@ def _cl_int_plot_multi_top_losses(self, samples:int=3, figsz:Tuple[int,int]=(8,8
         for clas in infolist[ordlosses_idxs[sampleN]][2]:
             actualclasses=actualclasses+' -- '+str(classes_ids[clas][1])
         imag=mismatches_ordered_byloss[sampleN][0]
-        imag=show_image(imag, figsize=figsz)
+        imag=show_image(imag, figsize=figsize)
         imag.set_title(f"""Predicted: {classes_ids[infolist[ordlosses_idxs[sampleN]][1]][1]} \nActual: {actualclasses}\nLoss: {infolist[ordlosses_idxs[sampleN]][3]}\nProbability: {infolist[ordlosses_idxs[sampleN]][4]}""",
                         loc='left')
         plt.show()
