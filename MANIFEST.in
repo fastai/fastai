@@ -1,6 +1,6 @@
 include AUTHORS.md
 include CONTRIBUTING.md
-include HISTORY.md
+include CHANGES.md
 include LICENSE
 include README.md
 include fastai/gen_doc/*tpl
