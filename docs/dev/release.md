@@ -476,12 +476,23 @@ To build a PyPI package and release it on [pypi.org/](https://pypi.org/project/f
     python setup.py sdist
     ```
 
-    `MANIFEST.in` is in charge of what source files are included in the package. If you want to include the whole directory `tests`, but not `tests/data` for example, adjust `MANIFEST.in` to have:
+    `MANIFEST.in` is in charge of what source files are included in the package. Here are some practical usage examples:
+
+    To include a sub-directory recursively, e.g. `docs` (one directory per instruction):
+    ```
+    graft docs
+    ```
+
+    If you want to include the whole directory `tests`, but not `tests/data` for example, adjust `MANIFEST.in` to have:
 
     ```
-    recursive-include tests *
+    graft tests
     prune tests/data
+    ```
 
+    To exclude some extensions from everywhere, e.g. all `*pyc` and `*.pyo`:
+    ```
+    global-exclude *.py[co]
     ```
 
     For more details, see [Creating a Source Distribution](https://docs.python.org/3/distutils/sourcedist.html)
