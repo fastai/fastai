@@ -97,9 +97,16 @@ If it's your first time, you just need to make a fork of the original repository
    for any of the `fastai` project repositories, except `fastprogress` where it doesn't exist.
 
    Finally, let's setup this fork to track the upstream:
+   
+   * Using SSH:
 
    ```
    git remote add upstream git@github.com:fastai/fastai.git
+   ```
+   * Using HTTPS:
+   
+   ```
+   git remote add upstream https://github.com/fastai/fastai.git
    ```
 
    You can check your setup:
@@ -108,11 +115,22 @@ If it's your first time, you just need to make a fork of the original repository
    ```
 
    It should show:
+   
+   * If you used SSH:
+   
    ```
    origin  git@github.com:USERNAME/fastai.git (fetch)
    origin  git@github.com:USERNAME/fastai.git (push)
-   upstream        git@github.com:fastai/fastai.git (fetch)
-   upstream        git@github.com:fastai/fastai.git (push)
+   upstream  git@github.com:fastai/fastai.git (fetch)
+   upstream  git@github.com:fastai/fastai.git (push)
+   ```
+   * If you used HTTPS:
+   
+   ```
+   origin  https://github.com/USERNAME/fastai.git (fetch)
+   origin  https://github.com/USERNAME/fastai.git (push)
+   upstream  https://github.com/fastai/fastai.git (fetch)
+   upstream  https://github.com/fastai/fastai.git (push)
    ```
 
    You can now proceed to step 2.
