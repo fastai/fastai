@@ -9,6 +9,8 @@ from typing import Dict, Any, AnyStr, List, Sequence, TypeVar, Tuple, Optional, 
 from .docstrings import *
 from .core import *
 from ..torch_core import *
+from .nbtest import get_pytest_html
+
 __all__ = ['get_fn_link', 'link_docstring', 'show_doc', 'get_ft_names',
            'get_exports', 'show_video', 'show_video_from_youtube', 'import_mod', 'get_source_link',
            'is_enum', 'jekyll_note', 'jekyll_warn', 'jekyll_important', 'doc']
@@ -98,7 +100,7 @@ def get_cls_doc(elt, full_name:str)->str:
     return name,args
 
 def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=None, title_level=None, alt_doc_string:str='',
-             ignore_warn:bool=False, markdown=True):
+             ignore_warn:bool=False, markdown=True, show_tests=False):
     "Show documentation for element `elt`. Supported types: class, Callable, and enum."
     arg_comments = ifnone(arg_comments, {})
     anchor_id = full_name or get_anchor(elt)
@@ -110,11 +112,14 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     elif isinstance(elt, Callable):  name,args = format_ft_def(elt, full_name)
     else: raise Exception(f'doc definition not supported for {full_name}')
     source_link = get_function_source(elt) if is_fastai_class(elt) else ""
+    test_link, test_modal = get_pytest_html(elt, anchor_id=anchor_id, inline=True) if show_tests else ('', '')
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
-    doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}</h{title_level}>'
+    doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}{test_link}</h{title_level}>'
     doc += f'\n\n> {args}'
     if doc_string and (inspect.getdoc(elt) or arg_comments):
         doc += format_docstring(elt, arg_comments, alt_doc_string, ignore_warn) + ' '
+    doc += '\n\n'
+    doc += f'{test_modal}' # hidden popup for tests doc. appending separately so it doesn't inherit css from <h{title_level}>
     if markdown: display(Markdown(doc))
     else: return doc
 
@@ -304,18 +309,18 @@ def get_pytorch_link(ft)->str:
     fnlink = '.'.join(paths[:(2+offset)]+[name])
     return f'{PYTORCH_DOCS}{doc_path}{ext}#{fnlink}'
 
-def get_source_link(mod, lineno, display_text="[source]")->str:
-    "Returns link to `lineno` in source code of `mod`."
-    github_path = mod.__name__.replace('.', '/')
-    link = f"{SOURCE_URL}{github_path}.py#L{lineno}"
+def get_source_link(file, line, display_text="[source]", **kwargs)->str:
+    "Returns github link for given file"
+    link = f"{SOURCE_URL}{file}#L{line}"
     if display_text is None: return link
-    return f'<a href="{link}" class="source_link">{display_text}</a>'
+    return f'<a href="{link}" class="source_link" style="float:right">{display_text}</a>'
 
 def get_function_source(ft, **kwargs)->str:
     "Returns link to `ft` in source code."
-    try: lineno = inspect.getsourcelines(ft)[1]
+    try: line = inspect.getsourcelines(ft)[1]
     except Exception: return ''
-    return get_source_link(inspect.getmodule(ft), lineno, **kwargs)
+    mod_path = get_module_name(ft).replace('.', '/') + '.py'
+    return get_source_link(mod_path, line, **kwargs)
 
 def title_md(s:str, title_level:int, markdown=True):
     res = '#' * title_level
