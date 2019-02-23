@@ -110,6 +110,8 @@ def gpu_mem_restore(func):
                 tb_clear_frames == "1"):
                 type, val, tb = get_ref_free_exc_info() # must!
                 gc.collect()
+                if "device-side assert triggered" in str(e):
+                    warn("""When 'device-side assert triggered' error happens, it's not possible to recover and you must restart the kernel to continue. Use os.environ['CUDA_LAUNCH_BLOCKING']="1" before restarting to debug""")
                 raise type(val).with_traceback(tb) from None
             else: raise # re-raises the exact last exception
     return wrapper
