@@ -411,9 +411,9 @@ class ItemLists():
     def __init__(self, path:PathOrStr, train:ItemList, valid:ItemList):
         self.path,self.train,self.valid,self.test = Path(path),train,valid,None
         if not self.train.ignore_empty and len(self.train.items) == 0:
-            warn("Your training set is empty. Is this is by design, pass `ignore_empty=True` to remove this warning.")
+            warn("Your training set is empty. If this is by design, pass `ignore_empty=True` to remove this warning.")
         if not self.valid.ignore_empty and len(self.valid.items) == 0:
-            warn("""Your validation set is empty. Is this is by design, use `no_split()`
+            warn("""Your validation set is empty. If this is by design, use `no_split()`
                  or pass `ignore_empty=True` when labelling to remove this warning.""")
         if isinstance(self.train, LabelList): self.__class__ = LabelLists
 
