@@ -87,17 +87,6 @@ def test_save_load(learn):
     check_learner(learn, train_items)
     if os.path.exists(model_path): os.remove(model_path)
 
-def check_mem_expected(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
-    used_received, peaked_received = mtrace.data()
-    ctx = f" ({ctx})" if ctx is not None else ""
-    assert isclose(used_exp,   used_received,   abs_tol=abs_tol), f"used mem: expected={used_exp} received={used_received}{ctx}"
-    assert isclose(peaked_exp, peaked_received, abs_tol=abs_tol), f"peaked mem: expected={peaked_exp} received={peaked_received}{ctx}"
-
-def report_mem_real(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
-    ctx = f" ({ctx})" if ctx is not None else ""
-    print(f"{mtrace}{ctx}")
-#check_mem_expected = report_mem_real
-
 def subtest_save_load_mem(data):
     learn = learn_large_unfit(data)
     name = 'mnist-tiny-test-save-load'
@@ -106,31 +95,31 @@ def subtest_save_load_mem(data):
     # save should consume no extra used or peaked memory
     with GPUMemTrace() as mtrace:
         model_path = learn.save(name, return_path=True)
-    check_mem_expected(used_exp=0, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="save")
+    check_mtrace(used_exp=0, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="save")
 
     # load w/ purge still leaks some the first time it's run
     with GPUMemTrace() as mtrace:
         learn.load(name, purge=True)
     # XXX: very different numbers if done w/o fit first 42 8, w/ fit 24 16
-    check_mem_expected(used_exp=42, peaked_exp=8, mtrace=mtrace, abs_tol=10, ctx="load")
+    check_mtrace(used_exp=42, peaked_exp=8, mtrace=mtrace, abs_tol=10, ctx="load")
 
     # subsequent multiple load w/o purge should consume no extra used memory
     with GPUMemTrace() as mtrace:
         learn.load(name, purge=False)
         learn.load(name, purge=False)
-    check_mem_expected(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="load x 2")
+    check_mtrace(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="load x 2")
 
     # subsequent multiple load w/ purge should consume no extra used memory
     with GPUMemTrace() as mtrace:
         learn.load(name, purge=True)
         learn.load(name, purge=True)
-    check_mem_expected(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="load x 2 2nd time")
+    check_mtrace(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="load x 2 2nd time")
 
     # purge + load w/ default purge should consume no extra used memory
     with GPUMemTrace() as mtrace:
         learn.purge()
         learn.load(name)
-    check_mem_expected(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="purge+load")
+    check_mtrace(used_exp=0, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="purge+load")
 
     if os.path.exists(model_path): os.remove(model_path)
 
@@ -165,23 +154,24 @@ def test_destroy():
 def subtest_destroy_mem(data):
     with GPUMemTrace() as mtrace:
         learn = learn_large_unfit(data)
-    check_mem_expected(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="load")
+    check_mtrace(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=10, ctx="load")
 
     # destroy should free most of the memory that was allocated during load (training, etc.)
     with GPUMemTrace() as mtrace:
         with CaptureStdout() as cs: learn.destroy()
-    check_mem_expected(used_exp=-20, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="destroy")
+    check_mtrace(used_exp=-20, peaked_exp=20, mtrace=mtrace, abs_tol=10, ctx="destroy")
 
 # memory tests behave differently when run individually and in a row, since
 # memory utilization patterns are very inconsistent - would require a full gpu
-# card reset before each test to be able to test consistently, so will run them all in a precise sequence
+# card reset before each test to be able to test consistently, so will run them
+# all in a precise sequence
 @pytest.mark.cuda
 def test_memory(data):
     # A big difficulty with measuring memory consumption is that it varies quite
     # wildly from one GPU model to another.
     #
     # Perhaps we need sets of different expected numbers per developer's GPUs?
-    # override check_mem_expected above with report_mem_real to acquire a new set
+    # override check_mem above in tests.utils.mem with report_mem to acquire a new set
     #
     # So for now just testing the specific card I have until a better way is found.
 

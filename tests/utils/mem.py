@@ -2,6 +2,7 @@
 
 import pytest, fastai, torch
 from fastai.utils.mem import *
+from math import isclose
 
 # torch.cuda.is_available() checks if we can use NVIDIA GPU. It automatically
 # handles the case when CUDA_VISIBLE_DEVICES="" env var is set, so even if CUDA
@@ -38,3 +39,25 @@ def gpu_mem_leave_free_mbs(n):
     consume = avail - n
     #print(f"consuming {consume}MB to bring free mem to {n}MBs")
     return gpu_mem_allocate_mbs(consume, fatal=True)
+
+########################## validation helpers ###############################
+# these functions are for checking expected vs received (actual) memory usage in tests
+
+# mtrace is GPUMemTrace.data output
+# ctx is useful as a hint for telling where in the test the trace was measured
+def check_mtrace(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
+    used_rcv, peaked_rcv = mtrace.data()
+    check_mem(used_exp, peaked_exp, used_rcv, peaked_rcv, abs_tol=abs_tol, ctx=ctx)
+
+def check_mem(used_exp, peaked_exp, used_rcv, peaked_rcv, abs_tol=2, ctx=None):
+    ctx = f" ({ctx})" if ctx is not None else ""
+    assert isclose(used_exp,   used_rcv,   abs_tol=abs_tol), f"used mem: expected={used_exp} received={used_rcv}{ctx}"
+    assert isclose(peaked_exp, peaked_rcv, abs_tol=abs_tol), f"peaked mem: expected={peaked_exp} received={peaked_rcv}{ctx}"
+
+# instead of asserting the following print outs the actual mem usage, to aid in debug
+# in order not to the change tests simply override `check_mem` with `report_mem` below
+def report_mem(used_exp, peaked_exp, used_rcv, peaked_rcv, abs_tol=2, ctx=None):
+    ctx = f" ({ctx})" if ctx is not None else ""
+    print(f"got:△used={used_rcv}MBs, △peaked={peaked_rcv}MBs{ctx}")
+
+#check_mem = report_mem

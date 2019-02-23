@@ -69,30 +69,28 @@ def test_gpu_mem_measure_consumed_reclaimed():
 
 @pytest.mark.cuda
 def test_gpu_mem_trace():
-    mem_trace = GPUMemTrace()
-    mem_trace.start()
+    mtrace = GPUMemTrace()
+    mtrace.start()
     # expecting used=~10, peaked=~15
     x1 = gpu_mem_allocate_mbs(10)
     x2 = gpu_mem_allocate_mbs(15)
     del x2
-    mem_trace.stop()
-    #print(mem_trace)
-    delta_used, delta_peaked = mem_trace.data()
-    assert abs(delta_used)-10   < 2, f"used {delta_used}MB GPU RAM"
-    assert abs(delta_peaked)-15 < 2, f"used {delta_peaked}MB GPU RAM"
+    mtrace.stop()
+    #print(mtrace)
+    check_mtrace(used_exp=10, peaked_exp=15, mtrace=mtrace, abs_tol=2, ctx="trace `data`")
 
-    with CaptureStdout() as cs:
-        mem_trace.report("whoah!")
-    match = re.findall(r'△used: \d+MB, △peaked: \d+MB: whoah!', cs.out)
+    ctx = "whoah"
+    with CaptureStdout() as cs: mtrace.report(ctx)
+    #print(cs.out)
+    match = re.findall(fr'△used: (\d+)MB, △peaked: (\d+)MB: {ctx}', cs.out)
     assert match
+    used, peaked = map(int, match[0])
+    #print(used, peaked)
+    check_mem(used_exp=10,   peaked_exp=15,
+              used_rcv=used, peaked_rcv=peaked, abs_tol=2, ctx="trace `report`")
 
 @pytest.mark.cuda
-def test_gpu_mem_trace_ctx():
+def test_gpu_mtrace_ctx():
     # expecting used=20, peaked=0
-    with GPUMemTrace() as mem_trace:
-        x1 = gpu_mem_allocate_mbs(20)
-    delta_used, delta_peaked = mem_trace.data()
-    #print(mem_trace)
-
-    assert abs(delta_used)-20 < 5, f"used {delta_used}MB GPU RAM"
-    assert abs(delta_peaked) == 0, f"used {delta_peaked}MB GPU RAM"
+    with GPUMemTrace() as mtrace: x1 = gpu_mem_allocate_mbs(20)
+    check_mtrace(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=2, ctx="ctx manager")
