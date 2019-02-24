@@ -65,20 +65,28 @@ def gpu_mem_get_all():
     if not use_gpu: return []
     return list(map(gpu_mem_get, range(pynvml.nvmlDeviceGetCount())))
 
+def gpu_mem_get_free():
+    "get free memory (in MBs) for the currently selected gpu id, w/o emptying the cache"
+    return gpu_mem_get().free
+
 def gpu_mem_get_free_no_cache():
     "get free memory (in MBs) for the currently selected gpu id, after emptying the cache"
     torch.cuda.empty_cache()
     return gpu_mem_get().free
 
-def gpu_mem_get_used_no_cache():
-    "get used memory (in MBs) for the currently selected gpu id, after emptying the cache"
-    torch.cuda.empty_cache()
+def gpu_mem_get_used():
+    "get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache"
     return gpu_mem_get().used
 
 def gpu_mem_get_used_fast(gpu_handle):
     "get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache, and needing the `gpu_handle` arg"
     info = pynvml.nvmlDeviceGetMemoryInfo(gpu_handle)
     return b2mb(info.used)
+
+def gpu_mem_get_used_no_cache():
+    "get used memory (in MBs) for the currently selected gpu id, after emptying the cache"
+    torch.cuda.empty_cache()
+    return gpu_mem_get().used
 
 def gpu_with_max_free_mem():
     "get [gpu_id, its_free_ram] for the first gpu with highest available RAM"
@@ -126,10 +134,10 @@ class gpu_mem_restore_ctx():
         raise exc_type(exc_val).with_traceback(exc_tb) from None
 
 class GPUMemTrace():
-    "Trace GPU allocated and peaked memory usage"
+    "Trace allocated and peaked GPU memory usage (deltas)."
     def __init__(self, silent=False):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
-        self.silent = silent # quickly turn off printouts from the constructor
+        self.silent = silent # shortcut to turn off all reports from constructor
         self.reset()
 
     def __enter__(self):

@@ -18,8 +18,6 @@ def gpu_mem_consume_some(n): return torch.ones((n, n)).cuda()
 def gpu_mem_consume_16mb(): return gpu_mem_consume_some(2000)
 def gpu_cache_clear(): torch.cuda.empty_cache()
 def gpu_mem_reclaim(): gc.collect(); gpu_cache_clear()
-def gpu_mem_get_used(): return gpu_mem_get().used
-def gpu_mem_get_free(): return gpu_mem_get().free
 
 def gpu_mem_allocate_mbs(n):
     " allocate n MBs, return the var holding it on success, None on failure "
