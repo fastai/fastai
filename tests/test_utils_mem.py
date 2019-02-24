@@ -1,5 +1,6 @@
 import pytest, fastai
 from fastai.utils.mem import *
+from fastai.gen_doc.doctest import this_tests
 from utils.mem import *
 from utils.text import *
 from math import isclose
@@ -22,6 +23,7 @@ def check_gpu_mem_non_zeros(total, used, free):
     assert free  > 0, "have free GPU RAM"
 
 def test_gpu_mem_by_id():
+    this_tests(gpu_mem_get)
     # test by currently selected device
     total, used, free = gpu_mem_get()
     if use_gpu: check_gpu_mem_non_zeros(total, used, free)
@@ -32,6 +34,7 @@ def test_gpu_mem_by_id():
 
 def test_gpu_mem_all():
     # all available gpus
+    this_tests(gpu_mem_get_all)
     mem_per_id = gpu_mem_get_all()
     if use_gpu:
         for mem in mem_per_id: check_gpu_mem_non_zeros(*mem)
@@ -39,6 +42,7 @@ def test_gpu_mem_all():
         assert len(mem_per_id) == 0
 
 def test_gpu_with_max_free_mem():
+    this_tests(gpu_with_max_free_mem)
     # all available gpus
     id, free = gpu_with_max_free_mem()
     if use_gpu:
@@ -50,6 +54,7 @@ def test_gpu_with_max_free_mem():
 
 @pytest.mark.cuda
 def test_gpu_mem_measure_consumed_reclaimed():
+    this_tests(gpu_mem_get_used)
     gpu_mem_reclaim()
     used_before = gpu_mem_get_used()
 
@@ -70,6 +75,7 @@ def test_gpu_mem_measure_consumed_reclaimed():
 @pytest.mark.cuda
 def test_gpu_mem_trace():
     mtrace = GPUMemTrace()
+    this_tests(mtrace.__class__)
     mtrace.start()
     # expecting used=~10, peaked=~15
     x1 = gpu_mem_allocate_mbs(10)
@@ -93,4 +99,5 @@ def test_gpu_mem_trace():
 def test_gpu_mtrace_ctx():
     # expecting used=20, peaked=0
     with GPUMemTrace() as mtrace: x1 = gpu_mem_allocate_mbs(20)
+    this_tests(mtrace.__class__)
     check_mtrace(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=2, ctx="ctx manager")
