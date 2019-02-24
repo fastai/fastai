@@ -138,7 +138,36 @@ class GPUMemTrace():
     def __init__(self, silent=False):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
         self.silent = silent # shortcut to turn off all reports from constructor
+        self.start()
+
+    def reset(self):
+        self.used_start = gpu_mem_get_used_no_cache()
+        self.used_peak  = self.used_start
+
+    def data_set(self):
+        # delta_used is the difference between current used mem and used mem at the start
+        self.delta_used = gpu_mem_get_used_no_cache() - self.used_start
+        # delta_peaked is the overhead if any.
+        # 1. The base measurement is the difference between the peak memory and
+        # the used mem at the start.
+        # 2. Then if delta_used is positive it gets subtracted from the base value.
+        # This indicates the size of the blip.
+        self.delta_peaked = self.used_peak - self.used_start
+        if self.delta_used > 0: self.delta_peaked -= self.delta_used
+
+    def data(self):
+        if self.is_running: self.data_set()
+        return self.delta_used, self.delta_peaked
+
+    def start(self):
+        self.is_running = True
         self.reset()
+        self.peak_monitor_start()
+
+    def stop(self):
+        self.peak_monitor_stop()
+        self.data_set()
+        self.is_running = False
 
     def __enter__(self):
         self.start()
@@ -147,53 +176,31 @@ class GPUMemTrace():
     def __exit__(self, *exc):
         self.stop()
 
+    def __del__(self):
+        self.stop()
+
     def __repr__(self):
         delta_used, delta_peaked = self.data()
         return f"△used: {delta_used}MB, △peaked: {delta_peaked}MB"
 
-    def silent(self, silent=False):
+    def silent(self, silent=True):
         self.silent = silent
 
-    def reset(self):
-        self.used_start  = gpu_mem_get_used_no_cache()
-        self.used_peak   = self.used_start
-        self.data_is_set = False
-
-    def start(self):
-        self.reset()
-        self.peak_monitor_start()
-
-    def stop(self):
-        self.data_set()
-        self.peak_monitor_stop()
-
-    def __del__(self):
-        self.stop()
-
-    def data_set(self):
-        self.delta_used   = gpu_mem_get_used_no_cache() - self.used_start
-        self.delta_peaked = self.used_peak              - self.used_start - self.delta_used
-        self.data_is_set = True
-
-    def data(self):
-        if not self.data_is_set: self.data_set()
-        return (self.delta_used, self.delta_peaked)
-
-    def report_n_reset(self, note=''):
-        self.report(note)
-        self.reset()
-
     def report(self, note=''):
-        "printout used+peaked, and an optional context note"
+        "Print delta used+peaked, and an optional context note"
         if self.silent: return
-        delta_used, delta_peaked = self.data()
         if note: note = f": {note}"
         print(f"{self}{note}")
+
+    def report_n_reset(self, note=''):
+        "Print delta used+peaked, and an optional context note. Then reset counters"
+        self.report(note)
+        self.reset()
 
     def peak_monitor_start(self):
         self.peak_monitoring = True
 
-        # continually sample RAM usage
+        # continually sample GPU RAM usage
         peak_monitor_thread = threading.Thread(target=self.peak_monitor_func)
         peak_monitor_thread.daemon = True
         peak_monitor_thread.start()
