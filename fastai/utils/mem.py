@@ -9,38 +9,20 @@ from collections import namedtuple
 import platform
 
 IS_IN_IPYTHON = is_in_ipython()
-
+is_osx = platform.system() == "Darwin"
 use_gpu = torch.cuda.is_available()
 
 GPUMemory = namedtuple('GPUMemory', ['total', 'free', 'used'])
 
-is_osx = platform.system() == "Darwin"
-
-# transparently monkey patch pynvx as pynvml API on OSX (for the few funcs we use)
+# on OSX we use pynvx with pynvml wrapper (still requires pynvml)
 if use_gpu and is_osx:
+    # currently there is no conda pynvx package, hence the runtime check
     try:
-        import pynvx
-    except:
-        print("please install pynvx on OSX: pip install pynvx")
-        sys.exit(1)
+        from pynvx import pynvml
+    except Exception as e:
+        raise Exception(f"{e}\npynvx is required; pip install pynvx")
 
-    # missing function
-    def cudaDeviceGetHandleByIndex(id): return pynvx.cudaDeviceGetHandles()[id]
-    setattr(pynvx, 'cudaDeviceGetHandleByIndex', cudaDeviceGetHandleByIndex)
-
-    # different named and return value needs be a named tuple
-    def cudaDeviceGetMemoryInfo(handle):
-        info = pynvx.cudaGetMemInfo(handle)
-        return GPUMemory(*info)
-    setattr(pynvx, 'cudaDeviceGetMemoryInfo', cudaDeviceGetMemoryInfo)
-
-    # remap the other functions
-    for m in ['Init', 'DeviceGetCount', 'DeviceGetHandleByIndex', 'DeviceGetMemoryInfo']:
-        setattr(pynvx, f'nvml{m}', getattr(pynvx, f'cuda{m}'))
-    pynvml = pynvx
-
-if use_gpu:
-    pynvml.nvmlInit()
+if use_gpu: pynvml.nvmlInit()
 
 def preload_pytorch():
     torch.ones((1, 1)).cuda()

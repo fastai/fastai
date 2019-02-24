@@ -19,7 +19,7 @@ of that change.
 ### New:
 
 - `Learner.destroy`: completely free up `learn`, leaving an empty shell (to replace `gc.collect` eye-sore)
-- added NVML query support on OSX via `pynvx` in addition to `pynvml`
+- added NVML query support on OSX via `pynvx` in addition to `pynvml` (Windows/Linux)
 - Added `XResNet`, which is ResNet plus tricks from
   [Bag of Tricks for Image Classification](https://arxiv.org/abs/1812.01187).
   Note pretrained models not available yet for this architecture.
