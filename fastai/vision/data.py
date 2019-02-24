@@ -279,7 +279,7 @@ class ImageItemList(ItemList):
 
     @classmethod
     def from_df(cls, df:DataFrame, path:PathOrStr, cols:IntsOrStrs=0, folder:PathOrStr=None, suffix:str='', **kwargs)->'ItemList':
-        "Get the filenames in `col` of `df` and will had `folder` in front of them, `suffix` at the end."
+        "Get the filenames in `cols` of `df` with `folder` in front of them, `suffix` at the end."
         suffix = suffix or ''
         res = super().from_df(df, path=path, cols=cols, **kwargs)
         pref = f'{res.path}{os.path.sep}'
