@@ -50,8 +50,10 @@ class PeakMemMetric(LearnerCallback):
 
     def on_epoch_end(self, **kwargs):
         cpu_used, cpu_peak =  list(map(lambda x: int(x/2**20), tracemalloc.get_traced_memory()))
+        self.peak_monitor_stop()
         gpu_used = gpu_mem_get_used_no_cache() - self.gpu_before
         gpu_peak = self.gpu_mem_used_peak      - self.gpu_before
-        self.peak_monitor_stop()
+        # since we want the overhead only, subtract delta used if it's positive
+        if gpu_used > 0: gpu_peak -= gpu_used
         # The numbers are deltas in MBs (beginning of the epoch and the end)
         self.learn.recorder.add_metrics([cpu_used, cpu_peak, gpu_used, gpu_peak])
