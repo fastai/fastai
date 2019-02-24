@@ -212,7 +212,9 @@ This can speed up the total execution time of the test suite.
    ```
 That's twice the speed of the normal sequential execution!
 
-We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
+XXX: We just need to fix the temp files creation to use a unique string (pid?), otherwise at times some tests collide in a race condition over the same temp file path.
+
+Since the order of executed tests is different and unpredictable, if running the test suite with `pytest-xdist` produces failures (meaning we have some undetected coupled tests), use  [pytest-replay](https://github.com/ESSS/pytest-replay) to replay the tests in the same order, which should help with then somehow reducing that failing sequence to a minimum. Currently there is *bisect*-like module that can reduce a long sequence of tests that leads to failure to the minimal one.
 
 
 ### Test order and repetition
@@ -240,6 +242,17 @@ Plugins:
    ```
    ```
    pytest --count=10 --repeat-scope=function tests
+   ```
+
+   Here is another similar module [pytest-flakefinder](https://github.com/dropbox/pytest-flakefinder):
+
+   ```
+   pip install pytest-flakefinder
+   ```
+
+   And then run every test multiple times (50 by default):
+   ```
+   pytest --flake-finder --flake-runs=5
    ```
 
 
@@ -312,6 +325,18 @@ To run tests without it, run:
    ```
 
 or uninstall it.
+
+#### instantly shows failed tests
+
+[pytest-instafail](https://github.com/pytest-dev/pytest-instafail) shows failures and errors instantly instead of waiting until the end of test session.
+
+   ```
+   pip install pytest-instafail
+   ```
+
+   ```
+   pytest --instafail
+   ```
 
 
 ### To GPU or not to GPU
