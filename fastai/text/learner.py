@@ -119,7 +119,10 @@ class LanguageLearner(RNNLearner):
             res = self.pred_batch(batch=(xb,yb))[0][-1]
             #if len(new_idx) == 0: self.model[0].select_hidden([0])
             if no_unk: res[self.data.vocab.stoi[UNK]] = 0.
-            if min_p is not None: res[res < min_p] = 0.
+            if min_p is not None: 
+                if (res >= min_p).float().sum() == 0:
+                    warn(f"There is no item with probability >= {min_p}, try a lower value.")
+                else: res[res < min_p] = 0.
             if temperature != 1.: res.pow_(1 / temperature)
             idx = torch.multinomial(res, 1).item()
             new_idx.append(idx)
