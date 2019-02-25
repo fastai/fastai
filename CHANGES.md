@@ -15,6 +15,7 @@ of that change.
 ### Breaking change:
 
 - In `CollabDataBunch`, `pct_val` is renamed `valid_pct` for consistency
+- `ImageItemList` becomes `ImageList` for consistency with `TextList` and `TabularList`
 
 ### New:
 
@@ -26,6 +27,7 @@ of that change.
 - `TextClassificationInterpretation`, which computes intrisic attention to give some interpretation of classification
   results in text (thanks to herrmann)
 - `add_cyclical_datepart`, which add the dateparts as cosine embeddings in tabular data (thanks to herrmann)
+- `MixedItemList` two mix several kinds of `ItemList` together
 
 ### Changed:
 
