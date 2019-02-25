@@ -433,12 +433,17 @@ mtrace.silent(silent=True)
 mtrace.report() # nothing will be printed</code></pre>
 <p><strong>Context Manager</strong>:</p>
 <p><a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> can also be used as a context manager:</p>
+<p>Get the numerical data (in rounder MBs):</p>
 
 <pre><code>with GPUMemTrace() as mtrace:
     some_code()
-delta_used, delta_peaked = mtrace.data()
+delta_used, delta_peaked = mtrace.data()</code></pre>
+<p>Print the used and peaked deltas:</p>
+
+<pre><code>with GPUMemTrace() as mtrace:
+    some_code()
 mem_trace.report("measured in ctx")</code></pre>
-<p>or just:</p>
+<p>or the same w/o the context note:</p>
 
 <pre><code>with GPUMemTrace() as mtrace:
     some_code()
