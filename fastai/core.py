@@ -155,6 +155,8 @@ class ItemBase():
         "Subclass this method if you want to apply data augmentation with `tfms` to this `ItemBase`."
         if tfms: raise Exception(f"Not implemented: you can't apply transforms to this type of item ({self.__class__.__name__})")
         return self
+    def __eq__(self, other): return self.data == other.data
+    def __hash__(self): return hash(self.obj)
 
 def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
                  show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
@@ -276,6 +278,8 @@ class MultiCategory(ItemBase):
     "Basic class for multi-classification labels."
     def __init__(self,data,obj,raw): self.data,self.obj,self.raw = data,obj,raw
     def __str__(self): return ';'.join([str(o) for o in self.obj])
+    def __eq__(self, other): return np.all(self.data == other.data)
+    def __hash__(self): return hash(tuple(self.obj))
 
 class FloatItem(ItemBase):
     "Basic class for float items."

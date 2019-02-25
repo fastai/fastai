@@ -2,6 +2,7 @@ import pytest, torch
 import numpy as np
 from fastai.basics import *
 from tempfile import TemporaryDirectory
+from collections import Counter
 
 def test_cpus(): assert num_cpus() >= 1
 
@@ -194,4 +195,36 @@ def test_subplots_single():
     axs = subplots(1,1, figsize=(10, 10))
     assert (len(axs) == 1)
     assert (len(axs[0]) == 1)
+
+def test_itembase():
+    c1 = Category(0, 'cat')
+    c2 = Category(1, 'dog')
+    c3 = Category(0, 'cat')
+    assert c1 == c1
+    assert c1 != c2
+    assert c1 == c3
+    assert hash(c1) == hash(c3)
+    assert hash(c1) != hash(c2)
+    assert Counter([c1, c2, c3]) == {c1: 2, c2: 1}
+
+    f1 = FloatItem(0.1)
+    f2 = FloatItem(1.2)
+    f3 = FloatItem(0.1)
+    assert f1 == f1
+    assert f1 != f2
+    assert f1 == f3
+    assert hash(f1) == hash(f3)
+    assert hash(f1) != hash(f2)
+    assert Counter([f1, f2, f3]) == {f1: 2, f2: 1}
+
+    mc1 = MultiCategory(np.array([1, 0]), ['cat'], [0])
+    mc2 = MultiCategory(np.array([1, 1]), ['cat', 'dog'], [0, 1]) 
+    mc3 = MultiCategory(np.array([1, 0]), ['cat'], [0])
+
+    assert mc1 == mc1
+    assert mc1 != mc2
+    assert mc1 == mc3
+    assert hash(mc1) == hash(mc3)
+    assert hash(mc1) != hash(mc2)
+    assert Counter([mc1, mc2, mc3]) == {mc1: 2, mc2: 1}
 
