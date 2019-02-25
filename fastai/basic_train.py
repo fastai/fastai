@@ -5,6 +5,8 @@ from .callback import *
 from .data_block import *
 from .utils.mem import gpu_mem_restore
 import inspect
+from fastprogress.fastprogress import format_time
+from time import time
 
 __all__ = ['Learner', 'LearnerCallback', 'Recorder', 'RecordOnCPU', 'fit', 'loss_batch', 'train_epoch', 'validate',
            'get_preds', 'load_learner']
@@ -146,6 +148,7 @@ class Learner():
     callback_fns:Collection[Callable]=None
     callbacks:Collection[Callback]=field(default_factory=list)
     layer_groups:Collection[nn.Module]=None
+    add_time:bool=True
     def __post_init__(self)->None:
         "Setup path,metrics, callbacks and ensure model directory exists."
         self.path = Path(ifnone(self.path, self.data.path))
@@ -155,7 +158,7 @@ class Learner():
         self.metrics=listify(self.metrics)
         if not self.layer_groups: self.layer_groups = [nn.Sequential(*flatten_model(self.model))]
         self.callbacks = listify(self.callbacks)
-        self.callback_fns = [Recorder] + listify(self.callback_fns)
+        self.callback_fns = [partial(Recorder, add_time=self.add_time)] + listify(self.callback_fns)
 
     def init(self, init): apply_init(self.model, init)
 
@@ -405,20 +408,24 @@ class LearnerCallback(Callback):
 class Recorder(LearnerCallback):
     "A `LearnerCallback` that records epoch, loss, opt and metric data during training."
     _order=-10
-    def __init__(self, learn:Learner):
+    def __init__(self, learn:Learner, add_time:bool=True):
         super().__init__(learn)
         self.opt = self.learn.opt
         self.train_dl = self.learn.data.train_dl
-        self.no_val,self.silent = False,False
+        self.no_val,self.silent,self.add_time = False,False,add_time
 
     def on_train_begin(self, pbar:PBar, metrics_names:Collection[str], **kwargs:Any)->None:
         "Initialize recording status at beginning of training."
         self.pbar = pbar
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
         self.names += metrics_names
+        if self.add_time: self.names.append('time')
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
         if not self.silent: self.pbar.write(self.names, table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
+        
+    def on_epoch_begin(self, **kwargs:Any)->None:
+        if self.add_time: self.start_epoch = time()
 
     def on_batch_begin(self, train, **kwargs:Any)->None:
         "Record learning rate and momentum at beginning of batch."
@@ -449,6 +456,7 @@ class Recorder(LearnerCallback):
         str_stats = []
         for name,stat in zip(self.names,stats):
             str_stats.append('' if stat is None else str(stat) if isinstance(stat, int) else f'{stat:.6f}')
+        if self.add_time: str_stats.append(format_time(time() - self.start_epoch))
         if not self.silent: self.pbar.write(str_stats, table=True)
 
     def add_metrics(self, metrics):
