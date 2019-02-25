@@ -148,7 +148,8 @@ def test_destroy():
     # check that `destroy` didn't break the Learner class
     learn = fake_learner()
     with CaptureStdout() as cs: learn.fit(1)
-    assert "Total time" in cs.out
+    assert "epoch" in cs.out
+    assert "train_loss" in cs.out
 
 
 def subtest_destroy_mem(data):
