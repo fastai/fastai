@@ -83,7 +83,7 @@ def test_image_resize(path, path_var_size):
 
                 # resize the data block way
                 with CaptureStderr() as cs:
-                    data = (ImageItemList.from_folder(p)
+                    data = (ImageList.from_folder(p)
                             .no_split()
                             .label_from_folder()
                             .transform(size=size, resize_method=rm)
@@ -195,7 +195,7 @@ def _check_data(data, t, v):
     _ = data.train_ds[0]
 
 def test_vision_datasets():
-    il = ImageItemList.from_folder(untar_data(URLs.MNIST_TINY))
+    il = ImageList.from_folder(untar_data(URLs.MNIST_TINY))
     sds = il.split_by_idx([0]).label_from_folder().add_test_folder()
     assert np.array_equal(sds.train.classes, sds.valid.classes), 'train/valid classes same'
     assert len(sds.test)==20, "test_ds is correct size"
@@ -204,7 +204,7 @@ def test_vision_datasets():
 
 def test_multi():
     path = untar_data(URLs.PLANET_TINY)
-    data = (ImageItemList.from_csv(path, 'labels.csv', folder='train', suffix='.jpg')
+    data = (ImageList.from_csv(path, 'labels.csv', folder='train', suffix='.jpg')
         .random_split_by_pct(seed=42).label_from_df(label_delim=' ').databunch())
     x,y = data.valid_ds[0]
     assert x.shape[0]==3

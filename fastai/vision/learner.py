@@ -119,9 +119,9 @@ def _cl_int_plot_top_losses(self, k, largest=True, figsize=(12,12), heatmap:bool
             xb,_ = self.data.one_item(im, detach=False, denorm=False)
             m = self.learn.model.eval()
             with hook_output(m[0]) as hook_a:
-                 with hook_output(m[0], grad= True) as hook_g:
-                     preds = m(xb)
-                     preds[0,cl].backward()
+                with hook_output(m[0], grad= True) as hook_g:
+                    preds = m(xb)
+                    preds[0,cl].backward()
             acts = hook_a.stored[0].cpu()
             if (acts.shape[-1]*acts.shape[-2]) >= heatmap_thresh:
                 grad = hook_g.stored[0][0].cpu()
