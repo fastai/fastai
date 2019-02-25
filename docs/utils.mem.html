@@ -34,7 +34,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get"><code>gpu_mem_get</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L52" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get</code>(<strong><code>id</code></strong>=<strong><em><code>None</code></em></strong>)</p>
+<h4 id="gpu_mem_get"><code>gpu_mem_get</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L27" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get</code>(<strong><code>id</code></strong>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>get total, used and free memory (in MBs) for gpu <code>id</code>. if <code>id</code> is not passed, currently selected torch device is used</p>
 
@@ -67,7 +67,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get_all"><code>gpu_mem_get_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L63" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_all</code>()</p>
+<h4 id="gpu_mem_get_all"><code>gpu_mem_get_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_all</code>()</p>
 </blockquote>
 <p>get total, used and free memory (in MBs) for each available gpu</p>
 
@@ -99,7 +99,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get_free"><code>gpu_mem_get_free</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L68" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_free</code>()</p>
+<h4 id="gpu_mem_get_free"><code>gpu_mem_get_free</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L43" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_free</code>()</p>
 </blockquote>
 <p>get free memory (in MBs) for the currently selected gpu id, w/o emptying the cache</p>
 
@@ -126,7 +126,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get_free_no_cache"><code>gpu_mem_get_free_no_cache</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L72" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_free_no_cache</code>()</p>
+<h4 id="gpu_mem_get_free_no_cache"><code>gpu_mem_get_free_no_cache</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_free_no_cache</code>()</p>
 </blockquote>
 <p>get free memory (in MBs) for the currently selected gpu id, after emptying the cache</p>
 
@@ -153,7 +153,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get_used"><code>gpu_mem_get_used</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L77" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_used</code>()</p>
+<h4 id="gpu_mem_get_used"><code>gpu_mem_get_used</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L52" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_used</code>()</p>
 </blockquote>
 <p>get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache</p>
 
@@ -180,7 +180,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get_used_no_cache"><code>gpu_mem_get_used_no_cache</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L86" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_used_no_cache</code>()</p>
+<h4 id="gpu_mem_get_used_no_cache"><code>gpu_mem_get_used_no_cache</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L61" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_used_no_cache</code>()</p>
 </blockquote>
 <p>get used memory (in MBs) for the currently selected gpu id, after emptying the cache</p>
 
@@ -208,7 +208,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_get_used_fast"><code>gpu_mem_get_used_fast</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_used_fast</code>(<strong><code>gpu_handle</code></strong>)</p>
+<h4 id="gpu_mem_get_used_fast"><code>gpu_mem_get_used_fast</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L56" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_get_used_fast</code>(<strong><code>gpu_handle</code></strong>)</p>
 </blockquote>
 <p>get used memory (in MBs) for the currently selected gpu id, w/o emptying the cache, and needing the <code>gpu_handle</code> arg</p>
 
@@ -236,7 +236,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_with_max_free_mem"><code>gpu_with_max_free_mem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_with_max_free_mem</code>()</p>
+<h4 id="gpu_with_max_free_mem"><code>gpu_with_max_free_mem</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L66" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_with_max_free_mem</code>()</p>
 </blockquote>
 <p>get [gpu_id, its_free_ram] for the first gpu with highest available RAM</p>
 
@@ -268,7 +268,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="preload_pytorch"><code>preload_pytorch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L45" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>preload_pytorch</code>()</p>
+<h4 id="preload_pytorch"><code>preload_pytorch</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>preload_pytorch</code>()</p>
 </blockquote>
 
 </div>
@@ -323,7 +323,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="b2mb"><code>b2mb</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L48" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>b2mb</code>(<strong><code>num</code></strong>)</p>
+<h4 id="b2mb"><code>b2mb</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L23" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>b2mb</code>(<strong><code>num</code></strong>)</p>
 </blockquote>
 <p>convert Bs to MBs and round down</p>
 
@@ -357,7 +357,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L136" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
 <p>Trace allocated and peaked GPU memory usage (deltas).</p>
 
@@ -371,6 +371,10 @@ sidebar: home_sidebar
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Arguments</strong>:</p>
+<ul>
+<li><code>silent</code> shortcut to make <code>report</code> and <code>report_n_reset</code> silent w/o needing to remove those calls - this can be done from the constructor, or alternatively you can call <code>silent</code> method anywhere to do the same.</li>
+</ul>
 <p><strong>Definitions</strong>:</p>
 <ul>
 <li><p><strong>Delta Used</strong> is the difference between current used memory and used memory at the start of the counter.</p>
@@ -406,19 +410,27 @@ delta_used, delta_peaked = mtrace.data()</code></pre>
 <pre><code>for i in range(10):
     mtrace.reset()
     some_code()
-    mtrace.report(f'i={i}') # report for just the last code run since reset</code></pre>
+    mtrace.report(f'i={i}')</code></pre>
 <p><code>reset</code> resets all the counters.</p>
 <p>Example 3: like example 2, but having <code>report</code> automatically reset the counters</p>
 
 <pre><code>mtrace.reset()
 for i in range(10):
     some_code()
-    mtrace.report_n_reset(f'i={i}') # report for just the last code run since reset</code></pre>
+    mtrace.report_n_reset(f'i={i}')</code></pre>
 <p>The tracing starts immediately upon the <a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> object creation, and stops when that object is deleted. But it can also be <code>stop</code>ed, <code>start</code>ed manually as well.</p>
 
 <pre><code>mtrace.start()
 mtrace.stop()</code></pre>
 <p><code>stop</code> is in particular useful if you want to <strong>freeze</strong> the <a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> object and to be able to query its data on <code>stop</code> some time down the road.</p>
+<p>Example 4: Silencing report calls w/o removing them</p>
+
+<pre><code>mtrace = GPUMemTrace(silent=True)
+mtrace.report() # nothing will be printed
+mtrace.silent(silent=False)
+mtrace.report() # printing resumed
+mtrace.silent(silent=True)
+mtrace.report() # nothing will be printed</code></pre>
 <p><strong>Context Manager</strong>:</p>
 <p><a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> can also be used as a context manager:</p>
 
@@ -453,7 +465,7 @@ prevents <code>gc.collect()</code> from freeing those variables and leading to a
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_restore"><code>gpu_mem_restore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L105" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_restore</code>(<strong><code>func</code></strong>)</p>
+<h4 id="gpu_mem_restore"><code>gpu_mem_restore</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_restore</code>(<strong><code>func</code></strong>)</p>
 </blockquote>
 <p>Reclaim GPU RAM if CUDA out of memory happened, or execution was interrupted</p>
 
@@ -492,7 +504,7 @@ depending on its value:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="gpu_mem_restore_ctx"><code>class</code> <code>gpu_mem_restore_ctx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_restore_ctx</code>()</p>
+<h4 id="gpu_mem_restore_ctx"><code>class</code> <code>gpu_mem_restore_ctx</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L102" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>gpu_mem_restore_ctx</code>()</p>
 </blockquote>
 <p>context manager to reclaim RAM if an exception happened under ipython</p>
 
