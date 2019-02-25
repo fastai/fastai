@@ -5,7 +5,7 @@ from ..utils.mem import *
 from ..basic_train import *
 from ..utils.pynvml_gate import *
 
-pynvml = load_pynvml_env()
+if use_gpu: pynvml = load_pynvml_env()
 
 class PeakMemMetric(LearnerCallback):
     "Callback that measures used and peaked general and GPU memory."
