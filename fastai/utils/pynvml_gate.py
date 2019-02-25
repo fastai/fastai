@@ -3,9 +3,11 @@
 import platform
 from ..script import *
 
+
 def load_pynvml_env():
-    is_osx = platform.system() == "Darwin"
-    if is_osx:
+    import pynvml # nvidia-ml-py3
+    
+    if platform.system() == "Darwin":
         try:
             from pynvx import pynvml
         except:
@@ -15,8 +17,6 @@ def load_pynvml_env():
         pynvml.nvmlInit()
         return pynvml
 
-    # use nvidia-ml-py3 module
-    import pynvml
     pynvml.nvmlInit()
 
     return pynvml
