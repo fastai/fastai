@@ -1,4 +1,4 @@
-import pytest, fastai, time
+import pytest
 from fastai.utils.mem import *
 from fastai.gen_doc.doctest import this_tests
 from utils.mem import *
@@ -85,7 +85,7 @@ def test_gpu_mem_trace():
     x1 = gpu_mem_allocate_mbs(10)
     x2 = gpu_mem_allocate_mbs(15)
     del x2
-    time.sleep(0.2) # hack: ensure peak thread gets a chance to measure the peak
+    yield_to_thread() # hack: ensure peak thread gets a chance to measure the peak
     check_mtrace(used_exp=10, peaked_exp=15, mtrace=mtrace, abs_tol=2, ctx="rel some")
 
     # check `report`'s format including the right numbers
@@ -106,7 +106,7 @@ def test_gpu_mem_trace():
     # expecting used=~10, peaked=~15
     x1 = gpu_mem_allocate_mbs(10)
     x2 = gpu_mem_allocate_mbs(15)
-    time.sleep(0.2) # hack: ensure peak thread gets a chance to measure the peak
+    yield_to_thread() # hack: ensure peak thread gets a chance to measure the peak
     del x2
     check_mtrace(used_exp=10, peaked_exp=15, mtrace=mtrace, abs_tol=2, ctx="rel some")
 

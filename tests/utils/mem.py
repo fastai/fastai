@@ -1,6 +1,6 @@
 """ Helper functions for dealing with memory usage testing """
 
-import pytest, fastai, torch
+import pytest, torch, time
 from fastai.utils.mem import *
 from math import isclose
 
@@ -37,8 +37,10 @@ def gpu_mem_leave_free_mbs(n):
 
 # must cleanup after some previously run tests that may leaked memory,
 # before starting this sensitive measurement-wise test
-def gpu_prepare_clean_slate():
-    gc.collect()
+def gpu_prepare_clean_slate(): gc.collect()
+
+# ensure a thread gets a chance to run by creating a tiny pause
+def yield_to_thread(): time.sleep(0.001)
 
 ########################## validation helpers ###############################
 # these functions are for checking expected vs received (actual) memory usage in tests
