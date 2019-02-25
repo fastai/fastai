@@ -4,9 +4,9 @@ from ..imports.torch import *
 from ..core import *
 from ..script import *
 from ..utils.env import *
-import pynvml, functools, traceback, threading, time
+import functools, traceback, threading, time
+from .pynvml_gate import *
 from collections import namedtuple
-import platform
 
 IS_IN_IPYTHON = is_in_ipython()
 is_osx = platform.system() == "Darwin"
@@ -14,15 +14,8 @@ use_gpu = torch.cuda.is_available()
 
 GPUMemory = namedtuple('GPUMemory', ['total', 'free', 'used'])
 
-# on OSX we use pynvx with pynvml wrapper (still requires pynvml)
-if use_gpu and is_osx:
-    # currently there is no conda pynvx package, hence the runtime check
-    try:
-        from pynvx import pynvml
-    except Exception as e:
-        raise Exception(f"{e}\npynvx is required; pip install pynvx")
-
-if use_gpu: pynvml.nvmlInit()
+if use_gpu:
+    pynvml = load_pynvml_env()
 
 def preload_pytorch():
     torch.ones((1, 1)).cuda()
