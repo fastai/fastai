@@ -170,7 +170,7 @@ or `pytest.ini` or `tox.ini` files:
 
 This would lead to only looking for file changes in the respective directories, specified relatively to the ini-file’s directory.
 
-
+[pytest-watch](https://github.com/joeyespo/pytest-watch) is an alternative implementation of this functionality.
 
 #### Skip integration tests
 
