@@ -46,7 +46,7 @@ class TrackerCallback(LearnerCallback):
         elif len(self.learn.recorder.val_losses) == 0: return None
         values = {'trn_loss':self.learn.recorder.losses[-1:][0].cpu().numpy(),
                   'val_loss':self.learn.recorder.val_losses[-1:][0]}
-        for i, name in enumerate(self.learn.recorder.names[3:]):
+        for i, name in enumerate(self.learn.recorder.names[3:-1]):
             values[name]=self.learn.recorder.metrics[-1:][0][i]
         if values.get(self.monitor) is None:
             warn(f'{self.__class__} conditioned on metric `{self.monitor}` which is not available. Available metrics are: {", ".join(map(str, self.learn.recorder.names[1:]))}')
