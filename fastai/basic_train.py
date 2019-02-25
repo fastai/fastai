@@ -419,8 +419,8 @@ class Recorder(LearnerCallback):
         self.pbar = pbar
         self.names = ['epoch', 'train_loss'] if self.no_val else ['epoch', 'train_loss', 'valid_loss']
         self.names += metrics_names
-        if self.add_time: self.names.append('time')
         if hasattr(self, '_added_met_names'): self.names += self._added_met_names
+        if self.add_time: self.names.append('time')
         if not self.silent: self.pbar.write(self.names, table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
         
