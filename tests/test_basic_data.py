@@ -48,12 +48,12 @@ def test_DataBunch_oneitem():
 
 
 def test_DataBunch_show_batch(capsys):
-     data = fake_data()
-     this_tests(data.show_batch)
-     data.show_batch()
-     captured = capsys.readouterr()
-     match = re.findall(r'tensor', captured.out)
-     assert match
+    data = fake_data()
+    this_tests(data.show_batch)
+    data.show_batch()
+    captured = capsys.readouterr()
+    match = re.findall(r'tensor', captured.out)
+    assert match
 
 ## TO DO: check over file created ?
 ##def test_DataBunch_export():
