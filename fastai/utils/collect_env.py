@@ -2,8 +2,10 @@
 from ..imports.torch import *
 from ..core import *
 from ..script import *
+from .pynvml_gate import *
 import fastprogress
 import subprocess
+import platform
 
 __all__ = ['show_install', 'check_perf']
 
@@ -152,7 +154,6 @@ def check_perf():
 
     from PIL import features, Image
     from packaging import version
-    import pynvml
 
     print("Running performance checks.")
 
@@ -189,8 +190,8 @@ def check_perf():
     }
     print("\n*** CUDA status")
     if torch.cuda.is_available():
-        pynvml.nvmlInit()
-        nvidia_ver = pynvml.nvmlSystemGetDriverVersion().decode('utf-8')
+        pynvml = load_pynvml_env()
+        nvidia_ver = (pynvml.nvmlSystemGetDriverVersion().decode('utf-8') if platform.system() != "Darwin" else "Cannot be determined on OSX yet")
         cuda_ver   = torch.version.cuda
         max_cuda = "8.0"
         for k in sorted(nvidia2cuda.keys()):
