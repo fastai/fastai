@@ -118,6 +118,8 @@ def test_normalize(path):
     assert abs(x.std()-1) < abs(m-1)
 
     with pytest.raises(Exception): data.normalize()
+    data.valid_dl = None
+    with pytest.raises(Exception): data.normalize()
 
 def test_denormalize(path):
     data = ImageDataBunch.from_folder(path, ds_tfms=(rand_pad(2, 28), []))

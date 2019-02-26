@@ -132,8 +132,12 @@ class DataBunch():
                 self.fix_dl)
 
     @property
-    def dls(self):
-        res = [self.train_dl, self.valid_dl, self.fix_dl, self.single_dl]
+    def dls(self)->List[DeviceDataLoader]:
+        "Returns a list of all DeviceDataLoaders. If you need a specific DeviceDataLoader, access via the relevant property (`train_dl`, `valid_dl`, etc) as the index of DLs in this list is not guaranteed to remain constant."
+        res = [self.train_dl, self.fix_dl, self.single_dl]
+        # Preserve the original ordering of Train, Valid, Fix, Single, Test Data Loaders
+        # (Unknown/not verified as of 1.0.47 whether there are other methods explicitly using DLs their list index)
+        if self.valid_dl: res.insert(1, self.valid_dl) 
         return res if not self.test_dl else res + [self.test_dl]
 
     def add_tfm(self,tfm:Callable)->None:
