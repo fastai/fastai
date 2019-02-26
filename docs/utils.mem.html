@@ -357,7 +357,7 @@ sidebar: home_sidebar
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>)</p>
+<h4 id="GPUMemTrace"><code>class</code> <code>GPUMemTrace</code><a href="https://github.com/fastai/fastai/blob/master/fastai/utils/mem.py#L111" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>GPUMemTrace</code>(<strong><code>silent</code></strong>=<strong><em><code>False</code></em></strong>, <strong><code>ctx</code></strong>=<strong><em><code>None</code></em></strong>, <strong><code>on_exit_report</code></strong>=<strong><em><code>False</code></em></strong>)</p>
 </blockquote>
 <p>Trace allocated and peaked GPU memory usage (deltas).</p>
 
@@ -373,7 +373,9 @@ sidebar: home_sidebar
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Arguments</strong>:</p>
 <ul>
-<li><code>silent</code> shortcut to make <code>report</code> and <code>report_n_reset</code> silent w/o needing to remove those calls - this can be done from the constructor, or alternatively you can call <code>silent</code> method anywhere to do the same.</li>
+<li><code>silent</code>: a shortcut to make <code>report</code> and <code>report_n_reset</code> silent w/o needing to remove those calls - this can be done from the constructor, or alternatively you can call <code>silent</code> method anywhere to do the same.</li>
+<li><code>ctx</code>: default context note in reports</li>
+<li><code>on_exit_report</code>:  auto-report on ctx manager exit</li>
 </ul>
 <p><strong>Definitions</strong>:</p>
 <ul>
@@ -404,7 +406,7 @@ delta_used, delta_peaked = mtrace.data()
 some_code()
 mtrace.report('2nd run of some_code()')
 delta_used, delta_peaked = mtrace.data()</code></pre>
-<p><code>report</code>'s optional <code>note</code> argument can be helpful if you have many <code>report</code> calls and you want to understand which is which in the outputs.</p>
+<p><code>report</code>'s optional <code>subctx</code> argument can be helpful if you have many <code>report</code> calls and you want to understand which is which in the outputs.</p>
 <p>Example 2: measure in a loop, resetting the counter before each run</p>
 
 <pre><code>for i in range(10):
@@ -423,7 +425,25 @@ for i in range(10):
 <pre><code>mtrace.start()
 mtrace.stop()</code></pre>
 <p><code>stop</code> is in particular useful if you want to <strong>freeze</strong> the <a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> object and to be able to query its data on <code>stop</code> some time down the road.</p>
-<p>Example 4: Silencing report calls w/o removing them</p>
+<p><strong>Reporting</strong>:</p>
+<p>In reports you can print a main context passed via the constructor:</p>
+
+<pre><code>mtrace = GPUMemTrace(ctx="foobar")
+mtrace.report()</code></pre>
+<p>prints:</p>
+
+<pre><code>△used: 0MB, △peaked: 0MB (foobar)</code></pre>
+<p>and then add subcontext notes as needed:</p>
+
+<pre><code>mtrace = GPUMemTrace(ctx="foobar")
+mtrace.report('1st try')
+mtrace.report('2nd try')</code></pre>
+<p>prints:</p>
+
+<pre><code>△used: 0MB, △peaked: 0MB (foobar: 1st try)
+△used: 0MB, △peaked: 0MB (foobar: 2nd try)</code></pre>
+<p>Both context and sub-context are optional, and are very useful if you sprinkle <a href="/utils.mem.html#GPUMemTrace"><code>GPUMemTrace</code></a> in different places around the code.</p>
+<p>You can silence report calls w/o needing to remove them via constructor or <code>silent</code>:</p>
 
 <pre><code>mtrace = GPUMemTrace(silent=True)
 mtrace.report() # nothing will be printed
@@ -448,6 +468,17 @@ mem_trace.report("measured in ctx")</code></pre>
 <pre><code>with GPUMemTrace() as mtrace:
     some_code()
 print(mtrace)</code></pre>
+<p>The reporting can be done automatically, which is especially useful in functions due to return call:</p>
+
+<pre><code>def some_func():
+    with GPUMemTrace(ctx='some_func', on_exit_report=True):
+        # some code
+        return 1
+some_func()</code></pre>
+<p>prints:</p>
+
+<pre><code>△used: 0MB, △peaked: 0MB (some_func: exit)</code></pre>
+<p>so you still get a perfect report despite the <code>return</code> call here. <code>ctx</code> is useful for specifying the <em>context</em> in case you have many of those calls through your code and you want to know which is which.</p>
 
 </div>
 </div>
