@@ -276,7 +276,7 @@ class Learner():
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
 
-        tmp_file = self.path/'purge-tmp.pkl'
+        tmp_file = self.path/f'purge-tmp-{os.getpid()}.pkl'
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
