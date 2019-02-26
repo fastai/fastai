@@ -190,7 +190,7 @@ class Learner():
         self.layer_groups = split_model(self.model, split_on)
 
     def freeze_to(self, n:int)->None:
-        "Freeze layers up to layer `n`."
+        "Freeze layers up to layer group `n`."
         for g in self.layer_groups[:n]:
             for l in g:
                 if not self.train_bn or not isinstance(l, bn_types): requires_grad(l, False)
@@ -198,7 +198,7 @@ class Learner():
         self.create_opt(defaults.lr)
 
     def freeze(self)->None:
-        "Freeze up to last layer."
+        "Freeze up to last layer group."
         assert(len(self.layer_groups)>1)
         self.freeze_to(-1)
         self.create_opt(defaults.lr)
