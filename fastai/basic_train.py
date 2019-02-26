@@ -4,7 +4,7 @@ from .basic_data import *
 from .callback import *
 from .data_block import *
 from .utils.mem import gpu_mem_restore
-import inspect, tempfile
+import inspect
 from fastprogress.fastprogress import format_time
 from time import time
 
@@ -277,8 +277,7 @@ class Learner():
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
 
-        tmp = tempfile.NamedTemporaryFile(dir=self.path)
-        tmp_file = tmp.name
+        tmp_file = get_tmp_file(self.path)
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
@@ -292,7 +291,7 @@ class Learner():
         for a in attrs_del: delattr(self, a)
         gc.collect()
         state = torch.load(tmp_file)
-        tmp.close()
+        os.remove(tmp_file)
         for a in attrs_pkl: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
@@ -425,7 +424,7 @@ class Recorder(LearnerCallback):
         if self.add_time: self.names.append('time')
         if not self.silent: self.pbar.write(self.names, table=True)
         self.losses,self.val_losses,self.lrs,self.moms,self.metrics,self.nb_batches = [],[],[],[],[],[]
-        
+
     def on_epoch_begin(self, **kwargs:Any)->None:
         if self.add_time: self.start_epoch = time()
 

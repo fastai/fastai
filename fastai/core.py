@@ -76,7 +76,7 @@ def uniqueify(x:Series, sort:bool=False)->List:
     if sort: res.sort()
     return res
 
-def idx_dict(a): 
+def idx_dict(a):
     "Create a dictionary value to index from `a`."
     return {v:k for k,v in enumerate(a)}
 
@@ -189,10 +189,10 @@ def download_url(url:str, dest:str, overwrite:bool=False, pbar:ProgressBar=None,
             print(timeout_txt)
             import sys;sys.exit(1)
 
-def range_of(x):  
+def range_of(x):
     "Create a range from 0 to `len(x)`."
     return list(range(len(x)))
-def arange_of(x): 
+def arange_of(x):
     "Same as `range_of` but returns an array."
     return np.arange(len(x))
 
@@ -243,7 +243,7 @@ def func_args(func)->bool:
     code = func.__code__
     return code.co_varnames[:code.co_argcount]
 
-def has_arg(func, arg)->bool: 
+def has_arg(func, arg)->bool:
     "Check if `func` accepts `arg`."
     return arg in func_args(func)
 
@@ -326,3 +326,9 @@ def show_some(items:Collection, n_max:int=5, sep:str=','):
     res = sep.join([f'{o}' for o in items[:n_max]])
     if len(items) > n_max: res += '...'
     return res
+
+def get_tmp_file(dir=None):
+    "Create and return a tmp filename, optionally at a specific path. `os.remove` when done with it."
+    f = tempfile.NamedTemporaryFile(delete=False, dir=dir)
+    f.close()
+    return f.name
