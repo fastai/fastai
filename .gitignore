@@ -142,4 +142,4 @@ docs_src/fastai
 fastai/test_api_db.json
 
 # our make release log files
-release-*
+release-*.log

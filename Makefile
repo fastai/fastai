@@ -206,7 +206,7 @@ release: ## do it all (other than testing)
 	${MAKE} test-install; \
 	${MAKE} backport-check; \
 	${MAKE} master-branch-switch; \
-	) 2>&1 | tee release-`date +"%Y-%m-%d-%H-%M-%S"`.log
+	) 2>&1 | tee $(log_file)
 
 ##@ git helpers
 
