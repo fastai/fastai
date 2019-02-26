@@ -167,7 +167,8 @@ class ImageDataBunch(DataBunch):
     def batch_stats(self, funcs:Collection[Callable]=None)->Tensor:
         "Grab a batch of data and call reduction function `func` per channel"
         funcs = ifnone(funcs, [torch.mean,torch.std])
-        x = self.one_batch(ds_type=DatasetType.Valid, denorm=False)[0].cpu()
+        ds_type = DatasetType.Valid if self.valid_dl else DatasetType.Train
+        x = self.one_batch(ds_type=ds_type, denorm=False)[0].cpu()
         return [func(channel_view(x), 1) for func in funcs]
 
     def normalize(self, stats:Collection[Tensor]=None, do_x:bool=True, do_y:bool=False)->None:
