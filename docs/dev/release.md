@@ -915,7 +915,7 @@ Tagging targets:
 
     ```
     git checkout 9fceb02a
-    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a v1.0.5 -m "1.0.5"
+    GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag -a 1.0.5 -m "1.0.5"
     git push --tags origin master
     git checkout master
     ```
