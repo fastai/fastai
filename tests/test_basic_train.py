@@ -70,7 +70,7 @@ def check_learner(learn, train_items):
     # XXX: could use more sanity checks
 
 def test_save_load(learn):
-    this_tests(learn.save, learn.load)
+    this_tests(learn.save, learn.load, learn.purge)
     name = 'mnist-tiny-test-save-load'
     train_items = len(learn.data.train_ds)
     # testing that all these various sequences don't break each other
