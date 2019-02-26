@@ -1,4 +1,4 @@
-import pytest, fastai
+import pytest
 from fastai.utils.mem import *
 from fastai.gen_doc.doctest import this_tests
 from utils.mem import *
@@ -74,29 +74,55 @@ def test_gpu_mem_measure_consumed_reclaimed():
 
 @pytest.mark.cuda
 def test_gpu_mem_trace():
+
+    gpu_prepare_clean_slate()
+
     mtrace = GPUMemTrace()
     this_tests(mtrace.__class__)
-    mtrace.start()
+
+    ### 1. more allocated, less released, then all released, w/o counter reset
     # expecting used=~10, peaked=~15
     x1 = gpu_mem_allocate_mbs(10)
     x2 = gpu_mem_allocate_mbs(15)
     del x2
-    mtrace.stop()
-    #print(mtrace)
-    check_mtrace(used_exp=10, peaked_exp=15, mtrace=mtrace, abs_tol=2, ctx="trace `data`")
+    yield_to_thread() # hack: ensure peak thread gets a chance to measure the peak
+    check_mtrace(used_exp=10, peaked_exp=15, mtrace=mtrace, abs_tol=2, ctx="rel some")
 
+    # check `report`'s format including the right numbers
     ctx = "whoah"
     with CaptureStdout() as cs: mtrace.report(ctx)
-    #print(cs.out)
     match = re.findall(fr'△used: (\d+)MB, △peaked: (\d+)MB: {ctx}', cs.out)
     assert match
     used, peaked = map(int, match[0])
-    #print(used, peaked)
     check_mem(used_exp=10,   peaked_exp=15,
               used_rcv=used, peaked_rcv=peaked, abs_tol=2, ctx="trace `report`")
 
+    # release the remaining allocation, keeping the global counter running w/o reset
+    # expecting used=~0, peaked=~25
+    del x1
+    check_mtrace(used_exp=0, peaked_exp=25, mtrace=mtrace, abs_tol=2, ctx="rel all")
+
+    ### 2. more allocated, less released, then all released, w/ counter reset
+    # expecting used=~10, peaked=~15
+    x1 = gpu_mem_allocate_mbs(10)
+    x2 = gpu_mem_allocate_mbs(15)
+    yield_to_thread() # hack: ensure peak thread gets a chance to measure the peak
+    del x2
+    check_mtrace(used_exp=10, peaked_exp=15, mtrace=mtrace, abs_tol=2, ctx="rel some")
+
+    # release the remaining allocation, resetting the global counter
+    mtrace.reset()
+    # expecting used=-10, peaked=0
+    del x1
+    check_mtrace(used_exp=-10, peaked_exp=0, mtrace=mtrace, abs_tol=2, ctx="rel all")
+
+    # XXX: test these
+    mtrace.stop()
+    mtrace.start()
+
+
 @pytest.mark.cuda
-def test_gpu_mtrace_ctx():
+def test_gpu_mem_trace_ctx():
     # expecting used=20, peaked=0
     with GPUMemTrace() as mtrace: x1 = gpu_mem_allocate_mbs(20)
     this_tests(mtrace.__class__)

@@ -55,7 +55,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Tokenizer"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L87" class="source_link">[source]</a></h2><blockquote><p><code>Tokenizer</code>(<strong><code>tok_func</code></strong>:<code>Callable</code>=<strong><em><code>'SpacyTokenizer'</code></em></strong>, <strong><code>lang</code></strong>:<code>str</code>=<strong><em><code>'en'</code></em></strong>, <strong><code>pre_rules</code></strong>:<code>ListRules</code>=<strong><em><code>None</code></em></strong>, <strong><code>post_rules</code></strong>:<code>ListRules</code>=<strong><em><code>None</code></em></strong>, <strong><code>special_cases</code></strong>:<code>StrList</code>=<strong><em><code>None</code></em></strong>, <strong><code>n_cpus</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
+<h2 id="Tokenizer"><code>class</code> <code>Tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L87" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Tokenizer</code>(<strong><code>tok_func</code></strong>:<code>Callable</code>=<strong><em><code>'SpacyTokenizer'</code></em></strong>, <strong><code>lang</code></strong>:<code>str</code>=<strong><em><code>'en'</code></em></strong>, <strong><code>pre_rules</code></strong>:<code>ListRules</code>=<strong><em><code>None</code></em></strong>, <strong><code>post_rules</code></strong>:<code>ListRules</code>=<strong><em><code>None</code></em></strong>, <strong><code>special_cases</code></strong>:<code>StrList</code>=<strong><em><code>None</code></em></strong>, <strong><code>n_cpus</code></strong>:<code>int</code>=<strong><em><code>None</code></em></strong>)</p>
 </blockquote>
 <p>Put together rules and a tokenizer function to tokenize text with multiprocessing.</p>
 
@@ -98,7 +98,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tokenizer.process_text"><code>process_text</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L103" class="source_link">[source]</a></h4><blockquote><p><code>process_text</code>(<strong><code>t</code></strong>:<code>str</code>, <strong><code>tok</code></strong>:<a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>) → <code>List</code>[<code>str</code>]</p>
+<h4 id="Tokenizer.process_text"><code>process_text</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L103" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>process_text</code>(<strong><code>t</code></strong>:<code>str</code>, <strong><code>tok</code></strong>:<a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>) → <code>List</code>[<code>str</code>]</p>
 </blockquote>
 <p>Process one text <code>t</code> with tokenizer <code>tok</code>.</p>
 
@@ -119,7 +119,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Tokenizer.process_all"><code>process_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L116" class="source_link">[source]</a></h4><blockquote><p><code>process_all</code>(<strong><code>texts</code></strong>:<code>StrList</code>) → <code>List</code>[<code>List</code>[<code>str</code>]]</p>
+<h4 id="Tokenizer.process_all"><code>process_all</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L116" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>process_all</code>(<strong><code>texts</code></strong>:<code>StrList</code>) → <code>List</code>[<code>List</code>[<code>str</code>]]</p>
 </blockquote>
 <p>Process a list of <code>texts</code>.</p>
 
@@ -291,7 +291,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="BaseTokenizer"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L16" class="source_link">[source]</a></h2><blockquote><p><code>BaseTokenizer</code>(<strong><code>lang</code></strong>:<code>str</code>)</p>
+<h2 id="BaseTokenizer"><code>class</code> <code>BaseTokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L16" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>BaseTokenizer</code>(<strong><code>lang</code></strong>:<code>str</code>)</p>
 </blockquote>
 <p>Basic class for a tokenizer function.</p>
 
@@ -312,7 +312,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BaseTokenizer.tokenizer"><code>tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L19" class="source_link">[source]</a></h4><blockquote><p><code>tokenizer</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>List</code>[<code>str</code>]</p>
+<h4 id="BaseTokenizer.tokenizer"><code>tokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L19" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>tokenizer</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>List</code>[<code>str</code>]</p>
 </blockquote>
 
 </div>
@@ -339,7 +339,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="BaseTokenizer.add_special_cases"><code>add_special_cases</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L20" class="source_link">[source]</a></h4><blockquote><p><code>add_special_cases</code>(<strong><code>toks</code></strong>:<code>StrList</code>)</p>
+<h4 id="BaseTokenizer.add_special_cases"><code>add_special_cases</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>add_special_cases</code>(<strong><code>toks</code></strong>:<code>StrList</code>)</p>
 </blockquote>
 
 </div>
@@ -373,7 +373,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SpacyTokenizer"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L22" class="source_link">[source]</a></h2><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>:<code>str</code>) :: <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a></p>
+<h2 id="SpacyTokenizer"><code>class</code> <code>SpacyTokenizer</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L22" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SpacyTokenizer</code>(<strong><code>lang</code></strong>:<code>str</code>) :: <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a></p>
 </blockquote>
 <p>Wrapper around a spacy tokenizer to make it a <a href="/text.transform.html#BaseTokenizer"><code>BaseTokenizer</code></a>.</p>
 
@@ -414,7 +414,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="deal_caps"><code>deal_caps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L75" class="source_link">[source]</a></h4><blockquote><p><code>deal_caps</code>(<strong><code>x</code></strong>:<code>StrList</code>) → <code>StrList</code></p>
+<h4 id="deal_caps"><code>deal_caps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L75" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>deal_caps</code>(<strong><code>x</code></strong>:<code>StrList</code>) → <code>StrList</code></p>
 </blockquote>
 
 </div>
@@ -441,7 +441,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="fix_html"><code>fix_html</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L58" class="source_link">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>:<code>str</code>) → <code>str</code></p>
+<h4 id="fix_html"><code>fix_html</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>fix_html</code>(<strong><code>x</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 
 </div>
@@ -497,7 +497,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_all_caps"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L67" class="source_link">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>x</code></strong>:<code>StrList</code>) → <code>StrList</code></p>
+<h4 id="replace_all_caps"><code>replace_all_caps</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L67" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_all_caps</code>(<strong><code>x</code></strong>:<code>StrList</code>) → <code>StrList</code></p>
 </blockquote>
 <p>Add <code>TK_UP</code> for words in all caps in <code>x</code>.</p>
 
@@ -518,7 +518,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_rep"><code>replace_rep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L42" class="source_link">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
+<h4 id="replace_rep"><code>replace_rep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L42" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_rep</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 
 </div>
@@ -574,7 +574,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_wrep"><code>replace_wrep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L50" class="source_link">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
+<h4 id="replace_wrep"><code>replace_wrep</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L50" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_wrep</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 
 </div>
@@ -630,7 +630,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="rm_useless_spaces"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L38" class="source_link">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
+<h4 id="rm_useless_spaces"><code>rm_useless_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L38" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>rm_useless_spaces</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 <p>Remove multiple spaces in <code>t</code>.</p>
 
@@ -680,7 +680,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="spec_add_spaces"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L34" class="source_link">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
+<h4 id="spec_add_spaces"><code>spec_add_spaces</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L34" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>spec_add_spaces</code>(<strong><code>t</code></strong>:<code>str</code>) → <code>str</code></p>
 </blockquote>
 <p>Add spaces around / and # in <code>t</code>.</p>
 
@@ -743,7 +743,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Vocab"><code>class</code> <code>Vocab</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L122" class="source_link">[source]</a></h2><blockquote><p><code>Vocab</code>(<strong><code>itos</code></strong>:<code>StrList</code>)</p>
+<h2 id="Vocab"><code>class</code> <code>Vocab</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L122" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Vocab</code>(<strong><code>itos</code></strong>:<code>StrList</code>)</p>
 </blockquote>
 <p>Contain the correspondence between numbers and tokens and numericalize.</p>
 
@@ -771,7 +771,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Vocab.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L147" class="source_link">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>tokens</code></strong>:<code>Tokens</code>, <strong><code>max_vocab</code></strong>:<code>int</code>, <strong><code>min_freq</code></strong>:<code>int</code>) → <code>Vocab</code></p>
+<h4 id="Vocab.create"><code>create</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>create</code>(<strong><code>tokens</code></strong>:<code>Tokens</code>, <strong><code>max_vocab</code></strong>:<code>int</code>, <strong><code>min_freq</code></strong>:<code>int</code>) → <code>Vocab</code></p>
 </blockquote>
 <p>Create a vocabulary from a set of <code>tokens</code>.</p>
 
@@ -799,7 +799,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Vocab.numericalize"><code>numericalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L128" class="source_link">[source]</a></h4><blockquote><p><code>numericalize</code>(<strong><code>t</code></strong>:<code>StrList</code>) → <code>List</code>[<code>int</code>]</p>
+<h4 id="Vocab.numericalize"><code>numericalize</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>numericalize</code>(<strong><code>t</code></strong>:<code>StrList</code>) → <code>List</code>[<code>int</code>]</p>
 </blockquote>
 <p>Convert a list of tokens <code>t</code> to their ids.</p>
 
@@ -820,7 +820,7 @@ summary: "NLP data processing; tokenizes text and creates vocab indexes"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="Vocab.textify"><code>textify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L132" class="source_link">[source]</a></h4><blockquote><p><code>textify</code>(<strong><code>nums</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>sep</code></strong>=<strong><em><code>' '</code></em></strong>) → <code>List</code>[<code>str</code>]</p>
+<h4 id="Vocab.textify"><code>textify</code><a href="https://github.com/fastai/fastai/blob/master/fastai/text/transform.py#L132" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>textify</code>(<strong><code>nums</code></strong>:<code>Collection</code>[<code>int</code>], <strong><code>sep</code></strong>=<strong><em><code>' '</code></em></strong>) → <code>List</code>[<code>str</code>]</p>
 </blockquote>
 <p>Convert a list of <code>nums</code> to their tokens.</p>
 

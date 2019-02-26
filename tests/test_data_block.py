@@ -110,7 +110,7 @@ def test_regression():
 def test_wrong_order():
     path = untar_data(URLs.MNIST_TINY)
     with pytest.raises(Exception):
-        src = ImageItemList.from_folder(path).label_from_folder().split_by_folder()
+        src = ImageList.from_folder(path).label_from_folder().split_by_folder()
 
 class CustomDataset(Dataset):
     def __init__(self, data_list): self.data = copy(data_list)

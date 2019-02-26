@@ -1,6 +1,6 @@
 """ Helper functions for dealing with memory usage testing """
 
-import pytest, fastai, torch
+import pytest, torch, time
 from fastai.utils.mem import *
 from math import isclose
 
@@ -20,12 +20,9 @@ def gpu_cache_clear(): torch.cuda.empty_cache()
 def gpu_mem_reclaim(): gc.collect(); gpu_cache_clear()
 
 def gpu_mem_allocate_mbs(n):
-    " allocate n MBs, return the var holding it on success, None on failure "
-    try:
-        d = int(2**9*n**0.5)
-        return torch.ones((d, d)).cuda().contiguous()
-    except:
-        return None
+    "Allocate `n` MBs, return the var holding it on success, None on failure. Granularity is of 2MB (mem page size)"
+    try:    return torch.ones((n*2**18)).cuda().contiguous()
+    except: return None
 
 # this is very useful if the test needs to hit OOM, so this function will leave
 # just the requested amount of GPU free, regardless of GPU utilization or size
@@ -37,6 +34,13 @@ def gpu_mem_leave_free_mbs(n):
     consume = avail - n
     #print(f"consuming {consume}MB to bring free mem to {n}MBs")
     return gpu_mem_allocate_mbs(consume, fatal=True)
+
+# must cleanup after some previously run tests that may leaked memory,
+# before starting this sensitive measurement-wise test
+def gpu_prepare_clean_slate(): gc.collect()
+
+# ensure a thread gets a chance to run by creating a tiny pause
+def yield_to_thread(): time.sleep(0.001)
 
 ########################## validation helpers ###############################
 # these functions are for checking expected vs received (actual) memory usage in tests

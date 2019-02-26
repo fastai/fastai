@@ -56,29 +56,24 @@ def tests2md(tests, type_label):
     md = [f'\n\n{type_label}:'] + md
     return '\n'.join(md)
 
-def get_pytest_html(elt, anchor_id:str, inline:bool=True)->Tuple[str,str]:
+def get_pytest_html(elt, anchor_id:str)->Tuple[str,str]:
     title,body = build_tests_markdown(elt)
     htmlb = HTMLExporter().markdown2html(body).replace('\n','') # nbconverter fails to parse markdown if it has both html and '\n'
     htmlt = HTMLExporter().markdown2html(title).replace('\n','')
     anchor_id = anchor_id.replace('.', '-') + '-pytest'
-    toggle_type = 'collapse' if inline else 'modal'
-    link = f'<a class="source_link" data-toggle="{toggle_type}" data-target="#{anchor_id}" style="float:right; padding-right:10px">[test]</a>'
-    body = get_pytest_card(htmlt, htmlb, anchor_id) if inline else get_pytest_modal(htmlt, htmlb, anchor_id)
+    link, body = get_pytest_card(htmlt, htmlb, anchor_id)
     return link, body
-    
-def get_pytest_modal(title, body, anchor_id):
-    "creates a modal html popup for `show_test`"
-    return (f'<div class="modal" id="{anchor_id}" tabindex="-1" role="dialog"><div class="modal-dialog"><div class="modal-content">'
-                f'<div class="modal-header">{title}<button type="button" class="close" data-dismiss="modal"></button></div>'
-                f'<div class="modal-body">{body}</div>'
-            '</div></div></div>')
 
 def get_pytest_card(title, body, anchor_id):
     "creates a collapsible bootstrap card for `show_test`"
-    return (f'<div class="collapse" id="{anchor_id}"><div class="card card-body"><div class="pytest_card">'
+    link = f'<a class="source_link" data-toggle="collapse" data-target="#{anchor_id}" style="float:right; padding-right:10px">[test]</a>'
+    body = (f'<div class="collapse" id="{anchor_id}"><div class="card card-body pytest_card">'
+                f'<a type="button" data-toggle="collapse" data-target="#{anchor_id}" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></a>'
+                # f'<button type="button" class="close" data-toggle="collapse" data-target="#{anchor_id}" style="float:right; padding-right:10px"></button>'
                 f'{title+body}'
-            '</div></div></div>'
+            '</div></div>'
             '<div style="height:1px"></div>') # hack to fix jumping bootstrap header
+    return link, body
 
 def lookup_db(elt)->List[Dict]:
     "Finds `this_test` entries from test_api_db.json"

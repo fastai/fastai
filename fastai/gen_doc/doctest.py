@@ -87,7 +87,7 @@ def get_func_fq_name(func):
 def get_parent_func(lineno, lines, ignore_missing=False):
     "Find any lines where `elt` is called and return the parent test function"
     for idx,l in enumerate(reversed(lines[:lineno])):
-        if re.match(f'\s*def test', l):  return (lineno - (idx+1)), l
+        if re.match(f'\s*def test', l):  return (lineno - idx), l # 1 based index for github
         if re.match(f'\w+', l):  break # top level indent - out of function scope
     if ignore_missing: return None
     raise LookupError('Could not find parent function for line:', lineno, lines[:lineno])

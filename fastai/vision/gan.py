@@ -4,7 +4,7 @@ from ..callback import *
 from ..basic_data import *
 from ..basic_train import Learner, LearnerCallback
 from .image import Image
-from .data import ImageItemList
+from .data import ImageList
 
 __all__ = ['basic_critic', 'basic_generator', 'GANModule', 'GANLoss', 'GANTrainer', 'FixedGANSwitcher', 'AdaptiveGANSwitcher',
            'GANLearner', 'NoisyItem', 'GANItemList', 'gan_critic', 'AdaptiveLoss', 'accuracy_thresh_expand',
@@ -233,9 +233,9 @@ class NoisyItem(ItemBase):
     def __str__(self):  return ''
     def apply_tfms(self, tfms, **kwargs): return self
 
-class GANItemList(ImageItemList):
+class GANItemList(ImageList):
     "`ItemList` suitable for GANs."
-    _label_cls = ImageItemList
+    _label_cls = ImageList
 
     def __init__(self, items, noise_sz:int=100, **kwargs):
         super().__init__(items, **kwargs)

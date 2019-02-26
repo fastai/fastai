@@ -4,7 +4,8 @@ from .layers import *
 from numbers import Integral
 
 __all__ = ['ItemList', 'CategoryList', 'MultiCategoryList', 'MultiCategoryProcessor', 'LabelList', 'ItemLists', 'get_files',
-           'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor', 'EmptyLabelList']
+           'PreProcessor', 'LabelLists', 'FloatList', 'CategoryProcessor', 'EmptyLabelList', 'MixedItem', 'MixedProcessor',
+           'MixedItemList']
 
 def _decode(df):
     return np.array([[df.columns[i] for i,t in enumerate(x) if t==1] for x in df.values], dtype=np.object)
@@ -695,3 +696,57 @@ def _databunch_load_empty(cls, path, fname:str='export.pkl'):
 
 DataBunch.load_empty = _databunch_load_empty
 
+class MixedProcessor(PreProcessor):
+    def __init__(self, procs:Collection[Union[PreProcessor, Collection[PreProcessor]]]):
+        self.procs = procs
+    
+    def process_one(self, item:Any): 
+        res = []
+        for procs, i in zip(self.procs, item):
+            for p in procs: i = p.process_one(i)
+            res.append(i)
+        return res
+    
+    def process(self, ds:Collection): 
+        for procs, il in zip(self.procs, ds.item_lists):
+            for p in procs: p.process(il)
+                
+class MixedItem(ItemBase):
+    def __init__(self, items):
+        self.obj = items
+        self.data = [item.data for item in items]
+    
+    def __repr__(self): return '\n'.join([f'{self.__class__.__name__}'] + [repr(item) for item in self.obj]) 
+    
+    def apply_tfms(self, tfms:Collection, **kwargs):
+        self.obj = [item.apply_tfms(t, **kwargs) for item,t in zip(self.obj, tfms)]
+        self.data = [item.data for item in self.obj]
+        return self
+
+class MixedItemList(ItemList):
+    
+    def __init__(self, item_lists, path:PathOrStr=None, label_cls:Callable=None, inner_df:Any=None, 
+                 x:'ItemList'=None, ignore_empty:bool=False, processor=None):
+        self.item_lists = item_lists
+        default_procs = [[p(ds=il) for p in listify(il._processor)] for il in item_lists]
+        if processor is None:
+            processor = MixedProcessor([ifnone(il.processor, dp) for il,dp in zip(item_lists, default_procs)])
+        super().__init__(range_of(item_lists[0]), processor=processor, path=ifnone(path, item_lists[0].path), 
+                         label_cls=label_cls, inner_df=inner_df, x=x, ignore_empty=ignore_empty)
+    
+    def new(self, item_lists, processor:PreProcessor=None, **kwargs)->'ItemList':
+        "Create a new `ItemList` from `items`, keeping the same attributes."
+        processor = ifnone(processor, self.processor)
+        copy_d = {o:getattr(self,o) for o in self.copy_new}
+        kwargs = {**copy_d, **kwargs}
+        return self.__class__(item_lists, processor=processor, **kwargs)
+    
+    def get(self, i):
+        return MixedItem([il.get(i) for il in self.item_lists])
+    
+    def __getitem__(self,idxs:int)->Any:
+        idxs = try_int(idxs)
+        if isinstance(idxs, Integral): return self.get(idxs)
+        else: 
+            item_lists = [il.new(il.items[idxs], inner_df=index_row(il.inner_df, idxs)) for il in self.item_lists]
+            return self.new(item_lists, inner_df=index_row(self.inner_df, idxs))

@@ -43,11 +43,11 @@ class RandomItemList(ItemList):
     def reconstruct(self, t): return RandomItem.from_val(t)
 
     def show_xys(self, xs, ys, **kwargs):
-        res = [f'{repr(x)},{repr(y)}' for x,y in zip(xs, ys)]
+        res = [f'{x},{y}' for x,y in zip(xs, ys)]
         print('\n'.join(res))
 
     def show_xyzs(self, xs, ys, zs, **kwargs):
-        res = [f'{repr(x)},{repr(y)},{repr(z)}' for x,y,z in zip(xs, ys, zs)]
+        res = [f'{x},{y},{z}' for x,y,z in zip(xs, ys, zs)]
         print('\n'.join(res))
 
 def fake_basedata(n_in:int=5,batch_size:int=5, train_length:int=None, valid_length:int=None):

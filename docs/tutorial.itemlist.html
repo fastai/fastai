@@ -90,7 +90,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For cycleGANs, we need to create a custom type of items since we feed the model tuples of images. Let's look at how to code this. The basis is to code the <code>obj</code> and <a href="/vision.data.html#vision.data"><code>data</code></a> attributes. We do that in the init. The object is the tuple of images and the data their underlying tensors normalized between -1 and 1.</p>
+<p>For cycleGANs, we need to create a custom type of items since we feed the model tuples of images. Let's look at how to code this. The basis is to code the <a href="/vision.data.html#vision.data"><code>data</code></a> attribute that is what will be given to the model. Note that we still keep track of the initial object (usuall in an <code>obj</code> attrivute) to be able to show nice representations later on. Here the object is the tuple of images and the data their underlying tensors normalized between -1 and 1.</p>
 
 </div>
 </div>
@@ -234,7 +234,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The most important method you have to implement is <code>get</code>: this one will enable your custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> to generate an <a href="/core.html#ItemBase"><code>ItemBase</code></a> from the thing stored in its <code>items</code> array. For instance an <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a> has the following <code>get</code> method:</p>
+<p>The most important method you have to implement is <code>get</code>: this one will enable your custom <a href="/data_block.html#ItemList"><code>ItemList</code></a> to generate an <a href="/core.html#ItemBase"><code>ItemBase</code></a> from the thing stored in its <code>items</code> array. For instance an <a href="/vision.data.html#ImageList"><code>ImageList</code></a> has the following <code>get</code> method:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
     <span class="n">fn</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
@@ -314,7 +314,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
 
 <span class="k">def</span> <span class="nf">show_xyzs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">-&gt;</span><span class="bp">None</span><span class="p">:</span>
 </pre></div>
-<p>In both cases <code>xs</code> and <code>ys</code> represent the inputs and the targets, in the second case <code>zs</code> represent the predictions. They are lists of the same length that depend on the <code>rows</code> argument you passed. The kwargs are passed from <code>data.show_batch()</code> / <code>learn.show_results()</code>. As an example, here is the source code of those methods in <a href="/vision.data.html#ImageItemList"><code>ImageItemList</code></a>:</p>
+<p>In both cases <code>xs</code> and <code>ys</code> represent the inputs and the targets, in the second case <code>zs</code> represent the predictions. They are lists of the same length that depend on the <code>rows</code> argument you passed. The kwargs are passed from <code>data.show_batch()</code> / <code>learn.show_results()</code>. As an example, here is the source code of those methods in <a href="/vision.data.html#ImageList"><code>ImageList</code></a>:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_xys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="s2">&quot;Show the `xs` and `ys` on a figure of `figsize`. `kwargs` are passed to the show method.&quot;</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
@@ -356,7 +356,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTupleList</span><span class="p">(</span><span class="n">ImageItemList</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTupleList</span><span class="p">(</span><span class="n">ImageList</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">itemsB</span> <span class="o">=</span> <span class="n">itemsB</span>
@@ -405,7 +405,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_folders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">folderA</span><span class="p">,</span> <span class="n">folderB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">itemsB</span> <span class="o">=</span> <span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderB</span><span class="p">)</span><span class="o">.</span><span class="n">items</span>
+        <span class="n">itemsB</span> <span class="o">=</span> <span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderB</span><span class="p">)</span><span class="o">.</span><span class="n">items</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderA</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="n">itemsB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="k">return</span> <span class="n">res</span>
@@ -472,7 +472,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTupleList</span><span class="p">(</span><span class="n">ImageItemList</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ImageTupleList</span><span class="p">(</span><span class="n">ImageList</span><span class="p">):</span>
     <span class="n">_label_cls</span><span class="o">=</span><span class="n">TargetTupleList</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -489,7 +489,7 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
     
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_folders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">folderA</span><span class="p">,</span> <span class="n">folderB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">itemsB</span> <span class="o">=</span> <span class="n">ImageItemList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderB</span><span class="p">)</span><span class="o">.</span><span class="n">items</span>
+        <span class="n">itemsB</span> <span class="o">=</span> <span class="n">ImageList</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderB</span><span class="p">)</span><span class="o">.</span><span class="n">items</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="n">folderA</span><span class="p">,</span> <span class="n">itemsB</span><span class="o">=</span><span class="n">itemsB</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="k">return</span> <span class="n">res</span>
@@ -529,6 +529,19 @@ summary: "Advanced tutorial, explains how to create your custom `ItemBase` or `I
         <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="n">zs</span><span class="p">)):</span>
             <span class="n">x</span><span class="o">.</span><span class="n">to_one</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">z</span><span class="o">.</span><span class="n">to_one</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
