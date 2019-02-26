@@ -4,7 +4,7 @@ from .basic_data import *
 from .callback import *
 from .data_block import *
 from .utils.mem import gpu_mem_restore
-import inspect
+import inspect, tempfile
 from fastprogress.fastprogress import format_time
 from time import time
 
@@ -277,7 +277,8 @@ class Learner():
     def purge(self, clear_opt:bool=True):
         "Purge the `Learner` of all cached attributes to release some GPU memory."
 
-        tmp_file = self.path/f'purge-tmp-{os.getpid()}.pkl'
+        tmp = tempfile.NamedTemporaryFile(dir=self.path)
+        tmp_file = tmp.name
         attrs_all = [k for k in self.__dict__.keys() if not k.startswith("__")]
         attrs_pkl = ['bn_wd', 'callback_fns', 'layer_groups', 'loss_func', 'metrics', 'model',
                      'model_dir', 'opt_func', 'path', 'train_bn', 'true_wd', 'wd']
@@ -291,7 +292,7 @@ class Learner():
         for a in attrs_del: delattr(self, a)
         gc.collect()
         state = torch.load(tmp_file)
-        os.remove(tmp_file)
+        tmp.close()
         for a in attrs_pkl: setattr(self, a, state[a])
         cb_state = state.pop('cb_state')
         self.callbacks = [load_callback(c,s, self) for c,s in cb_state.items()]
