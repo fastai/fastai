@@ -1279,6 +1279,9 @@ h4.panel-title {
     /* border-left: 5px solid #eef2ff;
     border-right: 5px solid #eef2ff; */
 }
+.pytest_card .close {
+    color: #000
+}
 blockquote {
         font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }

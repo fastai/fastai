@@ -112,7 +112,7 @@ def show_doc(elt, doc_string:bool=True, full_name:str=None, arg_comments:dict=No
     elif isinstance(elt, Callable):  name,args = format_ft_def(elt, full_name)
     else: raise Exception(f'doc definition not supported for {full_name}')
     source_link = get_function_source(elt) if is_fastai_class(elt) else ""
-    test_link, test_modal = get_pytest_html(elt, anchor_id=anchor_id, inline=True) if show_tests else ('', '')
+    test_link, test_modal = get_pytest_html(elt, anchor_id=anchor_id) if show_tests else ('', '')
     title_level = ifnone(title_level, 2 if inspect.isclass(elt) else 4)
     doc =  f'<h{title_level} id="{anchor_id}">{name}{source_link}{test_link}</h{title_level}>'
     doc += f'\n\n> {args}'
