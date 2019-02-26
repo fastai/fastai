@@ -102,9 +102,12 @@ If you need to make a hotfix to an already released version, follow the [Hotfix 
 Here is the "I'm feeling lucky" version, do not attempt unless you understand the build process.
 
 ```
-make release 2>&1 | tee release-`date +"%Y-%m-%d-%H:%M:%S"`.log
+make release
 ```
-Ideally, don't remove the part that saves the full log - you might need it later.
+
+This target will automatically log its stdout and stderr into a log file of date format `release-%Y-%m-%d-%H-%M-%S.log`.
+
+Ideally, please keep this file around for a few days in case we need to diagnose any problems with the release process at a later time.
 
 `make test`'s non-deterministic tests may decide to fail right during the release rites. It has now been moved to the head of the process, so if it fails not due to a bug but due to its unreliability, it won't affect the release process. Just rerun `make release` again.
 
