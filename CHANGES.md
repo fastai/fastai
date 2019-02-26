@@ -26,7 +26,7 @@ of that change.
 
 - In `CollabDataBunch`, `pct_val` is renamed `valid_pct` for consistency
 - `ImageItemList` becomes `ImageList` for consistency with `TextList` and `TabularList`
-    - Note: `load_learner` will fail for exported (pickled) models with error *AttributeError: Can't get attribute 'ImageItemList' on <module 'fastai.vision.data'*. You will need to re-export with version 1.0.46 or use 1.0.45
+- `load_learner` will fail for exported (pickled) models with error *AttributeError: Can't get attribute 'ImageItemList' on <module 'fastai.vision.data'*. You will need to re-export with version 1.0.46 or use 1.0.44
 
 ### New:
 
@@ -55,12 +55,10 @@ of that change.
 
 ## 1.0.45 (2019-02-13)
 
-- Released Changes (https://pypi.org/project/fastai/1.0.45/)
+Not Released
 
 
 ## 1.0.44 (2019-02-13)
-
-Never Released.
 
 ### New:
 
