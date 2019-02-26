@@ -110,9 +110,11 @@ class gpu_mem_restore_ctx():
 
 class GPUMemTrace():
     "Trace allocated and peaked GPU memory usage (deltas)."
-    def __init__(self, silent=False):
+    def __init__(self, silent=False, ctx=None, on_exit_report=False):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
         self.silent = silent # shortcut to turn off all reports from constructor
+        self.ctx    = ctx    # default context note in report
+        self.on_exit_report = on_exit_report # auto-report on ctx manager exit
         self.start()
 
     def reset(self):
@@ -150,6 +152,7 @@ class GPUMemTrace():
 
     def __exit__(self, *exc):
         self.stop()
+        if self.on_exit_report: self.report('exit')
 
     def __del__(self):
         self.stop()
@@ -158,18 +161,24 @@ class GPUMemTrace():
         delta_used, delta_peaked = self.data()
         return f"△used: {delta_used}MB, △peaked: {delta_peaked}MB"
 
+    def _get_ctx(self, subctx=None):
+        "Return ' (ctx: subctx)' or ' (ctx)' or ' (subctx)' or '' depending on this and constructor arguments"
+        l = []
+        if self.ctx is not None:      l.append(self.ctx)
+        if subctx is not None:        l.append(subctx)
+        return '' if len(l) == 0 else f" ({': '.join(l)})"
+
     def silent(self, silent=True):
         self.silent = silent
 
-    def report(self, note=''):
-        "Print delta used+peaked, and an optional context note"
+    def report(self, subctx=None):
+        "Print delta used+peaked, and an optional context note, which can also be preset in constructor"
         if self.silent: return
-        if note: note = f": {note}"
-        print(f"{self}{note}")
+        print(f"{ self }{ self._get_ctx(subctx) }")
 
-    def report_n_reset(self, note=''):
+    def report_n_reset(self, subctx=None):
         "Print delta used+peaked, and an optional context note. Then reset counters"
-        self.report(note)
+        self.report(subctx)
         self.reset()
 
     def peak_monitor_start(self):
