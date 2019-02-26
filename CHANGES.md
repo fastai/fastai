@@ -53,7 +53,7 @@ of that change.
 - `verify_images` fixes channels even if no new size is passed
 
 
-## 1.0.45 (2019-02-13)
+## 1.0.45
 
 Not Released
 
