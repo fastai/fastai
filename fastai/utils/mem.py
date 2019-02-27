@@ -110,11 +110,11 @@ class gpu_mem_restore_ctx():
 
 class GPUMemTrace():
     "Trace allocated and peaked GPU memory usage (deltas)."
-    def __init__(self, silent=False, ctx=None, on_exit_report=False):
+    def __init__(self, silent=False, ctx=None, on_exit_report=True):
         assert torch.cuda.is_available(), "pytorch CUDA is required"
         self.silent = silent # shortcut to turn off all reports from constructor
         self.ctx    = ctx    # default context note in report
-        self.on_exit_report = on_exit_report # auto-report on ctx manager exit
+        self.on_exit_report = on_exit_report # auto-report on ctx manager exit (default: True)
         self.start()
 
     def reset(self):
@@ -192,6 +192,8 @@ class GPUMemTrace():
     def peak_monitor_stop(self):
         self.peak_monitoring = False
 
+    # XXX: this is an unreliable function, since there is no thread priority
+    # control and it may not run enough or not run at all
     def peak_monitor_func(self):
         gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(torch.cuda.current_device())
         while True:

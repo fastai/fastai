@@ -144,8 +144,11 @@ def test_gpu_mem_trace():
 @pytest.mark.cuda
 def test_gpu_mem_trace_ctx():
     # context manager
-    # expecting used=20, peaked=0
-    with GPUMemTrace() as mtrace: x1 = gpu_mem_allocate_mbs(20)
+    # expecting used=20, peaked=0, auto-printout
+    with CaptureStdout() as cs:
+        with GPUMemTrace() as mtrace:
+            x1 = gpu_mem_allocate_mbs(20)
+    _, _ = parse_mtrace_repr(cs.out, "exit")
     this_tests(mtrace.__class__)
     check_mtrace(used_exp=20, peaked_exp=0, mtrace=mtrace, abs_tol=2, ctx="ctx manager")
     del x1
@@ -153,7 +156,7 @@ def test_gpu_mem_trace_ctx():
     # auto-report on exit w/ context and w/o
     for ctx in [None, "test"]:
         with CaptureStdout() as cs:
-            with GPUMemTrace(ctx=ctx, on_exit_report=True):
+            with GPUMemTrace(ctx=ctx):
                 # expecting used=20, peaked=0
                 x1 = gpu_mem_allocate_mbs(20)
         if ctx is None: ctx = "exit" # exit is the hardcoded subctx for ctx manager
@@ -162,3 +165,9 @@ def test_gpu_mem_trace_ctx():
         check_mem(used_exp=20,   peaked_exp=0,
                   used_rcv=used, peaked_rcv=peaked, abs_tol=2, ctx="auto-report on exit")
         del x1
+
+    # auto-report off
+    ctx = "auto-report off"
+    with CaptureStdout() as cs:
+        with GPUMemTrace(ctx=ctx, on_exit_report=False): 1
+    assert len(cs.out) == 0, f"stdout: {cs.out}"
