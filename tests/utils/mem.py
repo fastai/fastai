@@ -45,6 +45,9 @@ def yield_to_thread(): time.sleep(0.001)
 ########################## validation helpers ###############################
 # these functions are for checking expected vs received (actual) memory usage in tests
 
+# number strings can be 1,000.05, so strip commas and convert to float
+def str2flt(s): return float(s.replace(',',''))
+
 # mtrace is GPUMemTrace.data output
 # ctx is useful as a hint for telling where in the test the trace was measured
 def check_mtrace(used_exp, peaked_exp, mtrace, abs_tol=2, ctx=None):
@@ -61,5 +64,15 @@ def check_mem(used_exp, peaked_exp, used_rcv, peaked_rcv, abs_tol=2, ctx=None):
 def report_mem(used_exp, peaked_exp, used_rcv, peaked_rcv, abs_tol=2, ctx=None):
     ctx = f" ({ctx})" if ctx is not None else ""
     print(f"got:△used={used_rcv}MBs, △peaked={peaked_rcv}MBs{ctx}")
+
+# parses mtrace repr and also asserts that the `ctx` is in the repr
+def parse_mtrace_repr(mtrace_repr, ctx):
+    "parse the `mtrace` repr and return `used`, `peaked` ints"
+    # extract numbers + check ctx matches
+    match = re.findall(fr'△Used Peaked MB: +([\d,]+) +([\d,]+) +\({ctx}\)', mtrace_repr)
+    assert match, f"input: cs.out={mtrace_repr}, ctx={ctx}"
+    used, peaked = map(str2flt, match[0])
+    return used, peaked
+
 
 #check_mem = report_mem
