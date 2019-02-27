@@ -159,7 +159,7 @@ class GPUMemTrace():
 
     def __repr__(self):
         delta_used, delta_peaked = self.data()
-        return f"△used: {delta_used}MB, △peaked: {delta_peaked}MB"
+        return f"△Used Peaked MB: {delta_used:6,.0f} {delta_peaked:6,.0f}"
 
     def _get_ctx(self, subctx=None):
         "Return ' (ctx: subctx)' or ' (ctx)' or ' (subctx)' or '' depending on this and constructor arguments"
@@ -174,7 +174,7 @@ class GPUMemTrace():
     def report(self, subctx=None):
         "Print delta used+peaked, and an optional context note, which can also be preset in constructor"
         if self.silent: return
-        print(f"{ self }{ self._get_ctx(subctx) }")
+        print(f"{ self.__repr__() }{ self._get_ctx(subctx) }")
 
     def report_n_reset(self, subctx=None):
         "Print delta used+peaked, and an optional context note. Then reset counters"

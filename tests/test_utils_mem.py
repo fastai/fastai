@@ -72,14 +72,6 @@ def test_gpu_mem_measure_consumed_reclaimed():
     # allow 2mb tolerance for rounding of 1 mb on each side
     assert isclose(used_before, used_after_reclaimed, abs_tol=2), f"reclaim all consumed memory, started with {used_before}, now {used_after_reclaimed} used"
 
-def parse_mtrace_repr(mtrace_repr, ctx):
-    "parse the `mtrace` repr and return `used`, `peaked` ints"
-    # extract numbers + check ctx matches
-    match = re.findall(fr'△used: (\d+)MB, △peaked: (\d+)MB \({ctx}\)', mtrace_repr)
-    assert match, f"input: cs.out={mtrace_repr}, ctx={ctx}"
-    used, peaked = map(int, match[0])
-    return used, peaked
-
 @pytest.mark.cuda
 def test_gpu_mem_trace():
 
@@ -182,6 +174,7 @@ class NewTestExp():
     @gpu_mem_trace
     def experiment2(): pass
 
+@pytest.mark.cuda
 def test_gpu_mem_trace_decorator():
     this_tests(gpu_mem_trace)
 
