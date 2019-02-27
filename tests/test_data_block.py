@@ -101,6 +101,18 @@ def test_splitdata_datasets():
     assert len(sd.valid)==ratio*n, 'Validation set is right size'
     assert set(list(sd.train.items)+list(sd.valid.items))==set(range(n)), 'All items covered'
 
+def test_split_subsets():
+    sd = ItemList(range(10)).split_subsets(train_size=.1, valid_size=.2).label_const(0)
+    assert len(sd.train)==1
+    assert len(sd.valid)==2
+
+    with pytest.raises(AssertionError):
+        ItemList(range(10)).split_subsets(train_size=.6, valid_size=.6).label_const(0)
+    with pytest.raises(AssertionError):
+        ItemList(range(10)).split_subsets(train_size=0.0, valid_size=0.5).label_const(0)
+    with pytest.raises(AssertionError):
+        ItemList(range(10)).split_subsets(train_size=0.5, valid_size=0.0).label_const(0)
+
 def test_regression():
     df = pd.DataFrame({'x':range(100), 'y':np.random.rand(100)})
     data = ItemList.from_df(df, path='.', cols=0).random_split_by_pct().label_from_df(cols=1).databunch()

@@ -197,6 +197,17 @@ class ItemList():
         cut = int(valid_pct * len(self))
         return self.split_by_idx(rand_idx[:cut])
 
+    def split_subsets(self, train_size:float, valid_size:float, seed=None) -> 'ItemLists':
+        "Split the items into train set with size `train_size * n` and valid set with size `valid_size * n`."
+        assert 0 < train_size < 1
+        assert 0 < valid_size < 1
+        assert train_size + valid_size <= 1.
+        if seed is not None: np.random.seed(seed)
+        n = len(self.items)
+        rand_idx = np.random.permutation(range(n))
+        train_cut, valid_cut = int(train_size * n), int(valid_size * n)
+        return self.split_by_idxs(rand_idx[:train_cut], rand_idx[-valid_cut:])
+
     def split_by_valid_func(self, func:Callable)->'ItemLists':
         "Split the data by result of `func` (which returns `True` for validation set)."
         valid_idx = [i for i,o in enumerate(self.items) if func(o)]
