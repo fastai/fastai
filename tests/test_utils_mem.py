@@ -171,3 +171,28 @@ def test_gpu_mem_trace_ctx():
     with CaptureStdout() as cs:
         with GPUMemTrace(ctx=ctx, on_exit_report=False): 1
     assert len(cs.out) == 0, f"stdout: {cs.out}"
+
+
+# setup for test_gpu_mem_trace_decorator
+@gpu_mem_trace
+def experiment1(): pass
+
+class NewTestExp():
+    @staticmethod
+    @gpu_mem_trace
+    def experiment2(): pass
+
+def test_gpu_mem_trace_decorator():
+    this_tests(gpu_mem_trace)
+
+    # func
+    with CaptureStdout() as cs: experiment1()
+    used, peaked = parse_mtrace_repr(cs.out, "experiment1: exit")
+    check_mem(used_exp=0,    peaked_exp=0,
+              used_rcv=used, peaked_rcv=peaked, abs_tol=2, ctx="")
+
+    # class func
+    with CaptureStdout() as cs: NewTestExp.experiment2()
+    used, peaked = parse_mtrace_repr(cs.out, "NewTestExp.experiment2: exit")
+    check_mem(used_exp=0,    peaked_exp=0,
+              used_rcv=used, peaked_rcv=peaked, abs_tol=2, ctx="")
