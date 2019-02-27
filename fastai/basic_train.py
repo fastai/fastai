@@ -468,18 +468,21 @@ class Recorder(LearnerCallback):
         "Add `names` to the inner metric names."
         self._added_met_names = names
 
-    def plot_lr(self, show_moms=False)->None:
+    def plot_lr(self, show_moms=False)->plt.Figure:
         "Plot learning rate, `show_moms` to include momentum."
         iterations = range_of(self.lrs)
         if show_moms:
-            _, axs = plt.subplots(1,2, figsize=(12,4))
+            fig, axs = plt.subplots(1,2, figsize=(12,4))
             axs[0].plot(iterations, self.lrs)
             axs[0].set_xlabel('Iterations')
             axs[0].set_ylabel('Learning Rate')
             axs[1].plot(iterations, self.moms)
             axs[1].set_xlabel('Iterations')
             axs[1].set_ylabel('Momentum')
-        else: plt.plot(iterations, self.lrs)
+        else:
+            fig, ax = plt.subplots()
+            ax.plot(iterations, self.lrs)
+        return fig
 
     @staticmethod
     def smoothen_by_spline(xs, ys, **kwargs):
@@ -488,13 +491,13 @@ class Recorder(LearnerCallback):
         ys = spl(xs)
         return ys
 
-    def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, **kwargs)->None:
+    def plot(self, skip_start:int=10, skip_end:int=5, suggestion:bool=False, **kwargs)->plt.Figure:
         "Plot learning rate and losses, trimmed between `skip_start` and `skip_end`. Optionally plot and return min gradient"
         lrs = self.lrs[skip_start:-skip_end] if skip_end > 0 else self.lrs[skip_start:]
         losses = self.losses[skip_start:-skip_end] if skip_end > 0 else self.losses[skip_start:]
         losses = [x.item() for x in losses]
         if 'k' in kwargs: losses = self.smoothen_by_spline(lrs, losses, **kwargs)
-        _, ax = plt.subplots(1,1)
+        fig, ax = plt.subplots(1,1)
         ax.plot(lrs, losses)
         ax.set_ylabel("Loss")
         ax.set_xlabel("Learning Rate")
@@ -508,12 +511,13 @@ class Recorder(LearnerCallback):
             print(f"Min numerical gradient: {lrs[mg]:.2E}")
             ax.plot(lrs[mg],losses[mg],markersize=10,marker='o',color='red')
             self.min_grad_lr = lrs[mg]
+        return fig
 
-    def plot_losses(self, last:int=None)->None:
+    def plot_losses(self, last:int=None)->plt.Figure:
         "Plot training and validation losses."
         last = ifnone(last,len(self.nb_batches))
         assert last<=len(self.nb_batches), f"We can only plot up to the last {len(self.nb_batches)} epochs. Please adapt 'last' parameter accordingly."
-        _, ax = plt.subplots(1,1)
+        fig, ax = plt.subplots(1,1)
         l_b = np.sum(self.nb_batches[-last:])
         iterations = range_of(self.losses)[-l_b:]
         ax.plot(iterations, self.losses[-l_b:], label='Train')
@@ -523,17 +527,19 @@ class Recorder(LearnerCallback):
         ax.set_ylabel('Loss')
         ax.set_xlabel('Batches processed')
         ax.legend()
+        return fig
 
-    def plot_metrics(self)->None:
+    def plot_metrics(self)->plt.Figure:
         "Plot metrics collected during training."
         assert len(self.metrics) != 0, "There are no metrics to plot."
-        _, axes = plt.subplots(len(self.metrics[0]),1,figsize=(6, 4*len(self.metrics[0])))
+        fig, axes = plt.subplots(len(self.metrics[0]),1,figsize=(6, 4*len(self.metrics[0])))
         val_iter = self.nb_batches
         val_iter = np.cumsum(val_iter)
         axes = axes.flatten() if len(self.metrics[0]) != 1 else [axes]
         for i, ax in enumerate(axes):
             values = [met[i] for met in self.metrics]
             ax.plot(val_iter, values)
+        return fig
 
 class FakeOptimizer():
     def step(self): pass
